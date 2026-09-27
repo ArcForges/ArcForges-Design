@@ -1,6 +1,6 @@
 # CI and local validation policy
 
-Accepted on 2026-09-21 by explicit user direction during WP02.04; decision [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017). This is an execution-policy change across all nine implementation repositories, Design and Plan. It replaces prior mandatory hosted runtime matrices and repeated post-publication verification, including the original WP02.04 execution sequence. It does not remove application functionality, change dependency versions or establish untested product support.
+Accepted on 2026-09-21 by explicit user direction during WP02.04; decision [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017). This is an execution-policy change across all seven implementation repositories, Design and Plan. It replaces prior mandatory hosted runtime matrices and repeated post-publication verification, including the original WP02.04 execution sequence. It does not remove application functionality, change dependency versions or establish untested product support.
 
 The user's 2026-09-22 clarification distinguishes documentation repositories without CI from documentation-only changes in repositories with CI. Only the former merge after review without CI; the latter retain every applicable required check. This clarification does not require additional local product builds or runtime tests for documentation changes.
 
@@ -19,13 +19,13 @@ The user's 2026-09-22 clarification distinguishes documentation repositories wit
 
 ## Research inventory and fixed execution order
 
-Research inspected the current workflows, called scripts, repository instructions, open PRs and clean main checkouts before edits. Mobile PR 9 is the only related open source PR; its existing version-identity branch/worktree receives the reduction. Unrelated dependency PRs remain unchanged. DesktopPlatform, Contracts, Cloud, AI and Web currently have no macOS runner; the three desktop products each have two macOS matrix entries.
+Research inspected the current workflows, called scripts, repository instructions, open PRs and clean main checkouts before edits. Mobile PR 9 is the only related open source PR; its existing version-identity branch/worktree receives the reduction. Unrelated dependency PRs remain unchanged. DesktopPlatform, Contracts, Cloud, AI and Web currently have no macOS runner; ArcScope has two macOS matrix entries.
 
 | Owner | Planned reduction and retained boundary |
 |---|---|
 | DesktopPlatform | Remove packaged C17/managed/AOT consumer execution, native runtime tests, owned-DLL execution and redundant policy/hash passes; retain actual native/managed build, package production and necessary legal identity checks |
 | Contracts | Remove consumer execution matrices, live transport fixtures from default checks and repeated restore/artifact verification; publish with bounded registry metadata/status and latest-main SNAPSHOT ordering, without public archive polling |
-| ArcNotes / ArcScope / ArcSlate | Remove both macOS RIDs and GUI/live smoke; remove screenshot/smoke requirements from candidate and release schemas; keep three Windows/Linux CI RIDs and local opt-in runtime tests |
+| ArcScope | Remove both macOS RIDs and GUI/live smoke; remove screenshot/smoke requirements from candidate and release schemas; keep three Windows/Linux CI RIDs and local opt-in runtime tests |
 | Cloud | Build Native AOT/image without launching the app/container; remove Worker/RPC/live post-deploy tests and WSL fallback; keep image/candidate identity, licence extraction and deployment |
 | AI | Separate offline tests from opt-in Workflow runtime tests; remove real inference/live gates and mandatory live-evidence asset; keep sealed Worker build and deployment receipt |
 | Web | Remove Playwright/online asset verification and duplicate IDE/candidate builds; keep offline tests, static entry-point checks, one production build and deployment |

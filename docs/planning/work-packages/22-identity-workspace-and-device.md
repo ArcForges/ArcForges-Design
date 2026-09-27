@@ -243,7 +243,7 @@ Acceptance includes every amended §5 producer/consumer and [WP-22.90](#rule-wp-
 5. Every enumerated sensitive operation demands step-up; the window expires; app unlock never substitutes.
 6. Token scope is enforced; tokens cannot perform step-up operations; revocation is immediate.
 7. Recovery resists the modelled abuse cases; every account state has defined capability; deletion never touches local data.
-8. Shell launch and native Scope/Slate work require no account; Notes and Chat content behavior passes the [offline initial-state matrix](../../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix). Signout/deletion preserves native projects and pending recovery material while blocking normal signed-out Cloud content views.
+8. Shell launch and native ArcScope work require no account; Chat content behavior passes the [offline initial-state matrix](../../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix). Signout/deletion preserves native projects and pending recovery material while blocking normal signed-out Cloud content views.
 
 ---
 

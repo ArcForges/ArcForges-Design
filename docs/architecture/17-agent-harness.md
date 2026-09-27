@@ -91,7 +91,7 @@ proposed calls
 
 | # | Rule |
 |---|---|
-| <a id="rule-pa-01"></a>PA-01 | **Parallelism respects resource conflict** ([CC-02](../requirements/05-ai-and-agent-execution.md#rule-cc-02) of the AI requirements). Reading two ArcScope sessions may run in parallel; two calls editing the same ArcNotes document must not. |
+| <a id="rule-pa-01"></a>PA-01 | **Parallelism respects resource conflict** ([CC-02](../requirements/05-ai-and-agent-execution.md#rule-cc-02) of the AI requirements). Reading two ArcScope sessions may run in parallel; two calls editing the same ArcScope annotation or report must not. |
 | <a id="rule-pa-02"></a>PA-02 | **The conflict set is declared by the capability owner**, not inferred from arguments. An undeclared capability is treated as exclusive, which is the safe default. |
 | <a id="rule-pa-03"></a>PA-03 | **A capability declared non-parallelisable runs alone**, whatever the model proposed. |
 | <a id="rule-pa-04"></a>PA-04 | **Group order preserves the model's relative order** where the graph permits, so a model that intended a sequence gets one. |
@@ -192,9 +192,9 @@ collect references          (identity only — no content yet)
 | # | Rule |
 |---|---|
 | <a id="rule-pk-01"></a>PK-01 | **References first, content last.** A reference that fails revalidation never causes its content to be fetched. |
-| <a id="rule-pk-02"></a>PK-02 | **Every packed item carries source, revision and anchor**, which is what makes a citation resolvable afterwards ([WP-19.02](../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.02)). |
+| <a id="rule-pk-02"></a>PK-02 | **Every packed item carries source, revision and anchor**, which is what makes a citation resolvable afterwards ([WP-40.04](../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.04)). |
 | <a id="rule-pk-03"></a>PK-03 | **Permission is applied per source during assembly.** A refused source contributes nothing, including to counts ([WP-40.03](../planning/work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.03)). |
-| <a id="rule-pk-04"></a>PK-04 | Indexed/pinned owner context requires an acknowledged Cloud revision. A separately selected small local text/image/audio input may enter only through the one-use source-consent and transientInput profile in [client journeys](contracts/07-client-journeys-and-ports.md). This creates neither sync enrollment nor an index entry; pending local Notes content cannot masquerade as acknowledged context. Missing/denied content is disclosed. Enabling AI alone never uploads it. |
+| <a id="rule-pk-04"></a>PK-04 | Indexed/pinned owner context requires an acknowledged Cloud revision. A separately selected small local text or image input may enter only through the one-use source-consent and transientInput profile in [client journeys](contracts/07-client-journeys-and-ports.md). This creates neither sync enrollment nor an index entry; pending local ArcScope content cannot masquerade as acknowledged context. Missing/denied content is disclosed. Enabling AI alone never uploads it. |
 
 ### 4.3 Staleness and invalidation
 
@@ -205,7 +205,7 @@ The hardest correctness problem in the loop: context assembled at step 1 may be 
 | <a id="rule-si-01"></a>SI-01 | **Every packed item records the revision it was read at.** |
 | <a id="rule-si-02"></a>SI-02 | **Before a capability invocation that reads or writes an item in the pack, its revision is re-checked.** A changed revision invalidates that item. |
 | <a id="rule-si-03"></a>SI-03 | **An invalidated item is refreshed and the model is told**, as a structured tool result: *this content changed since you were shown it*. It is never silently substituted, because the model's reasoning may depend on what it saw. |
-| <a id="rule-si-04"></a>SI-04 | **A write against a stale revision fails with `conflict.revision_mismatch`** ([NO-02](contracts/02-local-rpc-operations.md#rule-no-02)) and is surfaced to the model as a correctable error. |
+| <a id="rule-si-04"></a>SI-04 | **A write against a stale revision fails with `conflict.revision_mismatch`** and is surfaced to the model as a correctable error. |
 | <a id="rule-si-05"></a>SI-05 | **Approval-suspended turns revalidate on resume** (`§5`), because a suspension may last hours. |
 | <a id="rule-si-06"></a>SI-06 | **An automation's scope freezes at run start** ([CA-04](09-ai-and-agent-runtime-architecture.md#rule-ca-04) of the runtime architecture) — an automation must not silently widen because content changed. |
 
@@ -354,7 +354,7 @@ The asymmetry is the point: **the intent is written before the act, so its absen
 
 | # | Rule |
 |---|---|
-| <a id="rule-cr-01"></a>CR-01 | **A local command log decides recovery only for effects that commit with it.** For an ArcNotes edit on the same device, the log write and the edit are one transaction and absence is proof. For anything crossing a process, a device or a network, it is not, and the design says so rather than relying on a convenient assumption. |
+| <a id="rule-cr-01"></a>CR-01 | **A local command log decides recovery only for effects that commit with it.** For an ArcScope annotation edit on the same device, the log write and the edit are one transaction and absence is proof. For anything crossing a process, a device or a network, it is not, and the design says so rather than relying on a convenient assumption. |
 | <a id="rule-cr-02"></a>CR-02 | The sweeper releases an orphaned **customer** hold at its reconciliation deadline ([UU-03](20-cross-system-lifecycles.md#rule-uu-03) of the cross-system lifecycles). It records a terminal no-later-customer-debit disposition. An unresolved supplier liability remains reserved and reconciled independently ([UC-02](16-billing-and-commerce-architecture.md#rule-uc-02) of the commerce architecture). |
 | <a id="rule-cr-03"></a>CR-03 | **Recovery is verifiable**: after restart, every task is in a valid state with a reason facet, and none is stuck in a transient state ([WP-16.00](../planning/work-packages/16-unified-execution-engine.md#rule-wp-16.00)). |
 | <a id="rule-cr-04"></a>CR-04 | Unknown effect is a nonterminal reason facet (waiting with reconciliation facet, or interrupted as appropriate), never a TaskState enum member or synonym for failure. Its explicit reconciliation path is §6.4; unresolved effects cannot be silently classified as success or repeated. |
@@ -481,7 +481,7 @@ The retired JSON presentation fields have these exact generated replacements; th
 | <a id="rule-xa-04"></a>XA-04 | **MCP remains a tool-integration edge adapter**, never the internal protocol (**[V-02](../assurance/phase-1-official-verification.md#rule-v-02)**, [MC-01](../requirements/08-extensions-and-developer-platform.md#rule-mc-01) of the extension requirements). An MCP tool maps to a declared capability carrying risk, permission and provenance — it is never injected as a raw tool ([MC-02](../requirements/08-extensions-and-developer-platform.md#rule-mc-02) there). |
 | <a id="rule-xa-05"></a>XA-05 | **MCP tool descriptions, prompts and resource contents are untrusted data** ([MC-07](../requirements/08-extensions-and-developer-platform.md#rule-mc-07) there, [I-262](../requirements/01-normative-glossary-and-invariants.md#rule-i-262), [I-263](../requirements/01-normative-glossary-and-invariants.md#rule-i-263)), and an MCP server changing its tool set re-enters permission review ([MC-10](../requirements/08-extensions-and-developer-platform.md#rule-mc-10) there). |
 | <a id="rule-xa-06"></a>XA-06 | **Hidden model reasoning never enters the product model** ([EA-07](../requirements/08-extensions-and-developer-platform.md#rule-ea-07) there, [PR-10](../requirements/05-ai-and-agent-execution.md#rule-pr-10) of the AI requirements, [I-107](../requirements/01-normative-glossary-and-invariants.md#rule-i-107)). Reasoning appears as a metered cost category ([MT-03](../requirements/04-commerce-entitlement-and-credits.md#rule-mt-03)), never as content or trace. |
-| <a id="rule-xa-07"></a>XA-07 | **The Harness is not a native Product Job runner.** A render, capture, index or export is owned by its product ([CM-04](09-ai-and-agent-runtime-architecture.md#rule-cm-04) of the runtime architecture, [I-121](../requirements/01-normative-glossary-and-invariants.md#rule-i-121), [I-485](../requirements/01-normative-glossary-and-invariants.md#rule-i-485)); the Harness may observe one through a status tool, never adopt it as a Step. |
+| <a id="rule-xa-07"></a>XA-07 | **The Harness is not a native Product Job runner.** A render, capture, index or export is owned by its product ([CM-04](09-ai-and-agent-runtime-architecture.md#rule-cm-04) of the runtime architecture, [I-121](../requirements/01-normative-glossary-and-invariants.md#rule-i-121)); the Harness may observe one through a status tool, never adopt it as a Step. |
 
 ---
 

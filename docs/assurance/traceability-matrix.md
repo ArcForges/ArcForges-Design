@@ -23,18 +23,17 @@ Every decision is carried. The **Primary home** column names where the decision 
 | Decision | Subject | Primary home | Also enforced in | Enforced by |
 |---|---|---|---|---|
 | **[D-001](../decisions/phase-1-foundation-decisions.md#rule-d-001)** | Conflict-resolution rule | `../planning/implementation-sequence.md` `§6` ([WF-03](../planning/implementation-sequence.md#rule-wf-03)) | Every work package's conflict rule | Process; [WP-05.06](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.06) specification-integrity checks |
-| **[D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)** | Product baseline — three professional products plus embedded assistants and companions | `../requirements/00-product-scope-and-portfolio.md` | Every product document; the reference map | Forbidden-term scan ([WP-00.00](../planning/work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.00), [G-04](release-gates.md#rule-g-04)) |
+| **[D-002](../decisions/phase-1-foundation-decisions.md#rule-d-002)** | Product baseline — the professional desktop application plus embedded assistants and companions | `../requirements/00-product-scope-and-portfolio.md` | Every product document; the reference map | Forbidden-term scan ([WP-00.00](../planning/work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.00), [G-04](release-gates.md#rule-g-04)) |
 | **[D-003](../decisions/phase-1-foundation-decisions.md#rule-d-003)** | Verification scope and first-consumption | `open-gates-register.md` `§5` | `reference-coverage-and-provenance.md` | Register review; [NV-02](open-gates-register.md#rule-nv-02) |
 | **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)** | Android companion licensing boundary | `../architecture/11-mobile-architecture.md` `§2` | Solution layout `§4`; provenance `§4`; [WP-30](../planning/work-packages/30-mobile-shared-architecture.md#rule-wp-30), [WP-32](../planning/work-packages/32-mobile-release-and-store-gates.md#rule-wp-32) | Licence policy tests ([G-03](release-gates.md#rule-g-03)), **[F-023](open-gates-register.md#rule-f-023)** closure |
 | **[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)** | Payment provider baseline | `../architecture/16-billing-and-commerce-architecture.md` | Commerce requirements; [WP-42](../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42) | Provider containment architecture test ([CT-09](../architecture/16-billing-and-commerce-architecture.md#rule-ct-09)) |
-| **[D-006](../decisions/phase-1-foundation-decisions.md#rule-d-006)** *(as amended by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006))* | ArcNotes scope: notebook core, bounded properties, saved views | `../requirements/products/arcnotes.md` | [WP-18](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18), [WP-28](../planning/work-packages/28-arcnotes-properties-and-views.md#rule-wp-28) — **`27` and `29` retired** | The migration chain gate ([WP-18.06](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.06)); the V4 stage is retired with `27` and `29` |
 | **[D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007)** | Web technology and rendering boundary | `../architecture/10-web-architecture.md` | [WP-47](../planning/work-packages/47-static-public-site.md#rule-wp-47), [WP-48](../planning/work-packages/48-account-portal.md#rule-wp-48), [WP-49](../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49) | React/TS scoped policy, generated-SDK/browser conformance and no-script public render under [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Runtime and AOT matrix | `../architecture/14-build-packaging-and-release.md` `§3` | Desktop, cloud, mobile, web architecture; [WP-02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02), [WP-06](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06), [WP-30](../planning/work-packages/30-mobile-shared-architecture.md#rule-wp-30) | Evaluated-property assertions; AOT publish proof ([R-03](release-gates.md#rule-r-03)) |
 | **[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)** | Contract granularity | `../architecture/02-contracts-and-protocols.md` | Solution layout `§3`; [WP-03](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03), [WP-23](../planning/work-packages/23-public-api-and-generated-clients.md#rule-wp-23) | Contract baseline diff gate ([G-05](release-gates.md#rule-g-05)) |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Cloud topology | `../architecture/00-architecture-overview.md` `§3` | Local IPC, cloud, mobile architecture; [WP-08](../planning/work-packages/08-local-ipc-and-registration.md#rule-wp-08), [WP-26](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26), [WP-31](../planning/work-packages/31-arcchat-mobile-android.md#rule-wp-31) | No-inbound-connection assertions ([WP-26.01](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.01), [WP-31.06](../planning/work-packages/31-arcchat-mobile-android.md#rule-wp-31.06)) |
-| **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** | Original repository inventory, amended to nine active owners by [P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012) | `implementation-state-reconciliation.md` — **item-level, 166 projects** | Solution layout `§1`; [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01) | [PG-02](open-gates-register.md#rule-pg-02) **closed** by that evidence |
-| **[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** | Reference-repository roles — **amended 2026-09-05** by [P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005) (ArcSlate: ArcVideo and ArcVideoFoundation) | `reference-coverage-and-provenance.md` `§1` (method); [`reference-coverage/`](reference-coverage/README.md) (**the five completed matrices**) | Every product document's reference posture; [WP-00.04](../planning/work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.04) | [PG-01](open-gates-register.md#rule-pg-01) **closed** by those matrices |
-| **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)** | Reuse policy | `reference-coverage-and-provenance.md` `§3`, `§4` | Solution layout [LB-07](../architecture/01-solution-and-project-layout.md#rule-lb-07); [WP-00.03](../planning/work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.03) | Provenance-record check ([AE-06](reference-coverage-and-provenance.md#rule-ae-06)); **[F-013](open-gates-register.md#rule-f-013) closed** — 145 rows each carry a licence position and **no row proposes reuse** |
+| **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** | Original repository inventory, amended to seven active owners by [P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012) | `implementation-state-reconciliation.md` — **item-level, 166 projects** | Solution layout `§1`; [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01) | [PG-02](open-gates-register.md#rule-pg-02) **closed** by that evidence |
+| **[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** | Reference-repository roles | `reference-coverage-and-provenance.md` `§1` (method); [`reference-coverage/`](reference-coverage/README.md) (**the three completed matrices**) | Every product document's reference posture; [WP-00.04](../planning/work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.04) | [PG-01](open-gates-register.md#rule-pg-01) **closed** by those matrices |
+| **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)** | Reuse policy | `reference-coverage-and-provenance.md` `§3`, `§4` | Solution layout [LB-07](../architecture/01-solution-and-project-layout.md#rule-lb-07); [WP-00.03](../planning/work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.03) | Provenance-record check ([AE-06](reference-coverage-and-provenance.md#rule-ae-06)); **[F-013](open-gates-register.md#rule-f-013) closed** — 73 rows each carry a licence position and **no row proposes reuse** |
 | **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)** | Web and service surface inventory | `../architecture/10-web-architecture.md` `§4` | Observability `§8`, `§10`; build `§7`; [WP-47](../planning/work-packages/47-static-public-site.md#rule-wp-47) | Surface deployment matrix; origin policy tests |
 | **[D-015](../decisions/phase-1-foundation-decisions.md#rule-d-015)** | Account portal URL | `../architecture/10-web-architecture.md` `§4` | [WP-48](../planning/work-packages/48-account-portal.md#rule-wp-48), [WP-49](../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49) | Redirect and profile-isolation tests ([WP-48.00](../planning/work-packages/48-account-portal.md#rule-wp-48.00)) |
 | **[D-016](../decisions/phase-1-foundation-decisions.md#rule-d-016)** | Deferred-decision ownership | `open-gates-register.md` | Native architecture [NI-10](../architecture/12-native-interop-and-media.md#rule-ni-10) | Register ownership fields |
@@ -46,7 +45,7 @@ Every decision is carried. The **Primary home** column names where the decision 
 | **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** | Mobile-store commerce | `../architecture/11-mobile-architecture.md` `§9` | Commerce architecture `§10`; [WP-31](../planning/work-packages/31-arcchat-mobile-android.md#rule-wp-31), [WP-32](../planning/work-packages/32-mobile-release-and-store-gates.md#rule-wp-32) | Five commerce-prohibition build checks ([WP-32.03](../planning/work-packages/32-mobile-release-and-store-gates.md#rule-wp-32.03)) |
 | **[D-023](../decisions/phase-1-foundation-decisions.md#rule-d-023)** | Mainland China payment route | `../architecture/16-billing-and-commerce-architecture.md` `§11` | Commerce requirements `§12`; [WP-42.10](../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.10) | Configuration assertion; gate [L-40](release-gates.md#rule-l-40) |
 
-**Phase 1 coverage: 23 of 23 decisions carried.**
+**Phase 1 coverage: 22 of 23 decisions carried; the remaining decision is retired under [P2-019](../decisions/phase-2-specification-decisions.md#rule-p2-019) and traced there.**
 
 ### 1.1 Phase 2 decisions
 
@@ -56,12 +55,11 @@ Every decision is carried. The **Primary home** column names where the decision 
 | [P2-002](../decisions/phase-2-specification-decisions.md#rule-p2-002) | Withdrawn: substitute sequence ordering | [Effective P2-004](../decisions/phase-2-specification-decisions.md#rule-p2-004) | Historical provenance only; no executable obligation | Sequence follows completed prerequisite evidence, not this withdrawn ordering |
 | [P2-003](../decisions/phase-2-specification-decisions.md#rule-p2-003) | Adopted: browser session deployment | [Web session architecture](../architecture/10-web-architecture.md#5-browser-session-architecture--p2-003-resolved) | Identity storage; browser-session/public/realtime contracts; Account/Chat | Identity/API/session and Web origin/CSRF/expiry/revocation gates; updated Web toolchain follows [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) |
 | [P2-004](../decisions/phase-2-specification-decisions.md#rule-p2-004) | Adopted: derive sequence from completed evidence | [Implementation sequence](../planning/implementation-sequence.md#11-the-d-019-ordering-followed) | Work-package inputs; reference matrices; reconciliation | Specification integrity and input/drift checks in foundation packages |
-| [P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005) | Adopted: ArcVideo/ArcVideoFoundation reference map | [ArcSlate reference matrix](reference-coverage/arcslate-arcvideo.md) | ArcSlate requirements; provenance; native/OTIO packages | Bounded source drift/licence/oracle evidence; no additional Olive checkout |
-| [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) | Adopted: subscription and product scope revision | [Portfolio requirements](../requirements/00-product-scope-and-portfolio.md) | Commerce, single-owner/Cloud Harness, Notes list/table, simulator, OTIO and configuration designs | The decision enumerates all affected requirements/packages; native exclusions, paid service/capacity and real-provider/simulator/interchange acceptance remain explicit |
-| [P2-007](../decisions/phase-2-specification-decisions.md#rule-p2-007) | Adopted: fourteen Stage 2 closure groups | [Fourteen-group closure record](phase-2-design-closure-review.md) | Cloud/desktop data models, shared transactions, feed, capacity, provider/stream, migrations, time/OTIO and isolation | All fourteen recorded producer/gate mappings apply; [verification proof limits](design-repair-verification.md#proof-strength) distinguish design models from runtime evidence |
+| [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) | Adopted: subscription and product scope revision | [Portfolio requirements](../requirements/00-product-scope-and-portfolio.md) | Commerce, single-owner/Cloud Harness, simulator and configuration designs | The decision enumerates all affected requirements/packages; native exclusions, paid service/capacity and real-provider/simulator/interchange acceptance remain explicit |
+| [P2-007](../decisions/phase-2-specification-decisions.md#rule-p2-007) | Adopted: fourteen Stage 2 closure groups | [Fourteen-group closure record](phase-2-design-closure-review.md) | Cloud/desktop data models, shared transactions, feed, capacity, provider/stream, migrations and isolation | All fourteen recorded producer/gate mappings apply; [verification proof limits](design-repair-verification.md#proof-strength) distinguish design models from runtime evidence |
 | [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) | Adopted: React/TypeScript Web; contract authority subsequently amended by [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) | [Web toolchain/SDK](../architecture/25-web-toolchain-and-sdk.md) | Web requirements; solution/build, browser contracts, Site/Account/Chat and release plan | [PG-23](open-gates-register.md#rule-pg-23) real Web evidence plus the detailed amendment table below |
 
-**Phase 2 coverage: 8 of 8 recorded decisions; seven adopted and one explicitly withdrawn.** The primary/consumer mapping is checked by the specification-integrity package together with the Phase 1 rows.
+**Phase 2 coverage: 7 of 8 decisions carried; one is retired under [P2-019](../decisions/phase-2-specification-decisions.md#rule-p2-019).** Of the seven, six are adopted and one is explicitly withdrawn. The primary/consumer mapping is checked by the specification-integrity package together with the Phase 1 rows.
 
 
 ---
@@ -98,18 +96,16 @@ Every decision is carried. The **Primary home** column names where the decision 
 | `03-cloud-services-and-sync` | `07-sync-conflict-and-backup`; `20-cross-system-lifecycles`; `contracts/01`, `contracts/03`; `data-model/01` | [F-03](testing-and-verification-strategy.md#rule-f-03), [F-07](testing-and-verification-strategy.md#rule-f-07), [F-11](testing-and-verification-strategy.md#rule-f-11), [F-13](testing-and-verification-strategy.md#rule-f-13) | `21`, `24`, `25`, `46` |
 | `04-commerce-entitlement-and-credits` | `16-billing-and-commerce-architecture` `§5.3`, `§7`; `20-cross-system-lifecycles` `§2`–`§4`; `data-model/01` `§8.1` | [F-02](testing-and-verification-strategy.md#rule-f-02), [F-03](testing-and-verification-strategy.md#rule-f-03), [F-06](testing-and-verification-strategy.md#rule-f-06) | `42`, `43`, `48` |
 | `05-ai-and-agent-execution` | `09-ai-and-agent-runtime-architecture`; **`17-agent-harness`** (the Cloud loop); `16` `§7.3` (admission) | [F-02](testing-and-verification-strategy.md#rule-f-02), [F-11](testing-and-verification-strategy.md#rule-f-11), [F-13](testing-and-verification-strategy.md#rule-f-13) | 17, 26, 40, 41, 42, 43, 44, 52 |
-| `06-knowledge-search-and-retrieval` | `09-ai-and-agent-runtime-architecture` `§5`; `17-agent-harness` `§4`; `data-model/03` | [F-03](testing-and-verification-strategy.md#rule-f-03), [F-11](testing-and-verification-strategy.md#rule-f-11) | `19`, `40` |
+| `06-knowledge-search-and-retrieval` | `09-ai-and-agent-runtime-architecture` `§5`; `17-agent-harness` `§4`; `data-model/03` | [F-03](testing-and-verification-strategy.md#rule-f-03), [F-11](testing-and-verification-strategy.md#rule-f-11) | `40` |
 | `07-security-privacy-and-trust` | `08-security-architecture` | [F-02](testing-and-verification-strategy.md#rule-f-02), [F-11](testing-and-verification-strategy.md#rule-f-11), [F-17](testing-and-verification-strategy.md#rule-f-17) | `11`, `22`, `41`, `45` |
 | `08-extensions-and-developer-platform` | `15-extension-platform-architecture` | [F-05](testing-and-verification-strategy.md#rule-f-05), [F-11](testing-and-verification-strategy.md#rule-f-11), [F-17](testing-and-verification-strategy.md#rule-f-17) | `41` |
 | `09-shared-desktop-experience` | `04-desktop-application-architecture`; `18-editing-and-rich-content` `§8` (preview levels) | [F-09](testing-and-verification-strategy.md#rule-f-09), [F-10](testing-and-verification-strategy.md#rule-f-10), [F-15](testing-and-verification-strategy.md#rule-f-15) | `10` |
 | `10-distribution-update-and-support` | `14-build-packaging-and-release`; `13-observability-and-operations`; **`22-deployment-and-release-execution`** | [F-16](testing-and-verification-strategy.md#rule-f-16), [F-11](testing-and-verification-strategy.md#rule-f-11) | `02`, `32`, `45`, `50`, `53` |
 | `11-policy-and-configuration` | `16-billing-and-commerce-architecture` `§2.2`; `22-deployment-and-release-execution` `§3.1`; `data-model/01` `§8.2`; `05-cloud-architecture` `§12` | [F-02](testing-and-verification-strategy.md#rule-f-02), [F-06](testing-and-verification-strategy.md#rule-f-06), [F-11](testing-and-verification-strategy.md#rule-f-11) | `44`, `42` |
 | `12-quality-and-compatibility-contract` | All (budgets and gates); `21-platform-and-dependency-matrix` `§2`; `22-deployment-and-release-execution` `§5` | Every family | `02`, `05`, `06`, and each product package |
-| `13-data-formats-and-portability` | `06-data-persistence-and-formats`; `18-editing-and-rich-content` `§10`; `data-model/02` | [F-03](testing-and-verification-strategy.md#rule-f-03), [F-12](testing-and-verification-strategy.md#rule-f-12), [F-13](testing-and-verification-strategy.md#rule-f-13) | `07`, `19`, `35`, `39` |
+| `13-data-formats-and-portability` | `06-data-persistence-and-formats`; `18-editing-and-rich-content` `§10`; `data-model/02` | [F-03](testing-and-verification-strategy.md#rule-f-03), [F-12](testing-and-verification-strategy.md#rule-f-12), [F-13](testing-and-verification-strategy.md#rule-f-13) | `07`, `35` |
 | `products/arcchat` | `04`, `09`, **`17`**, `19` `§3` architecture; `contracts/02` `§4` | [F-02](testing-and-verification-strategy.md#rule-f-02), [F-05](testing-and-verification-strategy.md#rule-f-05), [F-11](testing-and-verification-strategy.md#rule-f-11) | 15, 17, 25, 26, 52 |
-| `products/arcnotes` | `04`, `06`, **`18`**, `19` `§4` architecture; `data-model/02` `§3` | [F-03](testing-and-verification-strategy.md#rule-f-03), [F-09](testing-and-verification-strategy.md#rule-f-09), [F-12](testing-and-verification-strategy.md#rule-f-12) | 18, 19, 25, 28; 27 and 29 are retired |
 | `products/arcscope` | `12-native-interop-and-media` `§8`; **`23-simulator-and-interchange` `§1`**; `19` `§5`; `21` `§3`; `data-model/01` `§8.3`; `data-model/02` `§4` | [F-08](testing-and-verification-strategy.md#rule-f-08), [F-14](testing-and-verification-strategy.md#rule-f-14), [F-18](testing-and-verification-strategy.md#rule-f-18) | `33`, `34`, `35`, **`51`** |
-| `products/arcslate` | `12-native-interop-and-media` `§7`; **`23-simulator-and-interchange` `§2`**; `19` `§6`; `21` `§3`; `data-model/02` `§5` | [F-08](testing-and-verification-strategy.md#rule-f-08), [F-15](testing-and-verification-strategy.md#rule-f-15), [F-18](testing-and-verification-strategy.md#rule-f-18) | `36`, `37`, `38`, `39` |
 | `products/arcchat-mobile-and-web` | `11-mobile-architecture`; `10-web-architecture` | [F-04](testing-and-verification-strategy.md#rule-f-04), [F-06](testing-and-verification-strategy.md#rule-f-06), [F-16](testing-and-verification-strategy.md#rule-f-16) | `30`, `31`, `32`, `49` |
 | `products/arcforges-web` | `10-web-architecture` | [F-09](testing-and-verification-strategy.md#rule-f-09), [F-10](testing-and-verification-strategy.md#rule-f-10), [F-15](testing-and-verification-strategy.md#rule-f-15) | `47`, `48`, `49` |
 | `products/arcforges-cloud` | `05-cloud-architecture`; `13-observability-and-operations`; **`22-deployment-and-release-execution`**; `contracts/01`; `data-model/01` | [F-03](testing-and-verification-strategy.md#rule-f-03), [F-07](testing-and-verification-strategy.md#rule-f-07), [F-13](testing-and-verification-strategy.md#rule-f-13), [F-14](testing-and-verification-strategy.md#rule-f-14) | 21–26, 42–46, 51, 52 |
@@ -128,34 +124,34 @@ Test family identifiers are those of [`testing-and-verification-strategy.md`](te
 | `03-local-ipc-and-process-model` | `08`, `14` |
 | `04-desktop-application-architecture` | `06`, `10`, and each desktop product package |
 | `05-cloud-architecture` | `21`, `23`, `24`, `26` |
-| `06-data-persistence-and-formats` | `07`, `18`, `19` |
+| `06-data-persistence-and-formats` | `07` |
 | `07-sync-conflict-and-backup` | `25`, `46` |
 | `08-security-architecture` | `11`, `22`, `41` |
 | `09-ai-and-agent-runtime-architecture` | 17 (client), 26, 40, 43, 52 (single Cloud runtime) |
 | `10-web-architecture` | `47`, `48`, `49` |
 | `11-mobile-architecture` | `30`, `31`, `32` |
-| `12-native-interop-and-media` | `13`, `33`, `34`, `36`, `37`, `38` |
+| `12-native-interop-and-media` | `13`, `33`, `34` |
 | `13-observability-and-operations` | `12`, `45` |
 | `14-build-packaging-and-release` | `02`, `06`, `32`, `50` |
 | `15-extension-platform-architecture` | `41` |
 | `16-billing-and-commerce-architecture` | `42`, `43` |
 | `17-agent-harness` | **`52`** (the Harness itself), `15`, `17`, `40`, `42`, `43` |
-| `18-editing-and-rich-content` | 11, 18, 19, 25, 28 |
+| `18-editing-and-rich-content` | 11, 25 |
 | `19-product-implementation-maps` | `01`, `05`, and each product package it maps |
 | `20-cross-system-lifecycles` | `24`, `25`, `26`, `42`, `43`, `46`, `50` |
-| `21-platform-and-dependency-matrix` | `06`, `13`, `33`, `37`, `50` |
+| `21-platform-and-dependency-matrix` | `06`, `13`, `33`, `50` |
 | `22-deployment-and-release-execution` | `21`, `23`, `44`, `45`, `50` |
-| `23-simulator-and-interchange` *(also the ArcSlate time model, `§3`)* | `33`, `36`, `37`, `38`, `39`, **`51`** |
-| [24-content-and-extension-isolation](../architecture/24-content-and-extension-isolation.md) | 11.09, 13.13, 18.04, 37.01, 41.00 |
+| `23-simulator-and-interchange` | `33`, **`51`** |
+| [24-content-and-extension-isolation](../architecture/24-content-and-extension-isolation.md) | 11.09, 13.13, 41.00 |
 | [25-web-toolchain-and-sdk](../architecture/25-web-toolchain-and-sdk.md) | `01`, `02`, `03`, `04`, `05`, `06`, `22`, `23`, `24`, `47`, `48`, `49`, `50` |
 | `contracts/00-operation-catalogue` | `03`, `04`, `09`, `23` |
 | `contracts/01-public-api-operations` | `22`, `23`, `25`, `42` |
-| `contracts/02-local-rpc-operations` | `08`, `09`, `14`, `17`, `18`, `33`, `36` |
+| `contracts/02-local-rpc-operations` | `08`, `09`, `14`, `17`, `33` |
 | `contracts/03-realtime-and-bridge` | `24`, `26`, `31` |
 | `data-model/00-data-model-overview` | `07`, `21`, `25` |
 | `data-model/01-cloud-data-model` | `21`, `22`, `23`, `42` |
-| `data-model/02-desktop-data-model` | `07`, `15`, `18`, `33`, `36` |
-| `data-model/03-derived-stores` | `19`, `40` |
+| `data-model/02-desktop-data-model` | `07`, `15`, `33` |
+| `data-model/03-derived-stores` | `40` |
 
 **Coverage: 34 of 34 architecture documents realised in at least one work package.**
 
@@ -198,7 +194,7 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 
 | Gate | Scheduled in | Blocking |
 |---|---|---|
-| **[F-013](open-gates-register.md#rule-f-013)** | **Closed by design evidence 2026-09-05** — the five matrices. Registered in `00.04`; drift maintenance in `15.07`, `18.08`, `33.07`, `36.07` | [P-02](release-gates.md#rule-p-02) per product |
+| **[F-013](open-gates-register.md#rule-f-013)** | **Closed by design evidence 2026-09-05** — the three matrices. Registered in `00.04`; drift maintenance in `15.07`, `33.07` | [P-02](release-gates.md#rule-p-02) per product |
 | **[F-023](open-gates-register.md#rule-f-023)** | [Current candidate closed on execution evidence](open-gates-register.md#21-current-android-candidate-licence-evidence); `06.07` before first artifact, `30.00` on change and `32.02` final closure remain the recurring owners | [L-50](release-gates.md#rule-l-50), any mobile artifact |
 | **[F-026](open-gates-register.md#rule-f-026)** | `03.02`, `06.02` | [R-03](release-gates.md#rule-r-03) on consuming targets |
 | **[VG-01](open-gates-register.md#rule-vg-01)** | `43.04` | First EU-available release |
@@ -214,33 +210,31 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | **[VG-13](open-gates-register.md#rule-vg-13)** | `32.04` | First store submission |
 | **[PG-01](open-gates-register.md#rule-pg-01)** | **Closed by design evidence 2026-09-05.** Registered in `00.04`; drift maintenance per product | Product first release |
 | **[PG-02](open-gates-register.md#rule-pg-02)** | **Closed by design evidence 2026-09-05** — the item-level inventory. Drift validation in `01.00`; execution in `01.01`–`01.05` | All restructuring |
-| **[PG-03](open-gates-register.md#rule-pg-03)** | `13.04`, `33`, `37.00`; shim dispositions already assigned, two fenced pending `35.04` and `39.05` | Native dependency use |
+| **[PG-03](open-gates-register.md#rule-pg-03)** | `13.10`, `13.12`, `13.13` | Native dependency use |
 | **[PG-04](open-gates-register.md#rule-pg-04)** | `45.02` | Paid cloud go-live |
 | **[PG-05](open-gates-register.md#rule-pg-05)** | `12.02` | [R-16](release-gates.md#rule-r-16) |
 | **[PG-06](open-gates-register.md#rule-pg-06)** | **Closed by design evidence 2026-09-05** — [`invariant-coverage.md`](invariant-coverage.md) `§7` | Finalising the design baseline |
 | **[PG-11](open-gates-register.md#rule-pg-11)** | Distributed across the owning packages in that mapping; accounting reported by `05.05` | Each owning package's gate; [P-03](release-gates.md#rule-p-03) per product |
-| **[PG-07](open-gates-register.md#rule-pg-07)** | 19.04, 35.04, 39.05 | Public import-format claims. Early export UI fixtures in 15.06/19.05 do not prove the real Cloud download; that gate is 25.08 |
-| **[PG-08](open-gates-register.md#rule-pg-08)** | 13.04 seeds and13.16 completes the inventory; 33/34 and 37/38 consume and maintain it | [C-04](release-gates.md#rule-c-04) |
+| **[PG-07](open-gates-register.md#rule-pg-07)** | 35.04, 25.08 | Public import-format claims. The WP-15.06 fixture is the Cloud Chat export producer's only runtime fixture; 25.08 proves the real Cloud download |
+| **[PG-08](open-gates-register.md#rule-pg-08)** | 13.04 seeds and 13.16 completes the inventory; 33/34 consume and maintain it | [C-04](release-gates.md#rule-c-04) |
 | **[PG-09](open-gates-register.md#rule-pg-09)** | `41` | Third-party extension enablement |
 | **[PG-10](open-gates-register.md#rule-pg-10)** | `42.10`, `43.06` | [L-28](release-gates.md#rule-l-28), [L-29](release-gates.md#rule-l-29) |
-| **[PG-12](open-gates-register.md#rule-pg-12)** | 11.09, 13.13, 18.04 | [ArcNotes PDF requirement](../requirements/products/arcnotes.md#rule-at-05); first PDF release claim |
+| **[PG-12](open-gates-register.md#rule-pg-12)** | 11.09, 13.13 | Any release claim of PDF preview through the ContentSandbox |
 | **[PG-13](open-gates-register.md#rule-pg-13)** | `43.07`, `42.11` | Paid AI go-live; [PG-10](open-gates-register.md#rule-pg-10) |
 | **[PG-14b](open-gates-register.md#rule-pg-14b)** | `51.00`–`51.05` | Any ArcScope claim that Cloud simulation is delivered. **Not `34`**, whose repeatable source is file/replay from `33` |
-| **[PG-15](open-gates-register.md#rule-pg-15)** | `39.05` | ArcSlate release |
 | **[PG-16](open-gates-register.md#rule-pg-16)** | `44.01`, `42.11` | Paid production go-live |
 | **[PG-17](open-gates-register.md#rule-pg-17)** | 21.05, 25.02, 25.07 | Sync publisher ordering, fairness and bootstrap convergence |
 | **[PG-18](open-gates-register.md#rule-pg-18)** | `52.02`, `52.04` | Paid AI go-live; any external-effect capability |
 | **[PG-19](open-gates-register.md#rule-pg-19)** | `21.03`, `50.04` | Any schema evolution in production |
-| **[PG-20](open-gates-register.md#rule-pg-20)** | 36.01, 37.04, 39.05 | Source conform, per-track mixing and OTIO boundaries |
 | **[PG-21](open-gates-register.md#rule-pg-21)** | Current corpus closed by [repair verification](design-repair-verification.md); continuing drift check in 00.01 | Every later normative edit re-runs the complete citation check |
-| **[PG-22](open-gates-register.md#rule-pg-22)** | 11.09, 13.13, 18.04, 37.01, 41.00 | Packaged OS containment and extension permissions on each supported RID |
+| **[PG-22](open-gates-register.md#rule-pg-22)** | 11.09, 13.13, 41.00 | Packaged OS containment and extension permissions on each supported RID |
 | **[PG-23](open-gates-register.md#rule-pg-23)** | 06.05, 22.08, 23.05, 24.06, 47, 48, 49, 50.06 | Production React/TS, generated SDK, browser sessions, visual quality, toolchains and release/rollback |
 | **[PG-24](open-gates-register.md#rule-pg-24)** | `45.09`, `32` | Real Android push, physical receipt and recovery evidence |
 | **[PG-25](open-gates-register.md#rule-pg-25)** | `21.08`, `46`, `50` | Self-host account deployment, realm/key/auth isolation and independent restore |
 | **[PG-26](open-gates-register.md#rule-pg-26)** | `21.06`, `40.01`, `50.04` | Approved launch capacity, actual load/footprint/cost and headroom evidence |
 | **[VG-05](open-gates-register.md#rule-vg-05)** | **Merged into [F-026](open-gates-register.md#rule-f-026)** and recorded there; no separate schedule | — |
 
-**Coverage: 42 register entries** — 3 deferred Phase 1, 13 verification entries and 26 Phase 2 entries. Five are closed on design evidence; one is closed for the inspected implementation candidate; 34 remain open for implementation. One iOS entry is retired and one verification entry is merged into its deferred gate. There are zero unresolved owner determinations. Every entry has an owner, trigger and implementation or evidence location in the [gate register](open-gates-register.md).
+**Coverage: 40 register entries** — 3 deferred Phase 1, 13 verification entries and 24 Phase 2 entries. Five are closed on design evidence; one is closed for the inspected implementation candidate; 32 remain open for implementation. One iOS entry is retired and one verification entry is merged into its deferred gate. There are zero unresolved owner determinations. Every entry has an owner, trigger and implementation or evidence location in the [gate register](open-gates-register.md).
 
 > **This count is checked, not asserted.** [SV-05](testing-and-verification-strategy.md#rule-sv-05) of the verification strategy requires every gate to be scheduled in a named package; before 2026-09-08 this table stopped at [PG-10](open-gates-register.md#rule-pg-10) while the register held [PG-21](open-gates-register.md#rule-pg-21), so ten gates — including every gate created by the [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) reconciliation and the two review passes — were unscheduled here while the coverage line claimed completeness.
 
@@ -252,14 +246,14 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 |---|---|
 | <a id="rule-nc-01"></a>NC-01 | **This matrix records gate status; it does not supply closure evidence.** Five gates are closed by their design-stage artifacts; [F-023](open-gates-register.md#rule-f-023) is closed for the inspected candidate by the linked implementation receipts. |
 | <a id="rule-nc-02"></a>NC-02 | **Design traceability is complete; implementation enforcement is not.** [PG-06](open-gates-register.md#rule-pg-06) is closed on the mapping; [PG-11](open-gates-register.md#rule-pg-11) requires implemented, passing checks and is open. |
-| <a id="rule-nc-03"></a>NC-03 | **All five Reference Coverage Matrices exist**, with 145 item-level rows, and **no unresolved determination remains** — [OC-01](open-gates-register.md#rule-oc-01) was closed by user decision ([P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005)). |
+| <a id="rule-nc-03"></a>NC-03 | **All three Reference Coverage Matrices exist**, with 69 item-level rows, and **no unresolved determination remains** ([open-gates-register.md](open-gates-register.md) `§6`). |
 | <a id="rule-nc-04"></a>NC-04 | **The item-level code inventory exists** — 166 of 166 projects, measured. Its dispositions are **not executed**; that is [WP-01](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01)'s work. |
 | <a id="rule-nc-05"></a>NC-05 | **This matrix does not execute tests.** Test families and gates are defined here; dated implementation receipts, including the [WP00.03 evidence](wp00-03-implementation-evidence.md), record what actually ran in the implementation owners. |
 | <a id="rule-nc-06"></a>NC-06 | **A resolving citation is not a designed mechanism.** This matrix records that a requirement has an architecture home; whether that home specifies a mechanism rather than restating the requirement is checked by [`end-to-end-workflow-verification.md`](end-to-end-workflow-verification.md), with the complete fourteen-group repair recorded in [the closure review](phase-2-design-closure-review.md). |
 | <a id="rule-nc-07"></a>NC-07 | **Row counts prove nothing about completeness.** Every architecture document being realised in a work package says every document is claimed by someone, not that every subject is designed. |
 | <a id="rule-nc-08"></a>NC-08 | **This matrix was recomputed on 2026-09-06 against the revised requirements**, not carried forward. [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)'s downstream reconciliation statement is explicit that prior completion claims do not demonstrate coverage of the amended scope, so every count here is a fresh derivation. |
 | <a id="rule-nc-09"></a>NC-09 | **A retired package still appears.** `27` and `29` are listed as retired rather than deleted, so a reader following an older citation finds the retirement record instead of a broken reference. |
-| <a id="rule-nc-10"></a>NC-10 | This matrix was reconciled on 2026-09-17 against the [P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013) repair, current invariant catalogue and the 51-node/158-edge active work-package graph. The current proof is documentary mapping and mechanical consistency only. WP20/27/29 remain deferred/retired, and no oracle may use them as current implementation inputs. |
+| <a id="rule-nc-10"></a>NC-10 | This matrix was reconciled on 2026-09-17 against the [P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013) repair, current invariant catalogue and the [delivery graph](../planning/delivery/README.md)'s 430-task/1,180-edge active graph. The current proof is documentary mapping and mechanical consistency only. No retired work-package or task number may be used as a current implementation input. |
 
 ---
 
@@ -286,7 +280,7 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | Consumer visual and interaction quality | [Web requirements](../requirements/products/arcforges-web.md); [WP-47.07](../planning/work-packages/47-static-public-site.md#rule-wp-47.07) | [WP-48](../planning/work-packages/48-account-portal.md#rule-wp-48), [WP-49](../planning/work-packages/49-arcchat-web-companion.md#rule-wp-49) approved responsive/theme/state/locale visuals, keyboard/assistive and performance results |
 | Complete commercial Web release | [Deployment architecture](../architecture/22-deployment-and-release-execution.md); [WP-50.06](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.06) | [PG-23](open-gates-register.md#rule-pg-23); production artifacts and real Cloud workflows, not fixtures |
 
-Current register reconciliation (2026-09-19), including [P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013) and the [WP00.03 execution receipt](wp00-03-implementation-evidence.md): 42 entries = 5 design-closed + 1 candidate-specific implementation closure + 34 implementation-open/triggered + 1 retired iOS entry + 1 merged entry. Neither the Web gate nor the Android push gate is closed by document review.
+Current register reconciliation (2026-09-19), including [P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013) and the [WP00.03 execution receipt](wp00-03-implementation-evidence.md): 40 entries = 5 design-closed + 1 candidate-specific implementation closure + 32 implementation-open/triggered + 1 retired iOS entry + 1 merged entry. Neither the Web gate nor the Android push gate is closed by document review.
 
 
 ## [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) amendment coverage
@@ -295,25 +289,25 @@ The 23 foundation decisions and fourteen Phase 2 decisions remain traceable. [P2
 
 | Change | Current authority | Implementation and evidence |
 |---|---|---|
-| Nine repository owners, native and managed packages, licenses | [Layout and registry](../architecture/01-solution-and-project-layout.md) | WP01/02/03/06, product consumers and WP50; immutable isolated package consumption |
+| Seven repository owners, native and managed packages, licenses | [Layout and registry](../architecture/01-solution-and-project-layout.md) | WP01/02/03/06, product consumers and WP50; immutable isolated package consumption |
 | Handwritten proto, exact values, all service bodies | [Wire registry](../architecture/contracts/04-protobuf-wire-registry.md) | WP03/04/08/23/24/30, product owner implementations; generated language/runtime vectors |
 | One AOT C# business process, explicit adapters | [Runtime matrix](../architecture/21-platform-and-dependency-matrix.md) and [Cloud](../architecture/05-cloud-architecture.md) | WP06/21/22/23/44/45 and [VG-06](open-gates-register.md#rule-vg-06); real published closure |
 | Kotlin/Compose Android mobile and React browser | [Mobile](../architecture/11-mobile-architecture.md), [Web toolchain](../architecture/25-web-toolchain-and-sdk.md) | WP06/30/31/32/47/48/49; artifact, device, session and real-server proof |
 | Sole CF Harness, Workers AI, R2 and recovery | [CF integration](../architecture/contracts/05-cloudflare-integration.md), [Harness](../architecture/17-agent-harness.md) | WP25/40/43/46/52 and WP50; real provider effects, committed business state and restored manifest |
-| Preserved accepted product workflows | [Product maps](../architecture/19-product-implementation-maps.md) and existing requirements | All 51 active packages; Notes query/content-origin/Scope measurement profiles and commercial fixtures retained |
+| Preserved accepted product workflows | [Product maps](../architecture/19-product-implementation-maps.md) and existing requirements | All 430 active tasks; Scope measurement profiles and commercial fixtures retained |
 
-The two new contract companions are formal architecture inputs. Existing invariant IDs and the item-level reference dispositions are unchanged by repository relocation. The [complete dependency graph](../planning/implementation-sequence.md#9-p2-009-complete-artifact-dependency-graph) carries 51 active packages and 158 directed edges, with WP20 future-only and WP27/29 retired.
+The two new contract companions are formal architecture inputs. Existing invariant IDs and the item-level reference dispositions are unchanged by repository relocation. The [delivery graph](../planning/delivery/README.md) carries 430 active tasks and 1,180 directed edges.
 
 ## [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) completion map
 
 | Authority | Implementing WPs | Independent acceptance |
 |---|---|---|
 | Contracts wire/journeys/extension-policy schemas04/07/08 |03,06,09,22–26,40–44,52 | Complete generated types/methods/closed profiles and exact C#/TS/Kotlin vectors; actual owners at assigned stages |
-| Native functional ABI06 and package registry |03,06,08–13,33–39 | Existing probe compatibility, typed functional exports, full dependency closure, clean packaged AOT/RID consumers |
+| Native functional ABI06 and package registry |03,06,08–13,33–35 | Existing probe compatibility, typed functional exports, full dependency closure, clean packaged AOT/RID consumers |
 | Android architecture11 |30–32,49,50,52 | Full surface/state/recovery matrix and real signed physical-device app |
-| Product behavior26 |18/19/28,33–39/51/52 | Independent edit/undo, framing/analysis, time/retime/render/fidelity examples |
-| Execution owner/consent/transactions/transfer |15/17/22/25/26/40/42/43/46/52; WP20 future-only | No phantom Task, one effect/charge receipt, preserved pending work, explicit irrecoverable state and fenced restore |
-| Producer stage matrix | All51 active packages | Acyclic symmetric graph, immutable package-only inputs, named fixture replacement and full required release scope |
+| Product behavior26 |33–35/51/52 | Independent framing/analysis and fidelity examples |
+| Execution owner/consent/transactions/transfer |15/17/22/25/26/40/42/43/46/52 | No phantom Task, one effect/charge receipt, preserved pending work, explicit irrecoverable state and fenced restore |
+| Producer stage matrix | All 430 active tasks | Acyclic symmetric graph, immutable package-only inputs, named fixture replacement and full required release scope |
 
 Document validation is recorded in [family completion review](family-design-completion-review.md); implementation receipts remain future obligations.
 
@@ -339,4 +333,4 @@ Historical decisions [D-002](../decisions/phase-1-foundation-decisions.md#rule-d
 
 ## [P2-014](../decisions/phase-2-specification-decisions.md#rule-p2-014) final findings closure
 
-[The final findings ledger](final-findings-remediation-verification.md) maps [NRF-01](final-findings-remediation-verification.md#rule-nrf-01)–13 to repaired authorities and producer/consumer gates. Registry04/manifest11 now contain 373 active mappings plus seven reserved future IDs, including 31 operator methods. Model04 launch-capacity.v1 and requirements12 browser-support.v1 supply concrete release inputs. This amendment preserves the 51-node/158-edge implementation graph and keeps real service/device/commercial evidence gates open.
+[The final findings ledger](final-findings-remediation-verification.md) maps [NRF-01](final-findings-remediation-verification.md#rule-nrf-01)–13 to repaired authorities and producer/consumer gates. Registry04/manifest11 now contain 373 active mappings plus seven reserved future IDs, including 31 operator methods. Model04 launch-capacity.v1 and requirements12 browser-support.v1 supply concrete release inputs. This amendment preserves the 430-task/1,180-edge delivery graph and keeps real service/device/commercial evidence gates open.

@@ -1,6 +1,6 @@
 # WP01.00 implementation evidence
 
-Scope: [verify nine independent current repositories](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.00), under the [inventory profile](wp01-00-inventory-policy.md). This receipt records inventory and policy acceptance, not completed product behavior.
+Scope: [verify seven independent current repositories](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.00), under the [inventory profile](wp01-00-inventory-policy.md). This receipt records inventory and policy acceptance, not completed product behavior.
 
 ## Authority and change
 
@@ -14,25 +14,23 @@ The implementation owns `eng/policy/reconciliation/{source,current,historical,di
 
 | Inventory | Verified coverage |
 |---|---|
-| Current repositories | Nine independent origins, full commits and tree hashes, clean primary checkouts, retained worktree branch/commit observations |
-| Current build projects | 75: DesktopPlatform 35, Contracts 15, ArcNotes 4, ArcScope 4, ArcSlate 4, Cloud 5, AI 1, Web 4, Mobile 3 |
+| Current repositories | Seven independent origins, full commits and tree hashes, clean primary checkouts, retained worktree branch/commit observations |
+| Current build projects | 67: DesktopPlatform 35, Contracts 15, ArcScope 4, Cloud 5, AI 1, Web 4, Mobile 3 |
 | Historical C# projects | All 166 paths and blob identities from `ede43db5b2237104dd0008b99398090c54a2cf94`, each with current presence/change status, target owner, disposition, producer and reason |
 | Planned/current directories | 359 explicit owner/path records, including all 21 Cloud module owners and their three layers, seven native managed families with six RID families each, and six helper runtime directories |
 | Historical native entries | Six shims plus shared; retain five admitted foundations and shared support, exclude MDF. Full admission/surface work remains WP01.03/WP13 |
 
-Keep may denote a required future directory under its producing step; it does not authorize an empty placeholder or assert implemented behavior. Old Notes Edgeless/Slides and standalone ArcChat/hub paths remain retired. Contract schema ownership is assigned to Contracts, while individual type visibility is WP01.01. Old .NET Mobile/Web projects are historical; current Kotlin/Compose and React/TypeScript bootstrap outputs remain intact. The actual generated C# directory is `src/public/dotnet`; the old `csharp` spelling is not recreated.
+Keep may denote a required future directory under its producing step; it does not authorize an empty placeholder or assert implemented behavior. Standalone ArcChat/hub paths remain retired. Contract schema ownership is assigned to Contracts, while individual type visibility is WP01.01. Old .NET Mobile/Web projects are historical; current Kotlin/Compose and React/TypeScript bootstrap outputs remain intact. The actual generated C# directory is `src/public/dotnet`; the old `csharp` spelling is not recreated.
 
 ## Source and runtime evidence boundaries
 
-The inventory pins the [WP00 stage receipt](wp00-stage-acceptance.json) by SHA256 `69e06cd1248f61b5da2509184430ffc8c1f96d5c8550dd790f87e432393cc340`. Fresh remote-main and CI queries confirmed all nine recorded pre-change commits still matched that receipt. The new DesktopPlatform merge is a policy-only successor; the other eight commits and candidate identities remain unchanged.
+The inventory pins the [WP00 stage receipt](wp00-stage-acceptance.json) by SHA256 `69e06cd1248f61b5da2509184430ffc8c1f96d5c8550dd790f87e432393cc340`. Fresh remote-main and CI queries confirmed all seven recorded pre-change commits still matched that receipt. The new DesktopPlatform merge is a policy-only successor; the other six commits and candidate identities remain unchanged.
 
 | Owner | Recorded source | Existing published candidate |
 |---|---|---|
 | DesktopPlatform | `08c46ab9fe955c60c28e7106df519eb55bd8e3ba` | `1.0.0-ci.15.1`; successor below |
 | Contracts | `d716045854e2e401a1a536ba2ee5c62ad1c4e8ab` | `1.0.0-ci.58.1` |
-| ArcNotes | `e40423a1b14ce8341de35748cc2a093c7c9b77a7` | `0.1.0-ci.8.1` |
 | ArcScope | `d247dcff36fd1123a70e5e59967a9b2294a2eeac` | `0.1.0-ci.8.1` |
-| ArcSlate | `b0d255f54fb560a534cc493d5645ca4bc7b4bd0e` | `0.1.0-ci.8.1` |
 | Cloud | `4571ec8692235485712d4c4e3ef4886c162f2574` | `0.1.0-ci.18.1` |
 | AI | `944edfe88718fc5f72a42ea0bed1c495307c22df` | `0.1.0-ci.26.1` |
 | Web | `84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5` | `0.1.0-ci.22.1` |
@@ -42,7 +40,7 @@ WP00's exact NuGet/npm/Maven/native, five-RID desktop, browser, signed Android, 
 
 ## Checks and review
 
-- Fresh read-only nine-owner audit and independent pinned Git snapshot audit passed; no adjacent owner was compiled as a source dependency. The merged DesktopPlatform checkout also passed the fresh audit.
+- Fresh read-only seven-owner audit and independent pinned Git snapshot audit passed; no adjacent owner was compiled as a source dependency. The merged DesktopPlatform checkout also passed the fresh audit.
 - All 103 Python policy/provenance test groups passed (62 policy, including six reconciliation fixture groups, plus 41 provenance). Real Git fixtures reject missing/extra projects, modified historical blobs, source symlinks, gitlinks, wrong owners/origins, incomplete targets, unsafe paths and escaped project references.
 - SDK 10.0.400 locked restore, Release build and all four current .NET architecture tests passed, with zero build warnings/errors. Pre-commit and source provenance checks passed.
 - Windows/Linux CI inventory reports were downloaded and matched all counts. The CI graph requires both before packing; existing native compilation/tests and isolated empty-cache consumers remained required.

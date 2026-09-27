@@ -4,48 +4,21 @@
 
 Per-surface release readiness, production signing and feeds, commercial activation, disaster drill and the family release.
 
-Tasks: 11 · Owning repositories: ArcNotes, ArcScope, ArcSlate, Cloud, Contracts, DesktopPlatform, Mobile, Web · Integration owner(s): ArcNotes integration owner, ArcScope integration owner, ArcSlate integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner, Mobile integration owner, Web integration owner
+Tasks: 9 · Owning repositories: ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web · Integration owner(s): ArcScope integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner, Mobile integration owner, Web integration owner
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
-| [REL.01](#task-rel-01) | ArcNotes desktop release readiness | release | L | [NOTES.32](arcnotes.md#task-notes-32) (release), [UPD.08](updater.md#task-upd-08) (artifact), [NOTES.14](arcnotes.md#task-notes-14) (release), [NOTES.22](arcnotes.md#task-notes-22) (release) | not-started |
 | [REL.02](#task-rel-02) | ArcScope desktop release readiness | release | L | [SCOPE.26](arcscope.md#task-scope-26) (release), [UPD.08](updater.md#task-upd-08) (artifact), [SCOPE.11](arcscope.md#task-scope-11) (release), [SCOPE.19](arcscope.md#task-scope-19) (release) | not-started |
-| [REL.03](#task-rel-03) | ArcSlate desktop release readiness | release | L | [SLATE.40](arcslate.md#task-slate-40) (release), [UPD.08](updater.md#task-upd-08) (artifact), [SLATE.14](arcslate.md#task-slate-14) (release), [SLATE.23](arcslate.md#task-slate-23) (release), [SLATE.32](arcslate.md#task-slate-32) (release) | not-started |
 | [REL.04](#task-rel-04) | Android release readiness | release | M | [AND.23](android.md#task-and-23) (release) | not-started |
 | [REL.05](#task-rel-05) | Web outputs release readiness | release | L | [WEB.26](web.md#task-web-26) (release), [WEB.09](web.md#task-web-09) (release), [WEB.18](web.md#task-web-18) (release) | not-started |
 | [REL.06](#task-rel-06) | Cloud/AI production readiness (deployment, migration, backup, self-host) | release | XL | [CLOUD.51](cloud.md#task-cloud-51) (release), [AIR.90](ai-routing.md#task-air-90) (release), [GOV.03](governance.md#task-gov-03) (artifact), [CLOUD.10](cloud.md#task-cloud-10) (release), [CLOUD.20](cloud.md#task-cloud-20) (release), [CLOUD.28](cloud.md#task-cloud-28) (release), [CLOUD.36](cloud.md#task-cloud-36) (release), [CLOUD.47](cloud.md#task-cloud-47) (release), [CLOUD.55](cloud.md#task-cloud-55) (release), [COM.15](commerce.md#task-com-15) (release), [POL.10](policy.md#task-pol-10) (release), [OPS.12](operations.md#task-ops-12) (release), [SRCH.90](search.md#task-srch-90) (release), [EXT.90](extensions.md#task-ext-90) (release), [HAR.90](harness.md#task-har-90) (release), [SIM.08](simulator.md#task-sim-08) (release) | not-started |
-| [REL.07](#task-rel-07) | Contracts/SDK release audit (licence, SBOM, provenance rollup) | acceptance | M | [REL.01](#task-rel-01) (artifact), [REL.02](#task-rel-02) (artifact), [REL.03](#task-rel-03) (artifact), [REL.04](#task-rel-04) (artifact), [REL.05](#task-rel-05) (artifact), [REL.06](#task-rel-06) (artifact), [REL.08](#task-rel-08) (artifact) | not-started |
+| [REL.07](#task-rel-07) | Contracts/SDK release audit (licence, SBOM, provenance rollup) | acceptance | M | [REL.02](#task-rel-02) (artifact), [REL.04](#task-rel-04) (artifact), [REL.05](#task-rel-05) (artifact), [REL.06](#task-rel-06) (artifact), [REL.08](#task-rel-08) (artifact) | not-started |
 | [REL.08](#task-rel-08) | Commercial activation | release | L | [COM.15](commerce.md#task-com-15) (release), [POL.10](policy.md#task-pol-10) (release) | not-started |
 | [REL.09](#task-rel-09) | Combined disaster drill and operational readiness confirmation | release | L | [REL.06](#task-rel-06) (artifact), [OPS.12](operations.md#task-ops-12) (release) | not-started |
-| [REL.10](#task-rel-10) | Production update feed and signing switch | release | M | [REL.01](#task-rel-01) (artifact), [REL.02](#task-rel-02) (artifact), [REL.03](#task-rel-03) (artifact), [UPD.01](updater.md#task-upd-01) (artifact), [UPD.07](updater.md#task-upd-07) (artifact) | not-started |
-| [REL.11](#task-rel-11) | Family release readiness audit and honest statement | release | L | [REL.01](#task-rel-01) (release), [REL.02](#task-rel-02) (release), [REL.03](#task-rel-03) (release), [REL.04](#task-rel-04) (release), [REL.05](#task-rel-05) (release), [REL.06](#task-rel-06) (release), [REL.07](#task-rel-07) (release), [REL.08](#task-rel-08) (release), [REL.09](#task-rel-09) (release), [REL.10](#task-rel-10) (release) | not-started |
+| [REL.10](#task-rel-10) | Production update feed and signing switch | release | M | [REL.02](#task-rel-02) (artifact), [UPD.01](updater.md#task-upd-01) (artifact), [UPD.07](updater.md#task-upd-07) (artifact) | not-started |
+| [REL.11](#task-rel-11) | Family release readiness audit and honest statement | release | L | [REL.02](#task-rel-02) (release), [REL.04](#task-rel-04) (release), [REL.05](#task-rel-05) (release), [REL.06](#task-rel-06) (release), [REL.07](#task-rel-07) (release), [REL.08](#task-rel-08) (release), [REL.09](#task-rel-09) (release), [REL.10](#task-rel-10) (release) | not-started |
 
 ## Tasks
-
-<a id="task-rel-01"></a>
-
-### REL.01 — ArcNotes desktop release readiness
-
-**Outcome.** ArcNotes' desktop release candidate passes the complete update matrix on all three platforms against a candidate/staging feed, and carries a complete licence/SBOM/provenance/NOTICE record for REL.07 to roll up.
-
-| Field | Value |
-|---|---|
-| Owning repository | ArcNotes (`C:\MyFile\Projects\ArcForges\ArcNotes`); integration owner: ArcNotes integration owner, the holder of `roles/integration-arcnotes` |
-| Claim, branch and ledger | `claims/rel-01` and ledger record `ledger/tasks/rel-01.md` in the Plan repository; task branch `task/rel-01` ([DLV-26](../README.md#rule-dlv-26)) |
-| Kind / size | release / L |
-| Obligations | [WP-50.02](../../work-packages/50-full-platform-production-release.md#rule-wp-50.02) — ArcNotes' own complete update matrix (fresh install, upgrade, two-version upgrade, downgrade protection, rollback, interrupted download, interrupted install, corrupted-artifact rejection, update during a long task, update with documents open, uninstall preserving user data, channel switch both ways, blocked bad version) on Windows/macOS/Linux<br>[WP-50.01](../../work-packages/50-full-platform-production-release.md#rule-wp-50.01) — ArcNotes' own licence inventory, SBOM, provenance attestation and verified NOTICE |
-| Provides | arcnotes-release-candidate-proven |
-| Start prerequisites | **release** [NOTES.32](arcnotes.md#task-notes-32) — ArcNotes feature-complete release candidate. *Why:* there is no release candidate to run an update matrix against until ArcNotes' own product work is accepted<br>**artifact** [UPD.08](updater.md#task-upd-08) — the published ArcForges.Update package/client (the platform lane UPD area). *Why:* WP50.02 explicitly consumes the actual Update package rather than first implementing an updater<br>**release** [NOTES.14](arcnotes.md#task-notes-14) — ArcNotes document core accepted. *Why:* release readiness requires every ArcNotes obligation package accepted<br>**release** [NOTES.22](arcnotes.md#task-notes-22) — ArcNotes search and portability accepted. *Why:* release readiness requires every ArcNotes obligation package accepted |
-| Entry condition | [ADOPT.04.release](adoption.md#task-adopt-04-release) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | **integration** [REL.10](#task-rel-10) — production feed/signing cutover pointing at this proven candidate. *Why:* the update matrix can be rehearsed against a candidate/staging feed, but the desktop release is not actually complete until the production feed and signing switch points at the proven artifact |
-| Unblocks | [REL.07](#task-rel-07), [REL.10](#task-rel-10), [REL.11](#task-rel-11) |
-| Permitted substitutes | [SUB-desktop-candidate-feed](../substitutes.md#sub-desktop-candidate-feed) |
-| Write scope | `ArcNotes:eng/release/**`<br>`Design:docs/assurance/wp50-02-arcnotes-*.md` |
-| Shared resources | [RES-production-release-trust](../shared-resources.md#res-production-release-trust) (append) |
-| Validation | Local opt-in runtime observation per platform under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)/ci-and-local-validation-policy.md; no macOS CI - an independently produced macOS installer has its own local build/signing evidence; Windows/Linux installers promote their original CI-produced candidates, never rebuilt. |
-| Completion evidence | Full update-matrix results table per platform; licence/SBOM/provenance/NOTICE closure report for the ArcNotes artifact. |
-| Baseline (unreviewed unless accepted) | not-started |
-| Notes | Analogous tasks exist for ArcScope (REL.02) and ArcSlate (REL.03); all three can run in parallel once their own product WP and WP53 are ready. |
 
 <a id="task-rel-02"></a>
 
@@ -62,7 +35,7 @@ Tasks: 11 · Owning repositories: ArcNotes, ArcScope, ArcSlate, Cloud, Contracts
 | Provides | arcscope-release-candidate-proven |
 | Start prerequisites | **release** [SCOPE.26](arcscope.md#task-scope-26) — ArcScope feature-complete release candidate. *Why:* no release candidate exists to run an update matrix against until ArcScope's own product work is accepted<br>**artifact** [UPD.08](updater.md#task-upd-08) — the published ArcForges.Update package/client (the platform lane UPD area). *Why:* WP50.02 explicitly consumes the actual Update package rather than first implementing an updater<br>**release** [SCOPE.11](arcscope.md#task-scope-11) — ArcScope acquisition package accepted. *Why:* release readiness requires every ArcScope obligation package accepted<br>**release** [SCOPE.19](arcscope.md#task-scope-19) — ArcScope analysis package accepted. *Why:* release readiness requires every ArcScope obligation package accepted |
 | Entry condition | [ADOPT.05.release](adoption.md#task-adopt-05-release) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | **integration** [REL.10](#task-rel-10) — production feed/signing cutover pointing at this proven candidate. *Why:* same reasoning as REL.01 |
+| Completion prerequisites | **integration** [REL.10](#task-rel-10) — production feed/signing cutover pointing at this proven candidate. *Why:* the update matrix can be rehearsed against a candidate/staging feed, but the desktop release is not actually complete until the production feed and signing switch points at the proven artifact |
 | Unblocks | [REL.07](#task-rel-07), [REL.10](#task-rel-10), [REL.11](#task-rel-11) |
 | Permitted substitutes | [SUB-desktop-candidate-feed](../substitutes.md#sub-desktop-candidate-feed) |
 | Write scope | `ArcScope:eng/release/**`<br>`Design:docs/assurance/wp50-02-arcscope-*.md` |
@@ -70,32 +43,6 @@ Tasks: 11 · Owning repositories: ArcNotes, ArcScope, ArcSlate, Cloud, Contracts
 | Validation | Local opt-in runtime observation per platform under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017); no macOS CI. |
 | Completion evidence | Full update-matrix results table per platform; licence/SBOM/provenance/NOTICE closure report for the ArcScope artifact. |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Parallel sibling of REL.01/REL.03. |
-
-<a id="task-rel-03"></a>
-
-### REL.03 — ArcSlate desktop release readiness
-
-**Outcome.** ArcSlate's desktop release candidate passes the complete update matrix on all three platforms against a candidate/staging feed, and carries a complete licence/SBOM/provenance/NOTICE record for REL.07 to roll up.
-
-| Field | Value |
-|---|---|
-| Owning repository | ArcSlate (`C:\MyFile\Projects\ArcForges\ArcSlate`); integration owner: ArcSlate integration owner, the holder of `roles/integration-arcslate` |
-| Claim, branch and ledger | `claims/rel-03` and ledger record `ledger/tasks/rel-03.md` in the Plan repository; task branch `task/rel-03` ([DLV-26](../README.md#rule-dlv-26)) |
-| Kind / size | release / L |
-| Obligations | [WP-50.02](../../work-packages/50-full-platform-production-release.md#rule-wp-50.02) — ArcSlate's own complete update matrix on Windows/macOS/Linux<br>[WP-50.01](../../work-packages/50-full-platform-production-release.md#rule-wp-50.01) — ArcSlate's own licence inventory, SBOM, provenance attestation and verified NOTICE |
-| Provides | arcslate-release-candidate-proven |
-| Start prerequisites | **release** [SLATE.40](arcslate.md#task-slate-40) — ArcSlate feature-complete release candidate. *Why:* no release candidate exists to run an update matrix against until ArcSlate's own product work is accepted<br>**artifact** [UPD.08](updater.md#task-upd-08) — the published ArcForges.Update package/client (the platform lane UPD area). *Why:* WP50.02 explicitly consumes the actual Update package rather than first implementing an updater<br>**release** [SLATE.14](arcslate.md#task-slate-14) — ArcSlate obligation package accepted. *Why:* release readiness requires every ArcSlate obligation package accepted<br>**release** [SLATE.23](arcslate.md#task-slate-23) — ArcSlate obligation package accepted. *Why:* release readiness requires every ArcSlate obligation package accepted<br>**release** [SLATE.32](arcslate.md#task-slate-32) — ArcSlate obligation package accepted. *Why:* release readiness requires every ArcSlate obligation package accepted |
-| Entry condition | [ADOPT.06.release](adoption.md#task-adopt-06-release) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | **integration** [REL.10](#task-rel-10) — production feed/signing cutover pointing at this proven candidate. *Why:* same reasoning as REL.01 |
-| Unblocks | [REL.07](#task-rel-07), [REL.10](#task-rel-10), [REL.11](#task-rel-11) |
-| Permitted substitutes | [SUB-desktop-candidate-feed](../substitutes.md#sub-desktop-candidate-feed) |
-| Write scope | `ArcSlate:eng/release/**`<br>`Design:docs/assurance/wp50-02-arcslate-*.md` |
-| Shared resources | [RES-production-release-trust](../shared-resources.md#res-production-release-trust) (append) |
-| Validation | Local opt-in runtime observation per platform under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017); no macOS CI. |
-| Completion evidence | Full update-matrix results table per platform; licence/SBOM/provenance/NOTICE closure report for the ArcSlate artifact. |
-| Baseline (unreviewed unless accepted) | not-started |
-| Notes | Parallel sibling of REL.01/REL.02. |
 
 <a id="task-rel-04"></a>
 
@@ -179,7 +126,7 @@ Tasks: 11 · Owning repositories: ArcNotes, ArcScope, ArcSlate, Cloud, Contracts
 | Kind / size | acceptance / M |
 | Obligations | [WP-50.01](../../work-packages/50-full-platform-production-release.md#rule-wp-50.01) — the audit mechanism (licence inventory, SBOM, provenance attestation, NOTICE-generation verification per artifact, copied-content audit) plus Contracts/public-SDK's own candidate audit and the cross-artifact provenance-completeness rollup |
 | Provides | release-audit-rollup; sbom-provenance-closure-report |
-| Start prerequisites | **artifact** [REL.01](#task-rel-01) — ArcNotes' own licence/SBOM/provenance/NOTICE evidence row. *Why:* the rollup reads each surface's own audit output rather than re-deriving it<br>**artifact** [REL.02](#task-rel-02) — ArcScope's own licence/SBOM/provenance/NOTICE evidence row. *Why:* same<br>**artifact** [REL.03](#task-rel-03) — ArcSlate's own licence/SBOM/provenance/NOTICE evidence row. *Why:* same<br>**artifact** [REL.04](#task-rel-04) — Android's own licence/SBOM/provenance/NOTICE evidence row. *Why:* same<br>**artifact** [REL.05](#task-rel-05) — Web's own licence/SBOM/provenance/NOTICE evidence row. *Why:* same<br>**artifact** [REL.06](#task-rel-06) — Cloud/AI's own licence/SBOM/provenance/NOTICE evidence row. *Why:* same<br>**artifact** [REL.08](#task-rel-08) — the commercial surface's own licence/SBOM/provenance/NOTICE evidence row. *Why:* same |
+| Start prerequisites | **artifact** [REL.02](#task-rel-02) — ArcScope's own licence/SBOM/provenance/NOTICE evidence row. *Why:* same<br>**artifact** [REL.04](#task-rel-04) — Android's own licence/SBOM/provenance/NOTICE evidence row. *Why:* same<br>**artifact** [REL.05](#task-rel-05) — Web's own licence/SBOM/provenance/NOTICE evidence row. *Why:* same<br>**artifact** [REL.06](#task-rel-06) — Cloud/AI's own licence/SBOM/provenance/NOTICE evidence row. *Why:* same<br>**artifact** [REL.08](#task-rel-08) — the commercial surface's own licence/SBOM/provenance/NOTICE evidence row. *Why:* same |
 | Entry condition | [ADOPT.03.release](adoption.md#task-adopt-03-release) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [REL.11](#task-rel-11) |
@@ -239,19 +186,19 @@ Tasks: 11 · Owning repositories: ArcNotes, ArcScope, ArcSlate, Cloud, Contracts
 
 ### REL.10 — Production update feed and signing switch
 
-**Outcome.** The production update feed is populated with hashes/compatibility ranges/minimum versions for all three desktop products across Windows/macOS/Linux, store and package-manager listings point at the corresponding signed installer, and a blocked bad version is refused by both the feed and compatibility policy.
+**Outcome.** The production update feed is populated with hashes/compatibility ranges/minimum versions for the ArcScope desktop application across Windows/macOS/Linux, store and package-manager listings point at the corresponding signed installer, and a blocked bad version is refused by both the feed and compatibility policy.
 
 | Field | Value |
 |---|---|
 | Owning repository | DesktopPlatform (`C:\MyFile\Projects\ArcForges\DesktopPlatform`); integration owner: DesktopPlatform integration owner, the holder of `roles/integration-desktopplatform` |
 | Claim, branch and ledger | `claims/rel-10` and ledger record `ledger/tasks/rel-10.md` in the Plan repository; task branch `task/rel-10` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | release / M |
-| Obligations | [WP-50.02](../../work-packages/50-full-platform-production-release.md#rule-wp-50.02) — the shared production update-feed population (hashes, compatibility ranges, minimum versions) and code-signing/publication-pointer cutover only; per-product update-matrix testing is REL.01/REL.02/REL.03 |
+| Obligations | [WP-50.02](../../work-packages/50-full-platform-production-release.md#rule-wp-50.02) — the shared production update-feed population (hashes, compatibility ranges, minimum versions) and code-signing/publication-pointer cutover only; ArcScope update-matrix testing is REL.02 |
 | Provides | production-feed-live; signing-switch-complete |
-| Start prerequisites | **artifact** [REL.01](#task-rel-01) — ArcNotes' own update matrix proven on all three platforms. *Why:* the production feed must only ever point at a candidate that has already passed its own update matrix - [BR-09](../../work-packages/00-specification-naming-and-rights-freeze.md#rule-br-09): release artifacts are immutable, a defect produces a new version, not a silent feed edit<br>**artifact** [REL.02](#task-rel-02) — ArcScope's own update matrix proven. *Why:* same reasoning<br>**artifact** [REL.03](#task-rel-03) — ArcSlate's own update matrix proven. *Why:* same reasoning<br>**artifact** [UPD.01](updater.md#task-upd-01) — the update client/channel mechanism and feed schema (the platform lane UPD area). *Why:* WP50.02 explicitly does not first implement an updater; it consumes WP53's actual mechanism<br>**artifact** [UPD.07](updater.md#task-upd-07) — production catalog and Android distribution trust. *Why:* the production switch installs the production trust roots produced by the updater lane |
+| Start prerequisites | **artifact** [REL.02](#task-rel-02) — ArcScope's own update matrix proven. *Why:* same reasoning<br>**artifact** [UPD.01](updater.md#task-upd-01) — the update client/channel mechanism and feed schema (the platform lane UPD area). *Why:* WP50.02 explicitly does not first implement an updater; it consumes WP53's actual mechanism<br>**artifact** [UPD.07](updater.md#task-upd-07) — production catalog and Android distribution trust. *Why:* the production switch installs the production trust roots produced by the updater lane |
 | Entry condition | [ADOPT.02.release](adoption.md#task-adopt-02-release) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [REL.01](#task-rel-01), [REL.02](#task-rel-02), [REL.03](#task-rel-03), [REL.11](#task-rel-11), [UPD.08](updater.md#task-upd-08) |
+| Unblocks | [REL.02](#task-rel-02), [REL.11](#task-rel-11), [UPD.08](updater.md#task-upd-08) |
 | Write scope | `DesktopPlatform:eng/packaging/release/**` |
 | Shared resources | [RES-production-release-trust](../shared-resources.md#res-production-release-trust) (append) |
 | Validation | Blocked-bad-version refusal test against both feed and compatibility policy; no rebuild - promotes the exact already-proven candidate per [BR-01](../../../architecture/14-build-packaging-and-release.md#rule-br-01); per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) local/opt-in observation only. |
@@ -273,13 +220,13 @@ Tasks: 11 · Owning repositories: ArcNotes, ArcScope, ArcSlate, Cloud, Contracts
 | Package acceptance | Records the [WP-50](../../work-packages/50-full-platform-production-release.md#rule-wp-50) acceptance receipt after every task mapped to the package; tasks outside the package never start from it ([DLV-35](../README.md#rule-dlv-35)) |
 | Obligations | [WP-50.00](../../work-packages/50-full-platform-production-release.md#rule-wp-50.00) — full<br>[WP-50.08](../../work-packages/50-full-platform-production-release.md#rule-wp-50.08) — full<br>[WP-50.90](../../work-packages/50-full-platform-production-release.md#rule-wp-50.90) — full |
 | Provides | wp50-family-release-complete; release-audit-final |
-| Start prerequisites | **release** [REL.01](#task-rel-01) — ArcNotes desktop release readiness complete. *Why:* the family audit evaluates every gate across every surface; it cannot certify a surface that has not reported its own evidence<br>**release** [REL.02](#task-rel-02) — ArcScope desktop release readiness complete. *Why:* same<br>**release** [REL.03](#task-rel-03) — ArcSlate desktop release readiness complete. *Why:* same<br>**release** [REL.04](#task-rel-04) — Android release readiness complete. *Why:* same<br>**release** [REL.05](#task-rel-05) — Web outputs release readiness complete. *Why:* same<br>**release** [REL.06](#task-rel-06) — Cloud/AI production readiness complete. *Why:* same<br>**release** [REL.07](#task-rel-07) — Contracts/SDK release audit complete. *Why:* same<br>**release** [REL.08](#task-rel-08) — commercial activation complete. *Why:* same<br>**release** [REL.09](#task-rel-09) — combined disaster drill and operational readiness confirmed. *Why:* same<br>**release** [REL.10](#task-rel-10) — production feed/signing switch complete. *Why:* same |
+| Start prerequisites | **release** [REL.02](#task-rel-02) — ArcScope desktop release readiness complete. *Why:* same<br>**release** [REL.04](#task-rel-04) — Android release readiness complete. *Why:* same<br>**release** [REL.05](#task-rel-05) — Web outputs release readiness complete. *Why:* same<br>**release** [REL.06](#task-rel-06) — Cloud/AI production readiness complete. *Why:* same<br>**release** [REL.07](#task-rel-07) — Contracts/SDK release audit complete. *Why:* same<br>**release** [REL.08](#task-rel-08) — commercial activation complete. *Why:* same<br>**release** [REL.09](#task-rel-09) — combined disaster drill and operational readiness confirmed. *Why:* same<br>**release** [REL.10](#task-rel-10) — production feed/signing switch complete. *Why:* same |
 | Entry condition | [ADOPT.02.release](adoption.md#task-adopt-02-release) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | none |
 | Write scope | `Design:docs/assurance/wp50-00-readiness-audit.md, wp50-08-honest-statement.md, wp50-stage-acceptance.md/.json`<br>`DesktopPlatform:eng/release/**` |
 | Shared resources | [RES-design-evidence](../shared-resources.md#res-design-evidence) (append) |
 | Validation | Gate-coverage report asserting no gate is unevaluated; evidence-resolution check asserting every claimed evidence artifact exists; cross-system failure-row coverage check; claim audit comparing every required feature and owner WP to real gate receipts and public claims; per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) no new runtime beyond what each surface already produced. |
-| Completion evidence | Gate-coverage report; claim audit; WP50 stage-acceptance receipt joining REL.01-10. |
+| Completion evidence | Gate-coverage report; claim audit; WP50 stage-acceptance receipt joining REL.02 and REL.04-REL.10. |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | Terminal task for the entire 51-package sequence (WP50 has no downstream). [BR-01](../../../architecture/14-build-packaging-and-release.md#rule-br-01)/[BR-02](../../../architecture/14-build-packaging-and-release.md#rule-br-02)/[BR-03](../../../architecture/14-build-packaging-and-release.md#rule-br-03)/[BR-04](../../../architecture/14-build-packaging-and-release.md#rule-br-04) (build once, no partial pass, no waiving integrity/security/licence/regulatory gates, nothing incomplete presented as complete) all bind here directly. |

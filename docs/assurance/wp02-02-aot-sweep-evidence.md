@@ -4,7 +4,7 @@ Scope: [WP02.02](../planning/work-packages/02-build-governance-and-analyzer-poli
 
 ## Research, decision and ordered execution
 
-Research on 2026-09-21 evaluated all 43 restored managed projects in six owners, inspected the authored suppression surface and pinned SDK/ILLink/ILC imports, and ran expanded full-solution builds and real Native AOT publishes before changing documentation. Every existing AOT chain already declares its posture through effective imports; no source repair, dependency update, empty implementation PR or replacement publication is justified. No authored trim/AOT suppression or resulting diagnostic requires a waiver or blocking assignment.
+Research on 2026-09-21 evaluated all 35 restored managed projects in four owners, inspected the authored suppression surface and pinned SDK/ILLink/ILC imports, and ran expanded full-solution builds and real Native AOT publishes before changing documentation. Every existing AOT chain already declares its posture through effective imports; no source repair, dependency update, empty implementation PR or replacement publication is justified. No authored trim/AOT suppression or resulting diagnostic requires a waiver or blocking assignment.
 
 The complete order selected before documentation edits was:
 
@@ -23,12 +23,10 @@ The [machine-readable evidence](wp02-02-aot-sweep-evidence.json) records every p
 |---|---:|---:|---|
 | DesktopPlatform | 24 | 22 | `src/Directory.Build.props` declares reusable library compatibility; the ContentSandbox host imports `eng/build/desktop-aot.props` |
 | Contracts | 4 | 2 | PublicApi declares compatibility; HelloClient is an AOT-compatible verification client published AOT by its consumer command |
-| ArcNotes | 4 | 2 | Core declares compatibility; the product host declares Native AOT |
 | ArcScope | 4 | 2 | Core declares compatibility; the product host declares Native AOT |
-| ArcSlate | 4 | 2 | Core declares compatibility; the product host declares Native AOT |
 | Cloud | 3 | 1 | The service host declares Native AOT; effective imports enable all three analyzers |
 
-All 31 selected projects evaluate AOT, trim and single-file analyzers enabled, with compiler warnings treated as errors. The remaining 12 are build/code-generation/test tools or JIT test hosts, not reusable runtime libraries on the deliverable chain. None needs a fictitious AOT-host declaration. Kotlin Android, browser assets and AI TypeScript retain their separate runtime policies.
+All 27 selected projects evaluate AOT, trim and single-file analyzers enabled, with compiler warnings treated as errors. The remaining 8 are build/code-generation/test tools or JIT test hosts, not reusable runtime libraries on the deliverable chain. None needs a fictitious AOT-host declaration. Kotlin Android, browser assets and AI TypeScript retain their separate runtime policies.
 
 The pinned SDK supplies ordinary compiler exclusions `1701;1702`. On trimmed projects its ILLink targets additionally hide `IL2121`, which reports redundant suppression attributes. The complete sweep explicitly used `_TrimmerShowRedundantSuppressions=true`, `TrimmerSingleWarn=false` and `SuppressTrimAnalysisWarnings=false`. This exposes redundant-suppression diagnostics and individual dependency warnings while retaining warnings-as-errors. Actual captured ILC arguments contain `--warnaserror`, no `IL2121`, no global `--singlewarn`, and no trim/AOT analysis disable switch. Compiler codes `1701;1702;8002` in the response files are recorded separately from IL diagnostics. No owner-authored suppression is introduced or excused by an SDK default.
 
@@ -36,8 +34,8 @@ The installed ILLink targets and ILC response files, not file-local absence or a
 
 ## Observed verification and triage
 
-- Six complete Release solutions built successfully with expanded reporting and zero warnings/errors.
-- DesktopPlatform ContentSandbox and all three desktop products published real Windows x64 Native AOT binaries with no expanded diagnostic. The helper executed; each product's actual native UI action reached the deployed Cloud revision `8942437a5e42c01ae7595b64a220efd60f33b4f0`, verifying greetings, Unicode boundaries and invalid/oversized input failures.
+- Four complete Release solutions built successfully with expanded reporting and zero warnings/errors.
+- DesktopPlatform ContentSandbox and ArcScope published real Windows x64 Native AOT binaries with no expanded diagnostic. The helper executed; the product's actual native UI action reached the deployed Cloud revision `8942437a5e42c01ae7595b64a220efd60f33b4f0`, verifying greetings, Unicode boundaries and invalid/oversized input failures.
 - An isolated Contracts consumer restored `ArcForges.Contracts.PublicApi` `1.0.0-ci.69.1` from public NuGet into its own empty package cache, replacing the producer ProjectReference with a PackageReference. Its native client published with expanded diagnostics and passed the existing authored success/error vectors against a real local gRPC host. No sibling producer source was compiled by that consumer.
 - Cloud published the pinned Linux x64 Native AOT Docker closure using the same source and base images plus diagnostic-only command-line overrides in an untracked research recipe. The resulting image ran successfully; its actual native health and published binary gRPC-Web client passed greeting, Unicode, InvalidArgument and ResourceExhausted checks. This local image was not deployed or promoted as a new release.
 

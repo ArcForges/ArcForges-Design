@@ -9,13 +9,12 @@ Five bottom destinations: **Home, Chats, Tasks, Library, Settings**. Devices is 
 ```text
 +-------------------------------------+
 | Workspace v                  Account|
-| [My chats v] / [ArcNotes · PC-A v]   |
+| [My chats v] / [ArcScope · PC-A v]   |
 |                                     |
 | Needs attention: approval / failure  |
 | Continue chat                       |
 | Connected applications              |
-|   PC-A · ArcNotes      Online        |
-|   PC-A · ArcSlate      Offline       |
+|   PC-A · ArcScope      Online        |
 | Recent tasks / saved artifacts       |
 |                                     |
 | Home | Chats | Tasks | Library | ⚙  |
@@ -54,8 +53,8 @@ Compact width<600dp uses a single pane and bottom navigation.600–839dp uses a 
 | AN13 Approval / tasks | full-screen sensitive operation, target/source/egress/effects/cost/expiry | approve once/deny with idempotency; step-up where required | expired approval read-only; local-presence action instructs target desktop, no biometric substitution |
 | AN14 Library / library | projects, resources, saved search, simple automation sections | list/open/filter within current product scope | no cross-product merged library |
 | AN15 Project/profile/skill / library | metadata, instruction/source disclosure and version | supported create/edit/archive/attach behavior; preserve existing bounded mobile scope | concurrent change offers reload/copy; no untrusted content granted authority |
-| AN16 Search / library | query/scope/source kind, index/completeness badge | permission-aware results/citations; exact Notes scalar projections where admitted | lexical-only and unavailable are distinguished; query change cancels obsolete result |
-| AN17 Resource detail / library | metadata/status/provenance/version, preview pane, safe actions | view text/code/Markdown/image/PDF, bounded table/report, audio/video; download/export via Storage Access Framework | unsupported preview shows metadata/download, missing or unauthorized differs |
+| AN16 Search / library | query/scope/source kind, index/completeness badge | permission-aware results/citations | lexical-only and unavailable are distinguished; query change cancels obsolete result |
+| AN17 Resource detail / library | metadata/status/provenance/version, preview pane, safe actions | view text/code/Markdown/image/PDF, bounded table/report; download/export via Storage Access Framework | unsupported preview shows metadata/download, missing or unauthorized differs |
 | AN18 Transfers / library | item-level progress/hash/stage/retry/cancel | resumable upload/download, metered-network confirmation, explicit local file destination | process death resumes bounded journal; hash mismatch discards unsafe partial file |
 | AN19 Automation / library | rule list, schedule/timezone/next occurrence, target/budget | existing simple-rule create/edit/pause/delete, run history; Cloud scheduling authority | offline edit remains draft; no local timer guarantee |
 | AN20 Settings / settings | account/workspace, appearance, history, privacy, storage, notifications, help | navigate subsection, sign out, diagnostics consent, app version/update destination | consent defaults safe; no key-entry or purchase CTA |
@@ -77,7 +76,7 @@ Auto-scroll follows near-bottom output only; reading earlier messages shows a Ne
 
 Native bearer credentials are held by the network/security module and OS Keystore-backed storage, never Compose state, SavedStateHandle or navigation arguments. Deep links/push carry only opaque object IDs and intended product scope; resolve session/workspace/current permission before rendering. A route to a revoked device/resource shows denial even if the notification text was previously received. Lock-screen notifications show a generic attention summary by default.
 
-Changing target from ArcNotes/PC-A to ArcSlate/PC-A opens that application's scoped surface; pending Notes approvals remain bound to Notes. Own companion chats remain their own history. Creating a remote tool task explicitly shows the target before submit and freezes it; changing the header later cannot redirect the task. Local-only desktop conversations remain inaccessible. Choosing a Cloud desktop conversation is an explicit read/write of that application's authorized Cloud history, not joining a local assistant window.
+Changing target between authorized installations opens that installation's scoped surface; pending approvals remain bound to their originating installation. Own companion chats remain their own history. Creating a remote tool task explicitly shows the target before submit and freezes it; changing the header later cannot redirect the task. Local-only desktop conversations remain inaccessible. Choosing a Cloud desktop conversation is an explicit read/write of that application's authorized Cloud history, not joining a local assistant window.
 
 Room owns per-profile drafts, local-history canonical rows, Cloud projection/pending receipts, transfer journal and cursors. Existing bounded outbox 1000 items/20 MiB and cache 128 MiB default/512 MiB cap remain; canonical local history/pending work is not evictable cache. Logout/profile switch seals the old partition, cancels subscriptions, removes private previews and prevents queued work from sending under a different identity. Temporary mode never writes content to Room/saved state/crash logs. Process death cannot claim a temporary conversation was restored.
 

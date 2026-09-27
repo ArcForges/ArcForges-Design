@@ -9,7 +9,7 @@
 [Design PR29](https://github.com/ArcForges/ArcForges-Design/pull/29), merged as
 `e2dd78058ce2d4bd1a8434a34d049bbc1158eacb`, establishes the
 [runtime and source ownership profile](../architecture/30-runtime-and-source-ownership-policy.md).
-It corrects the stale ten-implementation-repository count to nine, records bounded
+It corrects the stale eight-implementation-repository count to seven, records bounded
 source checks and actual-build evidence separately, and preserves the already
 assigned later product migrations. Design remains documentation authority. Earlier
 [WP00.04 evidence](wp00-04-implementation-evidence.md) and its prerequisite stages
@@ -39,7 +39,7 @@ The policy binds Design's exact revision and profile digest
 `3be292a0fffc23dbdb0f7d1d0fe41ad250e03661d02fee79e4d4c58b8af33e2b`.
 The runtime registry digest is
 `66813be2a63b4f76c9f2fb0effd7661fd76e3a71b9bac07ea9177b88e56fc6ea`.
-It assigns all 75 current projects across nine owners and requires their actual
+It assigns all 67 current projects across seven owners and requires their actual
 source/provenance inventories. It does not copy the Contracts forbidden-name list
 or import AGPL tooling into Apache owners. Ten former monorepo source groups have
 explicit owner/disposition records verified against extraction revision
@@ -55,11 +55,11 @@ rerun. Existing 11 licence, 41 provenance/native, 15 Design and 12 reference gro
 also passed: 97 local groups in total. The actual provenance scan, repository hooks,
 whitespace check and complete-history secret scan passed without suppressions.
 
-Both PR and merged-main Windows/Linux reports passed with nine source snapshots,
-75 projects, 1,328 files and 34 actual Debug/Release MSBuild AOT property evaluations
+Both PR and merged-main Windows/Linux reports passed with seven source snapshots,
+67 projects, 1,175 files and 34 actual Debug/Release MSBuild AOT property evaluations
 using .NET SDK 10.0.400. Their policy identities match the reviewed registry. These
 read-only declaration/property checks remain distinct from native package execution.
-The fresh post-merge audit used all nine real local primary roots, not merely the
+The fresh post-merge audit used all seven real local primary roots, not merely the
 pinned snapshots; their source inventory and existing naming scan passed cleanly.
 The current Design preview passed with 135 terms, 148 names, 429 invariants and
 16 forbidden aliases.
@@ -68,15 +68,13 @@ The current Design preview passed with 135 terms, 148 names, 429 invariants and
 |---|---|---:|
 | DesktopPlatform | `08c46ab9fe955c60c28e7106df519eb55bd8e3ba` | 35 |
 | Contracts | `d716045854e2e401a1a536ba2ee5c62ad1c4e8ab` | 15 |
-| ArcNotes | `e40423a1b14ce8341de35748cc2a093c7c9b77a7` | 4 |
 | ArcScope | `d247dcff36fd1123a70e5e59967a9b2294a2eeac` | 4 |
-| ArcSlate | `b0d255f54fb560a534cc493d5645ca4bc7b4bd0e` | 4 |
 | Cloud | `4571ec8692235485712d4c4e3ef4886c162f2574` | 5 |
 | AI | `944edfe88718fc5f72a42ea0bed1c495307c22df` | 1 |
 | Web | `84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5` | 4 |
 | Mobile | `5031d837d2e7bf9dd1b681c837c942d2b74dc65e` | 3 |
 
-All nine primary HEADs were independently compared with remote main and were clean.
+All seven primary HEADs were independently compared with remote main and were clean.
 The unchanged product repositories needed no empty PRs. Source checks do not claim
 that their Hello applications implement the full commercial requirements.
 

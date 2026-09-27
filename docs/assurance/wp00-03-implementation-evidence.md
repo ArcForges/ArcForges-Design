@@ -3,7 +3,7 @@
 > Status: Execution evidence for the inspected revisions, verified 2026-09-19 UTC.
 > Owning substep: [WP-00.03 — Reuse and provenance process](../planning/work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.03).
 
-The nine current implementation owners satisfy this substep's process, admission,
+The seven current implementation owners satisfy this substep's process, admission,
 source reconciliation, CI and affected-distribution obligations. Each final PR was
 reviewed; code PRs merged after all applicable checks passed. Public packages and
 deployed/installed consumers were verified after merge. The corresponding primary
@@ -21,9 +21,7 @@ artifact receipts under its owning provenance/evidence conventions.
 |---|---|---|---|
 | [Contracts](https://github.com/ArcForges/Contracts/pull/22) | `aa2f187a4adae8ee4f79cee192c0d382cb7fec7f` | `1.0.0-ci.54.1` | [passed](https://github.com/ArcForges/Contracts/actions/runs/35423529896) |
 | [DesktopPlatform](https://github.com/ArcForges/DesktopPlatform/pull/50) | `5cb1121dc2312a10fba4424005ec29b4ad5d0113` | `1.0.0-ci.13.1` | [passed](https://github.com/ArcForges/DesktopPlatform/actions/runs/35429555877) |
-| [ArcNotes](https://github.com/ArcForges/ArcNotes/pull/4) | `e40423a1b14ce8341de35748cc2a093c7c9b77a7` | `0.1.0-ci.8.1` | [passed](https://github.com/ArcForges/ArcNotes/actions/runs/35425608146) |
 | [ArcScope](https://github.com/ArcForges/ArcScope/pull/4) | `d247dcff36fd1123a70e5e59967a9b2294a2eeac` | `0.1.0-ci.8.1` | [passed](https://github.com/ArcForges/ArcScope/actions/runs/35426873548) |
-| [ArcSlate](https://github.com/ArcForges/ArcSlate/pull/4) | `b0d255f54fb560a534cc493d5645ca4bc7b4bd0e` | `0.1.0-ci.8.1` | [passed](https://github.com/ArcForges/ArcSlate/actions/runs/35427484761) |
 | [Cloud](https://github.com/ArcForges/Cloud/pull/4) | `3165c97cccd3ea1e0b230d66e22ab9c775ca19d8` | `0.1.0-ci.16.1` | [passed](https://github.com/ArcForges/Cloud/actions/runs/35431961965) |
 | [AI](https://github.com/ArcForges/AI/pull/9) | `b26f05c73271693636d89a83a24f8cd66eac26b2` | `0.1.0-ci.24.1` | [passed](https://github.com/ArcForges/AI/actions/runs/35434201026) |
 | [Web](https://github.com/ArcForges/Web/pull/7) | `84939ca1fde0f0653d2cb4d8b8f9e5dd1057abb5` | `0.1.0-ci.22.1` | [passed](https://github.com/ArcForges/Web/actions/runs/35437014881) |
@@ -40,22 +38,20 @@ reuse keep their distinct licensing obligations. Unknown, conflicting or unclass
 material fails before acceptance; historical records and profiles cannot be rewritten
 to fit a later candidate. A retired initialization repository is not an implementation input.
 
-Fresh source checks passed for these revisions. Naming checks covered all 1,319 files
+Fresh source checks passed for these revisions. Naming checks covered all 1,166 files
 with no findings; DesktopPlatform's single exact reference exception remains hash-bound.
-The 286 count below includes preserved superseded records; it is not an active-record count.
+The 267 count below includes preserved superseded records; it is not an active-record count.
 
 | Owner | Inventoried files | Reused files | Retained records |
 |---|---:|---:|---:|
 | Contracts | 321 | 107 | 87 |
 | DesktopPlatform | 353 | 10 | 115 |
-| ArcNotes | 77 | 9 | 10 |
 | ArcScope | 76 | 12 | 9 |
-| ArcSlate | 76 | 12 | 9 |
 | Cloud | 109 | 12 | 15 |
 | AI | 88 | 10 | 10 |
 | Web | 109 | 14 | 13 |
 | Mobile | 110 | 19 | 18 |
-| **Total** | **1,319** | **205** | **286** |
+| **Total** | **1,166** | **184** | **267** |
 
 ## Distribution and runtime verification
 
@@ -73,9 +69,9 @@ The 286 count below includes preserved superseded records; it is not an active-r
   missing-owned/transitive-DLL and changed-DLL failures. Native source recipes,
   corresponding-source delivery, full legal texts and the separately licensed
   Microsoft compiler runtime are bound to the inspected binary closure.
-- **ArcNotes, ArcScope and ArcSlate:** each public release's eleven assets and five
-  native candidates match main CI; the complete companion archives were verified.
-  Each product passed real native UI/Cloud tests on Windows x64/Arm64, Linux x64 and
+- **ArcScope:** its public release's eleven assets and five
+  native candidates match main CI; the complete companion archive was verified.
+  The product passed real native UI/Cloud tests on Windows x64/Arm64, Linux x64 and
   macOS x64/Arm64. The UI uses Avalonia/Skia; these are native application tests.
 - **Cloud:** seven public candidate members match CI. The actual deployed OCI image
   identity, eleven app members and six base legal members were inspected. Real

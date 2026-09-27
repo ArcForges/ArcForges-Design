@@ -21,7 +21,7 @@ python check_design.py <absolute-path-to-phase-2-specifications-worktree>
 
 The corpus checker writes `design_check.json` beside its temporary script and exits nonzero on a defect. No product, reference or input file is modified. Reserved identifier headroom and standard names are vocabulary/metadata, not waived normative citations. Retired work-package identifiers resolve to their explicit retirement records.
 
-Passing arithmetic/state models establishes their bounded counterexample outcomes only; illustrative assertions have the narrower proof strength recorded below. Real concurrent SQL, provider reconciliation, packaged RID containment, physical restores and real OTIO/media processing remain the named implementation gates.
+Passing arithmetic/state models establishes their bounded counterexample outcomes only; illustrative assertions have the narrower proof strength recorded below. Real concurrent SQL, provider reconciliation, packaged RID containment and physical restores remain the named implementation gates.
 
 <a id="proof-strength"></a>
 ## Proof strength of the historical counterexamples

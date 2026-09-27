@@ -240,7 +240,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Start prerequisites | **artifact** [SCOPE.06](#task-scope-06) — capture lifecycle (running/interrupted states) to bind the shell prompt to. *Why:* the close-prompt decision depends on live capture state<br>**artifact** [PLT.32](platform.md#task-plt-32) — published generic shell lifecycle/shutdown-prompt mechanism. *Why:* [WP-33](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) §2 lists [WP-10](../../work-packages/10-design-system-and-desktop-shell.md#rule-wp-10) shell output as a required input; this substep specialises the generic close/shutdown prompt for capture-in-progress rather than inventing a second prompt mechanism |
 | Entry condition | [ADOPT.05.arcscope](adoption.md#task-adopt-05-arcscope) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [PLT.56](platform.md#task-plt-56), [SCOPE.11](#task-scope-11) |
+| Unblocks | [SCOPE.11](#task-scope-11) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.Presentation/**`<br>`ArcScope:src/ArcScope/ArcScope.Desktop/CaptureLifecycle/**` |
 | Validation | window-close-during-capture prompt test; background-residency test; visibility assertion — desktop-GUI-adjacent, kept to the offline/local tier per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) (no desktop GUI CI; local manual/scripted verification) |
 | Completion evidence | window-close, background and visibility results |
@@ -315,7 +315,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Validation | scale-corpus interaction measurements; downsampling-disclosure assertion; downsampled-vs-full-resolution cursor correctness — desktop rendering kept to local/offline tier per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |
 | Completion evidence | responsiveness, disclosure and cursor-exactness results |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | RESOLVED FINDING, not an edge: the assignment hint suggested this might need the [WP-13.14](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.14) Graphics native family (arc_graphics_* ABI). Checked 12-native-interop-and-media.md (the ArcScope native-interop authority, §8) directly: zero mentions of Graphics; its native surface is device/transport/high-rate acquisition primitives only. The Graphics native family's real consumer is ArcSlate (per the native and runtime-proof lanes' own contracts note: 'used by ArcSlate mainly'). ArcScope already carries Avalonia (Skia-based managed rendering, see ArcScope third-party/Avalonia.LICENSE.txt), which is sufficient for plotting/downsampling in pure C#. |
+| Notes | RESOLVED FINDING, not an edge: ArcScope's native surface (12-native-interop-and-media.md section 8) is device, transport and high-rate acquisition primitives only, with no graphics family. ArcScope already carries Avalonia (Skia-based managed rendering, see ArcScope third-party/Avalonia.LICENSE.txt), which is sufficient for plotting/downsampling in pure C#. |
 
 <a id="task-scope-13"></a>
 
@@ -490,10 +490,10 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Kind / size | feature / M |
 | Obligations | [WP-35.00](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.00) — full |
 | Provides | scope.capability-surface |
-| Start prerequisites | **artifact** [SCOPE.06](#task-scope-06) — session/capture/channel/signal/event domain objects the query capabilities expose. *Why:* capability descriptors wrap real domain types<br>**contract** [CON.02](contracts.md#task-con-02) — the generic capability descriptor shape (risk level, permission requirement, approval posture) established by the Hub/minimal-provider-slice pattern. *Why:* [WP-14.04](../../work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.04) ('Approval at the owner') looks like the origin of the generic owner-side approval posture every product's capability set implements; ArcScope should declare against the same shape ArcNotes's first slice used rather than inventing a second one. |
+| Start prerequisites | **artifact** [SCOPE.06](#task-scope-06) — session/capture/channel/signal/event domain objects the query capabilities expose. *Why:* capability descriptors wrap real domain types<br>**contract** [CON.02](contracts.md#task-con-02) — the generic capability descriptor shape (risk level, permission requirement, approval posture) established by the Hub/minimal-provider-slice pattern. *Why:* [WP-14.04](../../work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.04) ('Approval at the owner') is the origin of the generic owner-side approval posture every capability set implements; ArcScope declares against the same shape its first application slice (APP.02) used rather than inventing a second one. |
 | Entry condition | [ADOPT.05.arcscope](adoption.md#task-adopt-05-arcscope) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [AST.12](assistant.md#task-ast-12) — real ArcChat security/approval surface actually enforcing these descriptors end to end. *Why:* declaring capabilities does not require ArcChat's enforcement code to exist first; the real cross-product proof is a completion-time integration, and [WP-17.02](../../work-packages/17-arcchat-independent-core.md#rule-wp-17.02) ('Security and approval surface') is the plausible ArcChat-side owner |
-| Unblocks | [SCOPE.25](#task-scope-25), [SCOPE.26](#task-scope-26) |
+| Unblocks | [HAR.05](harness.md#task-har-05), [SCOPE.25](#task-scope-25), [SCOPE.26](#task-scope-26) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.AssistantIntegration/**`<br>`ArcScope:tests/ArcScopePipelineTests/Capabilities/**` |
 | Validation | descriptor validation per capability; owner-side refusal tests; operational-capability risk assertion — offline |
 | Completion evidence | capability descriptor and refusal results |
@@ -647,12 +647,12 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Owning repository | ArcScope (`C:\MyFile\Projects\ArcForges\ArcScope`); integration owner: ArcScope integration owner, the holder of `roles/integration-arcscope`; also touches Cloud |
 | Claim, branch and ledger | `claims/scope-27` and ledger record `ledger/tasks/scope-27.md` in the Plan repository; task branch `task/scope-27` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | integration / M |
-| Obligations | [WP-35.02](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.02) — real-integration evidence: metadata sync scope converges against deployed Cloud authority |
+| Obligations | [WP-35.02](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.02) — real-integration evidence: metadata sync scope converges against deployed Cloud authority<br>[WP-25.07](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.07) — ArcScope object-kind coverage of the convergence harness; the real ArcScope client participates in the three-device run |
 | Provides | ArcScope real metadata sync evidence |
 | Start prerequisites | **artifact** [SCOPE.22](#task-scope-22) — ArcScope Cloud sync scope declaration and client. *Why:* the integration exercises the ArcScope client<br>**artifact** [CLOUD.39](cloud.md#task-cloud-39) — deployed guarded publication and convergent bootstrap. *Why:* real convergence needs the real publisher<br>**artifact** [CLOUD.44](cloud.md#task-cloud-44) — multi-device convergence harness. *Why:* convergence is proven with the shared harness |
 | Entry condition | [ADOPT.05.arcscope](adoption.md#task-adopt-05-arcscope) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [SCOPE.22](#task-scope-22) |
+| Unblocks | [CLOUD.44](cloud.md#task-cloud-44), [CLOUD.47](cloud.md#task-cloud-47), [SCOPE.22](#task-scope-22) |
 | Write scope | `ArcScope:tests/ArcScope.Tests.Integration/Sync/**` |
 | Validation | Local real-integration run against a deployed test environment, recorded once; offline checks in CI; no hosted live-service CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
 | Completion evidence | Candidate identities, deployed environment identity, convergence scenario results and untested coverage. |

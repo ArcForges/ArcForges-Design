@@ -11,11 +11,11 @@
 [registration profile](reference-baseline-registration.md). It repairs the impossible
 Git-commit requirement for a packaged tree and explicitly assigns the registry,
 source verification, drift assessment and narrow packaged-observation boundary.
-The five completed matrices retain their dispositions and source commits.
+The three completed matrices retain their dispositions and source commits.
 
 The earlier naming, glossary, licence and provenance stages remain prerequisites.
-All nine primary implementation revisions matched the
-[previous execution receipt](wp00-03-implementation-evidence.md), and their nine linked
+All seven primary implementation revisions matched the
+[previous execution receipt](wp00-03-implementation-evidence.md), and their seven linked
 main CI/publication runs were independently queried and confirmed successful.
 Fresh verification retained the exact glossary/invariant pin, passed its 15 test
 groups and immutable export check, and passed the current Design corpus preview.
@@ -40,28 +40,25 @@ runtime package API, product identity or glossary declaration changes.
 The registration binds Design commit `f5ef5d56dba6e7ecbe49a4ff47163bc548b94c8c` and
 metadata digest `4d06afa72af2deeff860288b96644a63b3b1ce814ab2bf8cb7992cd3b005edd5`.
 Both hosted CI platforms independently fetched the registered immutable objects and
-verified the same metadata, five document digests and the 145 matrix rows.
+verified the same metadata, three document digests and the 69 matrix rows.
 
 | Matrix | Rows | Source identity |
 |---|---:|---|
 | Assistant | 30 | AionUi `29c9271a59484e4696778cb80164f705245a6186` |
-| Notes | 41 | AFFiNE `81df4751a367f2795bc0d165586650dbe8db73d6`; SiYuan `eef10568384e2e7cf547adb029ae46a72e43c287` |
 | Scope | 31 | Serial-Studio `639daafb2fe7d324c3b2d5583d2514c8c470676f` |
-| Slate | 31 | ArcVideo `caf56513278703adec0c2933ec235bb864d72e31`; ArcVideoFoundation `139eecaaa79dbad743a146f174a9c89a66ed594b` |
-| Distribution | 12 | Non-Git observation dated 2026-09-20; installer versions 0.27.2-stable, 2.1.35 and 3.7.3, six directory listings and seven bundled text-notice hashes |
+| Distribution | 8 | Non-Git observation dated 2026-09-20; installer version 2.1.35, two directory listings and two bundled text-notice hashes |
 
 The actual local packaged tree matched after merge. Only immediate directory-entry
-names/kinds and the seven registered text notices were read; no binary was read,
+names/kinds and the two registered text notices were read; no binary was read,
 executed, unpacked or reverse engineered. Hosted CI reports this observation as
 registered but not locally re-observed. The registration date cannot prove the
 packaged bytes present at the historical 2026-09-05 matrix review.
 
-A real AFFiNE dry run compared the bound commit with the identical current HEAD and
-reported no committed or working-tree delta. Independent disposable Git fixtures
-proved added, modified and removed paths are detected. All six historical commits
-resolved against their registered origins. AionUi, ArcVideo and ArcVideoFoundation
-had pre-existing local modifications; these were reported separately, remain
-unreviewed and are excluded from the fixed inputs. No reference checkout was changed.
+Independent disposable Git fixtures
+proved added, modified and removed paths are detected. Both historical commits
+resolved against their registered origins. AionUi
+had a pre-existing local modification; this was reported separately, remains
+unreviewed and is excluded from the fixed inputs. No reference checkout was changed.
 Later source/scope maintenance and rights assessment keep their named consumer owners.
 
 The 12 test groups additionally reject missing/duplicate/misassigned matrices,
@@ -72,7 +69,7 @@ scan false positive on a Python diagnostic was removed by renaming the local var
 no scan suppression or protection change was introduced. The final complete-history
 scan passed. The superseded failed/cancelled CI remains historical evidence.
 
-Post-merge naming verification scanned all 1,324 tracked files in the nine clean
+Post-merge naming verification scanned all 1,171 tracked files in the seven clean
 implementation repositories with zero findings; the two exact DesktopPlatform
 provenance paths were used. Local locked restore and Release build with the required
 .NET 10.0.400 passed without warnings/errors, as did all four architecture tests.

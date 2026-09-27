@@ -4,9 +4,9 @@ Authority: [WP02.00](../planning/work-packages/02-build-governance-and-analyzer-
 
 ## Current inputs and bounded repairs
 
-The current nine repositories contain 43 managed projects and their 43 per-project NuGet locks, four independently owned npm root locks (Contracts, Cloud, AI and Web), and the existing Contracts/Mobile/Cloud-test Gradle wrapper, catalog, strict locks and checksum metadata. The historical 165 NuGet locks describe the retired monorepo. Mobile is Kotlin/Gradle and has no npm build dependency. Keep the current independent SDK/package versions and published compatibility identities; no family-wide version upgrade is required.
+The current seven repositories contain 35 managed projects and their 35 per-project NuGet locks, four independently owned npm root locks (Contracts, Cloud, AI and Web), and the existing Contracts/Mobile/Cloud-test Gradle wrapper, catalog, strict locks and checksum metadata. The historical 165 NuGet locks describe the retired monorepo. Mobile is Kotlin/Gradle and has no npm build dependency. Keep the current independent SDK/package versions and published compatibility identities; no family-wide version upgrade is required.
 
-DesktopPlatform and Contracts already enable NuGet central transitive pinning. Enable it in ArcNotes, ArcScope, ArcSlate and Cloud, refresh locks only through the owning restore, and review any resulting dependency change before admission. Existing managed projects have no inline PackageReference version override.
+DesktopPlatform and Contracts already enable NuGet central transitive pinning. Enable it in ArcScope and Cloud, refresh locks only through the owning restore, and review any resulting dependency change before admission. Existing managed projects have no inline PackageReference version override.
 
 The existing Node patch and bundled npm version remain authoritative through .node-version and packageManager. Contracts and Web already check both. Add equivalent executable checks to AI and Cloud. Web's pinned JavaScript SDK adapter keeps ShouldRunNpmInstall=false and delegates to its own npm commands; explicit npm restore precedes IDE build. Do not introduce a second lock or a .NET Web runtime.
 

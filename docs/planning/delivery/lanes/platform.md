@@ -4,7 +4,7 @@
 
 Persistence, local helper gRPC, capabilities, design system and shell, security and observability packages.
 
-Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): DesktopPlatform integration owner
+Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): DesktopPlatform integration owner
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
@@ -33,7 +33,7 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | [PLT.23](#task-plt-23) | Own navigation, hints and health | producer | M | [PLT.22](#task-plt-22) (artifact) | not-started |
 | [PLT.24](#task-plt-24) | Invocation pipeline | producer | L | [PLT.19](#task-plt-19) (artifact), [PLT.20](#task-plt-20) (artifact), [PLT.21](#task-plt-21) (artifact) | not-started |
 | [PLT.25](#task-plt-25) | Publish Capabilities/Contributions packages and verify real integration | acceptance | S | [PLT.17](#task-plt-17) (artifact), [PLT.18](#task-plt-18) (artifact), [PLT.19](#task-plt-19) (artifact), [PLT.20](#task-plt-20) (artifact), [PLT.21](#task-plt-21) (artifact), [PLT.22](#task-plt-22) (artifact), [PLT.23](#task-plt-23) (artifact), [PLT.24](#task-plt-24) (artifact), [PLT.57](#task-plt-57) (artifact) | not-started |
-| [PLT.26](#task-plt-26) | Token system and theming | producer | M | [PRF.01](runtime-proofs.md#task-prf-01) (artifact) | not-started |
+| [PLT.26](#task-plt-26) | Token system and theming | producer | M | [PRF.02](runtime-proofs.md#task-prf-02) (artifact) | not-started |
 | [PLT.27](#task-plt-27) | Windows, panels and layout | producer | L | [PLT.26](#task-plt-26) (artifact) | not-started |
 | [PLT.28](#task-plt-28) | Command system | producer | M | [PLT.27](#task-plt-27) (artifact), [PLT.20](#task-plt-20) (artifact) | not-started |
 | [PLT.29](#task-plt-29) | Scoped settings | producer | M | [PLT.26](#task-plt-26) (artifact), [PLT.04](#task-plt-04) (artifact) | not-started |
@@ -41,7 +41,7 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | [PLT.31](#task-plt-31) | Error presentation | producer | S | [PLT.26](#task-plt-26) (artifact), [FND.05](foundation.md#task-fnd-05) (artifact) | not-started |
 | [PLT.32](#task-plt-32) | Lifecycle, menus and shutdown | producer | M | [PLT.28](#task-plt-28) (artifact) | not-started |
 | [PLT.33](#task-plt-33) | Accessibility and localisation baseline | producer | L | [PLT.27](#task-plt-27) (artifact) | not-started |
-| [PLT.34](#task-plt-34) | Third-party control admission | producer | M | [PRF.01](runtime-proofs.md#task-prf-01) (artifact) | not-started |
+| [PLT.34](#task-plt-34) | Third-party control admission | producer | M | [PRF.02](runtime-proofs.md#task-prf-02) (artifact) | not-started |
 | [PLT.35](#task-plt-35) | Publish DesignSystem/Shell packages and verify real integration | acceptance | S | [PLT.26](#task-plt-26) (artifact), [PLT.27](#task-plt-27) (artifact), [PLT.28](#task-plt-28) (artifact), [PLT.29](#task-plt-29) (artifact), [PLT.30](#task-plt-30) (artifact), [PLT.31](#task-plt-31) (artifact), [PLT.32](#task-plt-32) (artifact), [PLT.33](#task-plt-33) (artifact), [PLT.34](#task-plt-34) (artifact) | not-started |
 | [PLT.36](#task-plt-36) | Principals and the actor chain | producer | M | [FND.01](foundation.md#task-fnd-01) (artifact) | not-started |
 | [PLT.37](#task-plt-37) | Risk model and classification | producer | M | [PLT.19](#task-plt-19) (artifact) | not-started |
@@ -62,7 +62,6 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | [PLT.52](#task-plt-52) | Desktop diagnostics and consent | producer | L | [PLT.31](#task-plt-31) (artifact), [PLT.49](#task-plt-49) (artifact) | not-started |
 | [PLT.53](#task-plt-53) | Publish Observability packages and verify real integration | acceptance | S | [PLT.47](#task-plt-47) (artifact), [PLT.48](#task-plt-48) (artifact), [PLT.49](#task-plt-49) (artifact), [PLT.50](#task-plt-50) (artifact), [PLT.51](#task-plt-51) (artifact), [PLT.52](#task-plt-52) (artifact) | not-started |
 | [PLT.54](#task-plt-54) | Real hostile-input containment proof with production parser libraries loaded in ContentSandbox | integration | M | [PLT.45](#task-plt-45) (artifact), [NAT.14](native.md#task-nat-14) (artifact) | not-started |
-| [PLT.56](#task-plt-56) | Three professional products compose the shared DesignSystem/Shell without divergence | integration | M | [PLT.35](#task-plt-35) (artifact), [NOTES.03](arcnotes.md#task-notes-03) (artifact), [SCOPE.09](arcscope.md#task-scope-09) (artifact), [SLATE.22](arcslate.md#task-slate-22) (artifact) | not-started |
 | [PLT.57](#task-plt-57) | End-to-end capability invocation with real security enforcement inside one product | integration | M | [PLT.24](#task-plt-24) (artifact), [PLT.38](#task-plt-38) (artifact), [APP.01](app-composition.md#task-app-01) (artifact) | not-started |
 
 ## Tasks
@@ -83,7 +82,7 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Start prerequisites | **artifact** [FND.02](foundation.md#task-fnd-02) — CommandId/effect-certainty types. *Why:* the commit unit's idempotency slot and outbox entry are typed with [WP-04.01](../../work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04.01)'s execution identities; cannot write the transactional envelope without them.<br>**artifact** [FND.03](foundation.md#task-fnd-03) — Revision type. *Why:* the write path's 'advance revision exactly once' step is defined in terms of [WP-04.02](../../work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04.02)'s Revision type, not an ad hoc integer.<br>**artifact** [FND.05](foundation.md#task-fnd-05) — reason-code registry. *Why:* every refusal in the pipeline (validate/authorize failures) must return a registered code per [BR-06](../../../architecture/14-build-packaging-and-release.md#rule-br-06)/07 of WP04. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [CLOUD.38](cloud.md#task-cloud-38), [FND.02](foundation.md#task-fnd-02), [NAT.02](native.md#task-nat-02), [NOTES.01](arcnotes.md#task-notes-01), [NOTES.02](arcnotes.md#task-notes-02), [PLT.05](#task-plt-05), [PLT.07](#task-plt-07), [PLT.08](#task-plt-08), [PLT.39](#task-plt-39), [PLT.43](#task-plt-43), [PLT.44](#task-plt-44), [SCOPE.01](arcscope.md#task-scope-01), [SLATE.10](arcslate.md#task-slate-10) |
+| Unblocks | [CLOUD.38](cloud.md#task-cloud-38), [FND.02](foundation.md#task-fnd-02), [PLT.05](#task-plt-05), [PLT.07](#task-plt-07), [PLT.08](#task-plt-08), [PLT.39](#task-plt-39), [PLT.43](#task-plt-43), [PLT.44](#task-plt-44), [SCOPE.01](arcscope.md#task-scope-01) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Sqlite/**` |
 | Shared resources | [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append) |
 | Validation | Offline unit + integration tests against a real local SQLite file (no external service): policy test asserting no alternative write path, concurrency tests for serialised writes/concurrent reads, boundary test that no storage type appears in an application signature. AOT/trim diagnostics build-breaking since this library is IsAotCompatible. |
@@ -107,7 +106,7 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Start prerequisites | **artifact** [FND.02](foundation.md#task-fnd-02) — CommandId type. *Why:* [JS-01](../../../architecture/06-data-persistence-and-formats.md#rule-js-01) requires the journal entry to carry CommandId, checksum, actor, correlation, causation, commit time - these are [WP-04](../../work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04) types.<br>**artifact** [FND.03](foundation.md#task-fnd-03) — Revision/Sequence types. *Why:* [JS-01](../../../architecture/06-data-persistence-and-formats.md#rule-js-01) requires previous/new typed source version fields. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [NOTES.11](arcnotes.md#task-notes-11), [PLT.03](#task-plt-03), [PLT.08](#task-plt-08), [SLATE.11](arcslate.md#task-slate-11) |
+| Unblocks | [PLT.03](#task-plt-03), [PLT.08](#task-plt-08) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Sqlite/**` |
 | Shared resources | [RES-assistant-store-schema](../shared-resources.md#res-assistant-store-schema) (append) |
 | Validation | Offline tests: durability test using a simulated process kill between journal write and commit acknowledgement (in-process fault injection, not a real OS-level crash - that remains local opt-in); replay test; truncation-under-read test. |
@@ -130,7 +129,7 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Start prerequisites | **artifact** [PLT.02](#task-plt-02) — journal append/replay implementation. *Why:* recovery is defined as 'replay the journal forward from the most recent valid snapshot'; cannot be written or tested against a real journal until PLT.02's replay contract exists (may start against the IJournalReader interface from PLT.01 with a fake, but the real recovery matrix needs the real journal). |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [NOTES.11](arcnotes.md#task-notes-11), [PLT.08](#task-plt-08), [SLATE.11](arcslate.md#task-slate-11) |
+| Unblocks | [PLT.08](#task-plt-08) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Sqlite/**` |
 | Shared resources | [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append) |
 | Validation | Offline tests: full recovery matrix (clean shutdown, hard kill, kill during snapshot, kill during migration, corrupted snapshot, corrupted journal tail, disk-full during write) using simulated fault injection; native-crash/safe-start scenarios beyond process-level simulation are local opt-in only. |
@@ -154,7 +153,7 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Start prerequisites | **artifact** [FND.06](foundation.md#task-fnd-06) — StorageSchemaVersion axis type. *Why:* the runner's version bookkeeping is defined in terms of the typed axis, not a raw integer. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [NOTES.11](arcnotes.md#task-notes-11), [PLT.08](#task-plt-08), [PLT.29](#task-plt-29), [SLATE.10](arcslate.md#task-slate-10), [UPD.04](updater.md#task-upd-04) |
+| Unblocks | [PLT.08](#task-plt-08), [PLT.29](#task-plt-29), [UPD.04](updater.md#task-upd-04) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Sqlite/**`<br>`DesktopPlatform:fixtures/formats/**` |
 | Shared resources | [RES-desktopplatform-fixtures](../shared-resources.md#res-desktopplatform-fixtures) (append) |
 | Validation | Offline tests: forward migration from every historical version fixture, interruption/resume, refusal test for unsupported downgrade, golden-fixture semantic comparison ([QI-07](../../../requirements/12-quality-and-compatibility-contract.md#rule-qi-07)). |
@@ -177,7 +176,7 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Start prerequisites | **artifact** [PLT.01](#task-plt-01) — store abstraction's write-path pattern. *Why:* the resource store follows the same single-writer discipline ([BR-11](../../work-packages/00-specification-naming-and-rights-freeze.md#rule-br-11)) even though it is a separate table set; reuses the transactional idiom PLT.01 establishes rather than inventing a second one. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [NOTES.08](arcnotes.md#task-notes-08), [PLT.08](#task-plt-08), [PLT.22](#task-plt-22) |
+| Unblocks | [PLT.08](#task-plt-08), [PLT.22](#task-plt-22) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Resources/**` |
 | Shared resources | [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append) |
 | Validation | Offline tests: integrity verification on read, reference-counting test including crash between reference and store, garbage-collection safety test. |
@@ -200,7 +199,7 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Start prerequisites | **artifact** [FND.02](foundation.md#task-fnd-02) — execution/effect-certainty types for loss records. *Why:* recorded loss counts/time ranges are typed data, not free text. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [PLT.08](#task-plt-08), [SCOPE.07](arcscope.md#task-scope-07), [SLATE.35](arcslate.md#task-slate-35) |
+| Unblocks | [PLT.08](#task-plt-08), [SCOPE.07](arcscope.md#task-scope-07) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Resources/**` |
 | Shared resources | [RES-assistant-store-schema](../shared-resources.md#res-assistant-store-schema) (append) |
 | Validation | Offline tests: append-under-kill at chunk boundaries and mid-chunk, verification of recovered prefix, loss-record assertion. |
@@ -223,7 +222,7 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Start prerequisites | **artifact** [PLT.01](#task-plt-01) — store abstraction boundary. *Why:* the derived-store contract is defined relative to canonical data owned by PLT.01's store abstraction ([DS-02](../../../architecture/06-data-persistence-and-formats.md#rule-ds-02): separate file/schema from canonical data). |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [NOTES.15](arcnotes.md#task-notes-15), [PLT.08](#task-plt-08), [SLATE.21](arcslate.md#task-slate-21) |
+| Unblocks | [PLT.08](#task-plt-08) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Derived/**` |
 | Shared resources | [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append) |
 | Validation | Offline tests: delete-and-rebuild test per derived-store kind, eviction test asserting canonical data is never evicted. |
@@ -474,7 +473,7 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Start prerequisites | **artifact** [PLT.17](#task-plt-17) — application identity/composition root. *Why:* contributions register against a specific app's composition root. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [NAT.01](native.md#task-nat-01), [NOTES.12](arcnotes.md#task-notes-12), [PLT.25](#task-plt-25) |
+| Unblocks | [NAT.01](native.md#task-nat-01), [PLT.25](#task-plt-25) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Contributions/**` |
 | Validation | Offline tests: duplicate IDs, wrong owner, unavailable child, undeclared tool schema, cross-product registration refusal; registration survives a simulated restart against the persistence layer PLT.01/PLT.05 provide. |
 | Completion evidence | Registration idempotency and namespace refusal results. |
@@ -650,10 +649,10 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Kind / size | producer / M |
 | Obligations | [WP-10.00](../../work-packages/10-design-system-and-desktop-shell.md#rule-wp-10.00) — full<br>[WP-10](../../work-packages/10-design-system-and-desktop-shell.md#rule-wp-10) Reconciliation of the five legacy src/BuildingBlocks/ArcForges.Desktop.{Experience,Graphics,Preview,RichContent,Text} scaffold projects per [WP-01.02](../../work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.02) into DesignSystem/Shell — package-level obligation contribution |
 | Provides | design-tokens |
-| Start prerequisites | **artifact** [PRF.01](runtime-proofs.md#task-prf-01) — a proven Avalonia Native AOT publish with zero trim/AOT diagnostics. *Why:* WP10's own header lists [WP-06](../../work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06) output as 'the AOT proof and the control admission process'; every control this package introduces inherits [V-05a](../../../assurance/phase-1-official-verification.md#rule-v-05a). Owned by the native and runtime-proof lanes. |
+| Start prerequisites | **artifact** [PRF.02](runtime-proofs.md#task-prf-02) — a proven Avalonia Native AOT publish with zero trim/AOT diagnostics. *Why:* WP10's own header lists [WP-06](../../work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06) output as 'the AOT proof and the control admission process'; every control this package introduces inherits [V-05a](../../../assurance/phase-1-official-verification.md#rule-v-05a). Owned by the native and runtime-proof lanes. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [NOTES.03](arcnotes.md#task-notes-03), [NOTES.04](arcnotes.md#task-notes-04), [PLT.27](#task-plt-27), [PLT.29](#task-plt-29), [PLT.31](#task-plt-31), [PLT.35](#task-plt-35) |
+| Unblocks | [PLT.27](#task-plt-27), [PLT.29](#task-plt-29), [PLT.31](#task-plt-31), [PLT.35](#task-plt-35) |
 | Write scope | `DesktopPlatform:src/DesignSystem/ArcForges.DesignSystem/**` |
 | Shared resources | [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append) |
 | Validation | Offline tests: policy test asserting no raw colour/size literal in component code; contrast tests across every theme; density snapshot suite. Real AOT publish-with-zero-diagnostics evidence is local opt-in, recorded at PLT.34/PLT.35. |
@@ -676,7 +675,7 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Start prerequisites | **artifact** [PLT.26](#task-plt-26) — token system. *Why:* layout chrome is built from the token set. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [NOTES.03](arcnotes.md#task-notes-03), [NOTES.04](arcnotes.md#task-notes-04), [NOTES.05](arcnotes.md#task-notes-05), [PLT.28](#task-plt-28), [PLT.30](#task-plt-30), [PLT.33](#task-plt-33), [PLT.35](#task-plt-35), [SLATE.22](arcslate.md#task-slate-22), [SLATE.25](arcslate.md#task-slate-25) |
+| Unblocks | [PLT.28](#task-plt-28), [PLT.30](#task-plt-30), [PLT.33](#task-plt-33), [PLT.35](#task-plt-35) |
 | Write scope | `DesktopPlatform:src/DesignSystem/ArcForges.Desktop.Shell/**` |
 | Shared resources | [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append) |
 | Validation | Offline tests: restore tests across missing panel, changed display arrangement, corrupted layout state; device-local assertion. |
@@ -699,7 +698,7 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Start prerequisites | **artifact** [PLT.27](#task-plt-27) — window/panel host. *Why:* commands attach to shell chrome (palette, menus).<br>**artifact** [PLT.20](#task-plt-20) — capability availability evaluation ([WP-09.03](../../work-packages/09-capability-contribution-and-resource-model.md#rule-wp-09.03)). *Why:* explicit BR: command availability must reuse [WP-09.03](../../work-packages/09-capability-contribution-and-resource-model.md#rule-wp-09.03)'s evaluation so the two never disagree; this is a real cross-lane (capabilities->shell) dependency within the DesktopPlatform repository, distinct from the rest of WP10 which does not need WP09 at all. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [PLT.32](#task-plt-32), [PLT.35](#task-plt-35), [SLATE.22](arcslate.md#task-slate-22) |
+| Unblocks | [PLT.32](#task-plt-32), [PLT.35](#task-plt-35) |
 | Write scope | `DesktopPlatform:src/DesignSystem/ArcForges.Desktop.Shell/**` |
 | Validation | Offline tests: shortcut conflict detection; availability agreement tests against the capability model; palette search relevance tests. |
 | Completion evidence | Shortcut conflict and availability agreement results. |
@@ -790,7 +789,7 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Completion prerequisites | none |
 | Unblocks | [APP.07](app-composition.md#task-app-07), [PLT.35](#task-plt-35), [SCOPE.09](arcscope.md#task-scope-09), [UPD.03](updater.md#task-upd-03) |
 | Write scope | `DesktopPlatform:src/DesignSystem/ArcForges.Desktop.Shell/**` |
-| Validation | Offline tests: startup budget measurement per product host (local perf harness, not hosted CI); shutdown-during-work test; single-instance routing test. |
+| Validation | Offline tests: startup budget measurement for the ArcScope host (local perf harness, not hosted CI); shutdown-during-work test; single-instance routing test. |
 | Completion evidence | Startup budget measurements and shutdown-during-work result. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: Nothing exists. |
 
@@ -830,7 +829,7 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Kind / size | producer / M |
 | Obligations | [WP-10.08](../../work-packages/10-design-system-and-desktop-shell.md#rule-wp-10.08) — full |
 | Provides | third-party-control-admission |
-| Start prerequisites | **artifact** [PRF.01](runtime-proofs.md#task-prf-01) — the established AOT-publish-with-zero-diagnostics harness/process. *Why:* this substep applies the same proof methodology [WP-06](../../work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06) establishes to each additional control the shell adopts; it is ongoing (a standing admission process), not a one-time gate. |
+| Start prerequisites | **artifact** [PRF.02](runtime-proofs.md#task-prf-02) — the established AOT-publish-with-zero-diagnostics harness/process. *Why:* this substep applies the same proof methodology [WP-06](../../work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06) establishes to each additional control the shell adopts; it is ongoing (a standing admission process), not a one-time gate. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [PLT.35](#task-plt-35), [PRF.09](runtime-proofs.md#task-prf-09) |
@@ -851,12 +850,12 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Claim, branch and ledger | `claims/plt-35` and ledger record `ledger/tasks/plt-35.md` in the Plan repository; task branch `task/plt-35` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | acceptance / S |
 | Package acceptance | Records the [WP-10](../../work-packages/10-design-system-and-desktop-shell.md#rule-wp-10) acceptance receipt after every task mapped to the package; tasks outside the package never start from it ([DLV-35](../README.md#rule-dlv-35)) |
-| Obligations | [WP-10.90](../../work-packages/10-design-system-and-desktop-shell.md#rule-wp-10.90) — all work except the parts mapped to PLT.56 |
+| Obligations | [WP-10.90](../../work-packages/10-design-system-and-desktop-shell.md#rule-wp-10.90) — full |
 | Provides | designsystem-shell-packages |
 | Start prerequisites | **artifact** [PLT.26](#task-plt-26) — tokens. *Why:* publish needs the complete substep set.<br>**artifact** [PLT.27](#task-plt-27) — windows/panels. *Why:* same.<br>**artifact** [PLT.28](#task-plt-28) — commands. *Why:* same.<br>**artifact** [PLT.29](#task-plt-29) — settings. *Why:* same.<br>**artifact** [PLT.30](#task-plt-30) — attention. *Why:* same.<br>**artifact** [PLT.31](#task-plt-31) — error presentation. *Why:* same.<br>**artifact** [PLT.32](#task-plt-32) — lifecycle/menus. *Why:* same.<br>**artifact** [PLT.33](#task-plt-33) — a11y/l10n. *Why:* same.<br>**artifact** [PLT.34](#task-plt-34) — control admission. *Why:* same. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | **integration** [PLT.56](#task-plt-56) — ArcNotes actually composing the shell for its own product UI. *Why:* 'independent app restores only needed packages' is only truly proven once a real product consumes it; WP10's own gate accepts a clean package-only consumer diagnostic as sufficient for THIS package's completion, with full product UX acceptance remaining product-owned. |
-| Unblocks | [PLT.56](#task-plt-56) |
+| Completion prerequisites | none |
+| Unblocks | none |
 | Write scope | `DesktopPlatform:eng/packaging/packages.json` |
 | Shared resources | [RES-desktopplatform-package-inventory](../shared-resources.md#res-desktopplatform-package-inventory) (append) |
 | Validation | [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017): offline verify/policy tests plus the retained AOT-publish gate. |
@@ -1068,7 +1067,7 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 
 ### PLT.45 — Content helper and OS-enforced isolation (ContentSandbox host)
 
-**Outcome.** The first-party C# Native AOT ContentSandbox, generated gRPC broker/control bindings and all restricted RID launch profiles (Windows AppContainer+Job Object, Linux Landlock+seccomp, macOS App-Sandbox+XPC handoff) are built and solely owned here; ContentSandbox.Contracts/.Broker and the foundation Runtime.<rid> are published before WP13 consumes them; OS containment is proven with a deliberately hostile first-party test parser. Production PDF/image/media/OTIO libraries are WP13's job, never an upstream input here.
+**Outcome.** The first-party C# Native AOT ContentSandbox, generated gRPC broker/control bindings and all restricted RID launch profiles (Windows AppContainer+Job Object, Linux Landlock+seccomp, macOS App-Sandbox+XPC handoff) are built and solely owned here; ContentSandbox.Contracts/.Broker and the foundation Runtime.<rid> are published before WP13 consumes them; OS containment is proven with a deliberately hostile first-party test parser. Production PDF/image libraries are WP13's job, never an upstream input here.
 
 | Field | Value |
 |---|---|
@@ -1079,15 +1078,15 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Provides | content-helper-isolation; contentsandbox-host |
 | Start prerequisites | **artifact** [PLT.15](#task-plt-15) — LocalRpc brokered large-data mechanism ([WP-08.06](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08.06)). *Why:* the sandbox's slot grant/seal/ack/cancel lifecycle rides on the generic broker [WP-08.06](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08.06) defines; ContentSandbox is the first real consumer.<br>**artifact** [PLT.09](#task-plt-09) — LocalRpc transport/restricted launch identity ([WP-08.00](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08.00)/08.01). *Why:* the parent-created duplex stream and one-use launch secret are [WP-08](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08) mechanisms this helper is launched through.<br>**contract** [CON.04](contracts.md#task-con-04) — ArcForges.Contracts.LocalRpc.Sandbox generated ContentSandboxService/session/grant schema. *Why:* contracts/09-local-grpc-and-sandbox.md SS6 fixes WP03 as publishing the complete schema before this stage; ContentSandbox.Contracts is only a facade over it. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | **integration** [NAT.14](native.md#task-nat-14) — production PDF/image/media/OTIO parser composition rebuilt and signed on top of this same helper. *Why:* this task's own gate is explicit: 'WP13 later adds production parser composition to the same host and publishes a new immutable Runtime version; this stage has no reverse dependency on those parsers.' Full [PG-12](../../../assurance/open-gates-register.md#rule-pg-12)/[PG-22](../../../assurance/open-gates-register.md#rule-pg-22) closure additionally needs [WP-18.04](../../work-packages/18-arcnotes-document-core.md#rule-wp-18.04) (Notes PDF viewer) and [WP-37.01](../../work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.01)/41.00 real per-format/extension proofs. |
-| Unblocks | [EXT.00](extensions.md#task-ext-00), [NAT.11](native.md#task-nat-11), [NAT.14](native.md#task-nat-14), [NAT.25](native.md#task-nat-25), [NOTES.09](arcnotes.md#task-notes-09), [NOTES.37](arcnotes.md#task-notes-37), [PLT.15](#task-plt-15), [PLT.46](#task-plt-46), [PLT.54](#task-plt-54) |
+| Completion prerequisites | **integration** [NAT.14](native.md#task-nat-14) — production PDF/image parser composition rebuilt and signed on top of this same helper. *Why:* this task's own gate is explicit: 'WP13 later adds production parser composition to the same host and publishes a new immutable Runtime version; this stage has no reverse dependency on those parsers.' Full [PG-22](../../../assurance/open-gates-register.md#rule-pg-22) closure additionally needs the [WP-41.00](../../work-packages/41-extension-platform-and-integrations.md#rule-wp-41.00) real extension proof. |
+| Unblocks | [EXT.00](extensions.md#task-ext-00), [NAT.11](native.md#task-nat-11), [NAT.14](native.md#task-nat-14), [NAT.25](native.md#task-nat-25), [PLT.15](#task-plt-15), [PLT.46](#task-plt-46), [PLT.54](#task-plt-54) |
 | Permitted substitutes | [SUB-hostile-test-parser](../substitutes.md#sub-hostile-test-parser) |
 | Write scope | `DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox.Broker/**`<br>`DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox.Contracts/**`<br>`DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/**` |
 | Shared resources | [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append) |
 | Validation | [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) CRITICAL NUANCE: static/offline unit and policy tests run in CI, but the actual required evidence - real OS containment (AppContainer/Job Object denial, Landlock/seccomp denial, App-Sandbox/XPC denial, native crash/hang/memory-exhaustion/parent-death cleanup) - is device/OS-level execution that [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) explicitly excludes from hosted CI ('no macOS CI; no CI for... desktop GUI... sandbox execution'). This evidence MUST be recorded as local opt-in runs on each supported RID, per the ci-and-local-validation-policy.md and the architecture 24 rule 'a mocked launcher or same-user unrestricted child satisfies this gate: never'. |
 | Completion evidence | Real child attempts at product-DB/token reads, outbound TCP/UDP/loopback, sibling-process access, spawn escape, oversized output; OS denial, resource bounds and parent-death cleanup on every supported RID. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: src/DesktopHelpers/ArcForges.ContentSandbox/ contains only Program.cs (a placeholder, per docs/runtime-ownership.md: 'the ContentSandbox scaffold is not accepted containment behavior'). ContentSandbox.Contracts and.Broker do not exist as separate projects yet. |
-| Notes | This is the single highest-stakes early risk proof in the desktop platform foundation: [PG-22](../../../assurance/open-gates-register.md#rule-pg-22) explicitly states a mocked launcher or unrestricted same-user child cannot close the gate, and the failure mode (hostile parsing escaping containment) would invalidate downstream trust in every product that later touches untrusted content (Notes PDF, Slate media/OTIO, extensions). Recommend prioritising this alongside PLT.03 (persistence recovery). Merged duplicate integration or closure task formerly proposed as CON.96. |
+| Notes | This is the single highest-stakes early risk proof in the desktop platform foundation: [PG-22](../../../assurance/open-gates-register.md#rule-pg-22) explicitly states a mocked launcher or unrestricted same-user child cannot close the gate, and the failure mode (hostile parsing escaping containment) would invalidate downstream trust in every product that later touches untrusted content (assistant image/PDF previews, extensions). Recommend prioritising this alongside PLT.03 (persistence recovery). Merged duplicate integration or closure task formerly proposed as CON.96. |
 
 <a id="task-plt-46"></a>
 
@@ -1274,7 +1273,7 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 
 ### PLT.54 — Real hostile-input containment proof with production parser libraries loaded in ContentSandbox
 
-**Outcome.** that [PG-12](../../../assurance/open-gates-register.md#rule-pg-12)/[PG-22](../../../assurance/open-gates-register.md#rule-pg-22)'s OS isolation mechanics (proven against a first-party hostile test parser in PLT.45) hold once real PDFium/FFmpeg/OpenImageIO/OpenColorIO/OTIO composition is loaded into the same helper by [WP-13.13](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.13) ; this is the point where the SUB-hostile-test-parser substitute is actually replaced.
+**Outcome.** that [PG-12](../../../assurance/open-gates-register.md#rule-pg-12)/[PG-22](../../../assurance/open-gates-register.md#rule-pg-22)'s OS isolation mechanics (proven against a first-party hostile test parser in PLT.45) hold once real PDFium/OpenImageIO composition is loaded into the same helper by [WP-13.13](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.13) ; this is the point where the SUB-hostile-test-parser substitute is actually replaced.
 
 | Field | Value |
 |---|---|
@@ -1288,28 +1287,7 @@ Tasks: 56 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Unblocks | [NAT.30](native.md#task-nat-30), [PLT.46](#task-plt-46) |
 | Write scope |  |
 | Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
-| Completion evidence | that [PG-12](../../../assurance/open-gates-register.md#rule-pg-12)/[PG-22](../../../assurance/open-gates-register.md#rule-pg-22)'s OS isolation mechanics (proven against a first-party hostile test parser in PLT.45) hold once real PDFium/FFmpeg/OpenImageIO/OpenColorIO/OTIO composition is loaded into the same helper by [WP-13.13](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.13) ; this is the point where the SUB-hostile-test-parser substitute is actually replaced. |
-| Baseline (unreviewed unless accepted) | not-started |
-
-<a id="task-plt-56"></a>
-
-### PLT.56 — Three professional products compose the shared DesignSystem/Shell without divergence
-
-**Outcome.** that ArcNotes, ArcScope and ArcSlate each restore only the shell packages/mechanisms they need, feel like one family (shared tokens/commands/settings/attention/error presentation), and that no product had to depend on another to render its own UI ([BR-02](../../../architecture/14-build-packaging-and-release.md#rule-br-02) of WP10).
-
-| Field | Value |
-|---|---|
-| Owning repository | DesktopPlatform (`C:\MyFile\Projects\ArcForges\DesktopPlatform`); integration owner: DesktopPlatform integration owner, the holder of `roles/integration-desktopplatform` |
-| Claim, branch and ledger | `claims/plt-56` and ledger record `ledger/tasks/plt-56.md` in the Plan repository; task branch `task/plt-56` ([DLV-26](../README.md#rule-dlv-26)) |
-| Kind / size | integration / M |
-| Obligations | [WP-10.90](../../work-packages/10-design-system-and-desktop-shell.md#rule-wp-10.90) — the multi-product consumption evidence beyond a single clean package-only diagnostic |
-| Start prerequisites | **artifact** [PLT.35](#task-plt-35) — real, delivered outcome of PLT.35 (Publish DesignSystem/Shell packages and verify real integration). *Why:* this integration exercises the real publish DesignSystem/Shell packages and verify real integration instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [NOTES.03](arcnotes.md#task-notes-03) — real, delivered outcome of NOTES.03 (Editor interaction: caret, selection, IME composition, markdown-friendly input). *Why:* this integration exercises the real editor interaction: caret, selection, IME composition, markdown-friendly input instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [SCOPE.09](arcscope.md#task-scope-09) — real, delivered outcome of SCOPE.09 (Long-running capture in the shell). *Why:* this integration exercises the real long-running capture in the shell instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [SLATE.22](arcslate.md#task-slate-22) — real, delivered outcome of SLATE.22 (Viewer: source and sequence, professional transport). *Why:* this integration exercises the real viewer: source and sequence, professional transport instead of a substitute, so it cannot start before that outcome exists |
-| Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | none |
-| Unblocks | [PLT.35](#task-plt-35) |
-| Write scope |  |
-| Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
-| Completion evidence | that ArcNotes, ArcScope and ArcSlate each restore only the shell packages/mechanisms they need, feel like one family (shared tokens/commands/settings/attention/error presentation), and that no product had to depend on another to render its own UI ([BR-02](../../../architecture/14-build-packaging-and-release.md#rule-br-02) of WP10). |
+| Completion evidence | that [PG-12](../../../assurance/open-gates-register.md#rule-pg-12)/[PG-22](../../../assurance/open-gates-register.md#rule-pg-22)'s OS isolation mechanics (proven against a first-party hostile test parser in PLT.45) hold once real PDFium/OpenImageIO composition is loaded into the same helper by [WP-13.13](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.13) ; this is the point where the SUB-hostile-test-parser substitute is actually replaced. |
 | Baseline (unreviewed unless accepted) | not-started |
 
 <a id="task-plt-57"></a>

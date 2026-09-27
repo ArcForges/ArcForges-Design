@@ -8,10 +8,10 @@ A **value** substitute supplies contract-shaped data (vectors, documents, record
 
 | Substitute | Class | Stands in for | Real producer | Replaced by | Used by |
 |---|---|---|---|---|---|
-| [SUB-assistant-history-fixture](#sub-assistant-history-fixture) | value | [WP-25](../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) real Cloud Notes/Chat snapshot and export job | [CLOUD.45](lanes/cloud.md#task-cloud-45) | [AST.21](lanes/assistant.md#task-ast-21) | [AST.07](lanes/assistant.md#task-ast-07) |
+| [SUB-assistant-history-fixture](#sub-assistant-history-fixture) | value | [WP-25](../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) real Cloud Chat snapshot and export job | [CLOUD.45](lanes/cloud.md#task-cloud-45) | [AST.21](lanes/assistant.md#task-ast-21) | [AST.07](lanes/assistant.md#task-ast-07) |
 | [SUB-automation-fixture](#sub-automation-fixture) | behavior | the durable Cloud trigger scheduler and occurrence execution engine | [HAR.06](lanes/harness.md#task-har-06) | [HAR.06](lanes/harness.md#task-har-06) | [AST.14](lanes/assistant.md#task-ast-14), [HAR.06](lanes/harness.md#task-har-06), [AND.10](lanes/android.md#task-and-10) |
 | [SUB-commercial-figure-proposal](#sub-commercial-figure-proposal) | value | final approved production commercial figures (storage/window/grace/retention amounts) | [REL.08](lanes/release.md#task-rel-08) | [REL.08](lanes/release.md#task-rel-08) | [COM.02](lanes/commerce.md#task-com-02) |
-| [SUB-desktop-candidate-feed](#sub-desktop-candidate-feed) | value | the production update feed publication pointer (the real WP50.02 cutover) | [UPD.07](lanes/updater.md#task-upd-07) | [REL.10](lanes/release.md#task-rel-10) | [REL.01](lanes/release.md#task-rel-01), [REL.02](lanes/release.md#task-rel-02), [REL.03](lanes/release.md#task-rel-03) |
+| [SUB-desktop-candidate-feed](#sub-desktop-candidate-feed) | value | the production update feed publication pointer (the real WP50.02 cutover) | [UPD.07](lanes/updater.md#task-upd-07) | [REL.10](lanes/release.md#task-rel-10) | [REL.02](lanes/release.md#task-rel-02) |
 | [SUB-device-runtime-loopback](#sub-device-runtime-loopback) | behavior | [WP-26](../work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26) real Cloud-connected durable target queue and application presence | [DEV.01](lanes/device-bridge.md#task-dev-01), [DEV.02](lanes/device-bridge.md#task-dev-02) | [DEV.14](lanes/device-bridge.md#task-dev-14) | [AST.11](lanes/assistant.md#task-ast-11) |
 | [SUB-embedding-rerank-fixture](#sub-embedding-rerank-fixture) | value | [WP-43.00](../work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.00) real Workers AI embed/rerank calls | [AIR.00](lanes/ai-routing.md#task-air-00) | [SRCH.06](lanes/search.md#task-srch-06) | [SRCH.01](lanes/search.md#task-srch-01), [SRCH.02](lanes/search.md#task-srch-02) |
 | [SUB-fcm-recorded-responses](#sub-fcm-recorded-responses) | value | live Firebase Cloud Messaging sender responses | [OPS.10](lanes/operations.md#task-ops-10) | [AND.26](lanes/android.md#task-and-26) | [OPS.10](lanes/operations.md#task-ops-10) |
@@ -19,12 +19,8 @@ A **value** substitute supplies contract-shaped data (vectors, documents, record
 | [SUB-guarded-batch-capacity-fixtures](#sub-guarded-batch-capacity-fixtures) | behavior | real per-module business plans not yet built when capacity is first measured | [CLOUD.47](lanes/cloud.md#task-cloud-47), [COM.15](lanes/commerce.md#task-com-15) | [REL.06](lanes/release.md#task-rel-06) | [CLOUD.07](lanes/cloud.md#task-cloud-07) |
 | [SUB-history-admission-fixture](#sub-history-admission-fixture) | behavior | [WP-25.09](../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.09) real Cloud application-history restartable import receiver | [CLOUD.46](lanes/cloud.md#task-cloud-46) | [AST.22](lanes/assistant.md#task-ast-22) | [AST.15](lanes/assistant.md#task-ast-15) |
 | [SUB-hosted-checkout-sandbox](#sub-hosted-checkout-sandbox) | behavior | real Paddle hosted checkout page and redirect | [COM.14](lanes/commerce.md#task-com-14) | [REL.08](lanes/release.md#task-rel-08) | [COM.03](lanes/commerce.md#task-com-03) |
-| [SUB-hostile-test-parser](#sub-hostile-test-parser) | behavior | [WP-13.13](../work-packages/13-high-risk-technical-probes.md#rule-wp-13.13) production native parser composition (PDF/image/media/OTIO) | [NAT.14](lanes/native.md#task-nat-14) | [PLT.54](lanes/platform.md#task-plt-54) | [PLT.45](lanes/platform.md#task-plt-45), [NAT.14](lanes/native.md#task-nat-14) |
+| [SUB-hostile-test-parser](#sub-hostile-test-parser) | behavior | [WP-13.13](../work-packages/13-high-risk-technical-probes.md#rule-wp-13.13) production native parser composition (PDF/image) | [NAT.14](lanes/native.md#task-nat-14) | [PLT.54](lanes/platform.md#task-plt-54) | [PLT.45](lanes/platform.md#task-plt-45), [NAT.14](lanes/native.md#task-nat-14) |
 | [SUB-lkg-compiled-defaults-seed](#sub-lkg-compiled-defaults-seed) | value | a real prior published bundle to fall back to | [POL.08](lanes/policy.md#task-pol-08) | [POL.11](lanes/policy.md#task-pol-11) | [POL.09](lanes/policy.md#task-pol-09) |
-| [SUB-media-probe-fixture](#sub-media-probe-fixture) | value | [WP-13.06](../work-packages/13-high-risk-technical-probes.md#rule-wp-13.06) real arc_media_probe output | [NAT.07](lanes/native.md#task-nat-07) | [SLATE.15](lanes/arcslate.md#task-slate-15) | [SLATE.04](lanes/arcslate.md#task-slate-04) |
-| [SUB-no-op-media-adapter](#sub-no-op-media-adapter) | behavior | real codec integration (existing named scaffolding, implementation-sequence.md §3.1) | [NAT.07](lanes/native.md#task-nat-07), [NAT.08](lanes/native.md#task-nat-08) | [SLATE.23](lanes/arcslate.md#task-slate-23) | [SLATE.15](lanes/arcslate.md#task-slate-15) |
-| [SUB-notes-cloud-export](#sub-notes-cloud-export) | behavior | [WP-25.00](../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.00)..25.08 real Cloud Notes export authority | [CLOUD.45](lanes/cloud.md#task-cloud-45) | [NOTES.33](lanes/arcnotes.md#task-notes-33) | [NOTES.20](lanes/arcnotes.md#task-notes-20) |
-| [SUB-notes-pdf-fixture-parser](#sub-notes-pdf-fixture-parser) | behavior | [WP-13](../work-packages/13-high-risk-technical-probes.md#rule-wp-13)'s production ArcForges.Native.Pdf/PDFium wrapper (does not exist yet, not even as a declared placeholder project) | [NAT.14](lanes/native.md#task-nat-14) | [NOTES.37](lanes/arcnotes.md#task-notes-37) | [NOTES.09](lanes/arcnotes.md#task-notes-09) |
 | [SUB-postmark-ses-test-recordings](#sub-postmark-ses-test-recordings) | value | live Postmark primary / SES secondary email delivery | [CLOUD.12](lanes/cloud.md#task-cloud-12) | [CLOUD.12](lanes/cloud.md#task-cloud-12) | [CLOUD.12](lanes/cloud.md#task-cloud-12) |
 | [SUB-provider-adapter-fixture](#sub-provider-adapter-fixture) | behavior | real Paddle/Payoneer API calls behind the adapter | [COM.14](lanes/commerce.md#task-com-14) | [COM.14](lanes/commerce.md#task-com-14) | [COM.01](lanes/commerce.md#task-com-01) |
 | [SUB-provider-event-fixtures](#sub-provider-event-fixtures) | value | live Paddle/Payoneer webhook traffic | [COM.14](lanes/commerce.md#task-com-14) | [COM.14](lanes/commerce.md#task-com-14) | [COM.04](lanes/commerce.md#task-com-04) |
@@ -32,9 +28,8 @@ A **value** substitute supplies contract-shaped data (vectors, documents, record
 | [SUB-resource-transport-schema-fixtures](#sub-resource-transport-schema-fixtures) | value | [WP-25.05](../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.05)'s real R2 multipart upload/verify/commit and full Resource/Entitlement/sync owner tables | [CLOUD.42](lanes/cloud.md#task-cloud-42) | [CLOUD.42](lanes/cloud.md#task-cloud-42) | [CLOUD.25](lanes/cloud.md#task-cloud-25) |
 | [SUB-same-app-fixture-tool](#sub-same-app-fixture-tool) | behavior | [WP-17](../work-packages/17-arcchat-independent-core.md#rule-wp-17) real device-side tool executor | [AST.11](lanes/assistant.md#task-ast-11) | [HAR.05](lanes/harness.md#task-har-05) | [HAR.00](lanes/harness.md#task-har-00) |
 | [SUB-scope-instruments-fixture](#sub-scope-instruments-fixture) | behavior | [WP-13.12](../work-packages/13-high-risk-technical-probes.md#rule-wp-13.12) real hardware-backed ArcInstruments build | [NAT.13](lanes/native.md#task-nat-13), [NAT.24](lanes/native.md#task-nat-24) | [SCOPE.11](lanes/arcscope.md#task-scope-11) | [SCOPE.04](lanes/arcscope.md#task-scope-04) |
-| [SUB-scope-sync-fixture](#sub-scope-sync-fixture) | value | [WP-25.00](../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.00) real deployed Cloud sync engine | [CLOUD.39](lanes/cloud.md#task-cloud-39) | [SCOPE.27](lanes/arcscope.md#task-scope-27) | [SCOPE.22](lanes/arcscope.md#task-scope-22) |
+| [SUB-scope-sync-fixture](#sub-scope-sync-fixture) | value | [WP-25](../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) real deployed Cloud sync engine | [CLOUD.39](lanes/cloud.md#task-cloud-39) | [SCOPE.27](lanes/arcscope.md#task-scope-27) | [SCOPE.22](lanes/arcscope.md#task-scope-22) |
 | [SUB-signed-format-fixture-keys](#sub-signed-format-fixture-keys) | value | [WP-53](../work-packages/53-desktop-distribution-and-update.md#rule-wp-53)'s production signing keys | [UPD.07](lanes/updater.md#task-upd-07) | [REL.11](lanes/release.md#task-rel-11) | [CON.16](lanes/contracts.md#task-con-16), [PRF.07](lanes/runtime-proofs.md#task-prf-07), [EXT.04](lanes/extensions.md#task-ext-04) |
-| [SUB-slate-asr-fixture](#sub-slate-asr-fixture) | value | real Cloud Workers AI whisper-large-v3-turbo transcription output | [AIR.09](lanes/ai-routing.md#task-air-09) | [HAR.91](lanes/harness.md#task-har-91) | [SLATE.30](lanes/arcslate.md#task-slate-30) |
 | [SUB-stubbed-provider-path](#sub-stubbed-provider-path) | behavior | [WP-43](../work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43) real provider routing and metering (already-named [WP-17.05](../work-packages/17-arcchat-independent-core.md#rule-wp-17.05) scaffolding) | [AIR.00](lanes/ai-routing.md#task-air-00) | [AIR.08](lanes/ai-routing.md#task-air-08) | [AST.15](lanes/assistant.md#task-ast-15), [AIR.08](lanes/ai-routing.md#task-air-08) |
 | [SUB-test-signed-update-feed](#sub-test-signed-update-feed) | value | the production feed and real product signing key custody | [UPD.07](lanes/updater.md#task-upd-07) | [REL.10](lanes/release.md#task-rel-10) | [UPD.01](lanes/updater.md#task-upd-01) |
 | [SUB-updater-policy-fixture](#sub-updater-policy-fixture) | value | [WP-44](../work-packages/44-dynamic-policy-and-configuration.md#rule-wp-44) real activated policy distribution and [WP-45](../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45) real security-advisory process | [POL.09](lanes/policy.md#task-pol-09) | [UPD.08](lanes/updater.md#task-upd-08) | [UPD.05](lanes/updater.md#task-upd-05) |
@@ -46,13 +41,13 @@ A **value** substitute supplies contract-shaped data (vectors, documents, record
 | Field | Value |
 |---|---|
 | Class | value |
-| Stands in for | [WP-25](../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) real Cloud Notes/Chat snapshot and export job |
+| Stands in for | [WP-25](../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) real Cloud Chat snapshot and export job |
 | Authoritative contract | assistant-history.v1 archive format (Contracts) |
 | What its checks prove | local offline export/import round-trip, malformed/hash/foreign-reference handling, branch-cycle and cancel-import handling only -- no Cloud upload |
 | What it does not prove | Any real runtime, provider, device, integration or commercial behavior. |
 | Real producer | [CLOUD.45](lanes/cloud.md#task-cloud-45) |
 | Removes runtime substitution | [AST.21](lanes/assistant.md#task-ast-21) |
-| Real evidence still required | real Cloud Notes/Chat export producer accepts and round-trips the same archive against a deployed environment |
+| Real evidence still required | real Cloud Chat export producer accepts and round-trips the same archive against a deployed environment |
 
 ### SUB-automation-fixture
 
@@ -192,13 +187,13 @@ A **value** substitute supplies contract-shaped data (vectors, documents, record
 | Field | Value |
 |---|---|
 | Class | behavior |
-| Stands in for | [WP-13.13](../work-packages/13-high-risk-technical-probes.md#rule-wp-13.13) production native parser composition (PDF/image/media/OTIO) |
+| Stands in for | [WP-13.13](../work-packages/13-high-risk-technical-probes.md#rule-wp-13.13) production native parser composition (PDF/image) |
 | Authoritative contract | ArcForges.Contracts.LocalRpc.Sandbox ContentSandboxService |
 | What its checks prove | OS-level containment mechanics only (AppContainer/Job Object, Landlock/seccomp, App-Sandbox/XPC denial, resource bounds, crash/hang/parent-death cleanup) against a deliberately hostile FIRST-PARTY test parser, not real format-parsing correctness |
 | What it does not prove | Any real runtime, provider, device, integration or commercial behavior. |
 | Real producer | [NAT.14](lanes/native.md#task-nat-14) |
 | Removes runtime substitution | [PLT.54](lanes/platform.md#task-plt-54) |
-| Real evidence still required | packaged RID containment matrix re-run against the real parser libraries plus product-level malformed-input/crash tests in [WP-18.04](../work-packages/18-arcnotes-document-core.md#rule-wp-18.04)/[WP-37.01](../work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.01) |
+| Real evidence still required | packaged RID containment matrix re-run against the real PDFium and still-image parser libraries, including malformed-input, crash and hang cases |
 | Origin | Named scaffolding introduced by [WP-11.09](../work-packages/11-security-foundation.md#rule-wp-11.09); [WP-13.13](../work-packages/13-high-risk-technical-probes.md#rule-wp-13.13) replaces production fixture registration; the malicious regression fixture stays test-only. |
 
 ### SUB-lkg-compiled-defaults-seed
@@ -213,58 +208,6 @@ A **value** substitute supplies contract-shaped data (vectors, documents, record
 | Real producer | [POL.08](lanes/policy.md#task-pol-08) |
 | Removes runtime substitution | [POL.11](lanes/policy.md#task-pol-11) |
 | Real evidence still required | a genuinely stale client falling back through a real prior bundle, observed against the deployed Cloud policy service |
-
-### SUB-media-probe-fixture
-
-| Field | Value |
-|---|---|
-| Class | value |
-| Stands in for | [WP-13.06](../work-packages/13-high-risk-technical-probes.md#rule-wp-13.06) real arc_media_probe output |
-| Authoritative contract | native.metadata.v1 closed JSON projection (contracts/06-native-functional-abi.md §3: {version,streams:[...],warnings:[...]}) |
-| What its checks prove | domain/library/editing/timeline logic against synthetic but schema-conformant metadata only; never hostile-input containment or real decode fidelity |
-| What it does not prove | Any real runtime, provider, device, integration or commercial behavior. |
-| Real producer | [NAT.07](lanes/native.md#task-nat-07) |
-| Removes runtime substitution | [SLATE.15](lanes/arcslate.md#task-slate-15) |
-| Real evidence still required | Real file probe against packaged ArcForges.Native.Media on every admitted RID, including malformed/oversized/fuzzed input and a forced child-crash recovery run |
-
-### SUB-no-op-media-adapter
-
-| Field | Value |
-|---|---|
-| Class | behavior |
-| Stands in for | real codec integration (existing named scaffolding, implementation-sequence.md §3.1) |
-| Authoritative contract | n/a - unit-test-local no-op |
-| What its checks prove | wiring/composition only, never decode/codec correctness |
-| What it does not prove | Any real runtime, provider, device, integration or commercial behavior. |
-| Real producer | [NAT.07](lanes/native.md#task-nat-07), [NAT.08](lanes/native.md#task-nat-08) |
-| Removes runtime substitution | [SLATE.23](lanes/arcslate.md#task-slate-23) |
-| Real evidence still required | SLATE.16's decode results and SLATE.31's golden-corpus results |
-
-### SUB-notes-cloud-export
-
-| Field | Value |
-|---|---|
-| Class | behavior |
-| Stands in for | [WP-25.00](../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.00)..25.08 real Cloud Notes export authority |
-| Authoritative contract | ArtifactRef/export-manifest shape in ArcForges.Contracts.PublicApi |
-| What its checks prove | client-side export request construction, fidelity-report rendering, attachment-hash verification, offline-refusal behaviour against a scripted endpoint |
-| What it does not prove | Any real runtime, provider, device, integration or commercial behavior. |
-| Real producer | [CLOUD.45](lanes/cloud.md#task-cloud-45) |
-| Removes runtime substitution | [NOTES.33](lanes/arcnotes.md#task-notes-33) |
-| Real evidence still required | real host/database/object-store export across concurrent edits, notebook moves, deleted attachments, quota, expiry, restart, cancellation, paid-term end, per [WP-25.08](../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) testing requirements |
-
-### SUB-notes-pdf-fixture-parser
-
-| Field | Value |
-|---|---|
-| Class | behavior |
-| Stands in for | [WP-13](../work-packages/13-high-risk-technical-probes.md#rule-wp-13)'s production ArcForges.Native.Pdf/PDFium wrapper (does not exist yet, not even as a declared placeholder project) |
-| Authoritative contract | [WP-11.09](../work-packages/11-security-foundation.md#rule-wp-11.09)'s restricted fixture-parser ContentSandbox ABI |
-| What its checks prove | viewer UI, page-anchor model, preview-degradation logic and sandbox call plumbing only - not real PDFium behaviour |
-| What it does not prove | Any real runtime, provider, device, integration or commercial behavior. |
-| Real producer | [NAT.14](lanes/native.md#task-nat-14) |
-| Removes runtime substitution | [NOTES.37](lanes/arcnotes.md#task-notes-37) |
-| Real evidence still required | real packaged PDFium build, licence inventory and hostile-input containment evidence per [PG-12](../../assurance/open-gates-register.md#rule-pg-12)/[PG-22](../../assurance/open-gates-register.md#rule-pg-22) |
 
 ### SUB-postmark-ses-test-recordings
 
@@ -362,7 +305,7 @@ A **value** substitute supplies contract-shaped data (vectors, documents, record
 | Field | Value |
 |---|---|
 | Class | value |
-| Stands in for | [WP-25.00](../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.00) real deployed Cloud sync engine |
+| Stands in for | [WP-25](../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) real deployed Cloud sync engine |
 | Authoritative contract | Contracts SyncService records |
 | What its checks prove | client-side scope-mapping/exclusion logic only |
 | What it does not prove | Any real runtime, provider, device, integration or commercial behavior. |
@@ -383,19 +326,6 @@ A **value** substitute supplies contract-shaped data (vectors, documents, record
 | Removes runtime substitution | [REL.11](lanes/release.md#task-rel-11) |
 | Real evidence still required | production-signed manifest verified against the real distribution trust root, checked at release |
 | Origin | Fixture trust roots from [WP-03.07](../work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.07) and the [WP-02](../work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02)/[WP-06](../work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06) test identities; production keys come from [WP-53](../work-packages/53-desktop-distribution-and-update.md#rule-wp-53) and replace fixture roots in release configuration at REL.10; the family release audit asserts no fixture root remains in any release configuration. |
-
-### SUB-slate-asr-fixture
-
-| Field | Value |
-|---|---|
-| Class | value |
-| Stands in for | real Cloud Workers AI whisper-large-v3-turbo transcription output |
-| Authoritative contract | slate.transcribe.v1 TranscriptRecord/segment schema (23-simulator-and-interchange.md §5) |
-| What its checks prove | chunking, extraction-artifact hashing, adoption preview/undo/content-origin logic only -- never real ASR accuracy, real budget/metering or real provider failure modes |
-| What it does not prove | Any real runtime, provider, device, integration or commercial behavior. |
-| Real producer | [AIR.09](lanes/ai-routing.md#task-air-09) |
-| Removes runtime substitution | [HAR.91](lanes/harness.md#task-har-91) |
-| Real evidence still required | A real paid transcription dispatch reconciled through [WP-42](../work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42)/43's real metering path, end to end through [WP-52](../work-packages/52-cloud-harness.md#rule-wp-52)'s Harness |
 
 ### SUB-stubbed-provider-path
 

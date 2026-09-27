@@ -24,7 +24,7 @@ Owner-specific strongly typed contracts   independently owned and versioned per 
 | # | Rule |
 |---|---|
 | <a id="rule-cm-01"></a>CM-01 | **Shared foundation is small and stable; product capability contracts are independently owned and versioned by their owning product** (**[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
-| <a id="rule-cm-02"></a>CM-02 | **An upgrade to one product must never force an unrelated product to recompile or re-release** ([I-032](../requirements/01-normative-glossary-and-invariants.md#rule-i-032) family). |
+| <a id="rule-cm-02"></a>CM-02 | **An upgrade to one product must never force an unrelated product to recompile or re-release**. |
 | <a id="rule-cm-03"></a>CM-03 | **The foundation contract package holds only genuinely long-term stable types.** Product-specific concepts are prohibited in it. |
 | <a id="rule-cm-04"></a>CM-04 | A process-boundary envelope never contains object. Payloads use the owning contract; in-process application calls use the same typed semantics without introducing a listener. |
 | <a id="rule-cm-05"></a>CM-05 | Process-boundary contracts are AOT-friendly: authored proto/generated bindings, no runtime type resolution or assembly-qualified type names. |
@@ -88,9 +88,9 @@ Six contribution kinds:
 
 | # | Rule |
 |---|---|
-| <a id="rule-cp-01"></a>CP-01 | **A capability has a stable, namespaced `CapabilityId`**, owned by the contributing product: `arcnotes.document.create`, `arcscope.session.compare`, `arcslate.timeline.move-clip`. |
+| <a id="rule-cp-01"></a>CP-01 | **A capability has a stable, namespaced `CapabilityId`**, owned by the contributing product: `arcscope.session.compare`, `arcscope.annotation.create`, `arcscope.report.export`. |
 | <a id="rule-cp-02"></a>CP-02 | **The string is used only for discovery, display, policy, tool selection, routing and audit.** The actual call lands on a compiled, strongly typed interface method (**[AC-02](00-architecture-overview.md#rule-ac-02)**). |
-| <a id="rule-cp-03"></a>CP-03 | **A capability is business semantics, not a CRUD mapping.** `arcnotes.document.insert-block` is a capability; `arcnotes.table.row.update` is not. |
+| <a id="rule-cp-03"></a>CP-03 | **A capability is business semantics, not a CRUD mapping.** `arcscope.session.annotate` is a capability; `arcscope.annotation.field.update` is not. |
 | <a id="rule-cp-04"></a>CP-04 | Capability and UI Command are distinct: a menu item is not automatically machine callable. Only explicit capability descriptors can enter an own-app assistant or authorized Cloud invocation. |
 | <a id="rule-cp-05"></a>CP-05 | **`Capability ≠ Action`** ([I-040](../requirements/01-normative-glossary-and-invariants.md#rule-i-040)), **`Capability ≠ Permission`** ([I-042](../requirements/01-normative-glossary-and-invariants.md#rule-i-042)), **`Capability ≠ Package`** ([I-044](../requirements/01-normative-glossary-and-invariants.md#rule-i-044)). |
 | <a id="rule-cp-06"></a>CP-06 | **One classification system, not three.** Read, write and long-running operations are all capabilities, differing by declared metadata — not by living in separate mechanisms. |
@@ -167,7 +167,7 @@ Carries: realm, workspace scope where applicable, owning `AppId`, namespaced `Re
 
 | # | Rule |
 |---|---|
-| <a id="rule-rr-01"></a>RR-01 | **`ResourceKind` is namespaced by owner**: `arcnotes.document`, `arcnotes.block`, `arcscope.session`, `arcslate.sequence`. |
+| <a id="rule-rr-01"></a>RR-01 | **`ResourceKind` is namespaced by owner**: `arcscope.session`, `arcscope.annotation`, `arcscope.report`. |
 | <a id="rule-rr-02"></a>RR-02 | **A file path is never an identity** ([I-052](../requirements/01-normative-glossary-and-invariants.md#rule-i-052), [I-195](../requirements/01-normative-glossary-and-invariants.md#rule-i-195)). |
 | <a id="rule-rr-03"></a>RR-03 | **A `ResourceRef` never contains**: a file path, a native pointer, an internal database key, a connection handle, credentials, or the resource's content ([I-051](../requirements/01-normative-glossary-and-invariants.md#rule-i-051)). |
 | <a id="rule-rr-04"></a>RR-04 | **`ResourceId` is never reused** (`§2` of the glossary). |
@@ -198,7 +198,7 @@ Partial selection — a block range, a time range, a clip set — uses a **commo
 | # | Rule |
 |---|---|
 | <a id="rule-ts-01"></a>TS-01 | **A `ResourceRef` is not stuffed with sub-paths** ([I-055](../requirements/01-normative-glossary-and-invariants.md#rule-i-055)). |
-| <a id="rule-ts-02"></a>TS-02 | **No universal selection schema is created.** ArcNotes block ranges, ArcScope time and signal ranges, and ArcSlate timeline ranges are structurally different and are typed by their owners. |
+| <a id="rule-ts-02"></a>TS-02 | **No universal selection schema is created.** ArcScope time and signal ranges and ArcChat conversation ranges are structurally different and are typed by their owners. |
 | <a id="rule-ts-03"></a>TS-03 | **`ResourceRef ≠ Resource Selection`** ([I-056](../requirements/01-normative-glossary-and-invariants.md#rule-i-056)). |
 
 ---

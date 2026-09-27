@@ -6,7 +6,7 @@
 > Governing authority: **[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)** (ASP.NET Core **Native AOT** modular monolith), **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** (cloud topology and local action), **[D-003](../../decisions/phase-1-foundation-decisions.md#rule-d-003)** (provider facts deferred with a first-consumption trigger)
 > Companions: [`../03-cloud-services-and-sync.md`](../03-cloud-services-and-sync.md), [`../04-commerce-entitlement-and-credits.md`](../04-commerce-entitlement-and-credits.md), [`../10-distribution-update-and-support.md`](../10-distribution-update-and-support.md), [`../../architecture/05-cloud-architecture.md`](../../architecture/05-cloud-architecture.md), [`../../architecture/13-observability-and-operations.md`](../../architecture/13-observability-and-operations.md)
 
-> **ArcForges Cloud is the continuity and remote-execution layer of ArcForges — one logical platform, never four per-product backends.**
+> **ArcForges Cloud is the continuity and remote-execution layer of ArcForges — one logical platform, never per-product backends.**
 
 Product capability requirements are specified in [`../03-cloud-services-and-sync.md`](../03-cloud-services-and-sync.md). **This document specifies the platform: runtime roles, dependency posture, environments, deployment, operations, resilience and the go-live threshold.**
 
@@ -16,7 +16,7 @@ Product capability requirements are specified in [`../03-cloud-services-and-sync
 
 | # | Requirement |
 |---|---|
-| <a id="rule-pp-01"></a>PP-01 | ArcForges Cloud is one C# Native AOT modular monolith per Container instance under [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009)/[P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012). The 21 module owners are enumerated in architecture 05, including PackageCatalog. D1, Durable Objects, Queues, Workflow/Workers AI and R2 are bound managed resources; no Node sidecar or second business host. |
+| <a id="rule-pp-01"></a>PP-01 | ArcForges Cloud is one C# Native AOT modular monolith per Container instance under [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009)/[P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012). The 19 module owners are enumerated in architecture 05, including PackageCatalog. D1, Durable Objects, Queues, Workflow/Workers AI and R2 are bound managed resources; no Node sidecar or second business host. |
 | <a id="rule-pp-02"></a>PP-02 | **It is one logical platform**, internally partitioned by module — never split into per-product backends. |
 | <a id="rule-pp-03"></a>PP-03 | One deployable C# Native AOT host contains business APIs, admission, canonical Task/Agent stores, simulator and bounded leased jobs. The sole model/tool loop runs in the separate CF Worker deployment; identical C# replicas are allowed, no role-selected Worker/TaskRunner. |
 | <a id="rule-pp-04"></a>PP-04 | The first deployment uses Cloudflare Workers and Containers. Kubernetes and an independently operated container platform are outside this profile. |
@@ -184,7 +184,7 @@ Four layers:
 
 | # | Requirement |
 |---|---|
-| <a id="rule-rs-01"></a>RS-01 | **Capabilities degrade independently** ([CL-03](../03-cloud-services-and-sync.md#rule-cl-03)). An AI outage must never stop ArcNotes sync. |
+| <a id="rule-rs-01"></a>RS-01 | **Capabilities degrade independently** ([CL-03](../03-cloud-services-and-sync.md#rule-cl-03)). An AI outage must never stop ArcScope sync. |
 | <a id="rule-rs-02"></a>RS-02 | **Passkey authentication means an email outage does not lock every user out** (`§2.2` of the identity requirements). |
 | <a id="rule-rs-03"></a>RS-03 | **Every dependency has a documented degradation path and a runbook** (`§9`). |
 
@@ -283,7 +283,7 @@ Before the paid cloud goes live:
 
 The cloud modular monolith is partitioned into modules, each owning an application/domain boundary, its own schema or explicit table ownership, a public module API and events, independent tests, and a prohibition on other modules writing its tables:
 
-The 21 rows in architecture 05 §3 are the complete current module inventory. PackageCatalog owns its authoring, review, publication and revocation records; Notification owns delivery intents; Scope Simulation owns simulator state. This requirements document does not maintain a second differently grouped module list.
+The 19 rows in architecture 05 §3 are the complete current module inventory. PackageCatalog owns its authoring, review, publication and revocation records; Notification owns delivery intents; Scope Simulation owns simulator state. This requirements document does not maintain a second differently grouped module list.
 
 Scope Simulation owns the durable simulator state and manifests required by [SIM-01](arcscope.md#rule-sim-01)–[SIM-20](arcscope.md#rule-sim-20); it is an internal module, not another service.
 

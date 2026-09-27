@@ -21,12 +21,11 @@ The archived input bodies were not reread or re-extracted. Product and reference
 | Dependency found | Resolution and current definition |
 |---|---|
 | Old sequencing notes presented as governing authority, mock policy and per-step format | [Implementation sequence](../planning/implementation-sequence.md) contains the binding order, mock boundary, replacement ownership and nine required fields. Effective decision notes route consumers there |
-| Old input sections required by nine work packages | Probe, IPC, ArcChat, first workflow, property/view, Mobile, Scope, Slate and release packages now consume current definitions or explicitly state their own behavior and acceptance |
+| Old input sections required by eight work packages | Probe, IPC, ArcChat, first workflow, property/view, Mobile, Scope and release packages now consume current definitions or explicitly state their own behavior and acceptance |
 | Source-only inline provenance in otherwise complete rules | Existing constraints retained in requirements and architecture; removed the instruction-like shorthand instead of weakening the rule |
 | Original input provenance tables used as design traceability | Replaced with explicit relationships among current requirements, mechanisms, data/contracts, assurance and implementation owners |
-| First ArcChat–ArcNotes scenario delegated to a discovery-stage section | [Canonical workflow acceptance](end-to-end-workflow-verification.md#first-arcchat-arcnotes-workflow) now defines inputs, success observations and seven failure cases; distinguishes native capability proof from the real Cloud/provider/device workflow |
+| First ArcChat–ArcScope scenario delegated to a discovery-stage section | [Canonical workflow acceptance](end-to-end-workflow-verification.md#first-arcchat-arcscope-workflow) now defines inputs, success observations and seven failure cases; distinguishes native capability proof from the real Cloud/provider/device workflow |
 | Work-package failure acceptance required every case to become terminal | The [Cloud Harness workflow gate](../planning/work-packages/52-cloud-harness.md#rule-wp-52.05) accepts only the defined waiting, refusal or terminal outcome. Waiting for a device or admission is asserted explicitly, without pretending completion |
-| Property/view prerequisites pointed to a retired canvas package and an unrelated editor section | [Bounded property/view package](../planning/work-packages/28-arcnotes-properties-and-views.md) consumes active foundations, current scalar requirements, property storage and typed mutation. The storage enum and delivery list include the already-required date-time and URL kinds |
 | Installer choice and future-product contract could lead back through decision context | [Installer baseline](../decisions/phase-2-specification-decisions.md#rule-p2-001) names Velopack explicitly; [current portfolio acceptance](../requirements/00-product-scope-and-portfolio.md#24-adding-a-fifth-product) owns any future-product proposal |
 | Commercial examples and historical invariant counts looked like ongoing input authority | Current commercial examples retain proposal/approval status; completed extraction statistics remain history. Current work consumes the [429-entry catalogue mapping](invariant-coverage.md), not a repeated raw-input extraction |
 | Static-site rationale said only content was needed | The sequence now states the existing shared Node-toolchain prerequisite, consistent with the current Web design and existing dependency graph |
@@ -38,7 +37,7 @@ No new product or excluded feature is introduced. The single Cloud Harness, subs
 
 The root and layer READMEs may link to the archive README solely to state its exclusion. The completed Phase 1 reading ledger, original decision quotations, dated verification context, original invariant extraction accounting and previously executed verification commands retain source labels or old paths as history. Current-consumption notes make their boundary explicit. These references are not required implementation inputs, governing mechanisms or instructions to repeat the old review. The checker explicitly lists the six historical assurance records it exempts; their current-consumption boundary was reviewed separately.
 
-Reference-source coverage remains a separate obligation. Deprecating discovery inputs does not deprecate ArcVideo, ArcVideoFoundation, AionUi, AFFiNE, SiYuan, Serial-Studio or distribution reference evidence.
+Reference-source coverage remains a separate obligation. Deprecating discovery inputs does not deprecate AionUi, Serial-Studio or distribution reference evidence.
 
 ## 4. Verification evidence
 

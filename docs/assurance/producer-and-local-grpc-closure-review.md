@@ -12,18 +12,17 @@ Contracts remote main1fb1dfaaaaa7a9f2f4c64a6e1c6a2b7de47d67b0 contains Kotlin-li
 
 | Finding | Adopted authority and concrete closure |
 |---|---|
-| AF01 | WP13.05–13.16 implement the seven native families and full wrapper/runtime closure; .90 independently consumes completed artifacts. Probe and production scope are separate. |
+| AF01 | WP13.05–13.16 implement the three native families and full wrapper/runtime closure; .90 independently consumes completed artifacts. Probe and production scope are separate. |
 | AF02 | WP53 and build14 §8.1 own the updater, signed feed, migration interlock and crash recovery; WP50 verifies the production release. |
 | AF03 | Registry04 push.v1, Notification delivery persistence, WP45.09 and PG24 close server sending and later physical Android acceptance. Stale invalid-token responses cannot delete rotated registrations; unresolved intents migrate to the new revision within original TTL. WP45→31 explicitly gates the real Android consumer. |
-| AF04 | WP11 owns helper mechanisms/test-parser containment; WP13 publishes the next immutable version of that same helper with actual parser composition/containment; WP18 owns viewer integration. No upstream dependency on a future parser. |
+| AF04 | WP11 owns helper mechanisms/test-parser containment; WP13 publishes the next immutable version of that same helper with actual parser composition/containment. No upstream dependency on a future parser. |
 | AF05 | Native06/WP13.14 preserve ArcGraphicsMetalNative probes and independently implement ArcGraphicsNative CPU/private acceleration. No fake functional API claim. |
-| AF06 | Platform21 adds missing image/OTIO/audio slots, repairs owner/degradation coverage and distinguishes required feature failure from allowed optional acceleration. |
+| AF06 | Platform21 adds missing image slots, repairs owner/degradation coverage and distinguishes required feature failure from allowed optional acceleration. |
 | AF07 | Scope SD09, native instruments, WP13.12/16, WP33 and PG08 consistently include generic USB and explicit interface/endpoint/permission behavior. |
 | AF08 | Catalogue00 AZ04 exports all seven effective fields through closed identity/actor/egress profiles; human-only operations excluded from tool bindings. |
 | AF09 | Cloud requirements/architecture, release L04/L05 and WP46 describe actual PostgreSQL dispatch, bounded hints and CF recovery. No extra realtime/broker dependency. |
 | AF10 | Native arc_* prefix preserved consistently. |
-| AF11 | WP03 publishes Slate contracts; WP39 consumes and implements them. |
-| AF12 | Idempotency examples resolve to real operations; no alternate Notes body-write surface. |
+| AF12 | Idempotency examples resolve to real operations; no alternate body-write surface. |
 | AF13 | Forward tables, headers, section9 and reverse index represent the same graph. The seven erroneous reverse rows omitted eight edges. |
 | AF14 | Unique phase membership and explicit valid serial schedule; phase grouping is not claimed to concatenate into that schedule. |
 | AF15 | WP42 records technical/test-mode evidence; real checkout/payout belongs WP48/50. |
@@ -183,7 +182,7 @@ else:
 native=texts[(root/'docs/architecture/contracts/06-native-functional-abi.md').resolve()]
 exports=re.findall(r'^\| `(arc_\w+)\(',native,re.M)
 if len(exports)!=len(set(exports)):fail('native-exports','native','duplicate')
-for family in ['media','color','image','otio','pdf','instruments','graphics']:
+for family in ['image','pdf','instruments']:
     if not any(x.startswith('arc_'+family+'_') for x in exports):fail('native-coverage','native',family)
 
 
@@ -249,7 +248,7 @@ assurance_index=texts[(root/'docs/assurance/README.md').resolve()]
 if '40 entries, five design closures, 33 open implementation obligations' not in assurance_index:fail('gate-summary','assurance-index','stale')
 
 # Closed local additions: each operation has exactly one numbered service binding.
-helper='OpenSession RenewSession GrantSlot AckBuffer ProbeMedia OpenMediaReader ReadMediaFrame SeekMedia CopyVideoFrame CopyAudioFrame CloseFrame CloseReader OpenImage GetImageInfo ReadImageTile CloseImage OpenPdf GetPdfPage ExtractPdfText RenderPdfTile ClosePdf ReadOtio WriteOtio OtioReadChunk CancelSession CloseSession'.split()
+helper='OpenSession RenewSession GrantSlot AckBuffer OpenImage GetImageInfo ReadImageTile CloseImage OpenPdf GetPdfPage ExtractPdfText RenderPdfTile ClosePdf CancelSession CloseSession'.split()
 connector='ListDefinitions ListConnections BeginConnection CompleteConnection GetConnection RevokeConnection'.split()
 local_ops=['ILocalBootstrap.Renew','ILocalEvents.Poll']+['IContentSandbox.'+x for x in helper]+['IConnectorBroker.'+x for x in connector]
 for op in local_ops:

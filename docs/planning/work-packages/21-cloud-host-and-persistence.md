@@ -43,7 +43,7 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 **Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
 <a id="rule-wp-21.02"></a>
-### WP-21.02 — Twenty-one module boundaries
+### WP-21.02 — Nineteen module boundaries
 
 **What must be fully done.** Implement exact module projects and D1 named-plan bridge; C# owns business decisions, Worker executes approved SQL only.
 
@@ -129,7 +129,7 @@ Acceptance includes every amended §5 producer/consumer and [WP-21.90](#rule-wp-
 |---|---|
 | Ingress and host pipeline: Deployed request/stream/cancel/CSRF/trailer path; no buffered stream or direct public Container port. | [WP-21.00](#rule-wp-21.00) |
 | Finite durable jobs: Sleep/restart, duplicate wake, delayed delivery, stale lease and paused simulator continuation. | [WP-21.01](#rule-wp-21.01) |
-| Twenty-one module boundaries: Architecture/import/plan-hash/wrong-container/public-access refusal tests. | [WP-21.02](#rule-wp-21.02) |
+| Nineteen module boundaries: Architecture/import/plan-hash/wrong-container/public-access refusal tests. | [WP-21.02](#rule-wp-21.02) |
 | D1 migration and exact physical mapping: Actual D1 signed 64/uint64/decimal/JSON/FTS5, interrupted migration, stale backfill and compatible rollback. | [WP-21.03](#rule-wp-21.03) |
 | Receipts/outbox/archive: Constraint guard failure rolls back all rows; zero-row CAS cannot publish; duplicate/lost ack reconciles. | [WP-21.04](#rule-wp-21.04) |
 | Shared atomic families and claims: Two Containers contend, stale holder cannot finalize, exact credits and sync cursor safety. | [WP-21.05](#rule-wp-21.05) |
@@ -149,7 +149,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 
 | Delivery task | Satisfies | Start prerequisites outside this package |
 |---|---|---|
-| [CLOUD.01](../delivery/lanes/cloud.md#task-cloud-01) | [WP-21.00](21-cloud-host-and-persistence.md#rule-wp-21.00) (all work except the parts mapped to CLOUD.37) | [CON.91](../delivery/lanes/contracts.md#task-con-91) (contract) |
+| [CLOUD.01](../delivery/lanes/cloud.md#task-cloud-01) | [WP-21.00](21-cloud-host-and-persistence.md#rule-wp-21.00) (all work except the parts mapped to CLOUD.39) | [CON.91](../delivery/lanes/contracts.md#task-con-91) (contract) |
 | [CLOUD.02](../delivery/lanes/cloud.md#task-cloud-02) | [WP-21.02](21-cloud-host-and-persistence.md#rule-wp-21.02) (full) | none |
 | [CLOUD.03](../delivery/lanes/cloud.md#task-cloud-03) | [WP-21.03](21-cloud-host-and-persistence.md#rule-wp-21.03) (full)<br>[WP-21](21-cloud-host-and-persistence.md#rule-wp-21) §6 Impacts -- migration/compatibility manifests include source/schema/plan/ABI/runtime versions (package-level obligation contribution) | none |
 | [CLOUD.04](../delivery/lanes/cloud.md#task-cloud-04) | [WP-21.04](21-cloud-host-and-persistence.md#rule-wp-21.04) (full) | none |
@@ -159,11 +159,11 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [CLOUD.08](../delivery/lanes/cloud.md#task-cloud-08) | [WP-21.07](21-cloud-host-and-persistence.md#rule-wp-21.07) (full) | none |
 | [CLOUD.09](../delivery/lanes/cloud.md#task-cloud-09) | [WP-21.08](21-cloud-host-and-persistence.md#rule-wp-21.08) (full) | none |
 | [CLOUD.10](../delivery/lanes/cloud.md#task-cloud-10) | [WP-21.90](21-cloud-host-and-persistence.md#rule-wp-21.90) (full, including the Launch configuration acceptance subsection (launch-capacity.v1, [PG-26](../../assurance/open-gates-register.md#rule-pg-26)))<br>[WP-21](21-cloud-host-and-persistence.md#rule-wp-21) §6 Impacts -- migration/compatibility manifests include source/schema/plan/ABI/runtime versions (package-level obligation contribution) | none |
-| [CLOUD.37](../delivery/lanes/cloud.md#task-cloud-37) | [WP-21.00](21-cloud-host-and-persistence.md#rule-wp-21.00) (real Sync owner transaction implementation) | [CON.91](../delivery/lanes/contracts.md#task-con-91) (contract), [CON.20](../delivery/lanes/contracts.md#task-con-20) (contract), [CON.03](../delivery/lanes/contracts.md#task-con-03) (artifact), [CON.09](../delivery/lanes/contracts.md#task-con-09) (artifact) |
+| [CLOUD.39](../delivery/lanes/cloud.md#task-cloud-39) | [WP-21.00](21-cloud-host-and-persistence.md#rule-wp-21.00) (real Sync owner transaction implementation for admitted ArcScope metadata owner bodies) | [CLOUD.31](../delivery/lanes/cloud.md#task-cloud-31) (artifact), [CON.03](../delivery/lanes/contracts.md#task-con-03) (artifact), [CON.09](../delivery/lanes/contracts.md#task-con-09) (artifact) |
 | [CLOUD.63](../delivery/lanes/cloud.md#task-cloud-63) | [WP-21.05](21-cloud-host-and-persistence.md#rule-wp-21.05) (Commerce/Entitlement family participant evidence for the shared completion gate) | [CLOUD.16](../delivery/lanes/cloud.md#task-cloud-16) (artifact), [COM.09](../delivery/lanes/commerce.md#task-com-09) (artifact) |
 | [SIM.10](../delivery/lanes/simulator.md#task-sim-10) | [WP-21.06](21-cloud-host-and-persistence.md#rule-wp-21.06) (SimulationPacer real-consumer integration) | [SIM.01](../delivery/lanes/simulator.md#task-sim-01) (artifact) |
 
-**Consumers outside this package:** [CLOUD.11](../delivery/lanes/cloud.md#task-cloud-11), [CLOUD.13](../delivery/lanes/cloud.md#task-cloud-13), [CLOUD.19](../delivery/lanes/cloud.md#task-cloud-19), [CLOUD.31](../delivery/lanes/cloud.md#task-cloud-31), [CLOUD.33](../delivery/lanes/cloud.md#task-cloud-33), [CLOUD.39](../delivery/lanes/cloud.md#task-cloud-39), [CLOUD.42](../delivery/lanes/cloud.md#task-cloud-42), [CLOUD.45](../delivery/lanes/cloud.md#task-cloud-45), [CLOUD.46](../delivery/lanes/cloud.md#task-cloud-46), [CLOUD.47](../delivery/lanes/cloud.md#task-cloud-47), [CLOUD.48](../delivery/lanes/cloud.md#task-cloud-48), [COM.07](../delivery/lanes/commerce.md#task-com-07), [HAR.00](../delivery/lanes/harness.md#task-har-00), [NOTES.01](../delivery/lanes/arcnotes.md#task-notes-01), [NOTES.34](../delivery/lanes/arcnotes.md#task-notes-34), [NOTES.35](../delivery/lanes/arcnotes.md#task-notes-35), [PLT.48](../delivery/lanes/platform.md#task-plt-48), [REL.06](../delivery/lanes/release.md#task-rel-06), [SIM.01](../delivery/lanes/simulator.md#task-sim-01), [SIM.03](../delivery/lanes/simulator.md#task-sim-03), [SIM.04](../delivery/lanes/simulator.md#task-sim-04), [SRCH.00](../delivery/lanes/search.md#task-srch-00).
+**Consumers outside this package:** [AND.07](../delivery/lanes/android.md#task-and-07), [CLOUD.11](../delivery/lanes/cloud.md#task-cloud-11), [CLOUD.13](../delivery/lanes/cloud.md#task-cloud-13), [CLOUD.19](../delivery/lanes/cloud.md#task-cloud-19), [CLOUD.31](../delivery/lanes/cloud.md#task-cloud-31), [CLOUD.33](../delivery/lanes/cloud.md#task-cloud-33), [CLOUD.38](../delivery/lanes/cloud.md#task-cloud-38), [CLOUD.40](../delivery/lanes/cloud.md#task-cloud-40), [CLOUD.41](../delivery/lanes/cloud.md#task-cloud-41), [CLOUD.42](../delivery/lanes/cloud.md#task-cloud-42), [CLOUD.43](../delivery/lanes/cloud.md#task-cloud-43), [CLOUD.45](../delivery/lanes/cloud.md#task-cloud-45), [CLOUD.46](../delivery/lanes/cloud.md#task-cloud-46), [CLOUD.47](../delivery/lanes/cloud.md#task-cloud-47), [CLOUD.48](../delivery/lanes/cloud.md#task-cloud-48), [COM.07](../delivery/lanes/commerce.md#task-com-07), [HAR.00](../delivery/lanes/harness.md#task-har-00), [PLT.48](../delivery/lanes/platform.md#task-plt-48), [REL.06](../delivery/lanes/release.md#task-rel-06), [SCOPE.27](../delivery/lanes/arcscope.md#task-scope-27), [SIM.01](../delivery/lanes/simulator.md#task-sim-01), [SIM.03](../delivery/lanes/simulator.md#task-sim-03), [SIM.04](../delivery/lanes/simulator.md#task-sim-04), [SRCH.00](../delivery/lanes/search.md#task-srch-00).
 
 <!-- delivery-graph:end -->
 

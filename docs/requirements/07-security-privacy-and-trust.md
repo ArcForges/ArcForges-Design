@@ -54,9 +54,9 @@ Actor → Delegation → Capability → Resource → Risk → Approval → Audit
 |---|---|
 | <a id="rule-ac-01"></a>AC-01 | **Identity ≠ Actor ≠ Executor ≠ Caller Instance** ([I-230](01-normative-glossary-and-invariants.md#rule-i-230)). All are recorded; none substitutes for another. |
 | <a id="rule-ac-02"></a>AC-02 | Carry the actor chain end to end: workspace owner → authorised Cloud automation/Harness → tool executor → capability owner. No external-agent delegation chain is created. |
-| <a id="rule-ac-03"></a>AC-03 | **The Actor Chain must not be lost across an application boundary.** A capability call arriving at ArcNotes carries the whole chain, not just "ArcChat asked". |
+| <a id="rule-ac-03"></a>AC-03 | **The Actor Chain must not be lost across an application boundary.** A capability call arriving at ArcScope carries the whole chain, not just "ArcChat asked". |
 | <a id="rule-ac-04"></a>AC-04 | **Application identity does not confer user authority** ([I-231](01-normative-glossary-and-invariants.md#rule-i-231)). A trusted software identity establishes what code is running, never what the user is entitled to do. |
-| <a id="rule-ac-05"></a>AC-05 | **First-party application trust is not unlimited permission** ([I-249](01-normative-glossary-and-invariants.md#rule-i-249)). ArcChat being first-party does not let it bypass ArcNotes' authorization. |
+| <a id="rule-ac-05"></a>AC-05 | **First-party application trust is not unlimited permission** ([I-249](01-normative-glossary-and-invariants.md#rule-i-249)). ArcChat being first-party does not let it bypass ArcScope's authorization. |
 
 ---
 
@@ -68,7 +68,7 @@ Actor → Delegation → Capability → Resource → Risk → Approval → Audit
 |---|---|
 | <a id="rule-pm-01"></a>PM-01 | **Capability is the unit of authorization**, not "can this plug-in access the whole application?" |
 | <a id="rule-pm-02"></a>PM-02 | A permission is never a bare boolean pair of principal and capability. It carries **scope** (which resources), **constraints** (conditions), and **lifetime**. |
-| <a id="rule-pm-03"></a>PM-03 | **Capability Permission ≠ Resource Authorization** ([I-238](01-normative-glossary-and-invariants.md#rule-i-238)). Being permitted to use `arcnotes.document.edit` says nothing about whether this specific document may be edited. |
+| <a id="rule-pm-03"></a>PM-03 | **Capability Permission ≠ Resource Authorization** ([I-238](01-normative-glossary-and-invariants.md#rule-i-238)). Being permitted to use `arcscope.annotation.edit` says nothing about whether this specific annotation may be edited. |
 | <a id="rule-pm-04"></a>PM-04 | **The Resource Owner is the final authorization authority.** The owning application checks last, always. |
 | <a id="rule-pm-05"></a>PM-05 | **The application runtime is not a universal ACL database**. Professional resource access rules stay with the owner. |
 | <a id="rule-pm-06"></a>PM-06 | For a **local personal resource**, the local human principal is the default owner and edits directly without a permission prompt per action. Delegated authority — an agent acting for them — is what requires grants. |
@@ -121,7 +121,7 @@ Actor → Delegation → Capability → Resource → Risk → Approval → Audit
 |---|---|---|---|
 | **R0** | Passive / harmless | Navigate, read non-sensitive metadata, query status, open a local resource | Usually no approval; normal resource authorization still applies |
 | **R1** | Normal reversible local action | Create a marker, add a tag, create an ordinary local note, rename a non-sensitive resource, a small reversible edit | Human: executes normally. Agent: allowed inside an explicitly authorised scope |
-| **R2** | Significant / sensitive but recoverable | Bulk document edits, large timeline edits, reading sensitive workspace data, generating many resources, restructuring an important project | Explicit task grant, **impact preview**, **checkpoint**; approval in at least some cases |
+| **R2** | Significant / sensitive but recoverable | Bulk annotation edits, large report edits, reading sensitive workspace data, generating many resources, restructuring an important project | Explicit task grant, **impact preview**, **checkpoint**; approval in at least some cases |
 | **R3** | External / secret / persistent side effect | Sending data to an external provider, publishing, posting an external comment, using a sensitive secret, enabling a persistent write-capable automation, uploading a local resource externally | **Explicit approval.** Persistent grant only at narrow scope with explicit consent |
 | **R4** | Critical / irreversible / security administration | Permanently destroying large canonical data, changing security ownership, revealing credential plaintext, enabling an unverified privileged extension, transferring sensitive data across a trust boundary, disabling a security control, high-impact irreversible external action | **Always explicit.** Usually also step-up authentication, local presence, or workspace-admin authority |
 
@@ -233,7 +233,7 @@ Actor → Delegation → Capability → Resource → Risk → Approval → Audit
 | <a id="rule-tr-03"></a>TR-03 | **Verified Publisher ≠ safe capability** ([I-248](01-normative-glossary-and-invariants.md#rule-i-248)). A verified publisher may still ship a genuinely high-risk capability. |
 | <a id="rule-tr-04"></a>TR-04 | **First-party cannot bypass permission** ([I-249](01-normative-glossary-and-invariants.md#rule-i-249)). |
 | <a id="rule-tr-05"></a>TR-05 | **An unverified package is stricter by default**: reduced default grants, more approvals, and explicit enablement. |
-| <a id="rule-tr-06"></a>TR-06 | **A revoked package stops running**, and **revocation never deletes professional resources** ([I-434](01-normative-glossary-and-invariants.md#rule-i-434), [I-435](01-normative-glossary-and-invariants.md#rule-i-435)). Documents, reports and videos created with it continue to exist. A missing or revoked effect degrades the owning project gracefully with a clear explanation, rather than corrupting it. |
+| <a id="rule-tr-06"></a>TR-06 | **A revoked package stops running**, and **revocation never deletes professional resources** ([I-434](01-normative-glossary-and-invariants.md#rule-i-434), [I-435](01-normative-glossary-and-invariants.md#rule-i-435)). Reports, annotations and findings created with it continue to exist. A missing or revoked effect degrades the owning project gracefully with a clear explanation, rather than corrupting it. |
 | <a id="rule-tr-07"></a>TR-07 | **Developer Mode is not "trust everything"** ([I-271](01-normative-glossary-and-invariants.md#rule-i-271)). It permits running a local unsigned package. It never bypasses permission, secret rules or workspace policy, and developer packages are clearly marked in the interface. |
 | <a id="rule-tr-08"></a>TR-08 | **A package update that expands its permission surface requires renewed consent** ([I-303](01-normative-glossary-and-invariants.md#rule-i-303), [I-304](01-normative-glossary-and-invariants.md#rule-i-304)). |
 | <a id="rule-tr-09"></a>TR-09 | **A trust upgrade never automatically expands permission.** A package becoming verified does not gain grants. |
@@ -333,7 +333,7 @@ A single **Security & Permissions** surface, not an ACL editor for engineers.
 
 | # | Requirement |
 |---|---|
-| <a id="rule-ui-01"></a>UI-01 | **Permissions are shown in product language, not internal capability identifiers.** "May create documents in the Weekly Reports notebook", not `arcnotes.document.create`. |
+| <a id="rule-ui-01"></a>UI-01 | **Permissions are shown in product language, not internal capability identifiers.** "May create annotations in the Weekly Calibration session", not `arcscope.annotation.create`. |
 | <a id="rule-ui-02"></a>UI-02 | **Every permission is directly revocable** from this surface. |
 | <a id="rule-ui-03"></a>UI-03 | **Permission Impact Preview** explains, before granting, what the grant will allow, in concrete terms. |
 | <a id="rule-ui-04"></a>UI-04 | **Trusted Devices is not a "logged-in devices" list.** Trust for remote control is a distinct state, shown distinctly. |
@@ -474,7 +474,7 @@ The technical profile is **`arcforges.content-origin.v1`**, used for newly produ
 | Human-authored new content; deterministic capture, measurement, decoding, extraction, simulation or rendering | Record `nonAi` for new known non-AI content; derived output also inherits contributing input kinds. An agent invoking a deterministic tool does not by itself make its result AI generated. Simulator/synthetic-data labels remain a separate provenance dimension. |
 | Import or historical content without a trustworthy origin record | Record `unknown`; never infer human authorship from missing metadata. Preserve known AI origin from other available evidence. Do not invent a historical generation date or retroactive verification. |
 | Copy, supported import, manual edit, format conversion, proxy, render or export | Retain the union of the contributing units' origin kinds. Manual editing a retained unit cannot clear known AI origin. Removing a whole content unit removes its contribution from the enclosing union; it does not rewrite the unit's historical record. |
-| Mixed content | Mark at message-part, block, attachment, report-section or media-asset granularity, with an enclosing union. A report can contain non-AI measurements and an AI explanation without asserting that the measurements were generated by AI. |
+| Mixed content | Mark at message-part, attachment, report-section or media-asset granularity, with an enclosing union. A report can contain non-AI measurements and an AI explanation without asserting that the measurements were generated by AI. |
 | Unsupported or malformed imported origin | Preserve it inert and show origin as unverified/unknown, together with any independently known AI kinds. An unknown profile cannot be emitted as a newly verified v1 record. |
 
 Origin is content metadata, distinct from the actor/audit chain. Every revision preserves the corresponding payload and its origin atomically. A changed payload creates a new origin record linked to its inputs; regeneration never mutates the earlier record. Editing UI and APIs provide no operation that relabels retained AI content as non-AI. Native and Cloud mutation paths enforce the same rule.
@@ -483,7 +483,7 @@ Origin is content metadata, distinct from the actor/audit chain. Every revision 
 
 Supplier usage is retained under the existing [metering rules](04-commerce-entitlement-and-credits.md#rule-mt-08). Platform marking failure/non-delivery releases the customer's reservation or appends the existing compensating adjustment under [MT-09](04-commerce-entitlement-and-credits.md#rule-mt-09); it cannot fabricate delivered evidence or erase supplier cost. Caller cancellation keeps its separate verified-consumption rule. A metadata retry cannot cause another customer charge.
 
-**Required vectors.** Trace model text through a Notes copy, manual edit and Markdown download; verify the final payload hash and retained AI kinds. Compare deterministic Scope statistics with an AI narrative in the same report. Exercise an unknown legacy import, a marked asset render, lineage truncation, failed marking, corrupt hash, missing export sidecar and a crash before publication. None may produce a falsely completed/unmarked AI deliverable. The technical marker is a machine-detectable origin declaration, not cryptographic proof of authorship or a legal adequacy determination.
+**Required vectors.** Trace model text through an ArcScope annotation copy, manual edit and a Chat JSON/text download; verify the final payload hash and retained AI kinds. Compare deterministic Scope statistics with an AI narrative in the same report. Exercise an unknown legacy import, a marked asset render, lineage truncation, failed marking, corrupt hash, missing export sidecar and a crash before publication. None may produce a falsely completed/unmarked AI deliverable. The technical marker is a machine-detectable origin declaration, not cryptographic proof of authorship or a legal adequacy determination.
 
 **Required gate.** Before first EU market availability: record whether ArcForges adheres to the applicable Code of Practice on transparency of AI-generated content or relies on equivalently adequate alternative means, and assess the defined marking mechanism for each offered artifact type. **Owner:** Security/Privacy Owner, with Product Owner approval. The technical profile above is already decided; this market gate does not defer its design to provider implementation and is not closed by this document.
 
@@ -565,7 +565,7 @@ PrivacyDataInventoryEntry · ProviderRegistryEntry · SubprocessorRegistryEntry
 
 **Package update** — an update expanding declared permissions requires renewed consent.
 
-**Revoked extension** — the extension stops running; documents and projects created with it survive; the affected project explains the missing capability.
+**Revoked extension** — the extension stops running; reports, annotations, findings and projects created with it survive; the affected project explains the missing capability.
 
 **Developer mode** — an unsigned local package runs, is clearly marked, and still cannot bypass permission, secret rules or workspace policy.
 

@@ -165,7 +165,7 @@ Concurrent browser tabs share only their own origin's cookie session. No periodi
 
 ## 11. Non-goals
 
-No ArcNotes/ArcScope/ArcSlate browser editor, public sharing, desktop WebView, browser agent authority, supplier key handling, private policy bundle, or separate Node business backend is introduced. Private operator functions remain outside consumer deployment profiles.
+No ArcScope browser editor, public sharing, desktop WebView, browser agent authority, supplier key handling, private policy bundle, or separate Node business backend is introduced. Private operator functions remain outside consumer deployment profiles.
 
 ## 12. Traceability
 

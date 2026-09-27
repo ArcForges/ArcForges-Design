@@ -7,7 +7,7 @@
 > Phase: J — Platform and client integration
 > Scheduling: this package is an obligation set; its delivery tasks and their typed prerequisites are listed in section 9, generated from the [delivery graph](../delivery/delivery-graph.json) under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018).
 
-> **Goal.** Deliver ArcForges.Update as a real shared producer for all three professional desktop products before final release verification.
+> **Goal.** Deliver ArcForges.Update as the real producer for ArcScope before final release verification.
 
 ## 1. Scope and purpose
 
@@ -170,9 +170,9 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [UPD.05](../delivery/lanes/updater.md#task-upd-05) | [WP-53.04](53-desktop-distribution-and-update.md#rule-wp-53.04) (full) | none |
 | [UPD.06](../delivery/lanes/updater.md#task-upd-06) | [WP-53.05](53-desktop-distribution-and-update.md#rule-wp-53.05) (full) | [PLT.47](../delivery/lanes/platform.md#task-plt-47) (artifact), [FND.05](../delivery/lanes/foundation.md#task-fnd-05) (artifact) |
 | [UPD.07](../delivery/lanes/updater.md#task-upd-07) | [WP-53.07](53-desktop-distribution-and-update.md#rule-wp-53.07) (full) | [CON.16](../delivery/lanes/contracts.md#task-con-16) (contract) |
-| [UPD.08](../delivery/lanes/updater.md#task-upd-08) | [WP-53.90](53-desktop-distribution-and-update.md#rule-wp-53.90) (full) | [PRF.01](../delivery/lanes/runtime-proofs.md#task-prf-01) (artifact), [POL.09](../delivery/lanes/policy.md#task-pol-09) (artifact) |
+| [UPD.08](../delivery/lanes/updater.md#task-upd-08) | [WP-53.90](53-desktop-distribution-and-update.md#rule-wp-53.90) (full) | [PRF.02](../delivery/lanes/runtime-proofs.md#task-prf-02) (artifact), [POL.09](../delivery/lanes/policy.md#task-pol-09) (artifact) |
 
-**Consumers outside this package:** [POL.07](../delivery/lanes/policy.md#task-pol-07), [REL.01](../delivery/lanes/release.md#task-rel-01), [REL.02](../delivery/lanes/release.md#task-rel-02), [REL.03](../delivery/lanes/release.md#task-rel-03), [REL.10](../delivery/lanes/release.md#task-rel-10).
+**Consumers outside this package:** [POL.07](../delivery/lanes/policy.md#task-pol-07), [REL.02](../delivery/lanes/release.md#task-rel-02), [REL.10](../delivery/lanes/release.md#task-rel-10).
 
 <!-- delivery-graph:end -->
 

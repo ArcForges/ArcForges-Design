@@ -21,33 +21,11 @@ The prerequisite evidence **[D-019](../decisions/phase-1-foundation-decisions.md
 
 | Field | Content |
 |---|---|
-| **Evidence** | [`../assurance/reference-coverage/README.md`](../assurance/reference-coverage/README.md) `§Aggregate licence position`. Of six accessible references: AionUi Apache-2.0; AFFiNE **split** MIT / proprietary Enterprise Edition; SiYuan AGPL-3.0; Serial-Studio **dual GPL-3.0-only / commercial with named excluded modules**; ArcVideo and ArcVideoFoundation GPL-3.0-only |
+| **Evidence** | [`../assurance/reference-coverage/README.md`](../assurance/reference-coverage/README.md) `§Aggregate licence position`. Of three accessible references: AionUi Apache-2.0; Serial-Studio **dual GPL-3.0-only / commercial with named excluded modules**; and the StartArcForges distribution reference |
 | **Affected statement** | The provenance document's framing implied that per-product licence audits might clear material for reuse, making `Copy`, `Rewrite` or `Improve` dispositions plausible outcomes |
 | **Correction** | **No matrix row proposes reuse.** The accepted dispositions permit behavioural reference and record exclusions; none permits source reuse. Every product is an original implementation informed by behavioural evidence. Recorded as the aggregate position in the matrix set README |
-| **Downstream consumers** | [WP-15](work-packages/15-arcchat-conversation-core.md#rule-wp-15), [WP-18](work-packages/18-arcnotes-document-core.md#rule-wp-18), [WP-33](work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33), [WP-36](work-packages/36-arcslate-project-and-timeline.md#rule-wp-36) — each package's first binding rule now states the matrix is a consumed input with no reuse authorised; [WP-00.03](work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.03)'s provenance process remains. No reference-matrix reuse is pending; existing third-party or generated material in the current implementation repositories still requires the [current-repository provenance audit](../assurance/reference-coverage-and-provenance.md#31-current-repository-implementation-profile) |
+| **Downstream consumers** | [WP-15](work-packages/15-arcchat-conversation-core.md#rule-wp-15), [WP-33](work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) — each package's first binding rule now states the matrix is a consumed input with no reuse authorised; [WP-00.03](work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.03)'s provenance process remains. No reference-matrix reuse is pending; existing third-party or generated material in the current implementation repositories still requires the [current-repository provenance audit](../assurance/reference-coverage-and-provenance.md#31-current-repository-implementation-profile) |
 | **Verification** | The completeness check in each matrix asserts *"any row proposing reuse carries a provenance obligation"* and records **Not applicable — no row proposes reuse** |
-
-<a id="rule-r-02"></a>
-### R-02 — AFFiNE's server subtree is proprietary
-
-| Field | Content |
-|---|---|
-| **Evidence** | [`arcnotes-affine-siyuan.md`](../assurance/reference-coverage/arcnotes-affine-siyuan.md) `§2.1`. The root `LICENSE` delegates `packages/backend/**` and `packages/common/native/**` to `packages/backend/server/LICENSE`, which opens *"The AFFiNE Enterprise Edition (EE) license"* |
-| **Affected statement** | A repository-root reading would have concluded "MIT" for the whole repository |
-| **Correction** | Those two subtrees are **permanently ineligible** for reuse and were deliberately **not read beyond their licence file**, to avoid contamination with no offsetting benefit. Rows [AN-18](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-an-18) and [AN-19](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-an-19) record it |
-| **Downstream consumers** | [WP-18](work-packages/18-arcnotes-document-core.md#rule-wp-18), [WP-25](work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) — sync-shape evidence comes only from the MIT `packages/common/{nbstore,realtime,s3-compat}`, not from the server |
-| **Verification** | [MT-02](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-mt-02) of that matrix requires the licence split to be re-verified on every drift check, because a subtree licence can change upstream |
-
-<a id="rule-r-03"></a>
-### R-03 — ArcNotes slides have no reference evidence
-
-| Field | Content |
-|---|---|
-| **Evidence** | [`arcnotes-affine-siyuan.md`](../assurance/reference-coverage/arcnotes-affine-siyuan.md) [F-AN-2](../assurance/reference-coverage/arcnotes-affine-siyuan.md#rule-f-an-2). Neither AFFiNE nor SiYuan implements a presentation mode |
-| **Affected statement** | [WP-29](work-packages/29-arcnotes-slides.md#rule-wp-29) was written assuming reference oracles comparable to its sibling packages [WP-27](work-packages/27-arcnotes-edgeless-canvas.md#rule-wp-27) and [WP-28](work-packages/28-arcnotes-properties-and-views.md#rule-wp-28) |
-| **Correction** | Historical first-party slides-oracle requirement superseded by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006): slides are excluded and the package is retired, with no future hook. The reference observation is preserved. |
-| **Downstream consumers** | Current Notes core/property packages implement the amended notebook scope. No live slides-oracle work or slides-parity claim is assigned to release. |
-| **Verification** | The completeness check in that matrix records **[D-006](../decisions/phase-1-foundation-decisions.md#rule-d-006)** phase coverage explicitly, naming slides as an absence |
 
 <a id="rule-r-04"></a>
 ### R-04 — Serial-Studio creates an authorship boundary
@@ -59,52 +37,6 @@ The prerequisite evidence **[D-019](../decisions/phase-1-foundation-decisions.md
 | **Correction** | Three capability areas were **deliberately not read**. Rows [AS-03](../assurance/reference-coverage/arcscope-serial-studio.md#rule-as-03), [AS-14](../assurance/reference-coverage/arcscope-serial-studio.md#rule-as-14) and [AS-27](../assurance/reference-coverage/arcscope-serial-studio.md#rule-as-27) are accepted exclusions on licence grounds, with the non-reading recorded so a later reader does not mistake it for incomplete review |
 | **Downstream consumers** | [WP-33](work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33), [WP-34](work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34) — no ArcScope capability may derive from those modules' expression |
 | **Verification** | [MT-02](../assurance/reference-coverage/arcscope-serial-studio.md#rule-mt-02) of that matrix requires the §4 Pro-module list to be re-read on every drift check, because a feature can move into or out of it |
-
-<a id="rule-r-05"></a>
-### R-05 — ArcVideoFoundation is not a reusable core
-
-| Field | Content |
-|---|---|
-| **Evidence** | [`arcslate-arcvideo.md`](../assurance/reference-coverage/arcslate-arcvideo.md) [AL-30](../assurance/reference-coverage/arcslate-arcvideo.md#rule-al-30). The complete tree is **10 source files and 17 headers** — rational, timecode, timerange, bezier, colour, math, string, value, log, sample buffer, audio params, pixel format. Its README describes a *"fat core"*; the tree is a thin utility layer with no timeline, media, render-graph or project model |
-| **Affected statement** | Any planning assumption that a substantial reusable core existed for ArcSlate |
-| **Correction** | Recorded as an evidence-versus-claim finding. [WP-36](work-packages/36-arcslate-project-and-timeline.md#rule-wp-36) and [WP-37](work-packages/37-arcslate-playback-and-processing.md#rule-wp-37) plan original implementations, which the evidence now shows is necessary rather than merely chosen |
-| **Downstream consumers** | [WP-36](work-packages/36-arcslate-project-and-timeline.md#rule-wp-36), [WP-37](work-packages/37-arcslate-playback-and-processing.md#rule-wp-37) |
-| **Verification** | [MT-02](../assurance/reference-coverage/arcslate-arcvideo.md#rule-mt-02) of that matrix re-checks [AL-30](../assurance/reference-coverage/arcslate-arcvideo.md#rule-al-30) on drift: if the Foundation grows into the core its README describes, the assumption changes |
-
-<a id="rule-r-06"></a>
-### R-06 — ArcSlate's reference baseline narrowed to the two actual repositories
-
-| Field | Content |
-|---|---|
-| **Evidence** | [`arcslate-arcvideo.md`](../assurance/reference-coverage/arcslate-arcvideo.md) `§2`. No Olive repository existed at the authorized reference-map location. ArcVideo's `README.md` (lines 12, 20, 98) documents it as a fork of Olive, and it is the buildable codebase |
-| **Affected statement** | **[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)**'s reference map listed Olive as a third ArcSlate reference; the plan assumed all three were available |
-| **Correction** | **User decision [P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005), 2026-09-05**: ArcSlate's direct references are **ArcVideo and ArcVideoFoundation**; no Olive repository is to be obtained or independently reviewed. Olive could not be built in the user's environment and ArcVideo carries the modifications that made it build. **[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** is amended by dated record; the Olive-direct audit scope and the missing-repository blocker are removed; [OC-01](../assurance/open-gates-register.md#rule-oc-01) is closed |
-| **What was deliberately not removed** | **Olive-origin provenance.** ArcVideo's GPL-3.0 obligations, upstream copyright and attribution to the Olive authors are retained wherever inherited material requires them (`§3.1` of that matrix; [LP-02](../assurance/reference-coverage/arcslate-arcvideo.md#rule-lp-02)). Matrix rows previously labelled *(Olive-derived)* now read *(upstream-derived)* — an attribution note about ArcVideo's own tree, not a claim about an Olive repository |
-| **Downstream consumers** | [WP-36](work-packages/36-arcslate-project-and-timeline.md#rule-wp-36)–[WP-39](work-packages/39-arcslate-integration-and-portability.md#rule-wp-39); [`../assurance/reference-coverage-and-provenance.md`](../assurance/reference-coverage-and-provenance.md) `§1.1`, `§2.2`, `§7`; [`../requirements/products/arcslate.md`](../requirements/products/arcslate.md) `§1`; [`../requirements/00-product-scope-and-portfolio.md`](../requirements/00-product-scope-and-portfolio.md) `§9` |
-| **Verification** | The matrix completeness check now records **0 unresolved determinations**; the gates register records [OC-01](../assurance/open-gates-register.md#rule-oc-01) closed; no document claims Olive coverage or requires an Olive checkout |
-
-<a id="rule-r-07"></a>
-### R-07 — Native NOTICE obligation extends to native assets
-
-| Field | Content |
-|---|---|
-| **Evidence** | [`distribution-startarcforges.md`](../assurance/reference-coverage/distribution-startarcforges.md) [SD-06](../assurance/reference-coverage/distribution-startarcforges.md#rule-sd-06). The native reference product bundles OpenColorIO, OpenEXR, OpenImageIO, Imath, Iex and IlmThread DLLs with **no aggregated notice file**, while the Electron products all ship runtime notices |
-| **Affected statement** | [WP-50.01](work-packages/50-full-platform-production-release.md#rule-wp-50.01)'s NOTICE verification was scoped implicitly to managed packages |
-| **Correction** | **[WP-50.01](work-packages/50-full-platform-production-release.md#rule-wp-50.01) explicitly covers native assets.** ArcSlate and ArcScope will bundle the same dependency classes |
-| **Downstream consumers** | [WP-50.01](work-packages/50-full-platform-production-release.md#rule-wp-50.01), and [PG-03](../assurance/open-gates-register.md#rule-pg-03)'s per-product native licence review |
-| **Verification** | [SP-09](../architecture/14-build-packaging-and-release.md#rule-sp-09) of the build architecture already requires native assets to carry the same signing, SBOM and provenance rules; this makes the NOTICE half explicit at the gate |
-
-<a id="rule-r-08"></a>
-
-### R-08 — The crash handler is a signed release artifact
-
-| Field | Content |
-|---|---|
-| **Evidence** | [`distribution-startarcforges.md`](../assurance/reference-coverage/distribution-startarcforges.md) [SD-07](../assurance/reference-coverage/distribution-startarcforges.md#rule-sd-07). The native reference ships `crashpad_handler.exe` and `arcvideo-crashhandler.exe` as separate processes |
-| **Affected statement** | [WP-50.02](work-packages/50-full-platform-production-release.md#rule-wp-50.02)'s packaging matrix treated crash handling as an implementation detail |
-| **Correction** | The crash handler is its own signed, versioned artifact in the packaging matrix |
-| **Downstream consumers** | [WP-50.02](work-packages/50-full-platform-production-release.md#rule-wp-50.02), [WP-12.05](work-packages/12-observability-foundation.md#rule-wp-12.05) |
-| **Verification** | The release matrix enumerates signed artifacts; the crash handler appears in it |
 
 ---
 
@@ -154,7 +86,7 @@ Historical revision record: current transport, generated-code and repository rul
 | **Evidence** | There, `§5.2`. Each of the six shims contains **2–3 files, 28–120 lines**, exposing only the version / build-info / last-error triple. Total across all six plus shared: ~514 lines |
 | **Affected statement** | The earlier framing — "a broader native surface than the architecture illustrates" — implied six implemented surfaces |
 | **Correction** | They are six **named placeholders** sharing one ABI convention. Four are `Keep`; **two are `Fence`** pending substitute analyses: `arcslate-otio-abi` and `arcscope-mdf-abi`, where a managed substitute is plausible and the native architecture permits native code only where none exists |
-| **Downstream consumers** | [WP-01.03](work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.03) (fencing), [WP-35.04](work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04) and [WP-39.05](work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.05) (the substitute analyses), [WP-37.00](work-packages/37-arcslate-playback-and-processing.md#rule-wp-37.00) (the shims that stay) |
+| **Downstream consumers** | [WP-01.03](work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.03) (fencing), [WP-35.04](work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04) (the `arcscope-mdf-abi` substitute analysis) |
 | **Verification** | [WP-01.03](work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.03)'s gate asserts the two fenced shims are unreferenceable and their analyses are scheduled against named sub-steps |
 
 <a id="rule-r-13"></a>
@@ -194,7 +126,7 @@ Historical revision record: current transport, generated-code and repository rul
 
 | Field | Content |
 |---|---|
-| **Evidence** | [`../assurance/invariant-coverage.md`](../assurance/invariant-coverage.md) `§1`, `§2`. 589 raw corpus lines → 484 unique statements → **421 catalogue rows**, with identifiers reaching [I-490](../requirements/01-normative-glossary-and-invariants.md#rule-i-490) because each section reserves headroom |
+| **Evidence** | [`../assurance/invariant-coverage.md`](../assurance/invariant-coverage.md) `§1`, `§2`. 589 raw corpus lines → 484 unique statements → **421 catalogue rows**, with identifiers reaching I-490 because each section reserves headroom |
 | **Affected statement** | Every document stating "roughly 490 invariants" read the highest identifier as a count |
 | **Correction** | The count is 421. The 72 identifier gaps are **deliberate per-section reserved headroom**, evidenced by a table showing each section's last used identifier and its reserved range |
 | **Downstream consumers** | [WP-00.01](work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.01), [WP-05.05](work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.05), [`../assurance/traceability-matrix.md`](../assurance/traceability-matrix.md) |
@@ -207,7 +139,7 @@ Historical revision record: current transport, generated-code and repository rul
 |---|---|
 | **Evidence** | There, `§3.3`. Present in the corpus, absent from the catalogue |
 | **Affected statement** | The catalogue's completeness |
-| **Correction** | Added in their sections' reserved ranges: [I-077](../requirements/01-normative-glossary-and-invariants.md#rule-i-077) ArtifactRef ≠ Permission Token; [I-224](../requirements/01-normative-glossary-and-invariants.md#rule-i-224) Project Reference ≠ Resource Copy; [I-405](../requirements/01-normative-glossary-and-invariants.md#rule-i-405) Push Notification ≠ Durable Attention State; [I-490](../requirements/01-normative-glossary-and-invariants.md#rule-i-490) ArcSlate Sequence ≠ Timeline Clip |
+| **Correction** | Added in their sections' reserved ranges: [I-077](../requirements/01-normative-glossary-and-invariants.md#rule-i-077) ArtifactRef ≠ Permission Token; [I-224](../requirements/01-normative-glossary-and-invariants.md#rule-i-224) Project Reference ≠ Resource Copy; [I-405](../requirements/01-normative-glossary-and-invariants.md#rule-i-405) Push Notification ≠ Durable Attention State |
 | **Downstream consumers** | [WP-00.01](work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.01)'s export; the owning packages named in the coverage mapping |
 | **Verification** | Re-running the accounting after the additions reduced unaccounted statements to five, each then individually confirmed as a phrasing variant of a catalogued row |
 
@@ -241,7 +173,7 @@ Historical revision record: current transport, generated-code and repository rul
 
 | Revision | Verification | Result |
 |---|---|---|
-| [R-01](#rule-r-01) – [R-08](#rule-r-08) | Each matrix's completeness check, run per matrix | 145 rows, 0 unresolved except [OC-01](../assurance/open-gates-register.md#rule-oc-01) |
+| [R-01](#rule-r-01), [R-04](#rule-r-04) | Each matrix's completeness check, run per matrix | 69 rows, 0 unresolved |
 | [R-09](#rule-r-09) – [R-14](#rule-r-14) | The reconciliation completeness check | 166 of 166 projects; 6 of 6 shims; 6 corrections recorded |
 | [R-15](#rule-r-15) – [R-17](#rule-r-17) | The invariant accounting re-run after the additions | 484 of 484 statements accounted for; 421 of 421 mapped **at that revision** — superseded, see the banner on [R-15](#rule-r-15); the current figure is **429 of 429** |
 | All | Link and identifier integrity across `docs/` | Reported in the closure summary |

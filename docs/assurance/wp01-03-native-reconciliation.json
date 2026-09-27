@@ -33,22 +33,8 @@
   ],
   "productScans": [
     {
-      "repository": "ArcNotes",
-      "commit": "e40423a1b14ce8341de35748cc2a093c7c9b77a7",
-      "clean": true,
-      "scope": "src",
-      "matches": 0
-    },
-    {
       "repository": "ArcScope",
       "commit": "d247dcff36fd1123a70e5e59967a9b2294a2eeac",
-      "clean": true,
-      "scope": "src",
-      "matches": 0
-    },
-    {
-      "repository": "ArcSlate",
-      "commit": "b0d255f54fb560a534cc493d5645ca4bc7b4bd0e",
       "clean": true,
       "scope": "src",
       "matches": 0
@@ -75,7 +61,7 @@
     "engineeringTests": 63,
     "toolingTests": 41,
     "negativeDuplicateImport": "rejected",
-    "inventory": "9 owners, 75 projects, 166 historical projects, 359 directories, 7 native entries"
+    "inventory": "7 owners, 67 projects, 166 historical projects, 359 directories, 7 native entries"
   },
   "limits": [
     "bounded lexical binding guard",

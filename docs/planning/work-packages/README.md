@@ -7,7 +7,7 @@ Execution follows [P2-018](../../decisions/phase-2-specification-decisions.md#ru
 > Governing authority: **[D-017](../../decisions/phase-1-foundation-decisions.md#rule-d-017)** (numbered implementation work packages belong here), [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018) (task-level scheduling)
 > Companions: [`../delivery/README.md`](../delivery/README.md), [`../implementation-sequence.md`](../implementation-sequence.md), [`../../assurance/release-gates.md`](../../assurance/release-gates.md), [`../../assurance/open-gates-register.md`](../../assurance/open-gates-register.md)
 
-**51 active obligation packages are identified in `00`–`53`; `20` is future-only; `27` and `29` are retired.** Each package defines what must be done, tested and accepted. Scheduling is task-level: each package's section 9 lists the delivery tasks that satisfy it, generated from the [delivery graph](../delivery/delivery-graph.json), and [traceability](../delivery/traceability.md) maps every substep to its tasks.
+**44 active obligation packages are identified in `00`–`53`; `18`, `19`, `20`, `27`, `28`, `29` and `36`–`39` are retired identifiers with no package.** Each package defines what must be done, tested and accepted. Scheduling is task-level: each package's section 9 lists the delivery tasks that satisfy it, generated from the [delivery graph](../delivery/delivery-graph.json), and [traceability](../delivery/traceability.md) maps every substep to its tasks.
 
 The number is an identity, not a schedule. No package waits for another package; a task waits only for the specific tasks named in its prerequisites.
 
@@ -51,14 +51,6 @@ Phases group packages for reading only.
 | 16 | [Unified Execution Engine](16-unified-execution-engine.md) |
 | 17 | [Complete Embedded Assistant and Cloud Client Surface](17-arcchat-independent-core.md) |
 
-### Phase D — ArcNotes core
-
-| # | Work package |
-|---|---|
-| 18 | [ArcNotes Document Core](18-arcnotes-document-core.md) |
-| 19 | [ArcNotes Search, Import, Export and Portability](19-arcnotes-search-and-portability.md) |
-| 20 | [Cross-Product Collaboration — FUTURE](20-first-cross-product-workflow.md) |
-
 ### Phase E — First real cloud
 
 | # | Work package |
@@ -69,12 +61,6 @@ Phases group packages for reading only.
 | 24 | [gRPC-Web Streams and Durable Event Recovery](24-realtime-and-reliable-events.md) |
 | 25 | [Sync Engine and Blob Lifecycle](25-sync-engine-and-blob-lifecycle.md) |
 | 26 | [Application Presence and One-Application Tool Bridge](26-remote-action-and-tool-bridge.md) |
-
-### Phase F — ArcNotes completion
-
-| # | Work package |
-|---|---|
-| 28 | [ArcNotes Bounded Properties and Saved Views](28-arcnotes-properties-and-views.md) |
 
 ### Phase G — Mobile shared foundation
 
@@ -89,15 +75,6 @@ Phases group packages for reading only.
 | 33 | [ArcScope Acquisition and Session Core](33-arcscope-acquisition-and-session.md) |
 | 34 | [ArcScope Visualisation, Analysis and Reporting](34-arcscope-analysis-and-reporting.md) |
 | 35 | [ArcScope Integration and Metadata Sync](35-arcscope-integration-and-sync.md) |
-
-### Phase I — ArcSlate
-
-| # | Work package |
-|---|---|
-| 36 | [ArcSlate Project, Timeline and Media Model](36-arcslate-project-and-timeline.md) |
-| 37 | [ArcSlate Playback and Processing Runtime](37-arcslate-playback-and-processing.md) |
-| 38 | [ArcSlate Render, Export and Colour Management](38-arcslate-render-and-colour.md) |
-| 39 | [ArcSlate Integration and Portability](39-arcslate-integration-and-portability.md) |
 
 ### Phase J — Platform and client integration
 
@@ -124,7 +101,7 @@ Phases group packages for reading only.
 | 49 | [ArcChat Web Companion](49-arcchat-web-companion.md) |
 | 50 | [Full-Platform Production Release](50-full-platform-production-release.md) |
 
-`27` (canvas) and `29` (slides) are retired; their identifiers are not reused. [WP-20](20-first-cross-product-workflow.md#rule-wp-20) is future-only and has no delivery tasks.
+`27` (canvas) and `29` (slides) are retired under [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006); `18`, `19`, `20`, `28` and `36`–`39` are retired under [P2-019](../../decisions/phase-2-specification-decisions.md#rule-p2-019). None of these identifiers is reused, and none has a package file in this repository.
 
 ---
 
@@ -138,7 +115,7 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 
 | Gate | Satisfied in |
 |---|---|
-| **[F-013](../../assurance/open-gates-register.md#rule-f-013)** — reference licence determinations | **Closed 2026-09-05 by design-stage evidence** — the five matrices in [`../../assurance/reference-coverage/`](../../assurance/reference-coverage/README.md). Drift maintenance only: `15.07`, `18.08`, `33.07`, `36.07` |
+| **[F-013](../../assurance/open-gates-register.md#rule-f-013)** — reference licence determinations | **Closed 2026-09-05 by design-stage evidence** — the three matrices in [`../../assurance/reference-coverage/`](../../assurance/reference-coverage/README.md). Drift maintenance only: `15.07`, `33.07` |
 | **[F-023](../../assurance/open-gates-register.md#rule-f-023)** — mobile provenance and dependency closure | 06.07 before first artifact; 30.00 on change; 32.02 final closure |
 | **[F-026](../../assurance/open-gates-register.md#rule-f-026)** — typed HTTP client AOT packaging | 03.02, 06.02 |
 | **[VG-01](../../assurance/open-gates-register.md#rule-vg-01)** — AI transparency marking | 43 |
@@ -154,28 +131,26 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 | **[VG-11](../../assurance/open-gates-register.md#rule-vg-11)** — payout eligibility and currency | 42 |
 | **[VG-12](../../assurance/open-gates-register.md#rule-vg-12)** — regional enablement gates (conditional) | 42 |
 | **[VG-13](../../assurance/open-gates-register.md#rule-vg-13)** — store category fit and consumption-only | 32 |
-| **[PG-01](../../assurance/open-gates-register.md#rule-pg-01)** — per-product Reference Coverage Matrix | **Closed 2026-09-05 by design-stage evidence.** Registered as versioned inputs in `00.04`; drift maintenance in `15.07`, `18.08`, `33.07`, `36.07` |
+| **[PG-01](../../assurance/open-gates-register.md#rule-pg-01)** — per-product Reference Coverage Matrix | **Closed 2026-09-05 by design-stage evidence.** Registered as versioned inputs in `00.04`; drift maintenance in `15.07`, `33.07` |
 | **[PG-02](../../assurance/open-gates-register.md#rule-pg-02)** — item-level reconciliation inventory | **Closed 2026-09-05 by design-stage evidence** — [`../../assurance/implementation-state-reconciliation.md`](../../assurance/implementation-state-reconciliation.md). Drift validation in `01.00`; disposition execution in `01.01`–`01.05` |
-| **[PG-03](../../assurance/open-gates-register.md#rule-pg-03)** — native dependency licence review | 13.04, 33, 35.04, 37.00, 39.05; each admitted native dependency has its licence/substitute-analysis evidence |
+| **[PG-03](../../assurance/open-gates-register.md#rule-pg-03)** — native dependency licence review | 13.04, 33, 35.04; each admitted native dependency has its licence/substitute-analysis evidence |
 | **[PG-04](../../assurance/open-gates-register.md#rule-pg-04)** — runbook rehearsal evidence | 45 |
 | **[PG-05](../../assurance/open-gates-register.md#rule-pg-05)** — telemetry redaction proof | 12 |
 | **[PG-06](../../assurance/open-gates-register.md#rule-pg-06)** — design-stage invariant traceability | **Closed 2026-09-05 by design-stage evidence** — [`../../assurance/invariant-coverage.md`](../../assurance/invariant-coverage.md) `§7`, **429 of 429** mapped after [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006) added [I-491](../../requirements/01-normative-glossary-and-invariants.md#rule-i-491)–[I-498](../../requirements/01-normative-glossary-and-invariants.md#rule-i-498) |
 | **[PG-11](../../assurance/open-gates-register.md#rule-pg-11)** — implementation-stage invariant enforcement | **Open.** Distributed across the owning packages named in the coverage mapping; accounting reported by `05.05`, which closes neither gate |
-| **[PG-07](../../assurance/open-gates-register.md#rule-pg-07)** — format fixture completeness | 19.04 (Notes import), 35.04, 39.05; real Cloud Notes/Chat export separately closes at 25.08 |
-| **[PG-08](../../assurance/open-gates-register.md#rule-pg-08)** — hardware lab inventory | 13 establishes inventory; 33, 34, 37, 38 bind each hardware result to it |
+| **[PG-07](../../assurance/open-gates-register.md#rule-pg-07)** — format fixture completeness | 35.04 (ArcScope import fixtures); real Cloud Chat export separately closes at 25.08 |
+| **[PG-08](../../assurance/open-gates-register.md#rule-pg-08)** — hardware lab inventory | 13 establishes inventory; 33, 34 bind each hardware result to it |
 | **[PG-09](../../assurance/open-gates-register.md#rule-pg-09)** — extension protocol conformance | 41 |
 | **[PG-10](../../assurance/open-gates-register.md#rule-pg-10)** — provider test-environment coverage | 42, 43 |
-| **[PG-12](../../assurance/open-gates-register.md#rule-pg-12)** — PDF dependency and containment | 11.09, 13.13, 18.04 |
+| **[PG-12](../../assurance/open-gates-register.md#rule-pg-12)** — PDF dependency and containment | 11.09, 13.13 |
 | **[PG-13](../../assurance/open-gates-register.md#rule-pg-13)** — real-provider metering | 43.07, 42.11 |
 | **[PG-14b](../../assurance/open-gates-register.md#rule-pg-14b)** — real Cloud simulator | 51 |
-| **[PG-15](../../assurance/open-gates-register.md#rule-pg-15)** — bidirectional OTIO | 39.05 |
 | **[PG-16](../../assurance/open-gates-register.md#rule-pg-16)** — configuration activation | 44.01, 42.11 |
 | **[PG-17](../../assurance/open-gates-register.md#rule-pg-17)** — feed publication and bootstrap | 21.05, 25.02, 25.07 |
 | **[PG-18](../../assurance/open-gates-register.md#rule-pg-18)** — uncertain-effect resolution | 52.02, 52.04 |
 | **[PG-19](../../assurance/open-gates-register.md#rule-pg-19)** — versioned migration and cutover | 21.03, 50.04 |
-| **[PG-20](../../assurance/open-gates-register.md#rule-pg-20)** — time model and official OTIO boundary | 36.01, 37.04, 39.05 |
 | **[PG-21](../../assurance/open-gates-register.md#rule-pg-21)** — current design citation integrity | Current corpus closed by [repair verification](../../assurance/design-repair-verification.md); continuing drift check in 00.01 |
-| **[PG-22](../../assurance/open-gates-register.md#rule-pg-22)** — OS-enforced content/extension isolation | 11.09, 13.13, 18.04, 37.01, 41.00 |
+| **[PG-22](../../assurance/open-gates-register.md#rule-pg-22)** — OS-enforced content/extension isolation | 11.09, 13.13, 41.00 |
 | **[PG-23](../../assurance/open-gates-register.md#rule-pg-23)** — commercial Web | 06.05, 22.08, 23.05, 24.06, 47, 48, 49, 50.06; combine all applicable producer evidence |
 | **[PG-24](../../assurance/open-gates-register.md#rule-pg-24)** — real Android push | 45.09 live sender;32 physical receipt and fallback |
 
@@ -192,13 +167,13 @@ The contributing delivery tasks for each gate are listed in [gate traceability](
 - A task that discovers a genuine architecture conflict stops and raises it (**[D-001](../../decisions/phase-1-foundation-decisions.md#rule-d-001)**); it does not resolve it locally.
 - **A package never re-creates a completed baseline audit.** The reference matrices and the code inventory are versioned planning inputs; tasks consume them and check for drift ([`../evidence-driven-revisions.md`](../evidence-driven-revisions.md)).
 - Implementation ownership is per task: any number of workers may execute different ready tasks concurrently under atomic claims, with merges coordinated by each repository's integration owner ([DLV-26](../delivery/README.md#rule-dlv-26), [DLV-29](../delivery/README.md#rule-dlv-29)).
-- **A package identifier is stable and never reused.** `27` and `29` are retired by [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006); their files remain as retirement records so an older citation resolves to an explanation rather than a broken reference.
+- **A package identifier is stable and never reused.** `18`, `19`, `20`, `27`, `28`, `29` and `36`–`39` are retired — `27` and `29` by [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006), the rest by [P2-019](../../decisions/phase-2-specification-decisions.md#rule-p2-019) — and none of their identifiers is reused; no file remains at these numbers, and an older citation to one no longer resolves within this repository.
 - **Numbering is allocation order, not execution order.** `00`–`50` were allocated when the obligations were derived and `51`–`53` were added later.
 
 
 ## [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) package boundaries
 
-The 51 active packages keep their accepted scope; WP20 is future-only; WP27/29 remain retired. Package numbering and anchors are stable; titles and runtime/contract responsibilities reflect [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009). The `.90` substeps are the explicit repository and integration acceptance attached to inherited domain work; each package's closure task depends on every other task mapped to the package.
+The 44 active packages keep their accepted scope; `18`, `19`, `20`, `27`, `28`, `29` and `36`–`39` remain retired identifiers with no package. Package numbering and anchors are stable; titles and runtime/contract responsibilities reflect [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009). The `.90` substeps are the explicit repository and integration acceptance attached to inherited domain work; each package's closure task depends on every other task mapped to the package.
 
 
 [Producer artifacts and real integration](../producer-artifacts-and-integration.md) defines each package's producer outputs, permitted substitutes and real replacement evidence.

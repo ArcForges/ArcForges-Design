@@ -20,7 +20,7 @@
 
 **Out of scope.** Device control. Cloud-side analysis execution.
 
-**Why this package exists.** [I-474](../../requirements/01-normative-glossary-and-invariants.md#rule-i-474) states plainly that cloud sync is not raw capture upload. This package is where that invariant becomes structural rather than a policy note, and where the sync engine's scope model ([WP-25.00](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.00)) is proven against a real exclusion requirement.
+**Why this package exists.** [I-474](../../requirements/01-normative-glossary-and-invariants.md#rule-i-474) states plainly that cloud sync is not raw capture upload. This package is where that invariant becomes structural rather than a policy note, and where the sync engine's scope model ([WP-25.02](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.02)) is proven against a real exclusion requirement.
 
 ---
 
@@ -230,7 +230,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [SCOPE.26](../delivery/lanes/arcscope.md#task-scope-26) | [WP-35.90](35-arcscope-integration-and-sync.md#rule-wp-35.90) (full) | none |
 | [SCOPE.27](../delivery/lanes/arcscope.md#task-scope-27) | [WP-35.02](35-arcscope-integration-and-sync.md#rule-wp-35.02) (real-integration evidence: metadata sync scope converges against deployed Cloud authority) | [CLOUD.39](../delivery/lanes/cloud.md#task-cloud-39) (artifact), [CLOUD.44](../delivery/lanes/cloud.md#task-cloud-44) (artifact) |
 
-**Consumers outside this package:** [REL.02](../delivery/lanes/release.md#task-rel-02), [SIM.06](../delivery/lanes/simulator.md#task-sim-06), [SIM.09](../delivery/lanes/simulator.md#task-sim-09).
+**Consumers outside this package:** [CLOUD.44](../delivery/lanes/cloud.md#task-cloud-44), [CLOUD.47](../delivery/lanes/cloud.md#task-cloud-47), [HAR.05](../delivery/lanes/harness.md#task-har-05), [REL.02](../delivery/lanes/release.md#task-rel-02), [SIM.06](../delivery/lanes/simulator.md#task-sim-06), [SIM.09](../delivery/lanes/simulator.md#task-sim-09).
 
 <!-- delivery-graph:end -->
 

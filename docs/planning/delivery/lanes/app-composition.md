@@ -2,15 +2,15 @@
 
 > Generated from [the delivery graph](../delivery-graph.json) by Plan `tools/delivery.py`; do not edit by hand. Rules and definitions: [delivery model](../README.md).
 
-Independent application composition, typed host ports and the minimal ArcNotes services that prove them.
+Independent application composition, typed host ports and the minimal ArcScope services that prove them.
 
-Tasks: 8 · Owning repositories: ArcNotes, DesktopPlatform · Integration owner(s): ArcNotes integration owner, DesktopPlatform integration owner
+Tasks: 8 · Owning repositories: ArcScope, DesktopPlatform · Integration owner(s): ArcScope integration owner, DesktopPlatform integration owner
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
 | [APP.01](#task-app-01) | Assistant.Abstractions host ports and application identity | producer | M | [CON.02](contracts.md#task-con-02) (contract), [PLT.17](platform.md#task-plt-17) (artifact), [FND.01](foundation.md#task-fnd-01) (artifact) | not-started |
-| [APP.02](#task-app-02) | Minimal ArcNotes application services (read/create/append) | producer | M | [APP.01](#task-app-01) (artifact), [PLT.24](platform.md#task-plt-24) (artifact), [PLT.38](platform.md#task-plt-38) (artifact) | not-started |
-| [APP.03](#task-app-03) | Clean Native AOT package-consumer composition for ArcNotes | producer | S | [APP.01](#task-app-01) (artifact), [APP.02](#task-app-02) (artifact), [PRF.04](runtime-proofs.md#task-prf-04) (artifact), [NAT.01](native.md#task-nat-01) (artifact) | not-started |
+| [APP.02](#task-app-02) | Minimal ArcScope application services (read/create/append annotations) | producer | M | [APP.01](#task-app-01) (artifact), [PLT.24](platform.md#task-plt-24) (artifact), [PLT.38](platform.md#task-plt-38) (artifact) | not-started |
+| [APP.03](#task-app-03) | Clean Native AOT package-consumer composition for ArcScope | producer | S | [APP.01](#task-app-01) (artifact), [APP.02](#task-app-02) (artifact), [PRF.04](runtime-proofs.md#task-prf-04) (artifact), [NAT.01](native.md#task-nat-01) (artifact) | not-started |
 | [APP.04](#task-app-04) | Idempotency and revision against the real store | producer | S | [APP.02](#task-app-02) (artifact), [FND.02](foundation.md#task-fnd-02) (artifact), [FND.03](foundation.md#task-fnd-03) (artifact) | not-started |
 | [APP.05](#task-app-05) | Approval at the owner | producer | M | [APP.01](#task-app-01) (artifact), [PLT.39](platform.md#task-plt-39) (artifact) | not-started |
 | [APP.06](#task-app-06) | Context and artifact integration | producer | M | [APP.01](#task-app-01) (artifact), [PLT.21](platform.md#task-plt-21) (artifact), [PLT.22](platform.md#task-plt-22) (artifact), [PLT.41](platform.md#task-plt-41) (artifact) | not-started |
@@ -35,7 +35,7 @@ Tasks: 8 · Owning repositories: ArcNotes, DesktopPlatform · Integration owner(
 | Start prerequisites | **contract** [CON.02](contracts.md#task-con-02) — published capability/resource contract records (descriptor/risk/context shapes). *Why:* host port signatures (IHostResources/IHostActions) are typed against these Contracts records<br>**artifact** [PLT.17](platform.md#task-plt-17) — real ArcForges.Application.Abstractions (application identity and in-process composition), not the current placeholder assembly. *Why:* Assistant.Abstractions composes on top of Application.Abstractions per architecture 27; DesktopPlatform repo currently has only AssemblyPlaceholder.cs for that project<br>**artifact** [FND.01](foundation.md#task-fnd-01) — real ArcForges.Foundation identity/error/version primitives, not the current placeholder assembly. *Why:* host port identity/lifetime types build on Foundation primitives; currently only a placeholder assembly exists |
 | Entry condition | [ADOPT.02.app-composition](adoption.md#task-adopt-02-app-composition) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [APP.02](#task-app-02), [APP.03](#task-app-03), [APP.05](#task-app-05), [APP.06](#task-app-06), [APP.07](#task-app-07), [APP.08](#task-app-08), [AST.01](assistant.md#task-ast-01), [EXE.01](execution.md#task-exe-01), [NOTES.03](arcnotes.md#task-notes-03), [PLT.57](platform.md#task-plt-57) |
+| Unblocks | [APP.02](#task-app-02), [APP.03](#task-app-03), [APP.05](#task-app-05), [APP.06](#task-app-06), [APP.07](#task-app-07), [APP.08](#task-app-08), [AST.01](assistant.md#task-ast-01), [EXE.01](execution.md#task-exe-01), [PLT.57](platform.md#task-plt-57) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Abstractions/**`<br>`DesktopPlatform:tests/AssistantAbstractionsTests/**` |
 | Shared resources | [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append) |
 | Validation | Offline unit tests only (two identities/no shared store); Native AOT compile check; no live Cloud/device in CI per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
@@ -45,48 +45,48 @@ Tasks: 8 · Owning repositories: ArcNotes, DesktopPlatform · Integration owner(
 
 <a id="task-app-02"></a>
 
-### APP.02 — Minimal ArcNotes application services (read/create/append)
+### APP.02 — Minimal ArcScope application services (read/create/append annotations)
 
-**Outcome.** Real read/create/append document commands through typed application handlers and local persistence, with descriptor/risk/context validation and one write path shared by UI and own-app capability invocation. Professional document completion remains WP18.
+**Outcome.** Real read/create/append annotation commands through typed application handlers and local persistence, with descriptor/risk/context validation and one write path shared by UI and own-app capability invocation. Professional ArcScope completion remains WP33-WP35.
 
 | Field | Value |
 |---|---|
-| Owning repository | ArcNotes (`C:\MyFile\Projects\ArcForges\ArcNotes`); integration owner: ArcNotes integration owner, the holder of `roles/integration-arcnotes` |
+| Owning repository | ArcScope (`C:\MyFile\Projects\ArcForges\ArcScope`); integration owner: ArcScope integration owner, the holder of `roles/integration-arcscope` |
 | Claim, branch and ledger | `claims/app-02` and ledger record `ledger/tasks/app-02.md` in the Plan repository; task branch `task/app-02` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | producer / M |
 | Obligations | [WP-14.01](../../work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.01) — full |
-| Provides | arcnotes-minimal-services; arcnotes-write-path |
-| Start prerequisites | **artifact** [APP.01](#task-app-01) — published Assistant.Abstractions host ports and product identity. *Why:* ArcNotes application handlers register through the real host ports, not a private stand-in<br>**artifact** [PLT.24](platform.md#task-plt-24) — real ICapabilityProvider.InvokeAsync invocation pipeline (owner-side decode/validate). *Why:* the one write path for UI and own-app capability must go through the real pipeline; WP14.01 testing explicitly requires descriptor/risk/context validation on a real path<br>**artifact** [PLT.38](platform.md#task-plt-38) — published security decision pipeline enforcement point. *Why:* the write path must enforce real risk/permission decisions, not a bypass |
-| Entry condition | [ADOPT.04.app-composition](adoption.md#task-adopt-04-app-composition) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Provides | arcscope-minimal-services; arcscope-write-path |
+| Start prerequisites | **artifact** [APP.01](#task-app-01) — published Assistant.Abstractions host ports and product identity. *Why:* ArcScope application handlers register through the real host ports, not a private stand-in<br>**artifact** [PLT.24](platform.md#task-plt-24) — real ICapabilityProvider.InvokeAsync invocation pipeline (owner-side decode/validate). *Why:* the one write path for UI and own-app capability must go through the real pipeline; WP14.01 testing explicitly requires descriptor/risk/context validation on a real path<br>**artifact** [PLT.38](platform.md#task-plt-38) — published security decision pipeline enforcement point. *Why:* the write path must enforce real risk/permission decisions, not a bypass |
+| Entry condition | [ADOPT.05.app-composition](adoption.md#task-adopt-05-app-composition) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [APP.03](#task-app-03), [APP.04](#task-app-04), [APP.08](#task-app-08) |
-| Write scope | `ArcNotes:src/ArcForges.ArcNotes.Application/**`<br>`ArcNotes:src/ArcForges.ArcNotes.Infrastructure/**`<br>`ArcNotes:tests/**` |
+| Write scope | `ArcScope:src/ArcForges.ArcScope.Application/**`<br>`ArcScope:src/ArcForges.ArcScope.Infrastructure/**`<br>`ArcScope:tests/**` |
 | Validation | Offline unit tests (descriptor/risk/context validation, one write path); no live Cloud in CI. |
 | Completion evidence | Source commit, command receipt samples, validation-failure cases. |
-| Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: ArcNotes HEAD 268c3290 has only src/ArcForges.ArcNotes(.Core) hello-world bootstrap (BuildIdentity, CloudHelloClient, HelloViewModel, MainWindow, Program); no Domain/Application/Infrastructure/AssistantIntegration trees exist. |
-| Notes | This is the ONLY product-repo work in WP14 to WP17/26; full ArcNotes document model is WP18, not here. |
+| Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: ArcScope HEAD 31551f8 has only the src/ArcForges.ArcScope(.Core) bootstrap (ArcScopeApp, BuildIdentity, CloudHelloClient, HelloViewModel, LiveSmoke, MainWindow, Program); no Domain/Application/Infrastructure/AssistantIntegration trees exist. |
+| Notes | This is the ONLY product-repo work in WP14 to WP17/26; professional ArcScope completion is WP33-WP35, not here. |
 
 <a id="task-app-03"></a>
 
-### APP.03 — Clean Native AOT package-consumer composition for ArcNotes
+### APP.03 — Clean Native AOT package-consumer composition for ArcScope
 
-**Outcome.** A clean Native AOT ArcNotes consumer built purely from published Platform/Contracts packages and in-process typed host ports; no source reference or local-RPC product loop. Package-only restore, publish/run, command/cancel/result and owner refusal proven.
+**Outcome.** A clean Native AOT ArcScope consumer built purely from published Platform/Contracts packages and in-process typed host ports; no source reference or local-RPC product loop. Package-only restore, publish/run, command/cancel/result and owner refusal proven.
 
 | Field | Value |
 |---|---|
-| Owning repository | ArcNotes (`C:\MyFile\Projects\ArcForges\ArcNotes`); integration owner: ArcNotes integration owner, the holder of `roles/integration-arcnotes` |
+| Owning repository | ArcScope (`C:\MyFile\Projects\ArcForges\ArcScope`); integration owner: ArcScope integration owner, the holder of `roles/integration-arcscope` |
 | Claim, branch and ledger | `claims/app-03` and ledger record `ledger/tasks/app-03.md` in the Plan repository; task branch `task/app-03` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | producer / S · early risk proof |
 | Obligations | [WP-14.02](../../work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.02) — full |
-| Provides | arcnotes-aot-consumer-proof |
-| Start prerequisites | **artifact** [APP.01](#task-app-01) — published Assistant.Abstractions package (not project reference). *Why:* the consumer must restore this as a package, not a source/project reference, per the substep's own rule<br>**artifact** [APP.02](#task-app-02) — published ArcNotes application-services package surface. *Why:* same package-only consumption rule applies to the product's own services<br>**artifact** [PRF.04](runtime-proofs.md#task-prf-04) — proven Local RPC under Native AOT pattern. *Why:* reuse the already-proven AOT-safe local RPC approach rather than re-deriving one<br>**artifact** [NAT.01](native.md#task-nat-01) — confirmed Native AOT device-tool/capability-invocation feasibility from the high-risk probe. *Why:* this task is the first real product proof built on that probe; it should not re-litigate AOT feasibility |
-| Entry condition | [ADOPT.04.app-composition](adoption.md#task-adopt-04-app-composition) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Provides | arcscope-aot-consumer-proof |
+| Start prerequisites | **artifact** [APP.01](#task-app-01) — published Assistant.Abstractions package (not project reference). *Why:* the consumer must restore this as a package, not a source/project reference, per the substep's own rule<br>**artifact** [APP.02](#task-app-02) — published ArcScope application-services surface. *Why:* same package-only consumption rule applies to the product's own services<br>**artifact** [PRF.04](runtime-proofs.md#task-prf-04) — proven Local RPC under Native AOT pattern. *Why:* reuse the already-proven AOT-safe local RPC approach rather than re-deriving one<br>**artifact** [NAT.01](native.md#task-nat-01) — confirmed Native AOT device-tool/capability-invocation feasibility from the high-risk probe. *Why:* this task is the first real product proof built on that probe; it should not re-litigate AOT feasibility |
+| Entry condition | [ADOPT.05.app-composition](adoption.md#task-adopt-05-app-composition) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [APP.08](#task-app-08), [HAR.05](harness.md#task-har-05) |
-| Write scope | `ArcNotes:src/ArcForges.ArcNotes/**`<br>`ArcNotes:packaging/**` |
+| Write scope | `ArcScope:src/ArcForges.ArcScope/**`<br>`ArcScope:packaging/**` |
 | Validation | Native AOT publish/run in CI (package-only restore), offline command/cancel/result tests; no installed-package or public-release install/upgrade CI per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
 | Completion evidence | AOT publish log, package hash manifest, command/cancel/result and owner-refusal test results. |
-| Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: ArcNotes host project (ArcForges.ArcNotes) exists only as a hello-world Avalonia-style bootstrap; no host-port composition yet. |
+| Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: the ArcScope host project (ArcForges.ArcScope) exists only as a hello-world Avalonia bootstrap; no host-port composition yet. |
 | Notes | Narrow early-risk proof: first real evidence that the whole Assistant.Abstractions/host-port composition model survives Native AOT package-only consumption for an actual product. Failure here invalidates the composition model assumed by WP15 to WP17. |
 
 <a id="task-app-04"></a>

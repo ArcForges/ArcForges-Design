@@ -31,7 +31,7 @@
 
 **Frozen architecture inputs.** [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009), [package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [numbered wire profile](../../architecture/contracts/04-protobuf-wire-registry.md), and [CF/state/object contract](../../architecture/contracts/05-cloudflare-integration.md). All selected rules in these formal authorities apply before coding.
 
-**Frozen design input.** [notes.scalar.v1](../../requirements/products/arcnotes.md#notes-scalar-query-profile) and the [shared errors/cursors](../../architecture/contracts/00-operation-catalogue.md)
+**Frozen design input.** The [shared errors/cursors](../../architecture/contracts/00-operation-catalogue.md).
 
 | Input | Why it matters |
 |---|---|
@@ -210,7 +210,7 @@
 
 **[PG-23](../../assurance/open-gates-register.md#rule-pg-23) evidence:** [WP-23.05](#rule-wp-23.05) — Generated C#/TS contracts and real-server exact-value/error/header/client conformance. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
-**Additional completion requirement.** Notes cursor/error semantics are implemented before the full query consumer; general cursor tests honor the operation-specific stable-or-restart guarantee.
+**Additional completion requirement.** General cursor tests honor the operation-specific stable-or-restart guarantee.
 
 **All of the following, with recorded evidence:**
 

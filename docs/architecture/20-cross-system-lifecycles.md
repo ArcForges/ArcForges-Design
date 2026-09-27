@@ -179,7 +179,7 @@ device A                       cloud                       device B
 | <a id="rule-as-04"></a>AS-04 | Object row written; blob missing in storage | Partial success | Data-health scan (`§9` there) | Cloud | Anomaly raised; restore from the second provider where a backup exists (`§10` there) | Partly |
 | <a id="rule-as-05"></a>AS-05 | Last reference released; blob not collected | Partial | Reference-count invariant plus grace period ([DL-05](data-model/00-data-model-overview.md#rule-dl-05)) | Cloud | Collected on the next pass; **never collected while the count is above zero or the grace period is unelapsed** | Yes |
 | <a id="rule-as-06"></a>AS-06 | Reference released in error, then restored | `happened` | Grace period | Cloud | The grace period exists precisely so restore within it needs no re-upload | Yes |
-| <a id="rule-as-07"></a>AS-07 | External asset moved or deleted by the user | `happened` outside ArcForges | Availability check | Client | Explicit `missing external` state with recovery affordances ([AT-07](../requirements/products/arcnotes.md#rule-at-07)). **ArcForges never silently uploads it to compensate** | No |
+| <a id="rule-as-07"></a>AS-07 | External asset moved or deleted by the user | `happened` outside ArcForges | Availability check | Client | Explicit `missing external` state with recovery affordances. **ArcForges never silently uploads it to compensate** | No |
 
 ---
 
@@ -191,7 +191,7 @@ Five distinct operations (`§8` of the data-model overview), and the failure mod
 |---|---|---|
 | **Trash** | One aggregate, marked | Yes — restore preserves identity |
 | **Purge** | Aggregate and children, permanent | No |
-| **Unsync / pause hydration** | Notes/Chat Cloud authority retained; acknowledged cache may be evicted after pending work is preserved. Scope/Slate selective replica detach leaves local authority intact | Resume hydration; explicit Cloud deletion is separate |
+| **Unsync / pause hydration** | Chat Cloud authority retained; acknowledged cache may be evicted after pending work is preserved. Scope selective replica detach leaves local authority intact | Resume hydration; explicit Cloud deletion is separate |
 | **Cloud deletion** | Workspace's cloud data | No |
 | **Account deletion** | Cloud identity and all workspace data | No |
 
@@ -272,14 +272,14 @@ Each row is release-gating ([XL-07](#rule-xl-07)).
 | <a id="rule-lv-12"></a>LV-12 | A device returning after tombstone retention performs a full resync and resurrects nothing | [WP-25.04](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.04), [WP-25.07](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.07) |
 | <a id="rule-lv-13"></a>LV-13 | An interrupted multipart upload resumes; an abandoned one expires and reclaims storage | [WP-25.05](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.05) |
 | <a id="rule-lv-14"></a>LV-14 | A blob missing under a live object is detected by the data-health scan and restored | [WP-25.06](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.06), [WP-46.01](../planning/work-packages/46-backup-recovery-and-data-health.md#rule-wp-46.01) |
-| <a id="rule-lv-15"></a>LV-15 | A purge removes primary, search and vector entries, and a partial purge is retried to completion | [WP-25.04](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.04), [WP-19.00](../planning/work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.00) |
+| <a id="rule-lv-15"></a>LV-15 | A purge removes primary, search and vector entries, and a partial purge is retried to completion | [WP-25.04](../planning/work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.04) |
 | <a id="rule-lv-16"></a>LV-16 | Account deletion is confirmed only when every store reports completion; financial records survive under their own retention, and local files are untouched | [WP-22.06](../planning/work-packages/22-identity-workspace-and-device.md#rule-wp-22.06), [WP-42.09](../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.09) |
 | <a id="rule-lv-17"></a>LV-17 | A revoked device cannot complete an in-flight bridge request or keep a subscription open | [WP-26.02](../planning/work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.02), [WP-24.01](../planning/work-packages/24-realtime-and-reliable-events.md#rule-wp-24.01) |
 | <a id="rule-lv-18"></a>LV-18 | Every failure row in this document has a named test, and a row without one fails the completeness check | [WP-50.00](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.00) |
 
 ## [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) transport, storage and recovery composition
 
-The [CF/R2 lifecycle](contracts/05-cloudflare-integration.md) fixes part verification, Verified pins, authorization on consumption, release/deletion and independent immutable restore. C# owning transactions, sync cursors/tombstones/conflicts, desktop pending changes, native job snapshots and derived-source revision checks above retain their semantics. The [wire profile](contracts/04-protobuf-wire-registry.md) transports exact values without changing content-origin, Notes scalar or Scope measurement oracles. CF checkpoints/streams never become product history, and restoration cannot silently redispatch an uncertain external act.
+The [CF/R2 lifecycle](contracts/05-cloudflare-integration.md) fixes part verification, Verified pins, authorization on consumption, release/deletion and independent immutable restore. C# owning transactions, sync cursors/tombstones/conflicts, desktop pending changes, native job snapshots and derived-source revision checks above retain their semantics. The [wire profile](contracts/04-protobuf-wire-registry.md) transports exact values without changing content-origin or Scope measurement oracles. CF checkpoints/streams never become product history, and restoration cannot silently redispatch an uncertain external act.
 
 ## Disaster boundary for asynchronous effects
 

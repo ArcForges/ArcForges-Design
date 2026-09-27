@@ -1,6 +1,6 @@
 # Operation Scope Manifest
 
-Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012). This assigns all 380 mapped operation IDs, including reserved future entries, registry 04 methods and all 13 annex 10 additions. `future` rows are reserved only and excluded from active generation; all other rows require concrete metadata and implementation ownership. Registry 04 and annex 10 own the method/field definitions.
+Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012). This assigns all 306 mapped operation IDs, including reserved future entries, registry 04 methods and all 13 annex 10 additions. `future` rows are reserved only and excluded from active generation; all other rows require concrete metadata and implementation ownership. Registry 04 and annex 10 own the method/field definitions.
 
 `account`: existing realm/account/workspace permission; no assistant filter on account security/finance. `assistant`: mandatory product scope and inherited execution/resource owner. `product-owner`: product fixed by method/aggregate and validated against scope. `resource-owner`: derive account or product owner from admitted resource/notification/export kind, enforce existing owner permission and require a matching product scope for product-owned objects; never accept a caller-selected foreign owner. `application-target`: device administration keeps its account permission, but installation/presence/bridge execution always validates the explicit target and current epoch. `in-process`: ordinary product handlers, no network service. `private-helper`: parent-launched child only, never another product. `operator`: separate internal operator identity and the complete role/authorization matrix in registry04 section 9; no customer or tool access. `future`: not registered or invoked in this release; descriptor names remain reserved.
 
@@ -83,23 +83,6 @@ Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-0
 | `sync.resolveConflict` | product-owner |
 | `sync.requestFullResync` | product-owner |
 | `sync.getBootstrapPage` | product-owner |
-| `notes.listNotebooks` | product-owner |
-| `notes.listFolders` | product-owner |
-| `notes.getDocument` | product-owner |
-| `notes.createNotebook` | product-owner |
-| `notes.createFolder` | product-owner |
-| `notes.renameFolder` | product-owner |
-| `notes.moveFolder` | product-owner |
-| `notes.reorderFolder` | product-owner |
-| `notes.previewMoveDocument` | product-owner |
-| `notes.moveDocument` | product-owner |
-| `notes.trashFolder` | product-owner |
-| `notes.restoreFolder` | product-owner |
-| `notes.listRevisions` | product-owner |
-| `notes.getRevision` | product-owner |
-| `notes.createCheckpoint` | product-owner |
-| `notes.restoreRevision` | product-owner |
-| `notes.requestExport` | product-owner |
 | `export.getStatus` | resource-owner |
 | `export.cancel` | resource-owner |
 | `export.getDownload` | resource-owner |
@@ -126,7 +109,6 @@ Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-0
 | `chat.appendMessage` | assistant |
 | `chat.createBranch` | assistant |
 | `chat.requestExport` | assistant |
-| `task.startTranscription` | assistant |
 | `agent.listModels` | assistant |
 | `agent.listProfiles` | assistant |
 | `agent.getUsage` | assistant |
@@ -228,32 +210,6 @@ Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-0
 | `IProductLifecycle.GetState` | in-process |
 | `IProductLifecycle.PrepareForShutdown` | in-process |
 | `IDeepLinkTarget.HandleDeepLink` | in-process |
-| `INotesOperations.Search` | in-process |
-| `INotesOperations.GetDocument` | in-process |
-| `INotesOperations.CreateDocument` | in-process |
-| `INotesOperations.AppendBlocks` | in-process |
-| `INotesOperations.ApplyBlockEdits` | in-process |
-| `INotesOperations.SetProperties` | in-process |
-| `INotesOperations.AddTags` | in-process |
-| `INotesOperations.RemoveTags` | in-process |
-| `INotesOperations.CreateLink` | in-process |
-| `INotesOperations.TrashDocument` | in-process |
-| `INotesOperations.Export` | in-process |
-| `INotesOperations.ListNotebooks` | in-process |
-| `INotesOperations.ListFolders` | in-process |
-| `INotesOperations.CreateNotebook` | in-process |
-| `INotesOperations.CreateFolder` | in-process |
-| `INotesOperations.RenameFolder` | in-process |
-| `INotesOperations.MoveFolder` | in-process |
-| `INotesOperations.ReorderFolder` | in-process |
-| `INotesOperations.PreviewMoveDocument` | in-process |
-| `INotesOperations.MoveDocument` | in-process |
-| `INotesOperations.TrashFolder` | in-process |
-| `INotesOperations.RestoreFolder` | in-process |
-| `INotesOperations.ListRevisions` | in-process |
-| `INotesOperations.GetRevision` | in-process |
-| `INotesOperations.CreateCheckpoint` | in-process |
-| `INotesOperations.RestoreRevision` | in-process |
 | `IScopeOperations.ListSessions` | in-process |
 | `IScopeOperations.GetSession` | in-process |
 | `IScopeOperations.ListCaptures` | in-process |
@@ -267,25 +223,6 @@ Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-0
 | `IScopeOperations.StartCapture` | in-process |
 | `IScopeOperations.StopCapture` | in-process |
 | `IScopeOperations.GetStructuredContext` | in-process |
-| `ISlateOperations.ListProjects` | in-process |
-| `ISlateOperations.GetSequence` | in-process |
-| `ISlateOperations.ListMedia` | in-process |
-| `ISlateOperations.GetTimeline` | in-process |
-| `ISlateOperations.ListMarkers` | in-process |
-| `ISlateOperations.CreateMarker` | in-process |
-| `ISlateOperations.ApplyTimelineEdits` | in-process |
-| `ISlateOperations.PrepareTranscription` | in-process |
-| `ISlateOperations.AdoptTranscript` | in-process |
-| `ISlateOperations.ImportSubtitles` | in-process |
-| `ISlateOperations.ExportSubtitles` | in-process |
-| `ISlateOperations.StartRender` | in-process |
-| `ISlateOperations.CancelRender` | in-process |
-| `ISlateOperations.Export` | in-process |
-| `ISlateOperations.GetSequenceContext` | in-process |
-| `ISlateOperations.ImportOtio` | in-process |
-| `ISlateOperations.PreviewOtioImport` | in-process |
-| `ISlateOperations.ExportOtio` | in-process |
-| `ISlateOperations.RelinkMedia` | in-process |
 | `IChatOperations.ListConversations` | in-process |
 | `IChatOperations.GetConversation` | in-process |
 | `IChatOperations.CreateConversation` | in-process |
@@ -313,14 +250,6 @@ Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-0
 | `IContentSandbox.RenewSession` | private-helper |
 | `IContentSandbox.GrantSlot` | private-helper |
 | `IContentSandbox.AckBuffer` | private-helper |
-| `IContentSandbox.ProbeMedia` | private-helper |
-| `IContentSandbox.OpenMediaReader` | private-helper |
-| `IContentSandbox.ReadMediaFrame` | private-helper |
-| `IContentSandbox.SeekMedia` | private-helper |
-| `IContentSandbox.CopyVideoFrame` | private-helper |
-| `IContentSandbox.CopyAudioFrame` | private-helper |
-| `IContentSandbox.CloseFrame` | private-helper |
-| `IContentSandbox.CloseReader` | private-helper |
 | `IContentSandbox.OpenImage` | private-helper |
 | `IContentSandbox.GetImageInfo` | private-helper |
 | `IContentSandbox.ReadImageTile` | private-helper |
@@ -330,9 +259,6 @@ Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-0
 | `IContentSandbox.ExtractPdfText` | private-helper |
 | `IContentSandbox.RenderPdfTile` | private-helper |
 | `IContentSandbox.ClosePdf` | private-helper |
-| `IContentSandbox.ReadOtio` | private-helper |
-| `IContentSandbox.WriteOtio` | private-helper |
-| `IContentSandbox.OtioReadChunk` | private-helper |
 | `IContentSandbox.CancelSession` | private-helper |
 | `IContentSandbox.CloseSession` | private-helper |
 | `application.list` | application-target |

@@ -8,7 +8,7 @@ Tasks: 8 · Owning repositories: Cloud · Integration owner(s): Cloud integratio
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
-| [SRCH.00](#task-srch-00) | Source admission and registration for search | service | M | [CON.10](contracts.md#task-con-10) (contract), [CLOUD.37](cloud.md#task-cloud-37) (artifact) | not-started |
+| [SRCH.00](#task-srch-00) | Source admission and registration for search | service | M | [CON.10](contracts.md#task-con-10) (contract), [CLOUD.39](cloud.md#task-cloud-39) (artifact) | not-started |
 | [SRCH.01](#task-srch-01) | Scoped derived index production (D1 FTS + Vectorize) | service | L | [SRCH.00](#task-srch-00) (artifact), [CON.10](contracts.md#task-con-10) (contract) | not-started |
 | [SRCH.02](#task-srch-02) | Hybrid retrieval, RRF fusion and budgets | service | L | [SRCH.01](#task-srch-01) (artifact) | not-started |
 | [SRCH.03](#task-srch-03) | Current permission recheck at query time | service | S | [SRCH.02](#task-srch-02) (artifact), [CLOUD.11](cloud.md#task-cloud-11) (artifact) | not-started |
@@ -32,7 +32,7 @@ Tasks: 8 · Owning repositories: Cloud · Integration owner(s): Cloud integratio
 | Kind / size | service / M |
 | Obligations | [WP-40.00](../../work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.00) — full |
 | Provides | search-source-registry |
-| Start prerequisites | **contract** [CON.10](contracts.md#task-con-10) — published SourceRecord/ContentOrigin typed record (origin, consent, egress) in Contracts public schema. *Why:* admission must persist a typed, versioned origin/consent record before any content is queued for indexing; the exact CON substep that publishes this record was not determined from this area's WP files<br>**artifact** [CLOUD.37](cloud.md#task-cloud-37) — durable resource identity/revision for synced product content. *Why:* admitted sources need a stable resource id and revision to key the derived index against; [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) owns the sync engine and blob lifecycle that assigns these |
+| Start prerequisites | **contract** [CON.10](contracts.md#task-con-10) — published SourceRecord/ContentOrigin typed record (origin, consent, egress) in Contracts public schema. *Why:* admission must persist a typed, versioned origin/consent record before any content is queued for indexing; the exact CON substep that publishes this record was not determined from this area's WP files<br>**artifact** [CLOUD.39](cloud.md#task-cloud-39) — durable resource identity/revision for synced ArcScope content. *Why:* search admits only owner content the Sync owner transaction has committed and published |
 | Entry condition | [ADOPT.07.search](adoption.md#task-adopt-07-search) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [HAR.01](harness.md#task-har-01), [SRCH.01](#task-srch-01) |
@@ -72,7 +72,7 @@ Tasks: 8 · Owning repositories: Cloud · Integration owner(s): Cloud integratio
 
 ### SRCH.02 — Hybrid retrieval, RRF fusion and budgets
 
-**Outcome.** Lexical (D1 FTS) and semantic (Vectorize) candidates are fused with RRF(x)=sum(1/(60+rank_i(x))), exact-match priority preserved, the Notes scalar comparator never reordered by vector score, and RetrievalBudget defaults (candidates 200/500, evidence 20/100, contextTokens 8192/24000, perSource 5/20, graphDepth 1/3) enforced.
+**Outcome.** Lexical (D1 FTS) and semantic (Vectorize) candidates are fused with RRF(x)=sum(1/(60+rank_i(x))), exact-match priority preserved, and RetrievalBudget defaults (candidates 200/500, evidence 20/100, contextTokens 8192/24000, perSource 5/20, graphDepth 1/3) enforced.
 
 | Field | Value |
 |---|---|
@@ -118,7 +118,7 @@ Tasks: 8 · Owning repositories: Cloud · Integration owner(s): Cloud integratio
 
 ### SRCH.04 — Evidence and citations
 
-**Outcome.** Retrieval results retain source kind, immutable reference, anchor, uncertainty/completeness and measurement/media precision; stale or missing sources are labelled and no citation is ever fabricated.
+**Outcome.** Retrieval results retain source kind, immutable reference, anchor, uncertainty/completeness and measurement precision; stale or missing sources are labelled and no citation is ever fabricated.
 
 | Field | Value |
 |---|---|

@@ -22,20 +22,14 @@ Nothing in this document authorises reuse. It defines the process by which reuse
 | <a id="rule-rr-05"></a>RR-05 | **Reading a reference repository is always permitted; reusing its material is not** — reuse requires `§3` and `§4`. |
 | <a id="rule-rr-06"></a>RR-06 | **Reference repositories are never modified.** This is a documentation repository, and the reference checkouts are read-only evidence. |
 
-### 1.1 The reference map (**[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)**, as amended 2026-09-05 by [P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005))
+### 1.1 The reference map (**[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)**)
 
 | Reference | Role | Consuming product |
 |---|---|---|
 | AionUi | Behaviour and feature reference | ArcChat |
-| AFFiNE | Behaviour, feature and editor-model reference | ArcNotes |
-| SiYuan | Behaviour, feature and knowledge-model reference | ArcNotes |
 | Serial-Studio | Behaviour, acquisition and visualisation reference | ArcScope |
-| ArcVideo | Behaviour, timeline, editing-model and implementation-experience reference | ArcSlate |
-| ArcVideoFoundation | Media-foundation implementation experience | ArcSlate |
 | StartArcForges | Packaged-product and release-behaviour oracle | Distribution and release |
 | The existing ArcForges monorepo | Implementation-state inventory and reconciliation target | All — see [`implementation-state-reconciliation.md`](implementation-state-reconciliation.md) |
-
-> **Naming note.** `ArcVideo` and `ArcVideoFoundation` appear here **only** as the names of existing reference repositories. They are **not** current products: the desktop product baseline is exactly ArcNotes, ArcScope and ArcSlate, with embedded assistants and Android/Web companions under **[P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012)**, and `ArcCanvas`, `ArcMusic`, `ArcImage` and `ArcVideo` are superseded product names that must never appear as current products in any authoritative document.
 
 ---
 
@@ -78,15 +72,13 @@ The [versioned reference registration profile](reference-baseline-registration.m
 | Product | Required references | Matrix | Rows | Status |
 |---|---|---|---|---|
 | ArcChat | AionUi | [`arcchat-aionui.md`](reference-coverage/arcchat-aionui.md) | 30 | **Complete** — 24 evidence established, 6 accepted exclusions, 0 unresolved |
-| ArcNotes | AFFiNE, SiYuan | [`arcnotes-affine-siyuan.md`](reference-coverage/arcnotes-affine-siyuan.md) | 41 | **Complete** — 33 evidence established, 9 accepted exclusions, 0 unresolved |
 | ArcScope | Serial-Studio | [`arcscope-serial-studio.md`](reference-coverage/arcscope-serial-studio.md) | 31 | **Complete** — 24 evidence established, 7 accepted exclusions, 0 unresolved |
-| ArcSlate | ArcVideo, ArcVideoFoundation | [`arcslate-arcvideo.md`](reference-coverage/arcslate-arcvideo.md) | 31 | **Complete** |
-| Distribution and release | StartArcForges | [`distribution-startarcforges.md`](reference-coverage/distribution-startarcforges.md) | 12 | **Complete** within the authorized oracle boundary |
+| Distribution and release | StartArcForges | [`distribution-startarcforges.md`](reference-coverage/distribution-startarcforges.md) | 8 | **Complete** within the authorized oracle boundary |
 | Whole repository | Existing ArcForges monorepo | [`implementation-state-reconciliation.md`](implementation-state-reconciliation.md) | 166 projects | **Complete** — item-level, with dispositions |
 
-**Counting rule.** The five matrices contain 145 item rows, 121 evidence dispositions and 25 exclusion dispositions (146 total). [Notes AN-14](reference-coverage/arcnotes-affine-siyuan.md#rule-an-14) has both an established quota half and excluded sharing half; row count and disposition count must not be conflated.
+**Counting rule.** The three matrices contain 69 item rows, 55 evidence dispositions and 14 exclusion dispositions (69 total).
 
-**Gate consequence.** [PG-01](open-gates-register.md#rule-pg-01) and [F-013](open-gates-register.md#rule-f-013) are **closed** for every registered reference. [PG-02](open-gates-register.md#rule-pg-02) is **closed**. Implementation packages consume these matrices as versioned inputs and run drift checks only ([WP-15.07](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.07), [WP-18.08](../planning/work-packages/18-arcnotes-document-core.md#rule-wp-18.08), [WP-33.07](../planning/work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.07), [WP-36.07](../planning/work-packages/36-arcslate-project-and-timeline.md#rule-wp-36.07), [WP-01.00](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.00)).
+**Gate consequence.** [PG-01](open-gates-register.md#rule-pg-01) and [F-013](open-gates-register.md#rule-f-013) are **closed** for every registered reference. [PG-02](open-gates-register.md#rule-pg-02) is **closed**. Implementation packages consume these matrices as versioned inputs and run drift checks only ([WP-15.07](../planning/work-packages/15-arcchat-conversation-core.md#rule-wp-15.07), [WP-33.07](../planning/work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.07), [WP-01.00](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.00)).
 
 ---
 
@@ -203,8 +195,6 @@ The [admitted native packages](../architecture/01-solution-and-project-layout.md
 
 Review retained legal text for referenced companions. A summary containing a licence name or hyperlink cannot replace a required full licence, copyright or NOTICE file. Preserve existing notices and add the missing applicable texts from their immutable source. Candidate verification checks the exact legal bytes and closed recipe/resource membership, the installed binary and source-recipe identities, and every packaged member. The resulting receipt binds the owning commit, package, selected component records and actual hashes. An upstream version, licence scope, recipe or legal-text change needs a newly reviewed profile and superseding record.
 
-Matching corresponding-source archives required for LGPL distribution remain separate compliance material, with their own original licences and exact digests. Their presence does not admit excluded source into the compiled product. The selected FFmpeg configuration continues to reject GPL/nonfree features; actual binary configuration, dynamic replaceability and matching source/patch delivery remain mandatory. Preserve the full upstream archive where it is the verified source of the selected build; identify the compiled scope and the archive's separate licensing scope explicitly. Do not relabel the complete archive as if every file had the selected runtime licence.
-
 The producer records the actual generator and compiler selection for dependency inputs and owned wrappers separately. Follow the [Windows toolset pin](../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry): retain the standard triplet semantics while preventing an installed newer compiler from silently changing the reviewed runtime relationship. Packaging validates actual CMake caches, dependency-root identity and installed ABI records against the immutable profile; configured version strings or a successful run against a developer cache alone do not prove the selected toolchain.
 
 ### 3.4 Existing Windows compiler-runtime redistributable
@@ -273,7 +263,7 @@ A verification oracle answers: *how do we know our implementation is correct?* I
 | **Reference behaviour observation** | The reference's observable behaviour for a stated scenario, recorded as an expectation — used where the reference is the best available specification of a domain behaviour |
 | **Format fixture** | A file produced by the reference, which ArcForges must read correctly — used for import and migration paths |
 | **Round-trip fixture** | ArcForges writes, the reference reads, or the reverse — used where interoperability is required |
-| **Golden output** | A fixed input producing a fixed output within a declared tolerance — used for media, decode, render and analysis paths |
+| **Golden output** | A fixed input producing a fixed output within a declared tolerance — used for render and analysis paths |
 | **Specification** | An external standard the reference also implements — always preferred to the reference itself where one exists |
 | **First-party test** | An ArcForges test derived from ArcForges requirements — the default where none of the above applies |
 
@@ -301,16 +291,16 @@ Reference repositories are also the source of migration evidence — what existi
 
 ## 7. The [F-013](open-gates-register.md#rule-f-013) gate — discharged
 
-**[F-013](open-gates-register.md#rule-f-013)'s trigger has fired and been satisfied for the five accessible references.**
+**[F-013](open-gates-register.md#rule-f-013)'s trigger has fired and been satisfied for the two accessible references.**
 
 | Aspect | Position |
 |---|---|
 | What was deferred | The per-file licence determinations for reference material |
 | Trigger | The first step of the per-product Reference Coverage Matrix and licence audit (**[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**) — **fired 2026-09-05** |
-| What was determined | Root and subtree licences read per reference; **the AFFiNE split and the Serial-Studio Pro-module exclusion were found below the repository root**, exactly the case **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)** warns about. Every one of the 145 rows carries a licence position |
-| Result | **No row proposes reuse.** Four of six accessible references are GPL-family, proprietary or AGPL. The per-file determination that would be required before any copy, translation or port has no pending subject |
+| What was determined | Root and subtree licences read per reference; **the Serial-Studio Pro-module exclusion was found below the repository root**, exactly the case **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)** warns about. Every one of the 69 rows carries a licence position |
+| Result | **No row proposes reuse.** One of the two accessible references (Serial-Studio) is GPL-family; the other (AionUi) is permissive. The per-file determination that would be required before any copy, translation or port has no pending subject |
 | Owner | Licensing and Provenance Owner |
-| State | **`CLOSED` 2026-09-05** for AionUi, AFFiNE, SiYuan, Serial-Studio, ArcVideo and ArcVideoFoundation — **the complete amended reference map** (**[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)** as amended, [P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005)). No unresolved determination remains |
+| State | **`CLOSED` 2026-09-05** for AionUi and Serial-Studio — **the complete reference map** (**[D-012](../decisions/phase-1-foundation-decisions.md#rule-d-012)**). No unresolved determination remains |
 | Related gate | **[F-023](open-gates-register.md#rule-f-023)** — mobile provenance and full dependency closure before the first mobile artifact ([AE-04](#rule-ae-04)). Requires its own dependency-closure audit; see the [current candidate evidence and status](open-gates-register.md#21-current-android-candidate-licence-evidence). A reference audit cannot satisfy it |
 
 | # | Rule |
@@ -318,7 +308,6 @@ Reference repositories are also the source of migration evidence — what existi
 | <a id="rule-fg-01"></a>FG-01 | **[F-013](open-gates-register.md#rule-f-013) closed on evidence, not on assertion.** The evidence is the five matrices and their per-row licence positions. |
 | <a id="rule-fg-02"></a>FG-02 | **A per-file determination is still required before any future reuse.** Closing [F-013](open-gates-register.md#rule-f-013) records that none is currently proposed; it does not pre-authorise reuse. |
 | <a id="rule-fg-03"></a>FG-03 | **A licence position can change upstream.** Each product's drift-check sub-step re-reads the reference's licence files, and a changed subtree licence corrects the affected dispositions before dependent work continues. |
-| <a id="rule-fg-04"></a>FG-04 | **Upstream provenance survives a reference-map amendment.** [P2-005](../decisions/phase-2-specification-decisions.md#rule-p2-005) removed Olive as a separate required reference; ArcVideo's fork relationship, GPL-3.0 obligations and upstream attribution are unaffected and are preserved wherever inherited material requires them. |
 
 ---
 

@@ -171,34 +171,18 @@ Owned by the **Entitlement** module, independent of Commerce ([EO-01](../16-bill
 
 ---
 
-## 5.1 Cloud Notes structure, history and export operations
+## 5.1 Export operations
 
-The typed requests use the canonical Notes schema in [the Cloud data model](../data-model/01-cloud-data-model.md#84-cloud-notes-canonical-model). The module owns folders inside a notebook and blocks inside a document. Direct HTTP, sync batches and an authorised Cloud tool invoke the same domain validator/write service; none invents a second set of mutations.
+Direct HTTP and an authorised Cloud tool invoke the same domain validator/write service; none invents a second set of mutations.
 
 | Operation | Purpose | Auth | Class | Key errors | Compat |
 |---|---|---|---|---|---|
-| `notes.listNotebooks` | Bounded owner-filtered hierarchy/content at an acknowledged revision | `R1` | `Q` | `state.not_found` | `AO` |
-| `notes.listFolders` | Bounded owner-filtered hierarchy/content at an acknowledged revision | `R1` | `Q` | `state.not_found` | `AO` |
-| `notes.getDocument` | Bounded owner-filtered hierarchy/content at an acknowledged revision | `R1` | `Q` | `state.not_found` | `AO` |
-| `notes.createNotebook` | Caller-stable ID, notebook expected revision, nullable folder parent and sibling order | `R2` | `CC` | `conflict.revision_mismatch`, `validation.invalid_request` | `FR` |
-| `notes.createFolder` | Caller-stable ID, notebook expected revision, nullable folder parent and sibling order | `R2` | `CC` | `conflict.revision_mismatch`, `validation.invalid_request` | `FR` |
-| `notes.renameFolder` | Validate notebook revision, cycle/parent and deterministic order | `R2` | `IW` | `conflict.revision_mismatch`, `validation.invalid_request` | `FR` |
-| `notes.moveFolder` | Validate notebook revision, cycle/parent and deterministic order | `R2` | `IW` | `conflict.revision_mismatch`, `validation.invalid_request` | `FR` |
-| `notes.reorderFolder` | Validate notebook revision, cycle/parent and deterministic order | `R2` | `IW` | `conflict.revision_mismatch`, `validation.invalid_request` | `FR` |
-| `notes.moveDocument` | Atomically validate source/destination notebook revisions and document revision; preserve document/history IDs | `R2` | `IW` | `conflict.revision_mismatch`, `state.not_found` | `FR` |
-| `notes.trashFolder` | Ancestor visibility, preserving each descendant's independent trash state | `R3` | `IW` | `conflict.revision_mismatch` | `FR` |
-| `notes.restoreFolder` | Restore ancestor visibility; preserve independently trashed descendants | R3 | IW | conflict.revision_mismatch | FR |
-| `notes.listRevisions` | Bounded immutable history including attachment references | `R1` | `Q` | `state.not_found`, `state.gone` | `AO` |
-| `notes.getRevision` | Bounded immutable history including attachment references | `R1` | `Q` | `state.not_found`, `state.gone` | `AO` |
-| `notes.createCheckpoint` | Create a named pin of the acknowledged revision | R2 | IW | conflict.revision_mismatch | FR |
-| `notes.restoreRevision` | Create a new current revision from retained history without rewriting history | R3 | IW | conflict.revision_mismatch, resource.unavailable | FR |
-| `notes.requestExport` | Create bounded revision-pinned owner export with explicit data-export permission | R2 | CC | entitlement.quota_exceeded, state.not_found | FR |
 | `chat.requestExport` | Create bounded revision-pinned owner export with explicit data-export permission | R2 | CC | entitlement.quota_exceeded, state.not_found | FR |
 | `export.getStatus` | Read owner-filtered export progress | R1 | Q | state.not_found | AO |
 | `export.cancel` | Idempotent owner cancellation, preserving already committed output state | R2 | IW | state.invalid_transition | FR |
 | `export.getDownload` | Issue a new short-lived authenticated ticket for the retained verified artifact | R1 | NI | state.gone, resource.unavailable | FR |
 
-Structural writes return the new revisions of **all** affected roots and the immutable command receipt. A cross-notebook folder move is a bounded explicit move plan, not an unbounded recursive transaction; the V1 `moveFolder` operation stays within its notebook. A nonempty folder is not physically removed by the simple mutation API: trash changes visibility, and separately tracked retention/purge uses the deletion lifecycle. `restoreRevision` promotes a new current revision after revalidating resources and quota; old revisions remain immutable. Export manifests pin their inputs through bounded completion/retention and exclude pending local work.
+Export manifests pin their inputs through bounded completion/retention and exclude pending local work.
 
 ## 6. Resource transfer
 
@@ -288,9 +272,9 @@ The only wire and persistence enum is registry 04 `TaskState`: queued, running, 
 |---|---|
 | <a id="rule-ch-01"></a>CH-01 | **`chat.appendMessage` atomically appends the user turn and creates its linked Task where requested**, with one retained command result. It runs no model. AI admission happens afterwards in the Harness; a refusal leaves the accepted message and a visible Task reason, not a missing Task. |
 | <a id="rule-ch-02"></a>CH-02 | **`agent.listModels` returns availability with a reason.** A withdrawn model degrades explicitly rather than vanishing ([WP-43.05](../../planning/work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.05)). |
-| <a id="rule-ch-03"></a>CH-03 | Cloud search failure never disables own-application hydrated local search; WP17 and WP19 prove this independently of WP40 Cloud retrieval. |
+| <a id="rule-ch-03"></a>CH-03 | Cloud search failure never disables own-application hydrated local search; WP17 proves this independently of WP40 Cloud retrieval. |
 
-The Notes branch of `search.query` accepts the typed `NotesQuery` [profile](02-local-rpc-operations.md#notes-query-contract): property comparisons, saved-view scope/order and cursor revision bindings are identical to native evaluation. Cloud completeness covers authorized acknowledged content; the local cache operation declares its smaller scope. Other search modes keep their declared ranking. Invalid profile/type/AST/cursor uses the shared catalogue errors, before query execution.
+Cloud completeness covers authorized acknowledged content; the local cache operation declares its smaller scope. Other search modes keep their declared ranking. Invalid profile/type/AST/cursor uses the shared catalogue errors, before query execution.
 
 ---
 

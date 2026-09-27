@@ -18,11 +18,11 @@ NativeInterop remains a non-packable name scaffold with no native bindings. Prod
 | MDF | Retired ABI remains absent and excluded; no replacement placeholder created. |
 | Shared native ABI | Keep common owned C ABI support in DesktopPlatform. |
 
-No native exports, package allowlist, upstream recipes or provenance component profiles changed. Read-only source scans of clean ArcNotes, ArcScope and ArcSlate commits found no native import/loader/oracle/PlatformBroker declarations matching the recorded scan. There was no matching product copy to migrate. The scan scope and exact commits are recorded, not extrapolated to future product behavior.
+No native exports, package allowlist, upstream recipes or provenance component profiles changed. Read-only source scans of ArcScope's clean commit found no native import/loader/oracle/PlatformBroker declarations matching the recorded scan. There was no matching product copy to migrate. The scan scope and exact commits are recorded, not extrapolated to future product behavior.
 
 ## Review and verification
 
-The local Windows solution built Release|x64 with zero warnings and errors, and its freshly built native DLLs passed the managed ABI test. Five architecture tests, 63 engineering policy tests and 41 tooling tests passed. Locked restore, managed Release build, formatting, source/native provenance and the nine-owner snapshot reconciliation passed.
+The local Windows solution built Release|x64 with zero warnings and errors, and its freshly built native DLLs passed the managed ABI test. Five architecture tests, 63 engineering policy tests and 41 tooling tests passed. Locked restore, managed Release build, formatting, source/native provenance and the seven-owner snapshot reconciliation passed.
 
 CI review found that the existing reconciliation checker rejected every project-file content change as snapshot drift. The fix preserves the original observation and admits only the exact reviewed NativeAbiTests replacement blob, bound to the WP01.03 producer and merged Design authority. Other content drift, missing/extra projects, historical identity changes and source escapes remain rejected. Negative fixtures cover the reviewed-update boundary. The fixed source was reviewed again before merge.
 

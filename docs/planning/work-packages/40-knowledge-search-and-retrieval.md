@@ -45,7 +45,7 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 <a id="rule-wp-40.02"></a>
 ### WP-40.02 — Hybrid retrieval and budgets
 
-**What must be fully done.** Preserve ranking/retrieval/embedding limits and exact Notes scalar comparator; vector score never changes business ordering.
+**What must be fully done.** Preserve ranking/retrieval/embedding limits and an exact scalar comparator for ArcScope measurement data; vector score never changes business ordering.
 
 **Testing requirements.** Budget bounds, multilingual/no-match/partial and exact decimal vectors.
 
@@ -129,7 +129,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 
 | Delivery task | Satisfies | Start prerequisites outside this package |
 |---|---|---|
-| [SRCH.00](../delivery/lanes/search.md#task-srch-00) | [WP-40.00](40-knowledge-search-and-retrieval.md#rule-wp-40.00) (full) | [CON.10](../delivery/lanes/contracts.md#task-con-10) (contract), [CLOUD.37](../delivery/lanes/cloud.md#task-cloud-37) (artifact) |
+| [SRCH.00](../delivery/lanes/search.md#task-srch-00) | [WP-40.00](40-knowledge-search-and-retrieval.md#rule-wp-40.00) (full) | [CON.10](../delivery/lanes/contracts.md#task-con-10) (contract), [CLOUD.39](../delivery/lanes/cloud.md#task-cloud-39) (artifact) |
 | [SRCH.01](../delivery/lanes/search.md#task-srch-01) | [WP-40.01](40-knowledge-search-and-retrieval.md#rule-wp-40.01) (full) | [CON.10](../delivery/lanes/contracts.md#task-con-10) (contract) |
 | [SRCH.02](../delivery/lanes/search.md#task-srch-02) | [WP-40.02](40-knowledge-search-and-retrieval.md#rule-wp-40.02) (full) | none |
 | [SRCH.03](../delivery/lanes/search.md#task-srch-03) | [WP-40.03](40-knowledge-search-and-retrieval.md#rule-wp-40.03) (full) | [CLOUD.11](../delivery/lanes/cloud.md#task-cloud-11) (artifact) |

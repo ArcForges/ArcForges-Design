@@ -34,7 +34,7 @@ Public registry verification passed: all **13 original NuGet ZIP members** match
 
 Maven attempt 1 remained `PUBLISHING` for over 20 minutes. At the user's request it was cancelled, its deployment receipt retained, and only the failed Maven job retried. Attempt 2 resumed deployment `69143abb-d8f5-40d3-b9fe-bc030561be28` and reached `public-bytes-verified`. No candidate rebuild or duplicate upload occurred. Future Maven runs in this execution use the requested ten-minute cancellation/retry threshold, preserving deployment identity. The [official status page](https://status.maven.org/) reported no incident when checked on 2026-09-20; actual deployment/public-byte evidence governs acceptance.
 
-A fresh read-only nine-owner reconciliation after the merge passed: 75 current projects, 166 historical entries, 359 directory dispositions and seven historical native entries. Other owner project graphs and published consumer pins remain unchanged.
+A fresh read-only seven-owner reconciliation after the merge passed: 67 current projects, 166 historical entries, 359 directory dispositions and seven historical native entries. Other owner project graphs and published consumer pins remain unchanged.
 
 ## Retention and remaining scope
 

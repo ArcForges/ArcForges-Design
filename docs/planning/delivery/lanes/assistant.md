@@ -2,7 +2,7 @@
 
 > Generated from [the delivery graph](../delivery-graph.json) by Plan `tools/delivery.py`; do not edit by hand. Rules and definitions: [delivery model](../README.md).
 
-Assistant abstractions, core, history store, Cloud client surface and Avalonia presentation embedded by each product.
+Assistant abstractions, core, history store, Cloud client surface and Avalonia presentation embedded by ArcScope.
 
 Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): DesktopPlatform integration owner
 
@@ -28,7 +28,7 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | [AST.18](#task-ast-18) | Owned-artifact receipt and real integration | acceptance | M | [AST.17](#task-ast-17) (artifact) | not-started |
 | [AST.19](#task-ast-19) | Real Cloud Harness turn loop replacing the fixture turn endpoint | integration | M | [AST.11](#task-ast-11) (artifact), [HAR.00](harness.md#task-har-00) (artifact), [HAR.03](harness.md#task-har-03) (artifact) | not-started |
 | [AST.20](#task-ast-20) | Real durable Cloud automation scheduler replacing the automation fixture | integration | M | [AST.14](#task-ast-14) (artifact), [HAR.06](harness.md#task-har-06) (artifact) | not-started |
-| [AST.21](#task-ast-21) | Real Cloud Notes/Chat export producer replacing the local assistant-history.v1 fixture | integration | M | [AST.07](#task-ast-07) (artifact), [CLOUD.45](cloud.md#task-cloud-45) (artifact) | not-started |
+| [AST.21](#task-ast-21) | Real Cloud Chat export producer replacing the local assistant-history.v1 fixture | integration | M | [AST.07](#task-ast-07) (artifact), [CLOUD.45](cloud.md#task-cloud-45) (artifact) | not-started |
 | [AST.22](#task-ast-22) | Real Cloud application-history restartable import receiving promoted local history | integration | M | [AST.15](#task-ast-15) (artifact), [CLOUD.46](cloud.md#task-cloud-46) (artifact), [AST.01](#task-ast-01) (artifact) | not-started |
 
 ## Tasks
@@ -194,7 +194,7 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Validation | Offline full round-trip tests: malformed/hash/foreign references, draft exclusion, branch cycles, canceled import; no Cloud in CI. |
 | Completion evidence | Round-trip hash manifests, malformed/cycle/cancel test results, named-fixture manifest entry for this substitute. |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | One of the four named scaffolding rows in implementation-sequence.md §3.1 (shared with ArcNotes' own [WP-19.05](../../work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.05), not mine). See integration_proposals IM.history-export-cloud-promotion. |
+| Notes | One of the named scaffolding rows in implementation-sequence.md §3.1. See integration_proposals IM.history-export-cloud-promotion. |
 
 <a id="task-ast-08"></a>
 
@@ -246,7 +246,7 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 
 ### AST.10 — Complete assistant navigation shell
 
-**Outcome.** All AS01 to AS13 docked/floating/expanded surfaces are reachable through the architecture-27 AssistantHost API; the same composition code works independently in each product. All actions reachable at minimum size; window/draft/account/keyboard/accessibility matrix passes.
+**Outcome.** All AS01 to AS13 docked/floating/expanded surfaces are reachable through the architecture-27 AssistantHost API; the same composition code works independently in ArcScope. All actions reachable at minimum size; window/draft/account/keyboard/accessibility matrix passes.
 
 | Field | Value |
 |---|---|
@@ -485,7 +485,7 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Owning repository | DesktopPlatform (`C:\MyFile\Projects\ArcForges\DesktopPlatform`); integration owner: DesktopPlatform integration owner, the holder of `roles/integration-desktopplatform` |
 | Claim, branch and ledger | `claims/ast-20` and ledger record `ledger/tasks/ast-20.md` in the Plan repository; task branch `task/ast-20` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | integration / M |
-| Obligations | [WP-52.06](../../work-packages/52-cloud-harness.md#rule-wp-52.06) — all work except the parts mapped to HAR.06, HAR.91 |
+| Obligations | [WP-52.06](../../work-packages/52-cloud-harness.md#rule-wp-52.06) — all work except the parts mapped to HAR.06 |
 | Start prerequisites | **artifact** [AST.14](#task-ast-14) — real, delivered outcome of AST.14 (Automation client (automation fixture state transitions)). *Why:* this integration exercises the real automation client (automation fixture state transitions) instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [HAR.06](harness.md#task-har-06) — real, delivered outcome of HAR.06 (Durable Cloud automation, scheduling and automation-fixture removal). *Why:* this integration exercises the real durable Cloud automation, scheduling and automation-fixture removal instead of a substitute, so it cannot start before that outcome exists |
 | Entry condition | [ADOPT.02.assistant](adoption.md#task-adopt-02-assistant) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
@@ -497,23 +497,23 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 
 <a id="task-ast-21"></a>
 
-### AST.21 — Real Cloud Notes/Chat export producer replacing the local assistant-history.v1 fixture
+### AST.21 — Real Cloud Chat export producer replacing the local assistant-history.v1 fixture
 
-**Outcome.** a real deployed Cloud export/snapshot job round-trips the same assistant-history.v1 archive that AST.07's offline fixture produces, for both ArcChat and ArcNotes history
+**Outcome.** a real deployed Cloud export/snapshot job round-trips the same assistant-history.v1 archive that AST.07's offline fixture produces
 
 | Field | Value |
 |---|---|
 | Owning repository | DesktopPlatform (`C:\MyFile\Projects\ArcForges\DesktopPlatform`); integration owner: DesktopPlatform integration owner, the holder of `roles/integration-desktopplatform`; also touches Cloud |
 | Claim, branch and ledger | `claims/ast-21` and ledger record `ledger/tasks/ast-21.md` in the Plan repository; task branch `task/ast-21` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | integration / M |
-| Obligations | [WP-25.08](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) — all work except the parts mapped to CLOUD.45, CLOUD.58, NOTES.33 |
-| Start prerequisites | **artifact** [AST.07](#task-ast-07) — real, delivered outcome of AST.07 (Local history export and import (assistant-history.v1)). *Why:* this integration exercises the real local history export and import (assistant-history.v1) instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [CLOUD.45](cloud.md#task-cloud-45) — real, delivered outcome of CLOUD.45 (Real Cloud Notes and Chat export producers). *Why:* this integration exercises the real real Cloud Notes and Chat export producers instead of a substitute, so it cannot start before that outcome exists |
+| Obligations | [WP-25.08](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) — all work except the parts mapped to CLOUD.45, CLOUD.58 |
+| Start prerequisites | **artifact** [AST.07](#task-ast-07) — real, delivered outcome of AST.07 (Local history export and import (assistant-history.v1)). *Why:* this integration exercises the real local history export and import (assistant-history.v1) instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [CLOUD.45](cloud.md#task-cloud-45) — real, delivered outcome of CLOUD.45 (Real Cloud Chat export producer). *Why:* this integration exercises the real Cloud Chat export producer instead of a substitute, so it cannot start before that outcome exists |
 | Entry condition | [ADOPT.02.assistant](adoption.md#task-adopt-02-assistant) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [CLOUD.47](cloud.md#task-cloud-47), [CLOUD.58](cloud.md#task-cloud-58) |
 | Write scope |  |
 | Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
-| Completion evidence | a real deployed Cloud export/snapshot job round-trips the same assistant-history.v1 archive that AST.07's offline fixture produces, for both ArcChat and ArcNotes history |
+| Completion evidence | a real deployed Cloud export/snapshot job round-trips the same assistant-history.v1 archive that AST.07's offline fixture produces |
 | Baseline (unreviewed unless accepted) | not-started |
 
 <a id="task-ast-22"></a>

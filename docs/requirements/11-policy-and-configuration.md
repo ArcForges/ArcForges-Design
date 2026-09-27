@@ -142,7 +142,7 @@ Binary contains the code path
 | <a id="rule-wp-01"></a>WP-01 | **Workspace Policy ≠ Workspace Permission** ([I-365](01-normative-glossary-and-invariants.md#rule-i-365)). Policy narrows what the product may do; permission decides what an actor may do. |
 | <a id="rule-wp-02"></a>WP-02 | **Workspace policy may only tighten a platform restriction, never loosen one.** Hard deny wins. |
 | <a id="rule-wp-03"></a>WP-03 | **A user cannot bypass workspace policy through local configuration.** |
-| <a id="rule-wp-04"></a>WP-04 | **Workspace policy cannot change local core ownership.** It cannot make ArcNotes depend on ArcChat, cannot relocate data ownership, and cannot override the architecture constitution. |
+| <a id="rule-wp-04"></a>WP-04 | **Workspace policy cannot change local core ownership.** It cannot make ArcScope depend on ArcChat, cannot relocate data ownership, and cannot override the architecture constitution. |
 
 ### 6.2 Product invariants beyond remote reach
 
@@ -170,7 +170,7 @@ Certain properties are **never** feature-flagged, remotely configured or policy-
 | <a id="rule-co-04"></a>CO-04 | **A blocked version range is distinct from a minimum version.** A specific bad build can be blocked while both older and newer builds remain allowed. |
 | <a id="rule-co-05"></a>CO-05 | **A grace period applies before a minimum-version block takes effect**, with clear in-product notice. |
 | <a id="rule-co-06"></a>CO-06 | **An emergency security block may skip the grace period** — an explicitly exceptional path, recorded as such. |
-| <a id="rule-co-07"></a>CO-07 | A Cloud compatibility block preserves native pending edits, cached reading and product-specific native recovery/export. Notes/Chat Cloud export remains available through a supported portal during retention; no universal offline export engine is required. |
+| <a id="rule-co-07"></a>CO-07 | A Cloud compatibility block preserves native pending edits, cached reading and product-specific native recovery/export. ArcScope/Chat Cloud export remains available through a supported portal during retention; no universal offline export engine is required. |
 | <a id="rule-co-08"></a>CO-08 | **Compatibility policy can never make local user data inaccessible.** |
 | <a id="rule-co-09"></a>CO-09 | **Compatibility policy cannot redefine a project format** ([RC-07](#rule-rc-07)). |
 | <a id="rule-co-10"></a>CO-10 | A blocked old client receives a specific, actionable message naming the required version and what remains available. |

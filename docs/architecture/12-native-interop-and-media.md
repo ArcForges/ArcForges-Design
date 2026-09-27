@@ -1,11 +1,11 @@
-# Native Interoperability and Media Architecture
+# Native Interoperability Architecture
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
 > Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (Native AOT desktop), **[D-016](../decisions/phase-1-foundation-decisions.md#rule-d-016)** (deferred-decision ownership), the technology constitution and closed exception list (`§8` of [`../requirements/00-product-scope-and-portfolio.md`](../requirements/00-product-scope-and-portfolio.md))
-> Companions: [`04-desktop-application-architecture.md`](04-desktop-application-architecture.md), [`06-data-persistence-and-formats.md`](06-data-persistence-and-formats.md), [`../requirements/products/arcslate.md`](../requirements/products/arcslate.md), [`../requirements/products/arcscope.md`](../requirements/products/arcscope.md)
+> Companions: [`04-desktop-application-architecture.md`](04-desktop-application-architecture.md), [`06-data-persistence-and-formats.md`](06-data-persistence-and-formats.md), [`../requirements/products/arcscope.md`](../requirements/products/arcscope.md)
 
-Native code exists in ArcForges for one reason: some low-level capability has no reasonable managed substitute. It never exists because native code is faster in general, because the team is more familiar with it, or because an implementation already exists elsewhere. This document defines the boundary that keeps that concession small, auditable and reversible, and the media and acquisition pipelines that sit on top of it.
+Native code exists in ArcForges for one reason: some low-level capability has no reasonable managed substitute. It never exists because native code is faster in general, because the team is more familiar with it, or because an implementation already exists elsewhere. This document defines the boundary that keeps that concession small, auditable and reversible, and the still-image, PDF and acquisition pipelines that sit on top of it.
 
 ---
 
@@ -18,7 +18,7 @@ Native code exists in ArcForges for one reason: some low-level capability has no
 | <a id="rule-ni-03"></a>NI-03 | **A native library must never own ArcForges domain**. A native decoder is permitted; a native project manager, task scheduler, state owner or business-rule engine is not — *even where native performance would be higher*. |
 | <a id="rule-ni-04"></a>NI-04 | **Product area, business rules, Task, state ownership, scheduling, persistence, policy and UI are C#**. |
 | <a id="rule-ni-05"></a>NI-05 | **Where a dependency offers only a C++ API, a very thin `extern "C"` ABI shim is provided under `native/`**. That shim is a *library adaptation*, holds no product business state, and is not a route back to a worker. |
-| <a id="rule-ni-06"></a>NI-06 | **A native resource belongs to exactly one product process**. An ArcSlate GPU texture and an ArcScope device handle must never enter an ArcChat domain object, a Cloud DTO, or a `ResourceRef` as a raw pointer. |
+| <a id="rule-ni-06"></a>NI-06 | **A native resource belongs to exactly one product process**. An ArcScope device handle and a ContentSandbox image tile must never enter an ArcChat domain object, a Cloud DTO, or a `ResourceRef` as a raw pointer. |
 | <a id="rule-ni-07"></a>NI-07 | **Only stable resource identity, metadata and controlled access cross a process boundary**. |
 | <a id="rule-ni-08"></a>NI-08 | **The native surface is deliberately small.** Growth in the native ABI is a reviewed architectural change, not an implementation detail. |
 | <a id="rule-ni-09"></a>NI-09 | **Untrusted third-party native plug-ins never load into a stable main process**. |
@@ -34,10 +34,8 @@ A native memory error kills the process that loaded the library. Hostile parsing
 
 | Product | Permitted native surface | Explicitly not permitted |
 |---|---|---|
-| ArcSlate | Demux, decode, encode, colour conversion, scaling, resampling, GPU device and surface access, high-performance pixel and audio primitives | Project model, timeline model, edit decisions, render orchestration, export policy, cache policy |
 | ArcScope | Device and transport SDKs, high-rate acquisition primitives, hardware timestamps, high-performance signal primitives | Session model, capture lifecycle, trigger semantics, analysis definitions, evidence storage |
-| ArcNotes | Platform system APIs where required — shell integration, secure storage; **document rendering and text extraction for attachment viewing** (`§2.1`) | Anything in the note, block, link or search model; any editing, layout or content path |
-| ArcChat | Platform system APIs where required — global hotkey, notification, secure storage | Anything in the conversation, task or capability model |
+| ArcChat | Platform system APIs where required — global hotkey, notification, secure storage; **still-image and PDF rendering and bounded text extraction for thin attachment preview** (`§2.1`) | Anything in the conversation, task or capability model; any editing, layout or authoring path |
 | Cloud | **None.** Cloud is managed code on a managed hosting platform (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | All native dependencies |
 | Mobile and Web | Platform framework only; no first-party native ABI | A first-party C ABI shim |
 
@@ -47,17 +45,17 @@ A native memory error kills the process that loaded the library. Hostile parsing
 | <a id="rule-np-02"></a>NP-02 | **A native library used by two products is still loaded per process**, with no shared global state between them. |
 | <a id="rule-np-03"></a>NP-03 | **No global shared memory pool exists across products**. |
 
-### 2.1 ArcNotes document rendering — the one amendment, and why
+### 2.1 ArcChat thin preview rendering — the one amendment, and why
 
-[AT-05](../requirements/products/arcnotes.md#rule-at-05) of the ArcNotes requirements makes PDF **a first-class attachment with in-product viewing, page-anchored annotation targets and citation anchors**. That is an in-product viewer, not a thumbnail, and no managed-only path in the current stack delivers it. The permitted surface is therefore extended — narrowly.
+The embedded assistant's thin preview of image and PDF attachments requires rasterising a page to a bitmap and extracting bounded text, and no managed-only path in the current stack delivers it. The permitted surface is therefore extended — narrowly.
 
 | # | Rule |
 |---|---|
-| <a id="rule-dr-01"></a>DR-01 | **The extension covers exactly two operations**: rasterising a page to a bitmap at a requested scale, and extracting text with per-glyph or per-range geometry. Nothing else. |
-| <a id="rule-dr-02"></a>DR-02 | **No content, editing, layout, link or search path may call it.** The note, block, link and search models stay fully managed (`§2`), and a repository policy test asserts that only the viewer infrastructure project references the wrapper. |
+| <a id="rule-dr-01"></a>DR-01 | **The extension covers exactly two operations**: rasterising a page to a bitmap tile at a requested scale, and extracting bounded text. Nothing else. |
+| <a id="rule-dr-02"></a>DR-02 | **No content, editing or authoring path may call it.** Only the assistant's thin-preview surface may reference the wrapper (`§2`), and a repository policy test asserts it. |
 | <a id="rule-dr-03"></a>DR-03 | **[NP-01](#rule-np-01) is not waived by this amendment.** The named owner, the substitute analysis, the licence position and the provenance record are prerequisites to adoption, not follow-ups (**[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**). |
 | <a id="rule-dr-04"></a>DR-04 | PDF parsing/rasterisation/text geometry run inside the C# ContentSandbox under the [mandatory OS profile](24-content-and-extension-isolation.md). The viewer brokers input and validates bounded results. C ABI discipline, signed loading and lifetime checks remain required; child crash/hang produces a metadata card without taking down the parent. |
-| <a id="rule-dr-05"></a>DR-05 | **Until adopted, [AT-05](../requirements/products/arcnotes.md#rule-at-05) is not met.** The gap is carried as [PG-12](../assurance/open-gates-register.md#rule-pg-12) in the [open-gates register](../assurance/open-gates-register.md), never absorbed by relabelling the viewer a preview. |
+| <a id="rule-dr-05"></a>DR-05 | **Until adopted, the assistant's PDF preview is not available.** The gap is carried as [PG-12](../assurance/open-gates-register.md#rule-pg-12) in the [open-gates register](../assurance/open-gates-register.md), triggered by the first assistant PDF preview through the ContentSandbox, never absorbed by silently treating a missing preview as the metadata-card fallback. |
 | <a id="rule-dr-06"></a>DR-06 | **The same surface serves any later document-rendering need** — it is not re-opened per format. A format needing more than [DR-01](#rule-dr-01)'s two operations is a new decision. |
 
 ---
@@ -83,7 +81,7 @@ Every first-party native library, and every `extern "C"` shim over a third-party
 | # | Rule |
 |---|---|
 | <a id="rule-ab-01"></a>AB-01 | **The C calling convention is explicit and stable across compilers**. |
-| <a id="rule-ab-02"></a>AB-02 | **Every exported function carries a fixed prefix and an ABI version** — for example `arc_media_*`. |
+| <a id="rule-ab-02"></a>AB-02 | **Every exported function carries a fixed prefix and an ABI version** — for example `arc_image_*`. |
 | <a id="rule-ab-03"></a>AB-03 | **Existing frozen POD views/buffers/rationals keep their ABI1.0 layout.** New extensible records carry size/version and append-only compatible tails. Existing field order/size/meaning never changes. [Functional ABI](contracts/06-native-functional-abi.md) supplies exact declarations and wrapper/package mapping. |
 | <a id="rule-ab-04"></a>AB-04 | **Fixed-width integer types only.** |
 | <a id="rule-ab-05"></a>AB-05 | **C++ `bool`, STL types, exceptions, RTTI and vtables never cross the boundary**. |
@@ -91,7 +89,7 @@ Every first-party native library, and every `extern "C"` shim over a third-party
 | <a id="rule-ab-07"></a>AB-07 | **Resource ownership is stated explicitly in every function's contract and asserted by a test**: who allocates, who frees, and when. |
 | <a id="rule-ab-08"></a>AB-08 | **A native exception never crosses the C ABI.** A status or error object is returned instead. |
 | <a id="rule-ab-09"></a>AB-09 | **Callbacks have a defined registration, deregistration, threading, reentrancy and shutdown protocol**. A callback that can fire after deregistration is a defect. |
-| <a id="rule-ab-10"></a>AB-10 | **Functions are as coarse-grained as practical.** A P/Invoke per pixel or per audio sample is prohibited; work is submitted in buffers, plans or batches. |
+| <a id="rule-ab-10"></a>AB-10 | **Functions are as coarse-grained as practical.** A P/Invoke per pixel or per signal sample is prohibited; work is submitted in buffers, plans or batches. |
 | <a id="rule-ab-11"></a>AB-11 | **Every length is checked for overflow and against its upper bound in managed code before the call**. |
 | <a id="rule-ab-12"></a>AB-12 | **The ABI version is negotiated at load, not assumed.** A mismatch is a startup failure with an actionable message, never a crash later. |
 
@@ -128,7 +126,7 @@ Every first-party native library, and every `extern "C"` shim over a third-party
 | <a id="rule-bf-02"></a>BF-02 | **Pinning is scoped and short.** A long-lived pinned region is a documented exception with a stated reason. |
 | <a id="rule-bf-03"></a>BF-03 | **Pooled buffers are returned on every path including failure**, and pool exhaustion is a measured, surfaced condition rather than an unbounded allocation. |
 | <a id="rule-bf-04"></a>BF-04 | **A per-frame image is never serialised over gRPC, the HTTP client or the realtime channel**. |
-| <a id="rule-bf-05"></a>BF-05 | **The application runtime never relays video frames or large file bodies**. |
+| <a id="rule-bf-05"></a>BF-05 | **The application runtime never relays raw capture frames or large file bodies**. |
 | <a id="rule-bf-06"></a>BF-06 | **GPU resources are shared inside the process through a platform-specific rendering bridge; the UI receives only presentable surface or bitmap abstractions**. |
 | <a id="rule-bf-07"></a>BF-07 | **Cross-process large data uses `ResourceRef` plus a controlled stream, file-handle strategy or temporary resource channel**, never an inline payload. |
 | <a id="rule-bf-08"></a>BF-08 | **`ResourceRef` never carries a raw pointer, GPU handle or device handle** ([NI-06](#rule-ni-06)). It carries identity and metadata only ([RR-01](02-contracts-and-protocols.md#rule-rr-01)–[RR-14](02-contracts-and-protocols.md#rule-rr-14) in the contract architecture). |
@@ -158,63 +156,19 @@ These mitigations supplement the mandatory hostile-content process boundary. The
 | <a id="rule-sb-01"></a>SB-01 | **The native ABI is kept extremely small.** Every addition is reviewed. |
 | <a id="rule-sb-02"></a>SB-02 | **Input is validated in managed code before it reaches native code** — sizes, ranges, formats, counts, alignment. |
 | <a id="rule-sb-03"></a>SB-03 | **Native libraries are built with sanitiser configurations** — address and undefined behaviour — for test builds. |
-| <a id="rule-sb-04"></a>SB-04 | **Media and image parsers are fuzzed**, with a corpus retained and extended by every parser defect found. |
+| <a id="rule-sb-04"></a>SB-04 | **Image and PDF parsers are fuzzed**, with a corpus retained and extended by every parser defect found. |
 | <a id="rule-sb-05"></a>SB-05 | **Native integration tests run in a sacrificial process**, so a crash fails a test rather than the test host. |
 | <a id="rule-sb-06"></a>SB-06 | **Crash dumps, symbols and build identifiers are retained in production**, and are sufficient to resolve a native frame. |
 | <a id="rule-sb-07"></a>SB-07 | **Business recovery relies on the journal** (`§3` of the persistence architecture). A native crash loses at most work since the last committed boundary, never committed work. |
 | <a id="rule-sb-08"></a>SB-08 | **A repeated native crash on the same input is a quarantine condition.** The offending asset, device or code path is marked, the user is told, and the application starts in a degraded but usable state (safe start, `§5` of the desktop architecture). |
-| <a id="rule-sb-09"></a>SB-09 | **Untrusted content is treated as hostile input at the native boundary.** A media file, capture stream or imported asset from outside the user's trust domain is parsed with the same suspicion as network input (`§7` of the security architecture). |
+| <a id="rule-sb-09"></a>SB-09 | **Untrusted content is treated as hostile input at the native boundary.** An untrusted file, capture stream or imported asset from outside the user's trust domain is parsed with the same suspicion as network input (`§7` of the security architecture). |
 | <a id="rule-sb-10"></a>SB-10 | **A native defect that cannot be mitigated within these obligations is grounds for removing the dependency**, not for relaxing the obligations. |
 
 ---
 
-## 7. The ArcSlate media pipeline
+## 7. The ArcScope acquisition pipeline
 
 ### 7.1 Structure
-
-```
-MediaAsset — identity, metadata, availability            C# domain, authority
-      ↓ resolve representation
-original | managed copy | proxy                          C# decision
-      ↓
-Demux → Decode → colour convert · scale · resample       native, behind the ABI
-      ↓ frames and audio buffers in pooled memory
-Processing graph evaluation                              C# orchestration,
-                                                         native primitives per node
-      ↓
-Preview → presentable surface → UI     |     Render → Encode → Mux → output
-```
-
-| # | Rule |
-|---|---|
-| <a id="rule-mp-01"></a>MP-01 | **The domain model is C# and owns every decision** ([NI-03](#rule-ni-03)). The native foundation answers "decode this range of this stream at this quality"; it never decides what to decode, when, or why. |
-| <a id="rule-mp-02"></a>MP-02 | **A native media foundation must never leak into the domain** ([RT-02](../requirements/products/arcslate.md#rule-rt-02) in the ArcSlate requirements). No native type, handle, enumeration or error code appears in a domain, contract or persisted type. |
-| <a id="rule-mp-03"></a>MP-03 | **Preview and final render share processing semantics** ([PP-03](../requirements/products/arcslate.md#rule-pp-03), [RT-06](../requirements/products/arcslate.md#rule-rt-06) there). Effect and colour semantics are identical; only quality, speed and precision differ. This is enforced by one shared evaluation description, never by two independently written pipelines. |
-| <a id="rule-mp-04"></a>MP-04 | **Preview may drop displayed frames; it must keep the audio and timeline clock correct** ([VW-04](../requirements/products/arcslate.md#rule-vw-04) there). |
-| <a id="rule-mp-05"></a>MP-05 | **A dropped preview frame is a playback-quality event, never data loss** ([I-480](../requirements/01-normative-glossary-and-invariants.md#rule-i-480)), reported through playback quality state rather than as an error. |
-| <a id="rule-mp-06"></a>MP-06 | **Switching proxy on or off never changes render output** ([I-484](../requirements/01-normative-glossary-and-invariants.md#rule-i-484), [PX-02](../requirements/products/arcslate.md#rule-px-02) there). Final render uses the original unless proxy render is explicitly permitted. |
-| <a id="rule-mp-07"></a>MP-07 | **Proxies, render caches, thumbnails and waveforms are derived** ([PX-05](../requirements/products/arcslate.md#rule-px-05)–[PX-08](../requirements/products/arcslate.md#rule-px-08) there): fully reconstructable, never project authority, and safe to delete. |
-| <a id="rule-mp-08"></a>MP-08 | **Decode capability is discovered at runtime and reported as capability**, never assumed from a build flag. Missing hardware acceleration degrades to software with a visible reason. |
-| <a id="rule-mp-09"></a>MP-09 | **A render task binds a project and sequence revision snapshot** ([RN-04](../requirements/products/arcslate.md#rule-rn-04) there). The native pipeline is handed an immutable plan; it never reads live editor state. |
-| <a id="rule-mp-10"></a>MP-10 | **Export writes to a temporary target and commits atomically**, so a cancelled or failed render never leaves a file that looks complete. |
-| <a id="rule-mp-11"></a>MP-11 | **Timebase conversion is exact.** Rational frame rates and audio sample rates are converted through explicit exact arithmetic at the managed boundary ([TM-02](../requirements/products/arcslate.md#rule-tm-02), [TM-03](../requirements/products/arcslate.md#rule-tm-03) there); native code receives already-resolved frame and sample indices. |
-| <a id="rule-mp-12"></a>MP-12 | **Offline media is a normal state** ([MD-05](../requirements/products/arcslate.md#rule-md-05) there). The pipeline reports unavailability; it does not fail the project. |
-
-### 7.2 GPU
-
-| # | Rule |
-|---|---|
-| <a id="rule-gp-01"></a>GP-01 | **GPU state stays inside the owning process**. |
-| <a id="rule-gp-02"></a>GP-02 | **The device, its context and its resources have a single owning component**, with an explicit creation, loss and recreation protocol. |
-| <a id="rule-gp-03"></a>GP-03 | **Device loss is recoverable**: resources are recreated, in-flight work fails with a typed reason, and the session continues. |
-| <a id="rule-gp-04"></a>GP-04 | **GPU acceleration is optional at every stage.** A software path exists for every operation required for correctness, so a driver problem degrades performance rather than removing a feature. |
-| <a id="rule-gp-05"></a>GP-05 | **The UI receives presentable surfaces or bitmaps only**, never a GPU handle. |
-
----
-
-## 8. The ArcScope acquisition pipeline
-
-### 8.1 Structure
 
 ```
 SourceAdapter — serial · TCP · UDP · file replay · later device SDK      C#
@@ -246,7 +200,7 @@ Visualisation
 
 **Measurement owner.** ArcScope managed Analysis/Application code implements [scope.measurement.v1](../requirements/products/arcscope.md#measurement-profile), including population statistics, sample weighting, gaps, thresholds, interpolation, units and status/tolerance. Native primitives may accelerate computation only if the same reference vectors pass. Replay, interactive readout, offline ProductJobs and reports consume the same immutable request/result projection. Neither display decimation nor a native library's default statistics defines product semantics.
 
-## 9. Testing the native boundary
+## 8. Testing the native boundary
 
 | # | Test obligation |
 |---|---|
@@ -256,26 +210,24 @@ Visualisation
 | <a id="rule-nt-04"></a>NT-04 | **Sanitiser builds** run the native test suite under address and undefined-behaviour sanitisers in CI. |
 | <a id="rule-nt-05"></a>NT-05 | **Fuzzing** runs against every parser reachable from untrusted content, with a retained corpus. |
 | <a id="rule-nt-06"></a>NT-06 | **Sacrificial-process integration tests** cover crash and hang behaviour, asserting that the managed side reports a typed failure. |
-| <a id="rule-nt-07"></a>NT-07 | **Degradation tests** assert that a missing hardware accelerator, a missing entry point, an ABI mismatch and a device loss each produce a named, visible, recoverable state. |
+| <a id="rule-nt-07"></a>NT-07 | **Degradation tests** assert that a missing entry point, an ABI mismatch and a device loss each produce a named, visible, recoverable state. |
 | <a id="rule-nt-08"></a>NT-08 | **Soak tests** assert stable memory, stable handle counts and no pool exhaustion over the duration defined in the quality contract (`§8` there). |
 | <a id="rule-nt-09"></a>NT-09 | **Golden-output tests** assert that decode and render of a fixed input is stable across releases within a declared tolerance, so a codec update cannot silently change output. |
-| <a id="rule-nt-10"></a>NT-10 | **Proxy-equivalence tests** assert [MP-06](#rule-mp-06): render output is identical whether or not proxies are enabled. |
 | <a id="rule-nt-11"></a>NT-11 | **AOT tests** assert that every P/Invoke path is source-generated and that no reflection-based marshalling is required. |
 | <a id="rule-nt-12"></a>NT-12 | **Licence and provenance tests** assert that every shipped native asset is signed, recorded and licence-reviewed ([LD-05](#rule-ld-05)–[LD-07](#rule-ld-07)). |
 
 ---
 
-## 10. Non-goals
+## 9. Non-goals
 
-The native layer is **not**: a worker process; a place for business logic that is easier to write in C++; a shared cross-product runtime; a plug-in host for third-party native code; a transport for domain data; a holder of ArcForges identity, task or state; or a reason to weaken the Native AOT posture of the desktop products.
+The native layer is **not**: a worker process; a place for business logic that is easier to write in C++; a shared cross-product runtime; a plug-in host for third-party native code; a transport for domain data; a holder of ArcForges identity, task or state; or a reason to weaken the Native AOT posture of the desktop product.
 
 ---
 
-## 11. Traceability
+## 10. Traceability
 
 | Current document | Relationship |
 |---|---|
-| [ArcSlate — Product Requirements](../requirements/products/arcslate.md) | Owns media, render, timebase, proxy and recovery semantics |
 | [ArcScope — Product Requirements](../requirements/products/arcscope.md) | Owns acquisition, evidence, device-control and replay semantics |
 | [Local RPC Operations](contracts/02-local-rpc-operations.md) | Defines ResourceRef-based controlled access across the local boundary |
 | `§8`, `§8.1` of the scope requirements | The prohibition on C++ workers and the closed technical exception list |
@@ -285,11 +237,7 @@ The native layer is **not**: a worker process; a place for business logic that i
 
 ## [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) capability package adoption
 
-The [package registry](01-solution-and-project-layout.md#12-package-and-native-distribution-registry) fixes wrapper/RID package identities, exact source inputs, producer/consumer tests and OTIO/MDF dispositions. OTIO0.18.1 is selected for official interchange; MDF stays excluded from V1 distributions. All existing ABI/lifetime/buffer/error/colour/time/sandbox rules remain requirements on those packages, not alternatives that a consumer must design. Ordinary product builds are C# package consumers and do not invoke vcpkg.
-
-## Complete media package contract
-
-DesktopPlatform owns the selected decode/encode/audio/extraction C ABI and managed wrappers, packaged per capability/RID. ArcSlate consumes those packages and owns timelines, graph/business validation, subtitle editing and ProductJob recovery. [Slate profiles](23-simulator-and-interchange.md#5-slate-metadata-render-and-subtitle-profiles) fix the observable portable render, generated-source, subtitle and ASR extraction behavior. Native codec feature/licence and malformed-input tests apply to the actual package closure; a product must not compile an adjacent native source tree to pass them.
+The [package registry](01-solution-and-project-layout.md#12-package-and-native-distribution-registry) fixes wrapper/RID package identities, exact source inputs, producer/consumer tests and the MDF disposition. MDF stays excluded from V1 distributions. All existing ABI/lifetime/buffer/error/time/sandbox rules remain requirements on those packages, not alternatives that a consumer must design. Ordinary product builds are C# package consumers and do not invoke vcpkg.
 
 ## Functional producer closure
 

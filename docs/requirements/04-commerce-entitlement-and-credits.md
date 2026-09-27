@@ -202,7 +202,7 @@ Official capability admission is explicit:
 
 | Capability / operation family | Active paid term required | Other gate |
 |---|---|---|
-| cloud.sync, notebook enrolment and sync writes | Yes | Source grant, quota, current authorization |
+| cloud.sync, project sync enrolment and sync writes | Yes | Source grant, quota, current authorization |
 | cloud.version_history writes, assistant Cloud-history writes | Yes | Source grant and resource revision |
 | cloud.vector_index, Cloud search/query | Yes | Source policy, workspace/product partition |
 | cloud.remote_agent, cloud.ai, simulator compute | Yes | Capability grant, budget/rate/remote consent |
@@ -217,9 +217,9 @@ Cloud enrolment creates no initial service grant. Self-host realms use explicit 
 |---|---|
 | <a id="rule-en-01"></a>EN-01 | Entitlement belongs to a single-owner Workspace. The owner UserId and explicit actor/resource authorisation are required; no organisation workspace, member role or team credit pool exists. |
 | <a id="rule-en-02"></a>EN-02 | **Billing Account pays; Workspace receives.** `Billing Account → Commercial Purchase → Workspace → Entitlements`. Who pays and who uses are different concepts. |
-| <a id="rule-en-03"></a>EN-03 | Native editing, acquisition, playback, rendering and pending-edit recovery do not consume AI entitlement. No local AI, local embedding, local agent or BYOK capability is defined. |
+| <a id="rule-en-03"></a>EN-03 | Native acquisition, observation, analysis, reporting and pending-edit recovery do not consume AI entitlement. No local AI, local embedding, local agent or BYOK capability is defined. |
 | <a id="rule-en-04"></a>EN-04 | **Entitlement ≠ Feature Flag** ([I-004](01-normative-glossary-and-invariants.md#rule-i-004)). A feature flag says whether a capability has shipped; entitlement says whether a workspace may use it. |
-| <a id="rule-en-05"></a>EN-05 | **Entitlement ≠ Authorization** ([I-238](01-normative-glossary-and-invariants.md#rule-i-238)). `cloud.notes = enabled` says the workspace may use cloud notes; it never says a given actor may read a given document. Resource access always goes through authorization. |
+| <a id="rule-en-05"></a>EN-05 | **Entitlement ≠ Authorization** ([I-238](01-normative-glossary-and-invariants.md#rule-i-238)). `cloud.sync = enabled` says the workspace may use Cloud sync; it never says a given actor may read a given session. Resource access always goes through authorization. |
 | <a id="rule-en-06"></a>EN-06 | **No product computes its own entitlement.** Every product consumes one resolved snapshot from one resolver. Per-product logic such as `if provider status == active` is prohibited. |
 
 ### 6.3 Bundles and versioning
@@ -329,7 +329,7 @@ Allowance and purchased credits are **displayed separately**, never summed into 
 | <a id="rule-mt-07"></a>MT-07 | Record supplier amounts as fixed-precision decimal money with currency and at least nine fractional digits internally; customer accounting uses integer micro-credits (one credit = 1,000,000 micro-credits). No binary floating point. Reserve conservatively upward; settle once per logical request by declared half-even rounding after category aggregation, never per stream fragment. Provider invoice rounding differences are reconciliation adjustments. |
 | <a id="rule-mt-08"></a>MT-08 | Every AI call is classified by beneficiary/purpose. User-requested delivered inference consumes included capacity or authorised extra credits. Platform routing, abuse checks, health checks, admitted background indexing and platform-caused failed/retried work are recorded as platform cost without charging the user for duplicate/non-delivered work. Such overhead still has provider and workspace resource budgets. |
 | <a id="rule-mt-09"></a>MT-09 | Caller cancellation settles verified consumption already incurred within the authorised ceiling and releases the remainder; completed provider work is not presumed refundable. Platform failure/non-delivery releases customer reservation or appends a compensating credit adjustment. Supplier cost is retained in either case. |
-| <a id="rule-mt-10"></a>MT-10 | Independently billed search/tool/media operations use explicit quantity/unit/rate lines alongside tokens. No feature may be enabled with an unpriced billable dimension. Supporting the metering contract does not itself add image/video generation or arbitrary paid tools to product scope. |
+| <a id="rule-mt-10"></a>MT-10 | Independently billed search/tool operations use explicit quantity/unit/rate lines alongside tokens. No feature may be enabled with an unpriced billable dimension. Supporting the metering contract does not itself add image/video generation or arbitrary paid tools to product scope. |
 | <a id="rule-mt-11"></a>MT-11 | Persist settlement idempotency for each attempt usage revision and logical request. Duplicate/reordered events never double-debit; distinct real retries remain distinct supplier-cost records. Corrections append adjustments linked to the original records. |
 | <a id="rule-mt-12"></a>MT-12 | Missing final usage, timeout after dispatch and lost responses produce UsagePending/CostUnconfirmed, never zero cost or a fabricated exact total. Reconcile through the available provider evidence; no blind redispatch or repeat charge. After the configured reconciliation deadline, release unresolved customer holds without surprise later debit, retain the unresolved supplier liability and alert/restrict the affected route as required. |
 | <a id="rule-mt-13"></a>MT-13 | Reconcile calculated supplier cost against provider usage statements/invoices. Reconcile payments against the payment provider separately. Estimated cost, usage-confirmed calculated cost and invoice-reconciled cost remain distinguishable. |
@@ -366,7 +366,7 @@ Acceptance includes: a hand-calculable multi-category usage fixture; two synthet
 
 ### 8.7 Service eligibility across realms
 
-Official paid-service rules apply uniformly to all official AI, including chat, agent steps, embedding and AI media processing. Paid term means verified subscription or prepaid Cloud Pass coverage, including audited compensation extending an existing paid service. A credit grant, trial flag or operator edit cannot bypass it. Self-hosted realms may instead issue an explicit operator-funded ServiceGrant; references to an active service term in product AI requirements use that grant in the self-host realm. Real metering, authorization, resource budgets and the prohibition on end-user BYOK remain identical. A self-host deployment with billing disabled requires no customer credit purchase.
+Official paid-service rules apply uniformly to all official AI, including chat, agent steps, embedding, reranking and image-context processing. Paid term means verified subscription or prepaid Cloud Pass coverage, including audited compensation extending an existing paid service. A credit grant, trial flag or operator edit cannot bypass it. Self-hosted realms may instead issue an explicit operator-funded ServiceGrant; references to an active service term in product AI requirements use that grant in the self-host realm. Real metering, authorization, resource budgets and the prohibition on end-user BYOK remain identical. A self-host deployment with billing disabled requires no customer credit purchase.
 
 ## 9. Subscription-only AI access
 

@@ -65,7 +65,7 @@ Each family below states its unique responsibility and evidence. [P2-017](../dec
 |---|---|---|---|
 | <a id="rule-f-09"></a>F-09 | **UI component and automation tests** | Binding, command availability, state presentation and navigation defects | Test results plus failure screenshots |
 | <a id="rule-f-10"></a>F-10 | **Accessibility tests, automated and assistive-technology-verified** | Automated checks pass while the product is unusable with a screen reader ([QI-16](../requirements/12-quality-and-compatibility-contract.md#rule-qi-16), [QI-17](../requirements/12-quality-and-compatibility-contract.md#rule-qi-17)) | Automated results plus a dated manual verification record |
-| <a id="rule-f-18"></a>F-18 | **Hardware-lab tests for ArcScope and ArcSlate** | Real device, real driver, real codec and real timing defects that no simulation reproduces ([QI-21](../requirements/12-quality-and-compatibility-contract.md#rule-qi-21)) | Device inventory, run records, captured artifacts |
+| <a id="rule-f-18"></a>F-18 | **Hardware-lab tests for ArcScope** | Real device, real driver, real codec and real timing defects that no simulation reproduces ([QI-21](../requirements/12-quality-and-compatibility-contract.md#rule-qi-21)) | Device inventory, run records, captured artifacts |
 
 ---
 
@@ -135,16 +135,13 @@ Run the applicable rows with Cloud unreachable, including process restart. Recor
 
 | Product / initial state | Expected result | Evidence owner |
 |---|---|---|
-| Three professional desktop shells, fresh install and no account | Launch and local shell/settings remain usable; no automatic workspace/content entitlement is implied | Desktop shell package |
-| ArcScope/ArcSlate, new or existing local project, no account | Native capture/analysis/edit/save/render work on available local inputs; offline external assets remain explicitly unavailable | Acquisition/analysis and timeline/render packages |
-| ArcNotes, no enrolled realm/workspace or requested uncached content | Shell works; initial enrollment and unavailable content report Cloud dependency, with no empty substitute notebook or fabricated download | Notes core/sync packages |
-| ArcNotes, enrolled and authorized, hydrated notebook during outage | Open/edit/search available content without an interactive reauthentication prompt. Pending changes are visibly local, durable through crash/restart and later reconcile through normal conflicts; missing attachments remain unavailable | Notes core, query and sync packages |
-| ArcNotes after explicit signout/revocation | Normal workspace views are blocked. Preserve pending edits and expose only the existing [narrow recovery/export path](../requirements/02-identity-account-and-workspace.md#rule-dl-01); this is not account-free notebook creation | Identity/security and Notes packages |
+| The professional desktop shell, fresh install and no account | Launch and local shell/settings remain usable; no automatic workspace/content entitlement is implied | Desktop shell package |
+| ArcScope, new or existing local project, no account | Native capture/analysis/edit/save work on available local inputs; offline external assets remain explicitly unavailable | Acquisition/analysis packages |
 | ArcChat desktop, previously authorized cache and draft | Cached acknowledged conversation/task content is readable and drafts remain recoverable where permitted; no Cloud AI/turn execution or fabricated completed answer. New submission/export waits for Cloud | Conversation/core packages |
-| Android companion/Web, previously loaded authorized state | Preserve the declared bounded cache/draft/pending-attention presentation and report offline capability reasons; reconnect fetches authoritative state. No local agent runtime or general offline Notes workspace editor | Mobile/Web packages |
+| Android companion/Web, previously loaded authorized state | Preserve the declared bounded cache/draft/pending-attention presentation and report offline capability reasons; reconnect fetches authoritative state. No local agent runtime or general offline workspace editor | Mobile/Web packages |
 | Mobile/Web, fresh session or signed out | Authentication-dependent data/actions remain unavailable. Public static pages retain their separately specified Cloud independence | Identity, Site and companion packages |
 
-These are product-state assertions, not permissions to retain data after an explicit security action beyond its stated policy. Account deletion/signout does not delete native Scope/Slate projects or unacknowledged recovery material; it does not leave normal signed-out Cloud views open.
+These are product-state assertions, not permissions to retain data after an explicit security action beyond its stated policy. Account deletion/signout does not delete native Scope projects or unacknowledged recovery material; it does not leave normal signed-out Cloud views open.
 
 ---
 
@@ -175,7 +172,7 @@ These are product-state assertions, not permissions to retain data after an expl
 | **Format fixtures** | Files in each supported format version, first-party and reference-produced | Versioned; an import claim without a fixture is withdrawn ([ME-03](reference-coverage-and-provenance.md#rule-me-03) in the provenance document) |
 | **Migration fixtures** | A store at each historical schema version | Every migration is exercised forward, and backward where reversibility is claimed |
 | **Contract fixtures** | Serialized payloads for each contract version in the supported window | Never regenerated in place; a new version adds a new fixture |
-| **Scale corpus** | Large, realistic project, note, capture and timeline sets | Sized per the quality contract's scale definitions |
+| **Scale corpus** | Large, realistic project and capture sets | Sized per the quality contract's scale definitions |
 | **Fuzzing corpus** | Inputs for every parser reachable from untrusted content | Extended by every parser defect found ([SB-04](../architecture/12-native-interop-and-media.md#rule-sb-04) in the native architecture) |
 | **Adversarial corpus** | Prompt-injection attempts, hostile catalog metadata, malformed manifests, oversized payloads | Extended by every security finding |
 | **Accessibility scenarios** | Keyboard-only and screen-reader task scripts for every core workflow | Re-verified per release |
@@ -253,7 +250,7 @@ The same eighteen families run in each owning repository. Contract fixtures unbl
 
 ## [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) initial-contract and real-owner coverage
 
-The [producer stage matrix](../planning/producer-artifacts-and-integration.md) is mandatory in every evidence manifest. Verify all initial domain methods/closed schemas and the functional ABI before consumer implementation. Exact package-only C#/TS/Kotlin and C17 native probes must operate without adjacent source. Full ordinary/temporary/Task, Notes conflict/undo, Scope capture/analysis, Slate time/edit/render, Android lifecycle, partial registry publication, commerce and independent restore cases use their actual owners at the assigned later stage. A fake remains useful for deterministic negative inputs but never closes a gate requiring actual AOT/CF/R2/device/provider/payout behavior.
+The [producer stage matrix](../planning/producer-artifacts-and-integration.md) is mandatory in every evidence manifest. Verify all initial domain methods/closed schemas and the functional ABI before consumer implementation. Exact package-only C#/TS/Kotlin and C17 native probes must operate without adjacent source. Full ordinary/temporary/Task, Scope capture/analysis, Android lifecycle, partial registry publication, commerce and independent restore cases use their actual owners at the assigned later stage. A fake remains useful for deterministic negative inputs but never closes a gate requiring actual AOT/CF/R2/device/provider/payout behavior.
 
 ## Current repair acceptance families
 

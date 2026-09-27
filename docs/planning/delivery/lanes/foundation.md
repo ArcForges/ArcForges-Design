@@ -34,7 +34,7 @@ Tasks: 7 · Owning repositories: DesktopPlatform · Integration owner(s): Deskto
 | Start prerequisites | **contract** [CON.91](contracts.md#task-con-91) — ArcForges.Contracts.Foundation package: canonical UUID/Decimal/Rational/exact-value wire types and codecs. *Why:* BR-04.00 requires Foundation primitives to be adapters over the published Contracts wire types, never a duplicate/independent redefinition; the package already exists in Contracts (src/public/dotnet/ArcForges.Contracts.Foundation, Generated/ present) so this is a real but already-available artifact. |
 | Entry condition | [ADOPT.02.foundation](adoption.md#task-adopt-02-foundation) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [APP.01](app-composition.md#task-app-01), [FND.07](#task-fnd-07), [PLT.17](platform.md#task-plt-17), [PLT.36](platform.md#task-plt-36), [PLT.47](platform.md#task-plt-47), [PRF.01](runtime-proofs.md#task-prf-01), [PRF.02](runtime-proofs.md#task-prf-02), [PRF.03](runtime-proofs.md#task-prf-03) |
+| Unblocks | [APP.01](app-composition.md#task-app-01), [FND.07](#task-fnd-07), [PLT.17](platform.md#task-plt-17), [PLT.36](platform.md#task-plt-36), [PLT.47](platform.md#task-plt-47), [PRF.02](runtime-proofs.md#task-prf-02) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Foundation/**` |
 | Shared resources | [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append) |
 | Validation | [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) scope: Windows/Linux build + offline unit tests, compile-negative tests for identifier/axis confusion, no macOS/hosted-runtime/device CI. |

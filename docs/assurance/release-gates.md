@@ -80,7 +80,7 @@ This document consolidates every gate that stands between work and users, in one
 | <a id="rule-c-01"></a>C-01 | All per-release gates passed for this exact artifact — no rebuild ([BR-01](../architecture/14-build-packaging-and-release.md#rule-br-01) in the build architecture) | Every promotion |
 | <a id="rule-c-02"></a>C-02 | Soak and scale results within budget for the promotion's duration requirement ([F-14](testing-and-verification-strategy.md#rule-f-14)) | Beta → Stable |
 | <a id="rule-c-03"></a>C-03 | Cross-platform matrix complete for every supported platform and architecture (`§20` of the quality contract) | Beta → Stable |
-| <a id="rule-c-04"></a>C-04 | Hardware-lab verification complete for ArcScope and ArcSlate ([F-18](testing-and-verification-strategy.md#rule-f-18)) | Beta → Stable for those products |
+| <a id="rule-c-04"></a>C-04 | Hardware-lab verification complete for ArcScope ([F-18](testing-and-verification-strategy.md#rule-f-18)) | Beta → Stable for that product |
 | <a id="rule-c-05"></a>C-05 | Update feed entry prepared with hashes, compatibility ranges and minimum versions (`§7` of the build architecture) | Every promotion |
 | <a id="rule-c-06"></a>C-06 | Rollback path verified for this specific version pair | Every promotion |
 | <a id="rule-c-07"></a>C-07 | Nightly and canary artifacts are never submitted to a platform store (`§2` of the distribution requirements) | Store submission |
@@ -95,8 +95,7 @@ This document consolidates every gate that stands between work and users, in one
 | <a id="rule-p-02"></a>P-02 | The product's **licence audit** is complete — the **[F-013](open-gates-register.md#rule-f-013)** trigger has fired and been satisfied for this product (**[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**) | Audit record |
 | <a id="rule-p-03"></a>P-03 | The product's Quality Contract instance is populated with measured values, not targets (`§1` of the quality contract) | Quality report |
 | <a id="rule-p-04"></a>P-04 | Must-pass release scenarios pass for this product, including every applicable initial-state row of the [offline acceptance matrix](testing-and-verification-strategy.md#offline-acceptance-matrix). Record enrollment/hydration/authorization and restart outcomes; no generic Cloud-authoritative editable-workspace assumption substitutes for the product behavior | Scenario results |
-| <a id="rule-p-05"></a>P-05 | ArcScope/ArcSlate portable packages round-trip completely. Notes Cloud/cached export reports declared fidelity and missing resources. Every application assistant exports/imports assistant-history.v1 locally or from its admitted Cloud scope under model 05, without implicit promotion. | Owner-specific round-trip or complete fidelity/exclusion report |
-| <a id="rule-p-06"></a>P-06 | Cross-product launch/handoff is future-only. Current assistant navigation opens resources inside its own application; remote operations target an already authorized application through Cloud. | [Future boundary](../future/cross-product-collaboration/README.md) |
+| <a id="rule-p-05"></a>P-05 | ArcScope portable packages round-trip completely. Every application assistant exports/imports assistant-history.v1 locally or from its admitted Cloud scope under model 05, without implicit promotion. | Owner-specific round-trip or complete fidelity/exclusion report |
 | <a id="rule-p-07"></a>P-07 | Deep links, file associations and single-instance routing verified (`§7`, `§8` of the shared desktop requirements) | Test results |
 | <a id="rule-p-08"></a>P-08 | Diagnostics, crash reporting and consent behaviour verified (`§9` of the observability architecture) | Test results |
 
@@ -197,7 +196,7 @@ Full state is tracked in [`open-gates-register.md`](open-gates-register.md).
 | G | Architecture Owner |
 | R | Release Engineering Owner |
 | C | Release Engineering Owner |
-| P | Product Owner, with the Architecture Owner for [P-01](#rule-p-01), [P-02](#rule-p-02), [P-06](#rule-p-06) |
+| P | Product Owner, with the Architecture Owner for [P-01](#rule-p-01), [P-02](#rule-p-02) |
 | L (cloud) | Operations Owner |
 | L (commercial) | Product Owner |
 | L (regional) | Product Owner |

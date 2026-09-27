@@ -13,10 +13,10 @@ Phase 1 used exactly four input files. At that stage, no other file, repository,
 
 | # | File | Lines | Bytes | Read status |
 |---|---|---:|---:|---|
-| I1 | [product-discovery-overview-deprecated.md](../deprecated-inputs/product-discovery-overview-deprecated.md) | 91 | 7,746 | Complete |
-| I2 | [implementation-sequencing-notes-deprecated.md](../deprecated-inputs/implementation-sequencing-notes-deprecated.md) | 646 | 30,042 | Complete |
-| I3 | [platform-architecture-concept-deprecated.md](../deprecated-inputs/platform-architecture-concept-deprecated.md) | 2,522 | 121,737 | Complete |
-| I4 | [product-discovery-record-deprecated.md](../deprecated-inputs/product-discovery-record-deprecated.md) | 112,228 | 1,528,926 | Complete |
+| I1 | [product-discovery-overview-deprecated.md](../deprecated-inputs/README.md) | 91 | 7,746 | Complete |
+| I2 | [implementation-sequencing-notes-deprecated.md](../deprecated-inputs/README.md) | 646 | 30,042 | Complete |
+| I3 | [platform-architecture-concept-deprecated.md](../deprecated-inputs/README.md) | 2,522 | 121,737 | Complete |
+| I4 | [product-discovery-record-deprecated.md](../deprecated-inputs/README.md) | 112,228 | 1,528,926 | Complete |
 
 Total: 115,487 lines / 1,688,451 bytes across the four files.
 

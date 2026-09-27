@@ -4,12 +4,12 @@
 
 Host and D1 persistence, identity and sessions, public APIs, realtime events, sync and objects, backup and recovery.
 
-Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s): Cloud integration owner, DesktopPlatform integration owner
+Tasks: 59 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s): Cloud integration owner, DesktopPlatform integration owner
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
 | [CLOUD.01](#task-cloud-01) | Ingress and host pipeline | service | M | [CON.91](contracts.md#task-con-91) (contract) | not-started |
-| [CLOUD.02](#task-cloud-02) | Twenty-one module boundaries and D1 named-plan bridge | service | M | [CLOUD.01](#task-cloud-01) (artifact) | not-started |
+| [CLOUD.02](#task-cloud-02) | Nineteen module boundaries and D1 named-plan bridge | service | M | [CLOUD.01](#task-cloud-01) (artifact) | not-started |
 | [CLOUD.03](#task-cloud-03) | D1 migration runner and exact physical mapping | service | L | [CLOUD.02](#task-cloud-02) (artifact) | not-started |
 | [CLOUD.04](#task-cloud-04) | Receipts, outbox, inbox dedup and change archive | service | M | [CLOUD.02](#task-cloud-02) (artifact), [CLOUD.03](#task-cloud-03) (artifact) | not-started |
 | [CLOUD.05](#task-cloud-05) | Finite durable jobs (Cron/Queue/Workflow-woken endpoints) | service | M | [CLOUD.01](#task-cloud-01) (artifact), [CLOUD.04](#task-cloud-04) (artifact) | not-started |
@@ -17,7 +17,7 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | [CLOUD.07](#task-cloud-07) | Capacity, Container/D1 integration producer and harness | service | L | [CLOUD.02](#task-cloud-02) (artifact), [CLOUD.03](#task-cloud-03) (artifact), [CLOUD.06](#task-cloud-06) (artifact) | not-started |
 | [CLOUD.08](#task-cloud-08) | Failure isolation and readiness surface | service | S | [CLOUD.01](#task-cloud-01) (artifact), [CLOUD.02](#task-cloud-02) (artifact) | not-started |
 | [CLOUD.09](#task-cloud-09) | Selfhost.v1 deployment profile | service | M | [CLOUD.01](#task-cloud-01) (artifact), [CLOUD.03](#task-cloud-03) (artifact) | not-started |
-| [CLOUD.10](#task-cloud-10) | Owned-artifact closure and launch-capacity.v1 acceptance | integration | M | [CLOUD.37](#task-cloud-37) (artifact), [SIM.10](simulator.md#task-sim-10) (artifact) | not-started |
+| [CLOUD.10](#task-cloud-10) | Owned-artifact closure and launch-capacity.v1 acceptance | integration | M | [CLOUD.39](#task-cloud-39) (artifact), [SIM.10](simulator.md#task-sim-10) (artifact) | not-started |
 | [CLOUD.11](#task-cloud-11) | Core identity model (realm, user, authIdentity, single-owner workspace) | service | M | [CLOUD.02](#task-cloud-02) (artifact), [CLOUD.03](#task-cloud-03) (artifact), [CLOUD.06](#task-cloud-06) (artifact) | not-started |
 | [CLOUD.12](#task-cloud-12) | Native and browser authentication with real Postmark/SES mail delivery | service | L | [CLOUD.11](#task-cloud-11) (artifact) | not-started |
 | [CLOUD.13](#task-cloud-13) | Device, installation, instance and session (four distinct concepts) | service | M | [CLOUD.11](#task-cloud-11) (artifact), [CLOUD.06](#task-cloud-06) (artifact) | not-started |
@@ -44,17 +44,16 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | [CLOUD.34](#task-cloud-34) | Bounded stream lifecycle | service | S | [CLOUD.29](#task-cloud-29) (artifact) | not-started |
 | [CLOUD.35](#task-cloud-35) | Reusable stream consumer adapters | service | M | [CLOUD.33](#task-cloud-33) (artifact), [CLOUD.34](#task-cloud-34) (artifact) | not-started |
 | [CLOUD.36](#task-cloud-36) | Owned-artifact closure and real integration (tool-result acceptance) | integration | M | [DEV.14](device-bridge.md#task-dev-14) (artifact) | not-started |
-| [CLOUD.37](#task-cloud-37) | Cloud Notes authority and sync scopes | service | L | [CLOUD.03](#task-cloud-03) (artifact), [CLOUD.06](#task-cloud-06) (artifact), [CON.91](contracts.md#task-con-91) (contract), [CON.20](contracts.md#task-con-20) (contract), [CON.03](contracts.md#task-con-03) (artifact), [CON.09](contracts.md#task-con-09) (artifact), [CLOUD.01](#task-cloud-01) (artifact) | not-started |
 | [CLOUD.38](#task-cloud-38) | Client outbox and conflict lineage (desktop data model) | service | L | [PLT.01](platform.md#task-plt-01) (artifact) | not-started |
-| [CLOUD.39](#task-cloud-39) | Guarded publication and convergent bootstrap | service | L | [CLOUD.37](#task-cloud-37) (artifact), [CLOUD.04](#task-cloud-04) (artifact), [CLOUD.31](#task-cloud-31) (artifact) | not-started |
+| [CLOUD.39](#task-cloud-39) | Guarded publication, convergent bootstrap and the Sync owner transaction | service | L | [CLOUD.04](#task-cloud-04) (artifact), [CLOUD.31](#task-cloud-31) (artifact), [CLOUD.03](#task-cloud-03) (artifact), [CLOUD.06](#task-cloud-06) (artifact), [CON.03](contracts.md#task-con-03) (artifact), [CON.09](contracts.md#task-con-09) (artifact), [CLOUD.01](#task-cloud-01) (artifact) | not-started |
 | [CLOUD.40](#task-cloud-40) | Conflict detection and five resolution policies | service | M | [CLOUD.38](#task-cloud-38) (artifact), [CLOUD.39](#task-cloud-39) (artifact) | not-started |
 | [CLOUD.41](#task-cloud-41) | Deletion and tombstones | service | M | [CLOUD.39](#task-cloud-39) (artifact) | not-started |
 | [CLOUD.42](#task-cloud-42) | Blob lifecycle (real R2 staged/verified/committed) | service | L | [CLOUD.01](#task-cloud-01) (artifact), [CLOUD.06](#task-cloud-06) (artifact), [CLOUD.25](#task-cloud-25) (artifact) | not-started |
 | [CLOUD.43](#task-cloud-43) | Availability, protection, data-health signals and realm-transfer workflow | service | L | [CLOUD.42](#task-cloud-42) (artifact), [CLOUD.39](#task-cloud-39) (artifact) | not-started |
 | [CLOUD.44](#task-cloud-44) | Multi-device convergence harness | integration | L | none | not-started |
-| [CLOUD.45](#task-cloud-45) | Real Cloud Notes and Chat export producers | service | L | [CLOUD.37](#task-cloud-37) (artifact), [CLOUD.42](#task-cloud-42) (artifact), [CLOUD.05](#task-cloud-05) (artifact), [CON.20](contracts.md#task-con-20) (contract), [CON.22](contracts.md#task-con-22) (contract) | not-started |
+| [CLOUD.45](#task-cloud-45) | Real Cloud Chat export producer | service | L | [CLOUD.42](#task-cloud-42) (artifact), [CLOUD.05](#task-cloud-05) (artifact), [CON.22](contracts.md#task-con-22) (contract) | not-started |
 | [CLOUD.46](#task-cloud-46) | Application Cloud history and restartable import | service | M | [CLOUD.42](#task-cloud-42) (artifact), [CLOUD.06](#task-cloud-06) (artifact) | not-started |
-| [CLOUD.47](#task-cloud-47) | Owned-artifact closure and real integration | integration | M | [AST.21](assistant.md#task-ast-21) (artifact), [AST.22](assistant.md#task-ast-22) (artifact), [CLOUD.58](#task-cloud-58) (artifact), [NOTES.33](arcnotes.md#task-notes-33) (artifact), [NOTES.35](arcnotes.md#task-notes-35) (artifact) | not-started |
+| [CLOUD.47](#task-cloud-47) | Owned-artifact closure and real integration | integration | M | [AST.21](assistant.md#task-ast-21) (artifact), [AST.22](assistant.md#task-ast-22) (artifact), [CLOUD.58](#task-cloud-58) (artifact), [SCOPE.27](arcscope.md#task-scope-27) (artifact) | not-started |
 | [CLOUD.48](#task-cloud-48) | D1 and independent object backup | service | L | [CLOUD.03](#task-cloud-03) (artifact), [CLOUD.42](#task-cloud-42) (artifact) | not-started |
 | [CLOUD.49](#task-cloud-49) | Point-in-time and fresh restore | service | M | [CLOUD.48](#task-cloud-48) (artifact) | not-started |
 | [CLOUD.50](#task-cloud-50) | Fresh environment rebuild | service | M | [CLOUD.49](#task-cloud-49) (artifact), [CLOUD.17](#task-cloud-17) (artifact) | not-started |
@@ -63,7 +62,7 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | [CLOUD.53](#task-cloud-53) | Export and realm migration | service | M | [CLOUD.48](#task-cloud-48) (artifact) | not-started |
 | [CLOUD.54](#task-cloud-54) | Backup release gate | service | S | [CLOUD.48](#task-cloud-48) (artifact) | not-started |
 | [CLOUD.55](#task-cloud-55) | Owned-artifact closure and real integration | integration | M | none | not-started |
-| [CLOUD.58](#task-cloud-58) | Structural removal of the Notes/Chat export runtime fixtures | integration | M | [CLOUD.45](#task-cloud-45) (artifact), [NOTES.33](arcnotes.md#task-notes-33) (artifact), [AST.21](assistant.md#task-ast-21) (artifact) | not-started |
+| [CLOUD.58](#task-cloud-58) | Structural removal of the Chat export runtime fixture | integration | M | [CLOUD.45](#task-cloud-45) (artifact), [AST.21](assistant.md#task-ast-21) (artifact) | not-started |
 | [CLOUD.63](#task-cloud-63) | Real Commerce/Entitlement participation in the shared atomic family engine | integration | M | [CLOUD.06](#task-cloud-06) (artifact), [CLOUD.16](#task-cloud-16) (artifact), [COM.09](commerce.md#task-com-09) (artifact) | not-started |
 | [CLOUD.64](#task-cloud-64) | Full operator contract closure across PublicApi, Commerce, Policy and Console | integration | M | [COM.13](commerce.md#task-com-13) (artifact), [POL.05](policy.md#task-pol-05) (artifact), [OPS.05](operations.md#task-ops-05) (artifact), [CLOUD.21](#task-cloud-21) (artifact), [CLOUD.22](#task-cloud-22) (artifact) | not-started |
 | [CLOUD.66](#task-cloud-66) | Every enumerated sensitive operation wired to the step-up mechanism | integration | M | [CLOUD.15](#task-cloud-15) (artifact), [COM.10](commerce.md#task-com-10) (artifact), [CLOUD.21](#task-cloud-21) (artifact), [CLOUD.22](#task-cloud-22) (artifact) | not-started |
@@ -82,12 +81,12 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Owning repository | Cloud (`C:\MyFile\Projects\ArcForges\Cloud`); integration owner: Cloud integration owner, the holder of `roles/integration-cloud` |
 | Claim, branch and ledger | `claims/cloud-01` and ledger record `ledger/tasks/cloud-01.md` in the Plan repository; task branch `task/cloud-01` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | service / M · early risk proof |
-| Obligations | [WP-21.00](../../work-packages/21-cloud-host-and-persistence.md#rule-wp-21.00) — all work except the parts mapped to CLOUD.37 |
+| Obligations | [WP-21.00](../../work-packages/21-cloud-host-and-persistence.md#rule-wp-21.00) — all work except the parts mapped to CLOUD.39 |
 | Provides | cloud-ingress-pipeline |
 | Start prerequisites | **contract** [CON.91](contracts.md#task-con-91) — published ArcForges.Contracts.PublicApi generated gRPC-Web service stubs to register the pipeline against. *Why:* the pipeline has nothing to route without at least one generated service surface |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [CLOUD.02](#task-cloud-02), [CLOUD.05](#task-cloud-05), [CLOUD.08](#task-cloud-08), [CLOUD.09](#task-cloud-09), [CLOUD.10](#task-cloud-10), [CLOUD.19](#task-cloud-19), [CLOUD.37](#task-cloud-37), [CLOUD.42](#task-cloud-42), [HAR.00](harness.md#task-har-00), [PLT.48](platform.md#task-plt-48) |
+| Unblocks | [CLOUD.02](#task-cloud-02), [CLOUD.05](#task-cloud-05), [CLOUD.08](#task-cloud-08), [CLOUD.09](#task-cloud-09), [CLOUD.10](#task-cloud-10), [CLOUD.19](#task-cloud-19), [CLOUD.39](#task-cloud-39), [CLOUD.42](#task-cloud-42), [HAR.00](harness.md#task-har-00), [PLT.48](platform.md#task-plt-48) |
 | Write scope | `Cloud:worker/index.ts`<br>`Cloud:worker/router.ts`<br>`Cloud:wrangler.json`<br>`Cloud:src/ArcForges.Cloud.Host/**`<br>`Cloud:Dockerfile` |
 | Shared resources | [RES-cloud-deployment](../shared-resources.md#res-cloud-deployment) (append) |
 | Validation | offline unit tests for routing/validation logic; deployed-environment request/stream/cancel/CSRF/trailer path checks are opt-in local runtime evidence per docs/validation-policy.md, not hosted CI |
@@ -97,9 +96,9 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 
 <a id="task-cloud-02"></a>
 
-### CLOUD.02 — Twenty-one module boundaries and D1 named-plan bridge
+### CLOUD.02 — Nineteen module boundaries and D1 named-plan bridge
 
-**Outcome.** The 21 module projects exist as boundaries and the D1 named-plan bridge mechanism works: C# decides business logic and asks the Worker to execute one exact named/versioned plan; the Worker executes only approved SQL, never ad hoc queries.
+**Outcome.** The 19 module projects exist as boundaries and the D1 named-plan bridge mechanism works: C# decides business logic and asks the Worker to execute one exact named/versioned plan; the Worker executes only approved SQL, never ad hoc queries.
 
 | Field | Value |
 |---|---|
@@ -135,13 +134,13 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Start prerequisites | **artifact** [CLOUD.02](#task-cloud-02) — module boundary projects to attach physical tables to (physical table name = <module>_<snake_case_entity>). *Why:* physical mapping is organized per module boundary; there is nothing to migrate schema for without the module projects existing |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [CLOUD.04](#task-cloud-04), [CLOUD.07](#task-cloud-07), [CLOUD.09](#task-cloud-09), [CLOUD.10](#task-cloud-10), [CLOUD.11](#task-cloud-11), [CLOUD.37](#task-cloud-37), [CLOUD.48](#task-cloud-48) |
+| Unblocks | [CLOUD.04](#task-cloud-04), [CLOUD.07](#task-cloud-07), [CLOUD.09](#task-cloud-09), [CLOUD.10](#task-cloud-10), [CLOUD.11](#task-cloud-11), [CLOUD.39](#task-cloud-39), [CLOUD.48](#task-cloud-48) |
 | Write scope | `Cloud:src/ArcForges.Cloud.Storage.D1/Migrations/**`<br>`Cloud:src/ArcForges.Cloud.Storage.D1/Physical/**` |
 | Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append) |
 | Validation | offline unit tests for bind/result adapters; opt-in local runtime tests against a real D1 instance for signed64/uint64/Decimal/JSON/FTS5, interrupted migration, stale backfill and compatible rollback per docs/validation-policy.md |
 | Completion evidence | actual D1 signed64/uint64/decimal/JSON/FTS5 conformance results, interrupted-migration/stale-backfill/rollback test results, source commit |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: no migrations or physical mapping code exists |
-| Notes | Early risk proof: D1's real type/SQL quirks (signed 64-bit only, no native uint64/Decimal, JSON1, FTS5 behavior) affect the physical design of all 21 modules' tables. Getting the bind/result adapters wrong here would force rework across every later module task in every area that stores data in D1. |
+| Notes | Early risk proof: D1's real type/SQL quirks (signed 64-bit only, no native uint64/Decimal, JSON1, FTS5 behavior) affect the physical design of all 19 modules' tables. Getting the bind/result adapters wrong here would force rework across every later module task in every area that stores data in D1. |
 
 <a id="task-cloud-04"></a>
 
@@ -194,7 +193,7 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 
 ### CLOUD.06 — Shared atomic family guarded-batch engine
 
-**Outcome.** A reusable D1 guarded-batch executor exists that enforces the fixed [SU-04](../../../architecture/04-desktop-application-architecture.md#rule-su-04) module lock order (Config->Identity->Workspace->Device->Entitlement->Commerce->Policy->Agent->Chat->Notes->Scope->Slate->Task->Search->PackageCatalog->Notification->Resource->Sync->Audit) and provides authorization/revision/policy/balance/lease guard primitives that any shared-transaction family can compose.
+**Outcome.** A reusable D1 guarded-batch executor exists that enforces the fixed [SU-04](../../../architecture/04-desktop-application-architecture.md#rule-su-04) module lock order (Config->Identity->Workspace->Device->Entitlement->Commerce->Policy->Agent->Chat->Scope->Task->Search->PackageCatalog->Notification->Resource->Sync->Audit) and provides authorization/revision/policy/balance/lease guard primitives that any shared-transaction family can compose.
 
 | Field | Value |
 |---|---|
@@ -205,14 +204,14 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Provides | shared-atomic-family-engine |
 | Start prerequisites | **artifact** [CLOUD.02](#task-cloud-02) — the D1 named-plan bridge, since a guarded batch is executed as one named plan. *Why:* the family engine is built on top of the plan-execution mechanism, not a separate execution path |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | **integration** [CLOUD.63](#task-cloud-63) — at least two real module family participants exercising the engine under contention (e.g. Identity's auth/enrollment family and Notes/Sync's synced-content-mutation family). *Why:* [WP-21.05](../../work-packages/21-cloud-host-and-persistence.md#rule-wp-21.05)'s own completion gate requires evidence of 'two Containers contend, stale holder cannot finalize, exact credits and sync cursor safety' -- 'exact credits' is Commerce and 'sync cursor safety' is this area's own [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25); the generic engine alone cannot demonstrate this |
-| Unblocks | [CLOUD.07](#task-cloud-07), [CLOUD.10](#task-cloud-10), [CLOUD.11](#task-cloud-11), [CLOUD.13](#task-cloud-13), [CLOUD.37](#task-cloud-37), [CLOUD.42](#task-cloud-42), [CLOUD.46](#task-cloud-46), [CLOUD.63](#task-cloud-63), [SIM.03](simulator.md#task-sim-03) |
+| Completion prerequisites | **integration** [CLOUD.63](#task-cloud-63) — at least two real module family participants exercising the engine under contention (e.g. Identity's auth/enrollment family and Sync's synced-content-mutation family). *Why:* [WP-21.05](../../work-packages/21-cloud-host-and-persistence.md#rule-wp-21.05)'s own completion gate requires evidence of 'two Containers contend, stale holder cannot finalize, exact credits and sync cursor safety' -- 'exact credits' is Commerce and 'sync cursor safety' is this area's own [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25); the generic engine alone cannot demonstrate this |
+| Unblocks | [CLOUD.07](#task-cloud-07), [CLOUD.10](#task-cloud-10), [CLOUD.11](#task-cloud-11), [CLOUD.13](#task-cloud-13), [CLOUD.39](#task-cloud-39), [CLOUD.42](#task-cloud-42), [CLOUD.46](#task-cloud-46), [CLOUD.63](#task-cloud-63), [SIM.03](simulator.md#task-sim-03) |
 | Write scope | `Cloud:src/ArcForges.Cloud.Storage.D1/SharedFamilies/**` |
 | Shared resources | [RES-shared-transaction-families](../shared-resources.md#res-shared-transaction-families) (append) |
 | Validation | offline unit tests for the guard/lock-order primitives; opt-in local D1 runtime tests: two Containers contend, stale holder cannot finalize |
 | Completion evidence | lock-order enforcement test results, contention/stale-holder test results, source commit |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: no shared-family engine exists |
-| Notes | Every module task that participates in a named shared-transaction family (CLOUD.11/13 Identity's auth-enrollment/device-revocation families, CLOUD.37/38 Notes' synced-content-mutation family, CLOUD.42 Resource's upload-lifecycle family, CLOUD.53 realm-transfer family) declares a start edge on this task and fills in its own participant logic; [WP-21.05](../../work-packages/21-cloud-host-and-persistence.md#rule-wp-21.05) substep coverage therefore spans CLOUD.06 plus those module tasks with differing `part` text. |
+| Notes | Every module task that participates in a named shared-transaction family (CLOUD.11/13 Identity's auth-enrollment/device-revocation families, CLOUD.39 Sync's synced-content-mutation family, CLOUD.42 Resource's upload-lifecycle family, CLOUD.53 realm-transfer family) declares a start edge on this task and fills in its own participant logic; [WP-21.05](../../work-packages/21-cloud-host-and-persistence.md#rule-wp-21.05) substep coverage therefore spans CLOUD.06 plus those module tasks with differing `part` text. |
 
 <a id="task-cloud-07"></a>
 
@@ -300,7 +299,7 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Package acceptance | Records the [WP-21](../../work-packages/21-cloud-host-and-persistence.md#rule-wp-21) acceptance receipt after every task mapped to the package; tasks outside the package never start from it ([DLV-35](../README.md#rule-dlv-35)) |
 | Obligations | [WP-21.90](../../work-packages/21-cloud-host-and-persistence.md#rule-wp-21.90) — full, including the Launch configuration acceptance subsection (launch-capacity.v1, [PG-26](../../../assurance/open-gates-register.md#rule-pg-26))<br>[WP-21](../../work-packages/21-cloud-host-and-persistence.md#rule-wp-21) §6 Impacts -- migration/compatibility manifests include source/schema/plan/ABI/runtime versions — package-level obligation contribution |
 | Provides | wp21-closure |
-| Start prerequisites | **artifact** [CLOUD.37](#task-cloud-37) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [SIM.10](simulator.md#task-sim-10) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03)) |
+| Start prerequisites | **artifact** [CLOUD.39](#task-cloud-39) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [SIM.10](simulator.md#task-sim-10) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03)) |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [CLOUD.01](#task-cloud-01) — final candidate build. *Why:* closure requires every preceding substep complete<br>**integration** [CLOUD.02](#task-cloud-02) — final candidate build. *Why:* closure requires every preceding substep complete<br>**integration** [CLOUD.03](#task-cloud-03) — final candidate build. *Why:* closure requires every preceding substep complete<br>**integration** [CLOUD.04](#task-cloud-04) — final candidate build. *Why:* closure requires every preceding substep complete<br>**integration** [CLOUD.05](#task-cloud-05) — final candidate build. *Why:* closure requires every preceding substep complete<br>**integration** [CLOUD.06](#task-cloud-06) — final candidate build. *Why:* closure requires every preceding substep complete<br>**integration** [CLOUD.07](#task-cloud-07) — final candidate build. *Why:* closure requires every preceding substep complete<br>**integration** [CLOUD.08](#task-cloud-08) — final candidate build. *Why:* closure requires every preceding substep complete<br>**integration** [CLOUD.09](#task-cloud-09) — final candidate build. *Why:* closure requires every preceding substep complete |
 | Unblocks | [REL.06](release.md#task-rel-06) |
@@ -324,7 +323,7 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Kind / size | service / M |
 | Obligations | [WP-22.00](../../work-packages/22-identity-workspace-and-device.md#rule-wp-22.00) — all work except the parts mapped to CLOUD.20 |
 | Provides | identity-core-model |
-| Start prerequisites | **artifact** [CLOUD.02](#task-cloud-02) — module boundary + D1 plan bridge to implement the Identity module against. *Why:* Identity is one of the 21 modules; it cannot be written before the module boundary/plan-bridge mechanism exists<br>**artifact** [CLOUD.03](#task-cloud-03) — physical D1 schema/migration runner for identity.* tables. *Why:* the identity schema needs real migrations, not an improvised table<br>**artifact** [CLOUD.06](#task-cloud-06) — the shared atomic family engine, since core identity operations (enrollment, workspace provisioning) are shared-transaction families. *Why:* [WO-01](../../../architecture/data-model/01-cloud-data-model.md#rule-wo-01)..05/no-membership rules are enforced as part of a guarded family write, not a plain CRUD write |
+| Start prerequisites | **artifact** [CLOUD.02](#task-cloud-02) — module boundary + D1 plan bridge to implement the Identity module against. *Why:* Identity is one of the 19 modules; it cannot be written before the module boundary/plan-bridge mechanism exists<br>**artifact** [CLOUD.03](#task-cloud-03) — physical D1 schema/migration runner for identity.* tables. *Why:* the identity schema needs real migrations, not an improvised table<br>**artifact** [CLOUD.06](#task-cloud-06) — the shared atomic family engine, since core identity operations (enrollment, workspace provisioning) are shared-transaction families. *Why:* [WO-01](../../../architecture/data-model/01-cloud-data-model.md#rule-wo-01)..05/no-membership rules are enforced as part of a guarded family write, not a plain CRUD write |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [CLOUD.12](#task-cloud-12), [CLOUD.13](#task-cloud-13), [CLOUD.16](#task-cloud-16), [CLOUD.19](#task-cloud-19), [CLOUD.20](#task-cloud-20), [GOV.16](governance.md#task-gov-16), [SRCH.03](search.md#task-srch-03) |
@@ -599,7 +598,7 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Kind / size | service / M |
 | Obligations | [WP-23.02](../../work-packages/23-public-api-and-generated-clients.md#rule-wp-23.02) — full |
 | Provides | typed-query-cursors |
-| Start prerequisites | **artifact** [CLOUD.21](#task-cloud-21) — endpoint registration to add query/cursor semantics to. *Why:* cursors are a property of the registered query endpoints<br>**contract** [CON.91](contracts.md#task-con-91) — the frozen notes.scalar.v1 query profile definition. *Why:* [WP-23.02](../../work-packages/23-public-api-and-generated-clients.md#rule-wp-23.02)'s own required design input names notes.scalar.v1 as a frozen design input to implement exact scalar vectors against |
+| Start prerequisites | **artifact** [CLOUD.21](#task-cloud-21) — endpoint registration to add query/cursor semantics to. *Why:* cursors are a property of the registered query endpoints<br>**contract** [CON.91](contracts.md#task-con-91) — the accepted foundation PageRequest/PageState and exact-value records. *Why:* [WP-23.02](../../work-packages/23-public-api-and-generated-clients.md#rule-wp-23.02) implements scope-bound cursors, typed filters and exact scalar vectors against the accepted foundation contract records |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [CLOUD.28](#task-cloud-28), [COM.06](commerce.md#task-com-06) |
@@ -902,30 +901,6 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Completion evidence | owned artifact and real-integration receipt per [WP-24.90](../../work-packages/24-realtime-and-reliable-events.md#rule-wp-24.90) |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: n/a -- closure task |
 
-<a id="task-cloud-37"></a>
-
-### CLOUD.37 — Cloud Notes authority and sync scopes
-
-**Outcome.** The canonical notes schema (notebook-owned folders, document-owned blocks/values, tags, property definitions, saved views, immutable revisions, checkpoints, derived backlinks) exists with typed folder/document/history operations and sorted-root revision checks; Cloud validates the same typed operations as the local domain.
-
-| Field | Value |
-|---|---|
-| Owning repository | Cloud (`C:\MyFile\Projects\ArcForges\Cloud`); integration owner: Cloud integration owner, the holder of `roles/integration-cloud` |
-| Claim, branch and ledger | `claims/cloud-37` and ledger record `ledger/tasks/cloud-37.md` in the Plan repository; task branch `task/cloud-37` ([DLV-26](../README.md#rule-dlv-26)) |
-| Kind / size | service / L |
-| Obligations | [WP-25.00](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.00) — full<br>[WP-21.00](../../work-packages/21-cloud-host-and-persistence.md#rule-wp-21.00) — real Sync owner transaction implementation |
-| Provides | cloud-notes-authority |
-| Start prerequisites | **artifact** [CLOUD.03](#task-cloud-03) — D1 physical mapping/migration runner for notes.* tables. *Why:* the canonical notes schema needs real migrations<br>**artifact** [CLOUD.06](#task-cloud-06) — the shared atomic family engine, since synced content mutation is a named shared-transaction family. *Why:* publication/receipts/Resource/Entitlement enlistment share the commit per the WP text<br>**contract** [CON.91](contracts.md#task-con-91) — published Notes owner-body records (documents, blocks, properties) in the foundation closure. *Why:* [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25)'s own upstream input is explicitly 'a format proven to round-trip locally' -- Cloud's canonical schema mirrors that proven local format rather than inventing a second one<br>**contract** [CON.20](contracts.md#task-con-20) — published NotesService operations. *Why:* Cloud Notes authority implements the generated notes operations<br>**artifact** [CON.03](contracts.md#task-con-03) — real, delivered outcome of CON.03 (Resource/Sync owner-body admission: closed Sync mutation allowlist + cross-owner/wrong-revision/opaque-object/forbidden-path negatives). *Why:* this integration exercises the real resource/Sync owner-body admission: closed Sync mutation allowlist + cross-owner/wrong-revision/opaque-object/forbidden-path negatives instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [CON.09](contracts.md#task-con-09) — real, delivered outcome of CON.09 (Sync/resource-transfer/objects operation registry + realm-transfer.v1). *Why:* this integration exercises the real sync/resource-transfer/objects operation registry + realm-transfer.v1 instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [CLOUD.01](#task-cloud-01) — real, delivered outcome of CLOUD.01 (Ingress and host pipeline). *Why:* this integration exercises the real ingress and host pipeline instead of a substitute, so it cannot start before that outcome exists |
-| Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | none |
-| Unblocks | [CLOUD.10](#task-cloud-10), [CLOUD.39](#task-cloud-39), [CLOUD.45](#task-cloud-45), [CLOUD.47](#task-cloud-47), [NOTES.01](arcnotes.md#task-notes-01), [NOTES.34](arcnotes.md#task-notes-34), [NOTES.35](arcnotes.md#task-notes-35), [SRCH.00](search.md#task-srch-00) |
-| Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Notes/**` |
-| Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append), [RES-cloud-storage-plans](../shared-resources.md#res-cloud-storage-plans) (append), [RES-shared-transaction-families](../shared-resources.md#res-shared-transaction-families) (append) |
-| Validation | offline + opt-in real-D1 tests: folder cycle/reorder/reparent, cross-notebook move with stable document IDs, concurrent move/delete, ancestor trash/restore, stale revisions, immutable history, revision/attachment pins; verify generated API/SQLite projections against real D1 |
-| Completion evidence | one complete server authority model and hierarchy, executable operations, history and resource ownership; no client required to create authoritative schema or assign Cloud revisions |
-| Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: none exists |
-| Notes | Merged duplicate integration or closure task formerly proposed as CON.95. |
-
 <a id="task-cloud-38"></a>
 
 ### CLOUD.38 — Client outbox and conflict lineage (desktop data model)
@@ -942,7 +917,7 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Start prerequisites | **artifact** [PLT.01](platform.md#task-plt-01) — the local store journal/single-writer persistence foundation. *Why:* the client outbox is built on the local journal, not a second local persistence mechanism |
 | Entry condition | [ADOPT.02.cloud](adoption.md#task-adopt-02-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [CLOUD.39](#task-cloud-39) — the real guarded publication/bootstrap mechanism to submit batches against for a genuine end-to-end proof. *Why:* client-side outbox correctness (own-origin feed echo, late old receipt) can only be proven against the real server publisher, not assumed |
-| Unblocks | [CLOUD.40](#task-cloud-40), [CLOUD.44](#task-cloud-44), [CLOUD.47](#task-cloud-47), [NOTES.35](arcnotes.md#task-notes-35) |
+| Unblocks | [CLOUD.40](#task-cloud-40), [CLOUD.44](#task-cloud-44), [CLOUD.47](#task-cloud-47) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Sync/**` |
 | Shared resources | [RES-assistant-store-schema](../shared-resources.md#res-assistant-store-schema) (append) |
 | Validation | offline + opt-in tests: edit during dispatch, conflict followed by keep-local/keep-Cloud/merge, dependent undispatched batches, crash at each resolution write, late old receipt, own-origin feed echo |
@@ -952,27 +927,27 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 
 <a id="task-cloud-39"></a>
 
-### CLOUD.39 — Guarded publication and convergent bootstrap
+### CLOUD.39 — Guarded publication, convergent bootstrap and the Sync owner transaction
 
-**Outcome.** Model-04's primary lower-bound W bootstrap, immutable-key pages, retention pin and replay-to-H work; the publisher guards watermark/fence/selected rows in one D1 batch; real D1 clients converge without PostgreSQL snapshot/locks or lost pending work.
+**Outcome.** Model-04's primary lower-bound W bootstrap, immutable-key pages, retention pin and replay-to-H work; the publisher guards watermark/fence/selected rows in one D1 batch; the real Sync owner transaction commits admitted ArcScope metadata owner bodies with publication, receipts and Resource/Entitlement enlistment in the same commit; real D1 clients converge without PostgreSQL snapshot/locks or lost pending work.
 
 | Field | Value |
 |---|---|
 | Owning repository | Cloud (`C:\MyFile\Projects\ArcForges\Cloud`); integration owner: Cloud integration owner, the holder of `roles/integration-cloud` |
 | Claim, branch and ledger | `claims/cloud-39` and ledger record `ledger/tasks/cloud-39.md` in the Plan repository; task branch `task/cloud-39` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | service / L · early risk proof |
-| Obligations | [WP-25.02](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.02) — full |
-| Provides | sync-publication-bootstrap; sync-change-feed |
-| Start prerequisites | **artifact** [CLOUD.37](#task-cloud-37) — the canonical notes schema to publish changes from. *Why:* the change feed publishes committed notes.* revisions<br>**artifact** [CLOUD.04](#task-cloud-04) — the generic receipts/outbox mechanism this publisher reads committed-unpublished rows from. *Why:* the publisher batch reads <=100 committed-unpublished sync.change rows written with publish_seq=NULL by the business transaction, per data-model/01 §9<br>**artifact** [CLOUD.31](#task-cloud-31) — [WP-24](../../work-packages/24-realtime-and-reliable-events.md#rule-wp-24)'s cursor/gap-handling concept, since this publisher and the realtime DO feed are related but distinct publication mechanisms consumers must not conflate. *Why:* see shared_resources: this is a second, sync-specific leased singleton distinct from CLOUD.33's feed-wake publisher |
+| Obligations | [WP-25.02](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.02) — full<br>[WP-21.00](../../work-packages/21-cloud-host-and-persistence.md#rule-wp-21.00) — real Sync owner transaction implementation for admitted ArcScope metadata owner bodies |
+| Provides | sync-publication-bootstrap; sync-change-feed; sync-owner-transaction |
+| Start prerequisites | **artifact** [CLOUD.04](#task-cloud-04) — the generic receipts/outbox mechanism this publisher reads committed-unpublished rows from. *Why:* the publisher batch reads <=100 committed-unpublished sync.change rows written with publish_seq=NULL by the business transaction, per data-model/01 §9<br>**artifact** [CLOUD.31](#task-cloud-31) — [WP-24](../../work-packages/24-realtime-and-reliable-events.md#rule-wp-24)'s cursor/gap-handling concept, since this publisher and the realtime DO feed are related but distinct publication mechanisms consumers must not conflate. *Why:* see shared_resources: this is a second, sync-specific leased singleton distinct from CLOUD.33's feed-wake publisher<br>**artifact** [CLOUD.03](#task-cloud-03) — D1 physical mapping/migration runner for the Sync owner tables. *Why:* the real Sync owner transaction needs real migrations<br>**artifact** [CLOUD.06](#task-cloud-06) — the shared atomic family engine, since synced content mutation is a named shared-transaction family. *Why:* publication, receipts and Resource enlistment share the commit<br>**artifact** [CON.03](contracts.md#task-con-03) — the closed Sync owner-body admission for ArcScope metadata. *Why:* the Sync owner transaction accepts only admitted owner bodies<br>**artifact** [CON.09](contracts.md#task-con-09) — the published SyncService operations. *Why:* the Sync owner transaction implements the generated Sync operations<br>**artifact** [CLOUD.01](#task-cloud-01) — real, delivered outcome of CLOUD.01 (Ingress and host pipeline). *Why:* the Sync owner transaction runs behind the real ingress and host pipeline |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [AND.07](android.md#task-and-07), [CLOUD.38](#task-cloud-38), [CLOUD.40](#task-cloud-40), [CLOUD.41](#task-cloud-41), [CLOUD.43](#task-cloud-43), [CLOUD.47](#task-cloud-47), [NOTES.35](arcnotes.md#task-notes-35), [SCOPE.27](arcscope.md#task-scope-27), [SLATE.42](arcslate.md#task-slate-42) |
-| Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Sync/Publisher/**` |
+| Unblocks | [AND.07](android.md#task-and-07), [CLOUD.10](#task-cloud-10), [CLOUD.38](#task-cloud-38), [CLOUD.40](#task-cloud-40), [CLOUD.41](#task-cloud-41), [CLOUD.43](#task-cloud-43), [CLOUD.47](#task-cloud-47), [SCOPE.27](arcscope.md#task-scope-27), [SRCH.00](search.md#task-srch-00) |
+| Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Sync/Publisher/**`<br>`Cloud:src/Cloud/ArcForges.Cloud.Modules.Sync/Transactions/**` |
 | Shared resources | [RES-cloud-leased-singletons](../shared-resources.md#res-cloud-leased-singletons) (append) |
-| Validation | opt-in real-D1 tests: two-writer interleavings, commit between pages, insert below cursor, delete/tombstone, expired pin, lost acknowledgement, old/new revision application with pending edits |
+| Validation | opt-in real-D1 tests: two-writer interleavings, commit between pages, insert below cursor, delete/tombstone, expired pin, lost acknowledgement, old/new revision application with pending edits; non-allowlisted owner body, stale sorted-root revision and cross-owner reference refusals |
 | Completion evidence | real D1 clients converge without PostgreSQL snapshot/locks or lost pending work |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: none exists |
-| Notes | Early risk proof: this is the two-writer D1 guarded-batch algorithm underlying [PG-17](../../../assurance/open-gates-register.md#rule-pg-17). Proving it under contention before WP-25.03-07 build on top avoids invalidating that downstream work. [PG-17](../../../assurance/open-gates-register.md#rule-pg-17) explicitly 'consumes the publisher from package 21' (CLOUD.04/CLOUD.06) -- this task is where that consumption happens for Notes/Sync specifically. |
+| Notes | Early risk proof: this is the two-writer D1 guarded-batch algorithm underlying [PG-17](../../../assurance/open-gates-register.md#rule-pg-17). Proving it under contention before WP-25.03-07 build on top avoids invalidating that downstream work. [PG-17](../../../assurance/open-gates-register.md#rule-pg-17) explicitly 'consumes the publisher from package 21' (CLOUD.04/CLOUD.06) -- this task is where that consumption happens for Sync specifically, together with the real Sync owner transaction. |
 
 <a id="task-cloud-40"></a>
 
@@ -990,7 +965,7 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Start prerequisites | **artifact** [CLOUD.38](#task-cloud-38) — the client outbox/conflict lineage to detect conflicts against. *Why:* conflict detection compares the client's pending lineage against the server's committed revision<br>**artifact** [CLOUD.39](#task-cloud-39) — the guarded publication mechanism, since conflicts are detected during publication. *Why:* revision comparison happens as part of the guarded publish batch |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [CLOUD.44](#task-cloud-44), [CLOUD.47](#task-cloud-47), [NOTES.35](arcnotes.md#task-notes-35) |
+| Unblocks | [CLOUD.44](#task-cloud-44), [CLOUD.47](#task-cloud-47) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Sync/Conflict/**` |
 | Validation | offline + opt-in tests: conflict matrix across object kinds and policies, recoverability test for every discard, user-facing presentation test |
 | Completion evidence | every conflict path covered, every discarded version recoverable, user-facing conflicts present both versions |
@@ -1012,7 +987,7 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Start prerequisites | **artifact** [CLOUD.39](#task-cloud-39) — the change feed/publication mechanism to propagate tombstones through. *Why:* tombstones are change-feed entries like any other change |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [CLOUD.44](#task-cloud-44), [CLOUD.47](#task-cloud-47), [NOTES.35](arcnotes.md#task-notes-35) |
+| Unblocks | [CLOUD.44](#task-cloud-44), [CLOUD.47](#task-cloud-47) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Sync/Tombstones/**` |
 | Validation | offline + opt-in tests: offline-beyond-retention convergence, resurrection-prevention test, three-way delete-action distinction test |
 | Completion evidence | deleted content never silently resurrects; the three delete-like actions are distinguishable |
@@ -1034,7 +1009,7 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Start prerequisites | **artifact** [CLOUD.01](#task-cloud-01) — the deployed Worker's R2 bucket binding and job-authorized object port (contracts/05 §9 job-grant/job-authorize). *Why:* real bytes move through the deployed Worker's R2 binding; there is no substitute since object storage is explicitly must-be-real-early<br>**artifact** [CLOUD.06](#task-cloud-06) — the shared atomic family engine, since resource upload lifecycle is a named shared-transaction family. *Why:* staged/verified/committed transitions are guarded D1 batch writes, not plain state flips<br>**artifact** [CLOUD.25](#task-cloud-25) — the resource transport schema this task replaces the fixture for. *Why:* CLOUD.42 is the real_producer named by CLOUD.25's SUB-resource-transport-schema-fixtures entry |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [AND.07](android.md#task-and-07), [CLOUD.43](#task-cloud-43), [CLOUD.44](#task-cloud-44), [CLOUD.45](#task-cloud-45), [CLOUD.46](#task-cloud-46), [CLOUD.47](#task-cloud-47), [CLOUD.48](#task-cloud-48), [EXT.06](extensions.md#task-ext-06), [NOTES.35](arcnotes.md#task-notes-35), [SCOPE.23](arcscope.md#task-scope-23), [SIM.04](simulator.md#task-sim-04), [WEB.13](web.md#task-web-13) |
+| Unblocks | [AND.07](android.md#task-and-07), [CLOUD.43](#task-cloud-43), [CLOUD.44](#task-cloud-44), [CLOUD.45](#task-cloud-45), [CLOUD.46](#task-cloud-46), [CLOUD.47](#task-cloud-47), [CLOUD.48](#task-cloud-48), [EXT.06](extensions.md#task-ext-06), [SCOPE.23](arcscope.md#task-scope-23), [SIM.04](simulator.md#task-sim-04), [WEB.13](web.md#task-web-13) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Resource/**` |
 | Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append), [RES-cloud-storage-plans](../shared-resources.md#res-cloud-storage-plans) (append), [RES-shared-transaction-families](../shared-resources.md#res-shared-transaction-families) (append) |
 | Validation | opt-in real-R2 tests: interrupted-upload resumption, verification-failure path, orphan-cleanup safety test, accounting comparison against actual committed storage |
@@ -1061,7 +1036,7 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Unblocks | [CLOUD.47](#task-cloud-47) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Sync/Health/**`<br>`Cloud:src/Cloud/ArcForges.Cloud.Modules.Resource/RealmTransfer/**` |
 | Validation | opt-in real-R2/D1 tests: resume after 100-root batch, repeated command, missing object, partial cancellation, denied current scope, transfer credential/ledger exclusion, restore generation |
-| Completion evidence | no Unsync deletion of authoritative Notes/Chat, no empty success for irrecoverable data, no manual migration rule invented |
+| Completion evidence | no Unsync deletion of authoritative Cloud content, no empty success for irrecoverable data, no manual migration rule invented |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: none exists |
 | Notes | POSSIBLE DESIGN OVERLAP: this task's 'full realm-transfer export/preview/commit/status/cancel workflow from client journeys' ([WP-25.06](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.06)) reads very close to [WP-46.05](../../work-packages/46-backup-recovery-and-data-health.md#rule-wp-46.05)'s 'existing explicit realm export/import semantics using compatible D1 physical/schema/plan manifests' (CLOUD.53). They may be genuinely different (user-facing personal-data export vs operator-level realm-to-realm database migration) or may be the same feature described twice. |
 
@@ -1076,12 +1051,12 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Owning repository | Cloud (`C:\MyFile\Projects\ArcForges\Cloud`); integration owner: Cloud integration owner, the holder of `roles/integration-cloud` |
 | Claim, branch and ledger | `claims/cloud-44` and ledger record `ledger/tasks/cloud-44.md` in the Plan repository; task branch `task/cloud-44` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | integration / L |
-| Obligations | [WP-25.07](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.07) — all work except the parts mapped to NOTES.35 |
+| Obligations | [WP-25.07](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.07) — all work except the parts mapped to SCOPE.27 |
 | Provides | multi-device-convergence-proof |
 | Start prerequisites | none |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | **integration** [CLOUD.38](#task-cloud-38) — real client outbox. *Why:* the harness drives three real client outboxes<br>**integration** [CLOUD.40](#task-cloud-40) — real conflict policies. *Why:* concurrent edits must resolve through the real policies<br>**integration** [CLOUD.41](#task-cloud-41) — real tombstones. *Why:* the harness includes deletions<br>**integration** [CLOUD.42](#task-cloud-42) — real blob lifecycle. *Why:* the harness includes attachments<br>**integration** [NOTES.37](arcnotes.md#task-notes-37) — a real ArcNotes client to run the three-device harness against. *Why:* [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25)'s own rationale is that ArcNotes is the product proving the sync protocol; this task needs the real product, not just the Sync building block -- see IM.notes-sync-real-integration |
-| Unblocks | [CLOUD.47](#task-cloud-47), [NOTES.35](arcnotes.md#task-notes-35), [SCOPE.27](arcscope.md#task-scope-27), [SLATE.42](arcslate.md#task-slate-42) |
+| Completion prerequisites | **integration** [CLOUD.38](#task-cloud-38) — real client outbox. *Why:* the harness drives three real client outboxes<br>**integration** [CLOUD.40](#task-cloud-40) — real conflict policies. *Why:* concurrent edits must resolve through the real policies<br>**integration** [CLOUD.41](#task-cloud-41) — real tombstones. *Why:* the harness includes deletions<br>**integration** [CLOUD.42](#task-cloud-42) — real blob lifecycle. *Why:* the harness includes attachments<br>**integration** [SCOPE.27](arcscope.md#task-scope-27) — a real ArcScope client syncing metadata against the deployed Cloud sync engine to run the three-device harness against. *Why:* ArcScope is the product proving the sync protocol ([WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25)); this task needs the real product, not just the Sync building block |
+| Unblocks | [CLOUD.47](#task-cloud-47), [SCOPE.27](arcscope.md#task-scope-27) |
 | Write scope | `Cloud:tests/SyncConflictTests/Convergence/**` |
 | Validation | a three-device convergence harness with concurrent edits, an extended offline device, attachments, deletions and a mid-sync crash |
 | Completion evidence | three devices converge to verifiably identical state |
@@ -1090,26 +1065,26 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 
 <a id="task-cloud-45"></a>
 
-### CLOUD.45 — Real Cloud Notes and Chat export producers
+### CLOUD.45 — Real Cloud Chat export producer
 
-**Outcome.** Bounded leased Cloud export jobs freeze an acknowledged revision manifest, pin content/history/attachment objects, generate Markdown/JSON/text outputs with metadata/link map and fidelity report, and publish a verified expiring download artifact; device-only pending edits are excluded.
+**Outcome.** Bounded leased Cloud export jobs freeze an acknowledged revision manifest, pin history/attachment objects, generate the declared Markdown/JSON/text outputs with metadata/link map and fidelity report, and publish a verified expiring download artifact; device-only pending edits are excluded.
 
 | Field | Value |
 |---|---|
 | Owning repository | Cloud (`C:\MyFile\Projects\ArcForges\Cloud`); integration owner: Cloud integration owner, the holder of `roles/integration-cloud` |
 | Claim, branch and ledger | `claims/cloud-45` and ledger record `ledger/tasks/cloud-45.md` in the Plan repository; task branch `task/cloud-45` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | service / L |
-| Obligations | [WP-25.08](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) — all work except the parts mapped to AST.21, CLOUD.58, NOTES.33 |
-| Provides | real-notes-chat-export |
-| Start prerequisites | **artifact** [CLOUD.37](#task-cloud-37) — the canonical notes schema to snapshot for export. *Why:* Notes export freezes an acknowledged revision of CLOUD.37's schema<br>**artifact** [CLOUD.42](#task-cloud-42) — real R2 staging/verification for the export bundle. *Why:* the export bundle is staged and verified through the real blob lifecycle, not a fixture<br>**artifact** [CLOUD.05](#task-cloud-05) — the finite-durable-job mechanism, since exports are bounded leased jobs. *Why:* export jobs follow the same checkpoint/receipt/lease pattern<br>**contract** [CON.20](contracts.md#task-con-20) — published notes.requestExport records. *Why:* the export producer implements the generated request<br>**contract** [CON.22](contracts.md#task-con-22) — published export and data operations. *Why:* export jobs expose the generated status, cancel and download operations |
+| Obligations | [WP-25.08](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) — all work except the parts mapped to AST.21, CLOUD.58 |
+| Provides | real-chat-export |
+| Start prerequisites | **artifact** [CLOUD.42](#task-cloud-42) — real R2 staging/verification for the export bundle. *Why:* the export bundle is staged and verified through the real blob lifecycle, not a fixture<br>**artifact** [CLOUD.05](#task-cloud-05) — the finite-durable-job mechanism, since exports are bounded leased jobs. *Why:* export jobs follow the same checkpoint/receipt/lease pattern<br>**contract** [CON.22](contracts.md#task-con-22) — published export and data operations. *Why:* export jobs expose the generated status, cancel and download operations |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [AST.21](assistant.md#task-ast-21), [CLOUD.47](#task-cloud-47), [CLOUD.58](#task-cloud-58), [NOTES.20](arcnotes.md#task-notes-20), [NOTES.33](arcnotes.md#task-notes-33), [WEB.15](web.md#task-web-15) |
-| Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Notes/Export/**`<br>`Cloud:src/Cloud/ArcForges.Cloud.Jobs/Export/**` |
-| Validation | opt-in real host/database/object-store tests: concurrent edits, notebook moves, deleted attachments, quota limit, expiry, restart, cancellation, paid-term end; compare every delivered manifest/hash and omission; scan for secrets |
-| Completion evidence | both export exit paths work against real Cloud authority, preserve a stable snapshot and honest fidelity, release pins/reservations on all terminal paths |
+| Unblocks | [AST.21](assistant.md#task-ast-21), [CLOUD.47](#task-cloud-47), [CLOUD.58](#task-cloud-58), [WEB.15](web.md#task-web-15) |
+| Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Chat/Export/**`<br>`Cloud:src/Cloud/ArcForges.Cloud.Jobs/Export/**` |
+| Validation | opt-in real host/database/object-store tests: concurrent history writes, branch edits, deleted attachments, quota limit, expiry, restart, cancellation, paid-term end; compare every delivered manifest/hash and omission; scan for secrets |
+| Completion evidence | the Chat export path works against real Cloud authority, preserves a stable snapshot and honest fidelity, and releases pins/reservations on all terminal paths |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: none exists |
-| Notes | This is the CLOUD-side producer for [PG-07](../../../assurance/open-gates-register.md#rule-pg-07)'s Notes/Chat portion. See integration_proposals: IM.notes-chat-export-fixture-removal, which structurally asserts removal of the [WP-15.06](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.06)/[WP-19.05](../../work-packages/19-arcnotes-search-and-portability.md#rule-wp-19.05) fixture endpoints owned by the assistant lanes/the ArcNotes lane. |
+| Notes | This is the Cloud-side producer for [PG-07](../../../assurance/open-gates-register.md#rule-pg-07)'s Cloud Chat export portion; CLOUD.58 structurally removes the [WP-15.06](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.06) runtime export fixture. |
 
 <a id="task-cloud-46"></a>
 
@@ -1148,9 +1123,9 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Package acceptance | Records the [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) acceptance receipt after every task mapped to the package; tasks outside the package never start from it ([DLV-35](../README.md#rule-dlv-35)) |
 | Obligations | [WP-25.90](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.90) — full<br>[WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) Required implementation and closure from the final review (01-cloud-data-model verification; real structural move/ack/conflict transactions, full native metadata replicas, job-authorized R2 staging/verification/promotion, quarantined old-generation client commands) — package-level obligation contribution |
 | Provides | wp25-closure |
-| Start prerequisites | **artifact** [AST.21](assistant.md#task-ast-21) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [AST.22](assistant.md#task-ast-22) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [CLOUD.58](#task-cloud-58) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [NOTES.33](arcnotes.md#task-notes-33) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [NOTES.35](arcnotes.md#task-notes-35) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03)) |
+| Start prerequisites | **artifact** [AST.21](assistant.md#task-ast-21) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [AST.22](assistant.md#task-ast-22) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [CLOUD.58](#task-cloud-58) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [SCOPE.27](arcscope.md#task-scope-27) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03)) |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | **integration** [CLOUD.37](#task-cloud-37) — final candidate. *Why:* closure requires every preceding [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) substep<br>**integration** [CLOUD.38](#task-cloud-38) — final candidate. *Why:* closure requires every preceding [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) substep<br>**integration** [CLOUD.39](#task-cloud-39) — final candidate. *Why:* closure requires every preceding [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) substep<br>**integration** [CLOUD.40](#task-cloud-40) — final candidate. *Why:* closure requires every preceding [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) substep<br>**integration** [CLOUD.41](#task-cloud-41) — final candidate. *Why:* closure requires every preceding [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) substep<br>**integration** [CLOUD.42](#task-cloud-42) — final candidate. *Why:* closure requires every preceding [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) substep<br>**integration** [CLOUD.43](#task-cloud-43) — final candidate. *Why:* closure requires every preceding [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) substep<br>**integration** [CLOUD.44](#task-cloud-44) — final candidate. *Why:* closure requires every preceding [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) substep<br>**integration** [CLOUD.45](#task-cloud-45) — final candidate; [WP-25.08](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) must be represented in this task's own evidence and completion gate per the WP text, not treated as optional. *Why:* [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25)'s own §8 states [WP-25.08](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) 'remains represented in its evidence and completion gate'<br>**integration** [CLOUD.46](#task-cloud-46) — final candidate. *Why:* closure requires every preceding [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) substep, and the.90 stage explicitly cannot leave HistoryService as a fixture per [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) §9 |
+| Completion prerequisites | **integration** [CLOUD.38](#task-cloud-38) — final candidate. *Why:* closure requires every preceding [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) substep<br>**integration** [CLOUD.39](#task-cloud-39) — final candidate. *Why:* closure requires every preceding [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) substep<br>**integration** [CLOUD.40](#task-cloud-40) — final candidate. *Why:* closure requires every preceding [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) substep<br>**integration** [CLOUD.41](#task-cloud-41) — final candidate. *Why:* closure requires every preceding [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) substep<br>**integration** [CLOUD.42](#task-cloud-42) — final candidate. *Why:* closure requires every preceding [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) substep<br>**integration** [CLOUD.43](#task-cloud-43) — final candidate. *Why:* closure requires every preceding [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) substep<br>**integration** [CLOUD.44](#task-cloud-44) — final candidate. *Why:* closure requires every preceding [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) substep<br>**integration** [CLOUD.45](#task-cloud-45) — final candidate; [WP-25.08](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) must be represented in this task's own evidence and completion gate per the WP text, not treated as optional. *Why:* [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25)'s own §8 states [WP-25.08](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) 'remains represented in its evidence and completion gate'<br>**integration** [CLOUD.46](#task-cloud-46) — final candidate. *Why:* closure requires every preceding [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) substep, and the.90 stage explicitly cannot leave HistoryService as a fixture per [WP-25](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25) §9 |
 | Unblocks | [REL.06](release.md#task-rel-06) |
 | Write scope | `Cloud:artifacts/candidate/**` |
 | Validation | three-device convergence and interrupted-upload/failed-content-commit/orphan/delete cases against actual provider adapters |
@@ -1340,9 +1315,9 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 
 <a id="task-cloud-58"></a>
 
-### CLOUD.58 — Structural removal of the Notes/Chat export runtime fixtures
+### CLOUD.58 — Structural removal of the Chat export runtime fixture
 
-**Outcome.** Both production clients run with no fixture export producer registered; real Cloud export jobs serve both paths
+**Outcome.** The production clients run with no fixture export producer registered; real Cloud export jobs serve the Chat export path
 
 | Field | Value |
 |---|---|
@@ -1350,13 +1325,13 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Claim, branch and ledger | `claims/cloud-58` and ledger record `ledger/tasks/cloud-58.md` in the Plan repository; task branch `task/cloud-58` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | integration / M |
 | Obligations | [WP-25.08](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) — full, joint with consumer-side structural fixture-registration removal |
-| Start prerequisites | **artifact** [CLOUD.45](#task-cloud-45) — real, delivered outcome of CLOUD.45 (Real Cloud Notes and Chat export producers). *Why:* this integration exercises the real real Cloud Notes and Chat export producers instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [NOTES.33](arcnotes.md#task-notes-33) — real, delivered outcome of NOTES.33 (Real Cloud Notes export join replaces the / fixture endpoint). *Why:* this integration exercises the real real Cloud Notes export join replaces the / fixture endpoint instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [AST.21](assistant.md#task-ast-21) — assistant history export consuming the real Cloud export producer. *Why:* runtime export fixtures are removed only after every consumer uses the real producer |
+| Start prerequisites | **artifact** [CLOUD.45](#task-cloud-45) — real, delivered outcome of CLOUD.45 (Real Cloud Chat export producer). *Why:* this integration exercises the real Cloud Chat export producer instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [AST.21](assistant.md#task-ast-21) — assistant history export consuming the real Cloud export producer. *Why:* runtime export fixtures are removed only after every consumer uses the real producer |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [CLOUD.47](#task-cloud-47) |
 | Write scope |  |
 | Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
-| Completion evidence | Both production clients run with no fixture export producer registered; real Cloud export jobs serve both paths |
+| Completion evidence | The production clients run with no fixture export producer registered; real Cloud export jobs serve the Chat export path |
 | Baseline (unreviewed unless accepted) | not-started |
 
 <a id="task-cloud-63"></a>

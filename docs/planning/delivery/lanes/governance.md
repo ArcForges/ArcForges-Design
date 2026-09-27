@@ -4,7 +4,7 @@
 
 Accepted freeze, reconciliation and build-governance baselines, and the per-repository architecture and policy test suites.
 
-Tasks: 16 · Owning repositories: AI, ArcNotes, ArcScope, ArcSlate, Cloud, Contracts, DesktopPlatform, Mobile, Web · Integration owner(s): AI integration owner, ArcNotes integration owner, ArcScope integration owner, ArcSlate integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner, Mobile integration owner, Web integration owner
+Tasks: 15 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web · Integration owner(s): AI integration owner, ArcScope integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner, Mobile integration owner, Web integration owner
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
@@ -13,17 +13,16 @@ Tasks: 16 · Owning repositories: AI, ArcNotes, ArcScope, ArcSlate, Cloud, Contr
 | [GOV.03](#task-gov-03) | Build governance, packaging policy and analyzers (WP02, accepted) | governance | XL | [GOV.02](#task-gov-02) (artifact) | accepted |
 | [GOV.04](#task-gov-04) | Shared architecture/repository policy-test engine and DesktopPlatform enforcement | governance | L | [GOV.03](#task-gov-03) (artifact), [GOV.01](#task-gov-01) (artifact) | not-started |
 | [GOV.05](#task-gov-05) | Contracts policy tests and contract/serialization policy engine | governance | L | [GOV.04](#task-gov-04) (artifact), [CON.90](contracts.md#task-con-90) (contract) | not-started |
-| [GOV.06](#task-gov-06) | ArcNotes policy tests | governance | S | [GOV.04](#task-gov-04) (artifact), [GOV.05](#task-gov-05) (artifact) | not-started |
 | [GOV.07](#task-gov-07) | ArcScope policy tests | governance | S | [GOV.04](#task-gov-04) (artifact), [GOV.05](#task-gov-05) (artifact) | not-started |
-| [GOV.08](#task-gov-08) | ArcSlate policy tests | governance | S | [GOV.04](#task-gov-04) (artifact), [GOV.05](#task-gov-05) (artifact) | not-started |
 | [GOV.09](#task-gov-09) | Cloud policy tests | governance | M | [GOV.04](#task-gov-04) (artifact), [GOV.05](#task-gov-05) (artifact) | not-started |
 | [GOV.10](#task-gov-10) | AI (Workflow Harness) policy tests | governance | S | [GOV.04](#task-gov-04) (artifact), [GOV.05](#task-gov-05) (artifact) | not-started |
 | [GOV.11](#task-gov-11) | Web policy tests (Node/TS mechanism) | governance | M | [GOV.03](#task-gov-03) (artifact), [GOV.01](#task-gov-01) (artifact) | not-started |
 | [GOV.12](#task-gov-12) | Mobile policy tests (Gradle/Kotlin mechanism) | governance | M | [GOV.03](#task-gov-03) (artifact), [GOV.04](#task-gov-04) (artifact) | not-started |
-| [GOV.13](#task-gov-13) | Invariant enforcement accounting report | governance | M | [GOV.04](#task-gov-04) (artifact) | not-started |
-| [GOV.14](#task-gov-14) | Specification integrity checks over the Design repository | governance | M | [GOV.01](#task-gov-01) (artifact) | not-started |
-| [GOV.15](#task-gov-15) | WP05 stage integration verification | integration | M | [GOV.04](#task-gov-04) (artifact), [GOV.05](#task-gov-05) (artifact), [GOV.06](#task-gov-06) (artifact), [GOV.07](#task-gov-07) (artifact), [GOV.08](#task-gov-08) (artifact), [GOV.09](#task-gov-09) (artifact), [GOV.10](#task-gov-10) (artifact), [GOV.11](#task-gov-11) (artifact), [GOV.12](#task-gov-12) (artifact), [GOV.13](#task-gov-13) (artifact), [GOV.14](#task-gov-14) (artifact) | not-started |
+| [GOV.13](#task-gov-13) | Invariant enforcement accounting report | governance | M | [GOV.04](#task-gov-04) (artifact), [GOV.17](#task-gov-17) (artifact) | not-started |
+| [GOV.14](#task-gov-14) | Specification integrity checks over the Design repository | governance | M | [GOV.01](#task-gov-01) (artifact), [GOV.17](#task-gov-17) (artifact) | not-started |
+| [GOV.15](#task-gov-15) | WP05 stage integration verification | integration | M | [GOV.04](#task-gov-04) (artifact), [GOV.05](#task-gov-05) (artifact), [GOV.07](#task-gov-07) (artifact), [GOV.09](#task-gov-09) (artifact), [GOV.10](#task-gov-10) (artifact), [GOV.11](#task-gov-11) (artifact), [GOV.12](#task-gov-12) (artifact), [GOV.13](#task-gov-13) (artifact), [GOV.14](#task-gov-14) (artifact) | not-started |
 | [GOV.16](#task-gov-16) | Operation-catalogue authorization reachability matrix and identity boundary evidence | governance | M | [CON.18](contracts.md#task-con-18) (contract) | not-started |
+| [GOV.17](#task-gov-17) | Retire the DesktopPlatform material outside the product family and re-pin the design-policy export | governance | L | none | not-started |
 
 ## Tasks
 
@@ -31,7 +30,7 @@ Tasks: 16 · Owning repositories: AI, ArcNotes, ArcScope, ArcSlate, Cloud, Contr
 
 ### GOV.01 — Specification, naming, licence-boundary and provenance freeze (WP00, accepted)
 
-**Outcome.** WP00's naming/licence/provenance freeze is accepted across all nine implementation repositories: product-names.json, exported glossary/invariant policy data, per-project SPDX licence boundaries, a working provenance process and five registered Reference Coverage Matrices are in place, scanned clean, and enforced in CI.
+**Outcome.** WP00's naming/licence/provenance freeze is accepted across the seven implementation repositories: product-names.json, exported glossary/invariant policy data, per-project SPDX licence boundaries, a working provenance process and five registered Reference Coverage Matrices are in place, scanned clean, and enforced in CI.
 
 | Field | Value |
 |---|---|
@@ -42,19 +41,19 @@ Tasks: 16 · Owning repositories: AI, ArcNotes, ArcScope, ArcSlate, Cloud, Contr
 | Provides | product-names-policy-v1; glossary-invariant-policy-v1; licence-boundary-declarations; provenance-process-v1; reference-matrix-registrations |
 | Start prerequisites | none |
 | Completion prerequisites | none |
-| Unblocks | [GOV.02](#task-gov-02), [GOV.04](#task-gov-04), [GOV.11](#task-gov-11), [GOV.14](#task-gov-14) |
+| Unblocks | [CON.23](contracts.md#task-con-23), [GOV.02](#task-gov-02), [GOV.04](#task-gov-04), [GOV.11](#task-gov-11), [GOV.14](#task-gov-14) |
 | Write scope | `Contracts:eng/policy/product-names.json`<br>`DesktopPlatform:eng/policy/glossary-terms.json`<br>`DesktopPlatform:eng/policy/invariants.json`<br>`DesktopPlatform:eng/policy/reference-baselines.json`<br>`*:NOTICE.md`<br>`*:LICENSE`<br>`*:Directory.Build.props` |
 | Shared resources | [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append) |
-| Validation | Design-repo-pinned exporter (DesktopPlatform/eng/design_policy.py) verified against an immutable, clean pinned Design commit; nine-repository offline forbidden-term scanner in Contracts CI; no macOS/device/live-service runtime, per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
+| Validation | Design-repo-pinned exporter (DesktopPlatform/eng/design_policy.py) verified against an immutable, clean pinned Design commit; offline forbidden-term scanner over the implementation repositories in Contracts CI; no macOS/device/live-service runtime, per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
 | Completion evidence | docs/assurance/wp00-03-implementation-evidence.md, wp00-04-implementation-evidence.md, wp00-05-implementation-evidence.md, wp00-stage-acceptance.md, wp00-stage-acceptance.json (file names only, via ls; bodies not read per assignment). |
 | Baseline (unreviewed unless accepted) | accepted — Design receipts wp00-stage-acceptance.md/.json and the recorded executions in wp00-03, wp00-04 and wp00-05 implementation evidence. |
-| Notes | Executed across all nine implementation repositories plus Contracts' product-names.json; represented as one accepted task for the whole closed package rather than one task per substep, per the assignment's 'small number of GOV tasks' instruction. |
+| Notes | Executed across the seven implementation repositories plus Contracts' product-names.json; represented as one accepted task for the whole closed package rather than one task per substep, per the assignment's 'small number of GOV tasks' instruction. |
 
 <a id="task-gov-02"></a>
 
 ### GOV.02 — Repository reconciliation and target layout (WP01, accepted)
 
-**Outcome.** WP01 reconciliation is accepted: nine-repository disposition inventory executed against ede43db, the Contracts public/internal Apache-2.0 split assigned, the shared-foundation boundary reviewed, native surface dispositions executed (OTIO admitted, MDF excluded), all eighteen test families mapped, bounded reconciliation applied with a green Notes build, and Cloud's 21 domain owners recorded.
+**Outcome.** WP01 reconciliation is accepted: seven-repository disposition inventory executed against ede43db, the Contracts public/internal Apache-2.0 split assigned, the shared-foundation boundary reviewed, native surface dispositions executed (MDF excluded), all eighteen test families mapped, bounded reconciliation applied, and Cloud's 19 domain owners recorded.
 
 | Field | Value |
 |---|---|
@@ -76,7 +75,7 @@ Tasks: 16 · Owning repositories: AI, ArcNotes, ArcScope, ArcSlate, Cloud, Contr
 
 ### GOV.03 — Build governance, packaging policy and analyzers (WP02, accepted)
 
-**Outcome.** WP02 build governance is accepted: pinned/locked toolchains in all nine owners, warnings-as-errors with an empty authored-code waiver list, a complete AOT/trim declaration sweep with zero unassigned diagnostics, verified runtime/directory boundaries, all nine version axes producible, and dependency-admission policy encoded as data.
+**Outcome.** WP02 build governance is accepted: pinned/locked toolchains in all seven owners, warnings-as-errors with an empty authored-code waiver list, a complete AOT/trim declaration sweep with zero unassigned diagnostics, verified runtime/directory boundaries, all nine version axes producible, and dependency-admission policy encoded as data.
 
 | Field | Value |
 |---|---|
@@ -87,7 +86,7 @@ Tasks: 16 · Owning repositories: AI, ArcNotes, ArcScope, ArcSlate, Cloud, Contr
 | Provides | locked-toolchain-pins; warnings-as-errors-build; aot-trim-diagnostic-posture; runtime-boundary-config; version-axis-plumbing; dependency-admission-policy |
 | Start prerequisites | **artifact** [GOV.02](#task-gov-02) — WP01's settled project set and dispositions (GOV.02). *Why:* build properties and lock files are applied per-project; the project set must be settled first |
 | Completion prerequisites | none |
-| Unblocks | [GOV.04](#task-gov-04), [GOV.11](#task-gov-11), [GOV.12](#task-gov-12), [NOTES.21](arcnotes.md#task-notes-21), [REL.06](release.md#task-rel-06), [WEB.01](web.md#task-web-01), [WEB.08](web.md#task-web-08) |
+| Unblocks | [GOV.04](#task-gov-04), [GOV.11](#task-gov-11), [GOV.12](#task-gov-12), [REL.06](release.md#task-rel-06), [WEB.01](web.md#task-web-01), [WEB.08](web.md#task-web-08) |
 | Write scope | `*:global.json`<br>`*:Directory.Build.props/.targets`<br>`*:Directory.Packages.props`<br>`*:packages.lock.json`<br>`DesktopPlatform:eng/build/desktop-aot.props`<br>`Cloud:eng/build/cloud-aot.props`<br>`Mobile:gradle/*`<br>`Web:package.json,package-lock.json,.node-version,.npmrc,ArcForges.Web.esproj`<br>`Contracts:eng/build/contracts.props`<br>`*:.editorconfig`<br>`DesktopPlatform:eng/policy/dependency-policy.json` |
 | Shared resources | [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append) |
 | Validation | Clean-machine locked restores, warnings-as-errors full-solution build, complete AOT/trim diagnostic sweep, per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) reduced CI for 02.04/02.05 (no new macOS/device/download runtime). |
@@ -111,7 +110,7 @@ Tasks: 16 · Owning repositories: AI, ArcNotes, ArcScope, ArcSlate, Cloud, Contr
 | Start prerequisites | **artifact** [GOV.03](#task-gov-03) — a build that fails on warnings/AOT diagnostics (GOV.03). *Why:* WP05 [BR-02](../../../architecture/14-build-packaging-and-release.md#rule-br-02): a policy-test failure must be a build failure; without WP02's warnings-as-errors/AOT posture there is nothing for a new policy test to fail against<br>**artifact** [GOV.01](#task-gov-01) — exported glossary-terms.json/invariants.json policy data (GOV.01). *Why:* the layering/shared-foundation rules and forbidden-alias checks read this generated policy data directly rather than re-deriving it |
 | Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [GOV.05](#task-gov-05), [GOV.06](#task-gov-06), [GOV.07](#task-gov-07), [GOV.08](#task-gov-08), [GOV.09](#task-gov-09), [GOV.10](#task-gov-10), [GOV.12](#task-gov-12), [GOV.13](#task-gov-13), [GOV.15](#task-gov-15) |
+| Unblocks | [GOV.05](#task-gov-05), [GOV.07](#task-gov-07), [GOV.09](#task-gov-09), [GOV.10](#task-gov-10), [GOV.12](#task-gov-12), [GOV.13](#task-gov-13), [GOV.15](#task-gov-15) |
 | Write scope | `DesktopPlatform:tests/ArchitectureTests/**`<br>`DesktopPlatform:eng/policy/exceptions.json` |
 | Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append), [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append) |
 | Validation | Offline unit/analyzer-style project-graph assertions, one positive and one failing negative fixture per rule, runs in PR CI; no macOS/device/live runtime per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
@@ -123,7 +122,7 @@ Tasks: 16 · Owning repositories: AI, ArcNotes, ArcScope, ArcSlate, Cloud, Contr
 
 ### GOV.05 — Contracts policy tests and contract/serialization policy engine
 
-**Outcome.** Contracts enforces its own layering/licence/banned-API rules using GOV.04's shared engine, and implements the contract/serialization policy engine that makes [VG-04](../../../assurance/open-gates-register.md#rule-vg-04)'s policy-test half enforceable and that GOV.06-GOV.12 reuse for their own generated-client checks.
+**Outcome.** Contracts enforces its own layering/licence/banned-API rules using GOV.04's shared engine, and implements the contract/serialization policy engine that makes [VG-04](../../../assurance/open-gates-register.md#rule-vg-04)'s policy-test half enforceable and that GOV.07 and GOV.09-GOV.12 reuse for their own generated-client checks.
 
 | Field | Value |
 |---|---|
@@ -135,37 +134,13 @@ Tasks: 16 · Owning repositories: AI, ArcNotes, ArcScope, ArcSlate, Cloud, Contr
 | Start prerequisites | **artifact** [GOV.04](#task-gov-04) — published shared AT-*/RP-* rule engine, fixture compiler and project-graph reader. *Why:* 05.00/05.01/05.04 rule implementations must reuse one tested engine rather than reimplementing it per repository<br>**contract** [CON.90](contracts.md#task-con-90) — Contracts' public/internal Apache-2.0 project split and generated proto baseline. *Why:* 05.03 checks that generated artifacts match a committed baseline and that no public type transitively depends on an internal one; there is no generated baseline to check against before WP03 lands |
 | Entry condition | [ADOPT.03.governance](adoption.md#task-adopt-03-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [GOV.06](#task-gov-06), [GOV.07](#task-gov-07), [GOV.08](#task-gov-08), [GOV.09](#task-gov-09), [GOV.10](#task-gov-10), [GOV.15](#task-gov-15) |
+| Unblocks | [GOV.07](#task-gov-07), [GOV.09](#task-gov-09), [GOV.10](#task-gov-10), [GOV.15](#task-gov-15) |
 | Write scope | `Contracts:tests/ArchitectureTests/**`<br>`Contracts:eng/policy/exceptions.json` |
 | Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append) |
 | Validation | Offline unit tests, negative fixtures per assertion, PR CI; no live-service runtime per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
 | Completion evidence | Contract/serialization policy results with negative fixtures per assertion; Contracts' own layering/licence/banned-API results. |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | WP05's own §8 completion-gate text states this substep 'makes [VG-04](../../../assurance/open-gates-register.md#rule-vg-04)'s policy-test half enforceable' - a second [VG-04](../../../assurance/open-gates-register.md#rule-vg-04) contributor not listed in the README's deferred-gate table (which names only 03.04/06.01). |
-
-<a id="task-gov-06"></a>
-
-### GOV.06 — ArcNotes policy tests
-
-**Outcome.** ArcNotes enforces its own layering/licence/naming/banned-API/contract-consumption rules independently, using GOV.04's shared engine and GOV.05's contract-policy helpers, with positive and failing-negative fixtures for each rule.
-
-| Field | Value |
-|---|---|
-| Owning repository | ArcNotes (`C:\MyFile\Projects\ArcForges\ArcNotes`); integration owner: ArcNotes integration owner, the holder of `roles/integration-arcnotes` |
-| Claim, branch and ledger | `claims/gov-06` and ledger record `ledger/tasks/gov-06.md` in the Plan repository; task branch `task/gov-06` ([DLV-26](../README.md#rule-dlv-26)) |
-| Kind / size | governance / S |
-| Obligations | [WP-05.00](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.00) — ArcNotes slice: layering/reference-direction fixtures<br>[WP-05.01](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.01) — ArcNotes slice: licence boundary + dependency allowlist<br>[WP-05.02](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.02) — wire the forbidden-term scanner into ArcNotes' own PR build<br>[WP-05.03](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.03) — ArcNotes' generated-client consumption checks (RPC interface carries generated descriptor identity)<br>[WP-05.04](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.04) — ArcNotes banned-API fixtures |
-| Provides | arcnotes-policy-suite |
-| Start prerequisites | **artifact** [GOV.04](#task-gov-04) — published shared rule engine. *Why:* reuse one tested engine rather than reimplementing per repository<br>**artifact** [GOV.05](#task-gov-05) — contract/serialization policy helpers for generated-client checks. *Why:* ArcNotes consumes generated Contracts clients; the 'local RPC contract interface carries the generated descriptor identity' check needs GOV.05's engine, not a reimplementation |
-| Entry condition | [ADOPT.04.governance](adoption.md#task-adopt-04-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | none |
-| Unblocks | [GOV.15](#task-gov-15) |
-| Write scope | `ArcNotes:tests/ArchitectureTests/**`<br>`ArcNotes:eng/policy/exceptions.json` |
-| Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append) |
-| Validation | Offline unit tests, negative fixtures, PR CI; per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) no live/device runtime. |
-| Completion evidence | Per-rule pass/fail fixture table for ArcNotes' project graph. |
-| Baseline (unreviewed unless accepted) | not-started |
-| Notes | Runs against whatever ArcNotes source exists at Phase-A execution time (largely bootstrap); WP05's own model is fixture-driven so this does not need ArcNotes' product work (WP18/19/28) to have landed first. |
 
 <a id="task-gov-07"></a>
 
@@ -180,7 +155,7 @@ Tasks: 16 · Owning repositories: AI, ArcNotes, ArcScope, ArcSlate, Cloud, Contr
 | Kind / size | governance / S |
 | Obligations | [WP-05.00](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.00) — ArcScope slice<br>[WP-05.01](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.01) — ArcScope slice<br>[WP-05.02](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.02) — wire the forbidden-term scanner into ArcScope's own PR build<br>[WP-05.03](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.03) — ArcScope's generated-client consumption checks<br>[WP-05.04](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.04) — ArcScope banned-API fixtures |
 | Provides | arcscope-policy-suite |
-| Start prerequisites | **artifact** [GOV.04](#task-gov-04) — published shared rule engine. *Why:* reuse one tested engine rather than reimplementing per repository<br>**artifact** [GOV.05](#task-gov-05) — contract/serialization policy helpers. *Why:* same generated-client reasoning as GOV.06 |
+| Start prerequisites | **artifact** [GOV.04](#task-gov-04) — published shared rule engine. *Why:* reuse one tested engine rather than reimplementing per repository<br>**artifact** [GOV.05](#task-gov-05) — contract/serialization policy helpers. *Why:* ArcScope consumes generated Contracts clients; the 'local RPC contract interface carries the generated descriptor identity' check needs GOV.05's engine, not a reimplementation |
 | Entry condition | [ADOPT.05.governance](adoption.md#task-adopt-05-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [GOV.15](#task-gov-15) |
@@ -190,30 +165,6 @@ Tasks: 16 · Owning repositories: AI, ArcNotes, ArcScope, ArcSlate, Cloud, Contr
 | Completion evidence | Per-rule pass/fail fixture table for ArcScope's project graph. |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | Fixture-driven; does not require ArcScope's own product work (WP33 to WP35) to have landed. |
-
-<a id="task-gov-08"></a>
-
-### GOV.08 — ArcSlate policy tests
-
-**Outcome.** ArcSlate enforces its own layering/licence/naming/banned-API/contract-consumption rules independently.
-
-| Field | Value |
-|---|---|
-| Owning repository | ArcSlate (`C:\MyFile\Projects\ArcForges\ArcSlate`); integration owner: ArcSlate integration owner, the holder of `roles/integration-arcslate` |
-| Claim, branch and ledger | `claims/gov-08` and ledger record `ledger/tasks/gov-08.md` in the Plan repository; task branch `task/gov-08` ([DLV-26](../README.md#rule-dlv-26)) |
-| Kind / size | governance / S |
-| Obligations | [WP-05.00](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.00) — ArcSlate slice<br>[WP-05.01](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.01) — ArcSlate slice<br>[WP-05.02](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.02) — wire the forbidden-term scanner into ArcSlate's own PR build<br>[WP-05.03](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.03) — ArcSlate's generated-client consumption checks<br>[WP-05.04](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.04) — ArcSlate banned-API fixtures |
-| Provides | arcslate-policy-suite |
-| Start prerequisites | **artifact** [GOV.04](#task-gov-04) — published shared rule engine. *Why:* reuse one tested engine rather than reimplementing per repository<br>**artifact** [GOV.05](#task-gov-05) — contract/serialization policy helpers. *Why:* same generated-client reasoning as GOV.06 |
-| Entry condition | [ADOPT.06.governance](adoption.md#task-adopt-06-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | none |
-| Unblocks | [GOV.15](#task-gov-15) |
-| Write scope | `ArcSlate:tests/ArchitectureTests/**`<br>`ArcSlate:eng/policy/exceptions.json` |
-| Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append) |
-| Validation | Offline unit tests, negative fixtures, PR CI; per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
-| Completion evidence | Per-rule pass/fail fixture table for ArcSlate's project graph. |
-| Baseline (unreviewed unless accepted) | not-started |
-| Notes | Fixture-driven; does not require ArcSlate's own product work (WP36 to WP39) to have landed. Native admission rules (official OTIO, MDF exclusion) from WP01.03 are checkable here. |
 
 <a id="task-gov-09"></a>
 
@@ -252,7 +203,7 @@ Tasks: 16 · Owning repositories: AI, ArcNotes, ArcScope, ArcSlate, Cloud, Contr
 | Kind / size | governance / S |
 | Obligations | [WP-05.00](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.00) — AI slice<br>[WP-05.01](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.01) — AI slice<br>[WP-05.02](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.02) — wire the forbidden-term scanner into AI's own PR build<br>[WP-05.03](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.03) — AI's generated-client consumption checks<br>[WP-05.04](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.04) — AI banned-API fixtures |
 | Provides | ai-policy-suite |
-| Start prerequisites | **artifact** [GOV.04](#task-gov-04) — published shared rule engine. *Why:* reuse one tested engine rather than reimplementing per repository<br>**artifact** [GOV.05](#task-gov-05) — contract/serialization policy helpers. *Why:* same generated-client reasoning as GOV.06 |
+| Start prerequisites | **artifact** [GOV.04](#task-gov-04) — published shared rule engine. *Why:* reuse one tested engine rather than reimplementing per repository<br>**artifact** [GOV.05](#task-gov-05) — contract/serialization policy helpers. *Why:* the Workflow Harness consumes generated Contracts clients; its generated-client checks need GOV.05's engine, not a reimplementation |
 | Entry condition | [ADOPT.08.governance](adoption.md#task-adopt-08-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [GOV.15](#task-gov-15) |
@@ -324,7 +275,7 @@ Tasks: 16 · Owning repositories: AI, ArcNotes, ArcScope, ArcSlate, Cloud, Contr
 | Kind / size | governance / M |
 | Obligations | [WP-05.05](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.05) — full |
 | Provides | invariant-accounting-report-v1 |
-| Start prerequisites | **artifact** [GOV.04](#task-gov-04) — at least one owning package's real policy-test run to classify (DesktopPlatform's own AT-*/RP-* results). *Why:* the report's classifications must come from actual test-run results, not declared status; it needs at least one real producer before it can report anything besides 'not yet implemented' for every row |
+| Start prerequisites | **artifact** [GOV.04](#task-gov-04) — at least one owning package's real policy-test run to classify (DesktopPlatform's own AT-*/RP-* results). *Why:* the report's classifications must come from actual test-run results, not declared status; it needs at least one real producer before it can report anything besides 'not yet implemented' for every row<br>**artifact** [GOV.17](#task-gov-17) — the invariant export regenerated from this Design repository. *Why:* the accounting report reads the pinned invariant export, which must describe the reduced family |
 | Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [GOV.15](#task-gov-15) |
@@ -347,7 +298,7 @@ Tasks: 16 · Owning repositories: AI, ArcNotes, ArcScope, ArcSlate, Cloud, Contr
 | Kind / size | governance / M |
 | Obligations | [WP-05.06](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.06) — full: six checks over docs/ in ArcForges-Design, plus the 23+8-row Phase-1/Phase-2 decision-coverage check against traceability-matrix.md<br>[P2-018](../../../decisions/phase-2-specification-decisions.md#rule-p2-018) — delivery-graph validation replacing the retired package-level graph check |
 | Provides | spec-integrity-check-v1 |
-| Start prerequisites | **artifact** [GOV.01](#task-gov-01) — the citation/anchor index and continuing drift check installed by GOV.01 ([PG-21](../../../assurance/open-gates-register.md#rule-pg-21)). *Why:* 05.06 extends the same corpus/citation machinery WP00.01 already established rather than building link-resolution from nothing |
+| Start prerequisites | **artifact** [GOV.01](#task-gov-01) — the citation/anchor index and continuing drift check installed by GOV.01 ([PG-21](../../../assurance/open-gates-register.md#rule-pg-21)). *Why:* 05.06 extends the same corpus/citation machinery WP00.01 already established rather than building link-resolution from nothing<br>**artifact** [GOV.17](#task-gov-17) — the design-policy export re-pinned to this Design repository. *Why:* the integrity checks run against the pinned Design commit, which must be the reduced family |
 | Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [GOV.15](#task-gov-15) |
@@ -362,7 +313,7 @@ Tasks: 16 · Owning repositories: AI, ArcNotes, ArcScope, ArcSlate, Cloud, Contr
 
 ### GOV.15 — WP05 stage integration verification
 
-**Outcome.** Each of the nine repositories enforces its own boundary independently, and a cross-repository integration graph - reading each repository's published package/dependency metadata rather than cloning every reference or product repository - detects a forbidden transitive edge; both the architecture/repository-policy suite and the specification-integrity suite run in the pull-request pipeline and a violation fails the build.
+**Outcome.** Each of the seven implementation repositories enforces its own boundary independently, and a cross-repository integration graph - reading each repository's published package/dependency metadata rather than cloning every reference or product repository - detects a forbidden transitive edge; both the architecture/repository-policy suite and the specification-integrity suite run in the pull-request pipeline and a violation fails the build.
 
 | Field | Value |
 |---|---|
@@ -372,7 +323,7 @@ Tasks: 16 · Owning repositories: AI, ArcNotes, ArcScope, ArcSlate, Cloud, Contr
 | Package acceptance | Records the [WP-05](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05) acceptance receipt after every task mapped to the package; tasks outside the package never start from it ([DLV-35](../README.md#rule-dlv-35)) |
 | Obligations | [WP-05.90](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.90) — full |
 | Provides | wp05-stage-acceptance; cross-repo-dependency-graph-check |
-| Start prerequisites | **artifact** [GOV.04](#task-gov-04) — DesktopPlatform's own policy suite green. *Why:* the stage receipt joins every substep's real evidence<br>**artifact** [GOV.05](#task-gov-05) — Contracts' own policy suite green. *Why:* same<br>**artifact** [GOV.06](#task-gov-06) — ArcNotes' own policy suite green. *Why:* same<br>**artifact** [GOV.07](#task-gov-07) — ArcScope's own policy suite green. *Why:* same<br>**artifact** [GOV.08](#task-gov-08) — ArcSlate's own policy suite green. *Why:* same<br>**artifact** [GOV.09](#task-gov-09) — Cloud's own policy suite green. *Why:* same<br>**artifact** [GOV.10](#task-gov-10) — AI's own policy suite green. *Why:* same<br>**artifact** [GOV.11](#task-gov-11) — Web's own policy suite green. *Why:* same<br>**artifact** [GOV.12](#task-gov-12) — Mobile's own policy suite green. *Why:* same<br>**artifact** [GOV.13](#task-gov-13) — the invariant accounting report existing and complete. *Why:* 05.90 assembles all preceding substeps' real evidence into one receipt<br>**artifact** [GOV.14](#task-gov-14) — the specification-integrity suite green. *Why:* same |
+| Start prerequisites | **artifact** [GOV.04](#task-gov-04) — DesktopPlatform's own policy suite green. *Why:* the stage receipt joins every substep's real evidence<br>**artifact** [GOV.05](#task-gov-05) — Contracts' own policy suite green. *Why:* same<br>**artifact** [GOV.07](#task-gov-07) — ArcScope's own policy suite green. *Why:* same<br>**artifact** [GOV.09](#task-gov-09) — Cloud's own policy suite green. *Why:* same<br>**artifact** [GOV.10](#task-gov-10) — AI's own policy suite green. *Why:* same<br>**artifact** [GOV.11](#task-gov-11) — Web's own policy suite green. *Why:* same<br>**artifact** [GOV.12](#task-gov-12) — Mobile's own policy suite green. *Why:* same<br>**artifact** [GOV.13](#task-gov-13) — the invariant accounting report existing and complete. *Why:* 05.90 assembles all preceding substeps' real evidence into one receipt<br>**artifact** [GOV.14](#task-gov-14) — the specification-integrity suite green. *Why:* same |
 | Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | none |
@@ -405,3 +356,27 @@ Tasks: 16 · Owning repositories: AI, ArcNotes, ArcScope, ArcSlate, Cloud, Contr
 | Completion evidence | Reachability matrix with all seven [AZ-04](../../../architecture/08-security-architecture.md#rule-az-04) fields classified per binding, plus identity-boundary assertion results. |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | Covers two WP05 package-level obligations that carry no [WP-05](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05).MM anchor (the section 7 paragraph before the evidence table, and the section 8 'Identity boundary evidence' paragraph); see package_obligations. Genuinely cross-repository in subject matter (Contracts defines the catalogue; Cloud/DesktopPlatform implement the actual bindings) but modeled as a Contracts-owned static check over declared metadata, consistent with [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
+
+<a id="task-gov-17"></a>
+
+### GOV.17 — Retire the DesktopPlatform material outside the product family and re-pin the design-policy export
+
+**Outcome.** The Media, Colour and Otio native families and the macOS Metal graphics probe leave DesktopPlatform - ABI directories, overlays, managed and runtime projects, oracle tests, solution entries and package registrations - and no further versions of them are published; the still-image shim moves to native/arcimage-abi under the logical library ArcImageNative while its published arc_image_* symbols stay unchanged; runtime-ownership, licence-boundary and reconciliation policy data drop the retired repositories and families; the design-policy export is re-pinned to a reviewed commit of this Design repository and glossary-terms.json and invariants.json are regenerated from it; provenance records of reused files stay unchanged.
+
+| Field | Value |
+|---|---|
+| Owning repository | DesktopPlatform (`C:\MyFile\Projects\ArcForges\DesktopPlatform`); integration owner: DesktopPlatform integration owner, the holder of `roles/integration-desktopplatform` |
+| Claim, branch and ledger | `claims/gov-17` and ledger record `ledger/tasks/gov-17.md` in the Plan repository; task branch `task/gov-17` ([DLV-26](../README.md#rule-dlv-26)) |
+| Kind / size | governance / L |
+| Obligations | [P2-019](../../../decisions/phase-2-specification-decisions.md#rule-p2-019) — retirement of the accepted DesktopPlatform native families, projects, packages, tests and policy data whose only consumers left the family; the neutral identity of the still-image shim; the design-policy export re-pinned to this Design repository |
+| Provides | retired-desktop-material; design-policy-export-repinned |
+| Start prerequisites | none |
+| Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Completion prerequisites | none |
+| Unblocks | [CON.23](contracts.md#task-con-23), [GOV.13](#task-gov-13), [GOV.14](#task-gov-14), [NAT.11](native.md#task-nat-11), [NAT.30](native.md#task-nat-30) |
+| Write scope | `DesktopPlatform:native/* (retired family directories and the moved still-image directory)`<br>`DesktopPlatform:native/CMakeLists.txt`<br>`DesktopPlatform:src/Native/* (retired family projects and the still-image logical library name)`<br>`DesktopPlatform:tests/NativeAbiTests/**`<br>`DesktopPlatform:win.slnx`<br>`DesktopPlatform:eng/packaging/packages.json`<br>`DesktopPlatform:eng/policy/**`<br>`DesktopPlatform:docs/design-policy.md`<br>`DesktopPlatform:docs/native-reconciliation.md` |
+| Shared resources | [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append), [RES-desktopplatform-package-inventory](../shared-resources.md#res-desktopplatform-package-inventory) (append), [RES-desktopplatform-native-build](../shared-resources.md#res-desktopplatform-native-build) (append), [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append), [RES-workstation-build-slot](../shared-resources.md#res-workstation-build-slot) (exclusive) |
+| Validation | offline: native CMake/solution/package-inventory consistency, architecture and runtime-ownership tests, the design-policy exporter comparing fresh bytes against the re-pinned Design commit, and a scan proving the retired families, libraries and repositories are absent outside provenance history; the existing Windows native build and package consumers run for the retained families where the change requires it ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
+| Completion evidence | Retirement diff; re-pinned Design commit and policy-source hashes; exporter comparison; native build and package-consumer results for the retained families. |
+| Baseline (unreviewed unless accepted) | not-started Observed in the accepted WP00-WP02 implementation: the media, colour, OTIO and still-image shim directories, the Metal graphics probe source, their managed/runtime projects and 1.0.0-ci.17.1 packages, and policy data pinned to the derivation-baseline Design commit. |
+| Notes | Independent of the retained native families; NAT.11 starts on the moved still-image directory, and GOV.13, GOV.14 and NAT.30 read the re-pinned export or the retained producer set. |

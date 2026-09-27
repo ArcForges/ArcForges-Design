@@ -3,7 +3,7 @@
 
 > Status: Authoritative — [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012)
 > Scheduling: this package is an obligation set; its delivery tasks and their typed prerequisites are listed in section 9, generated from the [delivery graph](../delivery/delivery-graph.json) under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018).
-> Repositories: DesktopPlatform + ArcNotes. Consume only exact published upstream artifacts; no adjacent sources.
+> Repositories: DesktopPlatform + ArcScope. Consume only exact published upstream artifacts; no adjacent sources.
 
 ## 1. Scope and purpose
 
@@ -35,9 +35,9 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 **Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
 <a id="rule-wp-14.01"></a>
-### WP-14.01 — Minimal ArcNotes application services
+### WP-14.01 — Minimal ArcScope application services
 
-**What must be fully done.** Implement real read/create/append document commands through typed application handlers and local persistence. Professional document completion remains 18.
+**What must be fully done.** Implement real read/create/append annotation commands through typed application handlers and local persistence, with one write path shared by UI and own-app capability invocation. Professional ArcScope completion remains WP33–WP35.
 
 **Testing requirements.** Descriptor/risk/context validation and one write path for UI and own-app capability.
 
@@ -46,7 +46,7 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 <a id="rule-wp-14.02"></a>
 ### WP-14.02 — Package consumer composition
 
-**What must be fully done.** Build a clean Native AOT Notes consumer using exact Platform/Contracts packages and in-process typed host ports; no source reference or local RPC product loop.
+**What must be fully done.** Build a clean Native AOT ArcScope consumer using exact Platform/Contracts packages and in-process typed host ports; no source reference or local RPC product loop.
 
 **Testing requirements.** Package-only restore, publish/run, command/cancel/result and owner refusal.
 
@@ -99,14 +99,14 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 
 ## 6. Impacts
 
-Changed application scope, storage, transport, UI and deployment behavior are governed by the authorities in §2. Preserve existing business rules and formats. Migration/compatibility manifests include source/schema/plan/ABI/runtime versions; current cross-product collaboration is deferred and contributes no release input.
+Changed application scope, storage, transport, UI and deployment behavior are governed by the authorities in §2. Preserve existing business rules and formats. Migration/compatibility manifests include source/schema/plan/ABI/runtime versions.
 
 ## 7. Tests and verification evidence
 
 | Evidence | Produced by |
 |---|---|
 | Application scope and host ports: Two independent application identities cannot share stores/registration; no future 15/17 implementation dependency. | [WP-14.00](#rule-wp-14.00) |
-| Minimal ArcNotes application services: Descriptor/risk/context validation and one write path for UI and own-app capability. | [WP-14.01](#rule-wp-14.01) |
+| Minimal ArcScope application services: Descriptor/risk/context validation and one write path for UI and own-app capability. | [WP-14.01](#rule-wp-14.01) |
 | Package consumer composition: Package-only restore, publish/run, command/cancel/result and owner refusal. | [WP-14.02](#rule-wp-14.02) |
 | Idempotency and revision: Duplicate command, stale revision and process kill around commit. | [WP-14.03](#rule-wp-14.03) |
 | Approval at the owner: Expiry/modified input/revocation cannot bypass owner checks. | [WP-14.04](#rule-wp-14.04) |
@@ -135,7 +135,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [APP.07](../delivery/lanes/app-composition.md#task-app-07) | [WP-14.06](14-hub-and-minimal-provider-slice.md#rule-wp-14.06) (full) | [PLT.32](../delivery/lanes/platform.md#task-plt-32) (artifact) |
 | [APP.08](../delivery/lanes/app-composition.md#task-app-08) | [WP-14.90](14-hub-and-minimal-provider-slice.md#rule-wp-14.90) (full) | none |
 
-**Consumers outside this package:** [AST.01](../delivery/lanes/assistant.md#task-ast-01), [AST.03](../delivery/lanes/assistant.md#task-ast-03), [AST.12](../delivery/lanes/assistant.md#task-ast-12), [AST.16](../delivery/lanes/assistant.md#task-ast-16), [AST.17](../delivery/lanes/assistant.md#task-ast-17), [DEV.03](../delivery/lanes/device-bridge.md#task-dev-03), [EXE.01](../delivery/lanes/execution.md#task-exe-01), [HAR.05](../delivery/lanes/harness.md#task-har-05), [NOTES.03](../delivery/lanes/arcnotes.md#task-notes-03), [PLT.57](../delivery/lanes/platform.md#task-plt-57).
+**Consumers outside this package:** [AST.01](../delivery/lanes/assistant.md#task-ast-01), [AST.03](../delivery/lanes/assistant.md#task-ast-03), [AST.12](../delivery/lanes/assistant.md#task-ast-12), [AST.16](../delivery/lanes/assistant.md#task-ast-16), [AST.17](../delivery/lanes/assistant.md#task-ast-17), [DEV.03](../delivery/lanes/device-bridge.md#task-dev-03), [EXE.01](../delivery/lanes/execution.md#task-exe-01), [HAR.05](../delivery/lanes/harness.md#task-har-05), [PLT.57](../delivery/lanes/platform.md#task-plt-57).
 
 <!-- delivery-graph:end -->
 

@@ -8,7 +8,7 @@
 
 This document defines the Cloud Agent Task model and Cloud AI economics. Native product activities and jobs retain their own lifecycles.
 
-**One Cloud Harness.** The sole model/tool loop runs in CF Workflow. C# Native AOT owns canonical Task state, deterministic scheduling, admission and business transactions. Native acquisition, editing, rendering and background maintenance are ordinary product jobs; an agent may invoke and observe them without converting them into a second agent runtime.
+**One Cloud Harness.** The sole model/tool loop runs in CF Workflow. C# Native AOT owns canonical Task state, deterministic scheduling, admission and business transactions. Native acquisition, analysis, export and background maintenance are ordinary product jobs; an agent may invoke and observe them without converting them into a second agent runtime.
 
 ---
 
@@ -52,15 +52,15 @@ A Step may contain: an AI request, a capability invocation, a product job refere
 | # | Requirement |
 |---|---|
 | <a id="rule-ex-01"></a>EX-01 | **Intent is not a Task.** An ordinary chat turn produces a conversation turn and an AI response, with no Task at all. |
-| <a id="rule-ex-02"></a>EX-02 | Create a Cloud Agent Task for recoverable or multi-step AI work, approvals, agent-driven side effects, automation and work waiting on tools/devices. An ordinary native render, capture, search or edit is a product Activity/Job and does not require a Cloud Task or paid AI. |
+| <a id="rule-ex-02"></a>EX-02 | Create a Cloud Agent Task for recoverable or multi-step AI work, approvals, agent-driven side effects, automation and work waiting on tools/devices. An ordinary native capture, analysis, export, search or edit is a product Activity/Job and does not require a Cloud Task or paid AI. |
 | <a id="rule-ex-03"></a>EX-03 | **`TaskId` is stable for the life of the work goal.** A failed Run 1 followed by a successful Run 2 remains one Task. |
-| <a id="rule-ex-04"></a>EX-04 | **A Task has at most one active Run at a time.** Running two Runs of one Task concurrently would produce duplicated documents, duplicated requests and duplicated external calls. A user wanting to try two approaches forks or clones the Task. |
+| <a id="rule-ex-04"></a>EX-04 | **A Task has at most one active Run at a time.** Running two Runs of one Task concurrently would produce duplicated reports, duplicated requests and duplicated external calls. A user wanting to try two approaches forks or clones the Task. |
 | <a id="rule-ex-05"></a>EX-05 | **A Run freezes an Execution Snapshot at start**: intent version, agent profile version, skill versions, model and routing policy, permission policy, budget, execution-target policy, workspace and realm, input bindings, and the automation definition version where applicable. Editing a profile mid-run affects only later Runs and Tasks. |
 | <a id="rule-ex-06"></a>EX-06 | **Plan revisions are retained, never overwritten.** A plan change records a categorised reason: user steering, capability unavailable, new evidence, retry strategy, alternative path. Hidden reasoning is never exposed. |
 | <a id="rule-ex-07"></a>EX-07 | **A Step is not a capability call** ([I-084](01-normative-glossary-and-invariants.md#rule-i-084)). One Step ("analyse the startup regression") may internally issue several capability invocations and AI requests. Some Steps invoke nothing at all — wait for approval, wait for device, produce the final response, evaluate results. |
 | <a id="rule-ex-08"></a>EX-08 | V1 advances one model/agent loop per Run. A step may issue bounded independent tool calls concurrently and join their results before the loop continues. Dependency recording does not require a general DAG scheduler, independent planning branches or sub-agent execution. |
 | <a id="rule-ex-09"></a>EX-09 | **Retrying a Step produces a new Attempt inside the same Step**, never a new Step. |
-| <a id="rule-ex-10"></a>EX-10 | Attempts distinguish **technical retry** (transient timeout; the system may re-attempt automatically) from **user retry** (a document conflict; a decision is required). Mechanical retry of the second class is prohibited. |
+| <a id="rule-ex-10"></a>EX-10 | Attempts distinguish **technical retry** (transient timeout; the system may re-attempt automatically) from **user retry** (a revision conflict; a decision is required). Mechanical retry of the second class is prohibited. |
 
 ### 1.3 Identity separation
 
@@ -72,7 +72,7 @@ Run Again    → new Task
 
 | # | Requirement |
 |---|---|
-| <a id="rule-id-01"></a>ID-01 | **`AttemptId` ≠ `CommandId`** ([I-085](01-normative-glossary-and-invariants.md#rule-i-085)). `CommandId` identifies the business action ("create this document"); `AttemptId` identifies how many times it was actually dispatched. A write capability that times out is re-sent under the **same** `CommandId`, so the owning application deduplicates rather than creating a second document. |
+| <a id="rule-id-01"></a>ID-01 | **`AttemptId` ≠ `CommandId`** ([I-085](01-normative-glossary-and-invariants.md#rule-i-085)). `CommandId` identifies the business action ("create this finding"); `AttemptId` identifies how many times it was actually dispatched. A write capability that times out is re-sent under the **same** `CommandId`, so the owning application deduplicates rather than creating a second finding. |
 | <a id="rule-id-02"></a>ID-02 | **`InvocationId` ≠ `CommandId`** ([I-073](01-normative-glossary-and-invariants.md#rule-i-073)), and **Invocation ≠ Step** ([I-074](01-normative-glossary-and-invariants.md#rule-i-074)). |
 | <a id="rule-id-03"></a>ID-03 | Retry preserves the original intent and fixed input bindings. A Step retry stays within its Run snapshot; a Task retry creates a new Run and revalidates current eligibility, security, model availability and customer tariff within an approved budget. Material cost changes are shown before new spending. Running against newly selected/latest data is a new Task, never a silent rewrite of historical intent. |
 | <a id="rule-id-04"></a>ID-04 | A read capability retry is generally safe but must still consider revision: if the object read has changed, the Task must know its context moved. |
@@ -123,7 +123,7 @@ Run Again    → new Task
 | # | Requirement |
 |---|---|
 | <a id="rule-cn-01"></a>CN-01 | **Cancel is a request**: `CancelRequested → Canceling → Canceled`. Setting `Canceled` on click is prohibited. |
-| <a id="rule-cn-02"></a>CN-02 | Some work cannot stop instantly — finalising a video container, an atomic database commit, an external API that already accepted the request. The interface shows "Canceling… waiting for a safe point". |
+| <a id="rule-cn-02"></a>CN-02 | Some work cannot stop instantly — finalising a capture segment, an atomic database commit, an external API that already accepted the request. The interface shows "Canceling… waiting for a safe point". |
 | <a id="rule-cn-03"></a>CN-03 | **Every capability declares its cancellation semantics**: `Cancelable`, `CancelableAtSafePoint`, `NotCancelableOnceStarted`. |
 | <a id="rule-cn-04"></a>CN-04 | **Pause is cooperative**: `PauseRequested → Pausing → Paused`. A Task that cannot pause mid-step enters `Paused` after the current Step completes. |
 | <a id="rule-cn-05"></a>CN-05 | **Resume continues the current Run from its persistent checkpoint.** A resumed Run keeps its Run identity. |
@@ -141,7 +141,7 @@ Failure reasons are a unified, semantic set — they drive whether to auto-retry
 | <a id="rule-fl-02"></a>FL-02 | `Conflict` (expected revision 42, current 50) must **not** be retried indefinitely. It requires refresh, rebase, action regeneration, and re-approval where the approval was revision-bound. |
 | <a id="rule-fl-03"></a>FL-03 | `PermissionDenied` is never retried "to see if it passes". It requires a user or policy change. |
 | <a id="rule-fl-04"></a>FL-04 | A request for an offline target application waits with TaskState=waiting and reasonFacet=device. The user opens that application explicitly; no launch-on-demand or automatic retargeting occurs. Unsupported capabilities return a typed refusal. |
-| <a id="rule-fl-05"></a>FL-05 | `VersionIncompatible` surfaces as a specific, actionable message ("ArcNotes 2.1 or later required"), never "tool failed". |
+| <a id="rule-fl-05"></a>FL-05 | `VersionIncompatible` surfaces as a specific, actionable message ("ArcScope 2.1 or later required"), never "tool failed". |
 | <a id="rule-fl-06"></a>FL-06 | **`ExternalEffectUnknown` must never be blind-retried.** A send that lost its connection mid-flight has unknown effect. |
 | <a id="rule-fl-07"></a>FL-07 | Every effect carries an **Effect Certainty**: `NotApplied`, `Applied`, `Unknown`. `Unknown` triggers reconciliation against the external system first; if it cannot be resolved, the Task goes to Needs Attention. This is what prevents duplicate emails, duplicate issue creation and duplicate payments. |
 | <a id="rule-fl-08"></a>FL-08 | **Retry safety is declared by the capability owner**, never guessed by ArcChat. Capability metadata states `Idempotent`, `RetrySafe`, `RequiresReconciliation`. |
@@ -166,7 +166,7 @@ The single Harness executes in the ArcForges-AI Cloudflare Workflow through Work
 | <a id="rule-ow-02"></a>OW-02 | Agent ownership never moves to a desktop. Reconnection reconstructs a Cloud projection; desktop receipt/execution of a ToolRequest does not create a local child Agent Task. |
 | <a id="rule-ow-03"></a>OW-03 | Desktop-, Web-, Mobile- and automation-originated AI all use the same Cloud authority. Ordinary chat has a durable Cloud request/usage record even when no multi-step Task is needed. |
 | <a id="rule-ow-04"></a>OW-04 | Local/Cloud describes tool execution location only. The model loop and scheduler always remain in Cloud; there is no local or hybrid Harness. |
-| <a id="rule-ow-05"></a>OW-05 | A tool may execute in Cloud or in an explicitly authorised product on a selected device. Scope hardware capture and Slate render/playback remain native jobs. |
+| <a id="rule-ow-05"></a>OW-05 | A tool may execute in Cloud or in an explicitly authorised product on a selected device. ArcScope hardware capture and local analysis remain native jobs. |
 | <a id="rule-ow-06"></a>OW-06 | Tool target policy may select Cloud or a specific authorised device/product. It cannot select a local model/provider loop. |
 | <a id="rule-ow-07"></a>OW-07 | Automatic tool placement is bounded by data availability, capability, consent, resource authorisation, paid-service eligibility and budget. |
 | <a id="rule-ow-08"></a>OW-08 | **`Auto` must never upload local-only data to enable cloud execution.** An 80 GB local capture selects an authorized desktop analysis tool; it does not become an 80 GB upload. |
@@ -182,7 +182,7 @@ The single Harness executes in the ArcForges-AI Cloudflare Workflow through Work
 |---|---|
 | <a id="rule-ct-01"></a>CT-01 | A long native/cloud product operation returns a ProductJobHandle with stable identity and status access. The Cloud Step waits for that job and observes completion; no hours-long blocking RPC. |
 | <a id="rule-ct-02"></a>CT-02 | The referenced Product Job records its owner, origin/correlation, output and status. It has no model loop, autonomous planning or delegated agent identity. |
-| <a id="rule-ct-03"></a>CT-03 | Create a product Job only for an independent lifecycle such as capture, render/export, bulk processing or simulation. Internal agent Steps stay inside the same Cloud Run. |
+| <a id="rule-ct-03"></a>CT-03 | Create a product Job only for an independent lifecycle such as capture, export, bulk processing or simulation. Internal agent Steps stay inside the same Cloud Run. |
 | <a id="rule-ct-04"></a>CT-04 | Parent cancellation may request cancellation only of jobs it initiated and is authorised to control. Pre-existing/shared work is not cancelled; product safe-point semantics govern. |
 | <a id="rule-ct-05"></a>CT-05 | The Cloud Run receives a job reference, outcome and ResourceRef/ArtifactRef, never the product internal state store. |
 | <a id="rule-ct-06"></a>CT-06 | Sub-agents, agent teams, task handoff to another agent and external-agent delegation are excluded. Bounded independent tool calls are allowed inside the single Run. |
@@ -197,7 +197,7 @@ The single Harness executes in the ArcForges-AI Cloudflare Workflow through Work
 | Kind | Owner | Purpose |
 |---|---|---|
 | **Execution Checkpoint** | The agent runtime | Resume a Run: completed steps, pending steps, continuation state, product job references |
-| **Domain Checkpoint** | The owning professional application | A data recovery point, e.g. "before agent rewrite" in ArcNotes, "before agent timeline edit" in ArcSlate |
+| **Domain Checkpoint** | The owning professional application | A data recovery point, e.g. "before agent re-annotation" in ArcScope |
 
 | # | Requirement |
 |---|---|
@@ -211,8 +211,8 @@ Every side-effecting Step declares one of:
 
 | Semantics | Meaning | Example |
 |---|---|---|
-| **Reversible** | The owner can reliably undo or restore a checkpoint | A local ArcNotes edit |
-| **Compensatable** | A forward action restores a reasonable state, but history is not erased | A created document can be moved to trash |
+| **Reversible** | The owner can reliably undo or restore a checkpoint | A local ArcScope annotation edit |
+| **Compensatable** | A forward action restores a reasonable state, but history is not erased | A created report can be moved to trash |
 | **Irreversible** | Cannot be undone at all | Sent email, published public content, external payment, external notification |
 
 ### 5.3 Compensation
@@ -236,7 +236,7 @@ Every side-effecting Step declares one of:
 | # | Requirement |
 |---|---|
 | <a id="rule-ap-01"></a>AP-01 | An Approval binds a specific action snapshot: Task, Run, Step/Capability, target resource, resource revision where relevant, proposed effect, risk level and expiry. |
-| <a id="rule-ap-02"></a>AP-02 | **Vague future permission cannot be approved.** "Allow ArcChat to change anything for this task?" is prohibited. "Allow ArcChat to replace 12 blocks in Document X at revision 42?" is the required shape. |
+| <a id="rule-ap-02"></a>AP-02 | **Vague future permission cannot be approved.** "Allow ArcChat to change anything for this task?" is prohibited. "Allow ArcChat to replace 12 annotations in Session X at revision 42?" is the required shape. |
 | <a id="rule-ap-03"></a>AP-03 | **Approval ≠ persistent permission** ([I-097](01-normative-glossary-and-invariants.md#rule-i-097)). A persistent grant pre-authorises a class of low-risk behaviour; an approval authorises one specific action. |
 | <a id="rule-ap-04"></a>AP-04 | **Resource state is re-checked after approval.** An approval issued against revision 42 is no longer valid for that exact effect at revision 49; the action is rebased, the preview regenerated, and re-approval sought. |
 | <a id="rule-ap-05"></a>AP-05 | **Every approval expires.** An external action approved two weeks ago must not suddenly execute today. |
@@ -249,7 +249,7 @@ Every side-effecting Step declares one of:
 | <a id="rule-sg-01"></a>SG-01 | **Steering is the user's execution-direction update to an active Task** ([I-098](01-normative-glossary-and-invariants.md#rule-i-098), [I-099](01-normative-glossary-and-invariants.md#rule-i-099)). It is neither an approval nor an ordinary conversation message. |
 | <a id="rule-sg-02"></a>SG-02 | Steering produces an **immutable Steering Event**. It never overwrites the original Intent. |
 | <a id="rule-sg-03"></a>SG-03 | **The original Intent is always retained.** Steering affects the future execution of the current Run only. |
-| <a id="rule-sg-04"></a>SG-04 | Steering may trigger a Plan Revision; completed Steps remain in the trace even when superseded ("✓ analysed video" stays visible after "stop analysing the video"). |
+| <a id="rule-sg-04"></a>SG-04 | Steering may trigger a Plan Revision; completed Steps remain in the trace even when superseded ("✓ analysed session A" stays visible after "stop analysing session A"). |
 | <a id="rule-sg-05"></a>SG-05 | Steering application timing is explicit: applied immediately, queued until a safe point, or cannot be applied. It must never pretend to be instantaneous. |
 
 ---
@@ -314,9 +314,9 @@ Every side-effecting Step declares one of:
 | # | Requirement |
 |---|---|
 | <a id="rule-cc-01"></a>CC-01 | **Automation concurrency and task-step parallelism are two different layers** and must never be conflated ([I-104](01-normative-glossary-and-invariants.md#rule-i-104)). |
-| <a id="rule-cc-02"></a>CC-02 | Bounded tool/Step parallelism inside one Cloud Run respects resource conflict. Reading two sessions can parallelise; two Steps editing the same document must not. |
-| <a id="rule-cc-03"></a>CC-03 | **There is no global ArcForges lock manager.** Concurrency authority belongs to the owning product: ArcNotes decides document revision and locking, ArcScope decides device and session concurrency, ArcSlate decides timeline and render resource concurrency. |
-| <a id="rule-cc-04"></a>CC-04 | **Optimistic revision is the default agent concurrency mode.** `ExpectedRevision` mismatch is a Conflict. Holding a document lock for the 40-minute duration of a long Task is prohibited. |
+| <a id="rule-cc-02"></a>CC-02 | Bounded tool/Step parallelism inside one Cloud Run respects resource conflict. Reading two sessions can parallelise; two Steps editing the same report must not. |
+| <a id="rule-cc-03"></a>CC-03 | **There is no global ArcForges lock manager.** Concurrency authority belongs to the owning product or module: ArcScope decides device, session and report concurrency, and the owning Cloud module decides revisions of Cloud history and other Cloud resources. |
+| <a id="rule-cc-04"></a>CC-04 | **Optimistic revision is the default agent concurrency mode.** `ExpectedRevision` mismatch is a Conflict. Holding a resource lock for the 40-minute duration of a long Task is prohibited. |
 | <a id="rule-cc-05"></a>CC-05 | Genuinely exclusive resources — single-access hardware, for instance — are governed by lease/busy semantics provided by the capability owner. |
 
 ---
@@ -358,7 +358,7 @@ Supported trigger families: `Manual / Run Now`, `One-time`, `Interval`, `Cron / 
 | <a id="rule-mr-02"></a>MR-02 | **Catch-up is bounded.** A machine offline for three months must not return and immediately run 90 daily Tasks. A maximum catch-up count and window are mandatory. |
 | <a id="rule-mr-03"></a>MR-03 | Concurrency policy is one of `SkipIfRunning`, `Queue`, `Replace`, `AllowConcurrent`. The recommended default for recurring automations is **`SkipIfRunning`**, because a daily job that takes more than a day would otherwise build an unbounded queue. |
 | <a id="rule-mr-04"></a>MR-04 | **`Replace` is cooperative**: request cancellation of the old Task, observe per safety policy, then start the replacement. Killing and immediately restarting risks overlapping side effects. |
-| <a id="rule-mr-05"></a>MR-05 | **`AllowConcurrent` must be chosen explicitly.** It is never the default for expensive AI, same-document modification or device control. |
+| <a id="rule-mr-05"></a>MR-05 | **`AllowConcurrent` must be chosen explicitly.** It is never the default for expensive AI, same-resource modification or device control. |
 
 ### 10.3 Loop and storm protection
 
@@ -366,7 +366,7 @@ Supported trigger families: `Manual / Run Now`, `One-time`, `Interval`, `Cron / 
 |---|---|
 | <a id="rule-lp-01"></a>LP-01 | **Every trigger carries a causation chain**: this event was caused by this Task, caused by this Automation. |
 | <a id="rule-lp-02"></a>LP-02 | **Self-recursive automation is suppressed by default**: an automation whose own output matches its own trigger does not re-fire. |
-| <a id="rule-lp-03"></a>LP-03 | Cross-automation loops are guarded by **causation depth**, **rate guards** and cycle detection where feasible. `A creates a note → B sees the note and creates a finding → A sees the finding → …` must be stopped. |
+| <a id="rule-lp-03"></a>LP-03 | Cross-automation loops are guarded by **causation depth**, **rate guards** and cycle detection where feasible. `A creates an annotation → B sees the annotation and creates a finding → A sees the finding → …` must be stopped. |
 | <a id="rule-lp-04"></a>LP-04 | Storm protection is mandatory: per-automation rate limit, per-workspace concurrency cap, global agent concurrency cap, AI budget cap. A malformed event must not be able to generate an unbounded number of Tasks. |
 | <a id="rule-lp-05"></a>LP-05 | Automation budget is two-level: a **per-run budget** and an **aggregate budget** (per period). Reaching the aggregate budget pauses the Automation into Needs Attention. |
 
@@ -375,7 +375,7 @@ Supported trigger families: `Manual / Run Now`, `One-time`, `Interval`, `Cron / 
 | # | Requirement |
 |---|---|
 | <a id="rule-ap-10"></a>AP-10 | **Creating an automation does not grant it permanent unlimited authority** ([I-236](01-normative-glossary-and-invariants.md#rule-i-236)). Each Task it creates passes the current security policy, persistent grants, risk policy and approval rules. |
-| <a id="rule-ap-11"></a>AP-11 | Persistent grants inside an automation are **narrowly scoped**: "may append to the 'Weekly Reports' notebook" rather than "may write anywhere in ArcNotes forever". |
+| <a id="rule-ap-11"></a>AP-11 | Persistent grants inside an automation are **narrowly scoped**: "may add findings to the 'Line 3 Vibration' project" rather than "may write anywhere in ArcScope forever". |
 | <a id="rule-ap-12"></a>AP-12 | **External-effect automations are strictest.** Publishing, sending email or modifying an external service must select one of: always approve, approve first run, or allow within an explicitly scoped policy. High-risk external actions never run unattended by default. |
 
 ### 10.5 Cloud automation and native jobs
@@ -390,7 +390,7 @@ Supported trigger families: `Manual / Run Now`, `One-time`, `Interval`, `Cron / 
 
 All Tasks — manual, automation-created, remote — appear in one Task Center. Origin is a filter, not a separate page. Filters: origin, automation, project, device, app, execution location, status, date. The Automation page owns **definition** (schedule, policy, budget) and links each run-history entry to its Task.
 
-**Deleting Task history never deletes professional resources.** An ArcNotes document, ArcScope report or ArcSlate video produced by a Task survives the deletion of that Task's history.
+**Deleting Task history never deletes professional resources.** An ArcScope report or finding produced by a Task survives the deletion of that Task's history.
 
 ---
 
@@ -450,7 +450,7 @@ An enabled model route prices every applicable billable category/tier. The follo
 | <a id="rule-co-02"></a>CO-02 | Actual cached and uncached usage is distinguished and charged under the published category tariff; overlapping counters are normalised without double charging. Supplier discounts and customer tariffs remain separate records. |
 | <a id="rule-co-03"></a>CO-03 | **Cache isolation is a security requirement.** User-data-derived cache is workspace-scoped. Only genuinely public content — system prompts, public tool schemas, fixed instructions — may be reused across workspaces. |
 | <a id="rule-co-04"></a>CO-04 | Long-context requests are **flagged to the user in advance** ("a large context will increase credit usage"), not discovered after the fact. |
-| <a id="rule-co-05"></a>CO-05 | Multimodal consumption follows actual supplier units: tokens when token-billed; explicit image/second/call quantities when independently billed. Never invent token counts or charge tokenised media twice. |
+| <a id="rule-co-05"></a>CO-05 | Multimodal consumption follows actual supplier units: tokens when token-billed; explicit image/call quantities when independently billed. Never invent token counts or charge tokenised images twice. |
 | <a id="rule-co-06"></a>CO-06 | Paid tools and model tokens remain explicit budget dimensions. Web-search requests draw only on the operator search budget; processing retrieved results consumes customer AI capacity. Do not create a customer tool.webSearch tariff. |
 | <a id="rule-co-07"></a>CO-07 | Distinguish Cloud search from web search. Cloud search is an eligible service feature; web search itself is operator-funded and model processing of its results uses AI capacity. Explain this before use. |
 
@@ -460,15 +460,15 @@ An enabled model route prices every applicable billable category/tier. The follo
 |---|---|
 | Chat responses | Cloud search embedding, indexing and reranking |
 | Agent reasoning | Internal routing model calls |
-| Selection-scoped document actions | Abuse classification |
-| Supported media-understanding requests | Health checks |
+| Selection-scoped ArcScope actions | Abuse classification |
+| Supported image-understanding requests | Health checks |
 | Web search on the user's behalf | Cost prediction |
-| User-requested transcription | Platform-caused retry with no user value |
+| | Platform-caused retry with no user value |
 
 | # | Requirement |
 |---|---|
-| <a id="rule-cu-01"></a>CU-01 | **Internal platform AI never deducts user credits.** A cheap routing classifier deciding "is this ArcNotes or ArcScope?" is platform overhead. |
-| <a id="rule-cu-02"></a>CU-02 | **Cloud search embedding never deducts credits.** Synchronising 100 notes must not silently cost the user credits; semantic search is a subscription capability. |
+| <a id="rule-cu-01"></a>CU-01 | **Internal platform AI never deducts user credits.** A cheap routing classifier deciding "is this a measurement question or a report request?" is platform overhead. |
+| <a id="rule-cu-02"></a>CU-02 | **Cloud search embedding never deducts credits.** Synchronising 100 sessions must not silently cost the user credits; semantic search is a subscription capability. |
 | <a id="rule-cu-03"></a>CU-03 | **Platform-caused retry is not charged to the user.** A logical AI request whose first provider attempt failed and second succeeded is charged for the useful work, not twice. |
 | <a id="rule-cu-04"></a>CU-04 | User cancellation settles verified consumption already incurred within the authorised limit and releases unused holds. Unknown consumption is reconciled under commerce [MT-12](04-commerce-entitlement-and-credits.md#rule-mt-12); no assumed zero or surprise overdraft. |
 | <a id="rule-cu-05"></a>CU-05 | A provider safety block or other non-delivery with no usable result creates no customer debit, or an idempotent compensating adjustment if already settled. Actual supplier usage/cost is retained. Caller cancellation follows [CU-04](#rule-cu-04) instead. |
@@ -501,7 +501,7 @@ The most effective cost control is sending fewer meaningless tokens, not reducin
 
 | # | Requirement |
 |---|---|
-| <a id="rule-ce-01"></a>CE-01 | **The full capability catalogue is never handed to the model.** With hundreds of capabilities across products, sending every tool schema each round degrades quality and explodes cost. The flow is: intent and capability discovery within the frozen owning or explicitly targeted application and authorized Cloud scope → select a small relevant capability set → invoke the agent. |
+| <a id="rule-ce-01"></a>CE-01 | **The full capability catalogue is never handed to the model.** With hundreds of capabilities across the application and Cloud tools, sending every tool schema each round degrades quality and explodes cost. The flow is: intent and capability discovery within the frozen owning or explicitly targeted application and authorized Cloud scope → select a small relevant capability set → invoke the agent. |
 
 ### 11.7 Ledgers and reconciliation
 
@@ -532,8 +532,8 @@ The most effective cost control is sending fewer meaningless tokens, not reducin
 | # | Requirement |
 |---|---|
 | <a id="rule-sc-01"></a>SC-01 | Every Agent Task has one explicit realm and single-owner workspace. Resource and billing authority never cross workspaces implicitly. |
-| <a id="rule-sc-02"></a>SC-02 | No local-only Agent Task. Native offline editing, rendering and acquisition are product jobs with their own domain references. |
-| <a id="rule-sc-03"></a>SC-03 | A Cloud task may reference explicitly authorised device-local media or captures through tools. Billing never grants data access and never makes local bytes automatically cloud-resident. |
+| <a id="rule-sc-02"></a>SC-02 | No local-only Agent Task. Native offline acquisition, analysis and export are product jobs with their own domain references. |
+| <a id="rule-sc-03"></a>SC-03 | A Cloud task may reference explicitly authorised device-local captures or files through tools. Billing never grants data access and never makes local bytes automatically cloud-resident. |
 
 ---
 
@@ -572,7 +572,7 @@ ProviderBalance · CostReconciliation · CostAlert · AIMarginSnapshot
 ## 14. Acceptance scenarios
 
 ### Execution
-Intent that stays a chat turn · intent that becomes a Task · Run 1 fails and Run 2 succeeds under one `TaskId` · profile edited mid-run does not affect the running Run · plan revised with reason recorded · parallel Steps on a DAG · Step retried as a new Attempt · write capability retried under one `CommandId` producing exactly one document.
+Intent that stays a chat turn · intent that becomes a Task · Run 1 fails and Run 2 succeeds under one `TaskId` · profile edited mid-run does not affect the running Run · plan revised with reason recorded · parallel Steps on a DAG · Step retried as a new Attempt · write capability retried under one `CommandId` producing exactly one finding.
 
 ### Lifecycle
 Waiting for network with auto-resume · waiting for approval without auto-resume · paused by user then resumed on the same Run · interrupted by crash then recovery-evaluated · succeeded only when the outcome is truly reached · partially succeeded with an outcome manifest · cancelled after a completed side effect, with effects listed · cancel requested during a non-cancellable step.
@@ -590,13 +590,13 @@ Task reserves and settles · three concurrent tasks cannot collectively overdraw
 Weekly automation producing distinct Tasks · disabled automation leaves a running Task alone · deleted automation retains history · missed run per each policy · bounded catch-up · `SkipIfRunning` default · cooperative replace · self-recursion suppressed · cross-automation loop halted by causation depth · storm caps enforced · aggregate budget pausing the automation · DST transition with defined semantics · scheduler restart not double-firing · duplicate event not double-creating.
 
 ### AI pricing and usage
-Ordinary input/output · cached input · cache write · reasoning tokens · context crossing a pricing threshold · synthetic normalizer vectors for priority tier · batch tier · region surcharge · provider price change mid-catalogue · promotional price expiring · streaming completing · user cancelling mid-stream · provider failure with no upstream charge · provider failure with partial upstream charge · automatic retry not charged to the user · model fallback within class · concurrent tool accounting · enabled tool/search billing dimensions · supported media-understanding routes only. Unscoped image/video generation is not a delivery obligation.
+Ordinary input/output · cached input · cache write · reasoning tokens · context crossing a pricing threshold · synthetic normalizer vectors for priority tier · batch tier · region surcharge · provider price change mid-catalogue · promotional price expiring · streaming completing · user cancelling mid-stream · provider failure with no upstream charge · provider failure with partial upstream charge · automatic retry not charged to the user · model fallback within class · concurrent tool accounting · enabled tool/search billing dimensions · supported image-understanding routes only. Unscoped image/video generation is not a delivery obligation.
 
 ### Credits
 Capacity recovers only in paid intervals · annual renewal does not reset capacity · separate purchased/compensation lots · disclosed source-order consumption · concurrent reservations · insufficient balance hard stop · partial refund · refund hold · compensation credit · **model retired but credits unaffected** · historical task retaining its retired model and tariff version.
 
 ### Cloud-only service boundary
-No local/provider-key mode or external-agent delegation · native render/capture without Agent Task · direct product Cloud AI without the owning desktop application · paused/expired service stops new model calls even with credits · a self-host policy cannot unlock official AI.
+No local/provider-key mode or external-agent delegation · native capture/analysis without Agent Task · direct product Cloud AI without the owning desktop application · paused/expired service stops new model calls even with credits · a self-host policy cannot unlock official AI.
 
 ---
 

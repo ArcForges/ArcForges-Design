@@ -7,7 +7,7 @@
 > Phase: B — Shared platform
 > Scheduling: this package is an obligation set; its delivery tasks and their typed prerequisites are listed in section 9, generated from the [delivery graph](../delivery/delivery-graph.json) under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018).
 
-> **Goal.** Build the shared desktop foundation once — tokens, windows, panels, commands, settings, attention, errors, lifecycle — so that three desktop products feel like one family without any of them depending on another, and so that every control in it survives Native AOT.
+> **Goal.** Build the shared desktop foundation once — tokens, windows, panels, commands, settings, attention, errors, lifecycle — so that ArcScope has one coherent shell with no product depending on another, and so that every control in it survives Native AOT.
 
 > **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform; four applications. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
 > After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
@@ -174,9 +174,9 @@
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
-**Testing requirements.** Each app restores only needed UI/mechanism packages and passes existing command, lifecycle and accessibility acceptance independently.
+**Testing requirements.** The app restores only needed UI/mechanism packages and passes existing command, lifecycle and accessibility acceptance independently.
 
-**Completion gate.** Each app restores only needed UI/mechanism packages and passes existing command, lifecycle and accessibility acceptance independently. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+**Completion gate.** The app restores only needed UI/mechanism packages and passes existing command, lifecycle and accessibility acceptance independently. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -213,7 +213,7 @@
 
 ## 8. Completion gate
 
-**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-10.90](#rule-wp-10.90) and all inherited domain-specific gates must pass on the same candidate closure. Each app restores only needed UI/mechanism packages and passes existing command, lifecycle and accessibility acceptance independently.
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-10.90](#rule-wp-10.90) and all inherited domain-specific gates must pass on the same candidate closure. The app restores only needed UI/mechanism packages and passes existing command, lifecycle and accessibility acceptance independently.
 
 **Offline evidence.** Execute this product's applicable [initial-state matrix](../../assurance/testing-and-verification-strategy.md#offline-acceptance-matrix) rows, including fresh shell, hydrated outage, unavailable content, signout and restart where applicable. Record permitted local work and explicitly unavailable Cloud actions.
 
@@ -239,7 +239,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 
 | Delivery task | Satisfies | Start prerequisites outside this package |
 |---|---|---|
-| [PLT.26](../delivery/lanes/platform.md#task-plt-26) | [WP-10.00](10-design-system-and-desktop-shell.md#rule-wp-10.00) (full)<br>[WP-10](10-design-system-and-desktop-shell.md#rule-wp-10) Reconciliation of the five legacy src/BuildingBlocks/ArcForges.Desktop.{Experience,Graphics,Preview,RichContent,Text} scaffold projects per [WP-01.02](01-repository-reconciliation-and-target-layout.md#rule-wp-01.02) into DesignSystem/Shell (package-level obligation contribution) | [PRF.01](../delivery/lanes/runtime-proofs.md#task-prf-01) (artifact) |
+| [PLT.26](../delivery/lanes/platform.md#task-plt-26) | [WP-10.00](10-design-system-and-desktop-shell.md#rule-wp-10.00) (full)<br>[WP-10](10-design-system-and-desktop-shell.md#rule-wp-10) Reconciliation of the five legacy src/BuildingBlocks/ArcForges.Desktop.{Experience,Graphics,Preview,RichContent,Text} scaffold projects per [WP-01.02](01-repository-reconciliation-and-target-layout.md#rule-wp-01.02) into DesignSystem/Shell (package-level obligation contribution) | [PRF.02](../delivery/lanes/runtime-proofs.md#task-prf-02) (artifact) |
 | [PLT.27](../delivery/lanes/platform.md#task-plt-27) | [WP-10.01](10-design-system-and-desktop-shell.md#rule-wp-10.01) (full)<br>[WP-10](10-design-system-and-desktop-shell.md#rule-wp-10) Reconciliation of the five legacy src/BuildingBlocks/ArcForges.Desktop.{Experience,Graphics,Preview,RichContent,Text} scaffold projects per [WP-01.02](01-repository-reconciliation-and-target-layout.md#rule-wp-01.02) into DesignSystem/Shell (package-level obligation contribution) | none |
 | [PLT.28](../delivery/lanes/platform.md#task-plt-28) | [WP-10.02](10-design-system-and-desktop-shell.md#rule-wp-10.02) (full) | [PLT.20](../delivery/lanes/platform.md#task-plt-20) (artifact) |
 | [PLT.29](../delivery/lanes/platform.md#task-plt-29) | [WP-10.03](10-design-system-and-desktop-shell.md#rule-wp-10.03) (full) | [PLT.04](../delivery/lanes/platform.md#task-plt-04) (artifact) |
@@ -247,11 +247,10 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [PLT.31](../delivery/lanes/platform.md#task-plt-31) | [WP-10.05](10-design-system-and-desktop-shell.md#rule-wp-10.05) (full) | [FND.05](../delivery/lanes/foundation.md#task-fnd-05) (artifact) |
 | [PLT.32](../delivery/lanes/platform.md#task-plt-32) | [WP-10.06](10-design-system-and-desktop-shell.md#rule-wp-10.06) (full) | none |
 | [PLT.33](../delivery/lanes/platform.md#task-plt-33) | [WP-10.07](10-design-system-and-desktop-shell.md#rule-wp-10.07) (full) | none |
-| [PLT.34](../delivery/lanes/platform.md#task-plt-34) | [WP-10.08](10-design-system-and-desktop-shell.md#rule-wp-10.08) (full) | [PRF.01](../delivery/lanes/runtime-proofs.md#task-prf-01) (artifact) |
-| [PLT.35](../delivery/lanes/platform.md#task-plt-35) | [WP-10.90](10-design-system-and-desktop-shell.md#rule-wp-10.90) (all work except the parts mapped to PLT.56) | none |
-| [PLT.56](../delivery/lanes/platform.md#task-plt-56) | [WP-10.90](10-design-system-and-desktop-shell.md#rule-wp-10.90) (the multi-product consumption evidence beyond a single clean package-only diagnostic) | [NOTES.03](../delivery/lanes/arcnotes.md#task-notes-03) (artifact), [SCOPE.09](../delivery/lanes/arcscope.md#task-scope-09) (artifact), [SLATE.22](../delivery/lanes/arcslate.md#task-slate-22) (artifact) |
+| [PLT.34](../delivery/lanes/platform.md#task-plt-34) | [WP-10.08](10-design-system-and-desktop-shell.md#rule-wp-10.08) (full) | [PRF.02](../delivery/lanes/runtime-proofs.md#task-prf-02) (artifact) |
+| [PLT.35](../delivery/lanes/platform.md#task-plt-35) | [WP-10.90](10-design-system-and-desktop-shell.md#rule-wp-10.90) (full) | none |
 
-**Consumers outside this package:** [APP.07](../delivery/lanes/app-composition.md#task-app-07), [NOTES.03](../delivery/lanes/arcnotes.md#task-notes-03), [NOTES.04](../delivery/lanes/arcnotes.md#task-notes-04), [NOTES.05](../delivery/lanes/arcnotes.md#task-notes-05), [PLT.52](../delivery/lanes/platform.md#task-plt-52), [PRF.09](../delivery/lanes/runtime-proofs.md#task-prf-09), [SCOPE.09](../delivery/lanes/arcscope.md#task-scope-09), [SLATE.22](../delivery/lanes/arcslate.md#task-slate-22), [SLATE.25](../delivery/lanes/arcslate.md#task-slate-25), [UPD.03](../delivery/lanes/updater.md#task-upd-03).
+**Consumers outside this package:** [APP.07](../delivery/lanes/app-composition.md#task-app-07), [PLT.52](../delivery/lanes/platform.md#task-plt-52), [PRF.09](../delivery/lanes/runtime-proofs.md#task-prf-09), [SCOPE.09](../delivery/lanes/arcscope.md#task-scope-09), [UPD.03](../delivery/lanes/updater.md#task-upd-03).
 
 <!-- delivery-graph:end -->
 

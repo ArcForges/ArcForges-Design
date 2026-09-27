@@ -7,7 +7,7 @@
 > Phase: A — Freeze and foundation
 > Scheduling: this package is an obligation set; its delivery tasks and their typed prerequisites are listed in section 9, generated from the [delivery graph](../delivery/delivery-graph.json) under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018).
 
-> **Goal.** Reconcile the nine current repositories against the accepted ownership and licence boundaries. The historical ede43db inventory recorded **55 incorrectly licensed files**; verify current source before assigning a correction, move or retirement.
+> **Goal.** Reconcile the seven current repositories against the accepted ownership and licence boundaries. The historical ede43db inventory recorded **55 incorrectly licensed files**; verify current source before assigning a correction, move or retirement.
 
 > **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Platform and new owners. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
 > After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
@@ -20,7 +20,7 @@
 
 **Out of scope.** Behaviour changes of any kind ([RC-08](../../requirements/11-policy-and-configuration.md#rule-rc-08) in the reconciliation document). Cloud module boundary changes that require schema decisions — those belong to `21`. Per-product project reorganisation beyond what the boundary split requires — those land inside each product's own package.
 
-**Why this package exists.** The historical inventory identified licence and ownership defects. WP00 has since verified current first-party boundaries in nine independent repositories; its receipt does not complete contract type assignment or product behavior. WP01 records the actual remaining dispositions before restructuring. The mobile artifact gate (**[F-023](../../assurance/open-gates-register.md#rule-f-023)**) remains binding for its actual candidate.
+**Why this package exists.** The historical inventory identified licence and ownership defects. WP00 has since verified current first-party boundaries in seven independent repositories; its receipt does not complete contract type assignment or product behavior. WP01 records the actual remaining dispositions before restructuring. The mobile artifact gate (**[F-023](../../assurance/open-gates-register.md#rule-f-023)**) remains binding for its actual candidate.
 
 ---
 
@@ -37,7 +37,7 @@
 | [`../../architecture/01-solution-and-project-layout.md`](../../architecture/01-solution-and-project-layout.md) | The target layout, project conventions and reference-direction rules that dispositions are measured against |
 | [`../../architecture/00-architecture-overview.md`](../../architecture/00-architecture-overview.md) | The layering rules and the shared-foundation boundary |
 | [WP-00](00-specification-naming-and-rights-freeze.md#rule-wp-00) output | The licence boundary declaration and naming freeze |
-| The existing monorepo at `ede43db` | **historical 166 projects at ede43db**, 28 test-suite projects, 6 native shims, and the `eng/` build property set — measured, not estimated |
+| The existing monorepo at `ede43db` | **historical 166 projects at ede43db**, 27 test-suite projects, 6 native shims, and the `eng/` build property set — measured, not estimated |
 
 ---
 
@@ -85,15 +85,15 @@
 
 <a id="rule-wp-01.00"></a>
 
-### WP-01.00 — Verify nine independent current repositories
+### WP-01.00 — Verify seven independent current repositories
 
-**What must be fully done.** Record actual clean commit/worktree states for DesktopPlatform, Contracts, Cloud, AI, Web, Mobile, ArcNotes, ArcScope and ArcSlate. Inventory existing Hello World/build/publish artifacts against arch 27 and the package registry. Earlier ede43db monorepo inventories are historical provenance, not current source inventory.
+**What must be fully done.** Record actual clean commit/worktree states for DesktopPlatform, Contracts, Cloud, AI, Web, Mobile and ArcScope. Inventory existing Hello World/build/publish artifacts against arch 27 and the package registry. Earlier ede43db monorepo inventories are historical provenance, not current source inventory.
 
 **Testing requirements.** Compare each owned path/project to current Git tree and published artifact identity; reject adjacent-source/submodule integration.
 
 **Completion gate.** Every planned directory has one repository owner and explicit keep/move/retire disposition; no source mutation is justified solely by a dated baseline. Follow the [current inventory profile](../../assurance/wp01-00-inventory-policy.md) for the versioned data, historical drift, artifact and enforcement boundaries.
 
-**Recorded execution (2026-09-20).** [WP01.00 evidence](../../assurance/wp01-00-implementation-evidence.md) records nine current owners, 75 build projects, all 166 historical projects, 359 planned/current directory dispositions, Windows/Linux drift gates, reviewed merges and the verified public candidate. This closes only WP01.00.
+**Recorded execution (2026-09-20).** [WP01.00 evidence](../../assurance/wp01-00-implementation-evidence.md) records seven current owners, 67 current projects, all 166 historical projects, 359 planned/current directory dispositions, Windows/Linux drift gates, reviewed merges and the verified public candidate. This closes only WP01.00.
 
 <a id="rule-wp-01.01"></a>
 
@@ -144,19 +144,19 @@
 
 **Completion gate.** Every family has either an existing suite or a named future package.
 
-**Recorded execution (2026-09-20).** [Test-family mapping](../../assurance/wp01-04-test-family-map.md) assigns all discovered current test sources/verification entrypoints and 28 historical test projects. All eighteen families have current bounded coverage or an explicit gap and named future producer; ten families are partial and eight have no current suite. This closes mapping only, not their implementation or release acceptance.
+**Recorded execution (2026-09-20).** [Test-family mapping](../../assurance/wp01-04-test-family-map.md) assigns all discovered current test sources/verification entrypoints and 27 historical test projects. All eighteen families have current bounded coverage or an explicit gap and named future producer; ten families are partial and eight have no current suite. This closes mapping only, not their implementation or release acceptance.
 
 <a id="rule-wp-01.05"></a>
 
 ### WP-01.05 — Apply bounded repository reconciliation
 
-**What must be fully done.** Implement only inventory-backed owner moves and names in the nine repositories; replace legacy ArcChat host/Harness or product RPC scaffolds with the arch 27 composition boundaries. Preserve working builds while each consumer adopts immutable package artifacts.
+**What must be fully done.** Implement only inventory-backed owner moves and names in the seven repositories; replace legacy ArcChat host/Harness or product RPC scaffolds with the arch 27 composition boundaries. Preserve working builds while each consumer adopts immutable package artifacts.
 
 **Testing requirements.** Clean-checkout builds with no sibling source; verify licenses and package closure.
 
 **Completion gate.** Current repository/project map agrees with actual owned trees and every move has a tested consumer path.
 
-**Recorded execution (2026-09-20).** [Bounded reconciliation evidence](../../assurance/wp01-05-bounded-reconciliation.md) verifies all nine current owners, 75 projects and 359 directory dispositions, clean exact-head CI, licence/runtime/reference checks and a new clean-worktree Notes build with 89 passing tests. Retired blocking paths are already absent; no additional source move or deletion is needed. Future producer moves and explicitly retained bootstrap compatibility remain scheduled.
+**Recorded execution (2026-09-20).** [Bounded reconciliation evidence](../../assurance/wp01-05-bounded-reconciliation.md) verifies all seven current owners, 67 projects and 359 directory dispositions, clean exact-head CI and licence/runtime/reference checks. Retired blocking paths are already absent; no additional source move or deletion is needed. Future producer moves and explicitly retained bootstrap compatibility remain scheduled.
 
 <a id="rule-wp-01.90"></a>
 ### WP-01.90 — Verify the owned artifact and real integration
@@ -169,11 +169,11 @@
 
 **Completion gate.** Complete old-group → target-owner/disposition mapping; independently buildable roots; no product domain copied into Platform, no forced suite, no blanket retention of six shipping shims. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
-**Recorded execution (2026-09-20).** [WP01 stage acceptance](../../assurance/wp01-stage-acceptance.md) joins all six completed substeps to the nine current exact source/candidate identities, verifies all 166 historical project mappings, and re-downloads and hashes 33 Platform/Contracts public files. Current owner/build/licence gates pass; actual runtime evidence retains its original scenarios and dates. This closes the reconciliation stage only; named later producers remain required.
+**Recorded execution (2026-09-20).** [WP01 stage acceptance](../../assurance/wp01-stage-acceptance.md) joins all six completed substeps to the seven current exact source/candidate identities, verifies all 166 historical project mappings, and re-downloads and hashes 33 Platform/Contracts public files. Current owner/build/licence gates pass; actual runtime evidence retains its original scenarios and dates. This closes the reconciliation stage only; named later producers remain required.
 
 ---
 
-**Cloud module layout acceptance.** WP01 records all 21 domain owners listed in architecture01 §5 and their Cloud ownership. [WP21.02](21-cloud-host-and-persistence.md#rule-wp-21.02) implements their substantive Domain/Application/Infrastructure projects and compares the project list to the model01 schema map, including PackageCatalog. Platform remains shared infrastructure. Do not create empty module projects during reconciliation; this follows the schema-boundary exclusion in §1 and preserves the full 21-module acceptance at its producing step. The count is distinct from the nine independent implementation repositories.
+**Cloud module layout acceptance.** WP01 records all 19 domain owners listed in architecture01 §5 and their Cloud ownership. [WP21.02](21-cloud-host-and-persistence.md#rule-wp-21.02) implements their substantive Domain/Application/Infrastructure projects and compares the project list to the model01 schema map, including PackageCatalog. Platform remains shared infrastructure. Do not create empty module projects during reconciliation; this follows the schema-boundary exclusion in §1 and preserves the full 21-module acceptance at its producing step. The count is distinct from the seven independent implementation repositories.
 
 ## 6. Impacts
 
@@ -198,7 +198,7 @@
 | Shared-foundation reference check, clean | [WP-01.02](#rule-wp-01.02) |
 | Native shim decision records, one per shim | [WP-01.03](#rule-wp-01.03) |
 | Test family coverage report with explicit gaps | [WP-01.04](#rule-wp-01.04) |
-| Green build at every commit boundary; retired Notes paths absent and fenced-reference check clean | [WP-01.05](#rule-wp-01.05) |
+| Green build at every commit boundary; retired paths absent and fenced-reference check clean | [WP-01.05](#rule-wp-01.05) |
 | Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-01.90](#rule-wp-01.90) |
 
 ---
@@ -214,7 +214,7 @@
 3. No product knowledge remains in the shared foundation.
 4. Current native admissions are applied: official OTIO is the selected interchange boundary, MDF is excluded, and unmigrated conflicting skeletons are unreferenceable; no pending substitute choice overrides WP01.03.
 5. Every required test family maps to an existing suite or a named future package.
-6. The blocking moves and explicit deletion of `ArcNotes.Edgeless`/`ArcNotes.Slides` are executed, their obsolete solution/project/lock entries and excluded hooks are absent, the retained Notes core builds green, and all remaining conflicting code whose disposition is due at this stage is fenced and unreferenceable. Explicit bootstrap compatibility retained until a named later producer, including the Kotlin native-grpc client until the first business release in WP03, is not prematurely removed.
+6. All remaining conflicting code whose disposition is due at this stage is fenced and unreferenceable. Explicit bootstrap compatibility is retained until a named later producer, including the Kotlin native-grpc client until the first business release in WP03, and is not prematurely removed.
 
 ---
 

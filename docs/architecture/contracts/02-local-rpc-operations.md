@@ -22,7 +22,7 @@ Product ports use generated records and statically registered in-process handler
 | `IResourceAccess` | Owning product or admitted helper boundary | Own handler or exact child grant |
 | `IProductLifecycle` | Every product | owning application composition |
 | `IDeepLinkTarget` | Every product | owning application composition |
-| `INotesOperations`, `IScopeOperations`, `ISlateOperations`, `IChatOperations` | The owning product | owning application composition, for its authorized callers |
+| `IScopeOperations`, `IChatOperations` | The owning product | owning application composition, for its authorized callers |
 | `IExtensionHost` | Product process | Extension process *(the protocol of [`../15-extension-platform-architecture.md`](../15-extension-platform-architecture.md), listed here for completeness)* |
 
 ---
@@ -30,7 +30,7 @@ Product ports use generated records and statically registered in-process handler
 <a id="rule-rt-02"></a>
 ## 2. Registration and routing
 
-`IHubRegistry` and `IHubRouting` are reserved historical names, excluded from current generated server registration and runtime. There is no application-to-application discovery or routing. Their future use requires activation of the [cross-product plan](../../future/cross-product-collaboration/README.md).
+`IHubRegistry` and `IHubRouting` are reserved historical names, excluded from current generated server registration and runtime. There is no application-to-application discovery or routing.
 
 Current product services below are typed in-process Application ports. The Platform assistant registers only its own application's operations; Cloud's tool bridge dispatches to one authenticated application installation and the owner calls the same handlers. Private parent/helper discovery and bootstrap are separately specified in annex 09.
 
@@ -76,9 +76,9 @@ model tool call  /  extension invocation
   |       schema, rejecting unknown fields (L2-08)      |
   |    3. DECODE into the generated typed request       |
   +----------------------------------------------------+
-        |  ApplyBlockEditsRequest  (a generated record)
+        |  RunMeasurementRequest  (a generated record)
         v
-  INotesOperations.ApplyBlockEditsAsync(...)              typed, compile-time checked
+  IScopeOperations.RunMeasurementAsync(...)                typed, compile-time checked
         |
         v
   application service -> domain                            no structured value anywhere
@@ -97,7 +97,7 @@ model tool call  /  extension invocation
 
 | # | Rule |
 |---|---|
-| <a id="rule-dp-09"></a>DP-09 | **A product operation is never reachable except through its typed interface.** The boundary calls `INotesOperations`, `IScopeOperations`, `ISlateOperations` or `IChatOperations`; it never touches an application service or a repository directly, and an architecture test asserts it ([WP-05](../../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05)). |
+| <a id="rule-dp-09"></a>DP-09 | **A product operation is never reachable except through its typed interface.** The boundary calls `IScopeOperations` or `IChatOperations`; it never touches an application service or a repository directly, and an architecture test asserts it ([WP-05](../../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05)). |
 | <a id="rule-dp-10"></a>DP-10 | **`ResourceRef` and `ArtifactRef` cross the boundary by identity**; large payloads never travel inside the structured value ([CI-05](#rule-ci-05)). |
 
 ---
@@ -117,7 +117,7 @@ ProvideContextAsync(ContextRequest)             → ArcResult<ContextContributio
 |---|---|
 | <a id="rule-cx-01"></a>CX-01 | **Oversized context is refused explicitly**, never silently truncated ([WP-17](../../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17)). The refusal names what was requested and what the budget allows. |
 | <a id="rule-cx-02"></a>CX-02 | **A contribution states its size before it is used**, so the user can see what is being shared ([WP-17](../../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17)). |
-| <a id="rule-cx-03"></a>CX-03 | **Raw evidence never enters a contribution** where the product's rules forbid it — ArcScope raw capture and ArcSlate media are structurally excluded ([WP-35.01](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.01), [WP-39.01](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.01)). |
+| <a id="rule-cx-03"></a>CX-03 | **Raw evidence never enters a contribution** where the product's rules forbid it — ArcScope raw capture is structurally excluded ([WP-35.01](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.01)). |
 
 ### `IArtifactHandler`
 
@@ -173,35 +173,6 @@ HandleDeepLinkAsync(DeepLink)            → ArcResult<DeepLinkOutcome>
 
 These are the domain operations each product exposes as capabilities. They are the concrete answer to *what can an authorized assistant or companion do within this application*.
 
-### `INotesOperations` — ArcNotes
-
-The methods below use the version preconditions in [NO-02](#rule-no-02). Notebook/folder create, rename, move, reorder, trash and restore mirror the typed Cloud structural requests with local composite preconditions; their pending events and frozen sync batches retain the same command identity. Local Scope/Slate operations instead return NativeContentRevision and ProductJobRef. `ExpectedRev`/`Revision` in the abbreviated signatures is not a shared untyped integer across these authorities.
-
-| Operation | Risk / approval | Class |
-|---|---|---|
-| `SearchAsync(NotesQuery)` → `Page<DocumentSummary>` | `R1`, none | `Q` |
-| `GetDocumentAsync(DocumentId, DocumentProjection)` → `DocumentView` | `R1`, none | `Q` |
-| `CreateDocumentAsync(CreateDocument)` → `DocumentRef` | `R2`, `perOperation` | `CC` |
-| `AppendBlocksAsync(DocumentId, Block[], ExpectedRev)` → `Revision` | `R2`, `perOperation` | `AP` |
-| `ApplyBlockEditsAsync(DocumentId, BlockEdit[], ExpectedRev)` → `Revision` | `R2`, `perOperation` | `IW` |
-| `SetPropertiesAsync(DocumentId, PropertyValue[], ExpectedRev)` → `Revision` | `R2`, `perOperation` | `IW` |
-| `AddTagsAsync` / `RemoveTagsAsync` | `R1`, none | `IW` |
-| `CreateLinkAsync(DocumentId, LinkSpec, ExpectedRev)` → `Revision` | `R2`, `perOperation` | `IW` |
-| `TrashDocumentAsync(DocumentId, ExpectedRev)` → `Revision` | `R3`, `perOperation` | `DE` |
-| `ExportAsync(ExportRequest)` → `ArtifactRef` | `R2`, `perOperation`; **`egress = declared`** when the target is outside the workspace | `NI` |
-
-| # | Rule |
-|---|---|
-| <a id="rule-no-01"></a>NO-01 | ApplyBlockEdits takes the typed notes.commands.v1 edit list and validates the whole document at expected LocalNotesVersion before one owner commit/undo/outbox publication. Local block commands do not imply per-block Cloud sync. Whole-document conflict preservation and admitted Cloud owner writes follow Notes authority; no blind document replacement bypasses the revision guard. |
-| <a id="rule-no-02"></a>NO-02 | **Local Notes edits use LocalNotesVersion(acked_rev, head_local_seq).** A Cloud tool with only an acknowledged revision requires a clean matching shadow; if local edits are pending it returns `conflict.local_changes_pending` until sync/resolution supplies a fresh context. It cannot silently overwrite pending content. Writes return the resulting local token and pending status; Cloud ack is a later, distinct event. |
-| <a id="rule-no-03"></a>NO-03 | **`CreateDocumentAsync` takes a caller-allocated `DocumentId`**, which makes it idempotent under retry ([ID-04](../data-model/00-data-model-overview.md#rule-id-04)). |
-| <a id="rule-no-04"></a>NO-04 | **A write takes and returns the composite local token `(acked_rev, head_local_seq)`** ([RV-C5](../data-model/02-desktop-data-model.md#rule-rv-c5) of the desktop data model), not a bare revision ([RV-C3](../data-model/02-desktop-data-model.md#rule-rv-c3), [RV-C4](../data-model/02-desktop-data-model.md#rule-rv-c4) of the desktop data model), and enqueues a `sync_outbox` row. It does **not** return a Cloud acknowledgement ([PE-04](../data-model/02-desktop-data-model.md#rule-pe-04)): the caller learns the edit is durable on this device, which is a different fact from acknowledged by Cloud. Passing only `acked_rev` would let two local callers overwrite each other between acknowledgements; passing `local_rev` to Cloud would conflict on every second edit. |
-| <a id="rule-no-05"></a>NO-05 | **`SearchAsync` searches the hydrated local cache.** Cloud search over the whole workspace is `search.query` on the public surface; the two are separate operations with different completeness, and neither is presented as the other. |
-| <a id="rule-no-06"></a>NO-06 | **`SetPropertiesAsync` accepts only declared property definitions with bounded scalar types** from the [ArcNotes property requirements](../../requirements/products/arcnotes.md#7-properties-tags-and-views) and [property storage model](../data-model/02-desktop-data-model.md#property_definition-property_value). There is no formula, relation or rollup evaluation, so no expression reaches this path. |
-
-<a id="notes-query-contract"></a>
-**NotesQuery.** Required `profile`, notebook ID, optional saved-view ID/revision, typed filter/sort/projection and referenced definition semantic revisions; optional cursor/page size. [notes.scalar.v1](../../requirements/products/arcnotes.md#notes-scalar-query-profile) fixes value encodings, operators, limits, ordering and revision behavior. The result includes typed DocumentSummary values, source dataset token, `scope=hydratedLocal` or `acknowledgedCloud`, pending/completeness indicators and next cursor. An ad-hoc query binds current definitions at first evaluation; a saved query validates its persisted bindings. No unknown operator/type is ignored. Expected errors are `validation.invalid_request`, `validation.ast_bounds_exceeded`, `validation.unsupported_version`, `conflict.revision_mismatch` and permission-safe `state.not_found`. A stale cursor instructs restart without a partial success page.
-
 ### `IScopeOperations` — ArcScope
 
 | Operation | Risk / approval | Class |
@@ -225,37 +196,6 @@ The methods below use the version preconditions in [NO-02](#rule-no-02). Noteboo
 | <a id="rule-so-04"></a>SO-04 | **No operation writes raw capture.** ArcScope alone writes it, from its acquisition loop ([WP-35.05](../../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.05)). |
 
 **MeasurementRequest/MeasurementResult.** Use the [measurement storage projection](../data-model/02-desktop-data-model.md#measurement-storage) and [scope.measurement.v1](../../requirements/products/arcscope.md#measurement-profile) verbatim: frozen source/window/configuration, explicit family set, optional cursor/threshold input, resolved thresholds and per-family status/value/unit/count. A long analysis returns the existing ProductJobRef and the same eventual result shape. Insufficient data is a typed successful result with absent value, not zero or an RPC error. Invalid envelope/config is `validation.invalid_request`, unknown profile is `validation.unsupported_version`; stale requested source revision is `conflict.revision_mismatch`. Structured context and report APIs carry the profile, source bindings, quality and content origin without raw capture.
-
-### `ISlateOperations` — ArcSlate
-
-| Operation | Risk / approval | Class |
-|---|---|---|
-| `ListProjectsAsync` / `GetSequenceAsync` / `ListMediaAsync` | `R1`, none | `Q` |
-| `GetTimelineAsync(SequenceId, TimeRange?)` → `TimelineView` | `R1`, none | `Q` |
-| `ListMarkersAsync` / `CreateMarkerAsync` | `R1` / `R2` | `Q` / `CC` |
-| `ApplyTimelineEditsAsync(SequenceId, TimelineEdit[], ExpectedRev)` → `Revision` | `R2`, `perOperation` | `IW` |
-| `StartRenderAsync(RenderRequest)` → `ProductJobRef` | `R2`, `perOperation` | `NI` |
-| `CancelRenderAsync(RenderRequestId)` | `R2`, none | `IW` |
-| `ExportAsync(ExportRequest)` → `ArtifactRef` | `R2`, `perOperation`; `egress = declared` | `NI` |
-| `GetSequenceContextAsync(ContextRequest)` → `SequenceContextReference` | `R1`, none | `Q` |
-| `ImportOtioAsync(OtioImportRequest)` → `OtioImportResult` | `R2`, `perOperation`; `egress = none` | `NI` |
-| `PreviewOtioImportAsync(OtioImportRequest)` → `OtioFidelityReport` | `R1`, none | `Q` |
-| `ExportOtioAsync(SequenceId, CommittedRev, OtioExportRequest)` → `ArtifactRef` + `OtioFidelityReport` | `R2`, `perOperation`; `egress = declared` | `NI` |
-| `RelinkMediaAsync(SequenceId, MediaRelink[])` → `Revision` | `R2`, none | `IW` |
-
-| # | Rule |
-|---|---|
-| <a id="rule-sl-01"></a>SL-01 | The Slate local contract is published by WP03 with all other local signatures using the fixed wire/timeline/undo profiles. WP39.00 implements and exposes those semantics; it does not first define or create the interface. |
-| <a id="rule-sl-02"></a>SL-02 | **`GetSequenceContextAsync` returns structure, markers, ranges, timecodes and metadata — never media** ([WP-39.01](../../planning/work-packages/39-arcslate-integration-and-portability.md#rule-wp-39.01)). |
-| <a id="rule-sl-03"></a>SL-03 | **`StartRenderAsync` binds a revision snapshot** and returns a `ProductJobRef`; the render never reads live editor state ([RN-04](../../requirements/products/arcslate.md#rule-rn-04)). |
-| <a id="rule-sl-04"></a>SL-04 | **`StartRenderAsync` produces a native Product Job, not a Cloud Agent Task** ([I-485](../../requirements/01-normative-glossary-and-invariants.md#rule-i-485), [CM-04](../09-ai-and-agent-runtime-architecture.md#rule-cm-04) of the runtime architecture). It invokes no model, consumes no AI capacity, and ArcSlate owns its progress and recovery. |
-| <a id="rule-sl-05"></a>SL-05 | **OTIO import is staged before commit** ([OT-09](../../requirements/products/arcslate.md#rule-ot-09)). `PreviewOtioImportAsync` returns the fidelity report without mutating the project, so the user reviews retained, approximated and omitted dispositions **before** anything changes ([OT-07](../../requirements/products/arcslate.md#rule-ot-07)). |
-| <a id="rule-sl-06"></a>SL-06 | **Import creates ArcSlate-owned canonical objects with provenance; OTIO is never the mutable working store** ([OT-04](../../requirements/products/arcslate.md#rule-ot-04), [I-497](../../requirements/01-normative-glossary-and-invariants.md#rule-i-497)). |
-| <a id="rule-sl-07"></a>SL-07 | **Export binds a committed sequence revision** and writes a **separate artifact** carrying the support profile and fidelity information ([OT-04](../../requirements/products/arcslate.md#rule-ot-04)). It cannot export live editor state. |
-| <a id="rule-sl-08"></a>SL-08 | **Export writes a temporary destination and publishes atomically** ([OT-10](../../requirements/products/arcslate.md#rule-ot-10)). Failure or cancellation leaves both the project and any existing destination untouched; overwrite requires explicit approval. |
-| <a id="rule-sl-09"></a>SL-09 | **A `.otio` file references media; it never collects, uploads or embeds it** ([OT-08](../../requirements/products/arcslate.md#rule-ot-08)). Relative paths resolve only under an explicitly approved base; missing media becomes relinkable Offline Media, which is what `RelinkMediaAsync` addresses. |
-| <a id="rule-sl-10"></a>SL-10 | **Parsing is bounded and adapter-free** ([OT-09](../../requirements/products/arcslate.md#rule-ot-09)): bounded size, depth and item count; malformed or unsupported schema rejected; **no arbitrary adapters, no Python plug-ins, no executable content**. Native OTIO use stays behind an owned narrow C ABI and the untrusted-content boundary. |
-| <a id="rule-sl-11"></a>SL-11 | **A fidelity report excludes unselected absolute paths and secrets** ([OT-10](../../requirements/products/arcslate.md#rule-ot-10)). |
 
 ### `IChatOperations` — ArcChat
 
@@ -284,7 +224,6 @@ The methods below use the version preconditions in [NO-02](#rule-no-02). Noteboo
 | Any operation Cloud can call | **[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)** — Cloud never connects to a local endpoint |
 | Any operation returning a filesystem path | [RA-01](#rule-ra-01), [I-192](../../requirements/01-normative-glossary-and-invariants.md#rule-i-192) |
 | Any operation returning a plaintext secret | Use ≠ Reveal |
-| Any whole-document or whole-project replace | [NO-01](#rule-no-01) — it would destroy concurrent edits |
 | Any operation that writes raw capture | [SO-04](#rule-so-04) |
 | A device-control operation | [SO-03](#rule-so-03) |
 | Any cross-product relay operation | Current product ports stay in process; future Cloud collaboration has no active endpoint. |
@@ -292,8 +231,6 @@ The methods below use the version preconditions in [NO-02](#rule-no-02). Noteboo
 | Any operation accepting or storing an end-user model-provider key | **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** — no end-user BYOK ([BY-01](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-01)–[BY-04](../../requirements/04-commerce-entitlement-and-credits.md#rule-by-04)) |
 | Any local planning, tool-selection or turn-loop operation | The Harness is Cloud-only ([LS-02](../17-agent-harness.md#rule-ls-02)). The desktop executes authorised tools; it does not choose them |
 | Any operation delegating to an external agent or sub-agent | **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** ([EA-01](../../requirements/08-extensions-and-developer-platform.md#rule-ea-01)–[EA-08](../../requirements/08-extensions-and-developer-platform.md#rule-ea-08)) |
-| A canvas, whiteboard, frame, slide or presentation operation | **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** — excluded from ArcNotes delivery |
-| A DOCX, formula, relation or rollup operation | **[P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)** — excluded; import is Markdown/text (`§2.1` of the editing architecture) |
 
 ---
 
@@ -320,10 +257,6 @@ The [complete local profile 09](09-local-grpc-and-sandbox.md) and numbered regis
 
 The wire registry explicitly adds ILocalBootstrap.Challenge/Confirm and IResourceAccess.ReadChunk and IProductLifecycle.GetJob as transport-support methods. Challenge/Confirm are NI, OS-peer-only, one-use five-second bootstrap before normal owner authorization; they confer no product capability. ReadChunk is Q/R1/AO on the exact immutable owned transfer/version/offset, authorizing each bounded chunk. GetJob is Q/R1/AO on an owned native ProductJob. OpenRead returns LocalTransferTicket, never an HTTP bearer URL. The generated method names omit the C# Async suffix but preserve the catalogued operation's authorization, revision and effect rules.
 
-## Complete Notes and Slate method surface
-
-The [wire registry](04-protobuf-wire-registry.md#notes-structural-and-slate-operation-bindings) adds typed Notes move preview/mapping, full Slate metadata and extraction/transcript-adoption/subtitle import/export operations to this catalogue. Their exact fields, local revision preconditions, risk/class/compatibility, approval and loss semantics are defined there. Apply the same peer/actor/owner checks and generated capability allowlist as existing methods; no raw path, provider credential or generic invocation bypass is introduced.
-
 ## Initial producer and broker bindings
 
-Every local signature, capability descriptor and OS broker method is a WP03 producer output. Later product WPs implement these published ports; they do not first define their request/response shape. [Wire local registry](04-protobuf-wire-registry.md#6-local-and-extension-operation-registry) fixes exact semantic Notes/Scope/Slate commands and resource/job transport support. The [native annex](06-native-functional-abi.md) owns helper bulk-buffer handles/lengths/leases and typed native exports; ordinary RPC frames do not carry full pixel/audio buffers. No obsolete IResourceProvider interface or generated-shape/code-first service is part of the current protocol.
+Every local signature, capability descriptor and OS broker method is a WP03 producer output. Later product WPs implement these published ports; they do not first define their request/response shape. [Wire local registry](04-protobuf-wire-registry.md#6-local-and-extension-operation-registry) fixes exact semantic Scope commands and resource/job transport support. The [native annex](06-native-functional-abi.md) owns helper bulk-buffer handles/lengths/leases and typed native exports; ordinary RPC frames do not carry full pixel buffers. No obsolete IResourceProvider interface or generated-shape/code-first service is part of the current protocol.

@@ -21,7 +21,7 @@ ObjectRevision                        immutable, parented, actor-attributed
 | <a id="rule-id-02"></a>ID-02 | **`ObjectId` is never reused** ([RR-04](02-contracts-and-protocols.md#rule-rr-04) in the contracts architecture). |
 | <a id="rule-id-03"></a>ID-03 | **A revision records**: `RevisionId`, `ObjectId`, `ParentRevision`, created time, actor, device, app version, schema version — and for an agent write, task, capability and approval reference ([SY-20](../requirements/03-cloud-services-and-sync.md#rule-sy-20), [SY-21](../requirements/03-cloud-services-and-sync.md#rule-sy-21)). |
 | <a id="rule-id-04"></a>ID-04 | **Historical revisions are immutable.** A change produces a new revision ([SY-22](../requirements/03-cloud-services-and-sync.md#rule-sy-22)). |
-| <a id="rule-id-05"></a>ID-05 | **Restore is a new revision**, never a history rewrite ([HR-02](../requirements/products/arcnotes.md#rule-hr-02) in the ArcNotes requirements). |
+| <a id="rule-id-05"></a>ID-05 | **Restore is a new revision**, never a history rewrite. |
 | <a id="rule-id-06"></a>ID-06 | **Revision kinds are distinguishable** — autosave, user version, agent checkpoint, migration checkpoint — over one mechanism ([SY-24](../requirements/03-cloud-services-and-sync.md#rule-sy-24)). |
 
 ---
@@ -304,16 +304,16 @@ Required scenarios, all release-gating:
 
 ## [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) transport, storage and recovery composition
 
-The [CF/R2 lifecycle](contracts/05-cloudflare-integration.md) fixes part verification, Verified pins, authorization on consumption, release/deletion and independent immutable restore. C# owning transactions, sync cursors/tombstones/conflicts, desktop pending changes, native job snapshots and derived-source revision checks above retain their semantics. The [wire profile](contracts/04-protobuf-wire-registry.md) transports exact values without changing content-origin, Notes scalar or Scope measurement oracles. CF checkpoints/streams never become product history, and restoration cannot silently redispatch an uncertain external act.
+The [CF/R2 lifecycle](contracts/05-cloudflare-integration.md) fixes part verification, Verified pins, authorization on consumption, release/deletion and independent immutable restore. C# owning transactions, sync cursors/tombstones/conflicts, desktop pending changes, native job snapshots and derived-source revision checks above retain their semantics. The [wire profile](contracts/04-protobuf-wire-registry.md) transports exact values without changing content-origin or Scope measurement oracles. CF checkpoints/streams never become product history, and restoration cannot silently redispatch an uncertain external act.
 
 ## Restored realm and client pending state
 
-The [recovery generation and safety journal](22-deployment-and-release-execution.md#recovery-generation-and-safety-journal) governs disaster recovery and prevents acknowledged post-backup deletion/revocation or possibly executed commands from disappearing silently. A new generation invalidates read cursors and quarantines old client mutations before bootstrap. Preserved pending edits are compared and explicitly reapplied as new commands; no automatically re-labelled outbox can resurrect deleted content. This extends the existing pending-edit recovery view and does not create a second local Notes authority.
+The [recovery generation and safety journal](22-deployment-and-release-execution.md#recovery-generation-and-safety-journal) governs disaster recovery and prevents acknowledged post-backup deletion/revocation or possibly executed commands from disappearing silently. A new generation invalidates read cursors and quarantines old client mutations before bootstrap. Preserved pending edits are compared and explicitly reapplied as new commands; no automatically re-labelled outbox can resurrect deleted content. This extends the existing pending-edit recovery view and does not create a second local sync authority.
 
 ## Transfer and hydration closure
 
-Notes/Chat Unsync pauses hydration or evicts acknowledged cache only; pending local edits remain in same-owner recovery. It never deletes Cloud authority. Native Scope/Slate can detach their selective replica without changing native ownership. Explicit Cloud deletion has its own preview/tombstone/retention, independent from cache policy.
+Chat Unsync pauses hydration or evicts acknowledged cache only; pending local edits remain in same-owner recovery. It never deletes Cloud authority. Native Scope can detach its selective replica without changing native ownership. Explicit Cloud deletion has its own preview/tombstone/retention, independent from cache policy.
 
-Realm migration uses the complete [realm-transfer.v1 owner-data profile](contracts/07-client-journeys-and-ports.md#5-realm-transfer-and-data-health): manifested typed roots/blobs, new receiving IDs, exact reference mapping, preview/fidelity, bounded per-root commit/resume and no source deletion. It is distinct from ordinary Markdown/Chat JSON user export and from disaster backup. Missing-all-copies content becomes irrecoverable with retained evidence, never a successful repair.
+Realm migration uses the complete [realm-transfer.v1 owner-data profile](contracts/07-client-journeys-and-ports.md#5-realm-transfer-and-data-health): manifested typed roots/blobs, new receiving IDs, exact reference mapping, preview/fidelity, bounded per-root commit/resume and no source deletion. It is distinct from ordinary Chat JSON user export and from disaster backup. Missing-all-copies content becomes irrecoverable with retained evidence, never a successful repair.
 
 Operational objectives are PG5 minute/blob15 minute RPO,4 hour RTO and 30 day protected independent copies. Restore and rollback follow modeA/B/C in deployment 22; a modeC migration past its write-fenced horizon cannot promise application-only rollback.

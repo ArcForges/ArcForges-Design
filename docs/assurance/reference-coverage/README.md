@@ -2,16 +2,14 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications), design-stage evidence
 > Layer: Assurance
-> Governing authority: **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)** as amended 2026-09-05 (per-product matrix before implementation planning is finalized), **[P2-005](../../decisions/phase-2-specification-decisions.md#rule-p2-005)** (ArcSlate reference baseline), **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)** (reuse policy and provenance), **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**/**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)** (licence boundaries)
+> Governing authority: **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)** as amended 2026-09-05 (per-product matrix before implementation planning is finalized), **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)** (reuse policy and provenance), **[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**/**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)** (licence boundaries)
 > Companions: [`../reference-coverage-and-provenance.md`](../reference-coverage-and-provenance.md) (method), [`../open-gates-register.md`](../open-gates-register.md)
 
 These are the **completed design-stage Reference Coverage Matrices** required by **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)**. They are evidence, not templates and not future audit instructions.
 
 Each matrix was produced by reading the named reference repository at a recorded commit: its licence files, source tree, tests, packaging and documentation, to the depth needed to establish an item-level position. Every reviewed item carries an evidence location, the source identity and commit, an ArcForges requirement or an explicit exclusion, a disposition, a rationale, a licensing and provenance position, a verification oracle and an owner.
 
-> **Reference map amendment, 2026-09-05.** **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)**'s ArcSlate line is amended by user decision [P2-005](../../decisions/phase-2-specification-decisions.md#rule-p2-005): **ArcVideo and ArcVideoFoundation** are ArcSlate's direct references, and there is no requirement to obtain or independently review an Olive repository. **This narrows the audit scope, not the provenance obligation** — ArcVideo is a documented Olive fork, and its GPL-3.0 obligations, upstream copyright and attribution to the Olive authors are preserved wherever inherited material requires them (`§3.1` of that matrix).
-
-> **Scope amendment, 2026-09-06 ([P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)).** The revised requirements exclude capabilities several rows previously mapped to: Edgeless canvas and slides (ArcNotes), external-agent integration and agent teams (ArcChat), and end-user BYOK. Those rows are **reclassified as accepted exclusions with their reason recorded**, never deleted — the evidence that the capability was reviewed and deliberately dropped is worth more than a shorter matrix. Portfolio totals across 145 rows are now **121 evidence established, 25 accepted exclusions, 0 unresolved**; [AN-14](arcnotes-affine-siyuan.md#rule-an-14) remains the one compound row, so the figures sum to 146 over 145 rows. **No row in any matrix proposes reuse.**
+> **Scope amendment, 2026-09-06 ([P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006)).** The revised requirements exclude capabilities several rows previously mapped to: external-agent integration and agent teams (ArcChat), and end-user BYOK. Those rows are **reclassified as accepted exclusions with their reason recorded**, never deleted — the evidence that the capability was reviewed and deliberately dropped is worth more than a shorter matrix. Portfolio totals across 69 rows are **55 evidence established, 14 accepted exclusions, 0 unresolved**. **No row in any matrix proposes reuse.**
 
 ---
 
@@ -20,25 +18,19 @@ Each matrix was produced by reading the named reference repository at a recorded
 | Matrix | Reference(s) | Consuming product | State |
 |---|---|---|---|
 | [`arcchat-aionui.md`](arcchat-aionui.md) | AionUi | ArcChat | **Complete** |
-| [`arcnotes-affine-siyuan.md`](arcnotes-affine-siyuan.md) | AFFiNE, SiYuan | ArcNotes | **Complete** |
 | [`arcscope-serial-studio.md`](arcscope-serial-studio.md) | Serial-Studio | ArcScope | **Complete** |
-| [`arcslate-arcvideo.md`](arcslate-arcvideo.md) | ArcVideo, ArcVideoFoundation | ArcSlate | **Complete** |
 | [`distribution-startarcforges.md`](distribution-startarcforges.md) | StartArcForges | Distribution and release | **Complete within the authorized oracle boundary** |
 
 ---
 
 ## Source identity
 
-Each matrix is bound to its versioned Design document and the source identity below. The six Git references have recorded commits; StartArcForges instead has observed artifact versions under its authorized directory/notice boundary. The [registration profile](../reference-baseline-registration.md) defines the machine-readable binding and later drift checks; a different source revision requires a reviewed delta, not a second baseline audit.
+Each matrix is bound to its versioned Design document and the source identity below. The two Git references have recorded commits; StartArcForges instead has observed artifact versions under its authorized directory/notice boundary. The [registration profile](../reference-baseline-registration.md) defines the machine-readable binding and later drift checks; a different source revision requires a reviewed delta, not a second baseline audit.
 
 | Reference | Origin | Commit | Commit date | Root licence as found |
 |---|---|---|---|---|
 | AionUi | `github.com/iOfficeAI/AionUi` | `29c9271a5` | 2026-07-14 | Apache-2.0 (`LICENSE`) |
-| AFFiNE | `github.com/toeverything/AFFiNE` | `81df4751a3` | 2026-07-19 | **Split** — see the matrix `§2` |
-| SiYuan | `github.com/siyuan-note/siyuan` | `eef105683` | 2026-07-21 | AGPL-3.0 (`LICENSE`) |
 | Serial-Studio | `github.com/Serial-Studio/Serial-Studio` | `639daafb` | 2026-07-13 | **Dual GPL-3.0-only / commercial** — see the matrix `§2` |
-| ArcVideo | `github.com/ArcForges/ArcVideo` | `caf5651` | 2026-03-16 | GPL-3.0 (`LICENSE`) |
-| ArcVideoFoundation | `github.com/ArcForges/ArcVideoFoundation` | `139eeca` | 2026-03-30 | GPL-3.0 (`LICENSE`) |
 | StartArcForges | local packaged-output tree | not a git repository | — | Per-product bundled notices |
 
 ---
@@ -51,7 +43,7 @@ Every row carries exactly one of three states. They are not interchangeable, and
 |---|---|
 | **Evidence established** | The reference material was read, its position is determined, and the disposition follows from the evidence |
 | **Accepted exclusion** | The item exists in the reference and is deliberately out of ArcForges scope; the reason is recorded and it becomes no requirement |
-| **Unresolved determination** | The item's position cannot be settled from the accessible material; the exact blocker and its owner are recorded, and it blocks whatever depends on it. **None remains across the five matrices** — the one that existed was closed by [P2-005](../../decisions/phase-2-specification-decisions.md#rule-p2-005) |
+| **Unresolved determination** | The item's position cannot be settled from the accessible material; the exact blocker and its owner are recorded, and it blocks whatever depends on it. **None remains across the three matrices.** |
 
 | # | Rule |
 |---|---|
@@ -65,19 +57,15 @@ Every row carries exactly one of three states. They are not interchangeable, and
 
 ## Aggregate licence position
 
-The single most consequential finding across all five matrices — six registered references:
+The single most consequential finding across all three matrices — two registered references:
 
 | Reference | Effective position for reuse | Consequence |
 |---|---|---|
 | AionUi | **Apache-2.0, permissive** | The only reference whose material may, after a per-file provenance record, enter either the AGPL or the Apache-2.0 boundary |
-| AFFiNE — `blocksuite/**`, `packages/frontend/**`, `packages/common/**` except `native` | **MIT, permissive** | Reusable after a per-file provenance record |
-| AFFiNE — `packages/backend/**`, `packages/common/native/**` | **Proprietary (Enterprise Edition licence)** | **Not reusable in any form.** Reference Only, and behavioural reference must not reproduce its expression |
-| SiYuan | **AGPL-3.0** | Reusable only inside the AGPL boundary after exact compatibility and provenance review; **prohibited** in the Apache mobile and public-client boundary |
 | Serial-Studio — GPL portion | **GPL-3.0-only** | **Not copyable, translatable or portable** under **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)**. Reference Only |
 | Serial-Studio — Pro modules | **Commercial-only, excluded from GPL** | Reference Only, and the excluded module list is respected as an authorship boundary |
-| ArcVideo, ArcVideoFoundation | **GPL-3.0-only** | **Not copyable, translatable or portable** under **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)**. Reference Only |
 
-**Consequence for the whole programme.** Four of the six registered references are GPL-family, proprietary, or AGPL. Only AionUi and AFFiNE's MIT subtrees are permissively licensed. **No matrix row proposes copying, porting or translating reference source into ArcForges.** Every product is therefore an original implementation informed by behavioural evidence, and the **[F-013](../open-gates-register.md#rule-f-013)** determinations recorded here are what establishes that.
+**Consequence for the whole programme.** Serial-Studio is GPL-family across its GPL portion and commercial-only across its Pro modules; only AionUi is permissively licensed. **No matrix row proposes copying, porting or translating reference source into ArcForges.** Every product is therefore an original implementation informed by behavioural evidence, and the **[F-013](../open-gates-register.md#rule-f-013)** determinations recorded here are what establishes that.
 
 ---
 

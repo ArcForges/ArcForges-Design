@@ -2,10 +2,10 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
-> Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (runtime and AOT matrix), **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** (nine-repository target under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009)), **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)** (surface inventory, update and download domains), **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** (mobile commerce posture), [distribution requirements](../requirements/10-distribution-update-and-support.md)
+> Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (runtime and AOT matrix), **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** (seven-repository target under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) and [P2-019](../decisions/phase-2-specification-decisions.md#rule-p2-019)), **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)** (surface inventory, update and download domains), **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)** (mobile commerce posture), [distribution requirements](../requirements/10-distribution-update-and-support.md)
 > Companions: [`../requirements/10-distribution-update-and-support.md`](../requirements/10-distribution-update-and-support.md), [`../requirements/12-quality-and-compatibility-contract.md`](../requirements/12-quality-and-compatibility-contract.md), [`01-solution-and-project-layout.md`](01-solution-and-project-layout.md)
 
-Nine independent implementation repositories plus the Design authority, versioned capability packages and immutable integration artifacts, and one rule that governs everything below: **promote the original built candidate with its source and signing identity.** Execution follows [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017) and the [CI/local policy](../assurance/ci-and-local-validation-policy.md); runtime scenarios are local opt-in, and macOS CI is prohibited.
+Seven independent implementation repositories plus the Design authority, versioned capability packages and immutable integration artifacts, and one rule that governs everything below: **promote the original built candidate with its source and signing identity.** Execution follows [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017) and the [CI/local policy](../assurance/ci-and-local-validation-policy.md); runtime scenarios are local opt-in, and macOS CI is prohibited.
 
 ---
 
@@ -78,7 +78,7 @@ locked restores (.NET/native/npm) → proto compilation and descriptor export
 
 | Target | Publish mode | Verification obligation |
 |---|---|---|
-| ArcNotes, ArcScope, ArcSlate desktop with their embedded assistant | **Native AOT**, self-contained (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | AOT publish succeeds with zero trim/AOT warnings; the produced binary launches without a machine-installed runtime |
+| ArcScope desktop with its embedded assistant | **Native AOT**, self-contained (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | AOT publish succeeds with zero trim/AOT warnings; the produced binary launches without a machine-installed runtime |
 | ArcForges Cloud | **ASP.NET Core Native AOT**, container image (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | Native AOT compilation is required; real-adapter runtime verification is scoped local opt-in (**[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**); the image runs the same pipeline in every environment |
 | ArcForges.Web.App | **React/TypeScript browser assets**, Node/npm production build ([P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)) | Account/Chat profile artifacts, generated SDK round trip, browser/CSP/visual/bundle evidence |
 | ArcForges.Web.Site output | React/TS build-time pre-rendered static artifacts | No-script content, deterministic build, locale/SEO/accessibility and performance |
@@ -87,7 +87,7 @@ locked restores (.NET/native/npm) → proto compilation and descriptor export
 | # | Rule |
 |---|---|
 | <a id="rule-pm-01"></a>PM-01 | **A debug build passing is never evidence for a release target.** Every AOT and mobile gate is evaluated against the release artifact ([PM-03](../requirements/12-quality-and-compatibility-contract.md#rule-pm-03) in the quality contract). |
-| <a id="rule-pm-02"></a>PM-02 | Every desktop product and the Cloud business host continuously publish Native AOT against their actual changed dependency closure; a previous passing artifact cannot certify a new dependency. |
+| <a id="rule-pm-02"></a>PM-02 | The ArcScope desktop application and the Cloud business host continuously publish Native AOT against their actual changed dependency closure; a previous passing artifact cannot certify a new dependency. |
 | <a id="rule-pm-03"></a>PM-03 | **A framework major upgrade re-runs the whole runtime matrix**, including the Kotlin/Jetpack Compose native-module and transport proof ([RT-06](11-mobile-architecture.md#rule-rt-06) in the mobile architecture). |
 | <a id="rule-pm-04"></a>PM-04 | The C# Cloud host must publish Native AOT with the full selected adapter closure. The CF Worker is a separate TypeScript deployment; it creates no C# JIT exception. |
 
@@ -133,7 +133,7 @@ Owned assemblies and runtime artifacts retain source/build/pipeline identity. Th
 
 ### 5.1 Install and update infrastructure
 
-**Velopack is the baseline install and update infrastructure for the desktop products** under [P2-001](../decisions/phase-2-specification-decisions.md#rule-p2-001). It covers Windows, macOS and Linux with one framework, supports installers, automatic and delta updates, release channels, a self-hosted HTTP update source, downgrade and release notes.
+**Velopack is the baseline install and update infrastructure for the desktop application** under [P2-001](../decisions/phase-2-specification-decisions.md#rule-p2-001). It covers Windows, macOS and Linux with one framework, supports installers, automatic and delta updates, release channels, a self-hosted HTTP update source, downgrade and release notes.
 
 | # | Rule |
 |---|---|
@@ -154,7 +154,7 @@ Owned assemblies and runtime artifacts retain source/build/pipeline identity. Th
 
 | # | Rule |
 |---|---|
-| <a id="rule-pp-01"></a>PP-01 | **A "full suite" is an installation experience, not a packaging unit** ([DS-02](../requirements/10-distribution-update-and-support.md#rule-ds-02) there). A bootstrapper may install selected products; a single monolithic installer must never exist. |
+| <a id="rule-pp-01"></a>PP-01 | **The desktop installer is a packaging unit for one application** ([DS-02](../requirements/10-distribution-update-and-support.md#rule-ds-02) there). It never becomes a monolithic installer that bundles companions, services or other components with independent release lifecycles. |
 | <a id="rule-pp-02"></a>PP-02 | **Any independently produced macOS artifact is built/signed on a suitable local Mac.** macOS CI is prohibited under P2-017; current CI release inventories do not require macOS output. |
 | <a id="rule-pp-03"></a>PP-03 | **Every product's package identity is stable and distinct**, and is never reused between products or channels. |
 | <a id="rule-pp-04"></a>PP-04 | **The executable directory is never a user data directory** ([UP-05](../requirements/10-distribution-update-and-support.md#rule-up-05) there), and packaging must make that structurally impossible. |
@@ -246,7 +246,7 @@ A release record states the applicable checks actually performed under P2-017. T
 | <a id="rule-rg-02"></a>RG-02 | Architecture tests and repository policy tests pass ([BS-01](#rule-bs-01)) |
 | <a id="rule-rg-03"></a>RG-03 | Contract baseline check passes, or the contract change is declared with a version bump and a compatibility note ([BS-02](#rule-bs-02)) |
 | <a id="rule-rg-04"></a>RG-04 | Unit, integration, contract and migration test suites pass (`§25` of the quality contract) |
-| <a id="rule-rg-05"></a>RG-05 | AOT publish succeeds for every desktop product and the artifact launches ([PM-01](#rule-pm-01), [PM-02](#rule-pm-02)) |
+| <a id="rule-rg-05"></a>RG-05 | AOT publish succeeds for the desktop application and the artifact launches ([PM-01](#rule-pm-01), [PM-02](#rule-pm-02)) |
 | <a id="rule-rg-06"></a>RG-06 | Performance budgets met: startup, memory, responsiveness, bundle size, with the regression gate applied (`§2`–`§6` there) |
 | <a id="rule-rg-07"></a>RG-07 | Accessibility and localisation checks pass (`§10`, `§11` there) |
 | <a id="rule-rg-08"></a>RG-08 | Signing, notarisation and stapling complete and verified on the packaged artifact ([SP-01](#rule-sp-01), [SP-02](#rule-sp-02)) |
@@ -291,7 +291,7 @@ A release record states the applicable checks actually performed under P2-017. T
 
 ## 12. Non-goals
 
-The build and release system is **not**: a monolithic suite installer; a second update mechanism layered on a store; a place where product code learns about the packaging tool; a route for an unsigned or unrecorded artifact to reach a user; a justification for rebuilding per environment; or a reason to collapse the nine version axes into one number.
+The build and release system is **not**: a monolithic installer; a second update mechanism layered on a store; a place where product code learns about the packaging tool; a route for an unsigned or unrecorded artifact to reach a user; a justification for rebuilding per environment; or a reason to collapse the nine version axes into one number.
 
 ---
 
@@ -303,7 +303,7 @@ The build and release system is **not**: a monolithic suite installer; a second 
 | [Product Quality and Compatibility Contract](../requirements/12-quality-and-compatibility-contract.md) | Owns the runtime and release evidence matrix |
 | [Deployment and Release Execution](22-deployment-and-release-execution.md) | Defines publication, promotion, rollback and compatibility procedures |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../assurance/phase-1-official-verification.md#rule-v-03)**, **[V-04](../assurance/phase-1-official-verification.md#rule-v-04)** | The publish matrix and its verification obligations |
-| **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** | Ten independently built repositories integrated through versioned packages and immutable artifacts |
+| **[D-011](../decisions/phase-1-foundation-decisions.md#rule-d-011)** | Seven independently built implementation repositories and the Design authority, integrated through versioned packages and immutable artifacts |
 | **[D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014)** | Update and download domains as owned surfaces |
 | **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**, **[V-09](../assurance/phase-1-official-verification.md#rule-v-09)**, **[F-023](../assurance/open-gates-register.md#rule-f-023)** | Mobile release gates |
 | **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**, **[F-013](../assurance/open-gates-register.md#rule-f-013)** | Licence and provenance verification in the supply chain |
@@ -316,7 +316,7 @@ Per-repo locked restore/build/offline tests → immutable producer candidate →
 
 Rolling upgrade: expand DB/internal/public read schemas → backfill from watermark → deploy C# dual readers → deploy compatible Worker (old workflows drain on their pinned worker version) → canary/soak ≥24h → activate config reader head → clients independently update within supported window → contract only after all old workflows drained and rollback horizon closed. Incompatible Worker code is a new workflow class/migration tag; no hot reinterpretation of checkpoints. Rollback before contract restores prior image/Worker/config/assets; after destructive contraction use verified forward repair or fresh-environment restore, not blind old binary startup. Selfhost operator supplies own CF resources/AWS disaster copy/DB/secrets/origins/realm, same one-host architecture.
 
-Use [the CF/object recovery contract](contracts/05-cloudflare-integration.md#6-r2-lifecycle-and-independent-recovery) for the independent S3 COMPLIANCE 30-day backup, D1 export/change archive/object manifests and recovery generation. Observability join request/task/run/attempt/outbox IDs over W3C traceparent across C#/Worker/device with redaction; expose CF dispatch lag/unknown attempts/R2 transfer failures/backup lag/lease conflicts. CF/R2 outage leaves hydrated desktop editing/acquisition/rendering usable within existing per-product offline rules; AI pauses/fails with durable reasons and support/export stay truthful. Full recovery tested after WP46+52 and before 50.
+Use [the CF/object recovery contract](contracts/05-cloudflare-integration.md#6-r2-lifecycle-and-independent-recovery) for the independent S3 COMPLIANCE 30-day backup, D1 export/change archive/object manifests and recovery generation. Observability join request/task/run/attempt/outbox IDs over W3C traceparent across C#/Worker/device with redaction; expose CF dispatch lag/unknown attempts/R2 transfer failures/backup lag/lease conflicts. CF/R2 outage leaves hydrated ArcScope acquisition, analysis and annotation usable within its existing offline rules; AI pauses/fails with durable reasons and support/export stay truthful. Full recovery tested after WP46+52 and before 50.
 
 ## Producer bootstrap and candidate manifests
 

@@ -51,7 +51,7 @@ Contracts handwritten public proto â†’ pinned protoc/C#/protobuf-es generation â
 
 ### 3.1 Exact wire values
 
-Use protobuf bigint for all 64-bit counters and integer microcredits; JSON exceptions use canonical decimal strings. Money uses exact Decimal string, media uses signed ticks/reduced rational, GUID uses canonical 16 bytes, scalar null/absent is explicit. These preserve the complete content-origin/Notes/Scope profile oracles. No number coercion or metadata-only OpenAPI transformer may change actual bytes. [Independent vectors](contracts/04-protobuf-wire-registry.md#2-exact-values-canonical-identity-and-evolution) are required in both directions.
+Use protobuf bigint for all 64-bit counters and integer microcredits; JSON exceptions use canonical decimal strings. Money uses exact Decimal string, capture time uses signed ticks and reduced rational, GUID uses canonical 16 bytes, scalar null/absent is explicit. These preserve the complete content-origin/Scope profile oracles. No number coercion or metadata-only OpenAPI transformer may change actual bytes. [Independent vectors](contracts/04-protobuf-wire-registry.md#2-exact-values-canonical-identity-and-evolution) are required in both directions.
 
 ### 3.2 Realtime and streaming
 

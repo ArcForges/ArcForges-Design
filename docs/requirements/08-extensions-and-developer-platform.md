@@ -140,7 +140,7 @@ The single Cloud Harness may call authorised tools concurrently within one budge
 | <a id="rule-ex-06"></a>EX-06 | **Background execution must be explicitly declared** in the manifest and separately consented. Adding it in an update is a permission expansion requiring re-consent ([TR-08](07-security-privacy-and-trust.md#rule-tr-08)). |
 | <a id="rule-ex-07"></a>EX-07 | **An extension never connects to a product database.** It calls capabilities. |
 | <a id="rule-ex-08"></a>EX-08 | **Extension private state is not product canonical domain state** ([I-319](01-normative-glossary-and-invariants.md#rule-i-319)). It has its own store and its own `SchemaVersion`. |
-| <a id="rule-ex-09"></a>EX-09 | **An extension creating a professional resource goes through the owner's capability** ([EX-07](#rule-ex-07)), and the resource is owned by that product forever ([I-489](01-normative-glossary-and-invariants.md#rule-i-489) analogue). |
+| <a id="rule-ex-09"></a>EX-09 | **An extension creating a professional resource goes through the owner's capability** ([EX-07](#rule-ex-07)), and the resource is owned by that product forever. |
 | <a id="rule-ex-10"></a>EX-10 | **Extension isolation is not authorization** ([I-259](01-normative-glossary-and-invariants.md#rule-i-259)); **out-of-process is not automatically safe** ([I-260](01-normative-glossary-and-invariants.md#rule-i-260)). Capability-based access still governs everything. |
 | <a id="rule-ex-11"></a>EX-11 | **An extension crash must not crash the owning application.** The product remains open; the affected capability degrades with a clear state. |
 | <a id="rule-ex-12"></a>EX-12 | **Extension process identity is bound to the package installation.** A process cannot claim to be a different package, and cannot register a reserved official capability namespace. |
@@ -164,7 +164,7 @@ The unresolved tension — a strongly typed AOT product versus unknown third-par
 | <a id="rule-db-02"></a>DB-02 | **Prohibited across the extension boundary**: arbitrary CLR objects, runtime `Type`, assembly-qualified type names, native pointers. **`Dictionary<string, object>` is not the extension protocol** ([I-328](01-normative-glossary-and-invariants.md#rule-i-328)). |
 | <a id="rule-db-03"></a>DB-03 | **C# developers still get a code-first experience**: C# records plus attributes → source generator → extension schema, serializer and client/server binding. Developers do not hand-maintain JSON Schema. |
 | <a id="rule-db-04"></a>DB-04 | **The AOT host needs no knowledge of third-party CLR types.** This is what makes the boundary AOT-safe. |
-| <a id="rule-db-05"></a>DB-05 | **The schema exception applies only at the dynamic third-party boundary** ([I-329](01-normative-glossary-and-invariants.md#rule-i-329)). It must never be back-propagated into ArcNotes, ArcScope or ArcSlate native capabilities, which stay compile-time typed. |
+| <a id="rule-db-05"></a>DB-05 | **The schema exception applies only at the dynamic third-party boundary** ([I-329](01-normative-glossary-and-invariants.md#rule-i-329)). It must never be back-propagated into ArcScope native capabilities, which stay compile-time typed. |
 | <a id="rule-db-06"></a>DB-06 | **Large data never travels inside a structured extension value.** Large content crosses as a `ResourceRef` with controlled access. |
 
 ### 8.3 UI contribution
@@ -236,8 +236,8 @@ The unresolved tension — a strongly typed AOT product versus unknown third-par
 | <a id="rule-lc-02"></a>LC-02 | **Side-by-side versions are not supported.** One installed version per package per installation scope. |
 | <a id="rule-lc-03"></a>LC-03 | **Package rollback is a binary rollback, not a data rollback** ([I-208](01-normative-glossary-and-invariants.md#rule-i-208)). Extension private data carries its own `SchemaVersion` and its own migration story. |
 | <a id="rule-lc-04"></a>LC-04 | **A running extension cannot be uninstalled outright.** It is stopped or drained first. |
-| <a id="rule-lc-05"></a>LC-05 | **Uninstall does not delete resources the extension created in professional products.** A document created through an extension remains an ArcNotes document. |
-| <a id="rule-lc-06"></a>LC-06 | **A missing or revoked contribution degrades gracefully.** An ArcSlate project referencing a revoked effect still opens, states clearly what is unavailable, and preserves the state so it can be restored if the package returns. |
+| <a id="rule-lc-05"></a>LC-05 | **Uninstall does not delete resources the extension created in professional products.** An annotation created through an extension remains an ArcScope annotation. |
+| <a id="rule-lc-06"></a>LC-06 | **A missing or revoked contribution degrades gracefully.** An ArcScope project referencing a revoked effect still opens, states clearly what is unavailable, and preserves the state so it can be restored if the package returns. |
 | <a id="rule-lc-07"></a>LC-07 | **Unknown package data is preserved, not executed.** Data for a contribution that is not currently installed is retained and clearly marked, never silently trusted or discarded. |
 | <a id="rule-lc-08"></a>LC-08 | **Package provenance flows into tasks and artifacts.** An artifact produced through a community workflow records which package and version produced it; the owning resource's owner is unchanged. |
 
@@ -307,7 +307,7 @@ The official CLI is part of the developer platform, not a side tool. Its long-te
 |---|---|
 | <a id="rule-dx-01"></a>DX-01 | **Developer Mode** exists, is user- or administrator-enabled only (never enabled by a package), is clearly visible in the interface, and permits running a local unsigned package. |
 | <a id="rule-dx-02"></a>DX-02 | **Developer Mode does not bypass permission, secret rules or workspace policy** ([I-271](01-normative-glossary-and-invariants.md#rule-i-271)). Its trust level is *lower*, not higher. |
-| <a id="rule-dx-03"></a>DX-03 | A **lightweight extension test host** is provided for fast iteration, and **integration tests must still run against the real product** — an ArcSlate contribution is tested in ArcSlate. |
+| <a id="rule-dx-03"></a>DX-03 | A **lightweight extension test host** is provided for fast iteration, and **integration tests must still run against the real product** — an ArcScope contribution is tested in ArcScope. |
 | <a id="rule-dx-04"></a>DX-04 | A **compatibility test matrix** is published: available host versions and contract fixtures a developer can test against. |
 | <a id="rule-dx-05"></a>DX-05 | **Certification is not compatibility** and neither is trust. A certified package may still be incompatible with a given host version. |
 | <a id="rule-dx-06"></a>DX-06 | Sample packages and a conformance test suite are published as part of the platform. |
@@ -338,7 +338,7 @@ The official CLI is part of the developer platform, not a side tool. Its long-te
 | Reinventing container orchestration | Out of scope; isolation is achieved by process boundary and capability scoping |
 | MCP as the marketplace package ABI | MCP is an integration adapter, reached through a package |
 | ACP as an ArcChat domain model | ACP is an adapter |
-| Extensions redefining resource ownership | An ArcSlate resource is ArcSlate-owned forever; an extension may own its **own** new resource type |
+| Extensions redefining resource ownership | An ArcScope resource is ArcScope-owned forever; an extension may own its **own** new resource type |
 
 ---
 
@@ -349,9 +349,7 @@ Extension points are typed and versioned per product. Not every point must open 
 | Product | Representative extension point families |
 |---|---|
 | **ArcChat** | Agent tools, skills, context providers, artifact handlers, integrations, task step kinds |
-| **ArcNotes** | Block types, importers, exporters, property types, view kinds, document commands |
 | **ArcScope** | Source adapters, decoders, measurement kinds, analysis kinds, exporters, visualisation kinds |
-| **ArcSlate** | Effects, transitions, importers, exporters, render presets, media adapters |
 | **Cross-cutting** | Commands, panels, settings pages, deep-link handlers, knowledge sources, automation triggers |
 
 | # | Requirement |
