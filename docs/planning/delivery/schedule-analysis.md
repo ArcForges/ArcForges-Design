@@ -9,11 +9,11 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 | Measure | Value |
 |---|---|
 | Delivery tasks | 436 (6 carried as accepted baseline), plus 50 adoption slices |
-| Dependency edges by type | artifact 1013, contract 94, design 1, integration(completion) 193, release 33 |
+| Dependency edges by type | artifact 1013, contract 98, design 1, integration(completion) 193, release 33 |
 | Remaining work (size units: S=1, M=2, L=4, XL=8) | 1115 |
-| Longest dependency chain (levels) | 24 |
+| Longest dependency chain (levels) | 25 |
 | Widest level (tasks whose longest prerequisite chain has equal length) | 58 |
-| Critical path length (size units) | 77 |
+| Critical path length (size units) | 81 |
 | Retired model | 384 numbered substeps advanced one at a time from a single Current task |
 
 ## Work by lane
@@ -52,12 +52,12 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 
 | Repository | Open tasks | Lanes | Widest level (tasks at once) | Ready after its adoption slices | Examples that can run at the same time |
 |---|---|---|---|---|---|
-| AI | 12 | 4 | level 7: 4 | 0 | [AIR.05](lanes/ai-routing.md#task-air-05) Content-origin marking at the provider generation boundary, [EXT.10](lanes/extensions.md#task-ext-10) Cloud MCP HTTP through the AI Worker adapter, [GOV.10](lanes/governance.md#task-gov-10) AI (Workflow Harness) policy tests, [AIR.07](lanes/ai-routing.md#task-air-07) Provider test-environment coverage |
+| AI | 12 | 4 | level 8: 4 | 0 | [AIR.05](lanes/ai-routing.md#task-air-05) Content-origin marking at the provider generation boundary, [EXT.10](lanes/extensions.md#task-ext-10) Cloud MCP HTTP through the AI Worker adapter, [HAR.00](lanes/harness.md#task-har-00) Turn loop, tool batching and bounds (RunWorkflow core), [AIR.07](lanes/ai-routing.md#task-air-07) Provider test-environment coverage |
 | ArcScope | 33 | 6 | level 9: 9 | 2 | [APP.03](lanes/app-composition.md#task-app-03) Clean Native AOT package-consumer composition for ArcScope, [SCOPE.07](lanes/arcscope.md#task-scope-07) Durable capture writer, chunked verifiable store and crash recovery, [SCOPE.09](lanes/arcscope.md#task-scope-09) Long-running capture in the shell, [SCOPE.12](lanes/arcscope.md#task-scope-12) Visualisation: virtualised rendering, downsampling, cursors and markers |
-| Cloud | 132 | 13 | level 12: 15 | 8 | [AIR.90](lanes/ai-routing.md#task-air-90) Verify owned artifact and real integration (AI routing and metering), [CLOUD.32](lanes/cloud.md#task-cloud-32) Durable unary fallback (Poll/readOutput), [COM.09](lanes/commerce.md#task-com-09) Ledgers and reconciliation, [DEV.04](lanes/device-bridge.md#task-dev-04) Execution and result deduplication -- Cloud D1 attempt/result store |
-| Contracts | 29 | 4 | level 5: 8 | 7 | [CON.03](lanes/contracts.md#task-con-03) Resource/Sync owner-body admission: closed Sync mutation allowlist + cross-owner/wrong-revision/opaque-object/forbidden-path negatives, [EXT.04](lanes/extensions.md#task-ext-04) Package manifest/workflow/panel validators and lifecycle state machine, [CON.06](lanes/contracts.md#task-con-06) Product in-process port completion: IScopeOperations/IChatOperations + infra ports, [CON.08](lanes/contracts.md#task-con-08) Entitlement/commerce operation registry |
-| DesktopPlatform | 145 | 14 | level 7: 22 | 8 | [AST.01](lanes/assistant.md#task-ast-01) Single application history store (model 05 schema), [EXE.02](lanes/execution.md#task-exe-02) Lifecycle states and reason facets, [NAT.05](lanes/native.md#task-nat-05) Probe evidence, licence positions, conclusions and hardware-lab inventory seed, [PLT.11](lanes/platform.md#task-plt-11) Child registration lifecycle |
-| Mobile | 30 | 4 | level 14: 5 | 1 | [AND.07](lanes/android.md#task-and-07) Foundation integration evidence: real candidate against deployed 22/23/24/25, [AND.08](lanes/android.md#task-and-08) Authentication, Home and workspace (AN01-AN06), [AND.12](lanes/android.md#task-and-12) Presence, push, links and settings (AN20-AN24), [AND.24](lanes/android.md#task-and-24) Real CF Harness generation/tool loop observed end to end on Android |
+| Cloud | 132 | 13 | level 13: 17 | 8 | [AIR.90](lanes/ai-routing.md#task-air-90) Verify owned artifact and real integration (AI routing and metering), [CLOUD.10](lanes/cloud.md#task-cloud-10) Owned-artifact closure and launch-capacity.v1 acceptance, [COM.10](lanes/commerce.md#task-com-10) Refunds, disputes and evidence, [DEV.06](lanes/device-bridge.md#task-dev-06) Remote approval and steering |
+| Contracts | 29 | 4 | level 3: 7 | 7 | [CON.04](lanes/contracts.md#task-con-04) ContentSandbox service schema (15 methods: session/slot/image/PDF), [CON.05](lanes/contracts.md#task-con-05) Extension/Connector/LocalBootstrap service schema (annex09 helper closure minus ContentSandbox), [CON.12](lanes/contracts.md#task-con-12) Extension and policy schemas: manifest.v1/workflow.v1/panel.v1/policy body.v1/configuration.v1, [CON.16](lanes/contracts.md#task-con-16) Signed catalog/update/realm formats (catalog-index.v1, catalog-revocations.v1, android-update.v1, realm.v1) |
+| DesktopPlatform | 145 | 14 | level 6: 21 | 8 | [EXE.01](lanes/execution.md#task-exe-01) Execution chain and its persistence (ProductJob engine core), [EXT.05](lanes/extensions.md#task-ext-05) Six contribution-kind runtime wiring, [GOV.13](lanes/governance.md#task-gov-13) Invariant enforcement accounting report, [NAT.01](lanes/native.md#task-nat-01) Probe A: device tool execution under Native AOT |
+| Mobile | 30 | 4 | level 15: 5 | 1 | [AND.07](lanes/android.md#task-and-07) Foundation integration evidence: real candidate against deployed 22/23/24/25, [AND.08](lanes/android.md#task-and-08) Authentication, Home and workspace (AN01-AN06), [AND.12](lanes/android.md#task-and-12) Presence, push, links and settings (AN20-AN24), [AND.24](lanes/android.md#task-and-24) Real CF Harness generation/tool loop observed end to end on Android |
 | Web | 40 | 5 | level 4: 8 | 2 | [GOV.11](lanes/governance.md#task-gov-11) Web policy tests (Node/TS mechanism), [OPS.04](lanes/operations.md#task-ops-04) Status page, [WEB.02](lanes/web.md#task-web-02) Versioned public content and pricing inputs (catalogue.json), [WEB.03](lanes/web.md#task-web-03) Rendering and performance |
 
 ## Critical path
@@ -68,26 +68,27 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 | 2 | [ADOPT.03.contracts](lanes/adoption.md#task-adopt-03-contracts) | S | Adopt Contracts: Contracts schema closures |
 | 3 | [CON.23](lanes/contracts.md#task-con-23) | M | Retire the contract and naming elements outside the product family |
 | 4 | [CON.02](lanes/contracts.md#task-con-02) | M | Capability/action/context/version/health descriptor records + immutable oversized-body reference (EncodedBodyRef) |
-| 5 | [CON.10](lanes/contracts.md#task-con-10) | L | Task/approval/bridge/chat/agent/automation/search operation registry + ai-internal package |
-| 6 | [CON.11](lanes/contracts.md#task-con-11) | M | Application/history/execution/events operations (annex10's 13 additions) + EventService |
-| 7 | [CON.07](lanes/contracts.md#task-con-07) | L | Identity/session/device operation registry + native-auth and browser HTTP exceptions |
-| 8 | [PRF.07](lanes/runtime-proofs.md#task-prf-07) | XL | Cloudflare Native AOT host + D1 + DO/Queue/R2 foundation proof |
-| 9 | [PRF.10](lanes/runtime-proofs.md#task-prf-10) | L | Android Kotlin/Jetpack Compose gRPC-Web and CF proof |
-| 10 | [AND.01](lanes/android.md#task-and-01) | M | Android production identity and stable toolchain reconciliation |
-| 11 | [AND.02](lanes/android.md#task-and-02) | L | Real Android module graph and AN01-AN28 route/state contracts |
-| 12 | [AND.03](lanes/android.md#task-and-03) | L | Android runtime and OS adapters (Compose, Credential Manager, Keystore wrapper, WorkManager, FCM registration, SAF/MediaStore) |
-| 13 | [AND.06](lanes/android.md#task-and-06) | M | Secure per-account lifecycle: Keystore encryption, no-backup policy, purge/quarantine, deep-link validation |
-| 14 | [AND.08](lanes/android.md#task-and-08) | L | Authentication, Home and workspace (AN01-AN06) |
-| 15 | [AND.13](lanes/android.md#task-and-13) | L | Native interaction and recovery: full experience-02 device matrix |
-| 16 | [AND.15](lanes/android.md#task-and-15) | M | Complete companion acceptance |
-| 17 | [AND.16](lanes/android.md#task-and-16) | S | Signed Android release artifacts (AAB + direct APK) |
-| 18 | [AND.21](lanes/android.md#task-and-21) | L | Physical device and recovery gates |
-| 19 | [AND.23](lanes/android.md#task-and-23) | M | Distribution acceptance |
-| 20 | [AND.26](lanes/android.md#task-and-26) | M | Real FCM sending and physical Android receipt |
-| 21 | [OPS.12](lanes/operations.md#task-ops-12) | S | Owned-artifact receipt |
-| 22 | [REL.06](lanes/release.md#task-rel-06) | XL | Cloud/AI production readiness (deployment, migration, backup, self-host) |
-| 23 | [REL.09](lanes/release.md#task-rel-09) | L | Combined disaster drill and operational readiness confirmation |
-| 24 | [REL.11](lanes/release.md#task-rel-11) | L | Family release readiness audit and honest statement |
+| 5 | [CON.06](lanes/contracts.md#task-con-06) | L | Product in-process port completion: IScopeOperations/IChatOperations + infra ports |
+| 6 | [CON.10](lanes/contracts.md#task-con-10) | L | Task/approval/bridge/chat/agent/automation/search operation registry + ai-internal package |
+| 7 | [CON.11](lanes/contracts.md#task-con-11) | M | Application/history/execution/events operations (annex10's 13 additions) + EventService |
+| 8 | [CON.07](lanes/contracts.md#task-con-07) | L | Identity/session/device operation registry + native-auth and browser HTTP exceptions |
+| 9 | [PRF.07](lanes/runtime-proofs.md#task-prf-07) | XL | Cloudflare Native AOT host + D1 + DO/Queue/R2 foundation proof |
+| 10 | [PRF.10](lanes/runtime-proofs.md#task-prf-10) | L | Android Kotlin/Jetpack Compose gRPC-Web and CF proof |
+| 11 | [AND.01](lanes/android.md#task-and-01) | M | Android production identity and stable toolchain reconciliation |
+| 12 | [AND.02](lanes/android.md#task-and-02) | L | Real Android module graph and AN01-AN28 route/state contracts |
+| 13 | [AND.03](lanes/android.md#task-and-03) | L | Android runtime and OS adapters (Compose, Credential Manager, Keystore wrapper, WorkManager, FCM registration, SAF/MediaStore) |
+| 14 | [AND.06](lanes/android.md#task-and-06) | M | Secure per-account lifecycle: Keystore encryption, no-backup policy, purge/quarantine, deep-link validation |
+| 15 | [AND.08](lanes/android.md#task-and-08) | L | Authentication, Home and workspace (AN01-AN06) |
+| 16 | [AND.13](lanes/android.md#task-and-13) | L | Native interaction and recovery: full experience-02 device matrix |
+| 17 | [AND.15](lanes/android.md#task-and-15) | M | Complete companion acceptance |
+| 18 | [AND.16](lanes/android.md#task-and-16) | S | Signed Android release artifacts (AAB + direct APK) |
+| 19 | [AND.21](lanes/android.md#task-and-21) | L | Physical device and recovery gates |
+| 20 | [AND.23](lanes/android.md#task-and-23) | M | Distribution acceptance |
+| 21 | [AND.26](lanes/android.md#task-and-26) | M | Real FCM sending and physical Android receipt |
+| 22 | [OPS.12](lanes/operations.md#task-ops-12) | S | Owned-artifact receipt |
+| 23 | [REL.06](lanes/release.md#task-rel-06) | XL | Cloud/AI production readiness (deployment, migration, backup, self-host) |
+| 24 | [REL.09](lanes/release.md#task-rel-09) | L | Combined disaster drill and operational readiness confirmation |
+| 25 | [REL.11](lanes/release.md#task-rel-11) | L | Family release readiness audit and honest statement |
 
 ## Level widths
 
@@ -97,26 +98,27 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 | 2 | 58 |
 | 3 | 28 |
 | 4 | 29 |
-| 5 | 39 |
-| 6 | 36 |
-| 7 | 41 |
-| 8 | 37 |
-| 9 | 46 |
-| 10 | 33 |
-| 11 | 26 |
-| 12 | 28 |
-| 13 | 22 |
-| 14 | 18 |
-| 15 | 16 |
-| 16 | 7 |
-| 17 | 3 |
-| 18 | 4 |
-| 19 | 1 |
+| 5 | 37 |
+| 6 | 35 |
+| 7 | 37 |
+| 8 | 33 |
+| 9 | 44 |
+| 10 | 28 |
+| 11 | 27 |
+| 12 | 27 |
+| 13 | 30 |
+| 14 | 16 |
+| 15 | 21 |
+| 16 | 11 |
+| 17 | 5 |
+| 18 | 2 |
+| 19 | 3 |
 | 20 | 1 |
-| 21 | 2 |
-| 22 | 1 |
-| 23 | 2 |
-| 24 | 1 |
+| 21 | 1 |
+| 22 | 2 |
+| 23 | 1 |
+| 24 | 2 |
+| 25 | 1 |
 
 ## Simulated makespan (unmeasured estimate)
 
@@ -128,10 +130,10 @@ Assumptions: task effort is its relative size (S=1, M=2, L=4, XL=8 units, never 
 | 2 | 559 | 2.0× |
 | 4 | 281 | 4.0× |
 | 8 | 142 | 7.9× |
-| 16 | 77 | 14.5× |
-| 32 | 77 | 14.5× |
-| 64 | 77 | 14.5× |
-| unbounded | 77 | 14.5× |
+| 16 | 81 | 13.8× |
+| 32 | 81 | 13.8× |
+| 64 | 81 | 13.8× |
+| unbounded | 81 | 13.8× |
 
 ## Provisional initial ready set
 
