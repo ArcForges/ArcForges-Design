@@ -2680,6 +2680,8 @@
     "SUB-signed-format-fixture-keys"
    ],
    "writes": [
+    "Contracts:.gitleaks.toml (only demonstrated CON.16 public source-inventory SHA256 false positives: exact existing rule/path/key/digest bindings, independently verify source hash; no algorithm change or whole-key/path exemption)",
+    "Contracts:tests/tooling/test_dependency_admission.py (exact CON.16 public-digest false-positive regressions; retain other digest/key/path/token negatives)",
     "Contracts:public/http/v1/signed-formats.schema.json",
     "Contracts:fixtures/public/con-16-signed-formats.json",
     "Contracts:eng/generate_shapes.py (owned JSON-schema registry/compiler support; preserve closed validation and existing schema outputs)",
