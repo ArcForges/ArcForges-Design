@@ -29,7 +29,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | [SCOPE.19](#task-scope-19) | Owned-artifact verification and real integration | feature | M | [SCOPE.12](#task-scope-12) (artifact), [SCOPE.13](#task-scope-13) (artifact), [SCOPE.14](#task-scope-14) (artifact), [SCOPE.15](#task-scope-15) (artifact), [SCOPE.16](#task-scope-16) (artifact), [SCOPE.17](#task-scope-17) (artifact), [SCOPE.18](#task-scope-18) (artifact) | not-started |
 | [SCOPE.20](#task-scope-20) | ArcChat capability surface for ArcScope | feature | M | [SCOPE.06](#task-scope-06) (artifact), [CON.02](contracts.md#task-con-02) (contract) | not-started |
 | [SCOPE.21](#task-scope-21) | Bounded context provision for AI | feature | M | [SCOPE.14](#task-scope-14) (artifact), [SCOPE.16](#task-scope-16) (artifact), [SCOPE.15](#task-scope-15) (artifact) | not-started |
-| [SCOPE.22](#task-scope-22) | Cloud sync scope (metadata, not raw capture) | feature | M | [SCOPE.06](#task-scope-06) (artifact), [SCOPE.18](#task-scope-18) (artifact), [SCOPE.17](#task-scope-17) (artifact) | not-started |
+| [SCOPE.22](#task-scope-22) | Cloud sync scope (metadata, not raw capture) | feature | M | [SCOPE.06](#task-scope-06) (artifact), [SCOPE.18](#task-scope-18) (artifact), [SCOPE.17](#task-scope-17) (artifact), [CON.03](contracts.md#task-con-03) (contract) | not-started |
 | [SCOPE.23](#task-scope-23) | Explicit per-session raw capture upload | feature | M | [SCOPE.07](#task-scope-07) (artifact), [CLOUD.42](cloud.md#task-cloud-42) (artifact) | not-started |
 | [SCOPE.24](#task-scope-24) | Import, export and format fixtures | feature | L | [SCOPE.07](#task-scope-07) (artifact), [SCOPE.14](#task-scope-14) (artifact) | not-started |
 | [SCOPE.25](#task-scope-25) | Extension boundary: no third-party raw-capture write path | feature | S | [SCOPE.20](#task-scope-20) (artifact), [SCOPE.07](#task-scope-07) (artifact), [EXT.02](extensions.md#task-ext-02) (artifact) | not-started |
@@ -434,7 +434,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 
 ### SCOPE.18 — Reports and reproducibility
 
-**Outcome.** Reports compose analyses, measurements, findings and visualisations into a portable exported form; every element traces to session, capture, time range, configuration snapshot, decoder version and analysis version; regenerating from recorded sources produces equivalent results.
+**Outcome.** Reports compose analyses, measurements, findings and visualisations into a portable exported form; every element traces to session, capture, time range, configuration snapshot, decoder version and analysis version; regenerating from recorded sources produces equivalent results. Companion publication uses arcscope.report.pdf.v1: an atomic ZIP with static report.pdf (stored chart snapshots, textual results and a provenance appendix) and report.pdf.arcforges-origin.json. The immutable bundle is verified before its report reference is synced; preview reads the PDF, while download/share preserves the complete bundle. Companion readers never recompute measurements.
 
 | Field | Value |
 |---|---|
@@ -449,7 +449,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Unblocks | [SCOPE.19](#task-scope-19), [SCOPE.22](#task-scope-22), [SIM.09](simulator.md#task-sim-09) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.Reporting/**`<br>`ArcScope:tests/ArcScopePipelineTests/Reports/**` |
 | Validation | traceability completeness test; regeneration-equivalence test; export fidelity check; content-origin carrier vectors including unknown input and failed publication — offline |
-| Completion evidence | traceability completeness and regeneration equivalence results; carrier/propagation/failure vectors with payload and manifest hashes |
+| Completion evidence | traceability completeness and regeneration equivalence results; carrier/propagation/failure vectors with payload and manifest hashes A companion-readable PDF bundle with stored snapshots, provenance appendix and mandatory origin sidecar; verified resource identity and unavailable-artifact behavior. |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | Content-origin behavior (requirements/07-security-privacy-and-trust.md) and the carrier schema (requirements/13-data-formats-and-portability.md) are named as frozen design inputs fixed before this package — already satisfied, not a start edge; implement per spec without choosing a different marking mechanism. |
 
@@ -526,7 +526,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 
 ### SCOPE.22 — Cloud sync scope (metadata, not raw capture)
 
-**Outcome.** The ArcScope sync scope excludes raw capture by default and includes metadata, analysis, annotations, findings, reports and configurations; enabling project sync transfers no raw capture bytes; the policy is visible per project and per session; the included scope converges across devices.
+**Outcome.** The ArcScope sync scope publishes ScopeProjectMetadata (project identity/name, independent revision and deletion) and ScopeMetadata (session membership and metadata), analyses, annotations, findings, configuration and companion-readable report references. Commit the verified report resource before publishing its reference. Raw capture remains local unless explicitly uploaded; project/session policy is visible and the included scope converges across devices.
 
 | Field | Value |
 |---|---|
@@ -535,13 +535,13 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Kind / size | feature / M |
 | Obligations | [WP-35.02](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.02) — all work except the parts mapped to SCOPE.27 |
 | Provides | scope.cloud-sync-scope |
-| Start prerequisites | **artifact** [SCOPE.06](#task-scope-06) — session metadata. *Why:* sync scope includes session metadata<br>**artifact** [SCOPE.18](#task-scope-18) — reports. *Why:* sync scope includes reports<br>**artifact** [SCOPE.17](#task-scope-17) — annotations/findings. *Why:* sync scope includes them |
+| Start prerequisites | **artifact** [SCOPE.06](#task-scope-06) — session metadata. *Why:* sync scope includes session metadata<br>**artifact** [SCOPE.18](#task-scope-18) — reports. *Why:* sync scope includes reports<br>**artifact** [SCOPE.17](#task-scope-17) — annotations/findings. *Why:* sync scope includes them<br>**contract** [CON.03](contracts.md#task-con-03) — the generated project/session bodies and owner-body admission profile. *Why:* the sync adapter publishes the exact project metadata carrier and session membership instead of making a second schema |
 | Entry condition | [ADOPT.05.arcscope](adoption.md#task-adopt-05-arcscope) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [SCOPE.27](#task-scope-27) — real ArcScope metadata sync against deployed Cloud. *Why:* the sync scope is accepted only with real convergence evidence |
-| Unblocks | [SCOPE.26](#task-scope-26), [SCOPE.27](#task-scope-27) |
+| Unblocks | [AND.27](android.md#task-and-27), [SCOPE.26](#task-scope-26), [SCOPE.27](#task-scope-27), [WEB.32](web.md#task-web-32) |
 | Permitted substitutes | [SUB-scope-sync-fixture](../substitutes.md#sub-scope-sync-fixture) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.CloudClient/SyncScope/**`<br>`ArcScope:tests/SyncConflictTests/ArcScope/**` |
-| Validation | enable-sync test asserting no raw bytes transferred; policy-visibility test; convergence test across devices for included scope — early development against a contract-bound sync fixture, real convergence at [WP-35.90](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.90) |
+| Validation | enable-sync test asserting no raw bytes transferred; policy-visibility test; convergence test across devices for included scope — early development against a contract-bound sync fixture, real convergence at [WP-35.90](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.90); offline fixtures cover project rename/delete, parent/session arrival order and withholding a report reference until its resource is verified |
 | Completion evidence | no-raw-bytes sync assertion and convergence results |
 | Baseline (unreviewed unless accepted) | not-started |
 
@@ -640,7 +640,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 
 ### SCOPE.27 — Real ArcScope metadata sync against the deployed Cloud sync engine
 
-**Outcome.** ArcScope session and capture metadata sync scopes converge across devices against the deployed Cloud sync engine, replacing the contract-bound sync substitute; raw captures stay local unless explicitly uploaded.
+**Outcome.** ArcScope project, session and capture metadata sync scopes converge against the deployed Cloud sync engine, including project rename/deletion, session membership and companion-readable report references, replacing the contract-bound substitute; raw captures stay local unless explicitly uploaded.
 
 | Field | Value |
 |---|---|

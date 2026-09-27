@@ -152,7 +152,7 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 <a id="rule-wp-49.07"></a>
 ### WP-49.07 — ArcScope workspace: library and reports
 
-**What must be fully done.** Implement the Web ArcScope library ([SW-01](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-01)–[SW-03](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-03), [P2-020](../../decisions/phase-2-specification-decisions.md#rule-p2-020)): projects, sessions, findings and annotations over the library operations, report reading with provenance and stored chart snapshots, exported-report download through resource tickets, attaching sessions and reports to assistant conversations, and the ArcScope notification kinds.
+**What must be fully done.** Implement the Web ArcScope library ([SW-01](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-01)–[SW-03](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-03), [P2-020](../../decisions/phase-2-specification-decisions.md#rule-p2-020)): projects, sessions, findings and annotations over the library operations, report reading with provenance and stored chart snapshots, bounded static-PDF preview of the verified `arcscope.report.pdf.v1` bundle and complete-ZIP download, including the origin sidecar, through resource tickets, attaching sessions and reports to assistant conversations, and the ArcScope notification kinds.
 
 **Testing requirements.** Generated TypeScript client against the deployed library: paging, revision and commit time, revoked access and wrong scope, unavailable artifacts, download ticket expiry and resume, keyboard and screen-reader paths.
 
@@ -161,9 +161,9 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 <a id="rule-wp-49.08"></a>
 ### WP-49.08 — Cloud simulator console
 
-**What must be fully done.** Implement the simulator console ([SW-04](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-04)) over the `simulation.*` operations: definitions, immutable scenario versions with validation errors, start, pause, resume and cancel with expected state, run state with complete-or-partial extent and reasons, and the committed segment manifest with resumable downloads.
+**What must be fully done.** Implement the simulator console ([SW-04](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-04)) over the `simulation.*` operations: definitions, immutable scenario versions with validation errors, paginated run discovery through `simulation.listRuns`, start, pause, resume and cancel carrying `expectedRev` with owner validation of legal predecessor states, run state with complete-or-partial extent and reasons, and the committed segment manifest with resumable downloads.
 
-**Testing requirements.** Real deployed simulator: version validation failures, idempotent commands, ineligible term, cancellation committing a partial outcome, manifest-only listing of committed segments, download hash verification.
+**Testing requirements.** Real deployed simulator: version validation failures, run discovery after a fresh sign-in, idempotent commands and stale-revision/illegal-transition refusal, ineligible term, cancellation committing a partial outcome, manifest-only listing of committed segments, download hash verification.
 
 **Completion gate.** A scenario created and run from the browser with every desktop off completes or is cancelled with the correct extent, and its committed segments download and verify.
 

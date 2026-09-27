@@ -637,7 +637,7 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 
 ### AND.27 — ArcScope library, reports and simulation runs on Android
 
-**Outcome.** AN14 and AN26-AN28: the read-only ArcScope library, session and report views with provenance and stored chart snapshots, report sharing through the system share sheet, simulation run status with cancel, and the ArcScope notification kinds opening their objects.
+**Outcome.** AN14 and AN26-AN28: the read-only ArcScope library, session and report views with provenance and stored chart snapshots, report sharing through the system share sheet, simulation run status with cancel, and the ArcScope notification kinds opening their objects. A fresh installation discovers runs with simulation.listRuns before reading details or cancelling.
 
 | Field | Value |
 |---|---|
@@ -648,9 +648,9 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Provides | android-arcscope-workspace |
 | Start prerequisites | **artifact** [AND.11](#task-and-11) — the Library route and resource preview surfaces. *Why:* the ArcScope library is built into the Library destination and reuses its preview and transfer paths<br>**contract** [CON.24](contracts.md#task-con-24) — the generated library operations. *Why:* the views call scope.listProjects, scope.listSessions and scope.getSession<br>**contract** [CON.21](contracts.md#task-con-21) — the generated simulation operations. *Why:* run status and cancel use simulation.getRun and simulation.cancelRun |
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | **integration** [CLOUD.68](cloud.md#task-cloud-68) — the deployed library read model. *Why:* acceptance reads a real synced workspace<br>**integration** [SIM.05](simulator.md#task-sim-05) — the deployed simulation operations. *Why:* acceptance follows a real run to its terminal state |
+| Completion prerequisites | **integration** [CLOUD.68](cloud.md#task-cloud-68) — the deployed library read model. *Why:* acceptance reads a real synced workspace<br>**integration** [SIM.05](simulator.md#task-sim-05) — the deployed simulation operations. *Why:* acceptance follows a real run to its terminal state<br>**integration** [SCOPE.22](arcscope.md#task-scope-22) — the delivered desktop project/session and report publication adapter. *Why:* acceptance must consume desktop-produced synced metadata and readable reports rather than a fixture; UI development remains parallel |
 | Unblocks | [AND.15](#task-and-15) |
 | Write scope | `Mobile:feature/scope/**` |
 | Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
-| Completion evidence | A report synced from ArcScope desktop found, read and shared on Android; a Cloud simulation run followed to its terminal state; revocation, unavailable-artifact and raw-data-local cases. |
+| Completion evidence | A report synced from ArcScope desktop found, read and shared on Android; a Cloud simulation run followed to its terminal state; revocation, unavailable-artifact and raw-data-local cases. Run discovery after reinstall or on another authorized device; no remembered run ID required. |
 | Baseline (unreviewed unless accepted) | not-started Observed none. |

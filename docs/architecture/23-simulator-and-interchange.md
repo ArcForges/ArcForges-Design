@@ -92,6 +92,8 @@ External object writes and alarm calls are outside the D1 batch. Crash before pu
 | <a id="rule-sc-06"></a>SC-06 | **Simulation output is labelled synthetic wherever it appears**, and seed and profile provenance survives export or copy ([SIM-14](../requirements/products/arcscope.md#rule-sim-14), [I-496](../requirements/01-normative-glossary-and-invariants.md#rule-i-496)). A synthetic capture must never be presented as hardware evidence. |
 | <a id="rule-sc-07"></a>SC-07 | **Retention, deletion and exhausted storage expose their effect on historical runs and native availability** ([SIM-19](../requirements/products/arcscope.md#rule-sim-19)), and a stored output stays distinguishable from a regenerated one. |
 
+Current and historical runs are discoverable on every ArcScope surface through the workspace-authorized, paginated `simulation.listRuns` operation; a known run ID or terminal notification is not required. Control commands carry `RequestMeta.expectedRev`; the owner atomically validates that revision and the legal predecessor state before changing the run.
+
 ### 1.6 Native consumption
 
 | # | Rule |

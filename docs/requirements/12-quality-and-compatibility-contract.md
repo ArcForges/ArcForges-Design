@@ -547,7 +547,7 @@ The traditional three layers are insufficient here. The required families, each 
 
 **Units** — a converted display never alters the recorded measurement; a cross-dimension conversion fails; ArcScope retains the source unit.
 
-**AOT** — the full publish matrix produces real artifacts with zero unreviewed trimming/AOT warnings, and the round-trip smoke tests pass on each platform.
+**AOT** — the retained Windows/Linux publish matrix produces real artifacts with zero unreviewed trimming/AOT warnings under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017). Round-trip behavior remains required; affected-scope runtime checks are explicit local opt-in using an existing environment, recorded once. No macOS/runtime CI or validation-driven provisioning is required; untested platform and runtime coverage remains explicit.
 
 **Mixed contract versions** — current/previous client↔Cloud and parent↔helper combinations negotiate or refuse explicitly. No product-to-product interoperability gate exists.
 

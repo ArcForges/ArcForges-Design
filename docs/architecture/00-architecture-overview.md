@@ -91,7 +91,7 @@ Fixed by **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, e
 |---|---|---|
 | **ArcScope desktop** | **Native AOT** | Trim/AOT-safe dependency rules; real publish proof per RID per release |
 | **ArcForges Cloud** | **ASP.NET Core Native AOT modular monolith** | Native AOT is mandatory; every dependency and real adapter participates in publish/run proof |
-| **ArcChat Mobile — Android** | **Kotlin/Jetpack Compose** | Pinned Kotlin/Jetpack Compose and native modules; release artifact inspected and exercised on a real Android device |
+| **ArcChat Mobile — Android** | **Kotlin/Jetpack Compose** | Pinned Kotlin/Jetpack Compose and native modules; release artifact built and inspected. Affected-scope device checks are explicit local opt-in using an existing environment, recorded once under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017); no device CI or validation-driven provisioning, and untested coverage remains explicit |
 | **ArcForges Web** | **React/TypeScript; Node.js/npm build tooling** | [browser-support.v1](../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1); static public pre-rendering; [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) |
 
 | # | Rule |

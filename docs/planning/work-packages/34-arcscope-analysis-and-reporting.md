@@ -151,9 +151,9 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Required design implementation and verification.** Report sections retain their individual origin and the enclosing union. Test deterministic measurements beside AI narrative, report regeneration and export bundle hashes; calling a deterministic measurement through an agent never relabels the data AI generated.
 
-**What must be fully done.** Report composition from analyses, measurements, findings and visualisations, exported to a portable form. Every element traces to session, capture, time range, configuration snapshot, decoder version and analysis version. A reproducibility check regenerates a report's results from its recorded sources.
+**What must be fully done.** Report composition from analyses, measurements, findings and visualisations, exported to a portable form. Every element traces to session, capture, time range, configuration snapshot, decoder version and analysis version. A reproducibility check regenerates a report's results from its recorded sources. The desktop also produces the companion-readable artifact as `arcscope.report.pdf.v1`: an atomic ZIP of `report.pdf` and `report.pdf.arcforges-origin.json`. The static PDF carries stored chart snapshots, textual tables and a visible provenance appendix; it forbids scripts, forms, embedded attachments and network retrieval. The sidecar preserves the required content-origin carrier. Bind the verified immutable bundle and hash through the existing resource/artifact references. Verify resource publication before syncing its reference; consumers need no raw capture or recomputation and retain resource authorization and unavailable-artifact behavior.
 
-**Testing requirements.** A traceability completeness test; a regeneration test producing equivalent results; an export fidelity check.
+**Testing requirements.** A traceability completeness test; a regeneration test producing equivalent results; an export fidelity check including static-PDF chart snapshots and provenance readable without raw capture, bounded bundle reading, the required origin sidecar and refusal of active PDF content; failed publication must not expose an apparently available report.
 
 **Completion gate.** **Every report element traces to its sources, and regenerating from those sources produces equivalent results.**
 

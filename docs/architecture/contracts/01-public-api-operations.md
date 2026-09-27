@@ -196,11 +196,15 @@ Read models over the Sync owner's committed ArcScope metadata for the companions
 
 | # | Rule |
 |---|---|
-| <a id="rule-lq-01"></a>LQ-01 | **Read-only projections of committed `ScopeMetadata`.** They never mutate, never return raw capture bytes and add no authoritative table; reports and explicitly uploaded captures are fetched through resource tickets (`§6`). |
+| <a id="rule-lq-01"></a>LQ-01 | **Read-only projections of committed `ScopeProjectMetadata` and `ScopeMetadata`.** They never mutate, never return raw capture bytes and add no authoritative table; reports and explicitly uploaded captures are fetched through resource tickets (`§6`). |
 | <a id="rule-lq-02"></a>LQ-02 | **Every item carries its Cloud revision and commit time**, so a companion never presents unsynced desktop work as present. |
 | <a id="rule-lq-03"></a>LQ-03 | **Each request is authorized** by workspace membership, role and the `arcscope` product scope; revocation takes effect at the next request. |
 | <a id="rule-lq-04"></a>LQ-04 | **Lists are paged** and a large session uses the large read projection profile of registry 04. |
 | <a id="rule-lq-05"></a>LQ-05 | **Owners emit durable notifications** of kinds `scope.reportSynced` (Sync, when a committed session gains a report), `sync.conflictNeedsDecision` (Sync) and `simulation.runTerminal` (Simulation), each targeting its aggregate; the hint grants no authority. |
+
+Projects use their own synced stable identity, name, Cloud revision and commit time; a session rename or deletion never supplies or changes the project's name/revision. List only live projects with at least one visible live synced session. A session whose parent is missing or tombstoned stays hidden, including from `getSession`, until reconciled; it is never reassigned or treated as deleted merely because its parent has not arrived. Project deletion hides its sessions without deleting native data; restoring the same project identity restores visibility of its still-live sessions.
+
+Lists freeze an owner-filtered revision set under registry 04's `PageState` snapshot rules. Counts use that set's visible live sessions/reports; project summary `revision` and `updatedAt` name the project row, not an aggregate of incomparable session revisions. Order projects by `(updatedAt, projectId)` descending and sessions by `(updatedAt, sessionId)` descending. A fresh list observes later commits; each page and canonical read rechecks current access and deletion, so a retained snapshot cannot reveal revoked/deleted content. Large responses use the existing pinned read projection profile.
 
 ## 6. Resource transfer
 
@@ -334,13 +338,16 @@ Cloud completeness covers authorized acknowledged content; the local cache opera
 | `simulation.resumeRun` | Pause and resume at a durable boundary | `R2` | `IW` | `state.invalid_transition` | `FR` |
 | `simulation.cancelRun` | Cancel; commits a **partial** outcome | `R2` | `IW` | `state.invalid_transition` | `FR` |
 | `simulation.getRun` | State, terminal reason and **complete-or-partial extent** | `R1` | `Q` | `state.not_found` | `AO` |
+| `simulation.listRuns` | The workspace's retained runs, optionally filtered by scenario version and state | `R1` | `Q` | — | `AO` |
 | `simulation.listSegments` | The authorised manifest: sequence, logical range, count, encoding, byte length, hash | `R1` | `Q` | `state.not_found` | `AO` |
 | `simulation.getSegmentTicket` | A short-lived, resumable, range-capable download authorisation for one segment | `R1` | `NI` | `perm.capability_denied`, `state.gone` | `FR` |
 | `simulation.pollState` | Revision- or cursor-based state and event polling | `R1` | `Q` | — | `AO` |
 
+`simulation.listRuns` requires current workspace membership, read role and `arcscope` scope, including on every page. Optional exact scenario-version and state filters narrow only those retained visible runs. PageState binds the filters and snapshot; order is `(createdAt, runId)` descending. The result includes partial/terminal runs while retained, independent of current generation eligibility; deletion/retention and permission checks still apply. Refresh or `getRun` obtains current state before a revision-guarded command.
+
 | # | Rule |
 |---|---|
-| <a id="rule-so-01"></a>SO-01 | **Start, pause, resume and cancel are durable, authorised, idempotent commands carrying expected state and revision** ([SIM-09](../../requirements/products/arcscope.md#rule-sim-09)). A stale command is refused; a duplicate start creates no second run and cannot resurrect a terminal run. |
+| <a id="rule-so-01"></a>SO-01 | **Start, pause, resume and cancel are durable, authorised, idempotent commands carrying envelope `expectedRev`; the owner atomically guards that revision and the operation's legal source state** ([SIM-09](../../requirements/products/arcscope.md#rule-sim-09)). Start uses expectedRev=0 for the absent stable run ID. There is no second expected-state field. A stale command is refused; a duplicate start creates no second run and cannot resurrect a terminal run. |
 | <a id="rule-so-02"></a>SO-02 | **`simulation.getRun` distinguishes complete from partial** ([SIM-08](../../requirements/products/arcscope.md#rule-sim-08)). A cancelled run reports `canceled` with its committed extent — never `succeeded` for an incomplete range. |
 | <a id="rule-so-03"></a>SO-03 | **The manifest is the authority; the object is not.** `listSegments` returns only committed rows, and an incomplete object is invisible ([SIM-11](../../requirements/products/arcscope.md#rule-sim-11)). |
 | <a id="rule-so-04"></a>SO-04 | **Bulk data never flows over realtime.** Segments are fetched by HTTP or object storage with a hash the client verifies; gRPC hint polling is an optional wakeup or preview hint ([SIM-13](../../requirements/products/arcscope.md#rule-sim-13)). |
