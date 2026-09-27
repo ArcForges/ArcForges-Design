@@ -1621,7 +1621,8 @@
     "DesktopPlatform:tests/tooling/test_provenance.py (retirement rejection fixtures)",
     "DesktopPlatform:eng/provenance/retired-artifacts.json (exact former project/package/kind targets with retirement authority; reject active or unregistered targets)",
     "DesktopPlatform:eng/provenance/records/contracts-provenance-tools-r2.json (new immutable tool successor; preserve previous record)",
-    "DesktopPlatform:CMakeLists.txt (reject retired native build profiles)"
+    "DesktopPlatform:CMakeLists.txt (reject retired native build profiles)",
+    "DesktopPlatform:docs/provenance.md (current retained native profile inventory; preserve historical evidence)"
    ],
    "shared": [
     {
@@ -2695,7 +2696,16 @@
    "writes": [
     "Contracts:eng/check_compatibility.py",
     "Contracts:tests/tooling/test_compatibility_matrix.py",
-    "Contracts:fixtures/public/con-17-compat-hash.json"
+    "Contracts:fixtures/public/con-17-compat-hash.json",
+    "Contracts:src/public/dotnet/ArcForges.Contracts.Foundation/CanonicalSemanticHash.cs",
+    "Contracts:src/public/ts/proto/src/semantic-hash.ts",
+    "Contracts:eng/contracts.py (owned hash export generation and compatibility gate registration)",
+    "Contracts:src/public/ts/proto/src/index.ts (generator-produced export only)",
+    "Contracts:tests/public/semantic-hash.test.mjs",
+    "Contracts:tests/StructureTests/** (owned C# shared golden-vector verification)",
+    "Contracts:package.json (existing npm test registration only)",
+    "Contracts:eng/provenance/** (owned source inventory and new receipts; preserve historical records)",
+    "Contracts:eng/compatibility/** (immutable previous/minimum descriptors and version/window records)"
    ],
    "shared": [
     {
