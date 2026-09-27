@@ -64,3 +64,7 @@ Source merged at `8cb04f44116b5e77f7c3c54d58d89ac5b4ab78bc` after rechecking GOV
 Original uploaded candidate metadata: `nuget-candidate-36356901718-1`, artifact ID `10943693370`, provider digest `sha256:0f14cbc65befe6692c6c0640d873ddd7ab3b547a8eb3b554056c8c1cea172ec0`. Joined owning-gate evidence: `architecture-gates-36356901718-1`, artifact ID `10944760069`, provider digest `sha256:6ae372559a221d386960057933fca6beac5a6904b1fcc193c1f3ced35d417a40`. These are provider artifact identities, not individual NuGet package hashes.
 
 Post-merge verification used merge/job/publication status and provider metadata only. No public archive was downloaded and no runtime/consumer cycle was repeated. Final assurance and ledger receive independent exact-head review before task completion.
+
+## Outstanding observed source defect
+
+Actual PLT.06/PLT.36 array-return APIs exposed a namespace-null scanner failure after the initial publication. The current GOV.04 claim owns its minimal null-namespace repair and method/local-function/lambda regression in DesktopPlatform PR72. The initial candidate and receipts above remain immutable historical facts; final assurance requires the independently reviewed corrected source, retained CI and normal successor publication. No completion credit is taken for this pending repair.
