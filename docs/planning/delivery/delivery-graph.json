@@ -1238,6 +1238,8 @@
     }
    ],
    "writes": [
+    "Web:apps/site/app/cloud-hello.ts (remove obsolete explicit useBinaryFormat option for the pinned SDK that internally requires binary; no transport behavior change)",
+    "Web:tests/unit/contracts.test.ts (same pinned SDK option adaptation only; retain binary transport assertions)",
     "Web:eng/policy/**",
     "Web:.eslintrc*/lint-config for architecture rules",
     "Web:tooling/project.ts (wire owned policy checks into existing PR gate)",
@@ -2741,8 +2743,68 @@
    "complete": [
     {
      "type": "integration",
+     "task": "CON.07",
+     "need": "real published CON.07 domain contracts and semantic fixtures for the full bidirectional compatibility matrix",
+     "why": "The harness may deliver independently; CON.17 completes only after actual domain inputs exist and its own previous-client/current-server and current-client/minimum-server evidence covers them."
+    },
+    {
+     "type": "integration",
+     "task": "CON.08",
+     "need": "real published CON.08 domain contracts and semantic fixtures for the full bidirectional compatibility matrix",
+     "why": "The harness may deliver independently; CON.17 completes only after actual domain inputs exist and its own previous-client/current-server and current-client/minimum-server evidence covers them."
+    },
+    {
+     "type": "integration",
+     "task": "CON.09",
+     "need": "real published CON.09 domain contracts and semantic fixtures for the full bidirectional compatibility matrix",
+     "why": "The harness may deliver independently; CON.17 completes only after actual domain inputs exist and its own previous-client/current-server and current-client/minimum-server evidence covers them."
+    },
+    {
+     "type": "integration",
+     "task": "CON.10",
+     "need": "real published CON.10 domain contracts and semantic fixtures for the full bidirectional compatibility matrix",
+     "why": "The harness may deliver independently; CON.17 completes only after actual domain inputs exist and its own previous-client/current-server and current-client/minimum-server evidence covers them."
+    },
+    {
+     "type": "integration",
+     "task": "CON.11",
+     "need": "real published CON.11 domain contracts and semantic fixtures for the full bidirectional compatibility matrix",
+     "why": "The harness may deliver independently; CON.17 completes only after actual domain inputs exist and its own previous-client/current-server and current-client/minimum-server evidence covers them."
+    },
+    {
+     "type": "integration",
+     "task": "CON.12",
+     "need": "real published CON.12 domain contracts and semantic fixtures for the full bidirectional compatibility matrix",
+     "why": "The harness may deliver independently; CON.17 completes only after actual domain inputs exist and its own previous-client/current-server and current-client/minimum-server evidence covers them."
+    },
+    {
+     "type": "integration",
+     "task": "CON.13",
+     "need": "real published CON.13 domain contracts and semantic fixtures for the full bidirectional compatibility matrix",
+     "why": "The harness may deliver independently; CON.17 completes only after actual domain inputs exist and its own previous-client/current-server and current-client/minimum-server evidence covers them."
+    },
+    {
+     "type": "integration",
+     "task": "CON.14",
+     "need": "real published CON.14 domain contracts and semantic fixtures for the full bidirectional compatibility matrix",
+     "why": "The harness may deliver independently; CON.17 completes only after actual domain inputs exist and its own previous-client/current-server and current-client/minimum-server evidence covers them."
+    },
+    {
+     "type": "integration",
+     "task": "CON.15",
+     "need": "real published CON.15 domain contracts and semantic fixtures for the full bidirectional compatibility matrix",
+     "why": "The harness may deliver independently; CON.17 completes only after actual domain inputs exist and its own previous-client/current-server and current-client/minimum-server evidence covers them."
+    },
+    {
+     "type": "integration",
+     "task": "CON.16",
+     "need": "real published CON.16 domain contracts and semantic fixtures for the full bidirectional compatibility matrix",
+     "why": "The harness may deliver independently; CON.17 completes only after actual domain inputs exist and its own previous-client/current-server and current-client/minimum-server evidence covers them."
+    },
+    {
+     "type": "integration",
      "task": "CON.18",
-     "need": "full coverage of the compatibility matrix against every later-added service (CON.07-CON.16)",
+     "need": "the delivered operation-coverage oracle and current registered/pending distinction; not compatibility proof for absent domains",
      "why": "the harness and hash algorithm can be built and unit-tested now, but WP-03.06's own completion gate ('all selected values retain meaning across clients') is only fully evidenced once the domain tasks it must protect actually exist — this is an integration-style completion dependency, not a start blocker."
     }
    ],
@@ -2788,7 +2850,7 @@
     "notes": "Observed none, unreviewed: No semantic-hash implementation or compatibility-matrix harness exists yet; only the basic descriptor-diff regeneration check from WP03.00/01/02 exists (a much narrower 'did anything change' check, not the full previous/current-client x current/minimum-server matrix)."
    },
    "earlyRiskProof": true,
-   "notes": "Marked early_risk_proof=true: getting the canonical semantic hash algorithm right (vs. wire byte hash) early is exactly the kind of narrow risk proof that should stay early, because every later domain task's fixtures implicitly depend on hash determinism, and a late discovery of a hash-algorithm bug would invalidate many already-published fixture files."
+   "notes": "Delivery of the harness does not complete WP-03.06. Preserve a delivered ledger while real CON.07-CON.16 producer inputs are pending; completion requires its own full bidirectional compatibility run with exact candidate/descriptor identities and independent semantic vectors. CON.18 registered/pending counts never substitute for missing domain services. Marked early_risk_proof=true: getting the canonical semantic hash algorithm right (vs. wire byte hash) early is exactly the kind of narrow risk proof that should stay early, because every later domain task's fixtures implicitly depend on hash determinism, and a late discovery of a hash-algorithm bug would invalidate many already-published fixture files."
   },
   {
    "id": "CON.18",
