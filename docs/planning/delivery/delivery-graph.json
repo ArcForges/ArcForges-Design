@@ -1963,7 +1963,7 @@
      "part": "the ScopeProjectMetadata owner body and AggregateBody binding, closed Sync mutation allowlist and oversized-body admission negative vectors; ResourceRef/ResourceVersionRef/BlobRef schema itself is already done (CON.91/WP-03.01)"
     }
    ],
-   "outcome": "A generated/schema-derived validator enforces that Sync (registry04 §10) accepts client-origin writes only for authorized ScopeProjectMetadata and ScopeMetadata (the closed client-writable subset of AggregateBody), refusing TaskSnapshot/AutomationView/ConversationBody/AgentProfile/SkillRecord/ChatProjectRecord/MemoryRecord/PreferenceRecord as client writes (Cloud-authored-only); externalBody indirection resolves to the same allowlist before validation. Independent negative vectors cover cross-owner reference, wrong-revision precondition, opaque/unknown AggregateBody variant, and forbidden-path (non-allowlisted body kind) attempts, plus compatible unknown-response preservation. Author ScopeProjectMetadata and its additive AggregateBody variant, with cross-workspace project/session and tombstone vectors; project identity/name is never inferred from an arbitrary session. Append one valid ScopeProjectMetadata positive to the generic public Foundation fixture and its exact C# Foundation dispatch mapping; append only the unique ScopeProjectMetadata seed/ownership row to eng/foundation-inventory.json for existing coverage. Do not add it to foundationTypes or change generic checker/generator behavior.",
+   "outcome": "A generated/schema-derived validator enforces that Sync (registry04 §10) accepts client-origin writes only for authorized ScopeProjectMetadata and ScopeMetadata (the closed client-writable subset of AggregateBody), refusing TaskSnapshot/AutomationView/ConversationBody/AgentProfile/SkillRecord/ChatProjectRecord/MemoryRecord/PreferenceRecord as client writes (Cloud-authored-only); externalBody indirection resolves to the same allowlist before validation. Independent negative vectors cover cross-owner reference, wrong-revision precondition, opaque/unknown AggregateBody variant, and forbidden-path (non-allowlisted body kind) attempts, plus compatible unknown-response preservation. Author ScopeProjectMetadata and its additive AggregateBody variant, with cross-workspace project/session and tombstone vectors; project identity/name is never inferred from an arbitrary session. Append one valid ScopeProjectMetadata positive to the generic public Foundation fixture and its exact C# Foundation dispatch mapping; append only the ScopeProjectMetadata seed and its exact record/field/generated-output ownership row to eng/foundation-inventory.json, and add only ScopeProjectMetadata to eng/check_foundation.py EXTRA_SEEDS so existing coverage accepts it. Do not add it to foundationTypes or alter checker logic/algorithm or generator behavior.",
    "provides": [
     "sync-mutation-allowlist",
     "owner-body-admission-negatives"
@@ -1990,8 +1990,8 @@
     "Contracts:src/public/**/Generated/** (regenerated)",
     "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
     "Contracts:src/public/ts/proto/src/shapes/gen/** (regenerated)",
-    "Contracts:eng/foundation-inventory.json (append only the unique ScopeProjectMetadata seed/ownership row required for existing foundation coverage; do not alter generic checker behavior)",
-    "Contracts:eng/check_foundation.py",
+    "Contracts:eng/foundation-inventory.json (append only the ScopeProjectMetadata seed and exact record/field/generated-output ownership row; preserve other inventory entries)",
+    "Contracts:eng/check_foundation.py (append ScopeProjectMetadata to EXTRA_SEEDS only; no checker logic/algorithm change)",
     "Contracts:eng/foundation_semantics.py",
     "Contracts:eng/generate_shapes.py (only new generated admission entry)",
     "Contracts:tests/StructureTests/Con03Cases.cs",
