@@ -82,7 +82,7 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Start prerequisites | **artifact** [FND.02](foundation.md#task-fnd-02) — CommandId/effect-certainty types. *Why:* the commit unit's idempotency slot and outbox entry are typed with [WP-04.01](../../work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04.01)'s execution identities; cannot write the transactional envelope without them.<br>**artifact** [FND.03](foundation.md#task-fnd-03) — Revision type. *Why:* the write path's 'advance revision exactly once' step is defined in terms of [WP-04.02](../../work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04.02)'s Revision type, not an ad hoc integer.<br>**artifact** [FND.05](foundation.md#task-fnd-05) — reason-code registry. *Why:* every refusal in the pipeline (validate/authorize failures) must return a registered code per [BR-06](../../../architecture/14-build-packaging-and-release.md#rule-br-06)/07 of WP04. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [CLOUD.38](cloud.md#task-cloud-38), [FND.02](foundation.md#task-fnd-02), [PLT.05](#task-plt-05), [PLT.07](#task-plt-07), [PLT.08](#task-plt-08), [PLT.39](#task-plt-39), [PLT.43](#task-plt-43), [PLT.44](#task-plt-44), [SCOPE.01](arcscope.md#task-scope-01) |
+| Unblocks | [APP.08](app-composition.md#task-app-08), [CLOUD.38](cloud.md#task-cloud-38), [FND.02](foundation.md#task-fnd-02), [PLT.05](#task-plt-05), [PLT.07](#task-plt-07), [PLT.08](#task-plt-08), [PLT.39](#task-plt-39), [PLT.43](#task-plt-43), [PLT.44](#task-plt-44), [SCOPE.01](arcscope.md#task-scope-01) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Sqlite/**` |
 | Shared resources | [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append) |
 | Validation | Offline unit + integration tests against a real local SQLite file (no external service): policy test asserting no alternative write path, concurrency tests for serialised writes/concurrent reads, boundary test that no storage type appears in an application signature. AOT/trim diagnostics build-breaking since this library is IsAotCompatible. |
@@ -450,7 +450,7 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Start prerequisites | **contract** [CON.91](contracts.md#task-con-91) — descriptor contract types (App/Installation/Instance identity wire shapes). *Why:* [WP-09](../../work-packages/09-capability-contribution-and-resource-model.md#rule-wp-09)'s own header lists [WP-03](../../work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03) output as the descriptor contract types this package needs.<br>**artifact** [FND.01](foundation.md#task-fnd-01) — identity primitive types. *Why:* these identities are built on [WP-04](../../work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04)'s identity adapters. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [APP.01](app-composition.md#task-app-01), [EXE.01](execution.md#task-exe-01), [PLT.18](#task-plt-18), [PLT.19](#task-plt-19), [PLT.21](#task-plt-21), [PLT.22](#task-plt-22), [PLT.25](#task-plt-25) |
+| Unblocks | [APP.01](app-composition.md#task-app-01), [APP.08](app-composition.md#task-app-08), [EXE.01](execution.md#task-exe-01), [PLT.18](#task-plt-18), [PLT.19](#task-plt-19), [PLT.21](#task-plt-21), [PLT.22](#task-plt-22), [PLT.25](#task-plt-25) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Capabilities/**` |
 | Shared resources | [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append) |
 | Validation | Offline unit tests: two-product separation, forged/missing target refusal. |
@@ -676,7 +676,7 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Start prerequisites | **artifact** [PLT.26](#task-plt-26) — token system. *Why:* layout chrome is built from the token set. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [PLT.28](#task-plt-28), [PLT.30](#task-plt-30), [PLT.33](#task-plt-33), [PLT.35](#task-plt-35) |
+| Unblocks | [APP.08](app-composition.md#task-app-08), [PLT.28](#task-plt-28), [PLT.30](#task-plt-30), [PLT.33](#task-plt-33), [PLT.35](#task-plt-35) |
 | Write scope | `DesktopPlatform:src/DesignSystem/ArcForges.Desktop.Shell/**` |
 | Shared resources | [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append) |
 | Validation | Offline tests: restore tests across missing panel, changed display arrangement, corrupted layout state; device-local assertion. |

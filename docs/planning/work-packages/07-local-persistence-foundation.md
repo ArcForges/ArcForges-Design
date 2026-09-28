@@ -234,7 +234,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [PLT.07](../delivery/lanes/platform.md#task-plt-07) | [WP-07.06](07-local-persistence-foundation.md#rule-wp-07.06) (full) | none |
 | [PLT.08](../delivery/lanes/platform.md#task-plt-08) | [WP-07.90](07-local-persistence-foundation.md#rule-wp-07.90) (full) | none |
 
-**Consumers outside this package:** [CLOUD.38](../delivery/lanes/cloud.md#task-cloud-38), [FND.02](../delivery/lanes/foundation.md#task-fnd-02), [PLT.22](../delivery/lanes/platform.md#task-plt-22), [PLT.29](../delivery/lanes/platform.md#task-plt-29), [PLT.39](../delivery/lanes/platform.md#task-plt-39), [PLT.43](../delivery/lanes/platform.md#task-plt-43), [PLT.44](../delivery/lanes/platform.md#task-plt-44), [SCOPE.01](../delivery/lanes/arcscope.md#task-scope-01), [SCOPE.07](../delivery/lanes/arcscope.md#task-scope-07), [UPD.04](../delivery/lanes/updater.md#task-upd-04).
+**Consumers outside this package:** [APP.08](../delivery/lanes/app-composition.md#task-app-08), [CLOUD.38](../delivery/lanes/cloud.md#task-cloud-38), [FND.02](../delivery/lanes/foundation.md#task-fnd-02), [PLT.22](../delivery/lanes/platform.md#task-plt-22), [PLT.29](../delivery/lanes/platform.md#task-plt-29), [PLT.39](../delivery/lanes/platform.md#task-plt-39), [PLT.43](../delivery/lanes/platform.md#task-plt-43), [PLT.44](../delivery/lanes/platform.md#task-plt-44), [SCOPE.01](../delivery/lanes/arcscope.md#task-scope-01), [SCOPE.07](../delivery/lanes/arcscope.md#task-scope-07), [UPD.04](../delivery/lanes/updater.md#task-upd-04).
 
 <!-- delivery-graph:end -->
 
