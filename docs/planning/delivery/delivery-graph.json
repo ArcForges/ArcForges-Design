@@ -15153,7 +15153,7 @@
      "part": "full"
     }
    ],
-   "outcome": "The single sync_outbox schema exists client-side: acked shadow plus pending journal, frozen batch hash/revision/range, explicit supersession lineage; a user conflict resolution appends a new local event and never edits the frozen failed batch.",
+   "outcome": "The single sync_outbox schema exists client-side: the existing store_content aggregate row holds its canonical acknowledged Cloud shadow in a dedicated nullable column while payload bytes remain opaque and byte-exact, alongside the pending journal, frozen batch hash/revision/range and explicit supersession lineage; a user conflict resolution appends a new local event and never edits the frozen failed batch.",
    "provides": [
     "client-sync-outbox"
    ],
@@ -15175,7 +15175,7 @@
    ],
    "writes": [
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Sync/**",
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Sqlite/** (only the existing single sync_outbox schema, atomic local edit/state/journal/outbox transaction, and its forward migration, recovery and downgrade-refusal behavior)",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Sqlite/** (only the existing single sync_outbox schema and one store_content.acknowledged_cloud_shadow BLOB NULL column under the fixed cloud-38-sync-outbox-v1 forward migration; atomic local edit/state/journal/outbox/shadow transaction; recovery and downgrade-refusal behavior; payload remains opaque and byte-exact; protected-table migration authorization is limited to this exact migration touching sync_outbox and store_content after legacy-shape validation)",
     "DesktopPlatform:tests/PersistenceTests/** (WP-25.01 sync_outbox regressions only)"
    ],
    "shared": [
@@ -15192,13 +15192,13 @@
      "mode": "append"
     }
    ],
-   "validation": "offline + opt-in tests: edit during dispatch, conflict followed by keep-local/keep-Cloud/merge, dependent undispatched batches, crash at each resolution write, late old receipt, own-origin feed echo",
+   "validation": "offline + opt-in tests: edit during dispatch, conflict followed by keep-local/keep-Cloud/merge, dependent undispatched batches, crash at each resolution write, late old receipt, own-origin feed echo; migration preserves legacy payload bytes, valid and malformed projection-marker prefixes remain opaque byte-exact payloads, acknowledged shadow round-trips only through its explicit nullable column, legacy store_content shape is validated, and unrelated protected-table access is refused",
    "evidence": "every local edit has a durable outcome and exactly one live submission lineage; no conflict silently drops pending content",
    "baseline": {
     "state": "not-started",
     "notes": "Observed none, unreviewed: DesktopPlatform out of this area's primary research scope -- integration owner should verify no existing local-outbox scaffold"
    },
-   "notes": "Cross-repo: WP-25 names this project explicitly in its own §4 table despite living in DesktopPlatform. Persistence.Sqlite scope is limited to the one existing sync_outbox table, same-database atomic local edit/state/journal/outbox transaction, forward-only migration plus recovery and downgrade-refusal tests; no second database/table/outbox or unrelated Persistence changes. PersistenceTests scope covers only WP-25.01 outbox regressions. Project/solution/workflow/inventory/support changes are exact ADP-07 bindings only: append the required project/build/test and current policy/provenance inputs without new dependencies, package identities, policy algorithms or unrelated rows. Preserve RES-assistant-store-schema's serialized migration protocol."
+   "notes": "Cross-repo: WP-25 names this project explicitly in its own §4 table despite living in DesktopPlatform. Persistence.Sqlite scope is limited to the one existing sync_outbox schema plus one store_content.acknowledged_cloud_shadow BLOB NULL column on the existing store_content row, in the same database and atomic local edit/state/journal/outbox/shadow transaction, with the fixed cloud-38-sync-outbox-v1 forward migration, legacy-shape validation, recovery and downgrade-refusal tests; no second database, table or outbox and no unrelated Persistence changes. store_content.payload remains opaque application bytes and is never inspected for or decoded from a marker, magic prefix or hash wrapper. Only cloud-38-sync-outbox-v1 may touch the two exact protected tables sync_outbox and store_content; no generic protected-table authorization is added. PersistenceTests scope covers only WP-25.01 outbox regressions. Project/solution/workflow/inventory/support changes are exact ADP-07 bindings only: append the required project/build/test and current policy/provenance inputs without new dependencies, package identities, policy algorithms or unrelated rows. Preserve RES-assistant-store-schema's serialized migration protocol."
   },
   {
    "id": "CLOUD.39",
