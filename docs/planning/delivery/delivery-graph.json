@@ -3863,6 +3863,7 @@
     "Contracts:src/public/ts/contract-fixtures/src/index.ts (regenerated)",
     "Contracts:src/public/kotlin/contracts-proto/generated/** (regenerated)",
     "Contracts:src/public/kotlin/contracts-connect-client/generated/** (regenerated)",
+    "Contracts:eng/operations/con-24.json (exact owned append-only export for scope.listProjects, scope.listSessions and scope.getSession; bind existing product-owner manifest rows without changing manifest authority)",
     "Contracts:tests/public/con-24-scope-library.test.mjs (direct public-fixture consumer; exact vectors and descriptor/RPC/field/scope checks)",
     "Contracts:package.json (register the CON.24 public test only)",
     "Contracts:tests/StructureTests/Con24ScopeLibraryCases.cs (direct public-fixture consumer)",
@@ -3897,8 +3898,8 @@
      "mode": "exclusive"
     }
    ],
-   "validation": "offline: TypeScript, C# and Kotlin each directly load fixtures/public/con-24-scope-library.json, consume every independently authored vector exactly once, and check generated descriptors, the three RPCs, fields and authorization scope; missing, duplicate, unconsumed or unknown vectors fail. Also retain operation-count and scope-manifest checks, clean regeneration, and candidate packaging checks (P2-017).",
-   "evidence": "Executable TypeScript/C#/Kotlin consumers and registrations directly exercise fixtures/public/con-24-scope-library.json; generated ScopeService's three RPCs, fields and authorization scope, plus manifest/check results and candidate identity.",
+   "validation": "offline: TypeScript, C# and Kotlin each directly load fixtures/public/con-24-scope-library.json, consume every independently authored vector exactly once, and check generated descriptors, the three RPCs, fields and authorization scope; missing, duplicate, unconsumed or unknown vectors fail. Operation-scope audit registers exactly 3/3 owned RPCs against existing product-owner manifest rows, without changing manifest authority. Also retain operation-count and scope-manifest checks, clean regeneration, and candidate packaging checks (P2-017).",
+   "evidence": "Executable TypeScript/C#/Kotlin consumers and registrations directly exercise fixtures/public/con-24-scope-library.json; generated ScopeService's three RPCs, fields and authorization scope; operation-scope audit 3/3 registrations to existing product-owner manifest rows; manifest/check results and candidate identity.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed none: no ScopeService exists in Contracts."
