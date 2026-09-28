@@ -4809,10 +4809,6 @@
     {
      "resource": "RES-desktopplatform-build-config",
      "mode": "append"
-    },
-    {
-     "resource": "RES-desktopplatform-policy-data",
-     "mode": "append"
     }
    ],
    "validation": "First-candidate Windows x64 Native AOT publish with zero warnings/errors; locked restore and the same win-x64 publish gate run in package-validation PR and every main-build call under WP-06 BR-06. No executable or GUI run.",
