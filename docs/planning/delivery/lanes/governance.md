@@ -136,12 +136,12 @@ Tasks: 16 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Entry condition | [ADOPT.03.governance](adoption.md#task-adopt-03-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [GOV.07](#task-gov-07), [GOV.09](#task-gov-09), [GOV.10](#task-gov-10), [GOV.15](#task-gov-15) |
-| Write scope | `Contracts:tests/ArchitectureTests/**`<br>`Contracts:eng/policy/exceptions.json` |
+| Write scope | `Contracts:tests/ArchitectureTests/**`<br>`Contracts:eng/policy/exceptions.json`<br>`Contracts:ArcForges.Contracts.slnx`<br>`Contracts:eng/contracts.py`<br>`Contracts:Directory.Packages.props`<br>`Contracts:tests/ArchitectureTests/packages.lock.json`<br>`Contracts:eng/policy/dependency-policy.json`<br>`Contracts:eng/policy/dependency-reviews/gov-05-*.json`<br>`Contracts:eng/policy/licence-boundary.json`<br>`Contracts:eng/provenance/files.json`<br>`Contracts:eng/dependency_admission.py`<br>`Contracts:tests/tooling/test_dependency_admission.py` |
 | Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append) |
 | Validation | Offline unit tests, negative fixtures per assertion, PR CI; no live-service runtime per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
 | Completion evidence | Contract/serialization policy results with negative fixtures per assertion; Contracts' own layering/licence/banned-API results. |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | WP05's own §8 completion-gate text states this substep 'makes [VG-04](../../../assurance/open-gates-register.md#rule-vg-04)'s policy-test half enforceable' - a second [VG-04](../../../assurance/open-gates-register.md#rule-vg-04) contributor not listed in the README's deferred-gate table (which names only 03.04/06.01). |
+| Notes | WP05's own §8 completion-gate text states this substep 'makes [VG-04](../../../assurance/open-gates-register.md#rule-vg-04)'s policy-test half enforceable' - a second [VG-04](../../../assurance/open-gates-register.md#rule-vg-04) contributor not listed in the README's deferred-gate table (which names only 03.04/06.01). The narrowly required ArcForges.Build.Policy 1.0.0-ci.31.1 AGPL admission is build/test-only: forbid product/runtime and generated-public-package closure leakage, and add regression negatives proving those boundaries; do not broaden the exception. Shared Contracts solution, policy and provenance edits rebase and merge one-at-a-time under the Contracts integration owner after exact-head review. |
 
 <a id="task-gov-07"></a>
 
@@ -243,7 +243,7 @@ Tasks: 16 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 
 ### GOV.12 — Mobile policy tests (Gradle/Kotlin mechanism)
 
-**Outcome.** Mobile enforces its own layering/licence/naming/banned-API rules independently via a Gradle-native mechanism (dependency verification plus lint/Detekt-style rules) that consumes the same rule DATA as the other repos, not GOV.04's.NET test library directly.
+**Outcome.** DesktopPlatform owns and publishes a portable, schema-versioned catalog of the seven canonical BAN-* categories with the BannedSymbolScanner that consumes and validates it. Mobile enforces its own layering/licence/naming/banned-API rules independently via a Gradle-native mechanism (dependency verification plus lint/Detekt-style rules), pinning and copying the exact packaged catalog with version, source commit and SHA plus parity tests; it consumes the same data, not GOV.04's .NET test library. The catalog contains no repository-specific paths or status.
 
 | Field | Value |
 |---|---|
@@ -256,18 +256,18 @@ Tasks: 16 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Entry condition | [ADOPT.10.governance](adoption.md#task-adopt-10-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [GOV.15](#task-gov-15) |
-| Write scope | `Mobile:gradle/policy/**`<br>`Mobile:eng/policy/exceptions.json`<br>`Mobile:build.gradle.kts (apply owned Gradle-native policy and formatter target only)` |
-| Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append), [RES-mobile-build-config](../shared-resources.md#res-mobile-build-config) (append) |
+| Write scope | `Mobile:gradle/policy/**`<br>`Mobile:eng/policy/exceptions.json`<br>`Mobile:build.gradle.kts (apply owned Gradle-native policy and formatter target only)`<br>`DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/banned-api-categories.json`<br>`DesktopPlatform:src/Build/ArcForges.Build.Policy/ArcForges.Build.Policy.csproj`<br>`DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/BannedSymbolScanner.cs`<br>`DesktopPlatform:tests/ArchitectureTests/SharedPolicyTests.cs`<br>`DesktopPlatform:eng/provenance/files.json` |
+| Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append), [RES-mobile-build-config](../shared-resources.md#res-mobile-build-config) (append), [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append), [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append) |
 | Validation | Offline Gradle-time checks, negative fixtures, PR CI; no device/emulator runtime here, per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) (that is WP06.07/WP30/WP32). |
 | Completion evidence | Per-rule pass/fail fixture table for Mobile's Gradle dependency graph. |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | [F-023](../../../assurance/open-gates-register.md#rule-f-023) (mobile provenance) and [VG-07](../../../assurance/open-gates-register.md#rule-vg-07) (Android runtime posture) are separately scheduled at WP06.07/WP30/WP32 and are not this task's concern. |
+| Notes | Deliver two exact-head PRs under the single GOV.12 claim: independently review, CI and merge the DesktopPlatform catalog/scanner producer first, publish its existing package identity, then pin that exact immutable candidate in Mobile and run its parity checks. Preserve provenance and package/source digests across the handoff. No second catalog authority or per-repository path/status fields. [F-023](../../../assurance/open-gates-register.md#rule-f-023) (mobile provenance) and [VG-07](../../../assurance/open-gates-register.md#rule-vg-07) (Android runtime posture) are separately scheduled at WP06.07/WP30/WP32 and are not this task's concern. |
 
 <a id="task-gov-13"></a>
 
 ### GOV.13 — Invariant enforcement accounting report
 
-**Outcome.** A build-produced report classifies all current catalogued invariants (406 after reduced-family retirement) as enforced-and-passing / enforced-and-failing / not-yet-implemented, every classification derived from an actual test-run result, without re-deriving the design-stage mapping ([PG-06](../../../assurance/open-gates-register.md#rule-pg-06), already closed) and without itself closing [PG-11](../../../assurance/open-gates-register.md#rule-pg-11).
+**Outcome.** A build-produced report emits each current catalog ID exactly once and classifies each invariant as enforced-and-passing, enforced-and-failing or not-yet-implemented. Only enforced-* classifications derive from actual registered test outcomes; not-yet-implemented requires a complete catalog and owner-registration scan confirming zero registered cases, never a missing or skipped run. Do not re-derive the design-stage mapping ([PG-06](../../../assurance/open-gates-register.md#rule-pg-06), already closed) or close [PG-11](../../../assurance/open-gates-register.md#rule-pg-11).
 
 | Field | Value |
 |---|---|
@@ -280,11 +280,12 @@ Tasks: 16 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [GOV.15](#task-gov-15) |
-| Write scope | `DesktopPlatform:eng/accounting/invariant-report.py or equivalent`<br>`DesktopPlatform:artifacts/evidence/invariant-accounting.json` |
-| Validation | Report generation reads real CI test-run results only; offline; re-run as each owning package lands enforcement (not a one-time close), per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)'s 'runtime checks local, affected-scope, once, existing environment only' spirit. |
-| Completion evidence | Current-catalogue-complete accounting table, every row classified from a real result. |
+| Write scope | `DesktopPlatform:eng/accounting/invariant-test-cases.json`<br>`DesktopPlatform:eng/accounting/**`<br>`DesktopPlatform:.github/workflows/package-validation.yml`<br>`DesktopPlatform:eng/provenance/files.json` |
+| Shared resources | [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append), [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append) |
+| Validation | Define and test a normalized cross-owner result-input schema under eng/accounting/** with invariant ID, stable case ID, outcome, repository, source commit, CI run and attempt. The durable invariant-test-cases.json roster declares expected case IDs; DesktopPlatform CI converts all six unique TRX files to the schema, and future owner receipts use the same contract. A mapped test failure is failing and all accepted registered case outcomes passed is passing. Not-yet-implemented is allowed only when a complete catalog and owner-registration scan proves the expected-case roster has zero cases for that invariant. Missing declared result set or expected case; skipped/inconclusive result; malformed or incomplete TRX; duplicate/unknown IDs; or source/repository/run/attempt provenance mismatch fails closed. Reruns consume accepted owner run receipts; never claim another repository implemented an invariant without its receipt. Offline checks and PR CI; repeat as owners land enforcement, per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
+| Completion evidence | Current-catalogue-complete accounting report and six normalized CI result inputs, uploaded with TRX as generated ignored artifacts; the ledger receipt records source SHA, run identity, artifact URL and digest. |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Will read as mostly 'not yet implemented' immediately after WP05 since most current invariants are owned by packages far downstream (WP06...WP53, per invariant-coverage.md's ownerCell). [PG-11](../../../assurance/open-gates-register.md#rule-pg-11) stays open per-invariant in its OWNING package; GOV.13 never closes [PG-11](../../../assurance/open-gates-register.md#rule-pg-11) or [PG-06](../../../assurance/open-gates-register.md#rule-pg-06) itself - it only reports. |
+| Notes | Will read as mostly 'not yet implemented' immediately after WP05 since most current invariants are owned by packages far downstream (WP06...WP53, per invariant-coverage.md's ownerCell). [PG-11](../../../assurance/open-gates-register.md#rule-pg-11) stays open per-invariant in its OWNING package; GOV.13 never closes [PG-11](../../../assurance/open-gates-register.md#rule-pg-11) or [PG-06](../../../assurance/open-gates-register.md#rule-pg-06) itself - it only reports. `artifacts/evidence/test-results/**` and `artifacts/evidence/invariant-accounting.json` are generated ignored CI artifacts, uploaded together and never checked in. Future owners append stable invariant-to-case registrations in the normalized input schema; each report rerun consumes accepted owner run receipts, bound to the exact source SHA, CI run and attempt, and never claims another repository's coverage without that evidence. |
 
 <a id="task-gov-14"></a>
 

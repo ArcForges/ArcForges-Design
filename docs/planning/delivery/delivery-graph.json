@@ -980,7 +980,17 @@
    ],
    "writes": [
     "Contracts:tests/ArchitectureTests/**",
-    "Contracts:eng/policy/exceptions.json"
+    "Contracts:eng/policy/exceptions.json",
+    "Contracts:ArcForges.Contracts.slnx",
+    "Contracts:eng/contracts.py",
+    "Contracts:Directory.Packages.props",
+    "Contracts:tests/ArchitectureTests/packages.lock.json",
+    "Contracts:eng/policy/dependency-policy.json",
+    "Contracts:eng/policy/dependency-reviews/gov-05-*.json",
+    "Contracts:eng/policy/licence-boundary.json",
+    "Contracts:eng/provenance/files.json",
+    "Contracts:eng/dependency_admission.py",
+    "Contracts:tests/tooling/test_dependency_admission.py"
    ],
    "shared": [
     {
@@ -993,7 +1003,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "WP05's own §8 completion-gate text states this substep 'makes VG-04's policy-test half enforceable' - a second VG-04 contributor not listed in the README's deferred-gate table (which names only 03.04/06.01).",
+   "notes": "WP05's own §8 completion-gate text states this substep 'makes VG-04's policy-test half enforceable' - a second VG-04 contributor not listed in the README's deferred-gate table (which names only 03.04/06.01). The narrowly required ArcForges.Build.Policy 1.0.0-ci.31.1 AGPL admission is build/test-only: forbid product/runtime and generated-public-package closure leakage, and add regression negatives proving those boundaries; do not broaden the exception. Shared Contracts solution, policy and provenance edits rebase and merge one-at-a-time under the Contracts integration owner after exact-head review.",
    "complete": []
   },
   {
@@ -1296,7 +1306,7 @@
      "part": "Mobile banned-API fixtures"
     }
    ],
-   "outcome": "Mobile enforces its own layering/licence/naming/banned-API rules independently via a Gradle-native mechanism (dependency verification plus lint/Detekt-style rules) that consumes the same rule DATA as the other repos, not GOV.04's.NET test library directly.",
+   "outcome": "DesktopPlatform owns and publishes a portable, schema-versioned catalog of the seven canonical BAN-* categories with the BannedSymbolScanner that consumes and validates it. Mobile enforces its own layering/licence/naming/banned-API rules independently via a Gradle-native mechanism (dependency verification plus lint/Detekt-style rules), pinning and copying the exact packaged catalog with version, source commit and SHA plus parity tests; it consumes the same data, not GOV.04's .NET test library. The catalog contains no repository-specific paths or status.",
    "provides": [
     "mobile-policy-suite"
    ],
@@ -1317,7 +1327,12 @@
    "writes": [
     "Mobile:gradle/policy/**",
     "Mobile:eng/policy/exceptions.json",
-    "Mobile:build.gradle.kts (apply owned Gradle-native policy and formatter target only)"
+    "Mobile:build.gradle.kts (apply owned Gradle-native policy and formatter target only)",
+    "DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/banned-api-categories.json",
+    "DesktopPlatform:src/Build/ArcForges.Build.Policy/ArcForges.Build.Policy.csproj",
+    "DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/BannedSymbolScanner.cs",
+    "DesktopPlatform:tests/ArchitectureTests/SharedPolicyTests.cs",
+    "DesktopPlatform:eng/provenance/files.json"
    ],
    "shared": [
     {
@@ -1327,6 +1342,14 @@
     {
      "resource": "RES-mobile-build-config",
      "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
     }
    ],
    "validation": "Offline Gradle-time checks, negative fixtures, PR CI; no device/emulator runtime here, per P2-017 (that is WP06.07/WP30/WP32).",
@@ -1334,7 +1357,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "F-023 (mobile provenance) and VG-07 (Android runtime posture) are separately scheduled at WP06.07/WP30/WP32 and are not this task's concern.",
+   "notes": "Deliver two exact-head PRs under the single GOV.12 claim: independently review, CI and merge the DesktopPlatform catalog/scanner producer first, publish its existing package identity, then pin that exact immutable candidate in Mobile and run its parity checks. Preserve provenance and package/source digests across the handoff. No second catalog authority or per-repository path/status fields. F-023 (mobile provenance) and VG-07 (Android runtime posture) are separately scheduled at WP06.07/WP30/WP32 and are not this task's concern.",
    "complete": []
   },
   {
@@ -1350,7 +1373,7 @@
      "part": "full"
     }
    ],
-   "outcome": "A build-produced report classifies all current catalogued invariants (406 after reduced-family retirement) as enforced-and-passing / enforced-and-failing / not-yet-implemented, every classification derived from an actual test-run result, without re-deriving the design-stage mapping (PG-06, already closed) and without itself closing PG-11.",
+   "outcome": "A build-produced report emits each current catalog ID exactly once and classifies each invariant as enforced-and-passing, enforced-and-failing or not-yet-implemented. Only enforced-* classifications derive from actual registered test outcomes; not-yet-implemented requires a complete catalog and owner-registration scan confirming zero registered cases, never a missing or skipped run. Do not re-derive the design-stage mapping (PG-06, already closed) or close PG-11.",
    "provides": [
     "invariant-accounting-report-v1"
    ],
@@ -1369,15 +1392,27 @@
     }
    ],
    "writes": [
-    "DesktopPlatform:eng/accounting/invariant-report.py or equivalent",
-    "DesktopPlatform:artifacts/evidence/invariant-accounting.json"
+    "DesktopPlatform:eng/accounting/invariant-test-cases.json",
+    "DesktopPlatform:eng/accounting/**",
+    "DesktopPlatform:.github/workflows/package-validation.yml",
+    "DesktopPlatform:eng/provenance/files.json"
    ],
-   "validation": "Report generation reads real CI test-run results only; offline; re-run as each owning package lands enforcement (not a one-time close), per P2-017's 'runtime checks local, affected-scope, once, existing environment only' spirit.",
-   "evidence": "Current-catalogue-complete accounting table, every row classified from a real result.",
+   "shared": [
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    }
+   ],
+   "validation": "Define and test a normalized cross-owner result-input schema under eng/accounting/** with invariant ID, stable case ID, outcome, repository, source commit, CI run and attempt. The durable invariant-test-cases.json roster declares expected case IDs; DesktopPlatform CI converts all six unique TRX files to the schema, and future owner receipts use the same contract. A mapped test failure is failing and all accepted registered case outcomes passed is passing. Not-yet-implemented is allowed only when a complete catalog and owner-registration scan proves the expected-case roster has zero cases for that invariant. Missing declared result set or expected case; skipped/inconclusive result; malformed or incomplete TRX; duplicate/unknown IDs; or source/repository/run/attempt provenance mismatch fails closed. Reruns consume accepted owner run receipts; never claim another repository implemented an invariant without its receipt. Offline checks and PR CI; repeat as owners land enforcement, per P2-017.",
+   "evidence": "Current-catalogue-complete accounting report and six normalized CI result inputs, uploaded with TRX as generated ignored artifacts; the ledger receipt records source SHA, run identity, artifact URL and digest.",
    "baseline": {
     "state": "not-started"
    },
-   "notes": "Will read as mostly 'not yet implemented' immediately after WP05 since most current invariants are owned by packages far downstream (WP06...WP53, per invariant-coverage.md's ownerCell). PG-11 stays open per-invariant in its OWNING package; GOV.13 never closes PG-11 or PG-06 itself - it only reports.",
+   "notes": "Will read as mostly 'not yet implemented' immediately after WP05 since most current invariants are owned by packages far downstream (WP06...WP53, per invariant-coverage.md's ownerCell). PG-11 stays open per-invariant in its OWNING package; GOV.13 never closes PG-11 or PG-06 itself - it only reports. `artifacts/evidence/test-results/**` and `artifacts/evidence/invariant-accounting.json` are generated ignored CI artifacts, uploaded together and never checked in. Future owners append stable invariant-to-case registrations in the normalized input schema; each report rerun consumes accepted owner run receipts, bound to the exact source SHA, CI run and attempt, and never claims another repository's coverage without that evidence.",
    "complete": []
   },
   {
@@ -1942,7 +1977,17 @@
     "Contracts:public/proto/constraints/** (project metadata and owner-body admission)",
     "Contracts:src/public/**/Generated/** (regenerated)",
     "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
-    "Contracts:src/public/ts/proto/src/shapes/gen/** (regenerated)"
+    "Contracts:src/public/ts/proto/src/shapes/gen/** (regenerated)",
+    "Contracts:eng/foundation-inventory.json",
+    "Contracts:eng/check_foundation.py",
+    "Contracts:eng/foundation_semantics.py",
+    "Contracts:eng/generate_shapes.py (only new generated admission entry)",
+    "Contracts:tests/StructureTests/Con03Cases.cs",
+    "Contracts:tests/StructureTests/Program.cs (registration only)",
+    "Contracts:tests/public/con-03-sync-allowlist.test.mjs",
+    "Contracts:package.json (registration only)",
+    "Contracts:src/public/kotlin/contracts-proto/generated/**",
+    "Contracts:src/public/ts/contract-fixtures/src/index.ts"
    ],
    "shared": [
     {
@@ -1964,7 +2009,7 @@
     "state": "not-started",
     "notes": "Observed partial, unreviewed: The underlying AggregateBody oneof (all 16 branches) and every named record it references already exist and are published (WP03.01). Only the ADMISSION RULE (which branches Sync may accept as a client write) and its negative vectors are missing — confirmed by grepping content.proto for SyncScope/SyncChange/ChangeProposal/ChangeReceipt/AggregateView/ConflictView/BootstrapManifest: none exist yet either (those are CON.09's job, registry04 §5 Sync service operations, not this validator). ScopeProjectMetadata and its additive AggregateBody variant are new under the ArcScope library closure and are not covered by the accepted foundation receipt."
    },
-   "notes": "Owns the shared project metadata record and Sync body-admission rule. CON.09 owns SyncService RPC methods; CON.24 consumes this record for the library. This closure publishes independently of the library endpoints.",
+   "notes": "Owns the shared project metadata record and Sync body-admission rule. CON.09 owns SyncService RPC methods; CON.24 consumes this record for the library. This closure publishes independently of the library endpoints. Keep this as a closed client-write validator: preserve all AggregateBody read/feed variants and immutable external-body resolution; exclude fetch, auth, persistence and transactions. ADP-07 remains the sole authority for inventory/provenance/current admission input bindings.",
    "complete": []
   },
   {
@@ -2271,7 +2316,21 @@
    "writes": [
     "Contracts:public/proto/arcforges/publicapi/v1/commerce.proto",
     "Contracts:fixtures/public/con-08-entitlement-commerce.json",
-    "Contracts:eng/operations/con-08.json (owned domain operation authorization export; append through schema-source resource protocol)"
+    "Contracts:public/proto/constraints/con-08-entitlement-commerce.json",
+    "Contracts:public/proto/constraints.json (regenerated)",
+    "Contracts:eng/operations/con-08.json (owned domain operation authorization export; append through schema-source resource protocol)",
+    "Contracts:eng/check_operation_scope.py",
+    "Contracts:tests/tooling/test_operation_scope.py",
+    "Contracts:eng/check_compatibility.py",
+    "Contracts:tests/tooling/test_compatibility_matrix.py",
+    "Contracts:src/public/**/Generated/** (regenerated)",
+    "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
+    "Contracts:src/public/ts/proto/src/shapes/gen/proto.ts (regenerated)",
+    "Contracts:src/public/ts/proto/src/services/gen/catalog.ts (regenerated)",
+    "Contracts:src/public/ts/proto/src/index.ts (regenerated)",
+    "Contracts:src/public/ts/contract-fixtures/src/index.ts (regenerated)",
+    "Contracts:src/public/kotlin/contracts-proto/generated/** (regenerated)",
+    "Contracts:src/public/kotlin/contracts-connect-client/generated/** (regenerated)"
    ],
    "shared": [
     {
@@ -2293,7 +2352,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: No EntitlementService/CommerceService exist."
    },
-   "notes": "Consumes shared CON.02 read-envelope types; CON.06 supplies the shared Availability record; other commerce domain schemas retain their ownership. Consumers are the commerce, policy and operations lanes.",
+   "notes": "Consumes shared CON.02 read-envelope types; CON.06 supplies the shared Availability record; other commerce domain schemas retain their ownership. Consumers are the commerce, policy and operations lanes. Place each operation's `compatibilityClass: frozen` metadata in its owned operation export and the exact frozen semantic baseline in the existing con-08 fixture. The narrowly authorized checker extension must make the normal compatibility diff gate fail closed on any added or changed CON.08 field; do not introduce a separate baseline file or broaden the rule to other domains.",
    "start": [
     {
      "type": "contract",
@@ -2647,6 +2706,8 @@
    ],
    "writes": [
     "Contracts:internal/proto/arcforges/operator/v1/operator.proto",
+    "Contracts:internal/proto/constraints/con-14-operator.json",
+    "Contracts:internal/proto/constraints.json (regenerated)",
     "Contracts:src/internal/dotnet/ArcForges.Contracts.CloudInternal/**",
     "Contracts:src/internal/ts/operator-client/src/**",
     "Contracts:fixtures/internal/con-14-operator.json",
@@ -3189,10 +3250,20 @@
    "writes": [
     "Contracts:public/proto/arcforges/*/v1/**",
     "Contracts:fixtures/public/con-{i}-*.json",
-    "Contracts:src/public/**/Generated/**"
+    "Contracts:src/public/**/Generated/**",
+    "Contracts:public/proto/constraints/con-21-simulation.json",
+    "Contracts:eng/operations/con-21.json",
+    "Contracts:public/proto/constraints.json (regenerated)",
+    "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
+    "Contracts:src/public/ts/proto/src/shapes/gen/proto.ts (regenerated)",
+    "Contracts:src/public/ts/proto/src/services/gen/catalog.ts (regenerated)",
+    "Contracts:src/public/ts/proto/src/index.ts (regenerated)",
+    "Contracts:src/public/ts/contract-fixtures/src/index.ts (regenerated)",
+    "Contracts:src/public/kotlin/contracts-proto/generated/** (regenerated)",
+    "Contracts:src/public/kotlin/contracts-connect-client/generated/** (regenerated)"
    ],
    "validation": "Deterministic regeneration, descriptor/tag/compatibility checks, closed-schema validators, independent positive and negative vectors in C#, TypeScript and Kotlin; Windows/Linux compilation and packaging only (P2-017).",
-   "evidence": "Merged pull request, published Contracts candidate identity containing the closure, vector and compatibility results, and the operation-scope manifest rows flipped to verified for these operations.",
+   "evidence": "Merged pull request, published Contracts candidate identity containing the closure, vector and compatibility results, and an operation-scope report showing these operations registered rather than pending against the unchanged authoritative scope rows.",
    "baseline": {
     "state": "not-started"
    },
@@ -3241,10 +3312,20 @@
    "writes": [
     "Contracts:public/proto/arcforges/*/v1/**",
     "Contracts:fixtures/public/con-{i}-*.json",
-    "Contracts:src/public/**/Generated/**"
+    "Contracts:src/public/**/Generated/**",
+    "Contracts:public/proto/constraints/con-22-account-support.json",
+    "Contracts:eng/operations/con-22.json",
+    "Contracts:public/proto/constraints.json (regenerated)",
+    "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
+    "Contracts:src/public/ts/proto/src/shapes/gen/proto.ts (regenerated)",
+    "Contracts:src/public/ts/proto/src/services/gen/catalog.ts (regenerated)",
+    "Contracts:src/public/ts/proto/src/index.ts (regenerated)",
+    "Contracts:src/public/kotlin/contracts-proto/generated/** (regenerated)",
+    "Contracts:src/public/kotlin/contracts-connect-client/generated/** (regenerated)",
+    "Contracts:src/public/ts/contract-fixtures/src/index.ts (regenerated)"
    ],
    "validation": "Deterministic regeneration, descriptor/tag/compatibility checks, closed-schema validators, independent positive and negative vectors in C#, TypeScript and Kotlin; Windows/Linux compilation and packaging only (P2-017).",
-   "evidence": "Merged pull request, published Contracts candidate identity containing the closure, vector and compatibility results, and the operation-scope manifest rows flipped to verified for these operations.",
+   "evidence": "Merged pull request, published Contracts candidate identity containing the closure, vector and compatibility results, and an operation-scope report showing these operations registered rather than pending against the unchanged authoritative scope rows.",
    "baseline": {
     "state": "not-started"
    },
@@ -4181,12 +4262,26 @@
    ],
    "writes": [
     "DesktopPlatform:tests/LocalRpcAotTests/**",
-    "DesktopPlatform:eng/verification/**"
+    "DesktopPlatform:eng/verification/**",
+    "DesktopPlatform:Directory.Packages.props",
+    "DesktopPlatform:DesktopPlatform.slnx",
+    "DesktopPlatform:.github/workflows/package-validation.yml (existing compile/AOT path only)",
+    "DesktopPlatform:eng/policy/dependency-policy.json",
+    "DesktopPlatform:eng/policy/dependency-reviews/prf-04-r1.json",
+    "DesktopPlatform:eng/provenance/files.json"
    ],
    "shared": [
     {
      "resource": "RES-workstation-build-slot",
      "mode": "exclusive"
+    },
+    {
+     "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+   },
+   {
+    "resource": "RES-desktopplatform-policy-data",
+    "mode": "append"
     }
    ],
    "validation": "Actual Windows/Linux/macOS(local opt-in) process-to-process runs; no in-memory or TCP substitute (explicit design prohibition); malformed input, unauthorized peer, bounded resource tests",
@@ -4196,7 +4291,7 @@
     "notes": "Observed none, unreviewed: tests/LocalRpcAotTests not found under a shallow listing;"
    },
    "earlyRiskProof": true,
-   "notes": "Directly closes VG-04. Independent of PRF.02 (uses its own dedicated probe processes, not the product hosts).",
+   "notes": "Directly closes VG-04. Independent of PRF.02 (uses its own dedicated probe processes, not the product hosts). Keep dependency admission limited to the existing reviewed Grpc.AspNetCore.Server 2.83.0 and Grpc.Net.Client 2.84.0 candidates plus the CON.05 candidate; use the BCL NamedPipe stream API with no new NamedPipes package and no hosted execution. Directory.Packages.props, solution/workflow and dependency-policy/review/provenance edits are append/rebase-only under RES-desktopplatform-build-config and RES-desktopplatform-policy-data; merge after current GOV.14 main, never overwrite or rederive GOV.14 bindings.",
    "complete": []
   },
   {
