@@ -11316,9 +11316,25 @@
     }
    ],
    "writes": [
-    "ArcScope:src/ArcScope/ArcScope.Domain/Time/**",
-    "ArcScope:src/ArcScope/ArcScope.Domain/Channels/**",
-    "ArcScope:tests/ArcScopePipelineTests/TimeModel/**"
+    "ArcScope:src/ArcForges.ArcScope.Domain/ArcForges.ArcScope.Domain.csproj",
+    "ArcScope:src/ArcForges.ArcScope.Domain/packages.lock.json",
+    "ArcScope:src/ArcForges.ArcScope.Domain/Time/**",
+    "ArcScope:src/ArcForges.ArcScope.Domain/Channels/**",
+    "ArcScope:ArcScope.slnx",
+    "ArcScope:tests/ArcForges.ArcScope.Tests/ArcForges.ArcScope.Tests.csproj",
+    "ArcScope:tests/ArcForges.ArcScope.Tests/packages.lock.json",
+    "ArcScope:tests/ArcForges.ArcScope.Tests/TimeModel/**",
+    "ArcScope:eng/policy/licence-boundary.json",
+    "ArcScope:eng/policy/dependency-review.json",
+    "ArcScope:eng/provenance/files.json",
+    "ArcScope:eng/provenance/records/arcnotes-provenance-tools-r9.json",
+    "ArcScope:eng/provenance/NOTICE.txt"
+   ],
+   "shared": [
+    {
+     "resource": "RES-product-solutions",
+     "mode": "append"
+    }
    ],
    "validation": "offline unit tests: precision across rate domains, alignment with two sources, conversion exactness — pure math, no external environment",
    "evidence": "precision/alignment/conversion test results",
@@ -11326,7 +11342,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: no Channel/Signal/time types exist in the repo yet"
    },
-   "notes": "Pure domain/math task with no native or Cloud dependency; runs fully in parallel with SCOPE.01 (different files, same repo) — a clean simultaneous-execution example.",
+   "notes": "Follow architecture 27 §4 and WP-33 §5: create the canonical ArcForges.ArcScope.Domain project and put the model in that domain owner, not ArcForges.ArcScope.Core (the published gRPC client) or the desktop host. Add only the Domain project and its Time/Channels source, plus TimeModel tests in the existing CI-executed ArcForges.ArcScope.Tests project; add the exact Domain ProjectReference there and append the Domain project to ArcScope.slnx. The Domain library may depend only on the already-admitted ArcForges.Foundation package or have no package dependency; no third-party dependency, package identity/version/closure change, central package edit, app/AOT-host reference, new test project, workflow/runner registration, migration or shared runtime behavior is authorized. Append the project/solution entry under RES-product-solutions; regenerate required lock files after rebase rather than hand-merging. Update the exact licence and dependency-review inputs and classify new authored files in provenance. The current dependency-review.json and licence-boundary.json targets are bound to immutable ArcNotes provenance r8, so append the exact r9 successor and regenerate NOTICE; preserve all historical r1-r8 records. No other runtime, reconciliation, publication or package inventory changes are authorized.",
    "complete": []
   },
   {
