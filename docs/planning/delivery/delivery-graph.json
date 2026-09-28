@@ -5347,7 +5347,10 @@
    ],
    "writes": [
     "DesktopPlatform:eng/packaging/packages.json",
-    "DesktopPlatform:eng/version-sources.json"
+    "DesktopPlatform:eng/version-sources.json",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Resources/ArcForges.Persistence.Resources.csproj",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Derived/ArcForges.Persistence.Derived.csproj",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Derived/README.md"
    ],
    "shared": [
     {
@@ -5363,8 +5366,9 @@
    "evidence": "Owned artifact and real-integration receipt per the WP-07.90 template.",
    "baseline": {
     "state": "not-started",
-    "notes": "Observed scaffold, unreviewed: None of the three persistence packages are in eng/packaging/packages.json today."
+    "notes": "Observed scaffold, unreviewed: ArcForges.Persistence.Sqlite is already listed and packable; ArcForges.Persistence.Resources and ArcForges.Persistence.Derived are absent from eng/packaging/packages.json and their existing project files set IsPackable=false."
    },
+   "notes": "PLT.08-only package activation: the outcome requires the existing Resources and Derived projects to publish as their named managed packages. The three added project/document paths authorize only setting IsPackable=true, explicit existing package IDs, readme and description metadata, the existing AGPL-3.0-only licence metadata, and packaging the repository LICENSE and NOTICE; the new task-owned Derived README documents this owned mechanism. Preserve public APIs, project references, exact dependency closure, versions and package identities; preserve the existing Sqlite package entry and append only the missing Resources and Derived allowlist entries. Narrow ADP-07 supporting bindings for these changes: update only the exact two csproj input hashes in eng/policy/dependency-policy.json and the PLT.08 immutable successor at eng/policy/dependency-reviews/plt-08-r1.json without changing any dependency coordinate, version or closure; register only the Derived README as firstParty in eng/provenance/files.json and regenerate only required NOTICE/provenance derivatives. No workflow, lock, solution, project registration, reconciliation, architecture, licence/runtime policy row, pack algorithm, dependency/version or source API change is authorized.",
    "packageAcceptance": "WP-07",
    "complete": []
   },
