@@ -26,7 +26,7 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | [PLT.16](#task-plt-16) | Publish LocalRpc package and verify real integration | acceptance | S | [PLT.09](#task-plt-09) (artifact), [PLT.10](#task-plt-10) (artifact), [PLT.11](#task-plt-11) (artifact), [PLT.12](#task-plt-12) (artifact), [PLT.13](#task-plt-13) (artifact), [PLT.14](#task-plt-14) (artifact), [PLT.15](#task-plt-15) (artifact) | not-started |
 | [PLT.17](#task-plt-17) | Application identity and in-process composition | producer | S | [CON.91](contracts.md#task-con-91) (contract), [FND.01](foundation.md#task-fnd-01) (artifact) | not-started |
 | [PLT.18](#task-plt-18) | Static contribution registration | producer | M | [PLT.17](#task-plt-17) (artifact) | not-started |
-| [PLT.19](#task-plt-19) | Capability registry and selection | producer | L | [PLT.17](#task-plt-17) (artifact), [CON.91](contracts.md#task-con-91) (contract) | not-started |
+| [PLT.19](#task-plt-19) | Capability registry and selection | producer | L | [PLT.17](#task-plt-17) (artifact), [CON.91](contracts.md#task-con-91) (contract), [CON.02](contracts.md#task-con-02) (contract) | not-started |
 | [PLT.20](#task-plt-20) | Actions and availability | producer | M | [PLT.19](#task-plt-19) (artifact) | not-started |
 | [PLT.21](#task-plt-21) | Context providers and freezing | producer | M | [PLT.17](#task-plt-17) (artifact) | not-started |
 | [PLT.22](#task-plt-22) | Resources and artifacts resolution | producer | M | [PLT.05](#task-plt-05) (artifact), [PLT.17](#task-plt-17) (artifact) | not-started |
@@ -493,7 +493,7 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Kind / size | producer / L |
 | Obligations | [WP-09.02](../../work-packages/09-capability-contribution-and-resource-model.md#rule-wp-09.02) — full |
 | Provides | capability-registry-selection; capability-descriptor-type |
-| Start prerequisites | **artifact** [PLT.17](#task-plt-17) — identity/composition. *Why:* the registry is scoped per application instance.<br>**contract** [CON.91](contracts.md#task-con-91) — CapabilityDescriptor/OperationBinding wire schema. *Why:* BR of WP09 says 'no implementer invents binding fields or capability behavior to join products' - the schema is Contracts-owned. |
+| Start prerequisites | **artifact** [PLT.17](#task-plt-17) — identity/composition. *Why:* the registry is scoped per application instance.<br>**contract** [CON.91](contracts.md#task-con-91) — accepted Foundation contract profile, including ResourceRef/ResourceVersionRef/ArtifactRef. *Why:* retain [WP-09](../../work-packages/09-capability-contribution-and-resource-model.md#rule-wp-09)'s inherited base-contract prerequisite; this published Foundation profile is distinct from the capability descriptor schema introduced by CON.02.<br>**contract** [CON.02](contracts.md#task-con-02) — CapabilityDescriptor/OperationBinding wire schema. *Why:* CON.02 is the Contracts producer of CapabilityDescriptor and the descriptor types used by OperationBinding; BR of WP09 forbids inventing binding fields or capability behavior. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [EXT.00](extensions.md#task-ext-00), [PLT.20](#task-plt-20), [PLT.24](#task-plt-24), [PLT.25](#task-plt-25), [PLT.37](#task-plt-37) |
@@ -857,7 +857,7 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | none |
-| Write scope | `DesktopPlatform:eng/packaging/packages.json` |
+| Write scope | `DesktopPlatform:eng/packaging/packages.json`<br>`DesktopPlatform:src/DesignSystem/ArcForges.DesignSystem/ArcForges.DesignSystem.csproj (final IsPackable/package activation only; PLT.26 remains non-packable)`<br>`DesktopPlatform:src/DesignSystem/ArcForges.Desktop.Shell/ArcForges.Desktop.Shell.csproj (final IsPackable/package activation only; PLT.26 remains non-packable)` |
 | Shared resources | [RES-desktopplatform-package-inventory](../shared-resources.md#res-desktopplatform-package-inventory) (append) |
 | Validation | [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017): offline verify/policy tests plus the retained AOT-publish gate. |
 | Completion evidence | Owned artifact and real-integration receipt per [WP-10.90](../../work-packages/10-design-system-and-desktop-shell.md#rule-wp-10.90). |

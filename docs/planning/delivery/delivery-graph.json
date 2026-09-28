@@ -990,11 +990,17 @@
     "Contracts:eng/policy/licence-boundary.json",
     "Contracts:eng/provenance/files.json",
     "Contracts:eng/dependency_admission.py",
-    "Contracts:tests/tooling/test_dependency_admission.py"
+    "Contracts:tests/tooling/test_dependency_admission.py",
+    "Contracts:eng/check_licences.py",
+    "Contracts:tests/tooling/test_licence_boundary.py"
    ],
    "shared": [
     {
      "resource": "RES-architecture-tests",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-contracts-schema-sources",
      "mode": "append"
     }
    ],
@@ -1003,7 +1009,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "WP05's own §8 completion-gate text states this substep 'makes VG-04's policy-test half enforceable' - a second VG-04 contributor not listed in the README's deferred-gate table (which names only 03.04/06.01). The narrowly required ArcForges.Build.Policy 1.0.0-ci.31.1 AGPL admission is build/test-only: forbid product/runtime and generated-public-package closure leakage, and add regression negatives proving those boundaries; do not broaden the exception. Shared Contracts solution, policy and provenance edits rebase and merge one-at-a-time under the Contracts integration owner after exact-head review.",
+   "notes": "WP05's own §8 completion-gate text states this substep 'makes VG-04's policy-test half enforceable' - a second VG-04 contributor not listed in the README's deferred-gate table (which names only 03.04/06.01). The narrowly required ArcForges.Build.Policy 1.0.0-ci.31.1 AGPL admission permits a direct PackageReference only from Contracts tests/ArchitectureTests, with PrivateAssets=all, for architecture-test/build use. Regression negatives must reject this exact package from every other project or package closure, including product/runtime and generated-public-package closures; do not broaden the exception. Shared Contracts solution, policy and provenance edits rebase and merge one-at-a-time under the Contracts integration owner after exact-head review.",
    "complete": []
   },
   {
@@ -1332,7 +1338,8 @@
     "DesktopPlatform:src/Build/ArcForges.Build.Policy/ArcForges.Build.Policy.csproj",
     "DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/BannedSymbolScanner.cs",
     "DesktopPlatform:tests/ArchitectureTests/SharedPolicyTests.cs",
-    "DesktopPlatform:eng/provenance/files.json"
+    "DesktopPlatform:eng/provenance/files.json",
+    "DesktopPlatform:eng/packaging/packages.json (append only ArcForges.Build.Policy.requiredFiles entry tools/architecture/banned-api-categories.json; preserve package ID, project, kind, dependencies and version; no second package)"
    ],
    "shared": [
     {
@@ -1349,6 +1356,10 @@
     },
     {
      "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-package-inventory",
      "mode": "append"
     }
    ],
@@ -1975,6 +1986,7 @@
     "Contracts:public/proto/arcforges/publicapi/v1/content.proto",
     "Contracts:fixtures/public/con-03-sync-allowlist.json",
     "Contracts:public/proto/constraints/** (project metadata and owner-body admission)",
+    "Contracts:public/proto/constraints.json (regenerated from owned shard)",
     "Contracts:src/public/**/Generated/** (regenerated)",
     "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
     "Contracts:src/public/ts/proto/src/shapes/gen/** (regenerated)",
@@ -2315,6 +2327,7 @@
    ],
    "writes": [
     "Contracts:public/proto/arcforges/publicapi/v1/commerce.proto",
+   "Design:docs/architecture/contracts/01-public-api-operations.md (change only the ten CON.08 current AO compatibility cells to FR; preserve every field, risk, error and semantic row)",
     "Contracts:fixtures/public/con-08-entitlement-commerce.json",
     "Contracts:public/proto/constraints/con-08-entitlement-commerce.json",
     "Contracts:public/proto/constraints.json (regenerated)",
@@ -2323,6 +2336,12 @@
     "Contracts:tests/tooling/test_operation_scope.py",
     "Contracts:eng/check_compatibility.py",
     "Contracts:tests/tooling/test_compatibility_matrix.py",
+    "Contracts:eng/contract-packages.json (register CON.08 commerce proto in existing package producer lists only)",
+    "Contracts:eng/policy/contract-access.json (append exact compiled access/hash entry)",
+    "Contracts:eng/policy/dependency-policy.json (refresh current input hashes for this closure only; no dependency version or closure changes)",
+    "Contracts:eng/policy/dependency-reviews/con-08-r1.json (successor admission review for this closure; preserve prior history)",
+    "Contracts:eng/provenance/files.json (append owned source/output rows)",
+    "Contracts:eng/provenance/records/contract-bindings-con-08-r1.json (successor source/output binding; preserve history)",
     "Contracts:src/public/**/Generated/** (regenerated)",
     "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
     "Contracts:src/public/ts/proto/src/shapes/gen/proto.ts (regenerated)",
@@ -2352,7 +2371,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: No EntitlementService/CommerceService exist."
    },
-   "notes": "Consumes shared CON.02 read-envelope types; CON.06 supplies the shared Availability record; other commerce domain schemas retain their ownership. Consumers are the commerce, policy and operations lanes. Place each operation's `compatibilityClass: frozen` metadata in its owned operation export and the exact frozen semantic baseline in the existing con-08 fixture. The narrowly authorized checker extension must make the normal compatibility diff gate fail closed on any added or changed CON.08 field; do not introduce a separate baseline file or broaden the rule to other domains.",
+   "notes": "Consumes shared CON.02 read-envelope types; CON.06 supplies the shared Availability record; other commerce domain schemas retain their ownership. Consumers are the commerce, policy and operations lanes. Place each operation's `compatibilityClass: frozen` metadata in its owned operation export and the exact frozen semantic baseline in the existing con-08 fixture. The narrowly authorized checker extension must make the normal compatibility diff gate fail closed on any added or changed CON.08 field; do not introduce a separate baseline file or broaden the rule to other domains. Change only the ten current AO classifications for the six entitlement operations and commerce.explainCharge/getCatalogue/getSubscription/listBillingHistory to FR in the operation catalogue; preserve all other operation fields, error classifications and existing FR rows. Append package/access/provenance and any gate-required admission successors for this closure only, preserving prior receipts and dependency versions.",
    "start": [
     {
      "type": "contract",
@@ -2470,8 +2489,29 @@
     "Contracts:public/proto/arcforges/publicapi/v1/chat.proto",
     "Contracts:internal/ai-http/v1/schema.json",
     "Contracts:fixtures/public/con-10-chat-task-agent.json",
+    "Contracts:tests/public/con-10-chat-task-agent.test.mjs",
+    "Contracts:package.json (register the CON.10 public test only)",
     "Contracts:fixtures/internal/con-10-ai-internal.json",
     "Contracts:eng/operations/con-10.json (owned domain operation authorization export; append through schema-source resource protocol)",
+    "Contracts:eng/contract-packages.json (register the new public chat.proto in existing public package producer lists only; existing internal ai-http package inputs are unchanged)",
+    "Contracts:eng/policy/contract-access.json (append exact compiled access/hash entry)",
+    "Contracts:eng/policy/dependency-policy.json (refresh current input hashes for this closure only; no dependency version or closure changes)",
+    "Contracts:eng/policy/dependency-reviews/con-10-r1.json (successor admission review for this closure; preserve prior history)",
+    "Contracts:eng/provenance/files.json (append owned source/output rows)",
+    "Contracts:eng/provenance/records/contract-bindings-con-10-r1.json (successor source/output binding; preserve history)",
+    "Contracts:public/proto/constraints/con-10-chat-task-agent.json",
+    "Contracts:public/proto/constraints.json (regenerated)",
+    "Contracts:src/public/**/Generated/** (regenerated)",
+    "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
+    "Contracts:src/public/ts/proto/src/shapes/gen/proto.ts (regenerated)",
+    "Contracts:src/public/ts/proto/src/services/gen/catalog.ts (regenerated)",
+    "Contracts:src/public/ts/proto/src/index.ts (regenerated)",
+    "Contracts:src/public/ts/contract-fixtures/src/index.ts (regenerated)",
+    "Contracts:src/public/kotlin/contracts-proto/generated/** (regenerated)",
+    "Contracts:src/public/kotlin/contracts-connect-client/generated/** (regenerated)",
+    "Contracts:src/internal/dotnet/ArcForges.Contracts.CloudInternal/Generated/** (regenerated)",
+    "Contracts:src/internal/ts/ai-internal/src/gen/** (regenerated)",
+    "Contracts:src/internal/ts/ai-internal/src/shapes/gen/** (regenerated)",
     "Design:docs/architecture/contracts/11-operation-scope-manifest.md (only this task-owned private CF routes: unique route identities, exact bindings, existing owner-derived scope and complete eight-field cf-service authorization profile sourced from contracts05; independently review and merge authority before consuming)",
     "Contracts:eng/operation-scope-manifest.json (append this task-owned private route oracle rows only after Design authority merge; exact source commit and hash pin refresh; preserve existing rows)"
    ],
@@ -2711,7 +2751,16 @@
     "Contracts:src/internal/dotnet/ArcForges.Contracts.CloudInternal/**",
     "Contracts:src/internal/ts/operator-client/src/**",
     "Contracts:fixtures/internal/con-14-operator.json",
-    "Contracts:eng/operations/con-14.json (owned domain operation authorization export; append through schema-source resource protocol)"
+    "Contracts:eng/operations/con-14.json (owned domain operation authorization export; append through schema-source resource protocol)",
+    "Contracts:eng/policy/contract-access.json (append exact compiled access/hash entry)",
+    "Contracts:eng/policy/dependency-policy.json (refresh current input hashes for this closure only; no dependency version or closure changes)",
+    "Contracts:eng/policy/dependency-reviews/con-14-r1.json (successor admission review for this closure; preserve prior history)",
+    "Contracts:eng/provenance/files.json (append owned source/output rows)",
+    "Contracts:eng/provenance/records/contract-bindings-con-14-r1.json (successor source/output binding; preserve history)",
+    "Contracts:tests/public/operator-contract.test.mjs",
+    "Contracts:package.json (register the operator contract test only)",
+    "Contracts:tests/StructureTests/OperatorCases.cs",
+    "Contracts:tests/StructureTests/Program.cs (register OperatorCases only)"
    ],
    "shared": [
     {
@@ -3254,13 +3303,28 @@
     "Contracts:public/proto/constraints/con-21-simulation.json",
     "Contracts:eng/operations/con-21.json",
     "Contracts:public/proto/constraints.json (regenerated)",
+    "Contracts:eng/contract-packages.json (register simulation proto in existing package producer lists only)",
+    "Contracts:eng/policy/contract-access.json (append exact compiled access/hash entry)",
+    "Contracts:eng/policy/dependency-policy.json (refresh current input hashes for this closure only; no dependency version or closure changes)",
+    "Contracts:eng/policy/dependency-reviews/con-21-r1.json (successor admission review for this closure; preserve prior history)",
+    "Contracts:eng/provenance/files.json (append owned source/output rows)",
+    "Contracts:eng/provenance/records/contract-bindings-con-21-r1.json (successor source/output binding; preserve history)",
+    "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-r12.json (successor with exact generated Java/Kotlin files and API pages)",
+    "Contracts:eng/provenance/records/dokka-documentation-resources-r12.json (matching successor resource record)",
+    "Contracts:eng/documentation_tools.py (advance only the active Dokka PROFILE pointer to the matching successor)",
     "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
     "Contracts:src/public/ts/proto/src/shapes/gen/proto.ts (regenerated)",
     "Contracts:src/public/ts/proto/src/services/gen/catalog.ts (regenerated)",
     "Contracts:src/public/ts/proto/src/index.ts (regenerated)",
     "Contracts:src/public/ts/contract-fixtures/src/index.ts (regenerated)",
     "Contracts:src/public/kotlin/contracts-proto/generated/** (regenerated)",
-    "Contracts:src/public/kotlin/contracts-connect-client/generated/** (regenerated)"
+    "Contracts:src/public/kotlin/contracts-connect-client/generated/** (regenerated)",
+    "Contracts:tests/public/simulation.test.mjs",
+    "Contracts:package.json (register the public simulation contract test only)",
+    "Contracts:tests/StructureTests/SimulationCases.cs",
+    "Contracts:tests/StructureTests/Program.cs (register SimulationCases only)",
+    "Contracts:tests/public/KotlinConnectClient/src/main/kotlin/io/github/arcforges/tests/SimulationCases.kt",
+    "Contracts:tests/public/KotlinConnectClient/src/main/kotlin/io/github/arcforges/tests/Main.kt (register SimulationCases only)"
    ],
    "validation": "Deterministic regeneration, descriptor/tag/compatibility checks, closed-schema validators, independent positive and negative vectors in C#, TypeScript and Kotlin; Windows/Linux compilation and packaging only (P2-017).",
    "evidence": "Merged pull request, published Contracts candidate identity containing the closure, vector and compatibility results, and an operation-scope report showing these operations registered rather than pending against the unchanged authoritative scope rows.",
@@ -3316,13 +3380,28 @@
     "Contracts:public/proto/constraints/con-22-account-support.json",
     "Contracts:eng/operations/con-22.json",
     "Contracts:public/proto/constraints.json (regenerated)",
+    "Contracts:eng/contract-packages.json (register support/export proto in existing package producer lists only)",
+    "Contracts:eng/policy/contract-access.json (append exact compiled access/hash entry)",
+    "Contracts:eng/policy/dependency-policy.json (refresh current input hashes for this closure only; no dependency version or closure changes)",
+    "Contracts:eng/policy/dependency-reviews/con-22-r1.json (successor admission review for this closure; preserve prior history)",
+    "Contracts:eng/provenance/files.json (append owned source/output rows)",
+    "Contracts:eng/provenance/records/contract-bindings-con-22-r1.json (successor source/output binding; preserve history)",
+    "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-r13.json (successor with exact generated Java/Kotlin files and API pages)",
+    "Contracts:eng/provenance/records/dokka-documentation-resources-r13.json (matching successor resource record)",
+    "Contracts:eng/documentation_tools.py (advance only the active Dokka PROFILE pointer to the matching successor)",
     "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
     "Contracts:src/public/ts/proto/src/shapes/gen/proto.ts (regenerated)",
     "Contracts:src/public/ts/proto/src/services/gen/catalog.ts (regenerated)",
     "Contracts:src/public/ts/proto/src/index.ts (regenerated)",
     "Contracts:src/public/kotlin/contracts-proto/generated/** (regenerated)",
     "Contracts:src/public/kotlin/contracts-connect-client/generated/** (regenerated)",
-    "Contracts:src/public/ts/contract-fixtures/src/index.ts (regenerated)"
+    "Contracts:src/public/ts/contract-fixtures/src/index.ts (regenerated)",
+    "Contracts:tests/public/support.test.mjs",
+    "Contracts:package.json (register the public support contract test only)",
+    "Contracts:tests/StructureTests/SupportCases.cs",
+    "Contracts:tests/StructureTests/Program.cs (register SupportCases only)",
+    "Contracts:tests/public/KotlinConnectClient/src/main/kotlin/io/github/arcforges/tests/SupportCases.kt",
+    "Contracts:tests/public/KotlinConnectClient/src/main/kotlin/io/github/arcforges/tests/Main.kt (register SupportCases only)"
    ],
    "validation": "Deterministic regeneration, descriptor/tag/compatibility checks, closed-schema validators, independent positive and negative vectors in C#, TypeScript and Kotlin; Windows/Linux compilation and packaging only (P2-017).",
    "evidence": "Merged pull request, published Contracts candidate identity containing the closure, vector and compatibility results, and an operation-scope report showing these operations registered rather than pending against the unchanged authoritative scope rows.",
@@ -5537,8 +5616,14 @@
     {
      "type": "contract",
      "task": "CON.91",
+     "need": "accepted Foundation contract profile, including ResourceRef/ResourceVersionRef/ArtifactRef",
+     "why": "retain WP-09's inherited base-contract prerequisite; this published Foundation profile is distinct from the capability descriptor schema introduced by CON.02."
+    },
+    {
+     "type": "contract",
+     "task": "CON.02",
      "need": "CapabilityDescriptor/OperationBinding wire schema",
-     "why": "BR of WP09 says 'no implementer invents binding fields or capability behavior to join products' - the schema is Contracts-owned."
+     "why": "CON.02 is the Contracts producer of CapabilityDescriptor and the descriptor types used by OperationBinding; BR of WP09 forbids inventing binding fields or capability behavior."
     }
    ],
    "writes": [
@@ -6309,7 +6394,9 @@
    ],
    "complete": [],
    "writes": [
-    "DesktopPlatform:eng/packaging/packages.json"
+    "DesktopPlatform:eng/packaging/packages.json",
+    "DesktopPlatform:src/DesignSystem/ArcForges.DesignSystem/ArcForges.DesignSystem.csproj (final IsPackable/package activation only; PLT.26 remains non-packable)",
+    "DesktopPlatform:src/DesignSystem/ArcForges.Desktop.Shell/ArcForges.Desktop.Shell.csproj (final IsPackable/package activation only; PLT.26 remains non-packable)"
    ],
    "shared": [
     {
@@ -25139,7 +25226,7 @@
    "kind": "registry",
    "ownerRepo": "Contracts",
    "owner": "Contracts integration owner",
-   "protocol": "Each closure task edits only its own domain proto or HTTP-schema files and adds its own sharded constraint and fixture files; shared inventories (package inventory, foundation inventory, constraint aggregate) are append-only per closure. A proto file with several contributing tasks (operator, policy/configuration) has one designated author task and the others request changes through it. The integration owner merges closure pull requests one at a time and the next author rebases and regenerates."
+   "protocol": "Each schema closure task edits only its own domain proto or HTTP-schema files and adds its own sharded constraint and fixture files. Schema-closure tasks and Contracts policy tasks that touch package/access/provenance/dependency input registries share this append/rebase protocol: append only task-owned rows and successor receipts to package, compiled access/hash, foundation, operation, constraint, provenance source/output, binding, and dependency-review inventories; preserve prior history and never rewrite another task's rows. Refresh dependency input hashes only for the task-owned closure; do not expand dependency versions or closure. Public Dokka updates use task-specific successor artifact-profile/documentation-resource record pairs, preserve prior history, and advance only the matching active profile pointer. A proto file with several contributing tasks (operator, policy/configuration) has one designated author task and the others request changes through it. The integration owner serializes these merges one at a time; each next author rebases and regenerates before integration."
   },
   {
    "id": "RES-design-evidence",

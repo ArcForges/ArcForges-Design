@@ -92,15 +92,15 @@ Owned by the **Entitlement** module, independent of Commerce ([EO-01](../16-bill
 
 | Operation | Purpose | Auth | Class | Key errors | Compat |
 |---|---|---|---|---|---|
-| `entitlement.getSnapshot` | Effective entitlement with per-capability reasons and its version | `R1` | `Q` | — | `AO` |
-| `entitlement.getServiceTerm` | The effective paid service term: kind, interval, grace end, and whether AI is admissible **now** | `R1` | `Q` | — | `AO` |
-| `entitlement.getCapacity` | Included capacity: available, held, burst, recovery rate, and a server-calculated `recoveryAt` | `R1` | `Q` | — | `AO` |
-| `entitlement.listGrants` | Grant history with sources | `R1` | `Q` | — | `AO` |
-| `entitlement.getUsage` | Quota, usage and period boundary | `R1` | `Q` | — | `AO` |
-| `entitlement.check` | Batch capability check, for a client about to offer an action | `R1` | `Q` | — | `AO` |
+| `entitlement.getSnapshot` | Effective entitlement with per-capability reasons and its version | `R1` | `Q` | — | `FR` |
+| `entitlement.getServiceTerm` | The effective paid service term: kind, interval, grace end, and whether AI is admissible **now** | `R1` | `Q` | — | `FR` |
+| `entitlement.getCapacity` | Included capacity: available, held, burst, recovery rate, and a server-calculated `recoveryAt` | `R1` | `Q` | — | `FR` |
+| `entitlement.listGrants` | Grant history with sources | `R1` | `Q` | — | `FR` |
+| `entitlement.getUsage` | Quota, usage and period boundary | `R1` | `Q` | — | `FR` |
+| `entitlement.check` | Batch capability check, for a client about to offer an action | `R1` | `Q` | — | `FR` |
 | `commerce.authoriseExtraUsage` | Opt in to spending purchased credits, **with a maximum budget** | `R2`, step-up per policy | `IW` | `entitlement.no_service_term` | `FR` |
 | `commerce.revokeExtraUsage` | Withdraw that authorisation | `R2` | `IW` | `state.not_found` | `FR` |
-| `commerce.explainCharge` | Why a request waited, stopped or charged, and which pool funded it | `R1` | `Q` | `state.not_found` | `AO` |
+| `commerce.explainCharge` | Why a request waited, stopped or charged, and which pool funded it | `R1` | `Q` | `state.not_found` | `FR` |
 
 | # | Rule |
 |---|---|
@@ -122,15 +122,15 @@ Owned by the **Entitlement** module, independent of Commerce ([EO-01](../16-bill
 
 | Operation | Purpose | Auth | Class | Key errors | Compat |
 |---|---|---|---|---|---|
-| `commerce.getCatalogue` | Offers and price versions for the caller's region | `R1` | `Q` | — | `AO` |
+| `commerce.getCatalogue` | Offers and price versions for the caller's region | `R1` | `Q` | — | `FR` |
 | `commerce.createPurchaseIntent` | Allocate the idempotency anchor | `R2` | `CC` | `entitlement.not_entitled` | `FR` |
 | `commerce.createCheckoutAttempt` | Obtain a provider-hosted checkout session | `R2` | `EX` | `provider.declined`, `state.invalid_transition` | `FR` |
 | `commerce.getPurchaseState` | The confirming state after redirect | `R1` | `Q` | — | `FR` |
-| `commerce.getSubscription` | Normalised subscription state | `R1` | `Q` | — | `AO` |
+| `commerce.getSubscription` | Normalised subscription state | `R1` | `Q` | — | `FR` |
 | `commerce.cancelSubscription` | Cancel at period end | `R3`, step-up | `IW` | `state.invalid_transition` | `FR` |
 | `commerce.reactivateSubscription` | Undo a pending cancellation | `R2` | `IW` | `state.invalid_transition` | `FR` |
 | `commerce.getCredits` | Allowance and purchased balances, **presented separately** | `R1` | `Q` | — | `FR` |
-| `commerce.listBillingHistory` | Orders, payments, invoices | `R1` | `Q` | — | `AO` |
+| `commerce.listBillingHistory` | Orders, payments, invoices | `R1` | `Q` | — | `FR` |
 | `commerce.requestRefund` | Open a refund request | `R3`, step-up | `EX` | `state.invalid_transition` | `FR` |
 | `commerce.exportEvidence` | Commercial evidence for a period | `R3`, step-up | `NI` | — | `FR` |
 | `commerce.providerWebhook` | **Provider-facing**, signature-gated, not a customer operation | signature only | `AP` | `validation.invalid_request` | `FR` |

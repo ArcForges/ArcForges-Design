@@ -227,7 +227,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 |---|---|---|
 | [PLT.17](../delivery/lanes/platform.md#task-plt-17) | [WP-09.00](09-capability-contribution-and-resource-model.md#rule-wp-09.00) (full) | [CON.91](../delivery/lanes/contracts.md#task-con-91) (contract), [FND.01](../delivery/lanes/foundation.md#task-fnd-01) (artifact) |
 | [PLT.18](../delivery/lanes/platform.md#task-plt-18) | [WP-09.01](09-capability-contribution-and-resource-model.md#rule-wp-09.01) (full)<br>[WP-09](09-capability-contribution-and-resource-model.md#rule-wp-09) Contribution/registration state durable across restarts (SS6 impacts) (package-level obligation contribution) | none |
-| [PLT.19](../delivery/lanes/platform.md#task-plt-19) | [WP-09.02](09-capability-contribution-and-resource-model.md#rule-wp-09.02) (full) | [CON.91](../delivery/lanes/contracts.md#task-con-91) (contract) |
+| [PLT.19](../delivery/lanes/platform.md#task-plt-19) | [WP-09.02](09-capability-contribution-and-resource-model.md#rule-wp-09.02) (full) | [CON.91](../delivery/lanes/contracts.md#task-con-91) (contract), [CON.02](../delivery/lanes/contracts.md#task-con-02) (contract) |
 | [PLT.20](../delivery/lanes/platform.md#task-plt-20) | [WP-09.03](09-capability-contribution-and-resource-model.md#rule-wp-09.03) (full) | none |
 | [PLT.21](../delivery/lanes/platform.md#task-plt-21) | [WP-09.04](09-capability-contribution-and-resource-model.md#rule-wp-09.04) (full) | none |
 | [PLT.22](../delivery/lanes/platform.md#task-plt-22) | [WP-09.05](09-capability-contribution-and-resource-model.md#rule-wp-09.05) (full) | [PLT.05](../delivery/lanes/platform.md#task-plt-05) (artifact) |
