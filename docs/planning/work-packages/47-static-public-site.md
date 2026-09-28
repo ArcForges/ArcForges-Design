@@ -239,7 +239,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 
 | Delivery task | Satisfies | Start prerequisites outside this package |
 |---|---|---|
-| [WEB.01](../delivery/lanes/web.md#task-web-01) | [WP-47.00](47-static-public-site.md#rule-wp-47.00) (full) | [GOV.03](../delivery/lanes/governance.md#task-gov-03) (artifact) |
+| [WEB.01](../delivery/lanes/web.md#task-web-01) | [WP-47.00](47-static-public-site.md#rule-wp-47.00) (full) | [GOV.03](../delivery/lanes/governance.md#task-gov-03) (artifact), [GOV.11](../delivery/lanes/governance.md#task-gov-11) (artifact) |
 | [WEB.02](../delivery/lanes/web.md#task-web-02) | [WP-47.01](47-static-public-site.md#rule-wp-47.01) (full) | none |
 | [WEB.03](../delivery/lanes/web.md#task-web-03) | [WP-47.02](47-static-public-site.md#rule-wp-47.02) (full) | none |
 | [WEB.04](../delivery/lanes/web.md#task-web-04) | [WP-47.03](47-static-public-site.md#rule-wp-47.03) (full) | none |

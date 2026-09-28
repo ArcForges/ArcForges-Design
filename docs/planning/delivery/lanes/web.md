@@ -8,7 +8,7 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
-| [WEB.01](#task-web-01) | React static generation and determinism engine | producer | L | [GOV.03](governance.md#task-gov-03) (artifact) | not-started |
+| [WEB.01](#task-web-01) | React static generation and determinism engine | producer | L | [GOV.03](governance.md#task-gov-03) (artifact), [GOV.11](governance.md#task-gov-11) (artifact) | not-started |
 | [WEB.02](#task-web-02) | Versioned public content and pricing inputs (catalogue.json) | feature | M | [WEB.01](#task-web-01) (artifact) | not-started |
 | [WEB.03](#task-web-03) | Rendering and performance | feature | M | [WEB.01](#task-web-01) (artifact) | not-started |
 | [WEB.04](#task-web-04) | Internationalisation | feature | M | [WEB.01](#task-web-01) (artifact) | not-started |
@@ -57,14 +57,14 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Kind / size | producer / L |
 | Obligations | [WP-47.00](../../work-packages/47-static-public-site.md#rule-wp-47.00) — full |
 | Provides | web-static-generator |
-| Start prerequisites | **artifact** [GOV.03](governance.md#task-gov-03) — Node/npm workspace and toolchain pins. *Why:* already satisfied — the repo's root package.json/workspaces/.node-version already implement this |
+| Start prerequisites | **artifact** [GOV.03](governance.md#task-gov-03) — Node/npm workspace and toolchain pins. *Why:* already satisfied — the repo's root package.json/workspaces/.node-version already implement this<br>**artifact** [GOV.11](governance.md#task-gov-11) — prior Web security-config exception authority and r7 exact-pattern baseline. *Why:* WEB.01 r8 exact exception appends only after the merged r7 config-owner update |
 | Entry condition | [ADOPT.09.web](adoption.md#task-adopt-09-web) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [WEB.02](#task-web-02), [WEB.03](#task-web-03), [WEB.04](#task-web-04), [WEB.05](#task-web-05), [WEB.06](#task-web-06), [WEB.07](#task-web-07) |
-| Write scope | `Web:apps/site/**` |
+| Write scope | `Web:apps/site/**`<br>`Web:.gitleaks.toml (only exact-path-and-digest generic-api-key exceptions for the eight observed lines/six unique verified public SHA256 values in the browser resource profile)` |
 | Shared resources | [RES-contract-consumer-pins](../shared-resources.md#res-contract-consumer-pins) (append) |
-| Validation | Two full builds with identical inputs compared byte-for-byte; no-script navigation/content tests; single-content-change diff; build with network disabled after approved restore — CI-eligible offline checks |
-| Completion evidence | Determinism comparison and diff-minimality results |
+| Validation | Two full builds with identical inputs compared byte-for-byte; no-script navigation/content tests; single-content-change diff; build with network disabled after approved restore — CI-eligible offline checks. Keep the pinned Gitleaks scan enabled. Its generic-api-key exception may match only the eight observed lines/six unique verified public SHA256 values in eng/provenance/profiles/browser-resources-r8.json, requiring the exact path and digest on the same line (AND); a changed digest, another path, or any unrelated 64-hex value must remain detected. Do not allow generic 64-hex patterns, whole-file or commit suppressions, scanner/workflow/rule-algorithm changes, or new dependencies. |
+| Completion evidence | Determinism comparison and diff-minimality results; pinned Gitleaks results with eight observed findings bound by six exact path/digest pairs and negative path/digest-boundary evidence |
 | Baseline (unreviewed unless accepted) | not-started Observed partial, unreviewed: apps/site already has a working react-router static generator (react-router.config.ts prerenders /, /hello, /cloud-hello) with a working build/deploy pipeline; needs generalizing to the full catalogue-driven public inventory |
 | Notes | Its only real start need (WP00/WP02) is already satisfied; the current serial plan defers WP47 until after WP40, but nothing blocks starting this immediately. |
 

@@ -257,7 +257,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [GOV.15](../delivery/lanes/governance.md#task-gov-15) | [WP-05.90](05-architecture-and-repository-policy-tests.md#rule-wp-05.90) (full) | none |
 | [GOV.16](../delivery/lanes/governance.md#task-gov-16) | [WP-05](05-architecture-and-repository-policy-tests.md#rule-wp-05) Section 7 operation-by-actor [AZ-04](../../architecture/08-security-architecture.md#rule-az-04) authorization reachability matrix (public/local/operator/CF/exception bindings, hostile actor-chain fixtures, resource/context/connector egress denials) and section 8 'Identity boundary evidence' (owner/deployment identity chain; automation loses authorization when its owner loses eligibility) - both unlabeled, no [WP-05](05-architecture-and-repository-policy-tests.md#rule-wp-05).MM anchor (package-level obligation contribution) | [CON.18](../delivery/lanes/contracts.md#task-con-18) (contract) |
 
-**Consumers outside this package:** none.
+**Consumers outside this package:** [WEB.01](../delivery/lanes/web.md#task-web-01).
 
 <!-- delivery-graph:end -->
 

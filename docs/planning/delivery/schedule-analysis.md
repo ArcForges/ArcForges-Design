@@ -9,7 +9,7 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 | Measure | Value |
 |---|---|
 | Delivery tasks | 437 (6 carried as accepted baseline), plus 50 adoption slices |
-| Dependency edges by type | artifact 1019, contract 102, design 1, integration(completion) 197, release 33 |
+| Dependency edges by type | artifact 1020, contract 102, design 1, integration(completion) 197, release 33 |
 | Remaining work (size units: S=1, M=2, L=4, XL=8) | 1116 |
 | Longest dependency chain (levels) | 25 |
 | Widest level (tasks whose longest prerequisite chain has equal length) | 58 |
@@ -58,7 +58,7 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 | Contracts | 29 | 4 | level 3: 7 | 7 | [CON.04](lanes/contracts.md#task-con-04) ContentSandbox service schema (15 methods: session/slot/image/PDF), [CON.05](lanes/contracts.md#task-con-05) Extension/Connector/LocalBootstrap service schema (annex09 helper closure minus ContentSandbox), [CON.12](lanes/contracts.md#task-con-12) Extension and policy schemas: manifest.v1/workflow.v1/panel.v1/policy body.v1/configuration.v1, [CON.16](lanes/contracts.md#task-con-16) Signed catalog/update/realm formats (catalog-index.v1, catalog-revocations.v1, android-update.v1, realm.v1) |
 | DesktopPlatform | 146 | 14 | level 6: 21 | 8 | [EXE.01](lanes/execution.md#task-exe-01) Execution chain and its persistence (ProductJob engine core), [EXT.05](lanes/extensions.md#task-ext-05) Six contribution-kind runtime wiring, [GOV.06](lanes/governance.md#task-gov-06) Build.Policy generated-source reconstruction repair, [NAT.01](lanes/native.md#task-nat-01) Probe A: device tool execution under Native AOT |
 | Mobile | 30 | 4 | level 15: 5 | 1 | [AND.07](lanes/android.md#task-and-07) Foundation integration evidence: real candidate against deployed 22/23/24/25, [AND.08](lanes/android.md#task-and-08) Authentication, Home and workspace (AN01-AN06), [AND.12](lanes/android.md#task-and-12) Presence, push, links and settings (AN20-AN24), [AND.24](lanes/android.md#task-and-24) Real CF Harness generation/tool loop observed end to end on Android |
-| Web | 40 | 5 | level 4: 8 | 2 | [GOV.11](lanes/governance.md#task-gov-11) Web policy tests (Node/TS mechanism), [OPS.04](lanes/operations.md#task-ops-04) Status page, [WEB.02](lanes/web.md#task-web-02) Versioned public content and pricing inputs (catalogue.json), [WEB.03](lanes/web.md#task-web-03) Rendering and performance |
+| Web | 40 | 5 | level 11: 8 | 1 | [WEB.12](lanes/web.md#task-web-12) Account and security surfaces, [WEB.20](lanes/web.md#task-web-20) Conversation and generated output streams, [WEB.21](lanes/web.md#task-web-21) Tasks, approval and steering, [WEB.22](lanes/web.md#task-web-22) Artifacts and sandboxing |
 
 ## Critical path
 
@@ -96,11 +96,11 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 |---|---|
 | 1 | 1 |
 | 2 | 58 |
-| 3 | 28 |
-| 4 | 28 |
+| 3 | 27 |
+| 4 | 22 |
 | 5 | 35 |
-| 6 | 33 |
-| 7 | 36 |
+| 6 | 39 |
+| 7 | 37 |
 | 8 | 33 |
 | 9 | 47 |
 | 10 | 30 |
@@ -139,7 +139,7 @@ Assumptions: task effort is its relative size (S=1, M=2, L=4, XL=8 units, never 
 
 Tasks whose start prerequisites are satisfied once their adoption slices have confirmed the accepted baseline, assuming no other existing work is inherited. The actual first ready set is established slice by slice during adoption and grows as reviewed existing work is recorded as inherited.
 
-[AND.22](lanes/android.md#task-and-22), [CLOUD.01](lanes/cloud.md#task-cloud-01), [CLOUD.44](lanes/cloud.md#task-cloud-44), [CLOUD.55](lanes/cloud.md#task-cloud-55), [COM.01](lanes/commerce.md#task-com-01), [COM.02](lanes/commerce.md#task-com-02), [COM.05](lanes/commerce.md#task-com-05), [CON.04](lanes/contracts.md#task-con-04), [CON.05](lanes/contracts.md#task-con-05), [CON.12](lanes/contracts.md#task-con-12), [CON.16](lanes/contracts.md#task-con-16), [CON.17](lanes/contracts.md#task-con-17), [CON.18](lanes/contracts.md#task-con-18), [CON.23](lanes/contracts.md#task-con-23), [FND.01](lanes/foundation.md#task-fnd-01), [FND.02](lanes/foundation.md#task-fnd-02), [FND.03](lanes/foundation.md#task-fnd-03), [FND.04](lanes/foundation.md#task-fnd-04), [FND.05](lanes/foundation.md#task-fnd-05), [FND.06](lanes/foundation.md#task-fnd-06), [GOV.17](lanes/governance.md#task-gov-17), [NAT.03](lanes/native.md#task-nat-03), [OPS.01](lanes/operations.md#task-ops-01), [POL.01](lanes/policy.md#task-pol-01), [SCOPE.02](lanes/arcscope.md#task-scope-02), [SCOPE.10](lanes/arcscope.md#task-scope-10), [WEB.01](lanes/web.md#task-web-01), [WEB.08](lanes/web.md#task-web-08)
+[AND.22](lanes/android.md#task-and-22), [CLOUD.01](lanes/cloud.md#task-cloud-01), [CLOUD.44](lanes/cloud.md#task-cloud-44), [CLOUD.55](lanes/cloud.md#task-cloud-55), [COM.01](lanes/commerce.md#task-com-01), [COM.02](lanes/commerce.md#task-com-02), [COM.05](lanes/commerce.md#task-com-05), [CON.04](lanes/contracts.md#task-con-04), [CON.05](lanes/contracts.md#task-con-05), [CON.12](lanes/contracts.md#task-con-12), [CON.16](lanes/contracts.md#task-con-16), [CON.17](lanes/contracts.md#task-con-17), [CON.18](lanes/contracts.md#task-con-18), [CON.23](lanes/contracts.md#task-con-23), [FND.01](lanes/foundation.md#task-fnd-01), [FND.02](lanes/foundation.md#task-fnd-02), [FND.03](lanes/foundation.md#task-fnd-03), [FND.04](lanes/foundation.md#task-fnd-04), [FND.05](lanes/foundation.md#task-fnd-05), [FND.06](lanes/foundation.md#task-fnd-06), [GOV.17](lanes/governance.md#task-gov-17), [NAT.03](lanes/native.md#task-nat-03), [OPS.01](lanes/operations.md#task-ops-01), [POL.01](lanes/policy.md#task-pol-01), [SCOPE.02](lanes/arcscope.md#task-scope-02), [SCOPE.10](lanes/arcscope.md#task-scope-10), [WEB.08](lanes/web.md#task-web-08)
 
 ## Remaining serial dependencies and bottlenecks
 
