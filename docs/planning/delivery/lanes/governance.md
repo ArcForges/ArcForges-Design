@@ -137,7 +137,7 @@ Tasks: 16 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Completion prerequisites | none |
 | Unblocks | [GOV.07](#task-gov-07), [GOV.09](#task-gov-09), [GOV.10](#task-gov-10), [GOV.15](#task-gov-15) |
 | Write scope | `Contracts:tests/ArchitectureTests/**`<br>`Contracts:eng/policy/exceptions.json`<br>`Contracts:ArcForges.Contracts.slnx`<br>`Contracts:eng/contracts.py`<br>`Contracts:Directory.Packages.props`<br>`Contracts:tests/ArchitectureTests/packages.lock.json`<br>`Contracts:eng/policy/dependency-policy.json`<br>`Contracts:eng/policy/dependency-reviews/gov-05-*.json`<br>`Contracts:eng/policy/licence-boundary.json`<br>`Contracts:eng/provenance/files.json`<br>`Contracts:eng/dependency_admission.py`<br>`Contracts:tests/tooling/test_dependency_admission.py`<br>`Contracts:eng/check_licences.py`<br>`Contracts:tests/tooling/test_licence_boundary.py` |
-| Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append) |
+| Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append), [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append) |
 | Validation | Offline unit tests, negative fixtures per assertion, PR CI; no live-service runtime per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
 | Completion evidence | Contract/serialization policy results with negative fixtures per assertion; Contracts' own layering/licence/banned-API results. |
 | Baseline (unreviewed unless accepted) | not-started |

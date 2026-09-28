@@ -998,6 +998,10 @@
     {
      "resource": "RES-architecture-tests",
      "mode": "append"
+    },
+    {
+     "resource": "RES-contracts-schema-sources",
+     "mode": "append"
     }
    ],
    "validation": "Offline unit tests, negative fixtures per assertion, PR CI; no live-service runtime per P2-017.",
@@ -25222,7 +25226,7 @@
    "kind": "registry",
    "ownerRepo": "Contracts",
    "owner": "Contracts integration owner",
-   "protocol": "Each closure task edits only its own domain proto or HTTP-schema files and adds its own sharded constraint and fixture files. Shared inventories (contract package inventory, compiled access/hash inventory, foundation and operation inventories, constraint aggregate, and provenance source/output inventory and binding receipts) are append-only per closure and preserve prior history. A task-specific dependency-review successor is added only when the current admission gate requires fresh candidate-input admission; scope alone never changes dependency versions or dependency closure. Public Dokka updates use task-specific successor artifact-profile/documentation-resource record pairs, preserve prior history, and advance only the matching active profile pointer. A proto file with several contributing tasks (operator, policy/configuration) has one designated author task and the others request changes through it. The integration owner merges closure pull requests one at a time and the next author rebases and regenerates."
+   "protocol": "Each schema closure task edits only its own domain proto or HTTP-schema files and adds its own sharded constraint and fixture files. Schema-closure tasks and Contracts policy tasks that touch package/access/provenance/dependency input registries share this append/rebase protocol: append only task-owned rows and successor receipts to package, compiled access/hash, foundation, operation, constraint, provenance source/output, binding, and dependency-review inventories; preserve prior history and never rewrite another task's rows. Refresh dependency input hashes only for the task-owned closure; do not expand dependency versions or closure. Public Dokka updates use task-specific successor artifact-profile/documentation-resource record pairs, preserve prior history, and advance only the matching active profile pointer. A proto file with several contributing tasks (operator, policy/configuration) has one designated author task and the others request changes through it. The integration owner serializes these merges one at a time; each next author rebases and regenerates before integration."
   },
   {
    "id": "RES-design-evidence",
