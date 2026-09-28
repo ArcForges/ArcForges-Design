@@ -5876,7 +5876,23 @@
     }
    ],
    "writes": [
+    "DesktopPlatform:Directory.Packages.props",
+    "DesktopPlatform:eng/policy/architecture-contract-tests.json",
+    "DesktopPlatform:eng/policy/dependency-policy.json",
+    "DesktopPlatform:eng/policy/dependency-reviews/plt-19-r1.json",
+    "DesktopPlatform:eng/policy/reconciliation/active-projects.json",
+    "DesktopPlatform:eng/provenance/files.json",
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Capabilities/**"
+   ],
+   "shared": [
+    {
+     "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    }
    ],
    "validation": "Offline tests: enumerate expected bindings, reject missing/extra methods/unsupported major/inconsistent classification/readiness mismatch/ambiguous target.",
    "evidence": "Selection priority, determinism and explainability results.",

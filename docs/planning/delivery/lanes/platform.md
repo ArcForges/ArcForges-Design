@@ -498,7 +498,8 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [EXT.00](extensions.md#task-ext-00), [PLT.20](#task-plt-20), [PLT.24](#task-plt-24), [PLT.25](#task-plt-25), [PLT.37](#task-plt-37) |
-| Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Capabilities/**` |
+| Write scope | `DesktopPlatform:Directory.Packages.props`<br>`DesktopPlatform:eng/policy/architecture-contract-tests.json`<br>`DesktopPlatform:eng/policy/dependency-policy.json`<br>`DesktopPlatform:eng/policy/dependency-reviews/plt-19-r1.json`<br>`DesktopPlatform:eng/policy/reconciliation/active-projects.json`<br>`DesktopPlatform:eng/provenance/files.json`<br>`DesktopPlatform:src/BuildingBlocks/ArcForges.Capabilities/**` |
+| Shared resources | [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append), [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append) |
 | Validation | Offline tests: enumerate expected bindings, reject missing/extra methods/unsupported major/inconsistent classification/readiness mismatch/ambiguous target. |
 | Completion evidence | Selection priority, determinism and explainability results. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: Nothing exists. |
