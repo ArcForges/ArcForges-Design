@@ -4807,6 +4807,8 @@
     "DesktopPlatform:eng/policy/licence-boundary.json (append only the probe project as kind=msbuild)",
     "DesktopPlatform:eng/policy/runtime-ownership.json (append only the probe csproj to the DesktopPlatform owner projects as role=test-or-build-tool; preserve every other owner, project and field)",
     "DesktopPlatform:eng/policy/reconciliation/active-projects.json (append only the probe csproj row bound to its exact post-rebase git blob SHA; preserve the existing pinned roster)",
+    "DesktopPlatform:eng/policy/architecture-projects.json (append only the exact probe path as role=BuildTool, owner=DesktopPlatform, module empty, production=false, aot=false)",
+    "DesktopPlatform:tests/ArchitectureTests/EvaluatedPolicyTests.cs (exact probe-only default-solution selection exclusion and fail-closed drift tests; preserve all other BuildTool selection)",
     "DesktopPlatform:eng/provenance/files.json (append only the seven exact PRF.09 firstParty rows listed in notes; preserve every prior row/classification)",
     "DesktopPlatform:docs/third-party-control-admission.md (scope the no-Avalonia-use claim to production/shipped shell and disclose the isolated verification-only probe)"
    ],
@@ -4814,15 +4816,19 @@
     {
      "resource": "RES-desktopplatform-build-config",
      "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
     }
    ],
-   "validation": "First-candidate Windows x64 Native AOT publish with zero warnings/errors; locked restore and the same win-x64 publish gate run in package-validation PR and every main-build call under WP-06 BR-06. No executable or GUI run.",
+   "validation": "First-candidate Windows x64 Native AOT publish with zero warnings/errors; locked restore and the same win-x64 publish gate run in package-validation PR and every main-build call under WP-06 BR-06. The existing EvaluatedPolicyTests gate must prove the probe is the sole exact default-solution exclusion and reject missing/duplicate rows, path/owner/role/module/production/aot drift, accidental solution inclusion, and owned/classified inventory drift, while preserving selection of every other BuildTool row. No executable or GUI run.",
    "evidence": "First-candidate publish log and exact-head PR/main workflow runs for the locked aot-probe job; no runtime/GUI or package-adoption claim.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed none, unreviewed: no candidate-control probe found in this pass."
    },
-    "notes": "Low coupling; can run independent of PRF.02-08. Formally schedules VG-03 to WP10, not itself. The verification-only probe is not product adoption, a production dependency, or a release package. Its project must explicitly declare PackageLicenseExpression AGPL-3.0-only; inherited LicenceBoundary classification remains unchanged. The exact package-validation.yml support is a separate aot-probe job on windows-latest using the repository-pinned checkout and setup-dotnet actions, global-json-file global.json, cache enabled with **/packages.lock.json, locked restore of eng/verification/probe-evidence/Prf09.TableViewProbe.csproj, then dotnet publish eng/verification/probe-evidence/Prf09.TableViewProbe.csproj --no-restore -c Release -r win-x64 --verbosity minimal. The job must not execute the binary, run GUI/UI behavior, upload an artifact, or alter product packaging/dependencies/locks/other workflow jobs. The dependency-policy successor adds only input hashes for eng/verification/probe-evidence/Directory.Packages.props, Prf09.TableViewProbe.csproj, and packages.lock.json, and only these build-only locked NuGet coordinates: avalonia/12.1.3, avalonia.buildservices/11.3.2, avalonia.remote.protocol/12.1.3, microcom.runtime/0.11.6. Create eng/policy/dependency-reviews/prf-09-r1.json as a full immutable successor chained from the then-current receipt after rebase; preserve all earlier receipts and admission history. Set dependency-policy.json reviewReceipt to that successor and replace only its active review object with the byte-equivalent review object from that successor so the existing active-receipt gate remains truthful; no unrelated dependency-policy field may change. Append to eng/policy/licence-boundary.json only the probe csproj with kind msbuild. Append only the probe csproj to the DesktopPlatform projects in eng/policy/runtime-ownership.json with role test-or-build-tool, preserving every other owner, project, role and field; this is the necessary gate-support classification for the same verification-only project, not product adoption, a production dependency, runtime selection, runtime authority, a host, or a package. Append only the probe csproj row to eng/policy/reconciliation/active-projects.json, binding its exact post-rebase git blob SHA and preserving the existing pinned roster; no current/source/historical snapshots, project-updates, solution, architecture-projects or reference-baseline changes. Append these seven exact firstParty rows to eng/provenance/files.json, preserving every existing classification: eng/verification/probe-evidence/Directory.Packages.props, eng/verification/probe-evidence/Prf09.TableViewProbe.csproj, eng/verification/probe-evidence/Program.cs, eng/verification/probe-evidence/packages.lock.json, eng/verification/probe-evidence/README.md, eng/verification/probe-evidence/prf-09-publish.log, and eng/policy/dependency-reviews/prf-09-r1.json. Correct docs/third-party-control-admission.md only to state that the production/shipped shell has no Avalonia adoption, reference, or runtime usage and to disclose this isolated verification-only probe. No package-inventory append applies because this build-only probe is not a DesktopPlatform release package; no contract-access, package release allowlist, provenance artifact receipt, Gitleaks config, or other support path is authorized. DesktopPlatform has no dedicated provenance/source-inventory shared resource; the exact files.json and runtime-ownership additions follow ADP-07 necessary support-binding, while RES-desktopplatform-build-config covers only the existing workflow append.",
+   "notes": "Low coupling; can run independent of PRF.02-08. Formally schedules VG-03 to WP10, not itself. The verification-only probe is not product adoption, a production dependency, or a release package. Its project must explicitly declare PackageLicenseExpression AGPL-3.0-only; inherited LicenceBoundary classification remains unchanged. The exact package-validation.yml support is a separate aot-probe job on windows-latest using the repository-pinned checkout and setup-dotnet actions, global-json-file global.json, cache enabled with **/packages.lock.json, locked restore of eng/verification/probe-evidence/Prf09.TableViewProbe.csproj, then dotnet publish eng/verification/probe-evidence/Prf09.TableViewProbe.csproj --no-restore -c Release -r win-x64 --verbosity minimal. The job must not execute the binary, run GUI/UI behavior, upload an artifact, or alter product packaging/dependencies/locks/other workflow jobs. The dependency-policy successor adds only input hashes for eng/verification/probe-evidence/Directory.Packages.props, Prf09.TableViewProbe.csproj, and packages.lock.json, and only these build-only locked NuGet coordinates: avalonia/12.1.3, avalonia.buildservices/11.3.2, avalonia.remote.protocol/12.1.3, microcom.runtime/0.11.6. Create eng/policy/dependency-reviews/prf-09-r1.json as a full immutable successor chained from the then-current receipt after rebase; preserve all earlier receipts and admission history. Set dependency-policy.json reviewReceipt to that successor and replace only its active review object with the byte-equivalent review object from that successor so the existing active-receipt gate remains truthful; no unrelated dependency-policy field may change. Append to eng/policy/licence-boundary.json only the probe csproj with kind msbuild. Append only the probe csproj to the DesktopPlatform projects in eng/policy/runtime-ownership.json with role test-or-build-tool, preserving every other owner, project, role and field; this is the necessary gate-support classification for the same verification-only project, not product adoption, a production dependency, runtime selection, runtime authority, a host, or a package. Append only the probe csproj row to eng/policy/reconciliation/active-projects.json, binding its exact post-rebase git blob SHA and preserving the existing pinned roster; no current/source/historical snapshots or project-updates, solution edits or reference-baseline changes. The only architecture-projects addition is the exact probe row at eng/verification/probe-evidence/Prf09.TableViewProbe.csproj as role=BuildTool, owner=DesktopPlatform, module empty, production=false, aot=false. The existing EvaluatedPolicyTests must permit only this exact probe-only exclusion from default-solution selection; path, owner, role, module, production, AOT, solution inclusion, or owned/classified inventory drift fails closed, and all other BuildTool rows remain selected. This narrowly reconciles the existing test invariant that runtime-owned .csproj entries equal classified architecture-project rows and all other classifications are selected by the default solution; it is not a solution, runtime-ownership, production or product-adoption change. The CI evidence is hosted run 36414100059/job108903421150. Append these seven exact firstParty rows to eng/provenance/files.json, preserving every existing classification: eng/verification/probe-evidence/Directory.Packages.props, eng/verification/probe-evidence/Prf09.TableViewProbe.csproj, eng/verification/probe-evidence/Program.cs, eng/verification/probe-evidence/packages.lock.json, eng/verification/probe-evidence/README.md, eng/verification/probe-evidence/prf-09-publish.log, and eng/policy/dependency-reviews/prf-09-r1.json. Correct docs/third-party-control-admission.md only to state that the production/shipped shell has no Avalonia adoption, reference, or runtime usage and to disclose this isolated verification-only probe. No package-inventory append applies because this build-only probe is not a DesktopPlatform release package; no contract-access, package release allowlist, provenance artifact receipt, Gitleaks config, or other support path is authorized. DesktopPlatform has no dedicated provenance/source-inventory shared resource; exact policy/test/provenance additions use the existing RES-desktopplatform-policy-data append, while RES-desktopplatform-build-config covers only the existing workflow append.",
    "complete": []
   },
   {
@@ -7650,14 +7656,14 @@
    "writes": [
     "DesktopPlatform:benchmarks/probes/acquisition/**"
    ],
-   "validation": "Sustained-throughput run with recorded rate/memory/drop counts; induced overrun; induced disconnect; pause-while-recording test",
+   "validation": "Run a single-channel probe at 1,000,000 scalar samples/second over real localhost TCP sustained for at least 10 seconds using a fixed-capacity ring buffer; record achieved rate, buffer capacity/memory and drop/overrun counts. Also induce and record overrun, disconnect/gap and pause-while-recording behavior.",
    "evidence": "Sustained-throughput record with overrun/gap/pause results",
    "baseline": {
     "state": "not-started",
     "notes": "Observed none, unreviewed: no benchmarks/probes/acquisition scaffolding found."
    },
    "earlyRiskProof": true,
-   "notes": "No hard start-dependency on any other WP -- can begin immediately using a real TCP/UDP loopback or serial-over-USB pair; exotic hardware is not required for the first real-transport configuration. Parallel with NAT.01.",
+   "notes": "No hard start-dependency on any other WP -- can begin immediately using a real TCP/UDP loopback or serial-over-USB pair; exotic hardware is not required for the first real-transport configuration. For this bounded probe, use one channel at 1,000,000 scalar samples/second over real localhost TCP for at least 10 seconds with a fixed-capacity ring buffer and record actual rate, memory/capacity and dropped/overrun samples. This probe-only measurement is not a shipping SLA, marketing claim or downstream performance target; existing overrun counting/timestamping, explicit disconnect gap, pause-with-recording and responsive plot-downsampling obligations remain unchanged. Parallel with NAT.01.",
    "start": [],
    "complete": []
   },
@@ -7734,8 +7740,15 @@
    ],
    "writes": [
     "DesktopPlatform:native/shared/**",
+    "DesktopPlatform:native/CMakeLists.txt (register only the exact NAT.06 C17/C++20 common-ABI test targets below)",
+    "DesktopPlatform:native/shared/tests/arc_native_abi_c17_layout.c (retained shim-static test source only; CTest target arc_native_abi_c17_layout_tests)",
+    "DesktopPlatform:native/shared/tests/arc_native_abi_cpp20_tests.cpp (retained shim-static test source only; target arc_native_abi_cpp20_tests)",
     "DesktopPlatform:native/*/include/arc/**",
-    "DesktopPlatform:src/Native/ArcForges.Native.Abstractions/**"
+    "DesktopPlatform:src/Native/ArcForges.Native.Abstractions/**",
+    "DesktopPlatform:tests/NativeAbiTests/ArcForges.Tests.NativeAbiTests.csproj (add only a ProjectReference to the existing Native.Abstractions project; no PackageReference)",
+    "DesktopPlatform:tests/NativeAbiTests/CommonAbiLayoutTests.cs (existing Windows x64 test project only)",
+    "DesktopPlatform:.github/workflows/native-abi.yml (on Windows x64 run only the two exact CTest targets and `dotnet test tests/NativeAbiTests/ArcForges.Tests.NativeAbiTests.csproj --filter Category=NativeAbiLayout --no-restore`; this filter runs only common-layout tests and excludes the existing image runtime smoke)",
+    "DesktopPlatform:eng/provenance/files.json (append only the three exact new test-source rows above)"
    ],
    "shared": [
     {
@@ -7743,17 +7756,25 @@
      "mode": "append"
     },
     {
+     "resource": "RES-desktopplatform-native-build",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
      "resource": "RES-workstation-build-slot",
      "mode": "exclusive"
     }
    ],
-   "validation": "Compile C17/C++20 headers and C# layouts on the admitted RIDs; offset/size assertions; wrong-size/version/null/closed-handle negative tests",
+   "validation": "On the admitted RIDs compile the common headers and run only CTest targets arc_native_abi_c17_layout_tests (C17) and arc_native_abi_cpp20_tests (C++20), both retained shim-static; on Windows x64 run only `dotnet test tests/NativeAbiTests/ArcForges.Tests.NativeAbiTests.csproj --filter Category=NativeAbiLayout --no-restore`, excluding the existing image runtime smoke. Assert all field offsets and 17 normative sizes, wrong-size/version/null/closed-handle failures, and zero outputs on failure.",
    "evidence": "Common ABI and deterministic failure surface: behavioral, failure and package evidence",
    "baseline": {
     "state": "not-started",
     "notes": "Observed partial, unreviewed: native/shared/include/arc/arc_native_abi.h and native/shared/src/arc_native_abi_internal.hpp already exist (probe-level ABI1.0: get_abi_version/get_build_info/get_last_error only, per design's repeated 'probe-only' warning); the ABI1.1 functional preamble/pack8 records from contracts/06-native-functional-abi.md SS2 are not yet present. src/Native/ArcForges.Native.Abstractions/NativeAbi.cs exists as an early scaffold."
    },
-   "notes": "Hard prerequisite for NAT.11, NAT.13 and NAT.14 (artifact edges from each).",
+   "notes": "Hard prerequisite for NAT.11, NAT.13 and NAT.14 (artifact edges from each). NAT.06 alone registers native/shared/tests/arc_native_abi_c17_layout.c as CTest target arc_native_abi_c17_layout_tests and native/shared/tests/arc_native_abi_cpp20_tests.cpp as target arc_native_abi_cpp20_tests in native/CMakeLists.txt; both tests and targets are retained shim-static only. The existing tests/NativeAbiTests/ArcForges.Tests.NativeAbiTests.csproj gains only a ProjectReference to the existing Native.Abstractions project; CommonAbiLayoutTests.cs uses that project. On Windows x64 native-abi.yml runs only `dotnet test tests/NativeAbiTests/ArcForges.Tests.NativeAbiTests.csproj --filter Category=NativeAbiLayout --no-restore`, so the existing image runtime smoke is excluded. Do not create a project, add a PackageReference or change package identity, or authorize other workflow behavior. Append only these three new test-source rows to eng/provenance/files.json. Preserve the 17 normative size/offset checks and wrong-size, version, null, closed-handle, and zero-output-on-failure cases. No native family implementation, library identity, package identity or dependency expansion is authorized; runtime/policy input binding changes are limited to exact ADP-07 current rows necessary for these files.",
    "start": [
     {
      "type": "artifact",
