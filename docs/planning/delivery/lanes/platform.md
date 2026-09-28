@@ -503,6 +503,7 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Validation | Offline tests: enumerate expected bindings, reject missing/extra methods/unsupported major/inconsistent classification/readiness mismatch/ambiguous target. |
 | Completion evidence | Selection priority, determinism and explainability results. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: Nothing exists. |
+| Notes | Dependency support is limited to project-name conditional central pins for the existing ArcForges.Capabilities and ArcForges.Capabilities.Tests projects at the already-admitted ArcForges.Contracts.Foundation 1.0.0-ci.216.1; the repository-wide default remains 1.0.0-ci.113.1. Only the existing Capabilities and Tests packages.lock.json files may be regenerated. Preserve the existing 51 NuGet coordinates and 10 Python package closure unchanged, with no coordinate/version/license additions, deletions or changes; the immutable plt-19-r1 receipt must chain from the receipt active at integration. No new project, package, global pin, solution, workflow, package-inventory or licence-boundary change is authorized. |
 
 <a id="task-plt-20"></a>
 
