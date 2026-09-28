@@ -6048,11 +6048,23 @@
     }
    ],
    "writes": [
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.Capabilities/**"
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Capabilities/**",
+    "DesktopPlatform:eng/provenance/files.json (append only exact PLT.23-owned firstParty rows for source/test files within the task write scope)",
+    "DesktopPlatform:eng/policy/architecture-contract-tests.json (append only exact PLT.23 public API to direct-test bindings)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    }
    ],
    "validation": "Offline tests: invalid ownership, missing content, expired child cursor, restart, duplicate hint recovery.",
    "evidence": "Deep-link hostile-input, event and health results.",
-   "notes": "HealthDimension is only the closed capability-probe aspect-key type defined by WP-09: reachable, ready, healthy, degraded and capacity. It carries no observation value or snapshot fields. These keys are not Architecture 02 §11's five independent axes (Installation, Presence, Health, Readiness, Compatibility). This clarification changes no Contracts/wire or Foundation HealthSnapshot/InstanceHealth/InstanceReadiness semantics and defines no Cloud presence/heartbeat behavior.",
+   "notes": "HealthDimension is only the closed capability-probe aspect-key type defined by WP-09: reachable, ready, healthy, degraded and capacity. It carries no observation value or snapshot fields. These keys are not Architecture 02 §11's five independent axes (Installation, Presence, Health, Readiness, Compatibility). This clarification changes no Contracts/wire or Foundation HealthSnapshot/InstanceHealth/InstanceReadiness semantics and defines no Cloud presence/heartbeat behavior. ADP-07 support is limited to the two exact supporting paths above: append only PLT.23-owned firstParty source/test inventory rows and exact public-API-to-direct-test rows required by the existing provenance and RP-10 gates. These changes use RES-desktopplatform-policy-data, owned by the DesktopPlatform integration owner: generated policy data is regenerated from its pinned source and never hand-edited; task-owned API/test and inventory rows are additive, and each task adds its own tests/evidence. No evaluator, schema, algorithm, ReasonCode, dependency closure or unrelated policy change is authorized; task outcome, prerequisites and runtime behavior remain unchanged.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Nothing exists."
