@@ -5894,13 +5894,13 @@
      "mode": "append"
     }
    ],
-   "validation": "Offline tests: enumerate expected bindings, reject missing/extra methods/unsupported major/inconsistent classification/readiness mismatch/ambiguous target.",
+   "validation": "Offline tests: enumerate expected bindings, reject missing/extra methods/unsupported major/inconsistent classification/readiness mismatch/ambiguous target. Verify the implementation-only closed owner union: Product(AppIdentity) only for ArcScope/Companion inProcess descriptors, or CloudService(SearchService) only for the currently declared search.query publicGrpc descriptor; CloudService is static catalogue metadata and never constructs a CapabilityTarget or enters the local instance selector, while caller scope remains ApplicationScope.",
    "evidence": "Selection priority, determinism and explainability results.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Nothing exists."
    },
-   "notes": "Dependency support is limited to project-name conditional central pins for the existing ArcForges.Capabilities and ArcForges.Capabilities.Tests projects at the already-admitted ArcForges.Contracts.Foundation 1.0.0-ci.216.1; the repository-wide default remains 1.0.0-ci.113.1. Only the existing Capabilities and Tests packages.lock.json files may be regenerated. Preserve the existing 51 NuGet coordinates and 10 Python package closure unchanged, with no coordinate/version/license additions, deletions or changes; the immutable plt-19-r1 receipt must chain from the receipt active at integration. No new project, package, global pin, solution, workflow, package-inventory or licence-boundary change is authorized.",
+   "notes": "Dependency support is limited to project-name conditional central pins for the existing ArcForges.Capabilities and ArcForges.Capabilities.Tests projects at the already-admitted ArcForges.Contracts.Foundation 1.0.0-ci.216.1; the repository-wide default remains 1.0.0-ci.113.1. Only the existing Capabilities and Tests packages.lock.json files may be regenerated. Preserve the existing 51 NuGet coordinates and 10 Python package closure unchanged, with no coordinate/version/license additions, deletions or changes; the immutable plt-19-r1 receipt must chain from the receipt active at integration. No new project, package, global pin, solution, workflow, package-inventory or licence-boundary change is authorized. The capability owner is an implementation-only closed union: Product(AppIdentity), limited to ArcScope/Companion inProcess descriptors, or CloudService(SearchService), limited to the currently declared search.query publicGrpc descriptor. Do not change wire CapabilityDescriptor, AppIdentity, ProductId or ApplicationScope. CloudService registration is static catalogue metadata only; it must not construct CapabilityTarget or enter the local instance selector, and caller scope remains the request ApplicationScope. Do not add a PublicApi dependency, package or closure edge.",
    "complete": []
   },
   {
