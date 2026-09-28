@@ -2401,7 +2401,7 @@
      "part": "SyncService (~10 ops incl. listScopes/pullChanges/pushChange/pushBatch/getAggregate/listConflicts/resolveConflict/requestFullResync/getBootstrapPage), ResourceService transfer ops (beginUpload/completeUpload/getDownloadTicket/getMetadata/release/getUploadStatus/renewUploadTicket), TransferService (realm-transfer.v1: requestExport/previewImport/commitImport/get/list/cancel) from registry04 §5 and contracts07 §5; the shared TransferTicket record from registry04 §4"
     }
    ],
-   "outcome": "Add the sole canonical public Foundation arcforges.foundation.v1.TransferTicket exactly per registry04 §4: tag 1 ticketId:Id, 2 url:string, 3 expiresAt:Instant, 4 resourceId:Id, 5 range:ByteRange?, 6 maxPartBytes:uint32, reusing existing Foundation value types. It is an opaque object-facade route bound to the current session and allowed verb and never carries R2 credentials. Generate SyncService/ResourceService/TransferService with all listed operations; SyncService.pushChange/pushBatch enforce CON.03's mutation allowlist at the schema-validator boundary; realm-transfer.v1's included/excluded-roots manifest and chunked-batch (<=100 roots) semantics are schema-encoded per contracts07 §5. No other record, runtime behavior, or published compatibility baseline/version change is authorized.",
+   "outcome": "Add the sole canonical public Foundation arcforges.foundation.v1.TransferTicket exactly per registry04 §4: tag 1 ticketId:Id, 2 url:string, 3 expiresAt:Instant, 4 resourceId:Id, 5 range:ByteRange?, 6 maxPartBytes:uint32, reusing existing Foundation value types. It is an opaque object-facade route bound to the current session and allowed verb and never carries R2 credentials. Generate SyncService/ResourceService/TransferService with all listed operations; SyncService.pushChange/pushBatch enforce CON.03's mutation allowlist at the schema-validator boundary; realm-transfer.v1's included/excluded-roots manifest and chunked-batch (<=100 roots) semantics are schema-encoded per contracts07 §5. No other Foundation message, runtime behavior, or published compatibility baseline/version change is authorized.",
    "provides": [
     "sync-resource-transfer-ops",
     "realm-transfer-v1",
@@ -2456,7 +2456,7 @@
      "mode": "append"
     }
    ],
-   "validation": "Deterministic regeneration, constraint-shard aggregation and Foundation inventory/EXTRA_SEEDS checks; offline positive/negative TransferTicket shape vectors in the existing C#/TypeScript Foundation tests using the task-owned fixture, plus Sync/resource/realm-transfer vectors incl. stale revision -> preserved conflict proposal, absent-hash-never-promotes and expired-pin-blocks-adoption. Exactly one new Foundation message; preserve the published baseline/version; no runtime behavior, other record or real D1/R2 (WP-21/WP-25 own that).",
+   "validation": "Deterministic regeneration, constraint-shard aggregation and Foundation inventory/EXTRA_SEEDS checks; offline positive/negative TransferTicket shape vectors in the existing C#/TypeScript Foundation tests using the task-owned fixture, plus Sync/resource/realm-transfer vectors incl. stale revision -> preserved conflict proposal, absent-hash-never-promotes and expired-pin-blocks-adoption. Exactly one new Foundation message; preserve the published baseline/version; no runtime behavior, additional Foundation message or real D1/R2 (WP-21/WP-25 own that).",
    "evidence": "fixtures/public/con-09-sync-transfer.json.",
    "baseline": {
     "state": "not-started",
