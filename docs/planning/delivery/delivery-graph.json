@@ -2390,7 +2390,7 @@
   },
   {
    "id": "CON.09",
-   "title": "Sync/resource-transfer/objects operation registry + realm-transfer.v1",
+   "title": "Sync/resource-transfer/objects operation registry + realm-transfer.v1 + TransferTicket",
    "lane": "contracts",
    "repo": "Contracts",
    "kind": "contract",
@@ -2398,13 +2398,14 @@
    "obligations": [
     {
      "ref": "WP-03.05",
-     "part": "SyncService (~10 ops incl. listScopes/pullChanges/pushChange/pushBatch/getAggregate/listConflicts/resolveConflict/requestFullResync/getBootstrapPage), ResourceService transfer ops (beginUpload/completeUpload/getDownloadTicket/getMetadata/release/getUploadStatus/renewUploadTicket), TransferService (realm-transfer.v1: requestExport/previewImport/commitImport/get/list/cancel) from registry04 §5 and contracts07 §5"
+     "part": "SyncService (~10 ops incl. listScopes/pullChanges/pushChange/pushBatch/getAggregate/listConflicts/resolveConflict/requestFullResync/getBootstrapPage), ResourceService transfer ops (beginUpload/completeUpload/getDownloadTicket/getMetadata/release/getUploadStatus/renewUploadTicket), TransferService (realm-transfer.v1: requestExport/previewImport/commitImport/get/list/cancel) from registry04 §5 and contracts07 §5; the shared TransferTicket record from registry04 §4"
     }
    ],
-   "outcome": "SyncService/ResourceService/TransferService generated with all listed operations; SyncService.pushChange/pushBatch enforce CON.03's mutation allowlist at the schema-validator boundary; realm-transfer.v1's included/excluded-roots manifest and chunked-batch (<=100 roots) semantics are schema-encoded per contracts07 §5.",
+   "outcome": "Add the sole canonical public Foundation arcforges.foundation.v1.TransferTicket exactly per registry04 §4: tag 1 ticketId:Id, 2 url:string, 3 expiresAt:Instant, 4 resourceId:Id, 5 range:ByteRange?, 6 maxPartBytes:uint32, reusing existing Foundation value types. It is an opaque object-facade route bound to the current session and allowed verb and never carries R2 credentials. Generate SyncService/ResourceService/TransferService with all listed operations; SyncService.pushChange/pushBatch enforce CON.03's mutation allowlist at the schema-validator boundary; realm-transfer.v1's included/excluded-roots manifest and chunked-batch (<=100 roots) semantics are schema-encoded per contracts07 §5. No other record, runtime behavior, or published compatibility baseline/version change is authorized.",
    "provides": [
     "sync-resource-transfer-ops",
-    "realm-transfer-v1"
+    "realm-transfer-v1",
+    "transfer-ticket-v1"
    ],
    "start": [
     {
@@ -2421,10 +2422,25 @@
     }
    ],
    "writes": [
+    "Contracts:public/proto/arcforges/foundation/v1/foundation.proto (add only the canonical TransferTicket message from registry04 §4; reuse existing Id, Instant and ByteRange; no other message/field or baseline edit)",
     "Contracts:public/proto/arcforges/publicapi/v1/sync.proto",
     "Contracts:public/proto/arcforges/publicapi/v1/transfer.proto",
     "Contracts:fixtures/public/con-09-sync-transfer.json",
-    "Contracts:eng/operations/con-09.json (owned domain operation authorization export; append through schema-source resource protocol)"
+    "Contracts:eng/operations/con-09.json (owned domain operation authorization export; append through schema-source resource protocol)",
+    "Contracts:public/proto/constraints/con-09-transfer-ticket.json (TransferTicket-only constraints from registry04 §4)",
+    "Contracts:public/proto/constraints.json (regenerated)",
+    "Contracts:eng/foundation-inventory.json (append only TransferTicket to the seed list and its exact record/fields/generated outputs; preserve every existing record and seed)",
+    "Contracts:eng/check_foundation.py (add only TransferTicket to existing EXTRA_SEEDS; no algorithm, baseline, version or other-record changes)",
+    "Contracts:tests/public/foundation.test.mjs (include only the task-owned TransferTicket fixture cases in the existing Foundation test)",
+    "Contracts:tests/StructureTests/FoundationCases.cs (include only the task-owned TransferTicket fixture cases in the existing Foundation test)",
+    "Contracts:src/public/**/Generated/** (regenerated)",
+    "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
+    "Contracts:src/public/ts/proto/src/shapes/gen/proto.ts (regenerated)",
+    "Contracts:src/public/ts/proto/src/services/gen/catalog.ts (regenerated)",
+    "Contracts:src/public/ts/proto/src/index.ts (regenerated)",
+    "Contracts:src/public/ts/contract-fixtures/src/index.ts (regenerated)",
+    "Contracts:src/public/kotlin/contracts-proto/generated/** (regenerated)",
+    "Contracts:src/public/kotlin/contracts-connect-client/generated/** (regenerated)"
    ],
    "shared": [
     {
@@ -2440,11 +2456,11 @@
      "mode": "append"
     }
    ],
-   "validation": "offline positive/negative vectors incl. stale revision -> preserved conflict proposal, absent-hash-never-promotes, expired-pin-blocks-adoption; no real D1/R2 (WP-21/WP-25 own that).",
+   "validation": "Deterministic regeneration, constraint-shard aggregation and Foundation inventory/EXTRA_SEEDS checks; offline positive/negative TransferTicket shape vectors in the existing C#/TypeScript Foundation tests using the task-owned fixture, plus Sync/resource/realm-transfer vectors incl. stale revision -> preserved conflict proposal, absent-hash-never-promotes and expired-pin-blocks-adoption. Exactly one new Foundation message; preserve the published baseline/version; no runtime behavior, other record or real D1/R2 (WP-21/WP-25 own that).",
    "evidence": "fixtures/public/con-09-sync-transfer.json.",
    "baseline": {
     "state": "not-started",
-    "notes": "Observed none, unreviewed: No SyncService/ResourceService/TransferService exist; SyncScope/SyncChange/ChangeProposal/ChangeReceipt/AggregateView/ConflictView/ConflictResolution/BootstrapManifest records (registry04 §4) are also absent."
+    "notes": "Observed none, unreviewed: No SyncService/ResourceService/TransferService exist; SyncScope/SyncChange/ChangeProposal/ChangeReceipt/AggregateView/ConflictView/ConflictResolution/BootstrapManifest records (registry04 §4) are also absent. TransferTicket is the only Foundation addition authorized here; the published compatibility baseline remains unchanged."
    },
    "notes": "WP-21 (Cloud D1/sync engine, the Cloud lane) is the direct consumer that most needs this + CON.03 to start; it does NOT need CON.07/08/10-16.",
    "complete": []
@@ -2459,7 +2475,7 @@
    "obligations": [
     {
      "ref": "WP-03.05",
-     "part": "TaskService(~9)/ApprovalService(2)/BridgeService(3)/public ChatOperationsService(~25)/AgentService(3)/AutomationService(9)/search.query from registry04 §5, plus internal/ai-http/v1 schema.json (ai-internal npm/CloudInternal package) for the C#<->AI-Worker internal HTTP ports in contracts05 §3; public SourceService.getPolicy/setPolicy/clearPolicy/createConsent/revokeConsent from registry04, consuming the canonical CON.06 policy/consent values"
+     "part": "TaskService(~9)/ApprovalService(2)/BridgeService(3)/public ChatService(~25)/AgentService(3)/AutomationService(9)/search.query from registry04 §5, plus internal/ai-http/v1 schema.json (ai-internal npm/CloudInternal package) for the C#<->AI-Worker internal HTTP ports in contracts05 §3; public SourceService.getPolicy/setPolicy/clearPolicy/createConsent/revokeConsent from registry04, consuming the canonical CON.06 policy/consent values. registry04 §5's public ChatService is distinct from §6's in-process IChatOperations -> ChatOperationsService; do not generate a duplicate public service."
     },
     {
      "ref": "WP-03:p2-010-required-behavior-and-closure-sou",
@@ -2533,7 +2549,7 @@
    "evidence": "fixtures/public/con-10-chat-task-agent.json + fixtures/internal/con-10-ai-internal.json.",
    "baseline": {
     "state": "not-started",
-    "notes": "Observed none, unreviewed: No TaskService/ApprovalService/BridgeService/ChatOperationsService(public)/AgentService/AutomationService exist. internal/ai-http/v1/schema.json currently contains only CommitReceipt."
+    "notes": "Observed none, unreviewed: No TaskService/ApprovalService/BridgeService/ChatService(public)/AgentService/AutomationService exist. registry04 §5 public ChatService is distinct from §6 in-process IChatOperations -> ChatOperationsService; no duplicate public service is authorized. internal/ai-http/v1/schema.json currently contains only CommitReceipt."
    },
    "notes": "Second-largest domain task. WP-15/16/17 (ArcChat core/execution/independent-core, the assistant lanes) are the direct consumers; WP-52 (Cloud Harness, the AI lanes) needs both this and CON.11. Shared leaf shapes are defined here before CON.11 consumes them; there is no reverse CON.10 prerequisite on CON.11. SessionBinding is a schema record, not cached authorization; this task adds no live handlers. Private CF route exports require actual authoritative route oracle rows before registration: preserve service actor, PAT denial, HMAC, owner/fence binding and idempotency requirements from contracts05. No borrowed public operation identities, new scope enum, authorization weakening or CON.18 checker algorithm expansion is authorized by this repair. This future authoring scope is not evidence that those route rows already exist.",
    "complete": []
@@ -2742,6 +2758,12 @@
      "task": "CON.13",
      "need": "CatalogSubmissionView/CatalogVersionView",
      "why": "operator.catalog.review and catalog.revoke request/result fields reference these exact record types; they must exist first."
+    },
+    {
+     "type": "contract",
+     "task": "CON.09",
+     "need": "Canonical arcforges.foundation.v1.TransferTicket",
+     "why": "OperatorService.ReadDiagnostic returns the Registry04 TransferTicket; import the sole public Foundation definition authored by CON.09."
     }
    ],
    "writes": [
@@ -3294,6 +3316,12 @@
      "task": "CON.02",
      "need": "capability/action/context/resource descriptor and oversized-body reference records",
      "why": "these operations carry resource references, descriptors and immutable body references defined by the shared descriptor closure"
+    },
+    {
+     "type": "contract",
+     "task": "CON.09",
+     "need": "Canonical arcforges.foundation.v1.TransferTicket",
+     "why": "SimulationService.GetSegmentTicket returns the Registry04 TransferTicket; import the sole public Foundation definition authored by CON.09."
     }
    ],
    "writes": [
@@ -3371,6 +3399,12 @@
      "task": "CON.02",
      "need": "capability/action/context/resource descriptor and oversized-body reference records",
      "why": "these operations carry resource references, descriptors and immutable body references defined by the shared descriptor closure"
+    },
+    {
+     "type": "contract",
+     "task": "CON.09",
+     "need": "Canonical arcforges.foundation.v1.TransferTicket",
+     "why": "The export download operation returns the Registry04 TransferTicket; import the sole public Foundation definition authored by CON.09."
     }
    ],
    "writes": [
