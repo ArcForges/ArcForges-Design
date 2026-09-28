@@ -498,10 +498,12 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [EXT.00](extensions.md#task-ext-00), [PLT.20](#task-plt-20), [PLT.24](#task-plt-24), [PLT.25](#task-plt-25), [PLT.37](#task-plt-37) |
-| Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Capabilities/**` |
+| Write scope | `DesktopPlatform:Directory.Packages.props`<br>`DesktopPlatform:eng/policy/architecture-contract-tests.json`<br>`DesktopPlatform:eng/policy/dependency-policy.json`<br>`DesktopPlatform:eng/policy/dependency-reviews/plt-19-r1.json`<br>`DesktopPlatform:eng/policy/reconciliation/active-projects.json`<br>`DesktopPlatform:eng/provenance/files.json`<br>`DesktopPlatform:src/BuildingBlocks/ArcForges.Capabilities/**` |
+| Shared resources | [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append), [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append) |
 | Validation | Offline tests: enumerate expected bindings, reject missing/extra methods/unsupported major/inconsistent classification/readiness mismatch/ambiguous target. |
 | Completion evidence | Selection priority, determinism and explainability results. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: Nothing exists. |
+| Notes | Dependency support is limited to project-name conditional central pins for the existing ArcForges.Capabilities and ArcForges.Capabilities.Tests projects at the already-admitted ArcForges.Contracts.Foundation 1.0.0-ci.216.1; the repository-wide default remains 1.0.0-ci.113.1. Only the existing Capabilities and Tests packages.lock.json files may be regenerated. Preserve the existing 51 NuGet coordinates and 10 Python package closure unchanged, with no coordinate/version/license additions, deletions or changes; the immutable plt-19-r1 receipt must chain from the receipt active at integration. No new project, package, global pin, solution, workflow, package-inventory or licence-boundary change is authorized. |
 
 <a id="task-plt-20"></a>
 
