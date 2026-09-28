@@ -2539,6 +2539,7 @@
     "Contracts:eng/provenance/records/dokka-documentation-resources-r<N>.json (matching immutable task-owned successor)",
     "Contracts:eng/documentation_tools.py (advance only PROFILE to the same claimed successor at serialized integration)",
     "Contracts:public/proto/constraints/con-09-transfer-ticket.json (TransferTicket-only constraints from registry04 §4)",
+    "Contracts:public/proto/constraints/con-09-sync-transfer.json (only messages authored by CON.09 in sync.proto and transfer.proto)",
     "Contracts:public/proto/constraints.json (regenerated)",
     "Contracts:eng/foundation-inventory.json (append only TransferTicket to the seed list and its exact record/fields/generated outputs; preserve every existing record and seed)",
     "Contracts:eng/check_foundation.py (add only TransferTicket to existing EXTRA_SEEDS; no algorithm, baseline, version or other-record changes)",
@@ -2577,7 +2578,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: No SyncService/ResourceService/TransferService exist; SyncScope/SyncChange/ChangeProposal/ChangeReceipt/AggregateView/ConflictView/ConflictResolution/BootstrapManifest records (registry04 §4) are also absent. TransferTicket is the only Foundation addition authorized here; the published compatibility baseline remains unchanged."
    },
-   "notes": "WP-21 (Cloud D1/sync engine, the Cloud lane) is the direct consumer that most needs this + CON.03 to start; it does NOT need CON.07/08/10-16. TransferTicket boundary: CON.09 is its sole author, and this repair authorizes only this one new Foundation message; CON.14/.21/.22 import it without copies. No second/alias Foundation type, other new Foundation message, runtime handler/authorization/network behavior, R2 credential, or published compatibility-baseline/version mutation is authorized; CON.09's existing domain operation/record scope is otherwise unchanged. ADP-07 support is append/successor-only: register sync.proto and transfer.proto only in the existing PublicApi package; add exact hashes/type assignments for the three task-owned schemas; refresh only this closure's input hashes; preserve package identities, dependency versions/closure and prior receipt/history. Provenance may append this task's source/output rows and remap only regenerated targets already authorized above; no generated output authority outside the listed paths. Dokka is a current Contracts CI gate: eng/contracts.py pack -> eng/maven_tools.py:pack() runs dokkaGeneratePublicationHtml and documentation_tools.prepare(), and verify_bundle() calls documentation_tools.verify(); admission requires exact fixed/excluded/module-page membership and normalized page hashes. Use RES-contracts-dokka-profile's short allocation/generation lease after rebasing on latest Contracts main: inspect the merged PROFILE/immutable successor pairs and all live durable reservations; if an earlier unmerged reservation exists, release and defer only Dokka work. Otherwise claim exactly rN where N=active+1 and both successor paths are free, never skip/reuse/prewrite. Generate only this task's Kotlin inputs and exact API page/hash sets in contracts-proto and contracts-connect-client; preserve fixed/excluded/history and advance only the matching pointer. Push the exact branch head and durably record {resource,rN,exact head/PR} in claim/PR handoff, then release before review/CI. Do not allocate the next number until the reservation merges/releases/supersedes; any rebase/change requires reclaim, pointer/N revalidation, regeneration, reservation update and invalidates prior review.",
+   "notes": "WP-21 (Cloud D1/sync engine, the Cloud lane) is the direct consumer that most needs this + CON.03 to start; it does NOT need CON.07/08/10-16. TransferTicket boundary: CON.09 is its sole author, and this repair authorizes only this one new Foundation message; CON.14/.21/.22 import it without copies. No second/alias Foundation type, other new Foundation message, runtime handler/authorization/network behavior, R2 credential, or published compatibility-baseline/version mutation is authorized; CON.09's existing domain operation/record scope is otherwise unchanged. The sync-transfer constraint shard is limited to the complete new message set authored by CON.09 in sync.proto and transfer.proto; preserve every other shard and regenerate constraints.json only through the existing aggregator. ADP-07 support is append/successor-only: register sync.proto and transfer.proto only in the existing PublicApi package; add exact hashes/type assignments for the three task-owned schemas; refresh only this closure's input hashes; preserve package identities, dependency versions/closure and prior receipt/history. Provenance may append this task's source/output rows and remap only regenerated targets already authorized above; no generated output authority outside the listed paths. Dokka is a current Contracts CI gate: eng/contracts.py pack -> eng/maven_tools.py:pack() runs dokkaGeneratePublicationHtml and documentation_tools.prepare(), and verify_bundle() calls documentation_tools.verify(); admission requires exact fixed/excluded/module-page membership and normalized page hashes. Use RES-contracts-dokka-profile's short allocation/generation lease after rebasing on latest Contracts main: inspect the merged PROFILE/immutable successor pairs and all live durable reservations; if an earlier unmerged reservation exists, release and defer only Dokka work. Otherwise claim exactly rN where N=active+1 and both successor paths are free, never skip/reuse/prewrite. Generate only this task's Kotlin inputs and exact API page/hash sets in contracts-proto and contracts-connect-client; preserve fixed/excluded/history and advance only the matching pointer. Push the exact branch head and durably record {resource,rN,exact head/PR} in claim/PR handoff, then release before review/CI. Do not allocate the next number until the reservation merges/releases/supersedes; any rebase/change requires reclaim, pointer/N revalidation, regeneration, reservation update and invalidates prior review.",
    "complete": []
   },
   {
@@ -3922,7 +3923,8 @@
     "Contracts:fixtures/public/con-24-scope-library.json",
     "Contracts:src/public/**/Generated/**",
     "Contracts:public/proto/arcforges/publicapi/v1/content.proto (ScopeProjectSummary and ScopeSessionSummary only)",
-    "Contracts:public/proto/constraints/** (library summaries and operations)",
+    "Contracts:public/proto/constraints/con-24-scope-library.json (only ScopeService request/result plus ScopeProjectSummary and ScopeSessionSummary constraints)",
+    "Contracts:public/proto/constraints.json (regenerated from owned shards)",
     "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
     "Contracts:src/public/ts/proto/src/shapes/gen/** (regenerated)",
     "Contracts:src/public/ts/proto/src/services/gen/catalog.ts (regenerated)",
@@ -8488,7 +8490,7 @@
    "obligations": [
     {
      "ref": "WP-14.00",
-     "part": "full"
+     "part": "Host-port signatures, product/profile identity and lifetime, and two-identity unit isolation only; APP.08 owns the WP-14.00 minimal real-integration sample."
     }
    ],
    "outcome": "Assistant.Abstractions published with IHostContext/IHostActions/IHostResources/IHostNavigation/IHostLifecycle/IHostPlatformServices, product/profile identity and lifetime; two independent application identities cannot share stores/registration.",
@@ -8880,11 +8882,15 @@
    "size": "M",
    "obligations": [
     {
+     "ref": "WP-14.00",
+     "part": "Minimal real-integration sample only: compose the WP-14 host ports with real ArcForges.Capabilities, ArcForges.Desktop.Shell and ArcForges.Persistence.Sqlite; no fakes or stand-ins."
+    },
+    {
      "ref": "WP-14.90",
      "part": "full"
     }
    ],
-   "outcome": "WP14 built/packed once from a clean environment; all applicable UX acceptance groups recorded; package/contract/owner/version compatibility and failure/recovery evidence attached; no later-provider fixture used to close a real WP14 gate.",
+   "outcome": "A minimal, runnable WP14 integration sample composes the host ports with real ArcForges.Capabilities, ArcForges.Desktop.Shell and ArcForges.Persistence.Sqlite, and demonstrates product/profile identity, lifecycle and isolated local-store use; WP14 is built/packed once from a clean environment with all applicable UX acceptance groups and package/contract/owner/version compatibility and failure/recovery evidence recorded. No later-provider fixture closes a real WP14 gate.",
    "provides": [
     "wp14-accepted-artifact"
    ],
@@ -8892,8 +8898,8 @@
     {
      "type": "artifact",
      "task": "APP.01",
-     "need": "completed WP-14.00",
-     "why": "aggregation requires every WP14 substep complete"
+     "need": "published WP-14.00 host-port signatures and product/profile identity/lifetime",
+     "why": "the APP.08 real-integration sample composes through APP.01's delivered host ports and identity; APP.08 owns the separate sample portion of WP-14.00"
     },
     {
      "type": "artifact",
@@ -8930,22 +8936,57 @@
      "task": "APP.07",
      "need": "completed WP-14.06",
      "why": "aggregation"
+    },
+    {
+     "type": "artifact",
+     "task": "PLT.17",
+     "need": "real ArcForges.Capabilities application identity and composition root",
+     "why": "the sample must compose with the delivered capability/application-identity implementation, not a fake or stand-in"
+    },
+    {
+     "type": "artifact",
+     "task": "PLT.27",
+     "need": "real ArcForges.Desktop.Shell project and window/panel host",
+     "why": "the sample directly consumes the delivered same-repository Shell project; PLT.27 is named directly rather than inferred through another APP task, and no PLT.35 package is required"
+    },
+    {
+     "type": "artifact",
+     "task": "PLT.01",
+     "need": "real single-write-path Persistence.Sqlite store",
+     "why": "the sample must exercise the existing real local transactional store rather than an in-memory fake or a second persistence mechanism"
     }
    ],
    "writes": [
+    "DesktopPlatform:samples/AssistantHost/** (minimal runnable sample only; its packages.lock.json is generated from existing approved dependency identities)",
+    "DesktopPlatform:DesktopPlatform.slnx (register only the APP.08 sample)",
+    "DesktopPlatform:.github/workflows/package-validation.yml (build/run only the sample in the existing validation flow; no new job, matrix or deployment)",
+    "DesktopPlatform:eng/policy/architecture-projects.json (append only the sample project classification)",
+    "DesktopPlatform:eng/policy/runtime-ownership.json (append only the sample's non-production ownership classification)",
+    "DesktopPlatform:eng/policy/licence-boundary.json (append only the sample project classification)",
+    "DesktopPlatform:eng/policy/reconciliation/active-projects.json (append only the sample project)",
+    "DesktopPlatform:eng/policy/reconciliation/project-updates.json (append only the sample project registration)",
+    "DesktopPlatform:eng/policy/reconciliation/source.json (append only the sample source inventory)",
+    "DesktopPlatform:eng/provenance/files.json (classify only the task-owned sample source and project/lock inputs)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (only exact sample project/lock input bindings for already-admitted dependency identities)",
+    "DesktopPlatform:eng/policy/dependency-reviews/app-08-r1.json (immutable sample admission receipt only if required by the existing dependency gate; no dependency identity, version or closure changes)",
     "DesktopPlatform:artifacts/evidence/**"
    ],
    "shared": [
+    {
+     "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
     {
      "resource": "RES-desktopplatform-policy-data",
      "mode": "append"
     }
    ],
-   "validation": "Build/pack once in CI producing the immutable candidate; UX-A/B ledger rows recorded per experience/03; P2-017 scope only (no macOS/E2E/live-service CI).",
+   "validation": "Build and run the real minimal sample in the existing package-validation flow under P2-017, alongside the single WP14 CI build/pack producing the immutable candidate; record UX-A/B ledger rows per experience/03. No macOS, E2E or live-service CI.",
    "evidence": "Source commit, package/artifact versions and hashes, environment, UX-A/B acceptance rows, named later-fixture list (none expected for WP14 itself).",
    "baseline": {
     "state": "not-started"
    },
+   "notes": "APP.01 owns only WP-14.00 host-port signatures, product/profile identity and lifetime, and two-identity unit isolation; APP.08 owns WP-14.00's minimal real-integration sample plus WP-14.90 acceptance. The sample composes existing host ports with real ArcForges.Capabilities, ArcForges.Desktop.Shell and ArcForges.Persistence.Sqlite; it must not use fakes or fixture stand-ins, implement full AssistantHost UI (WP-17), add a package identity, or require PLT.35. Register only the sample project/build/run path and its exact existing-policy, reconciliation, provenance and lock bindings; preserve all package identities and dependency versions/closure. Shared build-config and policy-data updates are append-only.",
    "packageAcceptance": "WP-14",
    "complete": []
   },
@@ -15113,11 +15154,21 @@
     }
    ],
    "writes": [
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.Sync/**"
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Sync/**",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Sqlite/** (only the existing single sync_outbox schema, atomic local edit/state/journal/outbox transaction, and its forward migration, recovery and downgrade-refusal behavior)",
+    "DesktopPlatform:tests/PersistenceTests/** (WP-25.01 sync_outbox regressions only)"
    ],
    "shared": [
     {
      "resource": "RES-assistant-store-schema",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
      "mode": "append"
     }
    ],
@@ -15127,7 +15178,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: DesktopPlatform out of this area's primary research scope -- integration owner should verify no existing local-outbox scaffold"
    },
-   "notes": "Cross-repo: WP-25 names this project explicitly in its own §4 table despite living in DesktopPlatform."
+   "notes": "Cross-repo: WP-25 names this project explicitly in its own §4 table despite living in DesktopPlatform. Persistence.Sqlite scope is limited to the one existing sync_outbox table, same-database atomic local edit/state/journal/outbox transaction, forward-only migration plus recovery and downgrade-refusal tests; no second database/table/outbox or unrelated Persistence changes. PersistenceTests scope covers only WP-25.01 outbox regressions. Project/solution/workflow/inventory/support changes are exact ADP-07 bindings only: append the required project/build/test and current policy/provenance inputs without new dependencies, package identities, policy algorithms or unrelated rows. Preserve RES-assistant-store-schema's serialized migration protocol."
   },
   {
    "id": "CLOUD.39",
@@ -18871,6 +18922,9 @@
    ],
    "writes": [
     "Contracts:public/proto/arcforges/extensions/v1/**",
+    "Contracts:tests/StructureTests/ExtensionBoundaryCases.cs (negative containment test for StructuredValue in first-party domain/product contracts)",
+    "Contracts:tests/StructureTests/Fixtures/structured-value-first-party-domain.proto (task-owned negative test fixture only)",
+    "Contracts:tests/StructureTests/Program.cs (register exactly ExtensionBoundaryCases.Run(root) in the existing console runner only)",
     "DesktopPlatform:src/Extensions/ArcForges.Extensions.Contracts/**"
    ],
    "shared": [
@@ -18886,7 +18940,7 @@
     "notes": "Observed scaffold, unreviewed: Contracts already has public/proto/arcforges/extensions/v1/extensions.proto with ExtensionLease/ExtensionHostService.RenewLease and a generated ArcForges.Sdk.Client (ExtensionLeaseClient.cs) -- WP-03-level groundwork this task extends, not yet the StructuredValue/ValueSchema model itself."
    },
    "earlyRiskProof": true,
-   "notes": "WP-41 Sec.1 names the AOT-vs-dynamic-value tension as 'the platform's hardest design problem' -- narrow early risk proof.",
+   "notes": "WP-41 Sec.1 names the AOT-vs-dynamic-value tension as 'the platform's hardest design problem' -- narrow early risk proof. The first-party containment test must execute and reject StructuredValue in first-party domain/product contract source, not merely retain a textual fixture; Program.cs may only register ExtensionBoundaryCases.Run(root), without runner refactoring, other registrations, or execution-order/exit-semantics changes. The fixture and test are task-owned evidence; no dependency or package changes are authorized.",
    "complete": []
   },
   {

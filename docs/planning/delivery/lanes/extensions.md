@@ -85,12 +85,12 @@ Tasks: 12 · Owning repositories: AI, Cloud, Contracts, DesktopPlatform · Integ
 | Entry condition | [ADOPT.03.extensions](adoption.md#task-adopt-03-extensions) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [EXT.03](#task-ext-03), [EXT.04](#task-ext-04), [EXT.08](#task-ext-08), [EXT.90](#task-ext-90), [SCOPE.25](arcscope.md#task-scope-25) |
-| Write scope | `Contracts:public/proto/arcforges/extensions/v1/**`<br>`DesktopPlatform:src/Extensions/ArcForges.Extensions.Contracts/**` |
+| Write scope | `Contracts:public/proto/arcforges/extensions/v1/**`<br>`Contracts:tests/StructureTests/ExtensionBoundaryCases.cs (negative containment test for StructuredValue in first-party domain/product contracts)`<br>`Contracts:tests/StructureTests/Fixtures/structured-value-first-party-domain.proto (task-owned negative test fixture only)`<br>`Contracts:tests/StructureTests/Program.cs (register exactly ExtensionBoundaryCases.Run(root) in the existing console runner only)`<br>`DesktopPlatform:src/Extensions/ArcForges.Extensions.Contracts/**` |
 | Shared resources | [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append) |
 | Validation | Value-model coverage per type; bidirectional validation tests; containment policy test with a negative fixture; an AOT publish with the platform present (native AOT compile check, permitted under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
 | Completion evidence | Value-model, validation, containment and AOT results. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: Contracts already has public/proto/arcforges/extensions/v1/extensions.proto with ExtensionLease/ExtensionHostService.RenewLease and a generated ArcForges.Sdk.Client (ExtensionLeaseClient.cs) -- WP-03-level groundwork this task extends, not yet the StructuredValue/ValueSchema model itself. |
-| Notes | [WP-41](../../work-packages/41-extension-platform-and-integrations.md#rule-wp-41) Sec.1 names the AOT-vs-dynamic-value tension as 'the platform's hardest design problem' -- narrow early risk proof. |
+| Notes | [WP-41](../../work-packages/41-extension-platform-and-integrations.md#rule-wp-41) Sec.1 names the AOT-vs-dynamic-value tension as 'the platform's hardest design problem' -- narrow early risk proof. The first-party containment test must execute and reject StructuredValue in first-party domain/product contract source, not merely retain a textual fixture; Program.cs may only register ExtensionBoundaryCases.Run(root), without runner refactoring, other registrations, or execution-order/exit-semantics changes. The fixture and test are task-owned evidence; no dependency or package changes are authorized. |
 
 <a id="task-ext-03"></a>
 

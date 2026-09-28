@@ -250,7 +250,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [PLT.34](../delivery/lanes/platform.md#task-plt-34) | [WP-10.08](10-design-system-and-desktop-shell.md#rule-wp-10.08) (full) | [PRF.02](../delivery/lanes/runtime-proofs.md#task-prf-02) (artifact) |
 | [PLT.35](../delivery/lanes/platform.md#task-plt-35) | [WP-10.90](10-design-system-and-desktop-shell.md#rule-wp-10.90) (full) | none |
 
-**Consumers outside this package:** [APP.07](../delivery/lanes/app-composition.md#task-app-07), [PLT.52](../delivery/lanes/platform.md#task-plt-52), [PRF.09](../delivery/lanes/runtime-proofs.md#task-prf-09), [SCOPE.09](../delivery/lanes/arcscope.md#task-scope-09), [UPD.03](../delivery/lanes/updater.md#task-upd-03).
+**Consumers outside this package:** [APP.07](../delivery/lanes/app-composition.md#task-app-07), [APP.08](../delivery/lanes/app-composition.md#task-app-08), [PLT.52](../delivery/lanes/platform.md#task-plt-52), [PRF.09](../delivery/lanes/runtime-proofs.md#task-prf-09), [SCOPE.09](../delivery/lanes/arcscope.md#task-scope-09), [UPD.03](../delivery/lanes/updater.md#task-upd-03).
 
 <!-- delivery-graph:end -->
 

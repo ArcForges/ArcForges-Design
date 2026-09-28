@@ -216,7 +216,7 @@ Every active numbered substep and every package-level obligation maps to the del
 
 | Obligation | Title | Delivery tasks (part) |
 |---|---|---|
-| [WP-14.00](../work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.00) | Application scope and host ports | [APP.01](lanes/app-composition.md#task-app-01) (full) |
+| [WP-14.00](../work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.00) | Application scope and host ports | [APP.01](lanes/app-composition.md#task-app-01) (Host-port signatures, product/profile identity and lifetime, and two-identity unit isolation only; APP.08 owns the [WP-14.00](../work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.00) minimal real-integration sample.)<br>[APP.08](lanes/app-composition.md#task-app-08) (Minimal real-integration sample only: compose the [WP-14](../work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14) host ports with real ArcForges.Capabilities, ArcForges.Desktop.Shell and ArcForges.Persistence.Sqlite; no fakes or stand-ins.) |
 | [WP-14.01](../work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.01) | Minimal ArcScope application services | [APP.02](lanes/app-composition.md#task-app-02) (full) |
 | [WP-14.02](../work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.02) | Package consumer composition | [APP.03](lanes/app-composition.md#task-app-03) (full) |
 | [WP-14.03](../work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.03) | Idempotency and revision | [APP.04](lanes/app-composition.md#task-app-04) (full) |
