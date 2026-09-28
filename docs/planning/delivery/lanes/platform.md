@@ -592,6 +592,7 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Validation | Offline tests: invalid ownership, missing content, expired child cursor, restart, duplicate hint recovery. |
 | Completion evidence | Deep-link hostile-input, event and health results. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: Nothing exists. |
+| Notes | HealthDimension is only the closed capability-probe aspect-key type defined by [WP-09](../../work-packages/09-capability-contribution-and-resource-model.md#rule-wp-09): reachable, ready, healthy, degraded and capacity. It carries no observation value or snapshot fields. These keys are not Architecture 02 §11's five independent axes (Installation, Presence, Health, Readiness, Compatibility). This clarification changes no Contracts/wire or Foundation HealthSnapshot/InstanceHealth/InstanceReadiness semantics and defines no Cloud presence/heartbeat behavior. |
 
 <a id="task-plt-24"></a>
 
@@ -1225,6 +1226,7 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Validation | Offline tests: dependency-outage test asserting readiness fails closed; capability-health test reflecting simulated degradation. |
 | Completion evidence | Health probe fail-closed and degradation results. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: Nothing exists. |
+| Notes | Consume PLT.23's HealthDimension only as the same closed capability-probe aspect-key type defined by [WP-09](../../work-packages/09-capability-contribution-and-resource-model.md#rule-wp-09): reachable, ready, healthy, degraded and capacity. It carries no observation value or snapshot fields and is distinct from Architecture 02 §11's five independent axes (Installation, Presence, Health, Readiness, Compatibility). This clarification changes no Contracts/wire or Foundation HealthSnapshot/InstanceHealth/InstanceReadiness semantics and defines no Cloud presence/heartbeat behavior. |
 
 <a id="task-plt-52"></a>
 
