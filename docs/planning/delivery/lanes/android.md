@@ -27,7 +27,7 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | [AND.17](#task-and-17) | Release runtime inspection | acceptance | S | [AND.16](#task-and-16) (artifact) | not-started |
 | [AND.18](#task-and-18) | Dependency and source rights closure (final artifact) | acceptance | S | [AND.16](#task-and-16) (artifact) | not-started |
 | [AND.19](#task-and-19) | Consumption-only enforcement | acceptance | M | [AND.08](#task-and-08) (artifact), [AND.09](#task-and-09) (artifact), [AND.10](#task-and-10) (artifact), [AND.11](#task-and-11) (artifact), [AND.12](#task-and-12) (artifact) | not-started |
-| [AND.20](#task-and-20) | Play and direct-channel signed update client | feature | M | [CON.16](contracts.md#task-con-16) (contract) | not-started |
+| [AND.20](#task-and-20) | Play and direct-channel signed update client | feature | M | [CON.16](contracts.md#task-con-16) (contract), [AND.02](#task-and-02) (artifact) | not-started |
 | [AND.21](#task-and-21) | Physical device and recovery gates | integration | L | [AND.16](#task-and-16) (artifact) | not-started |
 | [AND.22](#task-and-22) | Android scope statement | acceptance | S | none | not-started |
 | [AND.23](#task-and-23) | Distribution acceptance | release | M | [AND.17](#task-and-17) (artifact), [AND.18](#task-and-18) (artifact), [AND.19](#task-and-19) (artifact), [AND.20](#task-and-20) (artifact), [AND.21](#task-and-21) (artifact), [AND.22](#task-and-22) (artifact) | not-started |
@@ -78,7 +78,7 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Start prerequisites | **artifact** [AND.01](#task-and-01) — renamed applicationId/namespace and pinned toolchain. *Why:* new modules must be created under the production package identity, not the Hello dev id |
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [AND.03](#task-and-03), [AND.04](#task-and-04), [AND.05](#task-and-05) |
+| Unblocks | [AND.03](#task-and-03), [AND.04](#task-and-04), [AND.05](#task-and-05), [AND.20](#task-and-20) |
 | Write scope | `Mobile:settings.gradle.kts`<br>`Mobile:build.gradle.kts`<br>`Mobile:core/domain/**`<br>`Mobile:core/data/**`<br>`Mobile:core/network/**`<br>`Mobile:core/security/**`<br>`Mobile:core/designsystem/**`<br>`Mobile:feature/home/**`<br>`Mobile:feature/chat/**`<br>`Mobile:feature/tasks/**`<br>`Mobile:feature/library/**`<br>`Mobile:feature/settings/**` |
 | Shared resources | [RES-mobile-build-config](../shared-resources.md#res-mobile-build-config) (exclusive) |
 | Validation | Architecture/import boundary tests (no React Native/iOS/AGPL imports, no cross-module leakage) as offline static checks; targeted offline unit tests per module |
@@ -489,7 +489,7 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Kind / size | feature / M |
 | Obligations | [WP-32.04](../../work-packages/32-mobile-release-and-store-gates.md#rule-wp-32.04) — full |
 | Provides | android-update-channels |
-| Start prerequisites | **contract** [CON.16](contracts.md#task-con-16) — android-update.v1 feed format and fixture signing keys. *Why:* already available per the producer matrix ("No production key prerequisite; WP32/WP41 consume fixture roots") |
+| Start prerequisites | **contract** [CON.16](contracts.md#task-con-16) — android-update.v1 feed format and fixture signing keys. *Why:* already available per the producer matrix ("No production key prerequisite; WP32/WP41 consume fixture roots")<br>**artifact** [AND.02](#task-and-02) — registered core/network and feature/settings module shells from android-module-boundaries. *Why:* AND.02 owns creation and one-time Gradle registration of the architecture-27 module set; the update client cannot be compiled or tested in these production modules until that delivered boundary exists |
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [AND.23](#task-and-23) |

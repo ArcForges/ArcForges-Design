@@ -21636,6 +21636,12 @@
      "task": "CON.16",
      "need": "android-update.v1 feed format and fixture signing keys",
      "why": "already available per the producer matrix (\"No production key prerequisite; WP32/WP41 consume fixture roots\")"
+    },
+    {
+      "type": "artifact",
+      "task": "AND.02",
+      "need": "registered core/network and feature/settings module shells from android-module-boundaries",
+      "why": "AND.02 owns creation and one-time Gradle registration of the architecture-27 module set; the update client cannot be compiled or tested in these production modules until that delivered boundary exists"
     }
    ],
    "writes": [
