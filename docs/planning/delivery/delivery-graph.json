@@ -987,6 +987,8 @@
     "Contracts:tests/ArchitectureTests/packages.lock.json",
     "Contracts:eng/policy/dependency-policy.json",
     "Contracts:eng/policy/dependency-reviews/gov-05-*.json",
+    "Contracts:eng/policy/contract-access.json (only the existing buildInputs[\"Directory.Packages.props\"] normalized SHA256 binding for this task's central Build.Policy pin)",
+    "Contracts:.gitleaks.toml (support-only exact receipt false-positive allowlist for rule generic-api-key)",
     "Contracts:eng/policy/licence-boundary.json",
     "Contracts:eng/provenance/files.json",
     "Contracts:eng/dependency_admission.py",
@@ -1009,7 +1011,8 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "WP05's own §8 completion-gate text states this substep 'makes VG-04's policy-test half enforceable' - a second VG-04 contributor not listed in the README's deferred-gate table (which names only 03.04/06.01). The narrowly required ArcForges.Build.Policy 1.0.0-ci.31.1 AGPL admission permits a direct PackageReference only from Contracts tests/ArchitectureTests, with PrivateAssets=all, for architecture-test/build use. Regression negatives must reject this exact package from every other project or package closure, including product/runtime and generated-public-package closures; do not broaden the exception. Shared Contracts solution, policy and provenance edits rebase and merge one-at-a-time under the Contracts integration owner after exact-head review.",
+   "notes": "WP05's own §8 completion-gate text states this substep 'makes VG-04's policy-test half enforceable' - a second VG-04 contributor not listed in the README's deferred-gate table (which names only 03.04/06.01). The narrowly required ArcForges.Build.Policy 1.0.0-ci.31.1 AGPL admission permits a direct PackageReference only from Contracts tests/ArchitectureTests, with PrivateAssets=all, for architecture-test/build use. Regression negatives must reject this exact package from every other project or package closure, including product/runtime and generated-public-package closures; do not broaden the exception. This task may update only the existing buildInputs[\"Directory.Packages.props\"] SHA256 in eng/policy/contract-access.json to the normalized hash of the final Directory.Packages.props after the authorized central Build.Policy pin; do not alter contract access, package graph, categories, schema, or checker. For the support-only .gitleaks.toml addition, allow only rule generic-api-key and the exact four review.inputHashes tuples in eng/policy/dependency-reviews/gov-05-r1.json: eng/policy/contract-access.json -> observed pre-repair receipt digest c339d391aeb89aabb9a5b503f152436905048c4855a72065fc4bc85712252ea7; eng/provenance/records/dokka-combokeys-licence-r1.json -> 75219d61672002f0bb242fed0fd93a0886f07d944e0b9e1b1f72132f59df1b41; eng/provenance/records/dokka-object-keys-licence-r1.json -> 55621ecc7032745ca46e56d13133dc22a3bd808d80966d737427b5d6fc5bd096; src/public/dotnet/ArcForges.Contracts.PublicApi/ArcForges.Contracts.PublicApi.csproj -> 986b7a97734cd5d0630e548da897869de322a112c087c2d0df6a0bfc98b8784c. Because the permitted contract-access input binding changes that file, recompute its final normalized SHA256 receipt input hash after the final edit and use that exact final digest in both gov-05-r1.json and the allowlist; the observed c339... value is not final after that edit. Keep the other three exact tuples bound to their final receipt SHA256 values. No wildcard receipt/path entries, source allowlist, other rule, threshold, scan scope, command, workflow or history change; do not change receipt format or bypass the parser/scanner. Shared Contracts solution, policy and provenance edits rebase and merge one-at-a-time under the Contracts integration owner after exact-head review."
+   ,
    "complete": []
   },
   {
@@ -4794,15 +4797,31 @@
     }
    ],
    "writes": [
-    "DesktopPlatform:eng/verification/probe-evidence/**"
+    "DesktopPlatform:eng/verification/probe-evidence/**",
+    "DesktopPlatform:.github/workflows/package-validation.yml (one separate Windows aot-probe job only)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (only the three probe input hashes, exact four build-only locked coordinates, and successor receipt pointer listed in notes)",
+    "DesktopPlatform:eng/policy/dependency-reviews/prf-09-r1.json (new immutable full successor, chained from the then-current receipt at serialized integration)",
+    "DesktopPlatform:eng/policy/licence-boundary.json (append only the probe project as kind=msbuild)",
+    "DesktopPlatform:eng/provenance/files.json (append only the seven exact PRF.09 firstParty rows listed in notes; preserve every prior row/classification)",
+    "DesktopPlatform:docs/third-party-control-admission.md (scope the no-Avalonia-use claim to production/shipped shell and disclose the isolated verification-only probe)"
    ],
-   "validation": "Single probe-host AOT publish with zero diagnostics for the first candidate",
-   "evidence": "Probe publish log for the first candidate",
+   "shared": [
+    {
+     "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    }
+   ],
+   "validation": "First-candidate Windows x64 Native AOT publish with zero warnings/errors; locked restore and the same win-x64 publish gate run in package-validation PR and every main-build call under WP-06 BR-06. No executable or GUI run.",
+   "evidence": "First-candidate publish log and exact-head PR/main workflow runs for the locked aot-probe job; no runtime/GUI or package-adoption claim.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed none, unreviewed: no candidate-control probe found in this pass."
    },
-   "notes": "Low coupling; can run independent of PRF.02-08. Formally schedules VG-03 to WP10, not itself.",
+   "notes": "Low coupling; can run independent of PRF.02-08. Formally schedules VG-03 to WP10, not itself. The verification-only probe is not product adoption, a production dependency, or a release package. Its project must explicitly declare PackageLicenseExpression AGPL-3.0-only; inherited LicenceBoundary classification remains unchanged. The exact package-validation.yml support is a separate aot-probe job on windows-latest using the repository-pinned checkout and setup-dotnet actions, global-json-file global.json, cache enabled with **/packages.lock.json, locked restore of eng/verification/probe-evidence/Prf09.TableViewProbe.csproj, then dotnet publish eng/verification/probe-evidence/Prf09.TableViewProbe.csproj --no-restore -c Release -r win-x64 --verbosity minimal. The job must not execute the binary, run GUI/UI behavior, upload an artifact, or alter product packaging/dependencies/locks/other workflow jobs. The dependency-policy successor adds only input hashes for eng/verification/probe-evidence/Directory.Packages.props, Prf09.TableViewProbe.csproj, and packages.lock.json, and only these build-only locked NuGet coordinates: avalonia/12.1.3, avalonia.buildservices/11.3.2, avalonia.remote.protocol/12.1.3, microcom.runtime/0.11.6. Create eng/policy/dependency-reviews/prf-09-r1.json as a full immutable successor chained from the then-current receipt after rebase; preserve all earlier receipts and admission history. Append to eng/policy/licence-boundary.json only the probe csproj with kind msbuild. Append these seven exact firstParty rows to eng/provenance/files.json, preserving every existing classification: eng/verification/probe-evidence/Directory.Packages.props, eng/verification/probe-evidence/Prf09.TableViewProbe.csproj, eng/verification/probe-evidence/Program.cs, eng/verification/probe-evidence/packages.lock.json, eng/verification/probe-evidence/README.md, eng/verification/probe-evidence/prf-09-publish.log, and eng/policy/dependency-reviews/prf-09-r1.json. Correct docs/third-party-control-admission.md only to state that the production/shipped shell has no Avalonia adoption, reference, or runtime usage and to disclose this isolated verification-only probe. No package-inventory append applies because this build-only probe is not a DesktopPlatform release package; no contract-access, package release allowlist, provenance artifact receipt, reconciliation/reference-baseline, Gitleaks config, or other support path is authorized. DesktopPlatform has no dedicated provenance/source-inventory shared resource; the exact files.json additions follow ADP-07 support-binding, while RES-desktopplatform-build-config covers only the existing workflow append.",
    "complete": []
   },
   {
@@ -8397,23 +8416,54 @@
     {
      "type": "artifact",
      "task": "PLT.17",
-     "need": "real ArcForges.Application.Abstractions (application identity and in-process composition), not the current placeholder assembly",
-     "why": "Assistant.Abstractions composes on top of Application.Abstractions per architecture 27; DesktopPlatform repo currently has only AssemblyPlaceholder.cs for that project"
+     "need": "delivered ArcForges.Capabilities application identity and explicit in-process composition pattern",
+     "why": "PLT.17 publishes ArcForges.Capabilities, not Application.Abstractions; use it as identity/composition precedent only. Architecture 27 permits Assistant.Abstractions direct dependencies only on Foundation and Application.Abstractions, so do not add a direct Capabilities dependency"
+    },
+    {
+     "type": "artifact",
+     "task": "FND.02",
+     "need": "published ArcForges.Application.Abstractions cancellation and lifecycle ports",
+     "why": "FND.02 is the producer of the real ArcForges.Application.Abstractions package consumed by Assistant.Abstractions"
     },
     {
      "type": "artifact",
      "task": "FND.01",
-     "need": "real ArcForges.Foundation identity/error/version primitives, not the current placeholder assembly",
-     "why": "host port identity/lifetime types build on Foundation primitives; currently only a placeholder assembly exists"
+     "need": "published ArcForges.Foundation identity/error/version primitives",
+     "why": "host port identity/lifetime types build on the real Foundation primitives delivered by FND.01"
     }
    ],
    "writes": [
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Abstractions/**",
-    "DesktopPlatform:tests/AssistantAbstractionsTests/**"
+    "DesktopPlatform:tests/AssistantAbstractionsTests/**",
+    "DesktopPlatform:DesktopPlatform.slnx (register APP.01 producer and its test project only)",
+    "DesktopPlatform:.github/workflows/package-validation.yml (run the APP.01 test project only)",
+    "DesktopPlatform:eng/packaging/packages.json (APP.01 package entry and Architecture 27 owned-package edges only)",
+    "DesktopPlatform:eng/version-sources.json (APP.01 package source declaration only)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (APP.01 production/test project registrations for the exact Architecture 27 dependency edges only)",
+    "DesktopPlatform:eng/policy/dependency-reviews/app-01-*.json (new immutable APP.01 successor only for already-admitted dependency identities, if required; no new dependency or version)",
+    "DesktopPlatform:eng/policy/licence-boundary.json (APP.01 production/test project registrations only)",
+    "DesktopPlatform:eng/policy/reconciliation/project-updates.json (APP.01 project registrations only)",
+    "DesktopPlatform:eng/policy/reconciliation/source.json (APP.01 source inventory only)",
+    "DesktopPlatform:eng/policy/reconciliation/active-projects.json (APP.01 active project registrations only; preserve frozen inventories)",
+    "DesktopPlatform:eng/policy/runtime-ownership.json (APP.01 project classifications only)",
+    "DesktopPlatform:eng/provenance/files.json (APP.01 owned-source inventory rows only)",
+    "DesktopPlatform:eng/provenance/records/assistant-abstractions-*.json (new immutable APP.01 source/package receipts only; preserve all prior records)",
+    "DesktopPlatform:eng/packaging/packages.py (exact existing external dependency pins in the APP.01 package closure only; add no package ID or version)",
+    "DesktopPlatform:eng/packaging/test_packages.py (APP.01-owned positive/negative checks for those exact existing pins only)",
+    "DesktopPlatform:README.md (current APP.01 package production claim only)",
+    "DesktopPlatform:docs/compliance/third-party-license-register.md (APP.01 package binding to already-admitted external dependencies only)"
    ],
    "shared": [
     {
      "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-package-inventory",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
      "mode": "append"
     }
    ],
@@ -8423,7 +8473,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: git ls-files DesktopPlatform src/ has no Assistant/ or Communication/ tree at all (HEAD fe8476d); only generic BuildingBlocks placeholders (AssemblyPlaceholder.cs) and Native/DesktopHelpers trees exist."
    },
-   "notes": "Root of the whole area's dependency graph; every other WP14 to WP17/26 desktop task starts from this package.",
+   "notes": "Root of the whole area's dependency graph; every other WP14 to WP17/26 desktop task starts from this package. FND.02 is the real ArcForges.Application.Abstractions producer; PLT.17 provides only the ArcForges.Capabilities application-identity/composition pattern. Keep Architecture 27's Assistant.Abstractions direct dependency table exactly Foundation plus Application.Abstractions; do not add a direct ArcForges.Capabilities dependency. CON.02 remains a host-port shape prerequisite and does not authorize another dependency edge. Register only APP.01's package, producer/test projects, and provenance/reconciliation rows, using already-admitted dependency identities and exact existing version pins; do not add package IDs, pins, versions, dependency owners, or expand the package closure. Append this producer's package entry and build-config project/CI rows; after rebase regenerate lock files and never hand-merge them.",
    "complete": []
   },
   {

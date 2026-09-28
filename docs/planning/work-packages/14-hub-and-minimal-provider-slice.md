@@ -126,7 +126,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 
 | Delivery task | Satisfies | Start prerequisites outside this package |
 |---|---|---|
-| [APP.01](../delivery/lanes/app-composition.md#task-app-01) | [WP-14.00](14-hub-and-minimal-provider-slice.md#rule-wp-14.00) (full) | [CON.02](../delivery/lanes/contracts.md#task-con-02) (contract), [PLT.17](../delivery/lanes/platform.md#task-plt-17) (artifact), [FND.01](../delivery/lanes/foundation.md#task-fnd-01) (artifact) |
+| [APP.01](../delivery/lanes/app-composition.md#task-app-01) | [WP-14.00](14-hub-and-minimal-provider-slice.md#rule-wp-14.00) (full) | [CON.02](../delivery/lanes/contracts.md#task-con-02) (contract), [PLT.17](../delivery/lanes/platform.md#task-plt-17) (artifact), [FND.02](../delivery/lanes/foundation.md#task-fnd-02) (artifact), [FND.01](../delivery/lanes/foundation.md#task-fnd-01) (artifact) |
 | [APP.02](../delivery/lanes/app-composition.md#task-app-02) | [WP-14.01](14-hub-and-minimal-provider-slice.md#rule-wp-14.01) (full) | [PLT.24](../delivery/lanes/platform.md#task-plt-24) (artifact), [PLT.38](../delivery/lanes/platform.md#task-plt-38) (artifact) |
 | [APP.03](../delivery/lanes/app-composition.md#task-app-03) | [WP-14.02](14-hub-and-minimal-provider-slice.md#rule-wp-14.02) (full) | [PRF.04](../delivery/lanes/runtime-proofs.md#task-prf-04) (artifact), [NAT.01](../delivery/lanes/native.md#task-nat-01) (artifact) |
 | [APP.04](../delivery/lanes/app-composition.md#task-app-04) | [WP-14.03](14-hub-and-minimal-provider-slice.md#rule-wp-14.03) (full) | [FND.02](../delivery/lanes/foundation.md#task-fnd-02) (artifact), [FND.03](../delivery/lanes/foundation.md#task-fnd-03) (artifact) |
