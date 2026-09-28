@@ -6906,16 +6906,29 @@
     }
    ],
    "writes": [
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Secrets/**"
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Secrets/**",
+    "DesktopPlatform:eng/policy/architecture-contract-tests.json (append only exact PLT.40 public API-to-focused-test bindings)",
+    "DesktopPlatform:eng/policy/architecture-projects.json (append only the PLT.40 production and test project rows)",
+    "DesktopPlatform:eng/policy/licence-boundary.json (append only the PLT.40 production and test project classifications)",
+    "DesktopPlatform:eng/policy/runtime-ownership.json (append only the PLT.40 production and test project roles)",
+    "DesktopPlatform:eng/provenance/files.json (append only PLT.40 first-party source, project, test, README, lock and immutable receipt paths)",
+    "DesktopPlatform:eng/policy/reconciliation/active-projects.json (append only the exact PLT.40 production and test project path/blob rows)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (add only exact PLT.40 project and lock input hashes and point reviewReceipt to the PLT.40 successor)",
+    "DesktopPlatform:eng/policy/dependency-reviews/plt-40-r1.json (new immutable PLT.40 receipt successor with the exact mirrored active input map)"
    ],
    "shared": [
     {
      "resource": "RES-desktopplatform-build-config",
      "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
     }
    ],
    "validation": "Offline tests where possible; real OS secure-storage round trips (Windows Credential Manager/keychain/keystore) are local opt-in per platform, recorded separately from CI.",
    "evidence": "Secret structural prohibitions and platform round-trip results.",
+   "notes": "Narrow ADP-07 support is limited to the exact eight additional DesktopPlatform paths listed above. The existing RES-desktopplatform-build-config append continues to cover only DesktopPlatform.slnx and .github/workflows/package-validation.yml. RES-desktopplatform-policy-data covers task-owned policy, test-map, reconciliation, dependency-admission and provenance rows under their exact scopes. The existing source write scope contains exactly the new production and test projects, including src/BuildingBlocks/ArcForges.Security.Secrets/packages.lock.json and src/BuildingBlocks/ArcForges.Security.Secrets/Tests/packages.lock.json; regenerate these locks after rebase and preserve the existing dependency closure, coordinates and versions. architecture-contract-tests.json adds only exact public API-to-focused-test bindings; architecture-projects.json, licence-boundary.json and runtime-ownership.json add only the two task-owned project rows/classifications; active-projects.json adds only those projects' exact paths and git blob IDs. dependency-policy.json may add only the hashes of the two project files and two lock files to inputHashes and set reviewReceipt to the new plt-40-r1 successor. The successor's review.inputHashes must exactly mirror the resulting active dependency-policy inputHashes map; it is immutable and chains from the then-current receipt. No other policy field, dependency coordinate, version, closure, or admission algorithm may change. provenance/files.json appends only first-party paths for the nine task-owned source/project/test/README/lock files and the new immutable receipt. Do not change directories.json, project-updates.json or source.json, package inventory, central package versions, dependency algorithms, or unrelated rows. These bindings authorize no new runtime behavior, dependency, package identity or security semantics and do not change PLT.40's outcome, prerequisites or completion condition.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: ArcForges.Security.Secrets does not exist as a separate project yet; the WP11 architecture doc names it as a new project distinct from the single 'ArcForges.Security' package registry row -."
