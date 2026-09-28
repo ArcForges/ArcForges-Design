@@ -2462,7 +2462,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: No SyncService/ResourceService/TransferService exist; SyncScope/SyncChange/ChangeProposal/ChangeReceipt/AggregateView/ConflictView/ConflictResolution/BootstrapManifest records (registry04 §4) are also absent. TransferTicket is the only Foundation addition authorized here; the published compatibility baseline remains unchanged."
    },
-   "notes": "WP-21 (Cloud D1/sync engine, the Cloud lane) is the direct consumer that most needs this + CON.03 to start; it does NOT need CON.07/08/10-16.",
+   "notes": "WP-21 (Cloud D1/sync engine, the Cloud lane) is the direct consumer that most needs this + CON.03 to start; it does NOT need CON.07/08/10-16. TransferTicket boundary: CON.09 is its sole author, and this repair authorizes only this one new Foundation message; CON.14/.21/.22 import it without copies. No second/alias Foundation type, other new Foundation message, runtime handler/authorization/network behavior, R2 credential, or published compatibility-baseline/version mutation is authorized; CON.09's existing domain operation/record scope is otherwise unchanged.",
    "complete": []
   },
   {
