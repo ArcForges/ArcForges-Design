@@ -1963,7 +1963,7 @@
      "part": "the ScopeProjectMetadata owner body and AggregateBody binding, closed Sync mutation allowlist and oversized-body admission negative vectors; ResourceRef/ResourceVersionRef/BlobRef schema itself is already done (CON.91/WP-03.01)"
     }
    ],
-   "outcome": "A generated/schema-derived validator enforces that Sync (registry04 §10) accepts client-origin writes only for authorized ScopeProjectMetadata and ScopeMetadata (the closed client-writable subset of AggregateBody), refusing TaskSnapshot/AutomationView/ConversationBody/AgentProfile/SkillRecord/ChatProjectRecord/MemoryRecord/PreferenceRecord as client writes (Cloud-authored-only); externalBody indirection resolves to the same allowlist before validation. Independent negative vectors cover cross-owner reference, wrong-revision precondition, opaque/unknown AggregateBody variant, and forbidden-path (non-allowlisted body kind) attempts, plus compatible unknown-response preservation. Author ScopeProjectMetadata and its additive AggregateBody variant, with cross-workspace project/session and tombstone vectors; project identity/name is never inferred from an arbitrary session.",
+   "outcome": "A generated/schema-derived validator enforces that Sync (registry04 §10) accepts client-origin writes only for authorized ScopeProjectMetadata and ScopeMetadata (the closed client-writable subset of AggregateBody), refusing TaskSnapshot/AutomationView/ConversationBody/AgentProfile/SkillRecord/ChatProjectRecord/MemoryRecord/PreferenceRecord as client writes (Cloud-authored-only); externalBody indirection resolves to the same allowlist before validation. Independent negative vectors cover cross-owner reference, wrong-revision precondition, opaque/unknown AggregateBody variant, and forbidden-path (non-allowlisted body kind) attempts, plus compatible unknown-response preservation. Author ScopeProjectMetadata and its additive AggregateBody variant, with cross-workspace project/session and tombstone vectors; project identity/name is never inferred from an arbitrary session. Append one valid ScopeProjectMetadata positive to the generic public Foundation fixture and its exact C# Foundation dispatch mapping; do not change generic checker or generator behavior.",
    "provides": [
     "sync-mutation-allowlist",
     "owner-body-admission-negatives"
@@ -1997,9 +1997,19 @@
     "Contracts:tests/StructureTests/Con03Cases.cs",
     "Contracts:tests/StructureTests/Program.cs (registration only)",
     "Contracts:tests/public/con-03-sync-allowlist.test.mjs",
+    "Contracts:fixtures/public/wp03-01.json (append only samples.ScopeProjectMetadata and one valid positive cases row with projectId and optional name; do not add it to foundationTypes because that selects foundation_pb)",
+    "Contracts:tests/StructureTests/FoundationCases.cs (append only the P.ScopeProjectMetadata dispatch mapping)",
     "Contracts:package.json (registration only)",
     "Contracts:src/public/kotlin/contracts-proto/generated/**",
-    "Contracts:src/public/ts/contract-fixtures/src/index.ts"
+    "Contracts:src/public/ts/contract-fixtures/src/index.ts",
+    "Contracts:eng/policy/contract-access.json (append only the exact changed content.proto schema hash/type assignments)",
+    "Contracts:eng/policy/dependency-policy.json (refresh task-owned input hashes only; no dependency version or closure changes)",
+    "Contracts:eng/policy/dependency-reviews/con-03-r1.json (new immutable task admission receipt; preserve history)",
+    "Contracts:eng/provenance/files.json (append owned source/output rows and remap only regenerated targets)",
+    "Contracts:eng/provenance/records/contract-bindings-con-03-r1.json (new successor source/output binding; preserve history)",
+    "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-r<N>.json (claim-time next-unused serialized successor; only task-owned Kotlin inputs and exact contracts-proto pages/hashes)",
+    "Contracts:eng/provenance/records/dokka-documentation-resources-r<N>.json (matching immutable task-owned successor)",
+    "Contracts:eng/documentation_tools.py (advance only PROFILE to the same claimed successor at serialized integration)"
    ],
    "shared": [
     {
@@ -2013,15 +2023,19 @@
     {
      "resource": "RES-contracts-schema-sources",
      "mode": "append"
+    },
+    {
+     "resource": "RES-contracts-dokka-profile",
+     "mode": "exclusive"
     }
    ],
    "validation": "offline positive/negative fixture suite (C#/TS); schema-level validator only (no owner authorization, persistence or transaction — those stay with WP-07/WP-21 per CA rules).",
-   "evidence": "fixtures/public/con-03-sync-allowlist.json with named negative cases; validator unit test report.",
+   "evidence": "fixtures/public/con-03-sync-allowlist.json with named negative cases; fixtures/public/wp03-01.json samples.ScopeProjectMetadata positive case (not foundationTypes); C#/TS Foundation test report and explicit C# dispatch mapping.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed partial, unreviewed: The underlying AggregateBody oneof (all 16 branches) and every named record it references already exist and are published (WP03.01). Only the ADMISSION RULE (which branches Sync may accept as a client write) and its negative vectors are missing — confirmed by grepping content.proto for SyncScope/SyncChange/ChangeProposal/ChangeReceipt/AggregateView/ConflictView/BootstrapManifest: none exist yet either (those are CON.09's job, registry04 §5 Sync service operations, not this validator). ScopeProjectMetadata and its additive AggregateBody variant are new under the ArcScope library closure and are not covered by the accepted foundation receipt."
    },
-   "notes": "Owns the shared project metadata record and Sync body-admission rule. CON.09 owns SyncService RPC methods; CON.24 consumes this record for the library. This closure publishes independently of the library endpoints. Keep this as a closed client-write validator: preserve all AggregateBody read/feed variants and immutable external-body resolution; exclude fetch, auth, persistence and transactions. ADP-07 remains the sole authority for inventory/provenance/current admission input bindings.",
+   "notes": "Owns the shared project metadata record and Sync body-admission rule. CON.09 owns SyncService RPC methods; CON.24 consumes this record for the library. This closure publishes independently of the library endpoints. Keep this as a closed client-write validator: preserve all AggregateBody read/feed variants and immutable external-body resolution; exclude fetch, auth, persistence and transactions. ADP-07 remains the sole authority for inventory/provenance/current admission input bindings. The generic fixture change is only samples.ScopeProjectMetadata plus one valid cases row; do not add it to foundationTypes (that selects foundation_pb, while this message is in content.proto). Add only the matching C# P.ScopeProjectMetadata dispatch mapping; no generic checker/generator or other record scope. During this task, Dokka covers only exact CON.03 generated public APIs in contracts-proto; generator rewrites to connect-client that are byte-identical are not authorized changes and must be shown unchanged. Use RES-contracts-dokka-profile's short allocation/generation lease after rebasing on latest Contracts main: inspect the merged pointer/immutable pairs and live durable reservations; if an earlier reservation exists, release and defer only Dokka work. Otherwise claim exactly next rN with both successor paths free, never skip/reuse/prewrite; preserve fixed/excluded/history, advance matching pointer, push exact head and record {resource,rN,head/PR} in claim/PR handoff, then release before review/CI. No next allocation until that reservation merges/releases/supersedes; rebase/change requires lease re-claim, revalidation, regeneration and reservation update, invalidating prior review.",
    "complete": []
   },
   {
@@ -2268,8 +2282,19 @@
     "Contracts:tests/public/** (identity and HTTP exception conformance)",
     "Contracts:src/**/Generated/** (regenerated owned identity/HTTP outputs)",
     "Contracts:src/public/ts/**/gen/** (regenerated owned identity/HTTP outputs)",
+    "Contracts:src/public/kotlin/contracts-proto/generated/** (regenerated public identity API)",
+    "Contracts:src/public/kotlin/contracts-connect-client/generated/** (regenerated public identity client)",
     "Contracts:eng/generate_shapes.py (owned JSON-schema registry/compiler support; preserve closed validation and existing schema outputs)",
-    "Contracts:eng/operations/con-07.json (owned domain operation authorization export; append through schema-source resource protocol)"
+    "Contracts:eng/operations/con-07.json (owned domain operation authorization export; append through schema-source resource protocol)",
+    "Contracts:eng/contract-packages.json (register only the new identity.proto input in the existing PublicApi package and the task-owned HTTP schema inputs/outputs; preserve package identities)",
+    "Contracts:eng/policy/contract-access.json (append exact task-owned schema hashes/type assignments)",
+    "Contracts:eng/policy/dependency-policy.json (refresh task-owned input hashes only; no dependency version or closure changes)",
+    "Contracts:eng/policy/dependency-reviews/con-07-r1.json (new immutable task admission receipt; preserve history)",
+    "Contracts:eng/provenance/files.json (append owned source/output rows and remap only regenerated targets)",
+    "Contracts:eng/provenance/records/contract-bindings-con-07-r1.json (new successor source/output binding; preserve history)",
+    "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-r<N>.json (claim-time next-unused serialized successor; only task-owned Kotlin inputs and exact contracts-proto/contracts-connect-client pages/hashes)",
+    "Contracts:eng/provenance/records/dokka-documentation-resources-r<N>.json (matching immutable task-owned successor)",
+    "Contracts:eng/documentation_tools.py (advance only PROFILE to the same claimed successor at serialized integration)"
    ],
    "shared": [
     {
@@ -2283,6 +2308,10 @@
     {
      "resource": "RES-contracts-schema-sources",
      "mode": "append"
+    },
+    {
+     "resource": "RES-contracts-dokka-profile",
+     "mode": "exclusive"
     }
    ],
    "validation": "offline positive/negative vectors per contracts07 §1 table (used/expired proof never replays, bad proof same bounded denial shape, wrong PKCE verifier never consumes valid code, etc.); no live provider, no real email/passkey ceremony (WP-22 owns that).",
@@ -2291,7 +2320,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: the frozen bootstrap has no IdentityService/WorkspaceService/DeviceService operations; exact current scope comes from the authoritative registry, not a historical operation count."
    },
-   "notes": "Cloud identity tasks consume the published operation closure; there is no whole-WP03 barrier.",
+   "notes": "Cloud identity tasks consume the published operation closure; there is no whole-WP03 barrier. New identity.proto is appended to the existing PublicApi package; task-owned HTTP exceptions use the existing schema/package generator and do not add a package identity. Append exact access, dependency-admission and provenance successors for the source/input bindings only; preserve prior rows, package identities and dependency versions/closure. Use RES-contracts-dokka-profile's short allocation/generation lease after rebasing on latest Contracts main: inspect the merged PROFILE/immutable successor pairs and all live durable reservations; if an earlier unmerged reservation exists, release and defer only Dokka work. Otherwise claim exactly rN where N=active+1 and both successor paths are free, never skip/reuse/prewrite. Generate only this task's Kotlin inputs and exact API page/hash sets in contracts-proto and contracts-connect-client; preserve fixed/excluded/history and advance only the matching pointer. Push the exact branch head and durably record {resource,rN,exact head/PR} in claim/PR handoff, then release before review/CI. Do not allocate the next number until the reservation merges/releases/supersedes; any rebase/change requires reclaim, pointer/N revalidation, regeneration, reservation update and invalidates prior review.",
    "start": [
     {
      "type": "contract",
@@ -2327,7 +2356,6 @@
    ],
    "writes": [
     "Contracts:public/proto/arcforges/publicapi/v1/commerce.proto",
-   "Design:docs/architecture/contracts/01-public-api-operations.md (change only the ten CON.08 current AO compatibility cells to FR; preserve every field, risk, error and semantic row)",
     "Contracts:fixtures/public/con-08-entitlement-commerce.json",
     "Contracts:public/proto/constraints/con-08-entitlement-commerce.json",
     "Contracts:public/proto/constraints.json (regenerated)",
@@ -2349,7 +2377,10 @@
     "Contracts:src/public/ts/proto/src/index.ts (regenerated)",
     "Contracts:src/public/ts/contract-fixtures/src/index.ts (regenerated)",
     "Contracts:src/public/kotlin/contracts-proto/generated/** (regenerated)",
-    "Contracts:src/public/kotlin/contracts-connect-client/generated/** (regenerated)"
+    "Contracts:src/public/kotlin/contracts-connect-client/generated/** (regenerated)",
+    "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-r<N>.json (claim-time next-unused serialized successor; only task-owned Kotlin inputs and exact contracts-proto/contracts-connect-client pages/hashes)",
+    "Contracts:eng/provenance/records/dokka-documentation-resources-r<N>.json (matching immutable task-owned successor)",
+    "Contracts:eng/documentation_tools.py (advance only PROFILE to the same claimed successor at serialized integration)"
    ],
    "shared": [
     {
@@ -2363,6 +2394,10 @@
     {
      "resource": "RES-contracts-schema-sources",
      "mode": "append"
+    },
+    {
+     "resource": "RES-contracts-dokka-profile",
+     "mode": "exclusive"
     }
    ],
    "validation": "offline positive/negative vectors; frozen-class compatibility baseline entries so any future field addition here fails the diff gate without an explicit new version (this is deliberate — financial operations must never silently gain an additive field).",
@@ -2371,7 +2406,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: No EntitlementService/CommerceService exist."
    },
-   "notes": "Consumes shared CON.02 read-envelope types; CON.06 supplies the shared Availability record; other commerce domain schemas retain their ownership. Consumers are the commerce, policy and operations lanes. Place each operation's `compatibilityClass: frozen` metadata in its owned operation export and the exact frozen semantic baseline in the existing con-08 fixture. The narrowly authorized checker extension must make the normal compatibility diff gate fail closed on any added or changed CON.08 field; do not introduce a separate baseline file or broaden the rule to other domains. Change only the ten current AO classifications for the six entitlement operations and commerce.explainCharge/getCatalogue/getSubscription/listBillingHistory to FR in the operation catalogue; preserve all other operation fields, error classifications and existing FR rows. Append package/access/provenance and any gate-required admission successors for this closure only, preserving prior receipts and dependency versions.",
+   "notes": "Consumes shared CON.02 read-envelope types; CON.06 supplies the shared Availability record; other commerce domain schemas retain their ownership. Consumers are the commerce, policy and operations lanes. The ten entitlement/commerce query compatibility cells required by this task are already FR in the authoritative Design baseline; verify and retain those rows read-only, and do not write or edit 01-public-api-operations.md for CON.08. Place each operation's `compatibilityClass: frozen` metadata in its owned operation export and the exact frozen semantic baseline in the existing con-08 fixture. The narrowly authorized checker extension must make the normal compatibility diff gate fail closed on any added or changed CON.08 field; do not introduce a separate baseline file or broaden the rule to other domains. For eng/check_operation_scope.py, accept the compatibilityClass key and require literal `frozen` only when path.relative_to(root).as_posix() == 'eng/operations/con-08.json' and the row ID is in CON.08's owned operation set; absence, any other value, and the key on any other export/row fail. Keep both key-set acceptance and presence/value validation path-scoped. tests/tooling/test_operation_scope.py covers the exact positive and wrong-path/export/ID/value/absence negatives. Append package/access/provenance and any gate-required admission successors for this closure only, preserving prior receipts and dependency versions. Use RES-contracts-dokka-profile's short allocation/generation lease after rebasing on latest Contracts main: inspect the merged PROFILE/immutable successor pairs and all live durable reservations; if an earlier unmerged reservation exists, release and defer only Dokka work. Otherwise claim exactly rN where N=active+1 and both successor paths are free, never skip/reuse/prewrite. Generate only this task's Kotlin inputs and exact API page/hash sets in contracts-proto and contracts-connect-client; preserve fixed/excluded/history and advance only the matching pointer. Push the exact branch head and durably record {resource,rN,exact head/PR} in claim/PR handoff, then release before review/CI. Do not allocate the next number until the reservation merges/releases/supersedes; any rebase/change requires reclaim, pointer/N revalidation, regeneration, reservation update and invalidates prior review.",
    "start": [
     {
      "type": "contract",
@@ -2433,9 +2468,9 @@
     "Contracts:eng/policy/dependency-reviews/con-09-r1.json (new immutable admission review for this closure; preserve prior history)",
     "Contracts:eng/provenance/files.json (append owned source/output rows; remap only outputs regenerated by this closure)",
     "Contracts:eng/provenance/records/contract-bindings-con-09-r1.json (new successor source/output binding; preserve prior history)",
-    "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-r12.json (task-owned successor with only CON.09 generated Kotlin input hashes and exact contracts-proto API page/hash set; preserve fixed/excluded entries and history)",
-    "Contracts:eng/provenance/records/dokka-documentation-resources-r12.json (matching immutable CON.09 resource successor; preserve history)",
-    "Contracts:eng/documentation_tools.py (advance only the active Dokka PROFILE pointer to CON.09 r12 during its serialized integration)",
+    "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-r<N>.json (claim-time next-unused serialized successor; only task-owned Kotlin inputs and exact contracts-proto/contracts-connect-client pages/hashes)",
+    "Contracts:eng/provenance/records/dokka-documentation-resources-r<N>.json (matching immutable task-owned successor)",
+    "Contracts:eng/documentation_tools.py (advance only PROFILE to the same claimed successor at serialized integration)",
     "Contracts:public/proto/constraints/con-09-transfer-ticket.json (TransferTicket-only constraints from registry04 §4)",
     "Contracts:public/proto/constraints.json (regenerated)",
     "Contracts:eng/foundation-inventory.json (append only TransferTicket to the seed list and its exact record/fields/generated outputs; preserve every existing record and seed)",
@@ -2463,6 +2498,10 @@
     {
      "resource": "RES-contracts-schema-sources",
      "mode": "append"
+    },
+    {
+     "resource": "RES-contracts-dokka-profile",
+     "mode": "exclusive"
     }
    ],
    "validation": "Deterministic regeneration, constraint-shard aggregation and Foundation inventory/EXTRA_SEEDS checks; offline positive/negative TransferTicket shape vectors in the existing C#/TypeScript Foundation tests using the task-owned fixture, plus Sync/resource/realm-transfer vectors incl. stale revision -> preserved conflict proposal, absent-hash-never-promotes and expired-pin-blocks-adoption. Exactly one new Foundation message; preserve the published baseline/version; no runtime behavior, additional Foundation message or real D1/R2 (WP-21/WP-25 own that).",
@@ -2471,7 +2510,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: No SyncService/ResourceService/TransferService exist; SyncScope/SyncChange/ChangeProposal/ChangeReceipt/AggregateView/ConflictView/ConflictResolution/BootstrapManifest records (registry04 §4) are also absent. TransferTicket is the only Foundation addition authorized here; the published compatibility baseline remains unchanged."
    },
-   "notes": "WP-21 (Cloud D1/sync engine, the Cloud lane) is the direct consumer that most needs this + CON.03 to start; it does NOT need CON.07/08/10-16. TransferTicket boundary: CON.09 is its sole author, and this repair authorizes only this one new Foundation message; CON.14/.21/.22 import it without copies. No second/alias Foundation type, other new Foundation message, runtime handler/authorization/network behavior, R2 credential, or published compatibility-baseline/version mutation is authorized; CON.09's existing domain operation/record scope is otherwise unchanged. ADP-07 support is append/successor-only: register sync.proto and transfer.proto only in the existing PublicApi package; add exact hashes/type assignments for the three task-owned schemas; refresh only this closure's input hashes; preserve package identities, dependency versions/closure and prior receipt/history. Provenance may append this task's source/output rows and remap only regenerated targets already authorized above; no generated output authority outside the listed paths. Dokka is a current Contracts CI gate: eng/contracts.py pack -> eng/maven_tools.py:pack() runs dokkaGeneratePublicationHtml and documentation_tools.prepare(), and verify_bundle() calls documentation_tools.verify(); admission requires exact fixed/excluded/module-page membership and normalized page hashes against active r11, which inventories 465 generated Kotlin input hashes. CON.09 owns only its generated Kotlin input hashes and exact contracts-proto API page/hash set in r12, its matching immutable documentation-resource successor, and advancement of the active PROFILE pointer to r12 at its serialized integration; preserve fixed/excluded entries and history. No package identity, dependency version/closure or published package-version change is authorized by the Dokka update.",
+   "notes": "WP-21 (Cloud D1/sync engine, the Cloud lane) is the direct consumer that most needs this + CON.03 to start; it does NOT need CON.07/08/10-16. TransferTicket boundary: CON.09 is its sole author, and this repair authorizes only this one new Foundation message; CON.14/.21/.22 import it without copies. No second/alias Foundation type, other new Foundation message, runtime handler/authorization/network behavior, R2 credential, or published compatibility-baseline/version mutation is authorized; CON.09's existing domain operation/record scope is otherwise unchanged. ADP-07 support is append/successor-only: register sync.proto and transfer.proto only in the existing PublicApi package; add exact hashes/type assignments for the three task-owned schemas; refresh only this closure's input hashes; preserve package identities, dependency versions/closure and prior receipt/history. Provenance may append this task's source/output rows and remap only regenerated targets already authorized above; no generated output authority outside the listed paths. Dokka is a current Contracts CI gate: eng/contracts.py pack -> eng/maven_tools.py:pack() runs dokkaGeneratePublicationHtml and documentation_tools.prepare(), and verify_bundle() calls documentation_tools.verify(); admission requires exact fixed/excluded/module-page membership and normalized page hashes. Use RES-contracts-dokka-profile's short allocation/generation lease after rebasing on latest Contracts main: inspect the merged PROFILE/immutable successor pairs and all live durable reservations; if an earlier unmerged reservation exists, release and defer only Dokka work. Otherwise claim exactly rN where N=active+1 and both successor paths are free, never skip/reuse/prewrite. Generate only this task's Kotlin inputs and exact API page/hash sets in contracts-proto and contracts-connect-client; preserve fixed/excluded/history and advance only the matching pointer. Push the exact branch head and durably record {resource,rN,exact head/PR} in claim/PR handoff, then release before review/CI. Do not allocate the next number until the reservation merges/releases/supersedes; any rebase/change requires reclaim, pointer/N revalidation, regeneration, reservation update and invalidates prior review.",
    "complete": []
   },
   {
@@ -2521,8 +2560,8 @@
     "Contracts:eng/check_operation_scope.py (admit only the exact public approval.decide proto binding under public-human-approval-decision; preserve the local-only in-process human-approval-decision profile, all other profiles and every other guard)",
     "Contracts:tests/tooling/test_operation_scope.py (positive/negative regression for the exact public profile, unchanged in-process profile, and wrong operation/surface/actor/PAT/source/proposal-binding variants)",
     "Design:docs/architecture/contracts/01-public-api-operations.md (only the TK-02 public-human-approval-decision profile; leave the local-only in-process profile in contracts/02 unchanged)",
-    "Contracts:eng/generate_shapes.py (only add JSON Schema number primitive generation as C# double and TypeScript number; finite values only and existing minimum/maximum handling; preserve strict JSON, unknown-keyword fail-closed behavior and every other output)",
-    "Contracts:tests/tooling/test_json_shape_unions.py (fractional/boundary number acceptance; NaN and positive/negative infinity rejection; nested-union/root-bundle round-trip and generated-shape drift regression)",
+    "Contracts:eng/generate_shapes.py (only add JSON Schema number primitive generation as C# double and TypeScript number, plus bounded maxUtf8Bytes string validation; number values finite-only with existing minimum/maximum handling; preserve strict JSON, unknown-keyword fail-closed behavior and every other output)",
+    "Contracts:tests/tooling/test_json_shape_unions.py (fractional/boundary number acceptance; NaN and positive/negative infinity rejection; maxUtf8Bytes multibyte 4096-byte accept/4097-byte reject; nested-union/root-bundle round-trip and generated-shape drift regression)",
     "Contracts:eng/contract-packages.json (register the new public chat.proto in existing public package producer lists only; existing internal ai-http package inputs are unchanged)",
     "Contracts:eng/policy/contract-access.json (append exact compiled access/hash entry)",
     "Contracts:eng/policy/dependency-policy.json (refresh current input hashes for this closure only; no dependency version or closure changes)",
@@ -2539,9 +2578,9 @@
     "Contracts:src/public/ts/contract-fixtures/src/index.ts (regenerated)",
     "Contracts:src/public/kotlin/contracts-proto/generated/** (regenerated)",
     "Contracts:src/public/kotlin/contracts-connect-client/generated/** (regenerated)",
-    "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-r13.json (task-owned successor with only CON.10 generated Kotlin input hashes and exact contracts-proto/contracts-connect-client API page/hash sets; preserve fixed/excluded entries and history)",
-    "Contracts:eng/provenance/records/dokka-documentation-resources-r13.json (matching immutable CON.10 resource successor; preserve history)",
-    "Contracts:eng/documentation_tools.py (advance only the active Dokka PROFILE pointer to CON.10 r13 during its serialized integration)",
+    "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-r<N>.json (claim-time next-unused serialized successor; only task-owned Kotlin inputs and exact contracts-proto/contracts-connect-client pages/hashes)",
+    "Contracts:eng/provenance/records/dokka-documentation-resources-r<N>.json (matching immutable task-owned successor)",
+    "Contracts:eng/documentation_tools.py (advance only PROFILE to the same claimed successor at serialized integration)",
     "Contracts:src/internal/dotnet/ArcForges.Contracts.CloudInternal/Generated/** (regenerated)",
     "Contracts:src/internal/ts/ai-internal/src/gen/** (regenerated)",
     "Contracts:src/internal/ts/ai-internal/src/shapes/gen/** (regenerated)",
@@ -2560,15 +2599,19 @@
     {
      "resource": "RES-contracts-schema-sources",
      "mode": "append"
+    },
+    {
+     "resource": "RES-contracts-dokka-profile",
+     "mode": "exclusive"
     }
    ],
-   "validation": "Offline positive/negative vectors for ChatTurn/AgentTask journeys per contracts07 §2 table; ai-internal codecs reuse WP03.02's strict-JSON posture; no live CF Worker (WP-52 owns that). Operation-scope tests admit only public approval.decide/ApprovalService.Decide under public-human-approval-decision with the human-only foregroundProposal profile and risk/stepUp/localPresence derived solely from the same verified pending proposal; reject fixed/downgraded/caller-supplied values, PAT/tool reachability, egress, wrong operation/source/binding/scope/surface/profile and invalid proposal identity, revision or expiry. Verify localPresence-required decisions are refused on mobile/web, replay returns the original receipt, and conflicting input cannot revive a proposal. Preserve the distinct local-only IChatOperations.SubmitApproval human-approval-decision binding and all other profiles. Test JSON Schema number handling: fractional/boundary values accepted, NaN and positive/negative infinity rejected, nested-union/root-bundle round-trip and generated-shape drift checked. Checker/generator changes add no runtime behavior.",
+   "validation": "Offline positive/negative vectors for ChatTurn/AgentTask journeys per contracts07 §2 table; ai-internal codecs reuse WP03.02's strict-JSON posture; no live CF Worker (WP-52 owns that). Operation-scope tests admit only public approval.decide/ApprovalService.Decide under public-human-approval-decision with the human-only foregroundProposal profile and risk/stepUp/localPresence derived solely from the same verified pending proposal; reject fixed/downgraded/caller-supplied values, PAT/tool reachability, egress, wrong operation/source/binding/scope/surface/profile and invalid proposal identity, revision or expiry. Verify localPresence-required decisions are refused on mobile/web, replay returns the original receipt, and conflicting input cannot revive a proposal. Preserve the distinct local-only IChatOperations.SubmitApproval human-approval-decision binding and all other profiles. Test JSON Schema number handling: fractional/boundary values accepted, NaN and positive/negative infinity rejected. Registry04 Cursor is an opaque UTF-8 string <=4096 bytes, not restricted to ASCII/base64url: the ai-http Cursor schema carries both maxLength=4096 and maxUtf8Bytes=4096; multibyte vectors accept exactly 4096 encoded bytes and reject 4097. Test nested-union/root-bundle round-trip and generated-shape drift. Checker/generator changes add no runtime behavior.",
    "evidence": "fixtures/public/con-10-chat-task-agent.json + fixtures/internal/con-10-ai-internal.json.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed none, unreviewed: No TaskService/ApprovalService/BridgeService/ChatService(public)/AgentService/AutomationService exist. registry04 §5 public ChatService is distinct from §6 in-process IChatOperations -> ChatOperationsService; no duplicate public service is authorized. internal/ai-http/v1/schema.json currently contains only CommitReceipt."
    },
-   "notes": "Second-largest domain task. WP-15/16/17 (ArcChat core/execution/independent-core, the assistant lanes) are the direct consumers; WP-52 (Cloud Harness, the AI lanes) needs both this and CON.11. Shared leaf shapes are defined here before CON.11 consumes them; there is no reverse CON.10 prerequisite on CON.11. SessionBinding is a schema record, not cached authorization; this task adds no live handlers. Private CF route exports require actual authoritative route oracle rows before registration: preserve service actor, PAT denial, HMAC, owner/fence binding and idempotency requirements from contracts05. No borrowed public operation identities, new scope enum or authorization weakening is authorized; no other/general CON.18 checker expansion beyond this exact approval.decide metadata gate is authorized by this repair. Public approval.decide uses only the separate TK-02 public-human-approval-decision profile; contracts/02's local-only in-process human-approval-decision profile is unchanged. TK-02 binds the verified pending proposal to the human, current session/workspace, action, target, revision, proposal hash and expiry, fails closed on changed/missing/expired/consumed proposals, replays the original receipt for identical command/canonical input, rejects conflicting revival, refuses localPresence-required approvals from mobile/web, and grants neither persistent permission nor execution. JSON Schema number support is narrowly number->C# double and TypeScript number, finite values only, with current minimum/maximum behavior; strict JSON, unknown-keyword fail-closed behavior and every other output remain unchanged. Task-owned dependency/provenance successors bind the generator input hash. No CON.15 inference shape, external reference, new schema keyword, runtime handler, package identity, dependency version/closure, or published package-version change is authorized. Dokka is a current Contracts CI gate: eng/contracts.py pack -> eng/maven_tools.py:pack() runs dokkaGeneratePublicationHtml and documentation_tools.prepare(), and verify_bundle() calls documentation_tools.verify(); admission requires exact fixed/excluded/module-page membership and normalized page hashes against active r11, which inventories 465 generated Kotlin input hashes. CON.10 owns only its generated Kotlin input hashes and exact contracts-proto/contracts-connect-client API page/hash sets in r13, its matching immutable documentation-resource successor, and advancement of the active PROFILE pointer to r13 at its serialized integration; preserve fixed/excluded entries and history. This future authoring scope is not evidence that other route rows already exist.",
+   "notes": "Second-largest domain task. WP-15/16/17 (ArcChat core/execution/independent-core, the assistant lanes) are the direct consumers; WP-52 (Cloud Harness, the AI lanes) needs both this and CON.11. Shared leaf shapes are defined here before CON.11 consumes them; there is no reverse CON.10 prerequisite on CON.11. SessionBinding is a schema record, not cached authorization; this task adds no live handlers. Private CF route exports require actual authoritative route oracle rows before registration: preserve service actor, PAT denial, HMAC, owner/fence binding and idempotency requirements from contracts05. No borrowed public operation identities, new scope enum or authorization weakening is authorized; no other/general CON.18 checker expansion beyond this exact approval.decide metadata gate is authorized by this repair. Public approval.decide uses only the separate TK-02 public-human-approval-decision profile; contracts/02's local-only in-process human-approval-decision profile is unchanged. TK-02 binds the verified pending proposal to the human, current session/workspace, action, target, revision, proposal hash and expiry, fails closed on changed/missing/expired/consumed proposals, replays the original receipt for identical command/canonical input, rejects conflicting revival, refuses localPresence-required approvals from mobile/web, and grants neither persistent permission nor execution. JSON Schema number support is narrowly number->C# double and TypeScript number, finite values only, with current minimum/maximum behavior; the maxUtf8Bytes keyword enforces encoded UTF-8 byte length for opaque string fields without parsing or re-encoding. Registry04 Cursor is opaque UTF-8 <=4096 bytes (not ASCII/base64url), so its ai-http schema has maxLength=4096 and maxUtf8Bytes=4096. Strict JSON, unknown-keyword fail-closed behavior and every other output remain unchanged. Task-owned dependency/provenance successors bind the generator input hash. No CON.15 inference shape, external reference, runtime handler, package identity, dependency version/closure, or published package-version change is authorized. Dokka is a current Contracts CI gate: eng/contracts.py pack -> eng/maven_tools.py:pack() runs dokkaGeneratePublicationHtml and documentation_tools.prepare(), and verify_bundle() calls documentation_tools.verify(); admission requires exact fixed/excluded/module-page membership and normalized page hashes. Use RES-contracts-dokka-profile's short allocation/generation lease after rebasing on latest Contracts main: inspect the merged PROFILE/immutable successor pairs and all live durable reservations; if an earlier unmerged reservation exists, release and defer only Dokka work. Otherwise claim exactly rN where N=active+1 and both successor paths are free, never skip/reuse/prewrite. Generate only this task's Kotlin inputs and exact API page/hash sets in contracts-proto and contracts-connect-client; preserve fixed/excluded/history and advance only the matching pointer. Push the exact branch head and durably record {resource,rN,exact head/PR} in claim/PR handoff, then release before review/CI. Do not allocate the next number until the reservation merges/releases/supersedes; any rebase/change requires reclaim, pointer/N revalidation, regeneration, reservation update and invalidates prior review.",
    "complete": []
   },
   {
@@ -2606,7 +2649,25 @@
     "Contracts:fixtures/public/con-11-application-streams.json",
     "Contracts:eng/operations/con-11.json (owned domain operation authorization export; append through schema-source resource protocol)",
     "Contracts:internal/proto/arcforges/cf/v1/stream.proto (annex10 section 7 private RunStream projection; reuse public stream records; existing CloudInternal package only)",
-    "Contracts:fixtures/internal/con-11-run-stream.json"
+    "Contracts:fixtures/internal/con-11-run-stream.json",
+    "Contracts:eng/contract-packages.json (register application.proto in the existing PublicApi package and stream.proto in existing CloudInternal only; events.proto is already registered, preserve all package identities)",
+    "Contracts:eng/policy/contract-access.json (append exact task-owned public/internal schema hashes and type assignments)",
+    "Contracts:eng/policy/dependency-policy.json (refresh task-owned input hashes only; no dependency version or closure changes)",
+    "Contracts:eng/policy/dependency-reviews/con-11-r1.json (new immutable task admission receipt; preserve history)",
+    "Contracts:eng/provenance/files.json (append owned source/output rows and remap only regenerated targets)",
+    "Contracts:eng/provenance/records/contract-bindings-con-11-r1.json (new successor source/output binding; preserve history)",
+    "Contracts:src/public/**/Generated/** (regenerated public application/events contracts)",
+    "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
+    "Contracts:src/public/ts/proto/src/shapes/gen/** (regenerated)",
+    "Contracts:src/public/ts/proto/src/services/gen/catalog.ts (regenerated)",
+    "Contracts:src/public/ts/proto/src/index.ts (regenerated)",
+    "Contracts:src/public/ts/contract-fixtures/src/index.ts (regenerated)",
+    "Contracts:src/public/kotlin/contracts-proto/generated/** (regenerated)",
+    "Contracts:src/public/kotlin/contracts-connect-client/generated/** (regenerated)",
+    "Contracts:src/internal/dotnet/ArcForges.Contracts.CloudInternal/Generated/** (regenerated private RunStream projection only)",
+    "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-r<N>.json (claim-time next-unused serialized successor; only task-owned Kotlin inputs and exact contracts-proto/contracts-connect-client pages/hashes)",
+    "Contracts:eng/provenance/records/dokka-documentation-resources-r<N>.json (matching immutable task-owned successor)",
+    "Contracts:eng/documentation_tools.py (advance only PROFILE to the same claimed successor at serialized integration)"
    ],
    "shared": [
     {
@@ -2620,6 +2681,10 @@
     {
      "resource": "RES-contracts-schema-sources",
      "mode": "append"
+    },
+    {
+     "resource": "RES-contracts-dokka-profile",
+     "mode": "exclusive"
     }
    ],
    "validation": "offline: binary unary/stream frame fixtures, scope/presence/unknown-field vectors, contract fixtures with mismatched resource owner/forged target/stale epoch per annex10 §6; no live gRPC-Web transport (WP-06/23/24/30 own that).",
@@ -2628,7 +2693,7 @@
     "state": "not-started",
     "notes": "ApplicationScope and RequestMeta.applicationScope tag 8 already exist in Foundation; HistoryMode and ConversationView applicationScope/historyMode already exist in PublicApi. Reuse these baseline definitions. CON.10 supplies the absent shared leaf records. CON.11 supplies the remaining application/history/execution/events and private RunStream closure."
    },
-   "notes": "Directly required by WP-24 (realtime/reliable events) and WP-26 (device bridge), both the Cloud lane; also the substep the WP03 text is most emphatic about ('required before 03 completion, not a.90 design task').",
+   "notes": "Directly required by WP-24 (realtime/reliable events) and WP-26 (device bridge), both the Cloud lane; also the substep the WP03 text is most emphatic about ('required before 03 completion, not a.90 design task'). events.proto is already an input of the existing Contracts.Events/PublicApi generator route; do not register a duplicate or change package identity. Append only the new application.proto and private stream.proto source routes plus their task-owned access/dependency/provenance bindings. The private RunStream output is limited to the existing CloudInternal .NET generated tree; no internal TypeScript source/output is authorized unless the official package route demonstrably emits it. Use RES-contracts-dokka-profile's short allocation/generation lease after rebasing on latest Contracts main: inspect the merged PROFILE/immutable successor pairs and all live durable reservations; if an earlier unmerged reservation exists, release and defer only Dokka work. Otherwise claim exactly rN where N=active+1 and both successor paths are free, never skip/reuse/prewrite. Generate only this task's Kotlin inputs and exact API page/hash sets in contracts-proto and contracts-connect-client; preserve fixed/excluded/history and advance only the matching pointer. Push the exact branch head and durably record {resource,rN,exact head/PR} in claim/PR handoff, then release before review/CI. Do not allocate the next number until the reservation merges/releases/supersedes; any rebase/change requires reclaim, pointer/N revalidation, regeneration, reservation update and invalidates prior review.",
    "complete": []
   },
   {
@@ -3354,9 +3419,9 @@
     "Contracts:eng/policy/dependency-reviews/con-21-r1.json (successor admission review for this closure; preserve prior history)",
     "Contracts:eng/provenance/files.json (append owned source/output rows)",
     "Contracts:eng/provenance/records/contract-bindings-con-21-r1.json (successor source/output binding; preserve history)",
-    "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-r14.json (task-owned successor with only CON.21 generated Java/Kotlin input hashes and exact API page/hash set; preserve fixed/excluded entries and history)",
-    "Contracts:eng/provenance/records/dokka-documentation-resources-r14.json (matching immutable CON.21 resource successor; preserve history)",
-    "Contracts:eng/documentation_tools.py (advance only the active Dokka PROFILE pointer to CON.21 r14 during its serialized integration)",
+    "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-r<N>.json (claim-time next-unused serialized successor; only task-owned Kotlin inputs and exact contracts-proto/contracts-connect-client pages/hashes)",
+    "Contracts:eng/provenance/records/dokka-documentation-resources-r<N>.json (matching immutable task-owned successor)",
+    "Contracts:eng/documentation_tools.py (advance only PROFILE to the same claimed successor at serialized integration)",
     "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
     "Contracts:src/public/ts/proto/src/shapes/gen/proto.ts (regenerated)",
     "Contracts:src/public/ts/proto/src/services/gen/catalog.ts (regenerated)",
@@ -3376,7 +3441,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "Added so that every operation family in the operation-scope manifest has a closure task.",
+   "notes": "Added so that every operation family in the operation-scope manifest has a closure task. Use RES-contracts-dokka-profile's short allocation/generation lease after rebasing on latest Contracts main: inspect the merged PROFILE/immutable successor pairs and all live durable reservations; if an earlier unmerged reservation exists, release and defer only Dokka work. Otherwise claim exactly rN where N=active+1 and both successor paths are free, never skip/reuse/prewrite. Generate only this task's Kotlin inputs and exact API page/hash sets in contracts-proto and contracts-connect-client; preserve fixed/excluded/history and advance only the matching pointer. Push the exact branch head and durably record {resource,rN,exact head/PR} in claim/PR handoff, then release before review/CI. Do not allocate the next number until the reservation merges/releases/supersedes; any rebase/change requires reclaim, pointer/N revalidation, regeneration, reservation update and invalidates prior review.",
    "complete": [],
    "shared": [
     {
@@ -3390,6 +3455,10 @@
     {
      "resource": "RES-contracts-schema-sources",
      "mode": "append"
+    },
+    {
+     "resource": "RES-contracts-dokka-profile",
+     "mode": "exclusive"
     }
    ]
   },
@@ -3437,9 +3506,9 @@
     "Contracts:eng/policy/dependency-reviews/con-22-r1.json (successor admission review for this closure; preserve prior history)",
     "Contracts:eng/provenance/files.json (append owned source/output rows)",
     "Contracts:eng/provenance/records/contract-bindings-con-22-r1.json (successor source/output binding; preserve history)",
-    "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-r15.json (task-owned successor with only CON.22 generated Java/Kotlin input hashes and exact API page/hash set; preserve fixed/excluded entries and history)",
-    "Contracts:eng/provenance/records/dokka-documentation-resources-r15.json (matching immutable CON.22 resource successor; preserve history)",
-    "Contracts:eng/documentation_tools.py (advance only the active Dokka PROFILE pointer to CON.22 r15 during its serialized integration)",
+    "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-r<N>.json (claim-time next-unused serialized successor; only task-owned Kotlin inputs and exact contracts-proto/contracts-connect-client pages/hashes)",
+    "Contracts:eng/provenance/records/dokka-documentation-resources-r<N>.json (matching immutable task-owned successor)",
+    "Contracts:eng/documentation_tools.py (advance only PROFILE to the same claimed successor at serialized integration)",
     "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
     "Contracts:src/public/ts/proto/src/shapes/gen/proto.ts (regenerated)",
     "Contracts:src/public/ts/proto/src/services/gen/catalog.ts (regenerated)",
@@ -3459,7 +3528,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "Added so that every operation family in the operation-scope manifest has a closure task.",
+   "notes": "Added so that every operation family in the operation-scope manifest has a closure task. Use RES-contracts-dokka-profile's short allocation/generation lease after rebasing on latest Contracts main: inspect the merged PROFILE/immutable successor pairs and all live durable reservations; if an earlier unmerged reservation exists, release and defer only Dokka work. Otherwise claim exactly rN where N=active+1 and both successor paths are free, never skip/reuse/prewrite. Generate only this task's Kotlin inputs and exact API page/hash sets in contracts-proto and contracts-connect-client; preserve fixed/excluded/history and advance only the matching pointer. Push the exact branch head and durably record {resource,rN,exact head/PR} in claim/PR handoff, then release before review/CI. Do not allocate the next number until the reservation merges/releases/supersedes; any rebase/change requires reclaim, pointer/N revalidation, regeneration, reservation update and invalidates prior review.",
    "complete": [],
    "shared": [
     {
@@ -3473,6 +3542,10 @@
     {
      "resource": "RES-contracts-schema-sources",
      "mode": "append"
+    },
+    {
+     "resource": "RES-contracts-dokka-profile",
+     "mode": "exclusive"
     }
    ]
   },
@@ -3778,7 +3851,21 @@
     "Contracts:public/proto/arcforges/publicapi/v1/content.proto (ScopeProjectSummary and ScopeSessionSummary only)",
     "Contracts:public/proto/constraints/** (library summaries and operations)",
     "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
-    "Contracts:src/public/ts/proto/src/shapes/gen/** (regenerated)"
+    "Contracts:src/public/ts/proto/src/shapes/gen/** (regenerated)",
+    "Contracts:src/public/ts/proto/src/services/gen/catalog.ts (regenerated)",
+    "Contracts:src/public/ts/proto/src/index.ts (regenerated)",
+    "Contracts:src/public/ts/contract-fixtures/src/index.ts (regenerated)",
+    "Contracts:src/public/kotlin/contracts-proto/generated/** (regenerated)",
+    "Contracts:src/public/kotlin/contracts-connect-client/generated/** (regenerated)",
+    "Contracts:eng/contract-packages.json (register only scope.proto in the existing PublicApi package; preserve all package identities)",
+    "Contracts:eng/policy/contract-access.json (append exact task-owned schema hashes/type assignments)",
+    "Contracts:eng/policy/dependency-policy.json (refresh task-owned input hashes only; no dependency version or closure changes)",
+    "Contracts:eng/policy/dependency-reviews/con-24-r1.json (new immutable task admission receipt; preserve history)",
+    "Contracts:eng/provenance/files.json (append owned source/output rows and remap only regenerated targets)",
+    "Contracts:eng/provenance/records/contract-bindings-con-24-r1.json (new successor source/output binding; preserve history)",
+    "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-r<N>.json (claim-time next-unused serialized successor; only task-owned Kotlin inputs and exact contracts-proto/contracts-connect-client pages/hashes)",
+    "Contracts:eng/provenance/records/dokka-documentation-resources-r<N>.json (matching immutable task-owned successor)",
+    "Contracts:eng/documentation_tools.py (advance only PROFILE to the same claimed successor at serialized integration)"
    ],
    "shared": [
     {
@@ -3792,6 +3879,10 @@
     {
      "resource": "RES-contracts-schema-sources",
      "mode": "append"
+    },
+    {
+     "resource": "RES-contracts-dokka-profile",
+     "mode": "exclusive"
     }
    ],
    "validation": "offline: descriptor/field vectors in three languages, operation-count and scope-manifest checks, regeneration clean, candidate packaging checks (P2-017).",
@@ -3800,7 +3891,7 @@
     "state": "not-started",
     "notes": "Observed none: no ScopeService exists in Contracts."
    },
-   "notes": "Independent of the other contract closures except for the shared schema-source protocol.",
+   "notes": "Independent of the other contract closures except for the shared schema-source protocol. scope.proto is added to the existing PublicApi package; the ScopeProjectSummary/ScopeSessionSummary additions remain limited to their named records in the already-routed content.proto. Append exact access/dependency/provenance successors for this task's changed schema inputs and generated outputs only, preserving packages, dependency versions/closure and history. Use RES-contracts-dokka-profile's short allocation/generation lease after rebasing on latest Contracts main: inspect the merged PROFILE/immutable successor pairs and all live durable reservations; if an earlier unmerged reservation exists, release and defer only Dokka work. Otherwise claim exactly rN where N=active+1 and both successor paths are free, never skip/reuse/prewrite. Generate only this task's Kotlin inputs and exact API page/hash sets in contracts-proto and contracts-connect-client; preserve fixed/excluded/history and advance only the matching pointer. Push the exact branch head and durably record {resource,rN,exact head/PR} in claim/PR handoff, then release before review/CI. Do not allocate the next number until the reservation merges/releases/supersedes; any rebase/change requires reclaim, pointer/N revalidation, regeneration, reservation update and invalidates prior review.",
    "complete": []
   },
   {
@@ -25264,6 +25355,14 @@
    "protocol": "Never hand-edited or hand-merged: after rebasing, the author regenerates with the pinned generator and commits the result; CI rejects drift between schemas, descriptors and generated output."
   },
   {
+   "id": "RES-contracts-dokka-profile",
+   "title": "Contracts Dokka active profile pointer and immutable profile/resource successors",
+   "kind": "pointer",
+   "ownerRepo": "Contracts",
+   "owner": "Contracts integration owner",
+   "protocol": "Tasks may prepare source work in parallel. Only on entering its Dokka phase, a task rebases on latest Contracts main and claims this resource exclusively; inspect merged active PROFILE/immutable profile-resource pairs and every live claim/PR durable handoff reservation. If any earlier unmerged reservation exists, immediately release the lease and defer only Dokka work; do not block other preparation or review. With no prior reservation, allocate exactly N=active revision+1 only if both eng/provenance/artifact-profiles/dokka-2-2-0-rN.json and eng/provenance/records/dokka-documentation-resources-rN.json are unoccupied; do not skip, reuse, or prewrite. Update only task-owned generated Kotlin input hashes and exact API page/hash sets for explicitly listed modules, write the matching immutable resource record, preserve all fixed/excluded entries/history, advance only PROFILE to that same successor, push the exact branch head and durably record {resource,rN,exact head/PR} in the claim/PR handoff. Then release the lease before waiting on review or CI. No later task may allocate while that reservation is live; only its merge/release/supersession frees the next number. The integration owner serially merges the exact reviewed head. Any rebase/change requires reclaiming the lease, revalidating the active pointer and N, regenerating, updating the durable reservation and releasing; prior review is invalidated. Candidate pack/check must accept the exact active pointer and immutable history."
+  },
+  {
    "id": "RES-contracts-publication",
    "title": "Contracts NuGet, npm and Maven publication",
    "kind": "pointer",
@@ -25277,7 +25376,7 @@
    "kind": "registry",
    "ownerRepo": "Contracts",
    "owner": "Contracts integration owner",
-   "protocol": "Each schema closure task edits only its own domain proto or HTTP-schema files and adds its own sharded constraint and fixture files. Schema-closure tasks and Contracts policy tasks that touch package/access/provenance/dependency input registries share this append/rebase protocol: append only task-owned rows and successor receipts to package, compiled access/hash, foundation, operation, constraint, provenance source/output, binding, and dependency-review inventories; preserve prior history and never rewrite another task's rows. Refresh dependency input hashes only for the task-owned closure; do not expand dependency versions or closure. Public Dokka updates use task-specific successor artifact-profile/documentation-resource record pairs and advance only the matching active profile pointer. For the current public Kotlin closures, the serialized successor sequence is CON.09 r12, CON.10 r13, CON.21 r14, CON.22 r15. Each owner changes only its generated input hashes, exact API page/hash set, matching immutable resource successor and active pointer; preserve all prior history and fixed/excluded entries. The integration owner serializes these merges one at a time; each next author rebases and regenerates from the then-active profile and must not prewrite or overwrite a later task's pointer. A proto file with several contributing tasks (operator, policy/configuration) has one designated author task and the others request changes through it. Each serialized merge is followed by a rebase and regeneration before integration of the next task."
+   "protocol": "Each schema closure task edits only its own domain proto or HTTP-schema files and adds its own sharded constraint and fixture files. Schema-closure tasks and Contracts policy tasks that touch package/access/provenance/dependency input registries share this append/rebase protocol: append only task-owned rows and successor receipts to package, compiled access/hash, foundation, operation, constraint, provenance source/output, binding, and dependency-review inventories; preserve prior history and never rewrite another task's rows. Refresh dependency input hashes only for the task-owned closure; do not expand dependency versions or closure. Public Kotlin/Dokka successors are exclusively governed by RES-contracts-dokka-profile. A proto file with several contributing tasks (operator, policy/configuration) has one designated author task and the others request changes through it. Each serialized merge is followed by a rebase and regeneration before integration of the next task."
   },
   {
    "id": "RES-design-evidence",
