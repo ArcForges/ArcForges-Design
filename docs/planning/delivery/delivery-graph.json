@@ -2316,6 +2316,8 @@
    "writes": [
     "Contracts:public/proto/arcforges/publicapi/v1/commerce.proto",
     "Contracts:fixtures/public/con-08-entitlement-commerce.json",
+    "Contracts:public/proto/constraints/con-08-entitlement-commerce.json",
+    "Contracts:public/proto/constraints.json (regenerated)",
     "Contracts:eng/operations/con-08.json (owned domain operation authorization export; append through schema-source resource protocol)",
     "Contracts:eng/check_operation_scope.py",
     "Contracts:tests/tooling/test_operation_scope.py",
@@ -2705,6 +2707,7 @@
    "writes": [
     "Contracts:internal/proto/arcforges/operator/v1/operator.proto",
     "Contracts:internal/proto/constraints/con-14-operator.json",
+    "Contracts:internal/proto/constraints.json (regenerated)",
     "Contracts:src/internal/dotnet/ArcForges.Contracts.CloudInternal/**",
     "Contracts:src/internal/ts/operator-client/src/**",
     "Contracts:fixtures/internal/con-14-operator.json",
