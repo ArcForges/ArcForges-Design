@@ -18944,9 +18944,11 @@
     "Contracts:public/proto/arcforges/extensions/v1/**",
     "Contracts:public/proto/constraints/ext-02-dual-capability.json (only EXT.02-authored new messages)",
     "Contracts:public/proto/constraints.json (regenerated from the EXT.02-owned shard; preserve all other shards)",
+    "Contracts:.gitleaks.toml (only exact-path-and-digest generic-api-key exceptions for the six observed input-hash lines described below)",
     "Contracts:tests/StructureTests/ExtensionBoundaryCases.cs (negative containment test for StructuredValue in first-party domain/product contracts)",
     "Contracts:tests/StructureTests/Fixtures/structured-value-first-party-domain.proto (task-owned negative test fixture only)",
     "Contracts:tests/StructureTests/Program.cs (register exactly ExtensionBoundaryCases.Run(root) in the existing console runner only)",
+    "Contracts:tests/tooling/test_dependency_admission.py (only positive and negative tests for the task's exact path-plus-digest Gitleaks exception boundary)",
     "DesktopPlatform:Directory.Packages.props (only pin the existing ArcForges.Contracts.PublicApi and ArcForges.Sdk.Contracts packages to the exact candidates published by this task's Contracts stage)",
     "DesktopPlatform:DesktopPlatform.slnx (only register the task-owned product, Tests and AotProbe projects)",
     "DesktopPlatform:.github/workflows/package-validation.yml (only build, test and AOT-compile steps for this task's projects)",
@@ -18978,8 +18980,8 @@
      "mode": "append"
     }
    ],
-   "validation": "Contracts stage: authored constraint-shard and aggregate checks, generated-shape and fixture checks, and applicable schema/structure tests. Only after that Contracts merge publishes both task candidates, Desktop stage pins the exact ArcForges.Contracts.PublicApi and ArcForges.Sdk.Contracts packages from the same merge and builds/tests the product and nested tests against those packages (never Contracts source); verify value-model coverage per type, bidirectional validation and executable first-party containment rejection. The nested AotProbe must AOT-compile with the platform present under P2-017; compilation only, with no hosted/runtime execution.",
-   "evidence": "Contracts source/generation/test results and both exact published package identities, versions and content hashes; Desktop exact two-package pins, locked restore/build/test results, executable containment negative, and native AOT compile result.",
+   "validation": "Contracts stage: authored constraint-shard and aggregate checks, generated-shape and fixture checks, and applicable schema/structure tests. Only after that Contracts merge publishes both task candidates, Desktop stage pins the exact ArcForges.Contracts.PublicApi and ArcForges.Sdk.Contracts packages from the same merge and builds/tests the product and nested tests against those packages (never Contracts source); verify value-model coverage per type, bidirectional validation and executable first-party containment rejection. The nested AotProbe must AOT-compile with the platform present under P2-017; compilation only, with no hosted/runtime execution. Keep the pinned Gitleaks scan enabled. Its generic-api-key exception may match only the six observed lines/four unique verified public input SHA256 values in eng/policy/dependency-policy.json and eng/policy/dependency-reviews/ext-02-r1.json, requiring the exact path and digest on the same line (AND); tests must cover exact positives and reject a changed digest, another path, and any unrelated 64-hex value. Do not allow generic 64-hex patterns, whole-file or commit suppressions, scanner/workflow/rule-algorithm changes, or new dependencies.",
+   "evidence": "Contracts source/generation/test results and both exact published package identities, versions and content hashes; Desktop exact two-package pins, locked restore/build/test results, executable containment negative, and native AOT compile result; pinned Gitleaks results and positive/negative exact exception-boundary tests.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Contracts already has public/proto/arcforges/extensions/v1/extensions.proto with ExtensionLease/ExtensionHostService.RenewLease and a generated ArcForges.Sdk.Client (ExtensionLeaseClient.cs) -- WP-03-level groundwork this task extends, not yet the StructuredValue/ValueSchema model itself."
@@ -22087,10 +22089,18 @@
      "task": "GOV.03",
      "need": "Node/npm workspace and toolchain pins",
      "why": "already satisfied — the repo's root package.json/workspaces/.node-version already implement this"
+    },
+    {
+     "type": "artifact",
+     "task": "GOV.11",
+     "need": "prior Web security-config exception authority and r7 exact-pattern baseline",
+     "why": "WEB.01 r8 exact exception appends only after the merged r7 config-owner update"
     }
    ],
    "writes": [
-    "Web:apps/site/**"
+    "Web:apps/site/**",
+    "Web:.gitleaks.toml (only exact-path-and-digest generic-api-key exceptions for the eight observed lines/six unique verified public SHA256 values in the browser resource profile)",
+    "Web:tests/provenance/candidate.test.ts (only tests for the r8 Gitleaks exact-exception boundary and its positive/negative cases; read the actual config and profile, without changing candidate generation)"
    ],
    "shared": [
     {
@@ -22098,13 +22108,13 @@
      "mode": "append"
     }
    ],
-   "validation": "Two full builds with identical inputs compared byte-for-byte; no-script navigation/content tests; single-content-change diff; build with network disabled after approved restore — CI-eligible offline checks",
-   "evidence": "Determinism comparison and diff-minimality results",
+   "validation": "Two full builds with identical inputs compared byte-for-byte; no-script navigation/content tests; single-content-change diff; build with network disabled after approved restore — CI-eligible offline checks. Keep the pinned Gitleaks scan enabled. Its generic-api-key exception may match only the eight observed lines/six unique verified public SHA256 values in eng/provenance/profiles/browser-resources-r8.json, requiring the exact path and digest on the same line (AND); `tests/provenance/candidate.test.ts` must test the actual config/profile exact bindings and positive/negative cases for changed digest, another path, unrelated 64-hex and credential-looking text. Do not allow generic 64-hex patterns, whole-file or commit suppressions, scanner/workflow/rule-algorithm changes, candidate-generation algorithm changes, or new dependencies.",
+   "evidence": "Determinism comparison and diff-minimality results; pinned Gitleaks results with eight observed findings bound by six exact path/digest pairs and negative path/digest-boundary evidence",
    "baseline": {
     "state": "not-started",
     "notes": "Observed partial, unreviewed: apps/site already has a working react-router static generator (react-router.config.ts prerenders /, /hello, /cloud-hello) with a working build/deploy pipeline; needs generalizing to the full catalogue-driven public inventory"
    },
-   "notes": "Its only real start need (WP00/WP02) is already satisfied; the current serial plan defers WP47 until after WP40, but nothing blocks starting this immediately.",
+   "notes": "Its only real start need (WP00/WP02) is already satisfied; the current serial plan defers WP47 until after WP40, but nothing blocks starting this immediately. The candidate provenance test reads the actual .gitleaks.toml and browser-resources-r8.json, verifies the six unique exact path/digest bindings for the eight observed findings, and rejects changed-digest, different-path, unrelated-64-hex and credential-text cases; it must not alter candidate generation.",
    "complete": []
   },
   {
