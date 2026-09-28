@@ -2,6 +2,7 @@
 
 > Status: **Authoritative** — Phase 2 design-stage evidence · **Complete**
 > Governing authority: **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)**, **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)**, **[D-002](../../decisions/phase-1-foundation-decisions.md#rule-d-002)** (ArcScope is independently defined, not a rename of a superseded product)
+> Scope note: Sections 1–7 are the historical review bound to commit 639daafb. Section 8 is a separate current-drift check and does not rewrite those baseline observations or expand ArcScope requirements. In particular, “the most restrictive in the programme” in §2 describes the licence at that pinned baseline, not the current upstream model.
 > Consuming product: **ArcScope** — [`../../requirements/products/arcscope.md`](../../requirements/products/arcscope.md)
 
 ---
@@ -135,3 +136,100 @@
 | <a id="rule-mt-01"></a>MT-01 | Bound to commit `639daafb`. [WP-33](../../planning/work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) re-checks for drift and newly introduced material; it does not re-create this matrix. |
 | <a id="rule-mt-02"></a>MT-02 | **The Pro-module list in `LICENSE.md` §4 is re-read on every drift check.** A feature moving into or out of that list changes the authorship boundary. |
 | <a id="rule-mt-03"></a>MT-03 | The packaged binary is never executed, at any stage. |
+
+---
+
+## 8. Current upstream drift check — 2026-09-28
+
+### 8.1 Identity and review method
+
+| Field | Value |
+|---|---|
+| Historical comparison point | 639daafb2fe7d324c3b2d5583d2514c8c470676f (Branch_v4.0.3, 2026-07-13) |
+| Current upstream point | master at 44c9452acfbf0ca31f1c5764d225bccdd53549c1 (2026-09-21) |
+| Change locator | Repository tree comparison with rename detection disabled: 5,213 changed path records across additions, modifications and removals. Paths locate drift; they do not establish implementation behaviour. |
+| Current material read | Public README.md, DISCOVER.md, relevant doc/help/** pages, current licence instruments and REUSE.toml; names and locations of changed source, test and packaging paths. |
+| Binary handling | No packaged binary was opened or executed. |
+
+The focused public help-page set reviewed under doc/help/ was Command-Palette.md, Console-Annotations.md, Drivers-EtherNet-IP.md, Drivers-IEC-104.md, Drivers-OPC-UA.md, Drivers-S7.md, Extensions.md, InfluxDB.md, Macros.md, Problem-Center.md, Remote-Dashboard.md, Session-Database.md, Session-Reports.md and Widget-Extension-Development.md. Internal developer/agent specification material was not treated as product authority.
+
+The original 31 rows remain the evidence record for the pinned commit. This check updates only their current path/capability disposition. The reference-source authorship boundary is preserved: no implementation under the baseline Pro exclusions was read. Current publicly documented commercial-only material, including direct industrial drivers, MQTT/Sparkplug, the AI Assistant and Pro visualisation surfaces, is treated as excluded; its source implementation was not read. No code is proposed for reuse.
+
+The table below accounts for every existing row family with path-level drift. It deliberately separates historical evidence from current claims: where a behaviour or product claim comes only from current documentation, it is not presented as source-verified.
+
+| Row | Current path or documented drift | Existing ArcForges target or accepted exclusion | Current disposition |
+|---|---|---|---|
+| AS-01 | Connection/device code is reorganised under core/Devices/IO/, including ConnectionManager and DeviceManager families. | I-466, SD-01, WP-33.00 | Reference Only; the historical separation remains a category cue, not a source-use proposal. |
+| AS-02 | Transport code is reorganised under core/Devices/ and core/Protocols/. Current public docs add WebSocket/HTTP to the GPL network list and document Pro OPC UA, S7comm, EtherNet/IP and IEC 60870-5-104 clients. | SD-09, WP-33.00; the accepted V1 transport subset is intentionally narrower. | Reference Only for generic transport coverage. The additional Pro industrial clients are Drop for this scope; no implementation was read. |
+| AS-03 | Current docs identify MQTT with Sparkplug B support as Pro; current MQTT implementation paths remain outside review. | Accepted exclusion: Pro/commercial MQTT; no accepted V1 requirement. | Drop. |
+| AS-04 | The rolling buffer is now located at core/Core/CircularBuffer.h. | SE-04, WP-33.02 | Reference Only; no source reuse. |
+| AS-05 | Framing and checksum paths are split across core/Pipeline/IO/, core/Pipeline/DataModel/ and core/Core/{IO,Checksum}/. Current docs also describe built-in, JavaScript and Lua parsers and parser templates. | Decoder/checksum requirements and WP-34.03 | Reference Only for framing and failure visibility; parser implementations and templates are not adopted. |
+| AS-06 | Frame, table and consumer code is split across core/Pipeline/DataModel/ and core/Core/DataModel/; current docs describe dataset transforms and computed variables. | Existing channel/signal/event model and WP-33.03 | Reference Only. |
+| AS-07 | DSP and hot-path paths are split between core/Pipeline/ and core/Core/, including SIMD and hot-path helper families. | Throughput requirement, WP-13.02 and WP-33.01 | Reference Only; the path change alone is not performance evidence for ArcForges. |
+| AS-08 | Importer paths are reorganised under core/Pipeline/DataModel/Importers/; current docs describe DBC multiplexing/J1939/ISO-TP and Modbus register-map import. | Accepted V1 importer exclusion; later-adapter evidence only. | Drop for the importers and extended protocol integrations; they do not enlarge V1. |
+| AS-09 | Session storage is reorganised under core/Storage/Sessions/; the current help centre uses the “Historian” name for the SQLite session feature. | SE-14, WP-33.04; deliberate divergence to the chunked verifiable capture store remains. | Reference Only. The current database implementation does not replace the ArcForges storage decision. |
+| AS-10 | Player/replay code is reorganised under core/Storage/{CSV,MDF4,Sessions}/; current docs retain replay and describe database-backed session replay. | SD-10, WP-33.05 | Reference Only; ArcForges' replay-label and device-identity constraints remain authoritative. |
+| AS-11 | Export paths are reorganised under core/Storage/; current docs add a Pro InfluxDB 2.x live sink alongside CSV/MDF4/session exports. | Existing export/precision requirements and WP-35.04; no ArcScope requirement authorises a live InfluxDB sink. | Reference Only for established export evidence. The new InfluxDB sink is Drop. |
+| AS-12 | Session-report paths are reorganised under core/Storage/Sessions/; current docs describe richer self-contained HTML/PDF reports. | Report traceability and WP-34.06 | Reference Only; source/session/configuration traceability remains the ArcForges requirement. |
+| AS-13 | Dashboard widget paths remain documented as a broad and changing vocabulary; current README distinguishes GPL widgets from additional Pro visualisation/output surfaces. | Existing visualisation scope and WP-34.00 | Reference Only for category vocabulary. Pro 3D/XY/Waterfall/Image/Canvas and output implementations remain excluded. |
+| AS-14 | Pro 3D/XY visualisation paths are reorganised; the current docs use “Canvas” for the surface called “Painter” at the baseline. | Accepted Pro-module exclusion. | Drop; no Pro visualisation implementation was read. |
+| AS-15 | The web-view widget paths remain present; web surfaces also appear in other product areas. | Accepted exclusion: no ArcScope requirement and a large security surface. | Drop. |
+| AS-16 | Alarm monitor paths move under core/Ui/UI/. | Existing trigger/alarm distinction and WP-34.01 | Reference Only. |
+| AS-17 | Notification code moves under core/Pipeline/DataModel/; current help adds console byte annotations and Problem Center/Connection Diagnostics. | Durable event-log/attention requirements and WP-10.04; decoder evidence also maps to WP-34.03. | Reference Only for event/diagnostic concepts; no new ArcScope requirement is inferred. |
+| AS-18 | Project Editor paths are reorganised and expanded in current public help with workspaces and project configuration flows. | Existing ArcScope project/configuration model and WP-33.00 | Reference Only; current workflow is not a requirement to reproduce. |
+| AS-19 | Command/API code is reorganised under core/Api/ and core/Core/Api/; current docs add a command palette and in-process Macros over the command surface. | Existing API/integration vocabulary and WP-35.00 | Reference Only; API vocabulary does not authorise adopting implementation or arbitrary commands. |
+| AS-20 | The gRPC implementation remains under app/src/API/GRPC/ and has changed. | Accepted source exclusion; ArcForges uses its own first-party protocol. | Drop; no reference implementation reuse. |
+| AS-21 | Path-policy code is reorganised under core/Api/API/. | Existing resource-identity/path policy and AI-08 | Reference Only. |
+| AS-22 | AI paths are reorganised/expanded; current README classifies the AI Assistant as Pro. | Existing bounded-context requirements in I-182 and AI-02; current Pro implementation is outside the authorship boundary. | The pinned evidence remains historical Reference Only; current Pro AI additions are Drop and their implementation was not read. |
+| AS-23 | The extension surface is expanded in current docs to include in-process QML widget extensions as well as external API-connected plugins. | WP-41; ArcForges' accepted out-of-process extension model deliberately diverges. | Reference Only for external-plugin category evidence. In-process widget extensions are Drop. |
+| AS-24 | Crash tracking moves under core/Ui/Misc/. | Crash-report consent and WP-12.05 | Reference Only. |
+| AS-25 | Backup management moves under core/Ui/Misc/. | Existing portability/recovery requirements and WP-46 | Reference Only. |
+| AS-26 | CLI code remains in the product tree and is expanded/documented for additional driver configuration. | Accepted exclusion: headless acquisition CLI is outside accepted V1 scope. | Drop. |
+| AS-27 | Current licensing adds EULA.md, TRADEMARKS.md, REUSE.toml, new SPDX texts and updated commercial terms; licensing/activation implementation remains unreviewed. | Accepted exclusion: commercial-only activation/licensing and D-022. | Drop for current activation/licensing implementation; see the current licence re-verification below. |
+| AS-28 | Platform code is split between core/Pipeline/Platform/ and core/Ui/Platform/, including CSD/native-window families. | Existing window/platform integration requirements and WP-10.01 | Reference Only. |
+| AS-29 | Integration/unit test families are reorganised and substantially expanded under app/tests/ and tests/. | Existing verification strategy F-05, F-11, F-18, WP-33 and WP-34 | Reference Only; path/test names are not ArcForges test evidence. |
+| AS-30 | Performance, security, benchmark and manual test materials change alongside the test-tree refactor. | Existing quality families, WP-13.02 and PG-08 | Reference Only; no upstream result is substituted for a first-party gate. |
+| AS-31 | Packaging/build material now includes current app/deploy/ platform assets and release/build paths; the pinned loose-directory observation is not evidence of the current release artifact shape. | WP-50.02; signed per-user distribution requirements remain authoritative. | Reference Only. Current release artifacts were not executed or exhaustively inspected; the historical “no installer” claim is baseline-only. |
+
+### 8.2 Current licence and provenance re-verification
+
+The current upstream root LICENSE.md (dated 2026-08-29) now states that per-file SPDX declarations or REUSE.toml are authoritative. It says files declared GPL-3.0-or-later OR LicenseRef-SerialStudio-Commercial may use either arm; the GPL option carries the GPL's own terms with no extra commercial-use restriction. Files marked only LicenseRef-SerialStudio-Commercial are proprietary Pro modules. This differs materially from the baseline's GPL-3.0-only description and must not be conflated with it.
+
+The current commercial-source instrument still says visibility grants no right to compile, use or distribute Pro source without an active commercial term, and bars distribution of Pro modules/builds. Official precompiled binaries now route to a separate 2026-08-29 EULA with a 14-day trial; TRADEMARKS.md states a separate trademark policy. The EULA and commercial terms contain [COUNSEL: ...] annotations. This report records those documents as published and makes no legal-validity determination.
+
+REUSE.toml adds explicit file-scoped declarations for first-party material and third parties. Its current entries identify, among others, open62541 as MPL-2.0, Mbed TLS as Apache-2.0 for this project, HIDAPI's alternative expressions, and the existing MIT/BSD families; it states that libplctag is fetched at configure time rather than vendored. The current license inventory includes Apache, BSD, GPL-3.0-or-later, MIT, MPL, OFL, Zlib and other SPDX texts. These declarations are provenance evidence only and do not grant ArcForges rights to reuse upstream expression. Under D-013, no reference source is copied, translated or ported; current Pro-source visibility is not treated as permission.
+
+The baseline LP-01 through LP-04 findings remain accurate only for the pinned baseline. For the current point, the governing disposition is: GPL-classified content remains Reference Only under D-013; current commercial-only and insufficiently classified surfaces are Drop; vendor content is not reused. The current README's Pro classification was used as a conservative no-read boundary for new Pro capabilities. No packaged binary or Pro implementation was inspected.
+
+### 8.3 Newly documented capability and material disposition
+
+| Newly documented or materially expanded material | Existing ArcForges mapping or accepted exclusion | Disposition |
+|---|---|---|
+| WebSocket and HTTP network transports in the GPL edition. | Generic transport coverage in SD-09 and WP-33.00. | Reference Only; category evidence, no implementation reuse. |
+| OPC UA tag browsing, direct S7comm/EtherNet/IP/IEC 60870-5-104 PLC clients and MQTT Sparkplug B. | SD-09 deliberately accepts a narrower V1 subset; MQTT is the accepted AS-03 Pro exclusion. | Drop for these additional Pro integrations; do not read their implementation or expand V1. |
+| Built-in/JavaScript/Lua parser choices and script-template catalogue. | Existing framing/decoder requirements and WP-34.03 (AS-05). | Reference Only for generic decoding needs; no source or template reuse. |
+| Modbus register-map and DBC import, including extended multiplexing/J1939/ISO-TP claims. | Accepted V1 importer exclusion (AS-08); later-adapter evidence only. | Drop; no importer or protocol expansion. |
+| InfluxDB live time-series sink. | No accepted ArcScope requirement for this destination; distinct from existing export evidence (AS-11). | Drop; no new requirement is inferred. |
+| Command palette, workspace navigation, project editor workflows and in-process Macros. | Existing project/configuration and command/API evidence (AS-18, AS-19; WP-33.00, WP-35.00). | Reference Only as product-category observations; do not add a workflow requirement. |
+| Console byte annotations, Problem Center and connection diagnostics. | Existing decoder-failure and durable attention evidence (AS-05, AS-17; WP-34.03, WP-10.04). | Reference Only; ArcForges requirements remain unchanged. |
+| QML widget extensions running inside the host process. | WP-41 explicitly chooses an out-of-process extension boundary (AS-23). | Drop; directly divergent trust model. |
+| Remote read-only dashboard mirroring over the API server. | No accepted ArcScope remote-mirroring requirement; existing API evidence is limited to AS-19. | Drop; no new remote-access requirement is inferred. |
+| Current Pro AI Assistant additions. | Existing bounded-context requirement vocabulary (I-182, AI-02); current README classifies the feature as Pro. | Drop for current implementation and additions; historical AS-22 remains pinned evidence only. |
+| Current commercial-source, binary-EULA, trademark and per-file third-party licensing model. | Existing authorship boundary and licence exclusion (AS-27, D-013, D-022). | Reference Only as licensing/provenance evidence; no code rights or licence conclusion inferred. |
+| Current platform packaging/build tree and release documentation. | Existing signed distribution requirement (AS-31, WP-50.02). | Reference Only; do not infer the current artifact shape from the pinned directory or execute a binary. |
+| Newly added internal developer/agent specifications and planning notes under doc/claude/specs/. | Not product requirements or accepted ArcScope evidence. | Drop from product-evidence scope; not mined for requirements. |
+| Expanded upstream unit, integration, performance, security, benchmark and fixture materials under app/tests/, tests/ and scripts/. | Existing test-family rows AS-29 and AS-30; first-party acceptance evidence remains governed by the ArcForges test strategy. | Reference Only for test-family names; no upstream test result is evidence of ArcForges conformance. |
+| Added/updated third-party component trees and notices, including Mbed TLS, open62541 and configure-time libplctag metadata. | Existing provenance boundary (AS-02, AS-27) and D-013; no third-party source reuse is proposed. | Drop as source material; retain license identity only as provenance evidence. |
+
+### 8.4 Drift-check completeness
+
+| Check | Result |
+|---|---|
+| All historical row families AS-01 through AS-31 checked for current path/document drift | **Pass** — every row family is dispositioned in §8.1; path observations are not presented as behaviour verification. |
+| Every current public capability group identified in the reviewed README/help material has a requirement mapping or explicit exclusion | **Pass** — §8.3 maps each group to an existing row/authority or records an accepted Drop. |
+| Current upstream licence instruments and REUSE/SPDX inventory re-verified, including identity of accompanying texts | **Pass** — §8.2; no vendor-source reuse or legal-validity opinion made. |
+| Original baseline facts remain distinguishable from current drift | **Pass** — §§1–7 stay bound to 639daafb; current claims are separately dated and bound to 44c9452acfbf0ca31f1c5764d225bccdd53549c1. |
+| Pro-module authorship boundary and packaged-binary restriction respected | **Pass** — current Pro implementations were not read; no packaged binary was opened or executed. |
+| Any source reuse or new ArcScope requirement proposed | **No** — all current material is Reference Only or Drop; existing ArcForges requirements are unchanged. |
+
+**Current drift determinations:** none require changing ArcScope requirements or this matrix's 31 baseline dispositions. The current source's commercial/licensing and product surface is materially different from the pinned baseline; subsequent drift checks must compare against a newly authorised source identity rather than silently rolling this report forward.
