@@ -1003,7 +1003,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "WP05's own §8 completion-gate text states this substep 'makes VG-04's policy-test half enforceable' - a second VG-04 contributor not listed in the README's deferred-gate table (which names only 03.04/06.01). The narrowly required ArcForges.Build.Policy 1.0.0-ci.31.1 AGPL admission is build/test-only: forbid product/runtime and generated-public-package closure leakage, and add regression negatives proving those boundaries; do not broaden the exception.",
+   "notes": "WP05's own §8 completion-gate text states this substep 'makes VG-04's policy-test half enforceable' - a second VG-04 contributor not listed in the README's deferred-gate table (which names only 03.04/06.01). The narrowly required ArcForges.Build.Policy 1.0.0-ci.31.1 AGPL admission is build/test-only: forbid product/runtime and generated-public-package closure leakage, and add regression negatives proving those boundaries; do not broaden the exception. Shared Contracts solution, policy and provenance edits rebase and merge one-at-a-time under the Contracts integration owner after exact-head review.",
    "complete": []
   },
   {
