@@ -22099,7 +22099,8 @@
    ],
    "writes": [
     "Web:apps/site/**",
-    "Web:.gitleaks.toml (only exact-path-and-digest generic-api-key exceptions for the eight observed lines/six unique verified public SHA256 values in the browser resource profile)"
+    "Web:.gitleaks.toml (only exact-path-and-digest generic-api-key exceptions for the eight observed lines/six unique verified public SHA256 values in the browser resource profile)",
+    "Web:tests/provenance/candidate.test.ts (only tests for the r8 Gitleaks exact-exception boundary and its positive/negative cases; read the actual config and profile, without changing candidate generation)"
    ],
    "shared": [
     {
@@ -22107,13 +22108,13 @@
      "mode": "append"
     }
    ],
-   "validation": "Two full builds with identical inputs compared byte-for-byte; no-script navigation/content tests; single-content-change diff; build with network disabled after approved restore — CI-eligible offline checks. Keep the pinned Gitleaks scan enabled. Its generic-api-key exception may match only the eight observed lines/six unique verified public SHA256 values in eng/provenance/profiles/browser-resources-r8.json, requiring the exact path and digest on the same line (AND); a changed digest, another path, or any unrelated 64-hex value must remain detected. Do not allow generic 64-hex patterns, whole-file or commit suppressions, scanner/workflow/rule-algorithm changes, or new dependencies.",
+   "validation": "Two full builds with identical inputs compared byte-for-byte; no-script navigation/content tests; single-content-change diff; build with network disabled after approved restore — CI-eligible offline checks. Keep the pinned Gitleaks scan enabled. Its generic-api-key exception may match only the eight observed lines/six unique verified public SHA256 values in eng/provenance/profiles/browser-resources-r8.json, requiring the exact path and digest on the same line (AND); `tests/provenance/candidate.test.ts` must test the actual config/profile exact bindings and positive/negative cases for changed digest, another path, unrelated 64-hex and credential-looking text. Do not allow generic 64-hex patterns, whole-file or commit suppressions, scanner/workflow/rule-algorithm changes, candidate-generation algorithm changes, or new dependencies.",
    "evidence": "Determinism comparison and diff-minimality results; pinned Gitleaks results with eight observed findings bound by six exact path/digest pairs and negative path/digest-boundary evidence",
    "baseline": {
     "state": "not-started",
     "notes": "Observed partial, unreviewed: apps/site already has a working react-router static generator (react-router.config.ts prerenders /, /hello, /cloud-hello) with a working build/deploy pipeline; needs generalizing to the full catalogue-driven public inventory"
    },
-   "notes": "Its only real start need (WP00/WP02) is already satisfied; the current serial plan defers WP47 until after WP40, but nothing blocks starting this immediately.",
+   "notes": "Its only real start need (WP00/WP02) is already satisfied; the current serial plan defers WP47 until after WP40, but nothing blocks starting this immediately. The candidate provenance test reads the actual .gitleaks.toml and browser-resources-r8.json, verifies the six unique exact path/digest bindings for the eight observed findings, and rejects changed-digest, different-path, unrelated-64-hex and credential-text cases; it must not alter candidate generation.",
    "complete": []
   },
   {
