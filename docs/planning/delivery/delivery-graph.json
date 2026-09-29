@@ -6037,10 +6037,23 @@
     }
    ],
    "writes": [
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.Capabilities/**"
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Capabilities/**",
+    "DesktopPlatform:eng/policy/architecture-contract-tests.json (append only the exact PLT.20 availability API-to-direct-test binding after source/test names are frozen)",
+    "DesktopPlatform:eng/provenance/files.json (append only exact PLT.20-owned firstParty rows for source/test files within the existing task source scope, after file names are frozen)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    }
    ],
    "validation": "Offline tests: availability tests across permission/entitlement/health/context/version reasons; purity test asserting no side effect.",
    "evidence": "Availability reason matrix and purity assertion.",
+   "notes": "ADP-07 support is limited to the two exact supporting files above and append-only updates. Bind only `ICapabilityProvider.EvaluateAvailabilityAsync(ActionKey, FrozenContext) -> ArcResult<AvailabilityResult>` from architecture/contracts/02-local-rpc-operations.md to its direct PLT.20 test; freeze the actual API symbol, test project and test method after source/test naming is settled, without guessing new filenames in advance. Preserve the existing availability result facts in architecture/02-contracts-and-protocols.md section 4: `Available`, `NotApplicableToContext`, `AppNotInstalled`, `AppNotRunning`, `IncompatibleVersion`, `PermissionRequired`, `EntitlementRequired`, `PolicyDisabled`, and `TemporarilyUnavailable`. `ActionDescriptor.availabilityRule` remains a statically registered predicate; do not add result fields or availability facts. Append firstParty provenance rows only for PLT.20-owned source/test files inside the existing `src/BuildingBlocks/ArcForges.Capabilities/**` scope once their exact names are frozen. Preserve all existing rows and use RES-architecture-tests and RES-desktopplatform-policy-data append protocols. No new project, package, dependency, lock, solution, workflow, licence boundary, runtime ownership, or reconciliation change is authorized; outcome, prerequisite and runtime behavior remain unchanged.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Nothing exists."
