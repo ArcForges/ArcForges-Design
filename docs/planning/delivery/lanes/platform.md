@@ -1159,7 +1159,8 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [CLOUD.01](cloud.md#task-cloud-01) — a real Cloud hop to prove the full HTTP/queue/worker/realtime/provider chain. *Why:* the desktop side can only prove propagation up to its own local hops (RPC, in-process) until a real Cloud counterpart exists; the [WP-12.90](../../work-packages/12-observability-foundation.md#rule-wp-12.90) receipt records this as a named later real-integration item. |
 | Unblocks | [PLT.53](#task-plt-53) |
-| Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Observability/**` |
+| Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Observability/**`<br>`DesktopPlatform:eng/policy/architecture-contract-tests.json (append only exact PLT.48 public API-to-test bindings for the existing Observability test project)`<br>`DesktopPlatform:eng/provenance/files.json (append only first-party paths for new PLT.48 source and test files)` |
+| Shared resources | [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append), [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append) |
 | Validation | Offline tests: synthetic end-to-end action producing one connected trace across available local hop kinds; resolution test from task identifier to trace; validation test rejecting malformed client-supplied correlation. |
 | Completion evidence | A single connected trace across every available hop kind. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: Nothing exists. |

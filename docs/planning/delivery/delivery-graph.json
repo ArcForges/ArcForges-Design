@@ -7364,8 +7364,20 @@
      "why": "the desktop side can only prove propagation up to its own local hops (RPC, in-process) until a real Cloud counterpart exists; the WP-12.90 receipt records this as a named later real-integration item."
     }
    ],
+   "shared": [
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
+    }
+   ],
    "writes": [
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.Observability/**"
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Observability/**",
+    "DesktopPlatform:eng/policy/architecture-contract-tests.json (append only exact PLT.48 public API-to-test bindings for the existing Observability test project)",
+    "DesktopPlatform:eng/provenance/files.json (append only first-party paths for new PLT.48 source and test files)"
    ],
    "validation": "Offline tests: synthetic end-to-end action producing one connected trace across available local hop kinds; resolution test from task identifier to trace; validation test rejecting malformed client-supplied correlation.",
    "evidence": "A single connected trace across every available hop kind.",
