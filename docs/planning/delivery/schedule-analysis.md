@@ -70,7 +70,7 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 | 4 | [CON.02](lanes/contracts.md#task-con-02) | M | Capability/action/context/version/health descriptor records + immutable oversized-body reference (EncodedBodyRef) |
 | 5 | [CON.06](lanes/contracts.md#task-con-06) | L | Product in-process port completion: IScopeOperations/IChatOperations + infra ports |
 | 6 | [CON.10](lanes/contracts.md#task-con-10) | L | Task/approval/bridge/chat/agent/automation/search operation registry + ai-internal package |
-| 7 | [CON.11](lanes/contracts.md#task-con-11) | M | Application/history/execution/events operations (annex10's 13 additions) + EventService |
+| 7 | [CON.11](lanes/contracts.md#task-con-11) | M | Application/history/execution/events operations (annex10's 13 additions) + EventService.Poll |
 | 8 | [CON.07](lanes/contracts.md#task-con-07) | L | Identity/session/device operation registry + native-auth and browser HTTP exceptions |
 | 9 | [PRF.07](lanes/runtime-proofs.md#task-prf-07) | XL | Cloudflare Native AOT host + D1 + DO/Queue/R2 foundation proof |
 | 10 | [PRF.10](lanes/runtime-proofs.md#task-prf-10) | L | Android Kotlin/Jetpack Compose gRPC-Web and CF proof |
