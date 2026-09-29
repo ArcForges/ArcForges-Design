@@ -2903,14 +2903,14 @@
    "obligations": [
     {
      "ref": "WP-03.05",
-     "part": "OperatorService's ~29 methods with all eight authorization fields and the OC-03 role matrix"
+     "part": "all 31 OperatorService methods: the 29 operator.* rows in Registry04 §9.1 plus catalog.review and catalog.revoke from §5, with all eight authorization fields and the OC-03 role matrix"
     },
     {
      "ref": "WP-03:operator-contract-closure-package-level",
      "part": "'Operator contract closure' package-level obligation — schema and negative vectors only; WP-23 owns real identity/dispatch, WP-42 financial owners, WP-44 config/policy owners, WP-45 the console join; package-level obligation contribution"
     }
    ],
-   "outcome": "internal/proto/arcforges/operator/v1/operator.proto generated with all 29 OperatorService methods (ListCases through catalog.review/catalog.revoke), OperatorCallContext(tag100)/OperatorProposalRef(tag101) appended per method, and the typed propose/approve/execute protocol (§9.2) with its 9 mutation-variant table rows (grant/revokeGrant/issueCredit/adjustCredit/refund/catalogReview/catalogRevoke/appeal/kill); independent negative vectors cover distinct-approver violation, stale hash/revision/configuration, role revocation, expiry, concurrent consumption and lost receipt; no direct SQL or public-SDK import of operator schema.",
+   "outcome": "internal/proto/arcforges/operator/v1/operator.proto generated with all 31 OperatorService methods: the 29 operator.* rows in Registry04 §9.1 plus catalog.review (ReviewCatalogSubmission) and catalog.revoke (RevokeCatalogVersion) from §5. OperatorCallContext(tag100)/OperatorProposalRef(tag101) are appended per method, with the typed propose/approve/execute protocol (§9.2) and its 9 mutation-variant table rows (grant/revokeGrant/issueCredit/adjustCredit/refund/catalogReview/catalogRevoke/appeal/kill); independent negative vectors cover distinct-approver violation, stale hash/revision/configuration, role revocation, expiry, concurrent consumption and lost receipt; no direct SQL or public-SDK import of operator schema.",
    "provides": [
     "operator-service-ops"
    ],
@@ -2935,14 +2935,17 @@
     "Contracts:src/internal/dotnet/ArcForges.Contracts.CloudInternal/**",
     "Contracts:src/internal/ts/operator-client/src/**",
     "Contracts:fixtures/internal/con-14-operator.json",
+    "Contracts:fixtures/public/wp03-02.json (append only the test-only ArcForges.Contracts.CloudInternal catalogue entry for arcforges.operator.v1.OperatorService and its exact 31 method paths: the 29 operator.* methods plus catalog.review/catalog.revoke; preserve all 31 binary vectors, 51 JSON vectors and every other fixture value)",
     "Contracts:eng/operations/con-14.json (owned domain operation authorization export; append through schema-source resource protocol)",
     "Contracts:eng/policy/contract-access.json (append exact compiled access/hash entry)",
     "Contracts:eng/policy/dependency-policy.json (refresh current input hashes for this closure only; no dependency version or closure changes)",
     "Contracts:eng/policy/dependency-reviews/con-14-r1.json (successor admission review for this closure; preserve prior history)",
     "Contracts:eng/provenance/files.json (append owned source/output rows)",
     "Contracts:eng/provenance/records/contract-bindings-con-14-r1.json (successor source/output binding; preserve history)",
+    "Contracts:eng/provenance/NOTICE.txt (regenerate only through the existing check_provenance.py --write-notice writer from active reviewed records; never hand-edit)",
     "Contracts:tests/public/operator-contract.test.mjs",
     "Contracts:package.json (register the operator contract test only)",
+    "Contracts:tests/public/SerializationProbe/Program.cs (add only the exact CloudInternal OperatorService catalogue assertion and test-only no-op/default endpoint bindings for all exact 31 methods; never invoke the stubs; preserve existing exact checks)",
     "Contracts:tests/StructureTests/OperatorCases.cs",
     "Contracts:tests/StructureTests/Program.cs (register OperatorCases only)"
    ],
@@ -2960,13 +2963,13 @@
      "mode": "append"
     }
    ],
-   "validation": "offline negative vectors per registry04 §9.1/§9.2 (public customer/PAT/agent access refuses; distinct approver enforced; stale hash/revision fails); no live Entra OIDC session (WP-06/WP-45 own that).",
-   "evidence": "fixtures/internal/con-14-operator.json.",
+   "validation": "Offline negative vectors per Registry04 §9.1/§9.2 (public customer/PAT/agent access refuses; distinct approver enforced; stale hash/revision fails). The existing WP03.02 NativeAOT SerializationProbe consumes the exact test-only CloudInternal OperatorService catalogue and all 31 method paths (29 operator.* plus catalog.review/catalog.revoke), binding them to no-op/default endpoints that are never invoked; preserve its exact descriptor/catalogue/method checks, all 31 binary and 51 JSON vectors, and dynamic message count. The method count of 31 is independent of the existing 31 binary-vector count. OperatorService remains internal and is not added to the public TypeScript service catalogue. No live Entra OIDC session (WP-06/WP-45 own that).",
+   "evidence": "fixtures/internal/con-14-operator.json plus the passing existing WP03.02 SerializationProbe report with the exact OperatorService catalogue and 31 bound method paths (29 operator.* plus catalog.review/catalog.revoke); the separate 31 binary and 51 JSON vectors remain unchanged.",
    "baseline": {
     "state": "not-started",
-    "notes": "Observed scaffold, unreviewed: Only OperatorCallContext (the 3-field context record) exists from the WP03.00 seed. None of the 29 OperatorService methods, roles or the propose/approve/execute protocol exist."
+    "notes": "Observed scaffold, unreviewed: Only OperatorCallContext (the 3-field context record) exists from the WP03.00 seed. None of the 31 OperatorService methods, roles or the propose/approve/execute protocol exist."
    },
-   "notes": "@arcforges/operator-client package already exists as an empty-ish scaffold (WP03.00); this task is what actually fills it. WP-45 (operations console, the commerce, policy and operations lanes) is the direct consumer.",
+   "notes": "@arcforges/operator-client package already exists as an empty-ish scaffold (WP03.00); this task is what actually fills it. WP-45 (operations console, the commerce, policy and operations lanes) is the direct consumer. Registry04 authorizes 29 operator.* methods in §9.1 plus catalog.review and catalog.revoke on the same OperatorService in §5, for 31 total methods; this is distinct from the existing WP03.02 fixture's 31 binary vectors and 51 JSON vectors, all of which remain unchanged. The existing test-only WP03.02 fixture and NativeAOT SerializationProbe already enumerate generated service descriptors, compare exact catalogues/method bindings, and scan OperatorReflection; adding the internal OperatorService therefore requires only the exact CloudInternal catalogue/method fixture append and exact no-op/default test endpoint binding authorized above. The stubs are never invoked, the service remains internal, and the TypeScript public service catalogue, probe algorithm, products, generated output authority, project/workflow/dependency/lock scope, and runtime behavior do not change. Refresh only the wp03-02.json digest in this task's current dependency-policy input set and immutable con-14-r1 dependency/binding successors. Retain the fixture and probe's existing first-party provenance classifications, bind their exact current input/target digests in the task successor, and preserve all unrelated rows/history. Regenerate eng/provenance/NOTICE.txt only with the existing canonical writer when the active reviewed record set changes it; no manual notice edits or new licence material. The fixture/probe remain under RES-contracts-schema-sources append/rebase ordering; add no new shared resource.",
    "complete": []
   },
   {
