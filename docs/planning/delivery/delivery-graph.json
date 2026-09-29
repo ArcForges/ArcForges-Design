@@ -6534,7 +6534,19 @@
     }
    ],
    "writes": [
-    "DesktopPlatform:src/DesignSystem/ArcForges.Desktop.Shell/**"
+    "DesktopPlatform:src/DesignSystem/ArcForges.Desktop.Shell/**",
+    "DesktopPlatform:eng/policy/architecture-contract-tests.json (append only six PLT.29 public API to direct-[Fact] test bindings)",
+    "DesktopPlatform:eng/provenance/files.json (append only four PLT.29 Settings first-party source/test paths)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
+    }
    ],
    "validation": "Offline tests: resolution order tests across every scope combination; explainability tests; migration test.",
    "evidence": "Settings resolution and explainability results.",
@@ -6542,7 +6554,15 @@
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Nothing exists."
    },
-   "complete": []
+   "complete": [
+    {
+     "type": "integration",
+     "task": "PLT.27",
+     "need": "PLT.27 Shell project and test host are integrated",
+     "why": "PLT.29 adds settings sources and tests to the Shell project and reuses its project-owned ApplicationKey and atomic file-writer foundation; it can be developed against the frozen PLT.27 candidate but cannot complete until PLT.27 is integrated."
+    }
+   ],
+   "notes": "The only supporting-file additions are six exact public ordinary API-to-direct-[Fact] bindings in eng/policy/architecture-contract-tests.json for DeviceLocalSettingsStore.CreateSyncSnapshot, DeviceLocalSettingsStore.Load, DeviceLocalSettingsStore.Save, ISettingSchema.Migrate, ScopedSettingsResolver.Resolve<T>, and SettingDefinition<T>.ToStoredValue; and four first-party provenance entries in eng/provenance/files.json for src/DesignSystem/ArcForges.Desktop.Shell/Settings/DeviceLocalSettingsStore.cs, src/DesignSystem/ArcForges.Desktop.Shell/Settings/ScopedSettings.cs, src/DesignSystem/ArcForges.Desktop.Shell/Settings/ScopedSettingsResolver.cs, and src/DesignSystem/ArcForges.Desktop.Shell/Tests/Settings/ScopedSettingsTests.cs. The six bindings target the task-owned direct [Fact] methods SynchronizationProjectionNeverIncludesDeviceOrInstanceSettings, StoreMigratesOlderValuesAtomicallyAndRefusesDowngradeWithoutChangingTheFile, and ResolutionCoversEveryScopeCombinationAndExplainsTheWinningSource. No project, csproj, solution, workflow, lock, dependency input/closure, immutable dependency-admission receipt, licence, runtime ownership, reconciliation, package inventory/identity, NOTICE, checker, or algorithm changes are in scope."
   },
   {
    "id": "PLT.30",
@@ -6612,7 +6632,19 @@
     }
    ],
    "writes": [
-    "DesktopPlatform:src/DesignSystem/ArcForges.Desktop.Shell/**"
+    "DesktopPlatform:src/DesignSystem/ArcForges.Desktop.Shell/**",
+    "DesktopPlatform:eng/policy/architecture-contract-tests.json (append only the exact PLT.31 ErrorPresenter.Present(TypedFailure) to direct-[Fact] test binding)",
+    "DesktopPlatform:eng/provenance/files.json (append only the three PLT.31 Errors source/resource/test first-party paths)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
+    }
    ],
    "validation": "Offline tests: no raw exception text displayed; coverage that every registered reason code has a message.",
    "evidence": "Raw-exception prohibition and reason-code coverage.",
@@ -6620,7 +6652,15 @@
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Nothing exists."
    },
-   "complete": []
+   "complete": [
+    {
+     "type": "integration",
+     "task": "PLT.27",
+     "need": "PLT.27 Shell project and test host are integrated",
+     "why": "PLT.31 adds the error presentation implementation, resources and tests to the Shell project; it can be validated against the frozen PLT.27 candidate but cannot complete until the Shell project and test host are integrated."
+    }
+   ],
+   "notes": "The only supporting-file additions are one exact ordinary public API-to-direct-[Fact] binding in eng/policy/architecture-contract-tests.json: ArcForges.Desktop.Shell.Errors.ErrorPresenter.Present(ArcForges.Foundation.Errors.TypedFailure) maps to ArcForges.Desktop.Shell.Tests.ErrorPresentationTests.PresentationUsesOnlyRegisteredTextAndNeverEchoesExceptionDetailsOrPaths(). The only first-party provenance additions are src/DesignSystem/ArcForges.Desktop.Shell/Errors/ErrorPresentationStrings.resx, src/DesignSystem/ArcForges.Desktop.Shell/Errors/ErrorPresenter.cs, and src/DesignSystem/ArcForges.Desktop.Shell/Tests/ErrorPresentationTests.cs. No project, csproj, solution, workflow, lock, dependency input/closure, immutable dependency-admission receipt, licence, runtime ownership, reconciliation, package inventory/identity, NOTICE, checker, or algorithm changes are in scope."
   },
   {
    "id": "PLT.32",
