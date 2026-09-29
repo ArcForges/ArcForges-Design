@@ -5619,9 +5619,10 @@
      "part": "full"
     }
    ],
-   "outcome": "16 active/64 queued bounded calls, deadlines and parent-owned callback channels; no recursive saturated callback lane.",
+   "outcome": "16 active/64 queued bounded data calls, deadlines and parent-owned callback channels, plus exactly two reserved control slots outside the data-call budget for bootstrap, lease renewal, cancellation and health; all four control operations remain serviceable while data dispatch is saturated, with no recursive saturated callback lane.",
    "provides": [
-    "ipc-bounds"
+    "ipc-bounds",
+    "ipc-two-reserved-control-slots"
    ],
    "start": [
     {
@@ -5634,8 +5635,8 @@
    "writes": [
     "DesktopPlatform:src/BuildingBlocks/ArcForges.LocalRpc/**"
    ],
-   "validation": "Offline tests: queue/memory bound, fairness, timeout and typed overload.",
-   "evidence": "Queue/memory bound, fairness, timeout and typed overload.",
+   "validation": "Offline deterministic tests: queue/memory bound, fairness, timeout and typed overload; hold the ordinary 16-active/64-queued data dispatcher at saturation and prove the exactly two reserved control slots remain outside that budget and service bootstrap, lease renewal, cancellation and health operations (each operation is exercised under saturation), without recursive callback dispatch.",
+   "evidence": "Queue/memory bound, fairness, timeout and typed overload; saturated data-dispatch results proving the exactly two reserved control slots service bootstrap, lease renewal, cancellation and health.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Nothing exists."
@@ -5671,13 +5672,19 @@
      "task": "FND.02",
      "need": "effect-certainty/Outcome types",
      "why": "unknown-effect classification is a WP-04.01 type, not invented locally."
+    },
+    {
+     "type": "artifact",
+     "task": "PLT.13",
+     "need": "two reserved cancellation/control slots under saturated bounded dispatch",
+     "why": "Annex 09 §3 reserves two separate control slots for bootstrap, renewal, cancellation and health; WP-08.05 cancellation must remain serviceable when ordinary calls saturate the bounded dispatcher."
     }
    ],
    "writes": [
     "DesktopPlatform:src/BuildingBlocks/ArcForges.LocalRpc/**"
    ],
-   "validation": "Offline/local tests: kill before/after commit, lost ack and unknown effect.",
-   "evidence": "Kill before/after commit, lost ack and unknown effect.",
+   "validation": "Offline/local tests: kill before/after commit, lost ack and unknown effect; while ordinary data dispatch is saturated, prove cancellation progresses through one of PLT.13's two reserved control slots.",
+   "evidence": "Kill before/after commit, lost ack and unknown effect; cancellation succeeds under saturated data dispatch through a reserved control slot.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Nothing exists."
@@ -5713,6 +5720,12 @@
      "task": "CON.04",
      "need": "ContentSandboxService/slot-grant wire shapes in contracts/09-local-grpc-and-sandbox.md",
      "why": "the exact grant/seal/ack/cancel lifecycle is fixed by the published contract, not invented here."
+    },
+    {
+     "type": "artifact",
+     "task": "PLT.13",
+     "need": "two reserved cancellation/control slots under saturated bounded dispatch",
+     "why": "Annex 09 §3 reserves two separate control slots for bootstrap, renewal, cancellation and health; WP-08.06 transfer cancellation must remain serviceable when ordinary calls saturate the bounded dispatcher."
     }
    ],
    "complete": [
@@ -5726,8 +5739,8 @@
    "writes": [
     "DesktopPlatform:src/BuildingBlocks/ArcForges.LocalRpc/**"
    ],
-   "validation": "Offline/local tests: wrong resource grant, range/hash/expiry/cancel and orphan cleanup.",
-   "evidence": "Wrong resource grant, range/hash/expiry/cancel and orphan cleanup.",
+   "validation": "Offline/local tests: wrong resource grant, range/hash/expiry/cancel and orphan cleanup; while ordinary data dispatch is saturated, prove transfer cancellation progresses through one of PLT.13's two reserved control slots.",
+   "evidence": "Wrong resource grant, range/hash/expiry/cancel and orphan cleanup; transfer cancellation succeeds under saturated data dispatch through a reserved control slot.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Nothing exists."
@@ -5795,21 +5808,29 @@
     }
    ],
    "writes": [
-    "DesktopPlatform:eng/packaging/packages.json"
+    "DesktopPlatform:eng/packaging/packages.json",
+    "DesktopPlatform:eng/policy/dependency-policy.json",
+    "DesktopPlatform:eng/policy/dependency-reviews/plt-16-r1.json",
+    "DesktopPlatform:eng/provenance/files.json"
    ],
    "shared": [
     {
      "resource": "RES-desktopplatform-package-inventory",
      "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
     }
    ],
-   "validation": "P2-017: offline verify plus policy tests; real multi-process OS-stream evidence beyond the repo's own build-machine tests is local opt-in.",
-   "evidence": "Exact artifact/consumer and applicable UX acceptance ledger.",
+   "validation": "P2-017: offline package and policy tests plus one independent consumer check against the exact prepublication CI candidate package. The consumer must resolve the recorded package ID/version and SHA256 from the candidate artifact through an isolated temporary package source/cache, with no project reference, sibling-source fallback or substitute package; record source commit, CI run/artifact identity, package identity/digest and consumer restore/build/run result. This existing-environment candidate check is local opt-in and performed once for the affected candidate; do not add a hosted installed-consumer test or a permanent consumer harness. Real multi-process OS-stream evidence beyond the repo's own build-machine tests remains local opt-in.",
+   "evidence": "Exact CI candidate artifact/source commit and package identity/version/SHA256; independent isolated consumer restore/build/run proving it resolved only that exact candidate with no project/source fallback; package/policy checks and applicable UX acceptance ledger. Record any separately required real OS-stream run once as local opt-in evidence.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: LocalRpc not in packages.json."
    },
    "packageAcceptance": "WP-08",
+   "notes": "ADP-07 support is limited to the exact append-only package-inventory row in eng/packaging/packages.json and its required existing-gate bindings: refresh only that file's active input hash and the current dependency-review pointer/active review object in eng/policy/dependency-policy.json; add immutable eng/policy/dependency-reviews/plt-16-r1.json as a successor to the then-current receipt, preserving the admitted dependency coordinates, versions and closure; and append only that receipt as firstParty in eng/provenance/files.json. Use RES-desktopplatform-policy-data for these task-owned policy/provenance bindings and RES-desktopplatform-package-inventory for the package row. Do not invent or predeclare LocalRpc package dependency IDs, version ranges or closure here: derive them only from the reviewed, frozen PLT.09 project references and their separately admitted exact pins; if that frozen graph requires any unadmitted package/version change, obtain authority before changing it. Do not change projects, package locks, reconciliation, architecture classifications or test maps, licences, runtime behavior, policy algorithms or unrelated records. PLT.16 may publish/consume the progressive exact package candidate once its declared PLT.09-15 artifacts exist; it has no PLT.45 completion prerequisite. PLT.15 remains complete only after PLT.45 integrates the brokered-data mechanism.",
    "complete": []
   },
   {
@@ -7247,8 +7268,14 @@
     {
      "type": "artifact",
      "task": "PLT.09",
-     "need": "LocalRpc transport/restricted launch identity (WP-08.00/08.01)",
-     "why": "the parent-created duplex stream and one-use launch secret are WP-08 mechanisms this helper is launched through."
+     "need": "LocalRpc transport (WP-08.00)",
+     "why": "the parent-created duplex stream is the WP-08 transport this helper is launched through; restricted endpoint identity and the one-use launch secret are owned separately by PLT.10."
+    },
+    {
+     "type": "artifact",
+     "task": "PLT.10",
+     "need": "restricted endpoint identity and one-use launch secret (WP-08.01)",
+     "why": "the helper must bind to the parent-owned endpoint/process/build/protocol identity and reject stale descriptors; transport existence from PLT.09 alone does not establish this launch authorization."
     },
     {
      "type": "contract",
