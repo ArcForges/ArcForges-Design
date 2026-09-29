@@ -7671,7 +7671,14 @@
     "notes": "Observed scaffold, unreviewed: Not in packages.json."
    },
    "packageAcceptance": "WP-12",
-   "complete": []
+   "complete": [
+    {
+     "type": "integration",
+     "task": "PLT.48",
+     "need": "PLT.48 completion, including the real Cloud HTTP/queue/worker/realtime/provider hop",
+     "why": "WP-12.90's cross-owner trace is not closed by PLT.48's delivered local stage; keep the package closure delivered until its real Cloud integration is complete."
+    }
+   ]
   },
   {
    "id": "PLT.54",

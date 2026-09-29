@@ -1272,7 +1272,7 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Provides | observability-package |
 | Start prerequisites | **artifact** [PLT.47](#task-plt-47) — emission/dimensions. *Why:* publish needs the complete substep set.<br>**artifact** [PLT.48](#task-plt-48) — correlation/causation. *Why:* same.<br>**artifact** [PLT.49](#task-plt-49) — redaction. *Why:* same.<br>**artifact** [PLT.50](#task-plt-50) — cardinality/sampling. *Why:* same.<br>**artifact** [PLT.51](#task-plt-51) — health probes. *Why:* same.<br>**artifact** [PLT.52](#task-plt-52) — diagnostics/consent. *Why:* same. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | none |
+| Completion prerequisites | **integration** [PLT.48](#task-plt-48) — PLT.48 completion, including the real Cloud HTTP/queue/worker/realtime/provider hop. *Why:* [WP-12.90](../../work-packages/12-observability-foundation.md#rule-wp-12.90)'s cross-owner trace is not closed by PLT.48's delivered local stage; keep the package closure delivered until its real Cloud integration is complete. |
 | Unblocks | none |
 | Write scope | `DesktopPlatform:eng/packaging/packages.json` |
 | Shared resources | [RES-desktopplatform-package-inventory](../shared-resources.md#res-desktopplatform-package-inventory) (append) |
