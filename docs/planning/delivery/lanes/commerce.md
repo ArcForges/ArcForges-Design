@@ -137,7 +137,7 @@ Tasks: 15 · Owning repositories: Cloud · Integration owner(s): Cloud integrati
 | Start prerequisites | none |
 | Entry condition | [ADOPT.07.commerce](adoption.md#task-adopt-07-commerce) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [COM.06](#task-com-06), [COM.07](#task-com-07), [COM.08](#task-com-08), [COM.10](#task-com-10), [COM.11](#task-com-11), [COM.13](#task-com-13), [COM.14](#task-com-14), [HAR.06](harness.md#task-har-06), [POL.04](policy.md#task-pol-04), [SIM.07](simulator.md#task-sim-07) |
+| Unblocks | [COM.06](#task-com-06), [COM.07](#task-com-07), [COM.08](#task-com-08), [COM.10](#task-com-10), [COM.11](#task-com-11), [COM.13](#task-com-13), [COM.14](#task-com-14), [HAR.06](harness.md#task-har-06), [PLT.20](platform.md#task-plt-20), [POL.04](policy.md#task-pol-04), [SIM.07](simulator.md#task-sim-07) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Entitlement/**/Resolver/**` |
 | Shared resources | [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append) |
 | Validation | Offline unit tests: rebuild-equivalence over fixture accounts, reason-coverage, combination matrix over the four entitlement kinds, clock-determinism against an injected time source. |
@@ -161,7 +161,7 @@ Tasks: 15 · Owning repositories: Cloud · Integration owner(s): Cloud integrati
 | Start prerequisites | **artifact** [COM.05](#task-com-05) — EntitlementSnapshot + EntitlementVersion. *Why:* there is nothing to distribute or enforce against before the resolver produces a versioned snapshot<br>**artifact** [CLOUD.23](cloud.md#task-cloud-23) — typed-query/revision-precondition pattern. *Why:* distributing a versioned snapshot to clients is expected to reuse the public API's revision-precondition idiom rather than invent a parallel versioning scheme; [WP-23](../../work-packages/23-public-api-and-generated-clients.md#rule-wp-23) not yet built so exact shape unconfirmed |
 | Entry condition | [ADOPT.07.commerce](adoption.md#task-adopt-07-commerce) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [COM.15](#task-com-15) |
+| Unblocks | [COM.15](#task-com-15), [PLT.20](platform.md#task-plt-20) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Entitlement/**/Distribution/**`<br>`Cloud:src/Cloud/ArcForges.Cloud.Modules.Entitlement/**/Enforcement/**` |
 | Shared resources | [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append), [RES-contract-consumer-pins](../shared-resources.md#res-contract-consumer-pins) (append) |
 | Validation | Offline tests: hint-not-authority, offline-staleness behavior, client-bypass negative, local-data-survival. |
