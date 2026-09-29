@@ -3598,7 +3598,7 @@
     "Contracts:public/proto/constraints/con-22-account-support.json",
     "Contracts:eng/operations/con-22.json",
     "Contracts:eng/check_foundation.py (append only SupportCase to EXTRA_SEEDS; SupportMessage is reached through SupportCase.messages; no checker algorithm change)",
-    "Contracts:eng/foundation-inventory.json (append only the exact SupportCase and SupportMessage content.proto inventory rows and current generated output paths; preserve all other rows and foundation-baseline.json)",
+    "Contracts:eng/foundation-inventory.json (append only SupportCase to seeds[] while preserving every other seed and its order; append only the exact SupportCase and SupportMessage content.proto inventory rows and current generated output paths; preserve all other rows and foundation-baseline.json)",
     "Contracts:public/proto/constraints.json (regenerated)",
     "Contracts:eng/contract-packages.json (register support/export proto in existing package producer lists only)",
     "Contracts:eng/policy/contract-access.json (append exact compiled access/hash entry)",
