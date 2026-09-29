@@ -6905,8 +6905,9 @@
      "mode": "append"
     }
    ],
-   "validation": "Offline unit tests: classification tests across every modifier combination; monotonicity test.",
+   "validation": "Offline unit tests exhaustively enumerate descriptor baselines R0–R4 and every runtime-modifier combination; verify effective risk equals the maximum of the baseline and active fixed floors, every active modifier is explained, adding a modifier never lowers risk, descriptor risk parsing is closed to canonical R0–R4, and the three explicit R4 interactions are covered.",
    "evidence": "Risk classification and monotonicity matrix.",
+   "notes": "Fixed minimum floors: remote origin R3; automation origin/Automation actor R2; unverified package R3; large data volume R2; external egress R3; sensitive resource R2; bulk scope R2; irreversible effect R4. Actor-kind floors: None/direct human adds no floor, InternalService R1, Agent R2, Automation R2, Extension R3. Exactly three two-factor interactions additionally require R4: Automation + external egress; sensitive resource + external egress; Extension + unverified package (the privileged-extension case). Effective risk is the maximum of the declared capability baseline and all active floors; every other combination adds no interaction floor. No configurable weights, additive scoring, third-party lowering, or implicit interactions are introduced.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Nothing exists."
