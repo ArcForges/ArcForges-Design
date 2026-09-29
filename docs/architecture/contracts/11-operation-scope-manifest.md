@@ -277,6 +277,7 @@ Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-0
 | `execution.watchOutput` | assistant |
 | `execution.acknowledgeOutput` | assistant |
 | `execution.purgeTransient` | assistant |
+| `events.poll` | resource-owner |
 | `events.watch` | resource-owner |
 | `catalog.search` | account |
 | `catalog.getPackage` | account |
