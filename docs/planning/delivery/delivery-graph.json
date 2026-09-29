@@ -7776,11 +7776,25 @@
     }
    ],
    "writes": [
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.Observability/**"
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Observability/**",
+    "DesktopPlatform:eng/policy/dependency-policy.json (refresh only task-owned Observability input hashes and active receipt pointer)",
+    "DesktopPlatform:eng/policy/dependency-reviews/plt-51-r1.json (one immutable PLT.51 dependency receipt successor)",
+    "DesktopPlatform:eng/policy/reconciliation/active-projects.json (refresh only the existing Observability project blob)",
+    "DesktopPlatform:eng/provenance/files.json (append only the PLT.51 receipt as firstParty)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    }
    ],
    "validation": "Offline tests: dependency-outage test asserting readiness fails closed; capability-health test reflecting simulated degradation.",
    "evidence": "Health probe fail-closed and degradation results.",
-   "notes": "Consume PLT.23's HealthDimension only as the same closed capability-probe aspect-key type defined by WP-09: reachable, ready, healthy, degraded and capacity. It carries no observation value or snapshot fields and is distinct from Architecture 02 §11's five independent axes (Installation, Presence, Health, Readiness, Compatibility). This clarification changes no Contracts/wire or Foundation HealthSnapshot/InstanceHealth/InstanceReadiness semantics and defines no Cloud presence/heartbeat behavior.",
+   "notes": "Consume PLT.23's HealthDimension only as the same closed capability-probe aspect-key type defined by WP-09: reachable, ready, healthy, degraded and capacity. It carries no observation value or snapshot fields and is distinct from Architecture 02 §11's five independent axes (Installation, Presence, Health, Readiness, Compatibility). This clarification changes no Contracts/wire or Foundation HealthSnapshot/InstanceHealth/InstanceReadiness semantics and defines no Cloud presence/heartbeat behavior. ADP-07 support is limited to the four exact existing-gate bindings listed above: refresh only hashes for task-owned Observability project/lock inputs that actually change and the active dependency receipt pointer; add immutable plt-51-r1.json as a successor to the then-current receipt, preserving dependency coordinates, versions and aggregate closure; update only the existing Observability project row's exact csproj blob in active-projects.json; and append only the new receipt as firstParty provenance. The same-repository project reference to PLT.23's Capabilities type adds no external package, package identity, version, runtime package closure or package-inventory entry. Use RES-desktopplatform-build-config for the task-owned Observability project configuration and its locks, regenerated after rebase; use RES-desktopplatform-policy-data for the exact dependency receipt, policy hash/pointer, reconciliation blob and provenance append. Do not change packages.json, central package versions, solution/workflow, project classification, licence boundary, policy algorithms, architecture/API-test mappings, unrelated records or any other task's scope. Outcome, prerequisites and runtime behavior remain unchanged.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Nothing exists."
