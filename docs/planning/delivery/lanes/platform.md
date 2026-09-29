@@ -908,7 +908,8 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [PLT.38](#task-plt-38), [PLT.39](#task-plt-39), [PLT.46](#task-plt-46) |
-| Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Security/**` |
+| Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Security/**`<br>`DesktopPlatform:eng/policy/architecture-contract-tests.json (append only PLT.37 RP-10 direct public-API-to-[Fact] mappings from src/BuildingBlocks/ArcForges.Security/RiskModel.cs to src/BuildingBlocks/ArcForges.Security/Tests/RiskModelTests.cs)`<br>`DesktopPlatform:eng/provenance/files.json (ADP-07 append only firstParty rows for src/BuildingBlocks/ArcForges.Security/RiskModel.cs and src/BuildingBlocks/ArcForges.Security/Tests/RiskModelTests.cs)` |
+| Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append), [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append) |
 | Validation | Offline unit tests: classification tests across every modifier combination; monotonicity test. |
 | Completion evidence | Risk classification and monotonicity matrix. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: Nothing exists. |
