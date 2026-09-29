@@ -6793,7 +6793,19 @@
     }
    ],
    "writes": [
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/**"
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/**",
+    "DesktopPlatform:eng/policy/architecture-contract-tests.json (append only PLT.37 RP-10 direct public-API-to-[Fact] mappings from src/BuildingBlocks/ArcForges.Security/RiskModel.cs to src/BuildingBlocks/ArcForges.Security/Tests/RiskModelTests.cs)",
+    "DesktopPlatform:eng/provenance/files.json (ADP-07 append only firstParty rows for src/BuildingBlocks/ArcForges.Security/RiskModel.cs and src/BuildingBlocks/ArcForges.Security/Tests/RiskModelTests.cs)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    }
    ],
    "validation": "Offline unit tests: classification tests across every modifier combination; monotonicity test.",
    "evidence": "Risk classification and monotonicity matrix.",
