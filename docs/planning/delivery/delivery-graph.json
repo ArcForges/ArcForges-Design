@@ -7367,10 +7367,12 @@
      "part": "full"
     }
    ],
-   "outcome": "Append-only audit append/query with a dedicated policy-retention maintenance authority; ordinary roles cannot UPDATE/DELETE; audited retention purge removes only expired unheld partitions under declared policy; complete separation from telemetry.",
+   "outcome": "Append-only audit append/query with a dedicated policy-retention maintenance authority; ordinary roles cannot UPDATE/DELETE; audited retention purge removes only expired unheld partitions under declared policy; complete separation from telemetry; every real egress decision and capability-lease lifecycle event is durably audited.",
    "provides": [
     "audit-subsystem",
-    "audit-event-type"
+    "audit-event-type",
+    "egress-decision-audit-intake",
+    "capability-lease-audit-intake"
    ],
    "start": [
     {
@@ -7384,24 +7386,72 @@
      "task": "PLT.01",
      "need": "persistence write path",
      "why": "audit is a durable append-only store built on the same persistence foundation, in its own local_audit table per the desktop data model (SS1.5), kept separate from ordinary product tables."
+    },
+    {
+     "type": "artifact",
+     "task": "FND.04",
+     "need": "wall Instant and monotonic timestamp",
+     "why": "the audit store must stamp occurrence and hold times from its injected clock, and maintenance-capability expiry must use monotonic elapsed time."
     }
    ],
    "writes": [
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/**"
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/ArcForges.Security.Audit.csproj",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/AuditModels.cs",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/AuditRetention.cs",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/AuditStore.cs",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/EgressDecisionAuditAdapter.cs",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/CapabilityLeaseAuditAdapter.cs",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/README.md",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/packages.lock.json",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/Tests/ArcForges.Security.Audit.Tests.csproj",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/Tests/AuditStoreTests.cs",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/Tests/packages.lock.json",
+    "DesktopPlatform:DesktopPlatform.slnx",
+    "DesktopPlatform:.github/workflows/package-validation.yml",
+    "DesktopPlatform:eng/policy/architecture-contract-tests.json",
+    "DesktopPlatform:eng/policy/architecture-projects.json",
+    "DesktopPlatform:eng/policy/licence-boundary.json",
+    "DesktopPlatform:eng/policy/reconciliation/active-projects.json",
+    "DesktopPlatform:eng/policy/runtime-ownership.json",
+    "DesktopPlatform:eng/provenance/files.json",
+    "DesktopPlatform:eng/policy/dependency-policy.json",
+    "DesktopPlatform:eng/policy/dependency-reviews/plt-44-r1.json"
    ],
    "shared": [
     {
      "resource": "RES-desktopplatform-build-config",
      "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
     }
    ],
-   "validation": "Offline tests: reject ordinary UPDATE/DELETE and forged retention role; approved expiry purge; legal hold; complete security events; telemetry separation test (also exercised jointly with PLT.49's redaction/separation evidence).",
-   "evidence": "Audit immutability, completeness and separation results.",
+   "validation": "Offline tests: reject ordinary UPDATE/DELETE and forged retention role; approved expiry purge; legal hold; exact-boundary maintenance-capability expiry using monotonic time despite wall-clock rollback; store-stamped audit occurrence and hold/release times with no caller timestamp; allowed and denied typed egress decisions append before return, preserve data class/destination/authority/risk/reason/correlation, and fail closed on append failure; typed capability-lease issue/revocation/expiry/task-end intake preserves the Guid-backed resource identity and unknown lifecycle kinds fail closed; telemetry separation test (also exercised jointly with PLT.49's redaction/separation evidence).",
+   "evidence": "Audit immutability, store-owned time/monotonic-expiry, typed egress and lease-event intake, completeness and separation results; report actual PLT.41 egress and PLT.43 lease-emission integration separately.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: ArcForges.Security.Audit does not exist as a project yet (same naming-granularity note as PLT.40)."
    },
-   "complete": []
+   "complete": [
+    {
+     "type": "integration",
+     "task": "PLT.41",
+     "need": "real allowed and denied egress-decision facts are synchronously appended to durable audit records",
+     "why": "WP-11.05 requires every egress decision to be audited. Typed intake fixtures alone cannot prove that the real PLT.41 enforcement path reaches the durable store; the fail-closed sink must not release an allowed transfer when its audit append fails."
+    },
+    {
+     "type": "integration",
+     "task": "PLT.43",
+     "need": "actual capability-lease issue, revocation, expiry and task-end events reach the PLT.44 typed audit intake with their stable identity",
+     "why": "[WP-11 BR-07](../../work-packages/11-security-foundation.md#rule-br-07) requires delegated leases to be scoped, expiring, revocable and audited. PLT.44 can deliver its append-only store and closed typed intake independently, but only a later integration against PLT.43's delivered lease implementation can prove that real lifecycle events reach the audit record without a fabricated runtime or substitute."
+    }
+   ],
+   "notes": "Time boundary: inject the delivered FND.04 IClock. The store, not callers, stamps audit occurrence and legal-hold placement/release from its wall Instant; caller-supplied event or hold timestamps are not accepted as authoritative or used to select a partition. The store evaluates retention with its own current Instant and uses the clock's monotonic timestamp/elapsed-time API exclusively for the in-process maintenance-capability TTL, so wall-clock rollback cannot revive an expired capability. The maintenance capability remains in-process, non-serializable and internally minted; no wall-clock timestamp is an authorization token. Egress boundary: consume only PLT.41's closed typed egress-decision fact, preserving its typed data class, destination class and canonical identity, authority ID/revision, risk, allow/deny decision and reason, and correlation in the durable audit event; do not accept transferred content, secret values or a free-form property bag. Both allowed and denied decisions are appended synchronously before the enforcement path returns; an append failure must prevent an allowed transfer from proceeding. Security owns the sink port and must not reference the Audit project. Lease boundary: PLT.43 must expose a non-empty immutable Guid-backed CapabilityLeaseId, and each issued/revoked/expired/task-ended lifecycle fact carries that same typed ID. Add only closed audit event/resource values for those four lifecycle kinds and map CapabilityLeaseId.Value directly into the Guid-valued AuditResourceReference; never stringify, hash or truncate the identity. Preserve the ID through append/query, reject unknown kinds, and do not fabricate a PLT.43 runtime or claim actual producer emission from intake-only tests. This task may be delivered with the append/query/retention store and both typed intakes complete, but it cannot be marked complete until real PLT.41 egress and PLT.43 lease lifecycle integrations satisfy both completion prerequisites. The production project sets IsPackable=true without changing package identity; PLT.44 does not choose a PackageId, edit eng/packaging/packages.json, publish packages or claim package acceptance—PLT.46 alone admits the existing ArcForges.Security.Audit package and completes pack/publish/independent-consumer validation. Support writes are limited to the exact solution/test workflow, project/license/runtime/active-project registrations, RP-10 bindings, sorted provenance rows, dependency input map and immutable PLT.44 receipt listed above. Use only the existing Microsoft.Data.Sqlite 10.0.12 and admitted dependency closure. No new dependency, version, closure, external/wire schema change, signature/key algorithm, Security-to-Audit dependency or package identity is authorized."
   },
   {
    "id": "PLT.45",
