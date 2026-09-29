@@ -5879,12 +5879,29 @@
    ],
    "writes": [
     "DesktopPlatform:Directory.Packages.props",
+    "DesktopPlatform:eng/packaging/packages.json",
     "DesktopPlatform:eng/policy/architecture-contract-tests.json",
     "DesktopPlatform:eng/policy/dependency-policy.json",
     "DesktopPlatform:eng/policy/dependency-reviews/plt-19-r1.json",
     "DesktopPlatform:eng/policy/reconciliation/active-projects.json",
     "DesktopPlatform:eng/provenance/files.json",
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.Capabilities/**"
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Application.Abstractions/packages.lock.json",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Capabilities/packages.lock.json",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Capabilities/Tests/packages.lock.json",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Contributions/packages.lock.json",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Contributions/Tests/packages.lock.json",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Foundation/packages.lock.json",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Foundation/Tests/packages.lock.json",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Observability/packages.lock.json",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Observability/Tests/packages.lock.json",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Resources/packages.lock.json",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Resources/Tests/packages.lock.json",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Sqlite/packages.lock.json",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/packages.lock.json",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/Tests/packages.lock.json",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/packages.lock.json",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Capabilities/**",
+    "DesktopPlatform:tests/PersistenceTests/packages.lock.json"
    ],
    "shared": [
     {
@@ -5892,17 +5909,21 @@
      "mode": "append"
     },
     {
+     "resource": "RES-desktopplatform-package-inventory",
+     "mode": "append"
+    },
+    {
      "resource": "RES-desktopplatform-policy-data",
      "mode": "append"
     }
    ],
-   "validation": "Offline tests: enumerate expected bindings, reject missing/extra methods/unsupported major/inconsistent classification/readiness mismatch/ambiguous target. Verify the implementation-only closed owner union: Product(AppIdentity) only for ArcScope/Companion inProcess descriptors, or CloudService(SearchService) only for the currently declared search.query publicGrpc descriptor; CloudService is static catalogue metadata and never constructs a CapabilityTarget or enters the local instance selector, while caller scope remains ApplicationScope.",
+   "validation": "Offline tests: enumerate expected bindings, reject missing/extra methods/unsupported major/inconsistent classification/readiness mismatch/ambiguous target. Verify the implementation-only closed owner union: Product(AppIdentity) only for ArcScope/Companion inProcess descriptors, or CloudService(SearchService) only for the currently declared search.query publicGrpc descriptor; CloudService is static catalogue metadata and never constructs a CapabilityTarget or enters the local instance selector, while caller scope remains ApplicationScope. Force-evaluate and perform locked restore for the exact 17-project Contracts.Foundation 1.0.0-ci.216.1 consumer set; confirm all other projects retain the 1.0.0-ci.113.1 repository default, including Foundation.Acceptance. Validate generated package metadata for the five authorized package rows and restore repository-external locked consumers of ArcForges.Capabilities and ArcForges.Capabilities plus ArcForges.Persistence.Sqlite against the candidate feed with no NU1107, NU1605 or NU1608.",
    "evidence": "Selection priority, determinism and explainability results.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Nothing exists."
    },
-   "notes": "Dependency support is limited to project-name conditional central pins for the existing ArcForges.Capabilities and ArcForges.Capabilities.Tests projects at the already-admitted ArcForges.Contracts.Foundation 1.0.0-ci.216.1; the repository-wide default remains 1.0.0-ci.113.1. Only the existing Capabilities and Tests packages.lock.json files may be regenerated. Preserve the existing 51 NuGet coordinates and 10 Python package closure unchanged, with no coordinate/version/license additions, deletions or changes; the immutable plt-19-r1 receipt must chain from the receipt active at integration. No new project, package, global pin, solution, workflow, package-inventory or licence-boundary change is authorized. The capability owner is an implementation-only closed union: Product(AppIdentity), limited to ArcScope/Companion inProcess descriptors, or CloudService(SearchService), limited to the currently declared search.query publicGrpc descriptor. Do not change wire CapabilityDescriptor, AppIdentity, ProductId or ApplicationScope. CloudService registration is static catalogue metadata only; it must not construct CapabilityTarget or enter the local instance selector, and caller scope remains the request ApplicationScope. Do not add a PublicApi dependency, package or closure edge.",
+   "notes": "Keep the repository-wide ArcForges.Contracts.Foundation default at 1.0.0-ci.113.1 and authorize the exact 1.0.0-ci.216.1 central pin only for these 17 MSBuildProjectName values: LocalRpcAotTests, ArcForges.Application.Abstractions, ArcForges.Capabilities, ArcForges.Capabilities.Tests, ArcForges.ContentSandbox, ArcForges.Contributions, ArcForges.Contributions.Tests, ArcForges.Foundation, ArcForges.Foundation.Tests, ArcForges.Observability, ArcForges.Observability.Tests, ArcForges.Persistence.Resources, ArcForges.Persistence.Resources.Tests, ArcForges.Persistence.Sqlite, ArcForges.Security, ArcForges.Security.Tests, and ArcForges.Tests.PersistenceTests. Preserve Foundation.Acceptance and all other projects on the repository default; do not change the existing LocalRpcAotTests pin. In eng/packaging/packages.json, change only externalDependencies.ArcForges.Contracts.Foundation from 1.0.0-ci.113.1 to 1.0.0-ci.216.1 for the existing rows ArcForges.Foundation, ArcForges.Application.Abstractions, ArcForges.Capabilities, ArcForges.Persistence.Sqlite, and ArcForges.Persistence.Resources. Preserve each row's package ID, project, kind, owned dependencies, required files and all other fields, as well as every other package row. Only these 16 semantic lock paths may change: src/BuildingBlocks/ArcForges.Application.Abstractions/packages.lock.json; src/BuildingBlocks/ArcForges.Capabilities/packages.lock.json; src/BuildingBlocks/ArcForges.Capabilities/Tests/packages.lock.json; src/BuildingBlocks/ArcForges.Contributions/packages.lock.json; src/BuildingBlocks/ArcForges.Contributions/Tests/packages.lock.json; src/BuildingBlocks/ArcForges.Foundation/packages.lock.json; src/BuildingBlocks/ArcForges.Foundation/Tests/packages.lock.json; src/BuildingBlocks/ArcForges.Observability/packages.lock.json; src/BuildingBlocks/ArcForges.Observability/Tests/packages.lock.json; src/BuildingBlocks/ArcForges.Persistence.Resources/packages.lock.json; src/BuildingBlocks/ArcForges.Persistence.Resources/Tests/packages.lock.json; src/BuildingBlocks/ArcForges.Persistence.Sqlite/packages.lock.json; src/BuildingBlocks/ArcForges.Security/packages.lock.json; src/BuildingBlocks/ArcForges.Security/Tests/packages.lock.json; src/DesktopHelpers/ArcForges.ContentSandbox/packages.lock.json; and tests/PersistenceTests/packages.lock.json. Fourteen of these locks move from the already-admitted 113.1 coordinate to 216.1; the Capabilities and Capabilities.Tests locks may change only for the Foundation project-reference edge. LocalRpcAotTests and eng/acceptance/foundation/packages.lock.json remain unchanged, and no DesignSystem newline-only or other lockfile changes are authorized. Preserve the existing 51 NuGet coordinates and 10 Python package closure unchanged. The only permitted dependency-coordinate adjustment is the already-admitted Contracts.Foundation 1.0.0-ci.113.1 to 1.0.0-ci.216.1 selection for these exact five package rows and 17 projects; do not add or delete coordinates, change any license or package identity, or alter unrelated dependencies. Refresh dependency-policy.json and the immutable plt-19-r1 receipt only for actual task inputs, mirroring the same input hashes in review.inputHashes; chain the receipt from the active receipt at integration and do not modify historical receipts. No new project, package ID, version axis, global default pin, packaging algorithm, release mechanism, solution, workflow or licence-boundary change is authorized. The capability owner is an implementation-only closed union: Product(AppIdentity), limited to ArcScope/Companion inProcess descriptors, or CloudService(SearchService), limited to the currently declared search.query publicGrpc descriptor. Do not change wire CapabilityDescriptor, AppIdentity, ProductId or ApplicationScope. CloudService registration is static catalogue metadata only; it must not construct CapabilityTarget or enter the local instance selector, and caller scope remains the request ApplicationScope. Do not add a PublicApi dependency, package or closure edge.",
    "complete": []
   },
   {
