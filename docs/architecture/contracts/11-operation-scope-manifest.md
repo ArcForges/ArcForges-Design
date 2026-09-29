@@ -1,6 +1,6 @@
 # Operation Scope Manifest
 
-Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012). This assigns all 324 mapped operation IDs, including reserved future entries, registry 04 methods, all 13 annex 10 additions, and the 14 CON.10 private Cloudflare AI ports. `future` rows are reserved only and excluded from active generation; all other rows require concrete metadata and implementation ownership. Registry 04 and annex 10 own the method/field definitions; the private AI route definitions remain in contracts05 section 3.
+Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012). This assigns all 325 mapped operation IDs, including reserved future entries, registry 04 methods, all 13 annex 10 additions, the existing Registry 04 `EventService.Poll` operation, and the 14 CON.10 private Cloudflare AI ports. `future` rows are reserved only and excluded from active generation; all other rows require concrete metadata and implementation ownership. Registry 04 and annex 10 own the method/field definitions; the private AI route definitions remain in contracts05 section 3.
 
 `account`: existing realm/account/workspace permission; no assistant filter on account security/finance. `assistant`: mandatory product scope and inherited execution/resource owner. `product-owner`: product fixed by method/aggregate and validated against scope. `resource-owner`: derive account or product owner from admitted resource/notification/export kind, enforce existing owner permission and require a matching product scope for product-owned objects; never accept a caller-selected foreign owner. `application-target`: device administration keeps its account permission, but installation/presence/bridge execution always validates the explicit target and current epoch. `in-process`: ordinary product handlers, no network service. `private-helper`: parent-launched child only, never another product. `operator`: separate internal operator identity and the complete role/authorization matrix in registry04 section 9; no customer or tool access. `future`: not registered or invoked in this release; descriptor names remain reserved.
 
@@ -277,6 +277,7 @@ Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-0
 | `execution.watchOutput` | assistant |
 | `execution.acknowledgeOutput` | assistant |
 | `execution.purgeTransient` | assistant |
+| `events.poll` | resource-owner |
 | `events.watch` | resource-owner |
 | `catalog.search` | account |
 | `catalog.getPackage` | account |
