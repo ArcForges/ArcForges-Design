@@ -3503,6 +3503,7 @@
     "Contracts:eng/policy/dependency-reviews/con-21-r1.json (successor admission review for this closure; preserve prior history)",
     "Contracts:eng/provenance/files.json (append owned source/output rows)",
     "Contracts:eng/provenance/records/contract-bindings-con-21-r1.json (successor source/output binding; preserve history)",
+    "Contracts:eng/provenance/NOTICE.txt (regenerated only by existing check_provenance.py --write-notice for the active con-21 binding successor; preserve all prior canonical blocks/text; no tool/algorithm change)",
     "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-r<N>.json (claim-time next-unused serialized successor; only task-owned Kotlin inputs and exact contracts-proto/contracts-connect-client pages/hashes)",
     "Contracts:eng/provenance/records/dokka-documentation-resources-r<N>.json (matching immutable task-owned successor)",
     "Contracts:eng/documentation_tools.py (advance only PROFILE to the same claimed successor at serialized integration)",
