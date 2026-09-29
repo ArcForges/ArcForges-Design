@@ -6041,7 +6041,8 @@
    "outcome": "Actions are computed from capabilities plus current context, side-effect free, cheap enough for UI enumeration; unavailability always yields a typed reason across permission/entitlement/health/context/version causes.",
    "provides": [
     "action-availability",
-    "availability-result-type"
+    "availability-result-type",
+    "availability-evidence-snapshot"
    ],
    "start": [
     {
@@ -6068,12 +6069,31 @@
    ],
    "validation": "Offline tests: availability tests across permission/entitlement/health/context/version reasons; purity test asserting no side effect.",
    "evidence": "Availability reason matrix and purity assertion.",
-   "notes": "ADP-07 support is limited to the two exact supporting files above and append-only updates. In the architecture pseudocode, `ArcResult<T>` maps to the already-delivered concrete `ArcForges.Foundation.Errors.Outcome<T>` from FND.02/FND.05, and `FrozenContext` maps to PLT.21's already-delivered `FrozenContextSnapshot`; do not introduce a duplicate ArcResult, result algebra, or FrozenContext wrapper. The concrete C# contract is `ValueTask<Outcome<AvailabilityResult>> ICapabilityProvider.EvaluateAvailabilityAsync(ActionKey actionKey, FrozenContextSnapshot context, CancellationToken cancellationToken = default)`, following existing Capabilities async APIs. Bind only this exact API to its direct PLT.20 test in RP-10; freeze the actual test project and method after source/test naming is settled, without guessing new filenames in advance. Preserve the existing availability result facts in architecture/02-contracts-and-protocols.md section 4: `Available`, `NotApplicableToContext`, `AppNotInstalled`, `AppNotRunning`, `IncompatibleVersion`, `PermissionRequired`, `EntitlementRequired`, `PolicyDisabled`, and `TemporarilyUnavailable`. `ActionDescriptor.availabilityRule` remains a statically registered predicate; do not add result fields or availability facts. Append firstParty provenance rows only for PLT.20-owned source/test files inside the existing `src/BuildingBlocks/ArcForges.Capabilities/**` scope once their exact names are frozen. Preserve all existing rows and use RES-architecture-tests and RES-desktopplatform-policy-data append protocols. No new project, package, dependency, lock, solution, workflow, licence boundary, runtime ownership, or reconciliation change is authorized; outcome, prerequisite and runtime behavior remain unchanged.",
+   "notes": "ADP-07 support is limited to the two exact supporting files above and append-only updates. Map `ArcResult<T>` to the delivered `ArcForges.Foundation.Errors.Outcome<T>` and `FrozenContext` to PLT.21's delivered `FrozenContextSnapshot`; preserve the exact `ValueTask<Outcome<AvailabilityResult>> ICapabilityProvider.EvaluateAvailabilityAsync(ActionKey actionKey, FrozenContextSnapshot context, CancellationToken cancellationToken = default)` signature and all nine existing result facts. Add only a Capabilities-owned immutable in-process `AvailabilityEvidenceSnapshot` supplied at provider construction by a trusted host; it is a local CLR contract, not protobuf, wire DTO, PublicApi dependency or grant. Bind one snapshot to `FrozenContextSnapshot.Owner`, provider principal/session, and finite unique action/capability/target keys; require exactly one matching record and reject missing, duplicate or mismatched keys. The host captures one fixed as-of time for each UI enumeration, computes freshness disposition before constructing the short-lived provider, and discards/rebuilds it on refresh or expiry; evaluation consumes only immutable evidence and its precomputed freshness disposition, never reads a clock or performs I/O. Permission facts must be owner-issued and preserve principal/capability/scope/constraints/lifetime; entitlement reason/version comes from COM.05/06; health/readiness/compatibility, product-version, installed and running facts require explicit trusted sources. PLT.19 `CapabilityTarget`/descriptor data does not establish distinct installed-versus-running state or product version: never infer these from an absent target or contract version. Missing, stale-at-capture, unknown or contradictory evidence must not yield `Available`; return an existing typed reason only for an explicitly established fact, otherwise `TemporarilyUnavailable`. Context applicability comes from the frozen context. Keep evaluation a pure projection over immutable inputs: `availabilityRule` keys select a finite private closed table of pure rule kinds; do not permit arbitrary caller-registered delegates, I/O, discovery, authorization, mutation or side effects. This is UX preflight only; Security rechecks at invocation and Cloud re-evaluates protected dispatch. `PolicyDisabled` requires explicit authorized input to an existing rule; do not invent a policy authority. Test expired-at-capture evidence returns `TemporarilyUnavailable` and host refresh constructs a new provider/snapshot; local tests may synthesize snapshots, but do not claim full WP-09.03 integration until the PLT.38 and COM.05/06 completion edges and real producer inputs are satisfied. Bind only the exact API to its direct PLT.20 test in RP-10 after names are frozen. Append only PLT.20-owned firstParty provenance rows within `src/BuildingBlocks/ArcForges.Capabilities/**`, preserving all rows and the RES-architecture-tests/RES-desktopplatform-policy-data append protocols. No new project, package, dependency, lock, solution, workflow, licence boundary, runtime owner, PublicApi reference, protobuf or reconciliation change is authorized; outcome, prerequisites and runtime behavior remain unchanged.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Nothing exists."
    },
-   "complete": []
+   "complete": [
+    {
+     "type": "integration",
+     "task": "PLT.38",
+     "need": "Security-owner read-only permission evidence for the acting principal, exact capability and scope",
+     "why": "The UI availability projection must consume the real Security owner's current permission facts; it is only a preflight and the owner still rechecks at invocation."
+    },
+    {
+     "type": "integration",
+     "task": "COM.05",
+     "need": "canonical per-capability entitlement reason and version from the immutable grant/revocation resolver",
+     "why": "The local projection must not compute entitlement or replace the resolver's effective snapshot."
+    },
+    {
+     "type": "integration",
+     "task": "COM.06",
+     "need": "the versioned client-distributed entitlement snapshot and bounded-staleness/refresh behavior",
+     "why": "Desktop availability consumes the actual client view; cached or asserted state remains UX-only and Cloud re-evaluates before protected dispatch."
+    }
+   ]
   },
   {
    "id": "PLT.21",
@@ -6983,7 +7003,8 @@
    "outcome": "The fourteen-step decision pipeline implemented once and invoked at each of the four enforcement points (caller pre-check, transport boundary, service-side decision, owner-side final validation always last); every step produces a typed outcome; a refusal names the failing step and reason code; the pipeline is unbypassable.",
    "provides": [
     "decision-pipeline",
-    "security-decision-type"
+    "security-decision-type",
+    "permission-availability-evidence"
    ],
    "start": [
     {
@@ -7025,7 +7046,8 @@
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Nothing exists."
    },
-   "complete": []
+   "complete": [],
+   "notes": "The pipeline's availability-facing permission output is a read-only, immutable owner projection for a specific principal, capability and scope, preserving applicable constraints and lifetime. It is only a UI preflight; it is never a permission grant, resource authorization or substitute for owner-side final validation at invocation."
   },
   {
    "id": "PLT.39",
