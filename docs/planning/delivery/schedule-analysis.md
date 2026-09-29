@@ -9,7 +9,7 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 | Measure | Value |
 |---|---|
 | Delivery tasks | 437 (6 carried as accepted baseline), plus 50 adoption slices |
-| Dependency edges by type | artifact 1023, contract 102, design 1, integration(completion) 200, release 33 |
+| Dependency edges by type | artifact 1023, contract 103, design 1, integration(completion) 200, release 33 |
 | Remaining work (size units: S=1, M=2, L=4, XL=8) | 1116 |
 | Longest dependency chain (levels) | 25 |
 | Widest level (tasks whose longest prerequisite chain has equal length) | 58 |
@@ -58,7 +58,7 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 | Contracts | 29 | 4 | level 3: 7 | 7 | [CON.04](lanes/contracts.md#task-con-04) ContentSandbox service schema (15 methods: session/slot/image/PDF), [CON.05](lanes/contracts.md#task-con-05) Extension/Connector/LocalBootstrap service schema (annex09 helper closure minus ContentSandbox), [CON.12](lanes/contracts.md#task-con-12) Extension and policy schemas: manifest.v1/workflow.v1/panel.v1/policy body.v1/configuration.v1, [CON.16](lanes/contracts.md#task-con-16) Signed catalog/update/realm formats (catalog-index.v1, catalog-revocations.v1, android-update.v1, realm.v1) |
 | DesktopPlatform | 146 | 14 | level 7: 22 | 8 | [EXE.02](lanes/execution.md#task-exe-02) Lifecycle states and reason facets, [NAT.05](lanes/native.md#task-nat-05) Probe evidence, licence positions, conclusions and hardware-lab inventory seed, [PLT.11](lanes/platform.md#task-plt-11) Child registration lifecycle, [UPD.02](lanes/updater.md#task-upd-02) Background download and staging |
 | Mobile | 30 | 4 | level 15: 5 | 1 | [AND.07](lanes/android.md#task-and-07) Foundation integration evidence: real candidate against deployed 22/23/24/25, [AND.08](lanes/android.md#task-and-08) Authentication, Home and workspace (AN01-AN06), [AND.12](lanes/android.md#task-and-12) Presence, push, links and settings (AN20-AN24), [AND.24](lanes/android.md#task-and-24) Real CF Harness generation/tool loop observed end to end on Android |
-| Web | 40 | 5 | level 11: 8 | 1 | [WEB.12](lanes/web.md#task-web-12) Account and security surfaces, [WEB.20](lanes/web.md#task-web-20) Conversation and generated output streams, [WEB.21](lanes/web.md#task-web-21) Tasks, approval and steering, [WEB.22](lanes/web.md#task-web-22) Artifacts and sandboxing |
+| Web | 40 | 5 | level 10: 8 | 1 | [OPS.05](lanes/operations.md#task-ops-05) Operator console and support access, [PRF.08](lanes/runtime-proofs.md#task-prf-08) React production build and generated TS SDK proof, [WEB.11](lanes/web.md#task-web-11) Real browser session and step-up acceptance, [WEB.13](lanes/web.md#task-web-13) Workspace, storage and usage |
 
 ## Critical path
 
@@ -100,12 +100,12 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 | 4 | 22 |
 | 5 | 35 |
 | 6 | 37 |
-| 7 | 38 |
+| 7 | 37 |
 | 8 | 31 |
-| 9 | 45 |
+| 9 | 44 |
 | 10 | 33 |
-| 11 | 29 |
-| 12 | 28 |
+| 11 | 30 |
+| 12 | 29 |
 | 13 | 31 |
 | 14 | 16 |
 | 15 | 21 |
