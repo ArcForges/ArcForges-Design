@@ -21,8 +21,8 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | [PLT.11](#task-plt-11) | Child registration lifecycle | producer | M | [PLT.10](#task-plt-10) (artifact) | not-started |
 | [PLT.12](#task-plt-12) | Static routing and version refusal | producer | S | [PLT.11](#task-plt-11) (artifact) | not-started |
 | [PLT.13](#task-plt-13) | Bounds and concurrency | producer | M | [PLT.09](#task-plt-09) (artifact) | not-started |
-| [PLT.14](#task-plt-14) | Disconnect, cancel and retry semantics | producer | M | [PLT.09](#task-plt-09) (artifact), [FND.02](foundation.md#task-fnd-02) (artifact) | not-started |
-| [PLT.15](#task-plt-15) | Brokered large data over the sandbox boundary | producer | M | [PLT.09](#task-plt-09) (artifact), [CON.04](contracts.md#task-con-04) (contract) | not-started |
+| [PLT.14](#task-plt-14) | Disconnect, cancel and retry semantics | producer | M | [PLT.09](#task-plt-09) (artifact), [FND.02](foundation.md#task-fnd-02) (artifact), [PLT.13](#task-plt-13) (artifact) | not-started |
+| [PLT.15](#task-plt-15) | Brokered large data over the sandbox boundary | producer | M | [PLT.09](#task-plt-09) (artifact), [CON.04](contracts.md#task-con-04) (contract), [PLT.13](#task-plt-13) (artifact) | not-started |
 | [PLT.16](#task-plt-16) | Publish LocalRpc package and verify real integration | acceptance | S | [PLT.09](#task-plt-09) (artifact), [PLT.10](#task-plt-10) (artifact), [PLT.11](#task-plt-11) (artifact), [PLT.12](#task-plt-12) (artifact), [PLT.13](#task-plt-13) (artifact), [PLT.14](#task-plt-14) (artifact), [PLT.15](#task-plt-15) (artifact) | not-started |
 | [PLT.17](#task-plt-17) | Application identity and in-process composition | producer | S | [CON.91](contracts.md#task-con-91) (contract), [FND.01](foundation.md#task-fnd-01) (artifact) | not-started |
 | [PLT.18](#task-plt-18) | Static contribution registration | producer | M | [PLT.17](#task-plt-17) (artifact) | not-started |
@@ -52,7 +52,7 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | [PLT.42](#task-plt-42) | Instruction provenance | producer | L | [PLT.21](#task-plt-21) (artifact) | not-started |
 | [PLT.43](#task-plt-43) | Capability leases and trust | producer | M | [PLT.38](#task-plt-38) (artifact), [PLT.01](#task-plt-01) (artifact) | not-started |
 | [PLT.44](#task-plt-44) | Append-only audit subsystem | producer | M | [PLT.36](#task-plt-36) (artifact), [PLT.01](#task-plt-01) (artifact) | not-started |
-| [PLT.45](#task-plt-45) | Content helper and OS-enforced isolation (ContentSandbox host) | producer | XL | [PLT.15](#task-plt-15) (artifact), [PLT.09](#task-plt-09) (artifact), [CON.04](contracts.md#task-con-04) (contract) | not-started |
+| [PLT.45](#task-plt-45) | Content helper and OS-enforced isolation (ContentSandbox host) | producer | XL | [PLT.15](#task-plt-15) (artifact), [PLT.09](#task-plt-09) (artifact), [PLT.10](#task-plt-10) (artifact), [CON.04](contracts.md#task-con-04) (contract) | not-started |
 | [PLT.46](#task-plt-46) | Publish Security packages and verify real integration | acceptance | M | [PLT.36](#task-plt-36) (artifact), [PLT.37](#task-plt-37) (artifact), [PLT.38](#task-plt-38) (artifact), [PLT.39](#task-plt-39) (artifact), [PLT.40](#task-plt-40) (artifact), [PLT.41](#task-plt-41) (artifact), [PLT.42](#task-plt-42) (artifact), [PLT.43](#task-plt-43) (artifact), [PLT.44](#task-plt-44) (artifact), [PLT.45](#task-plt-45) (artifact), [PLT.54](#task-plt-54) (artifact), [PLT.57](#task-plt-57) (artifact) | not-started |
 | [PLT.47](#task-plt-47) | Emission and required dimensions | producer | M | [FND.01](foundation.md#task-fnd-01) (artifact) | not-started |
 | [PLT.48](#task-plt-48) | Correlation and causation propagation | producer | M | [PLT.47](#task-plt-47) (artifact) | not-started |
@@ -295,7 +295,7 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Start prerequisites | **artifact** [PLT.09](#task-plt-09) — transport/framing. *Why:* endpoint identity is meaningless without a transport to bind it to; genuinely sequential within WP08. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [PLT.11](#task-plt-11), [PLT.16](#task-plt-16), [PLT.38](#task-plt-38) |
+| Unblocks | [PLT.11](#task-plt-11), [PLT.16](#task-plt-16), [PLT.38](#task-plt-38), [PLT.45](#task-plt-45) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.LocalRpc/**` |
 | Validation | Offline/local tests: concurrent launch, stale descriptor, forged nonce/build, parent-death cleanup. |
 | Completion evidence | Concurrent launch, stale descriptor, forged nonce/build and parent-death cleanup results. |
@@ -349,7 +349,7 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 
 ### PLT.13 — Bounds and concurrency
 
-**Outcome.** 16 active/64 queued bounded calls, deadlines and parent-owned callback channels; no recursive saturated callback lane.
+**Outcome.** 16 active/64 queued bounded data calls, deadlines and parent-owned callback channels, plus exactly two reserved control slots outside the data-call budget for bootstrap, lease renewal, cancellation and health; all four control operations remain serviceable while data dispatch is saturated, with no recursive saturated callback lane.
 
 | Field | Value |
 |---|---|
@@ -357,14 +357,14 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Claim, branch and ledger | `claims/plt-13` and ledger record `ledger/tasks/plt-13.md` in the Plan repository; task branch `task/plt-13` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | producer / M |
 | Obligations | [WP-08.04](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08.04) — full |
-| Provides | ipc-bounds |
+| Provides | ipc-bounds; ipc-two-reserved-control-slots |
 | Start prerequisites | **artifact** [PLT.09](#task-plt-09) — transport. *Why:* bounds/backpressure wrap the transport's call dispatch; can proceed in parallel with PLT.10-12 once the transport shape is fixed, not strictly serial after routing. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [PLT.16](#task-plt-16) |
+| Unblocks | [PLT.14](#task-plt-14), [PLT.15](#task-plt-15), [PLT.16](#task-plt-16) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.LocalRpc/**` |
-| Validation | Offline tests: queue/memory bound, fairness, timeout and typed overload. |
-| Completion evidence | Queue/memory bound, fairness, timeout and typed overload. |
+| Validation | Offline deterministic tests: queue/memory bound, fairness, timeout and typed overload; hold the ordinary 16-active/64-queued data dispatcher at saturation and prove the exactly two reserved control slots remain outside that budget and service bootstrap, lease renewal, cancellation and health operations (each operation is exercised under saturation), without recursive callback dispatch. |
+| Completion evidence | Queue/memory bound, fairness, timeout and typed overload; saturated data-dispatch results proving the exactly two reserved control slots service bootstrap, lease renewal, cancellation and health. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: Nothing exists. |
 
 <a id="task-plt-14"></a>
@@ -380,13 +380,13 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Kind / size | producer / M |
 | Obligations | [WP-08.05](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08.05) — full |
 | Provides | ipc-cancel-retry |
-| Start prerequisites | **artifact** [PLT.09](#task-plt-09) — transport. *Why:* cancellation/retry wrap the transport call lifecycle.<br>**artifact** [FND.02](foundation.md#task-fnd-02) — effect-certainty/Outcome types. *Why:* unknown-effect classification is a [WP-04.01](../../work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04.01) type, not invented locally. |
+| Start prerequisites | **artifact** [PLT.09](#task-plt-09) — transport. *Why:* cancellation/retry wrap the transport call lifecycle.<br>**artifact** [FND.02](foundation.md#task-fnd-02) — effect-certainty/Outcome types. *Why:* unknown-effect classification is a [WP-04.01](../../work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04.01) type, not invented locally.<br>**artifact** [PLT.13](#task-plt-13) — two reserved cancellation/control slots under saturated bounded dispatch. *Why:* Annex 09 §3 reserves two separate control slots for bootstrap, renewal, cancellation and health; [WP-08.05](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08.05) cancellation must remain serviceable when ordinary calls saturate the bounded dispatcher. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [PLT.16](#task-plt-16) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.LocalRpc/**` |
-| Validation | Offline/local tests: kill before/after commit, lost ack and unknown effect. |
-| Completion evidence | Kill before/after commit, lost ack and unknown effect. |
+| Validation | Offline/local tests: kill before/after commit, lost ack and unknown effect; while ordinary data dispatch is saturated, prove cancellation progresses through one of PLT.13's two reserved control slots. |
+| Completion evidence | Kill before/after commit, lost ack and unknown effect; cancellation succeeds under saturated data dispatch through a reserved control slot. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: Nothing exists. |
 
 <a id="task-plt-15"></a>
@@ -402,13 +402,13 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Kind / size | producer / M |
 | Obligations | [WP-08.06](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08.06) — full |
 | Provides | ipc-brokered-data |
-| Start prerequisites | **artifact** [PLT.09](#task-plt-09) — transport. *Why:* brokered transfer is a call pattern over the same transport.<br>**contract** [CON.04](contracts.md#task-con-04) — ContentSandboxService/slot-grant wire shapes in contracts/09-local-grpc-and-sandbox.md. *Why:* the exact grant/seal/ack/cancel lifecycle is fixed by the published contract, not invented here. |
+| Start prerequisites | **artifact** [PLT.09](#task-plt-09) — transport. *Why:* brokered transfer is a call pattern over the same transport.<br>**contract** [CON.04](contracts.md#task-con-04) — ContentSandboxService/slot-grant wire shapes in contracts/09-local-grpc-and-sandbox.md. *Why:* the exact grant/seal/ack/cancel lifecycle is fixed by the published contract, not invented here.<br>**artifact** [PLT.13](#task-plt-13) — two reserved cancellation/control slots under saturated bounded dispatch. *Why:* Annex 09 §3 reserves two separate control slots for bootstrap, renewal, cancellation and health; [WP-08.06](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08.06) transfer cancellation must remain serviceable when ordinary calls saturate the bounded dispatcher. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [PLT.45](#task-plt-45) — the real ContentSandbox helper actually using these brokered buffers. *Why:* [WP-08.06](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08.06) implements the generic broker mechanism; PLT.45 ([WP-11.09](../../work-packages/11-security-foundation.md#rule-wp-11.09)) is the first real consumer that proves it end to end with a hostile parser. |
 | Unblocks | [PLT.16](#task-plt-16), [PLT.24](#task-plt-24), [PLT.45](#task-plt-45) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.LocalRpc/**` |
-| Validation | Offline/local tests: wrong resource grant, range/hash/expiry/cancel and orphan cleanup. |
-| Completion evidence | Wrong resource grant, range/hash/expiry/cancel and orphan cleanup. |
+| Validation | Offline/local tests: wrong resource grant, range/hash/expiry/cancel and orphan cleanup; while ordinary data dispatch is saturated, prove transfer cancellation progresses through one of PLT.13's two reserved control slots. |
+| Completion evidence | Wrong resource grant, range/hash/expiry/cancel and orphan cleanup; transfer cancellation succeeds under saturated data dispatch through a reserved control slot. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: Nothing exists. |
 
 <a id="task-plt-16"></a>
@@ -429,11 +429,12 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | none |
-| Write scope | `DesktopPlatform:eng/packaging/packages.json` |
-| Shared resources | [RES-desktopplatform-package-inventory](../shared-resources.md#res-desktopplatform-package-inventory) (append) |
-| Validation | [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017): offline verify plus policy tests; real multi-process OS-stream evidence beyond the repo's own build-machine tests is local opt-in. |
-| Completion evidence | Exact artifact/consumer and applicable UX acceptance ledger. |
+| Write scope | `DesktopPlatform:eng/packaging/packages.json`<br>`DesktopPlatform:eng/policy/dependency-policy.json`<br>`DesktopPlatform:eng/policy/dependency-reviews/plt-16-r1.json`<br>`DesktopPlatform:eng/provenance/files.json` |
+| Shared resources | [RES-desktopplatform-package-inventory](../shared-resources.md#res-desktopplatform-package-inventory) (append), [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append) |
+| Validation | [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017): offline package and policy tests plus one independent consumer check against the exact prepublication CI candidate package. The consumer must resolve the recorded package ID/version and SHA256 from the candidate artifact through an isolated temporary package source/cache, with no project reference, sibling-source fallback or substitute package; record source commit, CI run/artifact identity, package identity/digest and consumer restore/build/run result. This existing-environment candidate check is local opt-in and performed once for the affected candidate; do not add a hosted installed-consumer test or a permanent consumer harness. Real multi-process OS-stream evidence beyond the repo's own build-machine tests remains local opt-in. |
+| Completion evidence | Exact CI candidate artifact/source commit and package identity/version/SHA256; independent isolated consumer restore/build/run proving it resolved only that exact candidate with no project/source fallback; package/policy checks and applicable UX acceptance ledger. Record any separately required real OS-stream run once as local opt-in evidence. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: LocalRpc not in packages.json. |
+| Notes | [ADP-07](../adoption.md#rule-adp-07) support is limited to the exact append-only package-inventory row in eng/packaging/packages.json and its required existing-gate bindings: refresh only that file's active input hash and the current dependency-review pointer/active review object in eng/policy/dependency-policy.json; add immutable eng/policy/dependency-reviews/plt-16-r1.json as a successor to the then-current receipt, preserving the admitted dependency coordinates, versions and closure; and append only that receipt as firstParty in eng/provenance/files.json. Use RES-desktopplatform-policy-data for these task-owned policy/provenance bindings and RES-desktopplatform-package-inventory for the package row. Do not invent or predeclare LocalRpc package dependency IDs, version ranges or closure here: derive them only from the reviewed, frozen PLT.09 project references and their separately admitted exact pins; if that frozen graph requires any unadmitted package/version change, obtain authority before changing it. Do not change projects, package locks, reconciliation, architecture classifications or test maps, licences, runtime behavior, policy algorithms or unrelated records. PLT.16 may publish/consume the progressive exact package candidate once its declared PLT.09-15 artifacts exist; it has no PLT.45 completion prerequisite. PLT.15 remains complete only after PLT.45 integrates the brokered-data mechanism. |
 
 <a id="task-plt-17"></a>
 
@@ -1085,7 +1086,7 @@ Tasks: 55 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Kind / size | producer / XL · early risk proof |
 | Obligations | [WP-11.09](../../work-packages/11-security-foundation.md#rule-wp-11.09) — full; production ContentSandbox helper, real transport<br>[WP-11](../../work-packages/11-security-foundation.md#rule-wp-11) Local gRPC closure (SS7): own actual signed restricted gRPC helper, launch-secret/OS-descriptor allowlist, hostile-fixture containment, private-copy/digest validation, ConnectorBroker security boundary (real connector providers are WP41) — package-level obligation contribution |
 | Provides | content-helper-isolation; contentsandbox-host |
-| Start prerequisites | **artifact** [PLT.15](#task-plt-15) — LocalRpc brokered large-data mechanism ([WP-08.06](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08.06)). *Why:* the sandbox's slot grant/seal/ack/cancel lifecycle rides on the generic broker [WP-08.06](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08.06) defines; ContentSandbox is the first real consumer.<br>**artifact** [PLT.09](#task-plt-09) — LocalRpc transport/restricted launch identity ([WP-08.00](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08.00)/08.01). *Why:* the parent-created duplex stream and one-use launch secret are [WP-08](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08) mechanisms this helper is launched through.<br>**contract** [CON.04](contracts.md#task-con-04) — ArcForges.Contracts.LocalRpc.Sandbox generated ContentSandboxService/session/grant schema. *Why:* contracts/09-local-grpc-and-sandbox.md SS6 fixes WP03 as publishing the complete schema before this stage; ContentSandbox.Contracts is only a facade over it. |
+| Start prerequisites | **artifact** [PLT.15](#task-plt-15) — LocalRpc brokered large-data mechanism ([WP-08.06](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08.06)). *Why:* the sandbox's slot grant/seal/ack/cancel lifecycle rides on the generic broker [WP-08.06](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08.06) defines; ContentSandbox is the first real consumer.<br>**artifact** [PLT.09](#task-plt-09) — LocalRpc transport ([WP-08.00](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08.00)). *Why:* the parent-created duplex stream is the [WP-08](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08) transport this helper is launched through; restricted endpoint identity and the one-use launch secret are owned separately by PLT.10.<br>**artifact** [PLT.10](#task-plt-10) — restricted endpoint identity and one-use launch secret ([WP-08.01](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08.01)). *Why:* the helper must bind to the parent-owned endpoint/process/build/protocol identity and reject stale descriptors; transport existence from PLT.09 alone does not establish this launch authorization.<br>**contract** [CON.04](contracts.md#task-con-04) — ArcForges.Contracts.LocalRpc.Sandbox generated ContentSandboxService/session/grant schema. *Why:* contracts/09-local-grpc-and-sandbox.md SS6 fixes WP03 as publishing the complete schema before this stage; ContentSandbox.Contracts is only a facade over it. |
 | Entry condition | [ADOPT.02.platform](adoption.md#task-adopt-02-platform) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [NAT.14](native.md#task-nat-14) — production PDF/image parser composition rebuilt and signed on top of this same helper. *Why:* this task's own gate is explicit: 'WP13 later adds production parser composition to the same host and publishes a new immutable Runtime version; this stage has no reverse dependency on those parsers.' Full [PG-22](../../../assurance/open-gates-register.md#rule-pg-22) closure additionally needs the [WP-41.00](../../work-packages/41-extension-platform-and-integrations.md#rule-wp-41.00) real extension proof. |
 | Unblocks | [EXT.00](extensions.md#task-ext-00), [NAT.11](native.md#task-nat-11), [NAT.14](native.md#task-nat-14), [NAT.25](native.md#task-nat-25), [PLT.15](#task-plt-15), [PLT.46](#task-plt-46), [PLT.54](#task-plt-54) |
