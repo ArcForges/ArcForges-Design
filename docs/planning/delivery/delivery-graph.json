@@ -4026,6 +4026,8 @@
     "Contracts:tests/public/KotlinConnectClient/src/main/kotlin/io/github/arcforges/tests/Con24ScopeLibraryCases.kt (direct public-fixture consumer)",
     "Contracts:tests/public/KotlinConnectClient/src/main/kotlin/io/github/arcforges/tests/Main.kt (register CON.24 only)",
     "Contracts:eng/contract-packages.json (register only scope.proto in the existing PublicApi package; preserve all package identities)",
+    "Contracts:eng/foundation-inventory.json (append only the existing content.proto inventory/seed rows for ScopeProjectSummary and ScopeSessionSummary, their exact declared fields and regenerated output paths; preserve all other records, seeds, order, baseline and type ownership)",
+    "Contracts:eng/check_foundation.py (append only ScopeProjectSummary and ScopeSessionSummary to EXTRA_SEEDS; preserve every other seed and its order and all checker logic)",
     "Contracts:eng/policy/contract-access.json (append exact task-owned schema hashes/type assignments)",
     "Contracts:eng/policy/dependency-policy.json (refresh task-owned input hashes only; no dependency version or closure changes)",
     "Contracts:eng/policy/dependency-reviews/con-24-r1.json (new immutable task admission receipt; preserve history)",
