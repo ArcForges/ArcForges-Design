@@ -1,6 +1,6 @@
 # Operation Scope Manifest
 
-Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012). This assigns all 325 mapped operation IDs, including reserved future entries, registry 04 methods, all 13 annex 10 additions, the existing Registry 04 `EventService.Poll` operation, and the 14 CON.10 private Cloudflare AI ports. `future` rows are reserved only and excluded from active generation; all other rows require concrete metadata and implementation ownership. Registry 04 and annex 10 own the method/field definitions; the private AI route definitions remain in contracts05 section 3.
+Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012). This assigns all 342 mapped operation IDs, including reserved future entries, registry 04 methods, all 13 annex 10 additions, the existing Registry 04 `EventService.Poll` operation, and the 31 CON.10/CON.15 private Cloudflare service ports. `future` rows are reserved only and excluded from active generation; all other rows require concrete metadata and implementation ownership. Registry 04 and annex 10 own the method/field definitions; the private AI route definitions remain in contracts05 sections 3, 8, 9 and the `Execution-owner and Web-search additions` subsection.
 
 `account`: existing realm/account/workspace permission; no assistant filter on account security/finance. `assistant`: mandatory product scope and inherited execution/resource owner. `product-owner`: product fixed by method/aggregate and validated against scope. `resource-owner`: derive account or product owner from admitted resource/notification/export kind, enforce existing owner permission and require a matching product scope for product-owned objects; never accept a caller-selected foreign owner. `application-target`: device administration keeps its account permission, but installation/presence/bridge execution always validates the explicit target and current epoch. `in-process`: ordinary product handlers, no network service. `private-helper`: parent-launched child only, never another product. `operator`: separate internal operator identity and the complete role/authorization matrix in registry04 section 9; no customer or tool access. `future`: not registered or invoked in this release; descriptor names remain reserved.
 
@@ -331,3 +331,46 @@ Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-0
 | `cf.ai.finalize` | assistant |
 | `cf.ai.stream-state` | assistant |
 | `cf.ai.late-outcome` | assistant |
+| `cf.objects.authorize` | resource-owner |
+| `cf.objects.part-receipt` | resource-owner |
+| `cf.objects.verification` | resource-owner |
+| `cf.objects.job-grant` | resource-owner |
+| `cf.objects.job-authorize` | resource-owner |
+| `cf.objects.job-read` | resource-owner |
+| `cf.objects.job-write` | resource-owner |
+| `cf.ai.dispatch` | assistant |
+| `cf.ai.control` | assistant |
+| `cf.ai.delete` | account |
+| `cf.ai.web-search` | assistant |
+| `cf.ai.inference-job` | resource-owner |
+| `cf.ai.inference-lease` | resource-owner |
+| `cf.ai.inference-input` | resource-owner |
+| `cf.ai.inference-outcome` | resource-owner |
+| `cf.ai.inference-late-outcome` | resource-owner |
+| `cf.ai.inference-state` | resource-owner |
+
+### CON.15 private Cloudflare service route tuples
+
+These are the only 17 CON.15 `cf-service` HTTP operations. Every row has `kind=http`, `surface=cf-internal`, `profile=cf-service`, `capability=null`, `risk=R1`, `approval=none`, `stepUp=false`, `localPresence=false`, `egress=none`, `patEligible=false`, and `actorKinds=[service]`. The profile authenticates the private service transport; it does not replace the exact owner, fence, generation, attempt, resource, reservation, and current-permission checks required by the cited contract section. `Q` and `IW` are transport/receipt retry classes only, not permission to repeat an external effect.
+
+`cf.ai.delete` is account-scoped because Workspace coordinates deletion through the existing account-scoped owner deletion job; the private adapter is callable only through that job after its existing preview-hash and step-up flow. A `workspaceId` in a request is data, not proof of caller-selected authority. The `resource-owner` inference rows follow §8's C# Search ownership of the queued job, source pins, index target and published result, including current permission checks.
+
+| Operation | Exact binding | Idempotency | Source | Source rule |
+|---|---|---|---|---|
+| `cf.objects.authorize` | `POST /internal/objects/v1/authorize` | Q | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#3-exact-internal-ports` |
+| `cf.objects.part-receipt` | `POST /internal/objects/v1/part-receipt` | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#3-exact-internal-ports` |
+| `cf.objects.verification` | `POST /internal/objects/v1/verification` | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#3-exact-internal-ports` |
+| `cf.objects.job-grant` | `POST /internal/objects/v1/job-grant` | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#9-job-authorized-objects-control-inventory-and-resource-budgets` |
+| `cf.objects.job-authorize` | `POST /internal/objects/v1/job-authorize` | Q | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#9-job-authorized-objects-control-inventory-and-resource-budgets` |
+| `cf.objects.job-read` | `GET /internal/objects/v1/jobs/{grantId}` | Q | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#9-job-authorized-objects-control-inventory-and-resource-budgets` |
+| `cf.objects.job-write` | `PUT /internal/objects/v1/jobs/{grantId}` | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#9-job-authorized-objects-control-inventory-and-resource-budgets` |
+| `cf.ai.dispatch` | `POST /internal/ai/v1/dispatch` | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#3-exact-internal-ports` |
+| `cf.ai.control` | `POST /internal/ai/v1/control` | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#3-exact-internal-ports` |
+| `cf.ai.delete` | `POST /internal/ai/v1/delete` | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#3-exact-internal-ports` |
+| `cf.ai.web-search` | `POST /internal/ai/v1/web-search` | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#execution-owner-and-web-search-additions` |
+| `cf.ai.inference-job` | `POST /internal/ai/v1/inference-job` | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#8-session-bindings-inference-jobs-and-deployment-transitions` |
+| `cf.ai.inference-lease` | `POST /internal/ai/v1/inference-lease` | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#8-session-bindings-inference-jobs-and-deployment-transitions` |
+| `cf.ai.inference-input` | `POST /internal/ai/v1/inference-input` | Q | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#8-session-bindings-inference-jobs-and-deployment-transitions` |
+| `cf.ai.inference-outcome` | `POST /internal/ai/v1/inference-outcome` | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#8-session-bindings-inference-jobs-and-deployment-transitions` |
+| `cf.ai.inference-late-outcome` | `POST /internal/ai/v1/inference-late-outcome` | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#8-session-bindings-inference-jobs-and-deployment-transitions` |
+| `cf.ai.inference-state` | `POST /internal/ai/v1/inference-state` | Q | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#8-session-bindings-inference-jobs-and-deployment-transitions` |
