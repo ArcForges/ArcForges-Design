@@ -7201,7 +7201,9 @@
     "DesktopPlatform:eng/policy/dependency-policy.json (refresh only the Security.Tests project/lock entries in inputHashes and the identical review.inputHashes; set reviewReceipt to plt-39-r1; update only review.owner, reviewer, reviewedOn, baselineCommit, maintenanceAssessment, values under the unchanged upgradeChecks keys, inputHashes and previousReceipt to mirror the PLT.39 receipt, with previousReceipt = active plt-28-r1; preserve frameworkVersions, namingToolCandidate, closures, unrelated hashes and every other policy field)",
     "DesktopPlatform:eng/policy/dependency-reviews/plt-39-r1.json (new immutable successor chained from active plt-28-r1 for the exact test-only project edge; mirror the active review and closure snapshots, preserve all package identities, coordinates, versions and prior receipts)",
     "DesktopPlatform:eng/policy/reconciliation/active-projects.json (refresh only the existing Security.Tests project blob for its test-only Persistence.Sqlite reference)",
-    "DesktopPlatform:eng/provenance/files.json (append only PLT.39 first-party source/test and dependency-receipt rows)"
+    "DesktopPlatform:eng/provenance/files.json (append only PLT.39 first-party source/test and dependency-receipt rows)",
+    "DesktopPlatform:eng/native_provenance.py (PLT.39 may pass urllib.request.Request(url, headers={\"User-Agent\": \"ArcForges/1.0 (+https://github.com/ArcForges/DesktopPlatform)\"}) only for exact full-string matches of https://visualstudio.microsoft.com/wp-content/uploads/2025/10/Visual_Studio_2026-License-Community_ENU.docx or https://visualstudio.microsoft.com/wp-content/uploads/2025/10/Visual-C-V14-License-Redistributable_and_Runtime_ENU.docx, and only after the existing verified-cache-hit return; preserve every other URL path and all URL, hash, TLS, timeout, redirect, cache, digest, temporary-file and atomic-promotion behavior)",
+    "DesktopPlatform:tests/tooling/test_native_provenance.py (append only offline tests for the two exact URL/User-Agent cases, a same-host lookalike and unrelated URL remaining unchanged, verified cache-hit bypass, HTTP 403 propagation without cache promotion, and wrong-digest temporary cleanup)"
    ],
    "shared": [
     {
@@ -7214,6 +7216,10 @@
     },
     {
      "resource": "RES-architecture-tests",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-native-build",
      "mode": "append"
     }
    ],
@@ -26185,7 +26191,7 @@
    "kind": "registry",
    "ownerRepo": "DesktopPlatform",
    "owner": "DesktopPlatform integration owner",
-   "protocol": "The vcpkg baseline and overlay ports change only through a dependency-admission change with licence and provenance receipts; each native family adds its own CMake targets and workflow entries; triplet or port changes are rebased and rebuilt by their author; CPU-heavy native builds use the workstation build slot."
+   "protocol": "The vcpkg baseline and overlay ports change only through a dependency-admission change with licence and provenance receipts; each native family adds its own CMake targets and workflow entries; triplet or port changes are rebased and rebuilt by their author; CPU-heavy native builds use the workstation build slot. PLT.39 may append only a narrowly scoped transport compatibility change to eng/native_provenance.py and offline tests in tests/tooling/test_native_provenance.py: after the verified cache-hit path, pass urllib.request.Request(url, headers={\"User-Agent\": \"ArcForges/1.0 (+https://github.com/ArcForges/DesktopPlatform)\"}) only when the complete requested URL equals https://visualstudio.microsoft.com/wp-content/uploads/2025/10/Visual_Studio_2026-License-Community_ENU.docx or https://visualstudio.microsoft.com/wp-content/uploads/2025/10/Visual-C-V14-License-Redistributable_and_Runtime_ENU.docx; preserve all other URL behavior, pinned URLs/hashes, TLS, timeout, redirects, cache, digest verification, temporary cleanup and atomic promotion, with no retries, dependency, workflow or runner changes. The DesktopPlatform integration owner serializes this shared helper append."
   },
   {
    "id": "RES-desktopplatform-package-inventory",
