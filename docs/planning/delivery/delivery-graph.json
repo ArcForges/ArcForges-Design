@@ -5585,7 +5585,9 @@
     }
    ],
    "writes": [
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.LocalRpc/**"
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.LocalRpc/**",
+    "DesktopPlatform:.gitleaks.toml (append exactly one PLT.09 generic-api-key AND allowlist with regexTarget=line and the one anchored path eng/policy/dependency-reviews/plt-09-r1.json, carrying only the two observed whole-line alternatives listed in Notes; no wildcard or receipt-directory path, no path-by-digest cross combination, preserve every other rule and allowlist)",
+    "DesktopPlatform:eng/test_dependency_policy.py (append only a focused test of the actual PLT.09 Gitleaks allowlist and its two exact whole-line matches in the actual plt-09-r1.json, rejecting swapped key/digest/path pairs, changed digests, a trailing credential, unrelated 64-hex values, and any other rule)"
    ],
    "shared": [
     {
@@ -5616,7 +5618,7 @@
    "obligations": [
     {
      "ref": "WP-08.01",
-     "part": "full"
+     "part": "full Scan-support extension (narrow ADP-07, same class as the merged PLT.40 allowlist and the PLT.44 repair): the immutable dependency receipt plt-09-r1.json mirrors the existing Security.Secrets project input rows, and the pinned full-history scanner reports exactly two complete lines there, shown with their exact indentation:      \"src/BuildingBlocks/ArcForges.Security.Secrets/ArcForges.Security.Secrets.csproj\": \"8ff03fdcaf23b09386fac47dd5e3e4f9689a665a569137f726456c9e59a9ecef\",      \"src/BuildingBlocks/ArcForges.Security.Secrets/Tests/ArcForges.Security.Secrets.Tests.csproj\": \"d6798bbbcf980fab4467c6d831871b075e55aeef6e09c7df67c4d72cd2334120\", One additional .gitleaks.toml group is authorized: path anchored to ^eng/policy/dependency-reviews/plt-09-r1[.]json$, targetRules generic-api-key, condition AND, regexTarget line, whose two alternatives are these whole lines anchored as the scanner reports an added line (at most one optional leading newline and nothing else around the line). No wildcard, receipt-directory or open-ended clause, no cross-combination of paths and digests, and no other finding, path, rule, scanner behavior or workflow change is authorized; every existing rule and allowlist is preserved. The focused eng/test_dependency_policy.py test is extended only to verify the actual config against the actual plt-09-r1.json lines (both line shapes) and to reject swapped key/digest/path pairs, changed digests, appended credentials, unrelated 64-hex values and other rules. Passing pinned full-history secret-scan evidence on the PLT.09 head is required."
     }
    ],
    "outcome": "Parent launch descriptor fixes endpoint, process/build/protocol identity, nonce and epoch; owner-only endpoint files are created/removed atomically; a stale descriptor never authorizes a child.",
