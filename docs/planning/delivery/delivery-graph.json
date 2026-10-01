@@ -3004,7 +3004,11 @@
     "Contracts:package.json (register the operator contract test only)",
     "Contracts:tests/public/SerializationProbe/Program.cs (add only the exact CloudInternal OperatorService catalogue assertion and test-only no-op/default endpoint bindings for all exact 31 methods; never invoke the stubs; preserve existing exact checks)",
     "Contracts:tests/StructureTests/OperatorCases.cs",
-    "Contracts:tests/StructureTests/Program.cs (register OperatorCases only)"
+    "Contracts:tests/StructureTests/Program.cs (register OperatorCases only)",
+    "Contracts:eng/check_operation_scope.py (classify exactly one high-risk operator exception required by Registry04 section 9.1: operator.startBreakGlass may carry risk R4 only when operationId operator.startBreakGlass, binding arcforges.operator.v1.OperatorService/StartBreakGlass, kind proto, source internal/proto/arcforges/operator/v1/operator.proto, scope operator, surface operator, profile operator, idempotency CC and actorKinds [operator] all match exactly; every other operation remains limited to R0-R3 plus the existing exact task.create R2+ exception; preserve the exact eight-field authorization, operator-identity, PAT, local-presence, tool, human-only and every other check, count and report field)",
+    "Contracts:tests/tooling/test_operation_scope.py (update only the real retained inventory expectation to the exact post-CON.14 registered/pending/reserved/total 263/55/7/325, and add focused cases for the exact R4 exception: accept only the exact operator.startBreakGlass row; reject R4 on any other operation or operator row, a wrong binding, wrong class, non-operator profile/surface/scope, a tool-bound capability, PAT eligibility and an invented risk such as R5; preserve every existing assertion and negative case)",
+    "Contracts:docs/operation-scope.md (document only that risk remains R0-R3 except the single exact operator.startBreakGlass R4 row and the CON.14 private-origin identity constraints; no other policy text)",
+    "Contracts:eng/contracts.py (in the existing internal npm import-owner rewrite only, extend the foundation|events|hello namespace alternation with the existing public publicapi and catalog namespaces, so generated operator-client imports of SupportCase, Grant, CreditLot, RefundView and the Catalog views resolve to the single canonical @arcforges/proto owner; no other generator behavior, output path, package identity, dependency or version change)"
    ],
    "shared": [
     {
