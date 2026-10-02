@@ -4844,18 +4844,24 @@
     {
      "type": "artifact",
      "task": "PRF.07",
-     "need": "deployed Worker/Container/DO providing EventService.Watch",
+     "need": "the deployed Worker/Container/DO foundation environment (the ingress target); PRF.07 does not provide EventService.Watch, the real Watch shells are CLOUD.29",
      "why": "06.03 requires the actual deployed provider boundary; no fixture closes real integration per WP06 SS5 text"
+    },
+    {
+     "type": "contract",
+     "task": "CON.11",
+     "need": "the published ArcForges.Contracts.Events generated EventService.Watch/Poll and ExecutionService.WatchOutput/ReadOutput clients, StreamFrame/StreamPosition/StreamReset and the 17 event hint payloads, with their ArcForges.Contracts.PublicApi and ArcForges.Contracts.Foundation closure",
+     "why": "the probe compiles against the generated annex 10 clients and records; it never copies a wire DTO (DLV-15), so it cannot be written before that closure is published"
     }
    ],
    "writes": [
     "DesktopPlatform:tests/ReleaseArtifactTests/**",
     "DesktopPlatform:eng/verification/**",
     "DesktopPlatform:DesktopPlatform.slnx (append only tests/ReleaseArtifactTests/Realtime/RealtimeAotProbe.csproj)",
-    "DesktopPlatform:Directory.Packages.props (append only the single exact Grpc.Net.Client.Web 2.84.0 pin if not yet present; otherwise reuse it, with no other coordinate/version changes)",
+    "DesktopPlatform:Directory.Packages.props (append only the single exact Grpc.Net.Client.Web 2.84.0 pin if not yet present; otherwise reuse it, and append only the exact generated-contract pins ArcForges.Contracts.Events and ArcForges.Contracts.PublicApi at 1.0.0-ci.270.1 plus the version update of ArcForges.Contracts.Foundation to 1.0.0-ci.270.1, the CON.11 candidate built from Contracts source 4047930ef2207e8a4c6de9e7ef679f0d9359a8e4, each conditioned on the project name RealtimeAotProbe so that no other project's resolution changes; no other coordinate/version changes)",
     "DesktopPlatform:tests/ReleaseArtifactTests/Realtime/RealtimeAotProbe.csproj and packages.lock.json",
     "DesktopPlatform:.github/workflows/package-validation.yml (append only one exact locked Native AOT publish-only job for this project on pull requests and main builds; no runtime execution or live endpoint)",
-    "DesktopPlatform:eng/policy/dependency-policy.json (only task-owned project/lock/pin input hashes and active review binding)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (only task-owned project/lock/pin input hashes, the exact locked NuGet closure rows and Apache-2.0 licence evidence of the pinned coordinates, and active review binding)",
     "DesktopPlatform:eng/policy/dependency-reviews/prf-06-r1.json (new immutable successor only when the existing gate requires one)",
     "DesktopPlatform:eng/policy/licence-boundary.json (append only this project as kind=msbuild)",
     "DesktopPlatform:eng/policy/runtime-ownership.json (append only this project as test-or-build-tool)",
@@ -4887,8 +4893,27 @@
     "state": "not-started",
     "notes": "Confirmed at DesktopPlatform main 3cee8ae0: no tests/ReleaseArtifactTests directory or realtime project, and package-validation.yml has no PRF.06 AOT publish job."
    },
-   "notes": "Runs after PRF.07 stands up DO/Worker; the existing PRF.07 start prerequisite is unchanged. Its runtime behavior is independent of PRF.04/05, but it shares their append-only transport/build configuration where applicable. Use only the single exact Grpc.Net.Client.Web 2.84.0 pin described by PRF.05; if this task reaches the serialized build-config merge first, append that sole entry, otherwise reuse it. The exact locked closure and Apache-2.0 package licence must be recorded in this task's immutable receipt; do not change any other dependency coordinate/version. This task's project is `tests/ReleaseArtifactTests/Realtime/RealtimeAotProbe.csproj`. Keep AOT publish evidence separate from the required local live-service proof. The project and policy/provenance rows are append-only under the declared build-config/policy-data resources; this probe is non-packable and does not alter package inventory. Hold `leases/res-cloud-deployment` only for the local live run. Do not add Gitleaks allowlists or change secret-scan behavior; no secret or credential-looking value is committed or emitted.",
-   "complete": []
+   "notes": "Runs after PRF.07 stands up DO/Worker; the existing PRF.07 start prerequisite is unchanged. Its runtime behavior is independent of PRF.04/05, but it shares their append-only transport/build configuration where applicable. Use only the single exact Grpc.Net.Client.Web 2.84.0 pin described by PRF.05; if this task reaches the serialized build-config merge first, append that sole entry, otherwise reuse it. The exact locked closure and Apache-2.0 package licence must be recorded in this task's immutable receipt; do not change any other dependency coordinate/version except the project-conditioned generated-contract pins named in the write scope. This task's project is `tests/ReleaseArtifactTests/Realtime/RealtimeAotProbe.csproj`. Keep AOT publish evidence separate from the required local live-service proof. The project and policy/provenance rows are append-only under the declared build-config/policy-data resources; this probe is non-packable and does not alter package inventory. Hold `leases/res-cloud-deployment` only for the local live run. Do not add Gitleaks allowlists or change secret-scan behavior; no secret or credential-looking value is committed or emitted. Stage delivery as the real client side under Native AOT: the generated annex 10 clients and records, the binary gRPC-Web transport, the cursor/sequence/gap, reset, heartbeat-silence, bounded-jitter reconnect and Poll/ReadOutput recovery logic, with a locked publish-only CI job and an offline self-test that opens no socket and calls no service. PRF.07's obligation (WP-06.04) does not include EventService.Watch and no task before CLOUD.29 implements a public Watch or WatchOutput server, so the live acceptance against a deployed Worker/Container/DO stays this task's own completion acceptance after the named real producers are complete; the ledger stays delivered meanwhile and the live result is never claimed from the offline self-test.",
+   "complete": [
+    {
+     "type": "integration",
+     "task": "CLOUD.29",
+     "need": "the real public EventService.Watch and ExecutionService.WatchOutput server-streaming shells with generated StreamFrame, 15 second re-authorization and typed trailers",
+     "why": "WP-06.03 requires EventService.Watch and output streams against the actual Worker/Container/DO; PRF.07 does not provide them and no earlier task does, so the live acceptance cannot run without this producer"
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.32",
+     "need": "the real durable Poll/readOutput unary reads over the same owner/cursor profile, with the cursor/gap model and the owner/product/recovery-generation scope binding of its own prerequisites",
+     "why": "WP-06.03 requires drop/expire/revoke recovery through authoritative reads; the recovery half of the acceptance consumes the real unary reads, not a substitute"
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.34",
+     "need": "the real bounded stream lifecycle: five minute close, 15 second heartbeat, 45 second silence and slow-reader reset",
+     "why": "WP-06.03 requires expire and drop handling against the actual provider; the lifecycle limits the probe reconnects under exist only in that producer"
+    }
+   ]
   },
   {
    "id": "PRF.07",

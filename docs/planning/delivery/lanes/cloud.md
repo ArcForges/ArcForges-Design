@@ -738,7 +738,7 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Start prerequisites | **artifact** [CLOUD.21](#task-cloud-21) — the endpoint-mapping pattern to register server-streaming methods alongside unary ones. *Why:* streams are registered through the same owner-handler mechanism CLOUD.21 establishes<br>**artifact** [CLOUD.19](#task-cloud-19) — session authorization to re-check every 15s on the open stream. *Why:* stream authorization reuses the same session/CSRF/Origin checks CLOUD.19 implements<br>**contract** [CON.11](contracts.md#task-con-11) — the StreamFrame/StreamPosition/ApplicationScope record definitions (contracts/10 §2). *Why:* the stream shells are typed against these generated records, not ad hoc JSON |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [AND.07](android.md#task-and-07), [CLOUD.30](#task-cloud-30), [CLOUD.34](#task-cloud-34), [CLOUD.36](#task-cloud-36), [DEV.01](device-bridge.md#task-dev-01), [DEV.14](device-bridge.md#task-dev-14), [WEB.30](web.md#task-web-30) |
+| Unblocks | [AND.07](android.md#task-and-07), [CLOUD.30](#task-cloud-30), [CLOUD.34](#task-cloud-34), [CLOUD.36](#task-cloud-36), [DEV.01](device-bridge.md#task-dev-01), [DEV.14](device-bridge.md#task-dev-14), [PRF.06](runtime-proofs.md#task-prf-06), [WEB.30](web.md#task-web-30) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.PublicApi/Streams/**` |
 | Validation | opt-in real deployed C#/browser/Kotlin binary stream tests: trailers/cancel/expiry, no WebSocket path |
 | Completion evidence | real binary stream trailer/cancel/expiry results |
@@ -804,7 +804,7 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Start prerequisites | **artifact** [CLOUD.31](#task-cloud-31) — cursor/gap handling to read from in the unary fallback. *Why:* Poll/readOutput shares the same cursor profile CLOUD.31 defines |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [CLOUD.36](#task-cloud-36) |
+| Unblocks | [CLOUD.36](#task-cloud-36), [PRF.06](runtime-proofs.md#task-prf-06) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.PublicApi/Streams/Fallback/**` |
 | Validation | opt-in test: blocked stream recovers through real unary read without invented completion |
 | Completion evidence | blocked-stream real-recovery result |
@@ -850,7 +850,7 @@ Tasks: 60 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Start prerequisites | **artifact** [CLOUD.29](#task-cloud-29) — the stream shell to bound the lifecycle of. *Why:* lifecycle limits wrap the stream CLOUD.29 opens |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [CLOUD.35](#task-cloud-35), [CLOUD.36](#task-cloud-36), [DEV.14](device-bridge.md#task-dev-14) |
+| Unblocks | [CLOUD.35](#task-cloud-35), [CLOUD.36](#task-cloud-36), [DEV.14](device-bridge.md#task-dev-14), [PRF.06](runtime-proofs.md#task-prf-06) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.PublicApi/Streams/Lifecycle/**` |
 | Validation | opt-in test: slow reader overflow resets, no unbounded memory or hibernation-cost claim |
 | Completion evidence | slow-reader overflow-reset result |
