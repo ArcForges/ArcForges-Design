@@ -4950,6 +4950,17 @@
     "Cloud:tooling/project.ts",
     "Cloud:tooling/cloudflare.ts",
     "Cloud:.github/workflows/ci.yml",
+    "Cloud:.dockerignore (only admit the nested C# sources of the existing host project to the Docker build context: replace the top-level-only !src/ArcForges.Cloud/*.cs allowance by !src/ArcForges.Cloud/**/*.cs; the existing bin/obj exclusions, base images, context roots and every other ignore rule are preserved)",
+    "Cloud:tooling/dependency-policy.ts (admit only the single exact private generated package @arcforges/ai-internal: explicit name, publisher ArcForges/Contracts, visibility internal, owner Cloud, importable only by sources under worker/ at its exact package root; refuse the private generated C# ArcForges.Contracts.CloudInternal records outside src/ArcForges.Cloud and tests/ArcForges.Cloud.Tests; the public-client rules, exact-version, integrity, licence, registry, prerelease, history and every other check are unchanged)",
+    "Cloud:tooling/dependency-policy.test.ts (add only acceptance and refusal cases for those two rules; every existing assertion is preserved)",
+    "Cloud:tooling/licence-boundary.ts (admit only the exact first-party NuGet coordinates ArcForges.Contracts.CloudInternal, ArcForges.Contracts.Events and ArcForges.Contracts.Foundation, the Apache-2.0 closure of the pinned PublicApi and CloudInternal candidates; no other algorithm or owner change)",
+    "Cloud:eng/policy/dependency-policy.json (task-owned admission bindings only: the Contracts candidate pins, the one internal first-party package, the exact refreshed npm closure, the input hashes of the files this task changes, and the active review and artifact-record pointers)",
+    "Cloud:NOTICE (only the Contracts candidate version and its notice description)",
+    "Cloud:third-party/Contracts.NOTICE.txt (only the verbatim published ArcForges.Contracts.CloudInternal NOTICE of the pinned candidate, admitted by an immutable contracts-notice-legal successor record)",
+    "Cloud:docs/dependency-policy.md (factual update only: the one admitted private generated package and its import boundaries)",
+    "Cloud:tests/ArcForges.Cloud.Consumer/packages.lock.json (regenerated lock for the pinned Contracts.PublicApi candidate only)",
+    "Cloud:tooling/build-identity.ts (accept the current Contracts source receipt shape only: when the receipt carries no single schema name, identify the ContractSet axis as arcforges.hello v1 from the required Hello schema source entry public/proto/arcforges/hello/v1/hello.proto of schemaSources, keeping the descriptor hash, clean-source and every other check; the legacy single-schema shape and every other axis are unchanged)",
+    "Cloud:tooling/protocol.ts (remove only the useBinaryFormat option from the three createHelloClient calls: the current published client always uses binary and no longer declares the option; no other protocol check changes)",
     "Cloud:docs/prf-07-*.md"
    ],
    "shared": [
