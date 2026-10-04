@@ -14320,13 +14320,27 @@
    "writes": [
     "Cloud:worker/index.ts",
     "Cloud:worker/router.ts",
+    "Cloud:worker/ingress/** (new: the generalized /api route table, credential and CSRF edge checks and the frame-guarded streaming pass-through)",
+    "Cloud:worker/foundation/entry.ts, Cloud:worker/foundation/container-env.ts and Cloud:worker/foundation/types.ts (only to hand the ingress route table the proof-only probe route and to forward the allowed origin; no change to a proof route, queue consumer or private handler)",
     "Cloud:wrangler.json",
-    "Cloud:src/ArcForges.Cloud.Host/**",
-    "Cloud:Dockerfile"
+    "Cloud:Dockerfile",
+    "Cloud:.dockerignore (only admit the new nested C# source folder of the existing host project by the same append-only explicit directory rule and *.cs rule used for its other source folders; every other ignore rule is preserved)",
+    "Cloud:src/ArcForges.Cloud/** (the existing Native AOT host project, which is the real layout of the planned src/ArcForges.Cloud.Host/**; ADP-07 and ADP-10 forbid renaming it or adding a parallel project)",
+    "Cloud:tests/ArcForges.Cloud.Tests/**",
+    "Cloud:tests/worker/**",
+    "Cloud:eng/verification/** (the local cross-process and explicit opt-in live scenarios of the pipeline)",
+    "Cloud:package.json (the explicit test file list and the pipeline scenario scripts only; no dependency or version change)",
+    "Cloud:eng/policy/dependency-policy.json and Cloud:eng/policy/dependency-reviews/cloud-01-*.json (new immutable successor chained from the then-active receipt, only because the changed bundle, manifest and source inputs are hash-bound; no coordinate, integrity value or closure entry changes)",
+    "Cloud:eng/provenance/** (immutable successor release profile, Worker bundle and runtime-notice records only where an existing record binds an input this task changes, the first-party inventory files.json and the deterministic NOTICE.txt)",
+    "Cloud:docs/cloud-ingress.md, Cloud:docs/deployment.md and Cloud:AGENTS.md (factual description of the ingress pipeline; the AGENTS.md Hello bullet is narrowed to what remains true)"
    ],
    "shared": [
     {
      "resource": "RES-cloud-deployment",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-host-composition",
      "mode": "append"
     }
    ],
