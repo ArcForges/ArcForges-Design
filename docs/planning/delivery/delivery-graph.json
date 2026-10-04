@@ -976,6 +976,12 @@
      "task": "CON.23",
      "need": "retired Contracts elements removed and reserved",
      "why": "the Contracts policy tests run over the cleaned naming data and record set"
+    },
+    {
+     "type": "artifact",
+     "task": "GOV.06",
+     "need": "the published ArcForges.Build.Policy candidate whose ProjectGraph reconstruction includes pinned-SDK generated sources and whose generated-type recognition accepts protoc and schema-generator output",
+     "why": "Contracts' hosted full-graph gate reconstructs source-generator output and classifies every generated wire type; the recorded exact-head run of PR 71 shows it cannot pass (reconstruction diagnostics, then 1843 AT-12 findings) against the earlier engine, and a gate that cannot pass cannot be delivered, so the producer candidate is a start input rather than a completion-only input."
     }
    ],
    "writes": [
@@ -983,6 +989,7 @@
     "Contracts:eng/policy/exceptions.json",
     "Contracts:ArcForges.Contracts.slnx",
     "Contracts:eng/contracts.py",
+    "Contracts:.github/workflows/security.yml (wire the hosted architecture-policy gate into the existing secrets job only, after the unchanged Gitleaks step: pinned setup-dotnet/setup-python, locked restore, Release build, python eng/check_naming.py --report artifacts/evidence/naming.json, then ArchitectureTests --hosted, in the order the gate verifies; no change to the Gitleaks command, history scope, allowlist, permissions, action pins of existing steps, other jobs, thresholds or continue-on-error/if-always behavior)",
     "Contracts:Directory.Packages.props",
     "Contracts:tests/ArchitectureTests/packages.lock.json",
     "Contracts:eng/policy/dependency-policy.json",
@@ -1011,31 +1018,34 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "WP05's own §8 completion-gate text states this substep 'makes VG-04's policy-test half enforceable' - a second VG-04 contributor not listed in the README's deferred-gate table (which names only 03.04/06.01). The narrowly required ArcForges.Build.Policy 1.0.0-ci.31.1 AGPL admission permits a direct PackageReference only from Contracts tests/ArchitectureTests, with PrivateAssets=all, for architecture-test/build use. Regression negatives must reject this exact package from every other project or package closure, including product/runtime and generated-public-package closures; do not broaden the exception. This task may update only the existing buildInputs[\"Directory.Packages.props\"] SHA256 in eng/policy/contract-access.json to e90ab87695c2d9eb162e77ba08939866d0a4a6c4dd6b80923ddef56328a7353f, the independently recomputed LF-normalized SHA256 of the final Directory.Packages.props after the authorized central Build.Policy pin; do not alter contract access, package graph, categories, schema, or checker. Refresh only the matching dependency-policy.inputHashes[\"eng/policy/contract-access.json\"] and current active dependency-policy.review.inputHashes[\"eng/policy/contract-access.json\"] entries to fcd8b5a1b54ba3b18eba8c7b8159d531069156137bee5b2bb55eb12ca3516708, the independently recomputed final LF-normalized contract-access SHA256 required by dependency admission; both current entries must remain identical under the retained admission invariant, and no coordinate, project, historical receipt, other review field or other input binding may change. For the support-only .gitleaks.toml addition, allow only rule generic-api-key, exact containing paths AND complete JSON key/value lines for fcd8b5a1b54ba3b18eba8c7b8159d531069156137bee5b2bb55eb12ca3516708 in eng/policy/dependency-policy.json and for the exact four review.inputHashes tuples in eng/policy/dependency-reviews/gov-05-r1.json: eng/policy/contract-access.json -> fcd8b5a1b54ba3b18eba8c7b8159d531069156137bee5b2bb55eb12ca3516708 (observed pre-repair value c339d391aeb89aabb9a5b503f152436905048c4855a72065fc4bc85712252ea7); eng/provenance/records/dokka-combokeys-licence-r1.json -> 75219d61672002f0bb242fed0fd93a0886f07d944e0b9e1b1f72132f59df1b41; eng/provenance/records/dokka-object-keys-licence-r1.json -> 55621ecc7032745ca46e56d13133dc22a3bd808d80966d737427b5d6fc5bd096; src/public/dotnet/ArcForges.Contracts.PublicApi/ArcForges.Contracts.PublicApi.csproj -> 986b7a97734cd5d0630e548da897869de322a112c087c2d0df6a0bfc98b8784c. Use exactly the final fcd8... digest in dependency-policy, gov-05-r1 and both exact allowlist path bindings; no later normalization or inferred replacement is authorized. Keep the other three exact tuples bound to these values and preserve the historical CON.06 block unchanged. No wildcard receipt/path entries, source allowlist, other rule, threshold, scan scope, command, workflow or history change; do not change receipt format or bypass the parser/scanner. Shared Contracts solution, policy and provenance edits rebase and merge one-at-a-time under the Contracts integration owner after exact-head review."
-   ,
+   "notes": "WP05's own §8 completion-gate text states this substep 'makes VG-04's policy-test half enforceable' - a second VG-04 contributor not listed in the README's deferred-gate table (which names only 03.04/06.01). The narrowly required ArcForges.Build.Policy 1.0.0-ci.31.1 AGPL admission permits a direct PackageReference only from Contracts tests/ArchitectureTests, with PrivateAssets=all, for architecture-test/build use. Regression negatives must reject this exact package from every other project or package closure, including product/runtime and generated-public-package closures; do not broaden the exception. This task may update only the existing buildInputs[\"Directory.Packages.props\"] SHA256 in eng/policy/contract-access.json to the independently recomputed LF-normalized SHA256 of the final Directory.Packages.props at the reviewed head after the authorized central Build.Policy pin (the pin is the exact candidate published by GOV.06; no literal digest is recorded here because the file and its digest move whenever main's central pins change, and the worker and the reviewer each recompute it at the head under review); do not alter contract access, package graph, categories, schema, or checker. Refresh only the matching dependency-policy.inputHashes[\"eng/policy/contract-access.json\"] and current active dependency-policy.review.inputHashes[\"eng/policy/contract-access.json\"] entries to the independently recomputed final LF-normalized contract-access.json SHA256 at the reviewed head required by dependency admission (the literal previously recorded in this task, fcd8b5a1..., is stale: the exact-head recovery of PR 71 recomputed 27c315c3... and current main differs again); both current entries must remain identical under the retained admission invariant, and no coordinate, project, historical receipt, other review field or other input binding may change. For the support-only .gitleaks.toml addition, allow only rule generic-api-key, exact containing paths AND complete JSON key/value lines for that final recomputed contract-access.json digest in eng/policy/dependency-policy.json and for the exact four review.inputHashes tuples in eng/policy/dependency-reviews/gov-05-r1.json: eng/policy/contract-access.json -> that final recomputed digest (observed pre-repair value c339d391aeb89aabb9a5b503f152436905048c4855a72065fc4bc85712252ea7); eng/provenance/records/dokka-combokeys-licence-r1.json -> 75219d61672002f0bb242fed0fd93a0886f07d944e0b9e1b1f72132f59df1b41; eng/provenance/records/dokka-object-keys-licence-r1.json -> 55621ecc7032745ca46e56d13133dc22a3bd808d80966d737427b5d6fc5bd096; src/public/dotnet/ArcForges.Contracts.PublicApi/ArcForges.Contracts.PublicApi.csproj -> 986b7a97734cd5d0630e548da897869de322a112c087c2d0df6a0bfc98b8784c. Use exactly that one final recomputed digest in dependency-policy, gov-05-r1 and both exact allowlist path bindings; recompute it and the three other digests (which this repair re-verified unchanged at Contracts main and at PR 71's head) again at the final reviewed head and have the reviewer independently confirm every allowlisted line against it; any rebase that changes Directory.Packages.props or contract-access.json changes it and requires re-recording; no inferred replacement is authorized. Keep the other three exact tuples bound to these values and preserve the historical CON.06 block unchanged. No wildcard receipt/path entries, source allowlist, other rule, threshold, scan scope, command, workflow or history change; do not change receipt format or bypass the parser/scanner. Shared Contracts solution, policy and provenance edits rebase and merge one-at-a-time under the Contracts integration owner after exact-head review.\n\nPlanning repair 2026-10-04. (1) Generated wire types: the AT-12 findings recorded for PR 71 come from the shared engine and are repaired by GOV.06, now a start prerequisite; do not stamp attributes in Contracts generators and do not hide AT-12 with an exception row. Pin the exact GOV.06 candidate through this task's own reviewed successor receipt (a version change of the existing ArcForges.Build.Policy identity inside the existing admission restrictions; no other coordinate). (2) RP-03 decision: the Apache-boundary tests/ArchitectureTests host references the AGPL ArcForges.Build.Policy package that this task's own admission permits (direct reference from this one project only, PrivateAssets=all, IsPackable=false, build/test use). Design docs/architecture/01-solution-and-project-layout.md section 4.1 fixes Contracts as Apache with Apache-2.0 and forbids relabelling the host or the licence, and LB-06 forbids silent exceptions, so this reviewed planning change records the resolution: exactly one row in eng/policy/exceptions.json using the engine's exception fields (rule RP-03, path tests/ArchitectureTests/ArcForges.Contracts.ArchitectureTests.csproj, owner Contracts, reason naming this admission and its restrictions, expires no later than 2027-04-04). The engine already rejects wildcard rules and paths, a non-owner and an expired row (it throws), and matches rule plus exact path only. Renewal path: before expiry, a reviewed Contracts pull request that changes only that row's expires date, with Architecture Owner approval recorded on the pull request and the admission unchanged, or removal of the row by a successor that moves the engine host out of the Apache closure; otherwise the gate fails closed at expiry. The row waives nothing else: the regression negatives still reject the package from every other project and package closure, and no other path or rule may be added. (3) Hosted wiring: the implemented gate verifies that the secrets job of .github/workflows/security.yml runs the pinned build, canonical naming report and ArchitectureTests --hosted after the unchanged Gitleaks step, so that file is now in write scope for that wiring only; PR 71's passing security checks do not exercise a gate that is not wired. No other change to security.yml is authorized.",
    "complete": [
     {
      "type": "integration",
      "task": "GOV.06",
      "need": "the published ArcForges.Build.Policy candidate whose ProjectGraph reconstruction includes pinned-SDK generated sources",
-     "why": "Contracts' policy compilation uses the shared project-graph reader; its acceptance includes the actual compiler-generated source shape, so the existing GOV.05 start path remains open but GOV.05 cannot complete until the producer repair is published and pinned through its own reviewed successor."
+     "why": "Contracts' policy compilation uses the shared project-graph reader; its acceptance includes the actual compiler-generated source shape, so GOV.05 starts from GOV.06's delivered candidate and cannot complete until that producer repair is complete (published, pinned through GOV.05's own reviewed successor and recorded in the ledger)."
     }
    ]
   },
   {
    "id": "GOV.06",
-   "title": "Build.Policy generated-source reconstruction repair",
+   "title": "Build.Policy generated-source reconstruction and generated-type recognition repair",
    "lane": "governance",
    "repo": "DesktopPlatform",
    "kind": "governance",
-   "size": "S",
+   "size": "M",
    "obligations": [
     {
      "ref": "WP-05.00",
      "part": "DesktopPlatform project-graph repair: run the pinned SDK compiler and configured source generators before semantic reconstruction, include generated sources in fail-closed diagnostics, and prove GeneratedRegex partial-method reconstruction"
+    },
+    {
+     "ref": "WP-05.03",
+     "part": "shared-engine generated-type recognition: the AT-11 interface-identity and AT-12 wire-type checks must recognise real protoc output and schema-generator output (a type declared in a source file with a leading <auto-generated header comment), so Contracts' generated-from-proto DTO check and the other consumers' generated-client checks can pass over actual generated shapes"
     }
    ],
-   "outcome": "The existing ArcForges.Build.Policy ProjectGraph reader materializes a selected project's sources through the pinned SDK's actual compiler/source-generator pipeline before semantic reconstruction; generated source participates in compilation diagnostics, and a GeneratedRegex partial regression passes. The normal DesktopPlatform merge publishes the fixed candidate under the existing ArcForges.Build.Policy package identity.",
+   "outcome": "The existing ArcForges.Build.Policy ProjectGraph reader materializes a selected project's sources through the pinned SDK's actual compiler/source-generator pipeline before semantic reconstruction; generated source participates in compilation diagnostics, and a GeneratedRegex partial regression passes. The normal DesktopPlatform merge publishes the fixed candidate under the existing ArcForges.Build.Policy package identity. The same normal merge also repairs the engine's generated-type test: the private generated-type recognition in PolicyEngine (used by the AT-11 generated-interface check and the AT-12 wire-type check) accepts, in addition to today's class-level GeneratedCode attribute from protoc, Google.Protobuf, grpc_csharp_plugin or ArcForges.SchemaGenerator, a type declared in a syntax tree whose leading header comment contains <auto-generated (the Roslyn generated-code convention), with nested types following their container. Positive and negative regressions pass: an attributed type and a header-marked type are recognised; an authored type without either, and a type whose file mentions <auto-generated only in a non-leading comment, are still rejected; a recognised type that has no schema binding or whose schema hash differs still fails AT-12.",
    "provides": [
     "project-graph-source-generated-compilation-reconstruction"
    ],
@@ -1044,13 +1054,15 @@
      "type": "artifact",
      "task": "GOV.04",
      "need": "the published shared ProjectGraph reader and architecture-policy package",
-     "why": "This is a narrowly scoped producer repair to GOV.04's shared project-graph reader, not a replacement engine or consumer-side workaround."
+     "why": "This is a narrowly scoped producer repair to GOV.04's shared Build.Policy project-graph reader and generated-type recognition, not a replacement engine or consumer-side workaround."
     }
    ],
    "writes": [
     "DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/ProjectGraph.cs (ReadCompilation source materialization and semantic reconstruction only)",
+    "DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/PolicyEngine.cs (the private generated-type recognition used by AT-11/AT-12 only; no other rule, rule identifier, message, threshold or exception-handling change)",
     "DesktopPlatform:tests/ArchitectureTests/GeneratedSourceReconstructionTests.cs (GeneratedRegex partial-method regression only)",
-    "DesktopPlatform:eng/provenance/files.json (append only the exact first-party regression source path if the new test file is added)",
+    "DesktopPlatform:tests/ArchitectureTests/GeneratedTypeRecognitionTests.cs (positive and negative generated-type recognition regressions over in-memory compilations only)",
+    "DesktopPlatform:eng/provenance/files.json (append only the exact first-party regression source paths of the new test files)",
     "DesktopPlatform:eng/policy/dependency-policy.json (only exact active-input hashes/review binding required by the existing dependency/provenance gates; no dependency or closure changes)",
     "DesktopPlatform:eng/policy/dependency-reviews/gov-06-r1.json (new immutable successor only if an existing registered input changes; chain from the exact then-active receipt, preserve history and the full admitted closure)"
    ],
@@ -1073,7 +1085,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "GOV.06 is a post-adoption planning repair introduced 2026-09-28; its implementation was not covered by the 2026-09-27 ADOPT.02.governance nine-task classification and is a gap, not inherited work. Do not claim GOV.06 until the accompanying Plan change adds a separate Post-adoption adjustment classification for GOV.06 as gap to ledger/tasks/adopt-02-governance.md; preserve that record's status, recorded date, epoch and nine frozen classifications verbatim. This follows DLV-22's later-adoption-adjustment process; do not reopen or rewrite the completed slice, create another adoption task, or add a GOV.06 start prerequisite. GOV.06 is a GOV.05 completion prerequisite only; it does not change GOV.05's existing start prerequisites or invalidate its already-started claim. Use the pinned SDK's actual compiler and configured source-generator pipeline to materialize outputs for every selected project before semantic reconstruction. Preserve full-project coverage and fail-closed compilation diagnostics. Do not filter diagnostics, skip projects, synthesize or bypass compiler/generator outputs in the consumer, introduce another scanner/CI mechanism, create a package ID, add a runtime or other dependency, change the SDK/toolchain, or expand package/dependency closure. Preserve the existing ArcForges.Build.Policy package identity and payload topology; do not edit its package inventory entry or consumer pin here. Preserve prior dependency/provenance receipts immutably and create a successor only when an existing gate requires one for an exact task-owned input change. After reviewed DesktopPlatform integration and its normal package publication, GOV.05 must separately pin the exact published candidate through its own reviewed successor before completing.",
+   "notes": "GOV.06 is a post-adoption planning repair introduced 2026-09-28; its implementation was not covered by the 2026-09-27 ADOPT.02.governance nine-task classification and is a gap, not inherited work. Do not claim GOV.06 until the accompanying Plan change adds a separate Post-adoption adjustment classification for GOV.06 as gap to ledger/tasks/adopt-02-governance.md; preserve that record's status, recorded date, epoch and nine frozen classifications verbatim. This follows DLV-22's later-adoption-adjustment process; do not reopen or rewrite the completed slice, create another adoption task, or add a GOV.06 start prerequisite. Since the 2026-10-04 planning repair GOV.06 is a start (artifact) prerequisite of GOV.05, GOV.07 and GOV.09 and remains a GOV.05 completion prerequisite: their hosted full-graph gates cannot pass, and their pins cannot be reviewed, without the published candidate. It does not invalidate GOV.05's earlier claim record. The 2026-10-04 scope extension is recorded as a further Post-adoption adjustment in ledger/tasks/adopt-02-governance.md; GOV.06 is not claimable until that Plan change also merges. Use the pinned SDK's actual compiler and configured source-generator pipeline to materialize outputs for every selected project before semantic reconstruction. Preserve full-project coverage and fail-closed compilation diagnostics. Do not filter diagnostics, skip projects, synthesize or bypass compiler/generator outputs in the consumer, introduce another scanner/CI mechanism, create a package ID, add a runtime or other dependency, change the SDK/toolchain, or expand package/dependency closure. Preserve the existing ArcForges.Build.Policy package identity and payload topology; do not edit its package inventory entry or consumer pin here. Preserve prior dependency/provenance receipts immutably and create a successor only when an existing gate requires one for an exact task-owned input change. After reviewed DesktopPlatform integration and its normal package publication, GOV.05, GOV.07 and GOV.09 each separately pin the exact published candidate through their own reviewed successors.\n\nGenerated-type recognition (added 2026-10-04, evidence): the hosted full-graph run recorded in Contracts PR 71 reports 1843 AT-12 findings across ten contract projects at Contracts main 4047930 because PolicyEngine.Generated (about line 341 of src/Build/ArcForges.Build.Policy/Architecture/PolicyEngine.cs) accepts only a class-level GeneratedCode attribute. Inspected Contracts sources show why that is too narrow: protoc output (for example src/internal/dotnet/ArcForges.Contracts.CloudInternal/Generated/Proto/Operator.cs) stamps GeneratedCode on members while its reflection and gRPC static classes carry no attribute at all, and schema-generated shapes (Generated/Shapes/*.g.cs, Generated/Services/*.g.cs) carry none; every one of those files begins with a leading <auto-generated header comment. Header recognition is therefore the single mechanism that covers messages, enums, reflection, gRPC and schema-generated classes, so no separate member-stamp or IMessage-shape heuristic is added (an authored class could imitate it). Require positive and negative regressions as in the outcome, keep the existing attribute path, keep AT-12's other conditions (a WireTypes binding and a matching schema SHA256) and AT-11's other conditions unchanged, and note that the broadened test also governs AT-11's generated-interface identity check. Do not hide the findings with a role change, exception row, per-project waiver, Contracts-side attribute stamping, diagnostic filtering or generator changes. Do not edit the package inventory entry or any consumer pin here.",
    "complete": []
   },
   {
@@ -1121,15 +1133,35 @@
      "task": "GOV.05",
      "need": "contract/serialization policy helpers",
      "why": "ArcScope consumes generated Contracts clients; the 'local RPC contract interface carries the generated descriptor identity' check needs GOV.05's engine, not a reimplementation"
+    },
+    {
+     "type": "artifact",
+     "task": "GOV.06",
+     "need": "the published ArcForges.Build.Policy candidate carrying generated-source reconstruction and generated-type recognition",
+     "why": "ArcScope uses source generators, and its host pins the shared engine candidate; the earlier engine reconstructs generated sources incorrectly and mis-classifies generated types, so the host must pin the repaired candidate."
     }
    ],
    "writes": [
     "ArcScope:tests/ArchitectureTests/**",
-    "ArcScope:eng/policy/exceptions.json"
+    "ArcScope:eng/policy/exceptions.json",
+    "ArcScope:ArcScope.slnx (add the new host project only)",
+    "ArcScope:Directory.Packages.props (the exact ArcForges.Build.Policy pin moved to the published GOV.06 candidate, and the exact published ArcForges.Contracts.Validation candidate that carries the CON.23 build-only naming tools only if the naming scan is wired through it; no other coordinate, runtime or version change)",
+    "ArcScope:tests/ArchitectureTests/packages.lock.json",
+    "ArcScope:src/ArcForges.ArcScope.Domain/packages.lock.json, ArcScope:src/ArcForges.ArcScope.Core/packages.lock.json, ArcScope:src/ArcForges.ArcScope/packages.lock.json, ArcScope:tests/ArcForges.ArcScope.Tests/packages.lock.json, ArcScope:eng/ArcForges.Repository/packages.lock.json (regenerated only for the central pin change)",
+    "ArcScope:eng/policy/dependency-policy.json",
+    "ArcScope:eng/policy/dependency-review.json (the existing active review, updated for the exact task-owned input and coordinate changes; preserve history)",
+    "ArcScope:eng/policy/licence-boundary.json (the host project row)",
+    "ArcScope:eng/provenance/files.json",
+    "ArcScope:eng/provenance/records/gov-07-*.json (new immutable successors only where an existing record binds an input this task changes)",
+    "ArcScope:.github/workflows/ci.yml (wire the host build, the forbidden-term scan and the policy run into the existing pull-request job; no new platform, scheduled or manual workflow, no weakened or removed check)"
    ],
    "shared": [
     {
      "resource": "RES-architecture-tests",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-product-solutions",
      "mode": "append"
     }
    ],
@@ -1138,7 +1170,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "Fixture-driven; does not require ArcScope's own product work (WP33 to WP35) to have landed.",
+   "notes": "Fixture-driven; does not require ArcScope's own product work (WP33 to WP35) to have landed. Write scope extended by the 2026-10-04 governance-chain planning repair: adding the host project needs the solution entry, the exact ArcForges.Build.Policy pin move (ArcScope pins 1.0.0-ci.20.1, which predates GOV.04's engine candidate 1.0.0-ci.31.1 and GOV.06's repair), every project lock the central pin changes (Directory.Build.props gives every project the package reference), dependency and provenance bindings, the licence inventory row and CI wiring. ArcScope is AGPL-3.0-only, so the host needs no RP-03 exception and none may be added. No security-scanner, gitleaks or secret-scan configuration change is authorized; if a new receipt digest line triggers the secret scan, that needs its own narrow planning repair. The pin cannot move before GOV.06's candidate is published.",
    "complete": []
   },
   {
@@ -1186,11 +1218,31 @@
      "task": "GOV.05",
      "need": "contract/serialization policy helpers",
      "why": "Cloud hosts the generated public API surface that 05.03 validates"
+    },
+    {
+     "type": "artifact",
+     "task": "GOV.06",
+     "need": "the published ArcForges.Build.Policy candidate carrying generated-source reconstruction and generated-type recognition",
+     "why": "Cloud uses System.Text.Json source generators throughout its AOT host; the earlier engine reconstructs generated sources incorrectly, so the host must pin the repaired candidate."
     }
    ],
    "writes": [
     "Cloud:tests/ArchitectureTests/**",
-    "Cloud:eng/policy/exceptions.json"
+    "Cloud:eng/policy/exceptions.json",
+    "Cloud:Cloud.slnx (add the new host project only)",
+    "Cloud:Directory.Packages.props (the exact ArcForges.Build.Policy pin moved to the published GOV.06 candidate; no other coordinate, runtime or version change)",
+    "Cloud:tests/ArchitectureTests/packages.lock.json",
+    "Cloud:src/ArcForges.Cloud/packages.lock.json, Cloud:tests/ArcForges.Cloud.Tests/packages.lock.json, Cloud:tests/ArcForges.Cloud.Consumer/packages.lock.json (regenerated only for the central pin change)",
+    "Cloud:eng/policy/dependency-policy.json",
+    "Cloud:eng/policy/dependency-reviews/gov-09-*.json (new immutable successor chained from the then-active receipt)",
+    "Cloud:eng/policy/licence-boundary.json (the host project row)",
+    "Cloud:eng/provenance/files.json",
+    "Cloud:eng/provenance/records/gov-09-*.json (new immutable successors only where an existing record binds an input this task changes)",
+    "Cloud:eng/policy/naming-candidate.json (exact published @arcforges/proto naming-tool identity and asset hashes, as in Web)",
+    "Cloud:tooling/project.ts (wire the forbidden-term scan into the existing check gate only)",
+    "Cloud:package.json (a policy script and the exact already-locked @arcforges/proto devDependency; no version change)",
+    "Cloud:package-lock.json (reflect that manifest change only)",
+    "Cloud:.github/workflows/ci.yml (wire the host build and policy run into the existing pull-request job; no new platform, scheduled or manual workflow, no weakened or removed check)"
    ],
    "shared": [
     {
@@ -1203,7 +1255,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "Fixture-driven; does not require Cloud's own product work (WP21 to WP26) to have landed.",
+   "notes": "Fixture-driven; does not require Cloud's own product work (WP21 to WP26) to have landed. Write scope extended by the 2026-10-04 governance-chain planning repair for the same supporting set as ArcScope's GOV.07 (host solution entry, exact ArcForges.Build.Policy pin move from 1.0.0-ci.21.1, every project lock that pin changes, dependency and provenance bindings, licence row, CI wiring), plus the naming-scan wiring. Cloud is AGPL-3.0-only, so the host needs no RP-03 exception and none may be added. Scope boundary: the engine and fixture scope is the C# project graph (src/ArcForges.Cloud and its tests). The worker/ TypeScript tree is NOT given a TS import or route policy by this task (the unlabeled WP-05 Node/TS assertion paragraph is mapped to GOV.11 only); it is covered only by the repository-wide forbidden-term scan wired through tooling/project.ts and by the existing licence, dependency and provenance tooling. A Cloud worker import policy, if wanted, needs its own planning change. No security-scanner, gitleaks or secret-scan configuration change is authorized. The pin cannot move before GOV.06's candidate is published.",
    "complete": []
   },
   {
@@ -1242,20 +1294,20 @@
    "start": [
     {
      "type": "artifact",
-     "task": "GOV.04",
-     "need": "published shared rule engine",
-     "why": "reuse one tested engine rather than reimplementing per repository"
-    },
-    {
-     "type": "artifact",
-     "task": "GOV.05",
-     "need": "contract/serialization policy helpers",
-     "why": "the Workflow Harness consumes generated Contracts clients; its generated-client checks need GOV.05's engine, not a reimplementation"
+     "task": "CON.23",
+     "need": "Immutable canonical naming policy/scanner build-time candidate asset",
+     "why": "The repository policy suite consumes Contracts-owned published naming authority without sibling source imports or copied rules."
     }
    ],
    "writes": [
     "AI:tests/ArchitectureTests/**",
-    "AI:eng/policy/exceptions.json"
+    "AI:eng/policy/** (owned Node/TypeScript policy sources and offline fixtures, exceptions.json, naming-candidate.json)",
+    "AI:eng/provenance/** (owned policy source inventory and new receipts; preserve historical records)",
+    "AI:package.json (policy scripts and the exact published @arcforges/proto naming-tool candidate pin)",
+    "AI:package-lock.json (regenerate exact naming-tool candidate lock)",
+    "AI:eng/project.mjs (wire owned policy checks into the existing check gate)",
+    "AI:vitest.config.ts, AI:tsconfig.tools.json (include the owned policy sources and tests only)",
+    "AI:eng/policy/dependency-policy.json, AI:eng/policy/dependency-reviews/** (immutable naming-tool pin admission receipt and exact input bindings)"
    ],
    "shared": [
     {
@@ -1268,7 +1320,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "Fixture-driven; does not require AI's own product work (WP40 to WP43, WP52) to have landed.",
+   "notes": "Fixture-driven; does not require AI's own product work (WP40 to WP43, WP52) to have landed. Rebound by the 2026-10-04 governance-chain planning repair: AI is a pure Node/TypeScript repository with no .NET project and no ArcForges.Build.Policy reference, so GOV.04's C# engine and GOV.05's Contracts-hosted policy engine cannot run there and the GOV.04 and GOV.05 start edges are replaced by the CON.23 artifact edge for the published naming scanner. Mirror GOV.11's mechanism (Node/TS static import and dependency policy over the real Git inventory, with passing and failing negative fixtures): mechanism is necessarily separate code from GOV.04's .NET engine, as GOV.11 records. Layering, licence boundary, generated-client consumption (generated wire types from the pinned @arcforges/proto only, no handwritten codec) and banned-API fixtures are implemented in that Node/TS mechanism; WP-05.02 consumes the published naming scanner and policy with exact producer, source and asset identity checked before execution, never a sibling checkout or copied rule. The pin of the naming-tool candidate is the only dependency version change. No security-scanner, gitleaks or secret-scan configuration change is authorized (AI's .gitleaks.toml is not in scope); if a new receipt digest line triggers the secret scan, that needs its own narrow planning repair. Offline only; no Workers AI or live run.",
    "complete": []
   },
   {

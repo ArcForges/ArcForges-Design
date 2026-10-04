@@ -9,8 +9,8 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 | Measure | Value |
 |---|---|
 | Delivery tasks | 437 (6 carried as accepted baseline), plus 50 adoption slices |
-| Dependency edges by type | artifact 1024, contract 105, design 1, integration(completion) 208, release 33 |
-| Remaining work (size units: S=1, M=2, L=4, XL=8) | 1116 |
+| Dependency edges by type | artifact 1026, contract 105, design 1, integration(completion) 208, release 33 |
+| Remaining work (size units: S=1, M=2, L=4, XL=8) | 1117 |
 | Longest dependency chain (levels) | 25 |
 | Widest level (tasks whose longest prerequisite chain has equal length) | 58 |
 | Critical path length (size units) | 81 |
@@ -21,7 +21,7 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 | Lane | Tasks | Size units | Owning repositories |
 |---|---|---|---|
 | [Adoption stage](lanes/adoption.md) | 9 | 10 | AI, ArcScope, Cloud, Contracts, Design, DesktopPlatform, Mobile, Plan, Web |
-| [Family governance and policy tests](lanes/governance.md) | 17 | 53 | AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web |
+| [Family governance and policy tests](lanes/governance.md) | 17 | 54 | AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web |
 | [Contracts schema closures](lanes/contracts.md) | 26 | 63 | Contracts |
 | [Foundation values](lanes/foundation.md) | 7 | 8 | DesktopPlatform |
 | [Runtime proofs](lanes/runtime-proofs.md) | 8 | 27 | ArcScope, Cloud, DesktopPlatform, Mobile, Web |
@@ -97,12 +97,12 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 | 1 | 1 |
 | 2 | 58 |
 | 3 | 27 |
-| 4 | 22 |
+| 4 | 23 |
 | 5 | 35 |
-| 6 | 37 |
-| 7 | 37 |
-| 8 | 31 |
-| 9 | 44 |
+| 6 | 36 |
+| 7 | 35 |
+| 8 | 32 |
+| 9 | 45 |
 | 10 | 33 |
 | 11 | 30 |
 | 12 | 29 |
@@ -126,8 +126,8 @@ Assumptions: task effort is its relative size (S=1, M=2, L=4, XL=8 units, never 
 
 | Workers | Makespan (size units) | Estimated speed-up over one worker |
 |---|---|---|
-| 1 | 1116 | 1.0× |
-| 2 | 559 | 2.0× |
+| 1 | 1117 | 1.0× |
+| 2 | 560 | 2.0× |
 | 4 | 281 | 4.0× |
 | 8 | 142 | 7.9× |
 | 16 | 81 | 13.8× |
