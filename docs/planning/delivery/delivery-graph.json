@@ -1297,6 +1297,12 @@
      "task": "CON.23",
      "need": "Immutable canonical naming policy/scanner build-time candidate asset",
      "why": "The repository policy suite consumes Contracts-owned published naming authority without sibling source imports or copied rules."
+    },
+    {
+     "type": "artifact",
+     "task": "GOV.19",
+     "need": "ai-wrangler-admission: the audited Wrangler closure and the ai-worker-r8 profile chain",
+     "why": "AI main fails npm audit until the Wrangler and undici admission merges; this task's package files, profile numbering (r9) and secret-scan path pattern build on it."
     }
    ],
    "writes": [
@@ -1309,10 +1315,9 @@
     "AI:vitest.config.ts, AI:tsconfig.tools.json (include the owned policy sources and tests only)",
     "AI:eng/policy/dependency-policy.json, AI:eng/policy/dependency-reviews/** (immutable naming-tool pin admission receipt and exact input bindings)",
     "AI:eng/build-identity.mjs, AI:eng/tests/build-identity.test.mjs, AI:eng/version-sources.json (read the published @arcforges/proto build-identity ContractSet, whose subjects declare their own schema versions and one or several schema sources, instead of the retired single-schema source receipt field; cross-check it against the installed source receipt and the exact package pin; add focused positive and negative tests; no other behavior change; the reused cloud-build-identity-r1 record is superseded by an immutable successor under AI:eng/provenance/**)",
-    "AI:eng/tests/release-provenance.test.mjs (update only the expected parsed and emitted input counts of the actual candidate to the reviewed ai-worker-r8 profile)",
+    "AI:eng/tests/release-provenance.test.mjs (update only the expected parsed and emitted input counts of the actual candidate to the reviewed ai-worker-r9 profile)",
     "AI:tests/tsconfig.json (exclude tests/ArchitectureTests from the Workers-typed test project; the owned suite is type-checked by tsconfig.tools.json with Node types; no other change)",
-    "AI:README.md, AI:docs/development.md (state the new exact @arcforges/proto pin where the toolchain table names it; no other change)",
-    "AI:.gitleaks.toml (extend only the existing generic-api-key allowlist path pattern from ai-worker-r[1234567] to ai-worker-r[12345678], and its description, so that the single existing whole-line api_pb.js digest repeated by the immutable ai-worker-r8 profile is accepted exactly as for r1 to r7; no other rule, path, regex, digest or scanner behavior)"
+    "AI:README.md, AI:docs/development.md (state the new exact @arcforges/proto pin where the toolchain table names it; no other change)"
    ],
    "shared": [
     {
@@ -1325,7 +1330,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "Fixture-driven; does not require AI's own product work (WP40 to WP43, WP52) to have landed. Rebound by the 2026-10-04 governance-chain planning repair: AI is a pure Node/TypeScript repository with no .NET project and no ArcForges.Build.Policy reference, so GOV.04's C# engine and GOV.05's Contracts-hosted policy engine cannot run there and the GOV.04 and GOV.05 start edges are replaced by the CON.23 artifact edge for the published naming scanner. Mirror GOV.11's mechanism (Node/TS static import and dependency policy over the real Git inventory, with passing and failing negative fixtures): mechanism is necessarily separate code from GOV.04's .NET engine, as GOV.11 records. Layering, licence boundary, generated-client consumption (generated wire types from the pinned @arcforges/proto only, no handwritten codec) and banned-API fixtures are implemented in that Node/TS mechanism; WP-05.02 consumes the published naming scanner and policy with exact producer, source and asset identity checked before execution, never a sibling checkout or copied rule. The pin of the naming-tool candidate is the only dependency version change. No security-scanner, gitleaks or secret-scan configuration change is authorized (AI's .gitleaks.toml is not in scope); if a new receipt digest line triggers the secret scan, that needs its own narrow planning repair. Offline only; no Workers AI or live run. Write scope extended by the 2026-10-04 GOV.10 planning repair after the pin move was found to need supporting bindings the previous repair did not list. (1) The published @arcforges/proto 1.0.0-ci.287.1 source receipt no longer carries the single schema field that eng/build-identity.mjs reads for the ContractSet axis, and every published candidate that carries the naming tools (CON.23 introduced them at 1.0.0-ci.129.1) has the same shape, so no naming-tool candidate can be pinned unless the build identity reads the producer's own published build-identity, as Web GOV.11 did: each subject keeps its own schema version and may name one or several schema sources, and the producer owner, clean source, exact package pin, complete schema-source hash set and descriptor hashes are cross-checked against the installed source receipt; focused positive and negative tests are added and the reused cloud-build-identity-r1 record gets an immutable successor. (2) The eng/tests/release-provenance.test.mjs counts follow the reviewed ai-worker-r8 profile (the emitted Worker bytes and source-map membership are unchanged; the parsed closure grows by 23 modules of the same package that are not emitted). (3) tests/tsconfig.json excludes the owned suite, which needs Node types and TypeScript import extensions that the Workers-typed test project does not provide. (4) The two documents that name the pin are updated. (5) Secret-scan support, the narrow planning repair that the preceding sentence about the secret scan requires (same class as the merged r7 admission): the immutable ai-worker-r8 profile necessarily repeats the one public digest line of protobuf 2.15.0 api_pb.js that the existing allowlist accepts for r1 to r7 by exact path pattern and exact whole line; only that path pattern is extended to r8, and the unchanged regex line still accepts nothing else. This authorizes no other .gitleaks.toml change, no new rule or allowlist, no scanner, workflow or baseline change and no change to any other repository's configuration. Passing pinned full-history secret-scan evidence on the GOV.10 head is required.",
+   "notes": "Fixture-driven; does not require AI's own product work (WP40 to WP43, WP52) to have landed. Rebound by the 2026-10-04 governance-chain planning repair: AI is a pure Node/TypeScript repository with no .NET project and no ArcForges.Build.Policy reference, so GOV.04's C# engine and GOV.05's Contracts-hosted policy engine cannot run there and the GOV.04 and GOV.05 start edges are replaced by the CON.23 artifact edge for the published naming scanner. Mirror GOV.11's mechanism (Node/TS static import and dependency policy over the real Git inventory, with passing and failing negative fixtures): mechanism is necessarily separate code from GOV.04's .NET engine, as GOV.11 records. Layering, licence boundary, generated-client consumption (generated wire types from the pinned @arcforges/proto only, no handwritten codec) and banned-API fixtures are implemented in that Node/TS mechanism; WP-05.02 consumes the published naming scanner and policy with exact producer, source and asset identity checked before execution, never a sibling checkout or copied rule. The pin of the naming-tool candidate is the only dependency version change. No security-scanner, gitleaks or secret-scan configuration change is authorized (AI's .gitleaks.toml is not in scope); if a new receipt digest line triggers the secret scan, that needs its own narrow planning repair. Offline only; no Workers AI or live run. Write scope extended by the 2026-10-04 GOV.10 planning repair after the pin move was found to need supporting bindings the previous repair did not list. (1) The published @arcforges/proto 1.0.0-ci.287.1 source receipt no longer carries the single schema field that eng/build-identity.mjs reads for the ContractSet axis, and every published candidate that carries the naming tools (CON.23 introduced them at 1.0.0-ci.129.1) has the same shape, so no naming-tool candidate can be pinned unless the build identity reads the producer's own published build-identity, as Web GOV.11 did: each subject keeps its own schema version and may name one or several schema sources, and the producer owner, clean source, exact package pin, complete schema-source hash set and descriptor hashes are cross-checked against the installed source receipt; focused positive and negative tests are added and the reused cloud-build-identity-r1 record gets an immutable successor. (2) The eng/tests/release-provenance.test.mjs counts follow the reviewed ai-worker-r9 profile (the emitted Worker bytes and source-map membership are unchanged; the parsed closure grows by 23 modules of the same package that are not emitted). (3) tests/tsconfig.json excludes the owned suite, which needs Node types and TypeScript import extensions that the Workers-typed test project does not provide. (4) The two documents that name the pin are updated. (5) Secret-scan support is owned by GOV.19, not by this task: the immutable ai-worker-r9 profile repeats the one public digest line of protobuf 2.15.0 api_pb.js that the existing allowlist accepts by exact path pattern and exact whole line, and the GOV.19 path pattern ai-worker-r[123456789] already covers r9. This task authorizes no .gitleaks.toml change and must not rewrite that pattern (narrowing it would make the r9 profile fail the secret scan); no new rule or allowlist, no scanner, workflow or baseline change and no change to any other repository's configuration. Passing pinned full-history secret-scan evidence on the GOV.10 head is required. Numbering: GOV.19 (the AI Wrangler and undici dependency admission) merges first and takes ai-worker-r8 with its bundle and build-identity successors; this task takes ai-worker-r9 and the next successors.",
    "complete": []
   },
   {
@@ -1915,6 +1920,45 @@
      "why": "The policy repin validates new exports through the canonical scanner rather than old Contracts source or duplicated naming authority."
     }
    ],
+   "complete": []
+  },
+  {
+   "id": "GOV.19",
+   "title": "AI Wrangler and undici dependency admission (clear the repository security gate)",
+   "lane": "governance",
+   "repo": "AI",
+   "kind": "governance",
+   "size": "S",
+   "obligations": [
+    {
+     "ref": "P2-017",
+     "part": "retain the credential-free repository security gate (npm audit, secret scan, dependency admission) green on main"
+    },
+    {
+     "ref": "P2-018",
+     "part": "a narrow necessary prerequisite recorded as its own task so that a dependency admission does not hide inside another task's claim"
+    }
+   ],
+   "outcome": "AI's locked Wrangler closure no longer carries the published high-severity undici advisories: wrangler, @cloudflare/vitest-plugin and @cloudflare/workers-types move to the exact versions whose closure clears npm audit and equals the closure already admitted for Cloud, with the input-bound dependency receipt, the immutable ai-worker-r8 profile and its bundle, build-identity and notice successors, and the exact secret-scan allowlist path extension for the immutable profile; the emitted Worker bytes stay unchanged unless the reviewed profile records otherwise.",
+   "provides": [
+    "ai-wrangler-admission"
+   ],
+   "writes": [
+    "AI:package.json (wrangler, @cloudflare/vitest-plugin and @cloudflare/workers-types exact versions only)",
+    "AI:package-lock.json (regenerate the exact closure of those three pins)",
+    "AI:eng/policy/dependency-policy.json, AI:eng/policy/dependency-reviews/** (new immutable successor receipt and exact input bindings)",
+    "AI:eng/provenance/** (new immutable ai-worker-r8 profile, ai-worker-bundle-r8, wrangler and other successors the checks require, files.json, NOTICE.txt; preserve historical records)",
+    "AI:eng/tests/release-provenance.test.mjs (only if the reviewed profile changes its expected counts)",
+    "AI:README.md, AI:docs/development.md, AI:docs/provenance.md (state the exact Wrangler version where these documents name it; no other change)",
+    "AI:.gitleaks.toml (extend only the existing generic-api-key allowlist path pattern from ai-worker-r[1234567] to ai-worker-r[123456789], and its description, so that the single existing whole-line api_pb.js digest repeated by the immutable ai-worker-r8 profile and by the successor profile of the next admission is accepted exactly as for r1 to r7; no other rule, path, regex, digest or scanner behavior)"
+   ],
+   "validation": "Offline: npm audit --audit-level=high, dependency-admission and provenance checks, npm run check, types and test:artifact with the repository-pinned Node and npm, hosted PR CI (Repository security including the secret scan, Build candidate); no live Cloudflare or Workflow run, per P2-017.",
+   "evidence": "npm audit result, lock diff limited to the Wrangler closure, receipt and profile chain, bundle-byte comparison against the previous profile, CI results.",
+   "baseline": {
+    "state": "not-started"
+   },
+   "notes": "Planning repair of 2026-10-04 (Cloud precedent: the PRF.07 claimant admitted Wrangler 4.143.1 as Cloud PR 32 under that task's write scope). AI main's unchanged lock fails npm audit --audit-level=high because new undici advisories (7.0.0 to 7.29.0) are reached through the locked wrangler 4.135.0, miniflare 5.20260918.0-alpha and @cloudflare/vitest-plugin 1.1.13, which pins wrangler and miniflare exactly; every AI pull request, including GOV.10, is blocked behind it. Dependabot PR 27 targets wrangler 4.147.0 and is left untouched. The smallest closure that clears the audit and equals Cloud's is wrangler 4.143.1 (miniflare 5.20260926.1-alpha, undici 7.29.1) with @cloudflare/vitest-plugin 1.3.2 (the release that pins exactly that wrangler and miniflare) and @cloudflare/workers-types 5.20260926.1 (Wrangler's peer range). No other dependency, no runtime behavior, no source or Worker change, and no other repository is authorized. The secret-scan support is the narrow planning repair required for an immutable profile that repeats the existing public protobuf api_pb.js digest line (same class as the merged r7 admission and the GOV.10 repair): only the path pattern is extended, to r1 through r9 so that the following GOV.10 profile (ai-worker-r9, after this admission takes r8) needs no further change; the regex line, rule, scanner, workflow, baseline and every other configuration are unchanged, and passing full-history secret-scan evidence on the pull request head is required. GOV.10 carries an artifact start edge on this task, takes ai-worker-r9 and the following successors, and owns no .gitleaks.toml change: this task's r[123456789] pattern covers r9 and must not be rewritten.",
+   "start": [],
    "complete": []
   },
   {

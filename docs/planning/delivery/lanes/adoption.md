@@ -254,7 +254,7 @@ Each slice classifies the tasks of one repository and lane against the frozen ba
 | <a id="task-adopt-07-simulator"></a>ADOPT.07.simulator | Cloud | [ArcScope Cloud simulator](simulator.md) | 9 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-08-ai-routing"></a>ADOPT.08.ai-routing | AI | [Workers AI routing and metering](ai-routing.md) | 4 | none | [ADOPT.08](#task-adopt-08) |
 | <a id="task-adopt-08-extensions"></a>ADOPT.08.extensions | AI | [Extension platform and integrations](extensions.md) | 1 | none | [ADOPT.08](#task-adopt-08) |
-| <a id="task-adopt-08-governance"></a>ADOPT.08.governance | AI | [Family governance and policy tests](governance.md) | 1 | none | [ADOPT.08](#task-adopt-08) |
+| <a id="task-adopt-08-governance"></a>ADOPT.08.governance | AI | [Family governance and policy tests](governance.md) | 2 | none | [ADOPT.08](#task-adopt-08) |
 | <a id="task-adopt-08-harness"></a>ADOPT.08.harness | AI | [Cloud Harness](harness.md) | 6 | none | [ADOPT.08](#task-adopt-08) |
 | <a id="task-adopt-09-governance"></a>ADOPT.09.governance | Web | [Family governance and policy tests](governance.md) | 1 | none | [ADOPT.09](#task-adopt-09) |
 | <a id="task-adopt-09-operations"></a>ADOPT.09.operations | Web | [Operations, support and trust and safety](operations.md) | 4 | none | [ADOPT.09](#task-adopt-09) |
