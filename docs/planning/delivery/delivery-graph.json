@@ -9506,7 +9506,9 @@
     "DesktopPlatform:eng/packaging/packages.py (exact existing external dependency pins in the APP.01 package closure only; add no package ID or version)",
     "DesktopPlatform:eng/packaging/test_packages.py (APP.01-owned positive/negative checks for those exact existing pins only)",
     "DesktopPlatform:README.md (current APP.01 package production claim only)",
-    "DesktopPlatform:docs/compliance/third-party-license-register.md (APP.01 package binding to already-admitted external dependencies only)"
+    "DesktopPlatform:docs/compliance/third-party-license-register.md (APP.01 package binding to already-admitted external dependencies only)",
+    "DesktopPlatform:Directory.Packages.props (append only ArcForges.Assistant.Abstractions and AssistantAbstractionsTests to the existing ArcForges.Contracts.Foundation 1.0.0-ci.216.1 MSBuildProjectName selector; preserve the 1.0.0-ci.113.1 default)",
+    "DesktopPlatform:eng/policy/architecture-contract-tests.json (append only exact APP.01 public API-to-focused-test bindings in the AssistantAbstractionsTests project)"
    ],
    "shared": [
     {
@@ -9520,6 +9522,10 @@
     {
      "resource": "RES-desktopplatform-policy-data",
      "mode": "append"
+    },
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
     }
    ],
    "validation": "Offline unit tests only (two identities/no shared store); Native AOT compile check; no live Cloud/device in CI per P2-017.",
@@ -9528,7 +9534,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: git ls-files DesktopPlatform src/ has no Assistant/ or Communication/ tree at all (HEAD fe8476d); only generic BuildingBlocks placeholders (AssemblyPlaceholder.cs) and Native/DesktopHelpers trees exist."
    },
-   "notes": "Root of the whole area's dependency graph; every other WP14 to WP17/26 desktop task starts from this package. FND.02 is the real ArcForges.Application.Abstractions producer; PLT.17 provides only the ArcForges.Capabilities application-identity/composition pattern. Keep Architecture 27's Assistant.Abstractions direct dependency table exactly Foundation plus Application.Abstractions; do not add a direct ArcForges.Capabilities dependency. CON.02 remains a host-port shape prerequisite and does not authorize another dependency edge. Register only APP.01's package, producer/test projects, and provenance/reconciliation rows, using already-admitted dependency identities and exact existing version pins; do not add package IDs, pins, versions, dependency owners, or expand the package closure. Append this producer's package entry and build-config project/CI rows; after rebase regenerate lock files and never hand-merge them.",
+   "notes": "Root of the whole area's dependency graph; every other WP14 to WP17/26 desktop task starts from this package. FND.02 is the real ArcForges.Application.Abstractions producer; PLT.17 provides only the ArcForges.Capabilities application-identity/composition pattern. Keep Architecture 27's Assistant.Abstractions direct dependency table exactly Foundation plus Application.Abstractions; do not add a direct ArcForges.Capabilities dependency. CON.02 remains a host-port shape prerequisite and does not authorize another dependency edge. Register only APP.01's package, producer/test projects, and provenance/reconciliation rows, using already-admitted dependency identities and exact existing version pins; do not add package IDs, pins, versions, dependency owners, or expand the package closure. Append this producer's package entry and build-config project/CI rows; after rebase regenerate lock files and never hand-merge them. Write-scope repair 2026-10-04 (w-c20261004-app01): Directory.Packages.props and eng/policy/architecture-contract-tests.json are append-only supporting bindings for the APP.01 producer and test projects (central transitive pinning rejects restore of a project that reaches ArcForges.Foundation under the 1.0.0-ci.113.1 default; RP-10 requires a [Fact] binding for every public API method of the Abstractions project). They add no dependency, package ID, version or pin.",
    "complete": []
   },
   {
