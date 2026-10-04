@@ -3434,7 +3434,7 @@
    "start": [],
    "complete": []
   },
-  {
+{
    "id": "CON.19",
    "title": "WP03.90 — verify the owned Contracts artifact and its real (non-consumer) integration",
    "lane": "contracts",
@@ -3451,7 +3451,7 @@
      "part": "§8 completion gate items 1-6 and the P2-009/VG-04/F-026 gate contributions; package-level obligation contribution"
     }
    ],
-   "outcome": "Deterministic generation, compatibility/reserved-field checks (CON.17's harness), Apache closure, and independent precise-value/error/profile vectors all pass across the complete CON.02-CON.18 closure; all three generated client ecosystems (NuGet, npm, Maven/Kotlin) restore the actual published candidate artifacts in isolated consumer tests; the WP-03.90 completion receipt records exact artifact identities and real-vs-fixture status per obligation.",
+   "outcome": "Deterministic generation, compatibility/reserved-field checks (CON.17's harness), Apache closure, and independent precise-value/error/profile vectors all pass across the complete CON.02-CON.25 closure; the three generated client ecosystems (NuGet, npm, Maven/Kotlin) are shown to be published as the original candidate by provider receipts and registry coordinate/status metadata, and the generated clients are shown to restore and compile by one explicit local opt-in `python eng/contracts.py consume` run recorded once (P2-017; no hosted installed-package consumer test, no public-byte polling); the WP-03.90 completion receipt records exact artifact identities and real-vs-fixture status per obligation.",
    "provides": [
     "wp03-complete-closure"
    ],
@@ -3587,6 +3587,12 @@
      "task": "CON.24",
      "need": "package task delivered",
      "why": "the package acceptance receipt verifies every task mapped to the package (DLV-03)"
+    },
+    {
+     "type": "contract",
+     "task": "CON.25",
+     "need": "ConnectorService authored and registered (the six connector.* operation-scope rows flipped from pending), the local LocalCallContext and the four af-segment records (SimulationDataSegment, SimulationSample, SimulationEvent, SimulationGap) authored",
+     "why": "the CON.18 edge's 'zero pending rows' is true only once the six public connector.* rows have an owner (WP-03.90 verification record, findings 1 and 2: they were exactly the six pending rows and the five absent records had no owner); the aggregate gate cannot assert a fully authored registry before this closure is published. The re-verification of docs/wp03-90-verification.md runs against the Contracts candidate published after CON.25 merges."
     }
    ],
    "writes": [
@@ -3607,14 +3613,14 @@
      "mode": "append"
     }
    ],
-   "validation": "the full P2-017-scoped suite: deterministic regen, all isolated NuGet/npm/Maven consumer restore-and-compile tests, descriptor baseline diff clean, Apache boundary clean; explicitly NOT live-service/device/macOS per P2-017 — 'no missing owner decision deferred to consumer coding' per the producer matrix's WP03 acceptance row.",
-   "evidence": "WP-03.90 completion receipt: source commit, producer release, candidate hashes, actual runtime/OS/provider identity tested, scenario, result, limitations, real-versus-fixture status per obligation (matching the format of the WP03.00/01/02 receipts already on file).",
+   "validation": "the P2-017-scoped suite: deterministic regen, descriptor baseline diff clean, Apache boundary clean, operation-scope gate with zero pending rows, and the offline policy and vector suites in CI. Consumer restore-and-compile evidence is one local opt-in `python eng/contracts.py consume` run (the Contracts-owned isolated consumer diagnostic; it restores NuGet, npm and Maven consumers from the packed candidate directory, so it shows that the generated clients restore and compile, not the bytes of the published packages), recorded once for the verified source commit, together with provider upload/deployment receipts and registry metadata for the original candidate (precedent: Plan ledger/tasks/plt-53.md). Explicitly NOT hosted installed-package consumers, live-service/device/macOS, or repeated downloads or hash audits per P2-017 - 'no missing owner decision deferred to consumer coding' per the producer matrix's WP03 acceptance row.",
+   "evidence": "WP-03.90 completion receipt: source commit, producer release, candidate hashes, actual runtime/OS/provider identity tested, scenario, result, limitations, real-versus-fixture status per obligation (matching the format of the WP03.00/01/02 receipts already on file). The consumer-restore element is evidenced as stated in validation: provider receipts and registry metadata plus the single recorded local `contracts.py consume` run with its limitations stated; it is not a hosted gate and is not repeated.",
    "baseline": {
     "state": "not-started",
     "notes": "Observed none, unreviewed: Cannot start meaningfully until the domain tasks exist; this entry exists now so the integration owner can see the terminal aggregation point and its exact evidence shape (modeled on the three existing wp03-0X-implementation-evidence.md receipts, which are unusually precise: exact PR numbers, merge SHAs, CI run URLs, publication versions)."
    },
    "packageAcceptance": "WP-03",
-   "notes": "This is WP03's own closure, NOT waiting for WP-04/05/06/09/21/23/30 to build real consumers — per producer-artifacts-and-integration.md's WP03 row, WP03's own acceptance is schema/fixture/candidate-restore evidence only ('Owner handlers are deliberately absent'). Real cross-repo integration is separate IM.* proposals below.",
+   "notes": "This is WP03's own closure, NOT waiting for WP-04/05/06/09/21/23/30 to build real consumers — per producer-artifacts-and-integration.md's WP03 row, WP03's own acceptance is schema/fixture/candidate-restore evidence only ('Owner handlers are deliberately absent'). Real cross-repo integration is separate IM.* proposals below. Planning repair of 2026-10-04 (DLV-34; scope moves, no obligation or acceptance removed): the first verification attempt (Contracts docs/wp03-90-verification.md, PR 75) found the ConnectorService and the five absent records ownerless; CON.25 now owns them. The CON.17 blocker of that record is resolved (CON.17 is complete); the remaining open input is the re-verification, which this task performs against the candidate published by the CON.25 merge. The consumer-restore clause of the outcome is reconciled with P2-017 as stated in validation (the WP-03.90 testing text 'restore actual candidate artifacts' is read together with the WP-03 validation policy: consumer restoration/compilation never authorizes installed-package execution in CI or public-byte polling).",
    "complete": []
   },
   {
@@ -4171,6 +4177,127 @@
    },
    "notes": "Independent of the other contract closures except for the shared schema-source protocol. scope.proto is added to the existing PublicApi package; the ScopeProjectSummary/ScopeSessionSummary additions remain limited to their named records in the already-routed content.proto. The executable TypeScript, C# and Kotlin consumers directly load the public fixture and verify every independently authored vector exactly once plus generated descriptor/RPC/field and authorization-scope bindings; missing, duplicate, unconsumed or unknown cases fail. Register only this task's public test and consumer cases in existing runners; add no projects or dependencies. Append exact access/dependency/provenance successors for this task's changed schema inputs and generated outputs only, preserving packages, dependency versions/closure and history. Use RES-contracts-dokka-profile's short allocation/generation lease after rebasing on latest Contracts main: inspect the merged PROFILE/immutable successor pairs and all live durable reservations; if an earlier unmerged reservation exists, release and defer only Dokka work. Otherwise claim exactly rN where N=active+1 and both successor paths are free, never skip/reuse/prewrite. Generate only this task's Kotlin inputs and exact API page/hash sets in contracts-proto and contracts-connect-client; preserve fixed/excluded/history and advance only the matching pointer. Push the exact branch head and durably record {resource,rN,exact head/PR} in claim/PR handoff, then release before review/CI. Do not allocate the next number until the reservation merges/releases/supersedes; any rebase/change requires reclaim, pointer/N revalidation, regeneration, reservation update and invalidates prior review.",
    "complete": []
+  },
+{
+   "id": "CON.25",
+   "title": "Public ConnectorService, the local call context and the af-segment records",
+   "lane": "contracts",
+   "repo": "Contracts",
+   "kind": "contract",
+   "size": "M",
+   "obligations": [
+    {
+     "ref": "WP-03.05",
+     "part": "the six public connector.* operations (ConnectorService: ListDefinitions, ListConnections, BeginConnection, CompleteConnection, GetConnection, RevokeConnection) of registry 04 section 5, the public ConnectorDefinition, ConnectorConnection, ConnectorChallenge and ConnectorProof records of section 4, authorization fields and vectors; and the SimulationDataSegment, SimulationSample, SimulationEvent and SimulationGap records of section 4 with the canonical af-segment.v1 JSON golden vectors (an additive amendment of the CON.21 simulation package)"
+    },
+    {
+     "ref": "WP-03.04",
+     "part": "the LocalCallContext record (the x-af-call-bin local call metadata of annex 09) in the local platform package"
+    }
+   ],
+   "outcome": "ConnectorService is generated in the public arcforges.publicapi.v1 package (public/proto/arcforges/publicapi/v1/connector.proto) with the six connector.* operations and their public ConnectorDefinition, ConnectorConnection, ConnectorChallenge and ConnectorProof records, exact fields, authorization fields and independent positive and negative vectors in C#, TypeScript and Kotlin, so that the operation-scope gate reports the six former pending rows as registered and zero pending rows; the public records are authored in the public package because a public proto never imports internal or local schema (registry 04 section 10), and the local ConnectorBrokerService records of CON.05 stay unchanged with a shape-parity check against the public records. LocalCallContext is authored in the local platform package with its exact fields, the 4 KiB and 32-root bounds and vectors. SimulationDataSegment, SimulationSample, SimulationEvent and SimulationGap are authored as proto messages in the CON.21 simulation package with the registry field numbers and oneof presence, together with the canonical af-segment.v1 JSON profile (the segment body is canonical UTF-8 JSON, never protobuf encoder output) and golden vectors that fix the exact bytes, so that the native reader and the simulator consume one published Contracts encoding.",
+   "provides": [
+    "connector-service-registry",
+    "local-call-context",
+    "af-segment-records"
+   ],
+   "start": [
+    {
+     "type": "contract",
+     "task": "CON.02",
+     "need": "capability/resource descriptor and oversized-body reference records and the foundation PageRequest/PageState/AggregateRef/ActorChain closure",
+     "why": "ConnectorService pages with PageRequest/PageState and LocalCallContext carries ActorChain and AggregateRef"
+    },
+    {
+     "type": "contract",
+     "task": "CON.05",
+     "need": "the local platform package (platform.proto) and the local ConnectorBrokerService records",
+     "why": "LocalCallContext is appended to the local platform package and the public connector records are parity-checked against the local twin records"
+    },
+    {
+     "type": "contract",
+     "task": "CON.10",
+     "need": "the published ExecutionOwner record of chat.proto",
+     "why": "LocalCallContext field 6 is ExecutionOwner"
+    },
+    {
+     "type": "contract",
+     "task": "CON.21",
+     "need": "the published simulation.proto and its ScopeTime-based records",
+     "why": "the four af-segment records are appended to the CON.21 simulation package and reuse its identifier and time types"
+    }
+   ],
+   "writes": [
+    "Contracts:public/proto/arcforges/publicapi/v1/connector.proto",
+    "Contracts:public/proto/arcforges/simulation/v1/simulation.proto (append only SimulationDataSegment, SimulationSample, SimulationEvent and SimulationGap; preserve every CON.21 message, service, field number and order)",
+    "Contracts:internal/proto/arcforges/local/platform/v1/platform.proto (append only LocalCallContext; preserve every CON.05 message, service, field number and the local Connector* records)",
+    "Contracts:fixtures/public/con-25-connector.json",
+    "Contracts:fixtures/public/con-25-af-segment.json (golden canonical af-segment.v1 JSON vectors)",
+    "Contracts:fixtures/internal/con-25-local-call-context.json",
+    "Contracts:src/public/**/Generated/**",
+    "Contracts:src/internal/**/Generated/**",
+    "Contracts:public/proto/constraints/con-25-connector.json",
+    "Contracts:public/proto/constraints/con-25-af-segment.json (only the four af-segment record constraints)",
+    "Contracts:internal/proto/constraints/con-25-local-call-context.json",
+    "Contracts:public/proto/constraints.json (regenerated from owned shards)",
+    "Contracts:internal/proto/constraints.json (regenerated from owned shards)",
+    "Contracts:eng/operations/con-25.json (exact owned append-only export for the six connector.* operations; bind the existing assistant-scope manifest rows without changing manifest authority)",
+    "Contracts:eng/contract-packages.json (register only connector.proto in the existing PublicApi package; preserve all package identities)",
+    "Contracts:eng/foundation-inventory.json (append only the inventory/seed rows of the new public records, their declared fields and regenerated output paths; preserve every other record, seed, order and baseline)",
+    "Contracts:eng/check_foundation.py (append only the new public records to EXTRA_SEEDS; preserve every other seed and all checker logic)",
+    "Contracts:eng/policy/contract-access.json (append exact task-owned schema hashes/type assignments)",
+    "Contracts:eng/policy/dependency-policy.json (refresh current input hashes for this closure only; no dependency version or closure changes)",
+    "Contracts:eng/policy/dependency-reviews/con-25-r1.json (successor admission review for this closure; preserve prior history)",
+    "Contracts:eng/provenance/files.json (append owned source/output rows and remap only regenerated targets)",
+    "Contracts:eng/provenance/records/contract-bindings-con-25-r1.json (successor source/output binding; preserve history)",
+    "Contracts:eng/provenance/NOTICE.txt (regenerated only by existing check_provenance.py --write-notice for the active con-25 binding successor; preserve all prior canonical blocks/text; no tool/algorithm change)",
+    "Contracts:eng/provenance/artifact-profiles/dokka-2-2-0-r<N>.json (claim-time next-unused serialized successor; only task-owned Kotlin inputs and exact contracts-proto/contracts-connect-client pages/hashes)",
+    "Contracts:eng/provenance/records/dokka-documentation-resources-r<N>.json (matching immutable task-owned successor)",
+    "Contracts:eng/documentation_tools.py (advance only PROFILE to the same claimed successor at serialized integration)",
+    "Contracts:src/public/ts/proto/src/gen/** (regenerated)",
+    "Contracts:src/public/ts/proto/src/shapes/gen/** (regenerated)",
+    "Contracts:src/public/ts/proto/src/services/gen/catalog.ts (regenerated)",
+    "Contracts:src/public/ts/proto/src/index.ts (regenerated)",
+    "Contracts:src/public/ts/contract-fixtures/src/index.ts (regenerated)",
+    "Contracts:src/public/kotlin/contracts-proto/generated/** (regenerated)",
+    "Contracts:src/public/kotlin/contracts-connect-client/generated/** (regenerated)",
+    "Contracts:tests/public/serialization.test.mjs (append only the arcforges.publicapi.v1.ConnectorService catalogue entry and its six PascalCase full method paths; preserve every existing service, method, order and fail-closed behavior)",
+    "Contracts:fixtures/public/wp03-02.json (append only the ConnectorService CSharp PublicApi entry and its six method paths in ContractServices.All order; keep the existing binary and JSON vectors byte-for-byte unchanged)",
+    "Contracts:tests/public/SerializationProbe/Program.cs (append only the ConnectorService no-op BindService/Endpoint and descriptor to the existing scan; no runtime handler)",
+    "Contracts:tests/public/con-25-connector.test.mjs (direct public-fixture consumer; exact vectors and descriptor/RPC/field checks)",
+    "Contracts:tests/public/con-25-af-segment.test.mjs (canonical af-segment.v1 JSON golden-vector consumer)",
+    "Contracts:package.json (register the CON.25 public tests only)",
+    "Contracts:tests/StructureTests/Con25Cases.cs (direct fixture consumer: connector, LocalCallContext and af-segment vectors)",
+    "Contracts:tests/StructureTests/Program.cs (register Con25Cases only)",
+    "Contracts:tests/public/KotlinConnectClient/src/main/kotlin/io/github/arcforges/tests/Con25Cases.kt (direct public-fixture consumer)",
+    "Contracts:tests/public/KotlinConnectClient/src/main/kotlin/io/github/arcforges/tests/Main.kt (register Con25Cases only)",
+    "Contracts:tests/tooling/test_documentation_provenance.py (exact CON.25 current-profile page/method additions only; preserve all existing fail-closed assertions)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-contracts-generated-baseline",
+     "mode": "regenerate"
+    },
+    {
+     "resource": "RES-contracts-publication",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-contracts-schema-sources",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-contracts-dokka-profile",
+     "mode": "exclusive"
+    }
+   ],
+   "validation": "Deterministic regeneration, descriptor/tag/compatibility checks, closed-schema validators, independent positive and negative vectors in C#, TypeScript and Kotlin, each consumer loading its fixture directly and consuming every vector exactly once (missing, duplicate, unconsumed or unknown vectors fail). The operation-scope gate must report 335 registered (329 plus the six), zero pending and 7 reserved against the unchanged 342-row oracle; the exact ConnectorService serialization-catalogue and no-op probe additions must preserve all prior exact-membership, unknown/extra rejection, AOT, method-binding and fixture-vector checks. The public connector records must be shape-checked against the local CON.05 twins (same field numbers, names and types) and a public proto must import no internal or local schema. The af-segment golden vectors fix exact canonical JSON bytes (finite binary64 as 16 lowercase hex digits, integral fields as exact strings, lowercase UUIDs, ordinal-sorted object fields, explicit oneof presence, every ordered repeated field present even when empty) and cover duplicate-delivery, gap and fault-marker cases. Windows/Linux compilation and packaging only (P2-017); no live provider, callback or Cloud runtime test.",
+   "evidence": "Merged pull request; published Contracts candidate identity containing the closure; vector and compatibility results; an operation-scope report showing the six connector.* operations registered rather than pending and zero pending rows overall; the ownership decisions recorded in the task notes.",
+   "baseline": {
+    "state": "not-started"
+   },
+   "complete": [],
+   "notes": "Added by the planning repair of 2026-10-04 (DLV-34) after the first WP-03.90 verification (Contracts docs/wp03-90-verification.md, PR 75) found these closures ownerless: Registry04 section 5 specifies ConnectorService (ListDefinitions, ListConnections, BeginConnection, CompleteConnection, GetConnection, RevokeConnection); the six operations are exactly the six pending rows of eng/operation-scope-manifest.json (assistant scope, manifest 11), and no proto, task or Cloud runtime owned them; LocalCallContext (registry 04 section 4, annex 09) and the SimulationDataSegment/SimulationSample/SimulationEvent/SimulationGap records (registry 04 section 4) were absent with no owner. Decisions recorded here (no Design behavior change; additive Contracts closure): (1) The public ConnectorService records are authored as public records in connector.proto because the existing ConnectorDefinition, ConnectorConnection, ConnectorChallenge and ConnectorProof messages live only in the internal arcforges.local.platform.v1 package and public proto never imports internal packages (registry 04 section 10); the internal ConnectorBrokerService of CON.05 stays a private helper boundary, unchanged and already published, so the two sets are kept in shape parity by a test and unifying them is not attempted (a published local package is not rewritten). Authorization: ConnectorService management uses assistant application scope and current workspace/user connection permission (annex 10); begin, complete and revoke are human-only foreground actions excluded from agent, automation and extension tool generation (catalogue 00); ConnectorProof carries SecretText and appears in no telemetry, fixture log or error. (2) LocalCallContext is a local proto record appended to the local platform package (annex 09 is already CON.05's authority); it imports the public ActorChain, AggregateRef and ExecutionOwner records, which a local package may do. (3) The four Simulation records ARE authored as proto messages with the registry field numbers, in the CON.21 simulation package as an additive amendment (compatible additions invalidate nothing, DLV-36), because every other registry-numbered record is a message and the generated C#, TypeScript and Kotlin shapes and the foundation inventory need the schema of record; no RPC carries them and no protobuf encoder output is ever the segment body: registry 04 section 10 fixes the af-segment.v1 body as canonical UTF-8 JSON, and this task adds the golden vectors that pin those bytes so that the native reader and the simulator (WP-51) share one published encoding. Not in scope and not invented: no Cloud runtime owner exists for ConnectorService and none is created here. The runtime (workspace/user connection permission, provider origin and scope allowlists, redirect and SSRF checks, and the provider callback exception /callbacks/connectors/{providerId} named in registry 04 with its HTTP schema) is a deferred follow-up for the Cloud and Extensions owners; it must be raised as a planning change when that area is scheduled, and this task makes no runtime or provider claim. The provider callback HTTP exception schema was not determined to belong to this closure and is not authored here. Use RES-contracts-dokka-profile's short allocation/generation lease after rebasing on latest Contracts main, exactly as CON.21 and CON.24 recorded: inspect the merged PROFILE/immutable successor pairs and all live durable reservations; claim exactly rN where N=active+1 and both successor paths are free, never skip, reuse or prewrite; generate only this task's Kotlin inputs and exact API page/hash sets; advance only the matching pointer; record {resource,rN,exact head/PR} in the handoff; release before review/CI. Supporting bindings (access, dependency hashes, provenance, NOTICE, Dokka, foundation inventory) follow the ADP-07 and shared-resource protocols with immutable history preserved. Not authorized: any .gitleaks.toml or scan-allowlist change (if the pinned full-history scan flags new receipt or profile digest lines, as it did for CON.21 and CON.24, that needs a separate exact authorization after the scan evidence exists), any dependency, version, closure or package-identity change, any workflow, scanner, matcher or checker-algorithm change, and any other task's rows."
   },
   {
    "id": "FND.01",
@@ -6555,7 +6682,7 @@
     "notes": "Observed scaffold, unreviewed: Nothing exists."
    }
   },
-  {
+{
    "id": "PLT.25",
    "title": "Publish Capabilities/Contributions packages and verify real integration",
    "lane": "platform",
@@ -6568,7 +6695,7 @@
      "part": "full"
     }
    ],
-   "outcome": "ArcForges.Capabilities (and the Contributions internals it packages) is packed, admitted, published, and independently consumed; owner refuses invalid/stale invocations and opaque references do not grant access.",
+   "outcome": "ArcForges.Capabilities (and the Contributions internals it packages) is packed, admitted, published, and independently consumed by one local opt-in clean-consumer run recorded once (P2-017); owner refuses invalid/stale invocations and opaque references do not grant access.",
    "provides": [
     "capabilities-package"
    ],
@@ -6642,8 +6769,8 @@
      "mode": "append"
     }
    ],
-   "validation": "P2-017: offline verify/policy tests; real cross-product UI acceptance is deferred to product WPs (14/18/33/36) that actually consume this package.",
-   "evidence": "Owned artifact and real-integration receipt per the WP-09.90 template.",
+   "validation": "P2-017: offline verify/policy tests; one local opt-in clean-consumer check of the packed ArcForges.Capabilities package (the PLT.53 precedent, Plan ledger/tasks/plt-53.md): a throwaway consumer restores only the package under test from an isolated temporary package source and the package cache, with no project reference, sibling-source fallback or substitute package, then builds and runs the invalid/stale-invocation and opaque-reference scenarios, performed once and recorded with source commit, package identity and result, stating whether the consumed bytes were the exact prepublication CI candidate or a locally packed equivalent. No hosted installed-package consumer, permanent consumer harness or repeated public download is added (P2-017). Real cross-product UI acceptance is deferred to product WPs (14/18/33/36) that actually consume this package.",
+   "evidence": "Owned artifact and real-integration receipt per the WP-09.90 template, including the single recorded local opt-in clean-consumer run and its stated limits (what the consumer did not exercise, and whether it consumed the CI candidate or a locally packed equivalent).",
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Not in packages.json."
@@ -8399,7 +8526,7 @@
    "complete": [],
    "writes": []
   },
-  {
+{
    "id": "PLT.57",
    "title": "End-to-end capability invocation with real security enforcement inside one product",
    "lane": "platform",
@@ -8443,7 +8570,37 @@
     "state": "not-started"
    },
    "complete": [],
-   "writes": []
+   "writes": [
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/CapabilityEnforcement/** (the new nested non-packable production project ArcForges.Security.CapabilityEnforcement with ArcForges.Security.CapabilityEnforcement.csproj, its source and packages.lock.json: the real CapabilityInvocationAuthorization adapter over the Security decision pipeline)",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/ArcForges.Security.csproj (add only the Compile Remove of the nested CapabilityEnforcement source, exactly as the existing LocalRpcBoundary entry; no reference, package, version or setting change)",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/Tests/** (new offline tests for the adapter and the end-to-end invocation scenario, and in ArcForges.Security.Tests.csproj only the ProjectReference to the new project, with the existing nested Tests lock regenerated)",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/README.md (factual status of the new nested project only)",
+    "DesktopPlatform:DesktopPlatform.slnx (append only the ArcForges.Security.CapabilityEnforcement project line; the existing Security.Tests registration and CI test line already cover the tests)",
+    "DesktopPlatform:Directory.Packages.props (append only ArcForges.Security.CapabilityEnforcement to the existing ArcForges.Contracts.Foundation 1.0.0-ci.216.1 MSBuildProjectName selector; preserve the 1.0.0-ci.113.1 default and every other entry)",
+    "DesktopPlatform:eng/policy/architecture-contract-tests.json (append only exact PLT.57 public API-to-focused-test bindings, in the Security.Tests project)",
+    "DesktopPlatform:eng/policy/architecture-projects.json (append only the ArcForges.Security.CapabilityEnforcement production project row)",
+    "DesktopPlatform:eng/policy/licence-boundary.json (append only the ArcForges.Security.CapabilityEnforcement classification)",
+    "DesktopPlatform:eng/policy/runtime-ownership.json (append only the ArcForges.Security.CapabilityEnforcement project role)",
+    "DesktopPlatform:eng/provenance/files.json (append only PLT.57 first-party source, project, test, README, lock and immutable receipt paths)",
+    "DesktopPlatform:eng/policy/reconciliation/active-projects.json (append only the ArcForges.Security.CapabilityEnforcement project path/blob row and refresh only the existing ArcForges.Security and ArcForges.Security.Tests project blobs)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (add only the exact PLT.57 project and lock input hashes, refresh only the Directory.Packages.props input hash and the changed Security and Security.Tests project and lock input hashes, mirrored in review.inputHashes, and point reviewReceipt to the PLT.57 successor)",
+    "DesktopPlatform:eng/policy/dependency-reviews/plt-57-r1.json (new immutable PLT.57 receipt successor chained from the receipt active on main at merge, mirroring the active review and closure snapshots)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    }
+   ],
+   "notes": "Planning repair for the exact write scope (2026-10-04; DLV-34, scope moves only: no obligation, edge or acceptance is added, removed or retyped). The task had an empty write scope, but the outcome needs real code: the seam that PLT.24 built against is the CapabilityInvocationAuthorization delegate of ArcForges.Capabilities.InvocationPipeline (the 'IAuthorizer' of the outcome text is this seam; no type of that name exists), and PLT.38 delivered SecurityDecisionPipeline in ArcForges.Security. Neither project can host the adapter: ArcForges.Security is Foundation-only and must not reference the packable ArcForges.Capabilities (and its Sdk.Contracts package), and ArcForges.Capabilities is packable and cannot reference the non-packable Security, whose package admission PLT.46 owns. The adapter therefore lives in one new non-packable nested production project, ArcForges.Security.CapabilityEnforcement, inside the Security directory exactly as PLT.38 placed ArcForges.Security.LocalRpcBoundary (Design PR 205, Plan PR 242, Plan ledger/tasks/plt-38.md): it references only ArcForges.Security and ArcForges.Capabilities, produces the CapabilityInvocationAuthorization delegate backed by the real decision pipeline (resolve, availability, freeze, authorize, invoke, validate, record, audit stay in the Capabilities pipeline; the adapter supplies only the authorize step and maps the typed security decision to the pipeline's outcome without weakening owner-side final validation), and adds no package, version, native code, runtime owner or wire schema. The existing nested ArcForges.Security.Tests project (already in the solution and the package-validation workflow) references it for the offline tests, so no new test project, workflow or solution entry beyond the one production line is needed. Registered in the same policy files and under the same ADP-07 protocol as PLT.38 and APP.01 (solution, central-package selector, architecture-projects, licence-boundary, runtime-ownership, active-projects, provenance, dependency-policy and one new immutable receipt chained from the receipt active on main at merge). The only central-package change is appending the new project name to the existing ArcForges.Contracts.Foundation 1.0.0-ci.216.1 selector, as PLT.38 did, because central transitive pinning rejects restore of a project reaching ArcForges.Foundation under the 1.0.0-ci.113.1 default. The receipt re-binds only the changed project, lock and Directory.Packages.props input hashes with an unchanged NuGet closure (every coordinate the new closure contains is already recorded; the claimant verifies this by restoring the exact planned shape and comparing the lock to the recorded closure before editing, and stops for a planning repair if a coordinate is new). Package admission stays with PLT.46 (Security) and PLT.25 (Capabilities); this task adds no package. Not authorized: any other source file (including ArcForges.Capabilities and the ArcForges.Security sources delivered by PLT.38), any workflow, .gitleaks.toml or scan allowlist (add no hash-like literal and no file or project name containing a Gitleaks generic-api-key keyword such as key, secret, token or auth in any hashed inventory row; the project, directory and every file name under it must avoid those keywords, which is why the project is named CapabilityEnforcement and its source files must not be named for authorization; the claimant confirms with the pinned scanner evidence), eng/packaging/packages.json, tests/ArchitectureTests, any other task's rows, and any dependency, package version, closure expansion, package identity, schema or migration. The real permission, policy, trust and egress sources that the pipeline ports need are injected by the hosting product; this task proves the attachment and the unbypassable ordering with the real PLT.24 and PLT.38 implementations and records, honestly, which ports were test composition and what remains for a real product host. Resource owners and protocols: RES-desktopplatform-build-config (append) for the solution and selector lines, RES-architecture-tests (append) for the exact public API-to-test bindings, and RES-desktopplatform-policy-data (append) for the receipt chain, provenance, reconciliation and inventory rows; regenerate locks and re-append rows after rebase and chain the receipt from the receipt active on main at merge."
   },
   {
    "id": "NAT.01",
