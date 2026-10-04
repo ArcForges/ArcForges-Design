@@ -4,7 +4,7 @@
 
 Accepted freeze, reconciliation and build-governance baselines, and the per-repository architecture and policy test suites.
 
-Tasks: 17 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web · Integration owner(s): AI integration owner, ArcScope integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner, Mobile integration owner, Web integration owner
+Tasks: 18 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web · Integration owner(s): AI integration owner, ArcScope integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner, Mobile integration owner, Web integration owner
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
@@ -25,6 +25,7 @@ Tasks: 17 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | [GOV.16](#task-gov-16) | Operation-catalogue authorization reachability matrix and identity boundary evidence | governance | M | [CON.18](contracts.md#task-con-18) (contract) | not-started |
 | [GOV.17](#task-gov-17) | Retire the native families outside the product family and move the still-image shim | governance | M | none | not-started |
 | [GOV.18](#task-gov-18) | Reduce the DesktopPlatform policy data and re-pin the design-policy export | governance | M | [CON.23](contracts.md#task-con-23) (artifact) | not-started |
+| [GOV.19](#task-gov-19) | AI Wrangler and undici dependency admission (clear the repository security gate) | governance | S | none | not-started |
 
 ## Tasks
 
@@ -431,3 +432,26 @@ Tasks: 17 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Completion evidence | Reviewed graph-validator/exporter migration and negative-fixture results; repinned Design commit and policy-source identities; exporter comparison and policy-test results. |
 | Baseline (unreviewed unless accepted) | not-started Observed in the accepted WP00-WP02 implementation: policy data and the design-policy export pinned to the derivation-baseline Design commit. |
 | Notes | Performs the narrow checker migration needed to repin within this cleanup task. GOV.13 and GOV.14 consume the resulting export; GOV.14 retains the broader specification-integrity audit. CON.23 completes after its forbidden-alias declaration is re-exported. |
+
+<a id="task-gov-19"></a>
+
+### GOV.19 — AI Wrangler and undici dependency admission (clear the repository security gate)
+
+**Outcome.** AI's locked Wrangler closure no longer carries the published high-severity undici advisories: wrangler, @cloudflare/vitest-plugin and @cloudflare/workers-types move to the exact versions whose closure clears npm audit and equals the closure already admitted for Cloud, with the input-bound dependency receipt, the immutable ai-worker-r8 profile and its bundle, build-identity and notice successors, and the exact secret-scan allowlist path extension for the immutable profile; the emitted Worker bytes stay unchanged unless the reviewed profile records otherwise.
+
+| Field | Value |
+|---|---|
+| Owning repository | AI (`C:\MyFile\Projects\ArcForges\AI`); integration owner: AI integration owner, the holder of `roles/integration-ai` |
+| Claim, branch and ledger | `claims/gov-19` and ledger record `ledger/tasks/gov-19.md` in the Plan repository; task branch `task/gov-19` ([DLV-26](../README.md#rule-dlv-26)) |
+| Kind / size | governance / S |
+| Obligations | [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) — retain the credential-free repository security gate (npm audit, secret scan, dependency admission) green on main<br>[P2-018](../../../decisions/phase-2-specification-decisions.md#rule-p2-018) — a narrow necessary prerequisite recorded as its own task so that a dependency admission does not hide inside another task's claim |
+| Provides | ai-wrangler-admission |
+| Start prerequisites | none |
+| Entry condition | [ADOPT.08.governance](adoption.md#task-adopt-08-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Completion prerequisites | none |
+| Unblocks | none |
+| Write scope | `AI:package.json (wrangler, @cloudflare/vitest-plugin and @cloudflare/workers-types exact versions only)`<br>`AI:package-lock.json (regenerate the exact closure of those three pins)`<br>`AI:eng/policy/dependency-policy.json, AI:eng/policy/dependency-reviews/** (new immutable successor receipt and exact input bindings)`<br>`AI:eng/provenance/** (new immutable ai-worker-r8 profile, ai-worker-bundle-r8, wrangler and other successors the checks require, files.json, NOTICE.txt; preserve historical records)`<br>`AI:eng/tests/release-provenance.test.mjs (only if the reviewed profile changes its expected counts)`<br>`AI:README.md, AI:docs/development.md, AI:docs/provenance.md (state the exact Wrangler version where these documents name it; no other change)`<br>`AI:.gitleaks.toml (extend only the existing generic-api-key allowlist path pattern from ai-worker-r[1234567] to ai-worker-r[123456789], and its description, so that the single existing whole-line api_pb.js digest repeated by the immutable ai-worker-r8 profile and by the successor profile of the next admission is accepted exactly as for r1 to r7; no other rule, path, regex, digest or scanner behavior)` |
+| Validation | Offline: npm audit --audit-level=high, dependency-admission and provenance checks, npm run check, types and test:artifact with the repository-pinned Node and npm, hosted PR CI (Repository security including the secret scan, Build candidate); no live Cloudflare or Workflow run, per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
+| Completion evidence | npm audit result, lock diff limited to the Wrangler closure, receipt and profile chain, bundle-byte comparison against the previous profile, CI results. |
+| Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair of 2026-10-04 (Cloud precedent: the PRF.07 claimant admitted Wrangler 4.143.1 as Cloud PR 32 under that task's write scope). AI main's unchanged lock fails npm audit --audit-level=high because new undici advisories (7.0.0 to 7.29.0) are reached through the locked wrangler 4.135.0, miniflare 5.20260918.0-alpha and @cloudflare/vitest-plugin 1.1.13, which pins wrangler and miniflare exactly; every AI pull request, including GOV.10, is blocked behind it. Dependabot PR 27 targets wrangler 4.147.0 and is left untouched. The smallest closure that clears the audit and equals Cloud's is wrangler 4.143.1 (miniflare 5.20260926.1-alpha, undici 7.29.1) with @cloudflare/vitest-plugin 1.3.2 (the release that pins exactly that wrangler and miniflare) and @cloudflare/workers-types 5.20260926.1 (Wrangler's peer range). No other dependency, no runtime behavior, no source or Worker change, and no other repository is authorized. The secret-scan support is the narrow planning repair required for an immutable profile that repeats the existing public protobuf api_pb.js digest line (same class as the merged r7 admission and the GOV.10 repair): only the path pattern is extended, to r1 through r9 so that the following GOV.10 profile (ai-worker-r9, after this admission takes r8) needs no further change; the regex line, rule, scanner, workflow, baseline and every other configuration are unchanged, and passing full-history secret-scan evidence on the pull request head is required. GOV.10 renumbers its profile and records to r9 after this task merges; its own r8 allowlist extension is then covered by this task. |

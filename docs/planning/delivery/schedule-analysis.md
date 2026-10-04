@@ -8,9 +8,9 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 
 | Measure | Value |
 |---|---|
-| Delivery tasks | 438 (6 carried as accepted baseline), plus 50 adoption slices |
+| Delivery tasks | 439 (6 carried as accepted baseline), plus 50 adoption slices |
 | Dependency edges by type | artifact 1027, contract 109, design 1, integration(completion) 208, release 33 |
-| Remaining work (size units: S=1, M=2, L=4, XL=8) | 1119 |
+| Remaining work (size units: S=1, M=2, L=4, XL=8) | 1120 |
 | Longest dependency chain (levels) | 25 |
 | Widest level (tasks whose longest prerequisite chain has equal length) | 58 |
 | Critical path length (size units) | 81 |
@@ -21,7 +21,7 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 | Lane | Tasks | Size units | Owning repositories |
 |---|---|---|---|
 | [Adoption stage](lanes/adoption.md) | 9 | 10 | AI, ArcScope, Cloud, Contracts, Design, DesktopPlatform, Mobile, Plan, Web |
-| [Family governance and policy tests](lanes/governance.md) | 17 | 54 | AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web |
+| [Family governance and policy tests](lanes/governance.md) | 18 | 55 | AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web |
 | [Contracts schema closures](lanes/contracts.md) | 27 | 65 | Contracts |
 | [Foundation values](lanes/foundation.md) | 7 | 8 | DesktopPlatform |
 | [Runtime proofs](lanes/runtime-proofs.md) | 8 | 27 | ArcScope, Cloud, DesktopPlatform, Mobile, Web |
@@ -52,7 +52,7 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 
 | Repository | Open tasks | Lanes | Widest level (tasks at once) | Ready after its adoption slices | Examples that can run at the same time |
 |---|---|---|---|---|---|
-| AI | 12 | 4 | level 8: 4 | 0 | [AIR.05](lanes/ai-routing.md#task-air-05) Content-origin marking at the provider generation boundary, [EXT.10](lanes/extensions.md#task-ext-10) Cloud MCP HTTP through the AI Worker adapter, [HAR.00](lanes/harness.md#task-har-00) Turn loop, tool batching and bounds (RunWorkflow core), [AIR.07](lanes/ai-routing.md#task-air-07) Provider test-environment coverage |
+| AI | 13 | 4 | level 8: 4 | 1 | [AIR.05](lanes/ai-routing.md#task-air-05) Content-origin marking at the provider generation boundary, [EXT.10](lanes/extensions.md#task-ext-10) Cloud MCP HTTP through the AI Worker adapter, [HAR.00](lanes/harness.md#task-har-00) Turn loop, tool batching and bounds (RunWorkflow core), [AIR.07](lanes/ai-routing.md#task-air-07) Provider test-environment coverage |
 | ArcScope | 33 | 6 | level 9: 9 | 2 | [APP.03](lanes/app-composition.md#task-app-03) Clean Native AOT package-consumer composition for ArcScope, [SCOPE.07](lanes/arcscope.md#task-scope-07) Durable capture writer, chunked verifiable store and crash recovery, [SCOPE.09](lanes/arcscope.md#task-scope-09) Long-running capture in the shell, [SCOPE.12](lanes/arcscope.md#task-scope-12) Visualisation: virtualised rendering, downsampling, cursors and markers |
 | Cloud | 132 | 13 | level 13: 17 | 8 | [AIR.90](lanes/ai-routing.md#task-air-90) Verify owned artifact and real integration (AI routing and metering), [CLOUD.10](lanes/cloud.md#task-cloud-10) Owned-artifact closure and launch-capacity.v1 acceptance, [COM.10](lanes/commerce.md#task-com-10) Refunds, disputes and evidence, [DEV.06](lanes/device-bridge.md#task-dev-06) Remote approval and steering |
 | Contracts | 30 | 4 | level 3: 7 | 7 | [CON.04](lanes/contracts.md#task-con-04) ContentSandbox service schema (15 methods: session/slot/image/PDF), [CON.05](lanes/contracts.md#task-con-05) Extension/Connector/LocalBootstrap service schema (annex09 helper closure minus ContentSandbox), [CON.12](lanes/contracts.md#task-con-12) Extension and policy schemas: manifest.v1/workflow.v1/panel.v1/policy body.v1/configuration.v1, [CON.16](lanes/contracts.md#task-con-16) Signed catalog/update/realm formats (catalog-index.v1, catalog-revocations.v1, android-update.v1, realm.v1) |
@@ -96,7 +96,7 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 |---|---|
 | 1 | 1 |
 | 2 | 58 |
-| 3 | 27 |
+| 3 | 28 |
 | 4 | 23 |
 | 5 | 35 |
 | 6 | 36 |
@@ -126,7 +126,7 @@ Assumptions: task effort is its relative size (S=1, M=2, L=4, XL=8 units, never 
 
 | Workers | Makespan (size units) | Estimated speed-up over one worker |
 |---|---|---|
-| 1 | 1119 | 1.0× |
+| 1 | 1120 | 1.0× |
 | 2 | 561 | 2.0× |
 | 4 | 282 | 4.0× |
 | 8 | 142 | 7.9× |
@@ -139,7 +139,7 @@ Assumptions: task effort is its relative size (S=1, M=2, L=4, XL=8 units, never 
 
 Tasks whose start prerequisites are satisfied once their adoption slices have confirmed the accepted baseline, assuming no other existing work is inherited. The actual first ready set is established slice by slice during adoption and grows as reviewed existing work is recorded as inherited.
 
-[AND.22](lanes/android.md#task-and-22), [CLOUD.01](lanes/cloud.md#task-cloud-01), [CLOUD.44](lanes/cloud.md#task-cloud-44), [CLOUD.55](lanes/cloud.md#task-cloud-55), [COM.01](lanes/commerce.md#task-com-01), [COM.02](lanes/commerce.md#task-com-02), [COM.05](lanes/commerce.md#task-com-05), [CON.04](lanes/contracts.md#task-con-04), [CON.05](lanes/contracts.md#task-con-05), [CON.12](lanes/contracts.md#task-con-12), [CON.16](lanes/contracts.md#task-con-16), [CON.17](lanes/contracts.md#task-con-17), [CON.18](lanes/contracts.md#task-con-18), [CON.23](lanes/contracts.md#task-con-23), [FND.01](lanes/foundation.md#task-fnd-01), [FND.02](lanes/foundation.md#task-fnd-02), [FND.03](lanes/foundation.md#task-fnd-03), [FND.04](lanes/foundation.md#task-fnd-04), [FND.05](lanes/foundation.md#task-fnd-05), [FND.06](lanes/foundation.md#task-fnd-06), [GOV.17](lanes/governance.md#task-gov-17), [NAT.03](lanes/native.md#task-nat-03), [OPS.01](lanes/operations.md#task-ops-01), [POL.01](lanes/policy.md#task-pol-01), [SCOPE.02](lanes/arcscope.md#task-scope-02), [SCOPE.10](lanes/arcscope.md#task-scope-10), [WEB.08](lanes/web.md#task-web-08)
+[AND.22](lanes/android.md#task-and-22), [CLOUD.01](lanes/cloud.md#task-cloud-01), [CLOUD.44](lanes/cloud.md#task-cloud-44), [CLOUD.55](lanes/cloud.md#task-cloud-55), [COM.01](lanes/commerce.md#task-com-01), [COM.02](lanes/commerce.md#task-com-02), [COM.05](lanes/commerce.md#task-com-05), [CON.04](lanes/contracts.md#task-con-04), [CON.05](lanes/contracts.md#task-con-05), [CON.12](lanes/contracts.md#task-con-12), [CON.16](lanes/contracts.md#task-con-16), [CON.17](lanes/contracts.md#task-con-17), [CON.18](lanes/contracts.md#task-con-18), [CON.23](lanes/contracts.md#task-con-23), [FND.01](lanes/foundation.md#task-fnd-01), [FND.02](lanes/foundation.md#task-fnd-02), [FND.03](lanes/foundation.md#task-fnd-03), [FND.04](lanes/foundation.md#task-fnd-04), [FND.05](lanes/foundation.md#task-fnd-05), [FND.06](lanes/foundation.md#task-fnd-06), [GOV.17](lanes/governance.md#task-gov-17), [GOV.19](lanes/governance.md#task-gov-19), [NAT.03](lanes/native.md#task-nat-03), [OPS.01](lanes/operations.md#task-ops-01), [POL.01](lanes/policy.md#task-pol-01), [SCOPE.02](lanes/arcscope.md#task-scope-02), [SCOPE.10](lanes/arcscope.md#task-scope-10), [WEB.08](lanes/web.md#task-web-08)
 
 ## Remaining serial dependencies and bottlenecks
 
