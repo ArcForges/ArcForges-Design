@@ -1711,7 +1711,14 @@
    },
    "packageAcceptance": "WP-05",
    "notes": "Terminal task for WP05. WP06 and WP21 depend on this as their own external artifact prerequisite (README downstream index: 05 -> 06, 21).",
-   "complete": []
+   "complete": [
+    {
+     "type": "integration",
+     "task": "GOV.07",
+     "need": "ArcScope's own policy suite complete, including its executable's banned-API and production-only rules (the GOV.07 function-pointer deferral repaired through GOV.20)",
+     "why": "The WP05 stage receipt joins every repository's real policy result; a stage with one repository's executable deliberately unenforced is delivered, not complete."
+    }
+   ]
   },
   {
    "id": "GOV.16",
@@ -2025,6 +2032,61 @@
     "state": "not-started"
    },
    "notes": "Post-adoption planning repair of 2026-10-05, a gap with no frozen-baseline counterpart. Evidence: ArcScope GOV.07 (PR 23, merged, task delivered) found that BannedSymbolScanner.Scan (src/Build/ArcForges.Build.Policy/Architecture/BannedSymbolScanner.cs, the branch that throws InvalidOperationException(\"Unresolved invocation cannot be audited: ...\")) aborts on the unmanaged function-pointer call in src/ArcForges.ArcScope/NativePackageProof.cs, because model.GetSymbolInfo of a function-pointer invocation has no IMethodSymbol. ArcScope therefore classifies its Native AOT executable Production: false, and the executable's banned-API scan, public-API test binding and production-only layer rules are not enforced (a reviewer mutant adding .Wait(), Type.GetType and a double price to the executable passed the hosted gate); its deferral check fails once the engine can audit that file. GOV.06 is complete and out of scope for a repair, and its write scope names only ProjectGraph.cs and PolicyEngine.cs, so the scanner change needs its own task (ADP-07: a change outside an existing task's write scope requires the planning repair). The decision recorded here: a function-pointer invocation is not a banned API and not a managed symbol; the scan continues and still audits its operands, and the engine is not given a new category, a role exemption or a suppression. Only the unresolved branch for a function-pointer invocation is relaxed; the fallback stays fail-closed. No consumer pin moves in this task: ArcScope moves its own Build.Policy pin through the GOV.07 completion follow-up (GOV.07 now has a completion prerequisite on this task). Contracts (GOV.05) and Cloud (GOV.09) pin the new candidate only through their own reviewed successors, and only if and when their own scans meet the same failure; this task authorizes no change in them. No dependency, runtime, package identity or SDK change; do not edit the package inventory entry or any consumer pin here.",
+   "complete": []
+  },
+  {
+   "id": "GOV.21",
+   "title": "Scheduled and manual policy preview of the Design main branch (post-merge drift watch)",
+   "lane": "governance",
+   "repo": "DesktopPlatform",
+   "kind": "governance",
+   "size": "S",
+   "obligations": [
+    {
+     "ref": "WP-05.06",
+     "part": "continuing detection of specification-integrity drift on the Design main branch between design-policy pin updates: the existing design-policy checker runs in its existing preview mode against the current public Design main head on a schedule and on demand, so link, citation, superseded-name, decision-coverage, delivery-graph and citation-classification failures that accumulate after the pin are reported within one schedule interval instead of at the next pin update"
+    }
+   ],
+   "outcome": "A new DesktopPlatform workflow runs only on a weekly schedule and on manual dispatch (no pull_request or push trigger, contents: read only, ubuntu-latest, a timeout-minutes and a concurrency group, the same SHA-pinned action revisions and Python version file as pr-gate.yml, and checkout with persist-credentials: false). It initialises an isolated Git directory whose origin is https://github.com/ArcForges/ArcForges-Design.git, fetches the current main head at depth 1 with core.autocrlf=false and hooks disabled exactly as the checker's own pinned checkout does, checks it out detached, and runs python eng/design_policy.py --preview --design-root <that directory> with --report artifacts/evidence/design-drift.json uploaded by an if: always() upload-artifact step. A failing checker exits non-zero, so the scheduled run fails and GitHub reports it; a clean head passes. The workflow is not a job of pr-gate.yml, is not in any ci.needs list and gates no pull request, no merge and no release. docs/design-policy.md and the AGENTS.md design-policy line state what the watch is, that a failure means Design main drifted from the policy and is repaired by a reviewed Design planning repair (and its Plan view pair) rather than by editing the checker, and that the pin still moves only through the reviewed pin update. The checker, its classification and citation algorithms, its tests, the pin, the exports and every existing workflow are unchanged; nothing is relaxed, exempted or suppressed.",
+   "provides": [
+    "design-main-drift-watch"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "GOV.14",
+     "need": "the specification-integrity checker with its --preview mode over a Design checkout (spec-integrity-check-v1)",
+     "why": "The watch only invokes that existing mode against the current Design main head; it adds no check of its own."
+    },
+    {
+     "type": "artifact",
+     "task": "GOV.18",
+     "need": "the design-policy export re-pinned to this Design repository and the delivery-graph validation in the checker",
+     "why": "The preview must validate the delivery graph and generated views of the reduced family, not the retired serial graph."
+    }
+   ],
+   "writes": [
+    "DesktopPlatform:.github/workflows/design-drift.yml (new; schedule and workflow_dispatch triggers only; no new platform, no pull_request or push trigger, no macOS runner, no secret or token other than the default read-only repository token; no change to pr-gate.yml, deep-check.yml, package-validation.yml, native-abi.yml or publish-nuget.yml, and no job added to any ci.needs list)",
+    "DesktopPlatform:docs/design-policy.md (document the watch, its failure meaning and the repair route only)",
+    "DesktopPlatform:AGENTS.md (the one design-policy sentence only: name the watch)",
+    "DesktopPlatform:eng/provenance/files.json (append only the exact new workflow path; the dependency-admission inputs do not include workflow files, so no dependency-policy or dependency-review change is authorized)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    }
+   ],
+   "validation": "Offline: the existing test_design_policy.py suite, the provenance policy (every tracked file listed in eng/provenance/files.json) and the existing PR CI pass unchanged; the reviewer confirms the trigger set, permissions: contents: read, the SHA-pinned actions copied from pr-gate.yml and the isolated fetch against the checker's own checkout(). A single manual dispatch of the new workflow after merge reports pass or fail on the then-current Design main head; no repeat run and no deliberately broken Design head is created.",
+   "evidence": "Exact-head hosted results for the retained PR checks; the workflow file showing the trigger set, permissions and the isolated fetch; one dispatch run identifying the Design head it checked and its design-drift report.",
+   "baseline": {
+    "state": "not-started"
+   },
+   "notes": "Post-adoption planning repair of 2026-10-05, a gap with no frozen-baseline counterpart. Evidence: Design main failed python eng/design_policy.py --preview --design-root after about 138 commits (duplicate and bare-citation findings) because Design has no CI and DesktopPlatform's pr-gate verifies only its pinned Design commit; Design PR 231 and Plan PR 296 repaired it. Decision recorded here: the cheaper detection vehicle is a scheduled and manual DesktopPlatform workflow, not a Design CI workflow. A Design workflow would have to run an unpinned DesktopPlatform script against Design, reversing the dependency direction, would let a checker change break every Design pull request, and would change the documented no-CI merge model for the documentation repository; it is not authorized here and may be proposed by its own planning repair if drift recurs despite this watch. The watch detects after merge and gates nothing, so it does not replace the reviewed Design planning repair that fixes a failure, and a failing run is a prompt to open that repair, never to relax the checker. The classification register is keyed by exact line hash, so an edit to a generated lane line that names a hash-algorithm or character-encoding standard needs a new register row; whether such standard names in generated lane views or code spans should stop being treated as citations changes the checker's citation algorithm and is deliberately out of scope here: it needs its own Architecture Owner decision and planning task and must keep every genuine bare-citation and duplicate finding. No change to the checker, the pin, the exports, the classification register or any existing workflow; no new dependency, runtime, package identity or SDK; no secret or credential; no wsl.exe.",
    "complete": []
   },
   {
@@ -9970,7 +10032,15 @@
    ],
    "writes": [
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Abstractions/**",
-    "DesktopPlatform:tests/AssistantAbstractionsTests/**"
+    "DesktopPlatform:tests/AssistantAbstractionsTests/**",
+    "DesktopPlatform:eng/policy/architecture-contract-tests.json (append only exact APP.07 public API-to-focused-test bindings in the AssistantAbstractionsTests project)",
+    "DesktopPlatform:eng/provenance/files.json (APP.07 owned-source inventory rows for the new source and test files only)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
+    }
    ],
    "validation": "Offline unit/process tests: two windows/different drafts, independent crash, no data loss; no live-environment CI.",
    "evidence": "Two-window and crash-recovery test results.",
@@ -9978,6 +10048,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: No lifecycle handling exists yet."
    },
+   "notes": "Write-scope repair 2026-10-05 (w-c20261005-app07): eng/policy/architecture-contract-tests.json and eng/provenance/files.json are append-only supporting bindings for the new Assistant.Abstractions lifecycle source and tests (RP-10 requires a [Fact] binding for every public API method of the Abstractions project; the provenance inventory lists every owned source file). They add no dependency, package ID, version, project or pin. The task composes no Shell, Capabilities or Persistence.Sqlite (APP.08 owns the real sample); its tests use test-only ports for the local draft store, Cloud link and canonical data.",
    "complete": []
   },
   {
@@ -17323,6 +17394,12 @@
      "task": "COM.09",
      "need": "real, delivered outcome of COM.09 (Ledgers and reconciliation)",
      "why": "this integration exercises the real ledgers and reconciliation instead of a substitute, so it cannot start before that outcome exists"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the real Entitlement D1 store and grant port as the Entitlement participant of the shared families",
+     "why": "this integration exercises the real Entitlement participation instead of an in-memory substitute, so it cannot start before the durable Entitlement store exists"
     }
    ],
    "validation": "Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI (P2-017).",
@@ -17760,6 +17837,12 @@
      "task": "COM.03",
      "need": "CheckoutAttempt/Order identifiers to correlate events against",
      "why": "out-of-order handling and idempotency by event type+identifier require the purchase-side identifiers the event correlates to"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the published IssueGrant and RevokeGrant port and the durable Entitlement store behind it",
+     "why": "the last step of the fixed verification chain (EI-05) is the grant, and EO-03 lets Commerce write into Entitlement only through that port; replaying the inbox must reproduce the persisted grants, which needs the real store behind the port and not a test store"
     }
    ],
    "substitutes": [
@@ -17798,7 +17881,7 @@
    "obligations": [
     {
      "ref": "WP-42.04",
-     "part": "full"
+     "part": "the grant and revocation model, the resolver and the snapshot with per-capability reasons and version, with rebuild equivalence proven over the resolver's store port (the Commerce-facing grant interface in the shared Abstractions project, the GR-05 reason on the grant row, and the durable D1 store with its atomic snapshot commit are mapped to COM.16)"
     }
    ],
    "outcome": "Immutable grants and revocations resolve deterministically into an entitlement snapshot with a per-capability reason and version, and rebuilding the snapshot from its grants/revocations always reproduces the stored snapshot.",
@@ -17860,6 +17943,12 @@
      "task": "CLOUD.23",
      "need": "typed-query/revision-precondition pattern",
      "why": "distributing a versioned snapshot to clients is expected to reuse the public API's revision-precondition idiom rather than invent a parallel versioning scheme; WP-23 not yet built so exact shape unconfirmed"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the durable Entitlement store that holds the stored snapshot with its EntitlementVersion",
+     "why": "distribution reads the persisted snapshot and version (ED-01, ES-03); it must not read a test store or the grant tables, and the store is where the snapshot is committed atomically with the records that cause it"
     }
    ],
    "writes": [
@@ -18060,6 +18149,12 @@
      "task": "COM.09",
      "need": "ledger entries to export",
      "why": "the evidence export is built from ledger + event + entitlement history, which only exist once COM.09 posts them"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the RevokeGrant side of the published grant port",
+     "why": "a refund rolls entitlement back by appending a revocation against the grant it funded (GR-03), which Commerce can do only through the published port (EO-03)"
     }
    ],
    "writes": [
@@ -18113,6 +18208,12 @@
      "task": "COM.04",
      "need": "deduplicated ProviderEvent stream",
      "why": "TM-02 requires provider-event dedup to live in commerce.provider_event so a replayed event cannot extend a term twice; the inbox is the only place that dedup exists"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the widened append path of the durable Entitlement store for service terms and term actions, with its D1 plans",
+     "why": "a term, a renewal or a plan-change supersede must commit atomically with the snapshot refresh it causes (the resolver port carried grants and revocations only); COM.16 provides the one append path and the D1 plans, COM.11 owns the term rules"
     }
    ],
    "writes": [
@@ -18229,6 +18330,12 @@
      "task": "COM.10",
      "need": "refund/rollback path",
      "why": "the refund RPC drives COM.10's refund-with-rollback mechanism"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the IssueGrant and RevokeGrant port carrying the GR-05 reason",
+     "why": "operator grant and revokeGrant (AdminGrant and Compensation sources) must reach Entitlement through the published interface with reason, operator and incident reference, never through its tables or its internal service"
     }
    ],
    "complete": [
@@ -18392,6 +18499,86 @@
     "state": "not-started"
    },
    "packageAcceptance": "WP-42",
+   "complete": []
+  },
+  {
+   "id": "COM.16",
+   "title": "Entitlement grant port and durable Entitlement store",
+   "lane": "commerce",
+   "repo": "Cloud",
+   "kind": "service",
+   "size": "L",
+   "obligations": [
+    {
+     "ref": "WP-42.04",
+     "part": "the Commerce-facing grant interface (EO-03: IssueGrant and RevokeGrant as a public port in the shared Abstractions project, implemented by the Entitlement module), the GR-05 reason carried on the grant row, and the durable D1 Entitlement store: grants, revocations, service terms and term actions committed atomically with the snapshot and its EntitlementVersion under one guarded plan, with rebuild equivalence over D1-stored records (the resolver, its rules and its in-memory-store rebuild equivalence are COM.05)"
+    }
+   ],
+   "outcome": "Commerce, the operator path and the refund path reach Entitlement only through one published IssueGrant/RevokeGrant port that lives in ArcForges.Cloud.Modules.Abstractions and is implemented by the Entitlement module (EO-03, MD-03), so no module references Entitlement internals or writes its tables; an administrative, compensation or migration grant carries its reason on the grant row (GR-05); and the Entitlement module has its production D1 store: grants, revocations, service terms, term actions and the derived snapshot are appended and replaced in one guarded named plan under the workspace revision together with the owner receipt and notification outbox row, so a grant or term never exists without the snapshot and EntitlementVersion that reflect it, a stale writer commits nothing, and the snapshot rebuilt from the D1-stored records equals the stored snapshot. The Entitlement store reaches D1 only through a generic plan-execution port that this task creates in ArcForges.Cloud.Modules.Abstractions (outside the Entitlement folder, so every later module reuses it) and a Storage.D1 adapter that implements it over the signed Worker executor; an Entitlement plan names only entitlement_ and platform_ tables. The port commits on its own; joining the same grant statements to the enumerated purchase unit of work is the Entitlement participation of CLOUD.63.",
+   "provides": [
+    "entitlement-grant-port",
+    "entitlement-d1-store"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "COM.05",
+     "need": "the grant and revocation model, the EntitlementService admission rules and the IEntitlementStore port contract",
+     "why": "the port exposes, and the D1 store implements, exactly the contract COM.05 defined and tested; nothing of the resolver or its admission rules is redefined here"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.03",
+     "need": "the physical entitlement tables (grant with its reason column, revocation, revision, snapshot, service_term and service_term_action), their append-only triggers and the typed bind/result adapters",
+     "why": "the store binds to the checked-in physical manifest and creates no table or column of its own; the manifest is generated from model 01, whose entitlement.grant now carries the GR-05 reason"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.04",
+     "need": "the owner receipt and notification outbox rows of a guarded write",
+     "why": "every atomic guarded write carries its receipt and outbox entry in the same batch, and the snapshot commit is such a write (ES-04: the realtime hint is published from that outbox row)"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.06",
+     "need": "the guarded-batch executor and its revision guard primitive with the SU-04 module order",
+     "why": "the commit is one guarded batch of the Entitlement participant; it runs through the shared engine instead of a private executor"
+    }
+   ],
+   "writes": [
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Entitlement/** (new and public: the IssueGrant and RevokeGrant port with its request, result and refusal types, built from primitives only and referencing no module and no Entitlement internal type; cross-module ports belong to this shared boundary project (architecture 01 section 5, MD-03); no change to IModuleBoundary or ModuleDescriptor; the generic plan-execution port is not part of this folder: see Abstractions/Storage/**)",
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Storage/** (new and public: the generic plan-execution port, a named plan id with exact typed parameters in, typed rows or a typed refusal out, that a module project may use because a module references only this project and never the storage layer; it names no table, no SQL and no module; CLOUD.02 published none, and CLOUD.04 and CLOUD.06 write only inside Storage.D1 and so cannot publish one)",
+  "Cloud:src/ArcForges.Cloud.Storage.D1/ModuleBinding/** and Cloud:src/ArcForges.Cloud.Storage.D1/ArcForges.Cloud.Storage.D1.csproj (new folder owned by this task, no overlap with the Migrations, Physical, Receipts, Outbox or SharedFamilies folders of CLOUD.03, CLOUD.04 and CLOUD.06: the adapter that implements the Abstractions plan-execution port over the existing signed Worker executor and refuses a plan id whose owner is not the caller's module descriptor; the project file only for the project reference to Abstractions; later module tasks reuse the adapter and add nothing here)",
+  "Cloud:src/ArcForges.Cloud.Modules.Entitlement/** except Resolver/Domain (the port adapter over EntitlementService that carries the reason, the widened EntitlementAppend that also carries service terms and term actions, the D1 IEntitlementStore under Persistence/** written against the Abstractions plan-execution port, and the module's own Register entry listing them; the resolver rules, rebuild semantics and admission rules of COM.05 are unchanged)",
+    "Cloud:storage/plans/entitlement/** and the generated plan manifest in Cloud:src/ArcForges.Cloud.Storage.D1/PlanManifest.g.cs (the Entitlement module's named plans as owner entitlement, naming only entitlement_ and platform_ tables (CM-01 to CM-03); the manifest hash is regenerated by the author after rebase; RES-cloud-storage-plans)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Migrations/** (an append-only expand migration only if the physical manifest delivered by CLOUD.03 lacks entitlement_grant.reason or an index the plans need; numbered at merge by the integration owner; RES-cloud-d1-migrations)",
+    "Cloud:src/ArcForges.Cloud/Composition/HostModules.cs (only the append that binds the Storage.D1 ModuleBinding adapter to the Abstractions plan-execution port, and the Entitlement store to the Entitlement port, by composition; RES-cloud-host-composition)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Entitlement/** and Cloud:tests/ArchitectureTests/** (port contract tests and store tests; the architecture tests only to assert that Commerce reaches Entitlement only through the Abstractions port and that the Abstractions project references no module)",
+    "Cloud:eng/policy/dependency-policy.json and Cloud:eng/policy/dependency-reviews/com-16-*.json (new immutable successor chained from the then-active receipt, only because hash-bound project and release inputs change; no coordinate, integrity value or closure entry changes)",
+    "Cloud:eng/provenance/** (immutable successor release profile, Worker bundle and runtime-notice records only where an existing record binds an input this task changes, the first-party inventory files.json and the deterministic NOTICE.txt)",
+    "Cloud:docs/entitlement-resolver.md (the port, the reason column and the store replace the stated limits it records), Cloud:docs/storage-plans.md (the entitlement owner) and Cloud:AGENTS.md (only if the module description changes)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-cloud-host-composition",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-storage-plans",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-d1-migrations",
+     "mode": "append"
+    }
+   ],
+   "validation": "Offline unit tests: port contract (idempotent replay by source reference, stale-version refusal, reason required for administrative, compensation and migration grants, no Entitlement type crosses the port), store tests through the plan-bridge fakes and the physical column map (atomic append and snapshot replace, a stale revision commits nothing, concurrent writers, append-only enforcement, reason round trip), rebuild equivalence over D1-stored fixture records, architecture tests for the Commerce-to-Entitlement path; opt-in local runtime run against a real D1 instance for the atomic commit and the concurrent-writer case per docs/validation-policy.md; no hosted runtime, live-service or browser CI (P2-017).",
+   "evidence": "Port contract and architecture test results; the D1 atomic-commit, stale-revision and concurrent-writer results (the local D1 run recorded once, or recorded as untested); rebuild-equivalence result over D1-stored records; reason round-trip result; source commit.",
+   "baseline": {
+    "state": "not-started",
+    "notes": "Observed, unreviewed: COM.05 (Cloud PR 47, in review) keeps the resolver service internal to the Entitlement project, tests it against an in-memory store only and records that the Commerce grant port, the GR-05 reason column and the D1 store have no owning task; CLOUD.02 (complete) published only IModuleBoundary and ModuleDescriptor in the Abstractions project."
+   },
+   "notes": "Added by the COM.05 review finding that nothing owned the EO-03 port, the GR-05 reason column or the D1 IEntitlementStore. Decisions: the port type lives in Abstractions (Commerce cannot reference the Entitlement project); the reason column is a model 01 correction made by the planning pair that added this task and is mapped by the CLOUD.03 manifest; the D1 store is the Entitlement module's own persistence (module owners own their plans, architecture 01 section 5), not CLOUD.63, which joins the same statements to the shared families once Commerce exists. Plan execution: a module project references only Abstractions (docs/storage-plans.md), so this task creates the generic plan-execution port in Abstractions/Storage/** and its adapter in Storage.D1/ModuleBinding/**, and an Entitlement plan may name only entitlement_ and platform_ tables. Revision guard: the per-workspace revision COM.05's port commits under is held in the new Entitlement-owned table entitlement.revision (model 01, added by the planning pair that added this task), never in a workspace_ table, and every Entitlement commit guards and increments it in the same batch. One point the model still does not settle is raised by this task through a Design pair before it edits, never decided in code (D-001; ADP-07 forbids new schema meanings): the persistence of the workspace status facts, feature releases and definitions activations that COM.05's record set reads (the model has no table for them; workspace.state and the commerce.subscription fields stay owned by their modules). Until that is settled the store covers the entitlement-owned tables only.",
    "complete": []
   },
   {

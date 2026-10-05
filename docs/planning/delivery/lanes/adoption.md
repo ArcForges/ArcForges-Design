@@ -222,7 +222,7 @@ Each slice classifies the tasks of one repository and lane against the frozen ba
 | <a id="task-adopt-02-execution"></a>ADOPT.02.execution | DesktopPlatform | [Execution engine](execution.md) | 9 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-extensions"></a>ADOPT.02.extensions | DesktopPlatform | [Extension platform and integrations](extensions.md) | 7 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-foundation"></a>ADOPT.02.foundation | DesktopPlatform | [Foundation values](foundation.md) | 7 | none | [ADOPT.02](#task-adopt-02) |
-| <a id="task-adopt-02-governance"></a>ADOPT.02.governance | DesktopPlatform | [Family governance and policy tests](governance.md) | 8 | [GOV.01](governance.md#task-gov-01), [GOV.02](governance.md#task-gov-02), [GOV.03](governance.md#task-gov-03) | [ADOPT.02](#task-adopt-02) |
+| <a id="task-adopt-02-governance"></a>ADOPT.02.governance | DesktopPlatform | [Family governance and policy tests](governance.md) | 9 | [GOV.01](governance.md#task-gov-01), [GOV.02](governance.md#task-gov-02), [GOV.03](governance.md#task-gov-03) | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-native"></a>ADOPT.02.native | DesktopPlatform | [Native producers and probes](native.md) | 13 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-platform"></a>ADOPT.02.platform | DesktopPlatform | [Desktop platform mechanisms](platform.md) | 55 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-policy"></a>ADOPT.02.policy | DesktopPlatform | [Dynamic policy and configuration](policy.md) | 1 | none | [ADOPT.02](#task-adopt-02) |
@@ -241,7 +241,7 @@ Each slice classifies the tasks of one repository and lane against the frozen ba
 | <a id="task-adopt-05-simulator"></a>ADOPT.05.simulator | ArcScope | [ArcScope Cloud simulator](simulator.md) | 1 | none | [ADOPT.05](#task-adopt-05) |
 | <a id="task-adopt-07-ai-routing"></a>ADOPT.07.ai-routing | Cloud | [Workers AI routing and metering](ai-routing.md) | 6 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-cloud"></a>ADOPT.07.cloud | Cloud | [Cloud core](cloud.md) | 59 | none | [ADOPT.07](#task-adopt-07) |
-| <a id="task-adopt-07-commerce"></a>ADOPT.07.commerce | Cloud | [Commerce, entitlement and credits](commerce.md) | 15 | none | [ADOPT.07](#task-adopt-07) |
+| <a id="task-adopt-07-commerce"></a>ADOPT.07.commerce | Cloud | [Commerce, entitlement and credits](commerce.md) | 16 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-device-bridge"></a>ADOPT.07.device-bridge | Cloud | [Application presence and tool bridge](device-bridge.md) | 9 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-extensions"></a>ADOPT.07.extensions | Cloud | [Extension platform and integrations](extensions.md) | 1 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-governance"></a>ADOPT.07.governance | Cloud | [Family governance and policy tests](governance.md) | 1 | none | [ADOPT.07](#task-adopt-07) |
