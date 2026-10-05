@@ -1145,7 +1145,7 @@
     "ArcScope:tests/ArchitectureTests/**",
     "ArcScope:eng/policy/exceptions.json",
     "ArcScope:ArcScope.slnx (add the new host project only)",
-    "ArcScope:Directory.Packages.props (the exact ArcForges.Build.Policy pin moved to the published GOV.06 candidate, and the exact published ArcForges.Contracts.Validation candidate that carries the CON.23 build-only naming tools only if the naming scan is wired through it; no other coordinate, runtime or version change)",
+    "ArcScope:Directory.Packages.props (the exact ArcForges.Build.Policy pin moved to the published GOV.06 candidate and later, in the completion follow-up, to the published GOV.20 candidate, and the exact published ArcForges.Contracts.Validation candidate that carries the CON.23 build-only naming tools only if the naming scan is wired through it; no other coordinate, runtime or version change)",
     "ArcScope:tests/ArchitectureTests/packages.lock.json",
     "ArcScope:src/ArcForges.ArcScope.Domain/packages.lock.json, ArcScope:src/ArcForges.ArcScope.Core/packages.lock.json, ArcScope:src/ArcForges.ArcScope/packages.lock.json, ArcScope:tests/ArcForges.ArcScope.Tests/packages.lock.json, ArcScope:eng/ArcForges.Repository/packages.lock.json (regenerated only for the central pin change)",
     "ArcScope:eng/policy/dependency-policy.json",
@@ -1170,8 +1170,15 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "Fixture-driven; does not require ArcScope's own product work (WP33 to WP35) to have landed. Write scope extended by the 2026-10-04 governance-chain planning repair: adding the host project needs the solution entry, the exact ArcForges.Build.Policy pin move (ArcScope pins 1.0.0-ci.20.1, which predates GOV.04's engine candidate 1.0.0-ci.31.1 and GOV.06's repair), every project lock the central pin changes (Directory.Build.props gives every project the package reference), dependency and provenance bindings, the licence inventory row and CI wiring. ArcScope is AGPL-3.0-only, so the host needs no RP-03 exception and none may be added. No security-scanner, gitleaks or secret-scan configuration change is authorized; if a new receipt digest line triggers the secret scan, that needs its own narrow planning repair. The pin cannot move before GOV.06's candidate is published.",
-   "complete": []
+   "notes": "Fixture-driven; does not require ArcScope's own product work (WP33 to WP35) to have landed. Write scope extended by the 2026-10-04 governance-chain planning repair: adding the host project needs the solution entry, the exact ArcForges.Build.Policy pin move (ArcScope pins 1.0.0-ci.20.1, which predates GOV.04's engine candidate 1.0.0-ci.31.1 and GOV.06's repair), every project lock the central pin changes (Directory.Build.props gives every project the package reference), dependency and provenance bindings, the licence inventory row and CI wiring. ArcScope is AGPL-3.0-only, so the host needs no RP-03 exception and none may be added. No security-scanner, gitleaks or secret-scan configuration change is authorized; if a new receipt digest line triggers the secret scan, that needs its own narrow planning repair. The pin cannot move before GOV.06's candidate is published. Completion repair 2026-10-05: the executable (ArcForges.ArcScope, Native AOT, role UserInterface) was delivered classified Production: false because the pinned engine's BannedSymbolScanner.Scan throws on the unmanaged function-pointer calls in NativePackageProof.cs (Build.Policy 1.0.0-ci.94.1). GOV.20 repairs that scanner in DesktopPlatform; this task now has a completion prerequisite on GOV.20, and its completion follow-up (DLV-41) moves the Build.Policy pin to the exact published GOV.20 candidate through its own reviewed successor receipt, lets its self-expiring deferral check fail, restores Production: true for the executable with an updated per-rule fixture table and executable negatives (a banned call, a reflection entry point, a blocking wait and a binary floating-point price in the executable), and removes the deferral text; no other coordinate, rule or scanner change.",
+   "complete": [
+    {
+     "type": "integration",
+     "task": "GOV.20",
+     "need": "the published ArcForges.Build.Policy candidate whose banned-symbol scanner audits unmanaged function-pointer invocations instead of throwing",
+     "why": "ArcScope's Native AOT executable contains unmanaged function-pointer calls, so its banned-API scan, public-API test binding and production-only layer rules stay unenforced (Production: false) until the shared scanner can audit it; GOV.07 cannot complete with that deferral and must pin the exact candidate through its own reviewed successor."
+    }
+   ]
   },
   {
    "id": "GOV.09",
@@ -1960,6 +1967,60 @@
    },
    "notes": "Planning repair of 2026-10-04 (Cloud precedent: the PRF.07 claimant admitted Wrangler 4.143.1 as Cloud PR 32 under that task's write scope). AI main's unchanged lock fails npm audit --audit-level=high because new undici advisories (7.0.0 to 7.29.0) are reached through the locked wrangler 4.135.0, miniflare 5.20260918.0-alpha and @cloudflare/vitest-plugin 1.1.13, which pins wrangler and miniflare exactly; every AI pull request, including GOV.10, is blocked behind it. Dependabot PR 27 targets wrangler 4.147.0 and is left untouched. The smallest closure that clears the audit and equals Cloud's is wrangler 4.143.1 (miniflare 5.20260926.1-alpha, undici 7.29.1) with @cloudflare/vitest-plugin 1.3.2 (the release that pins exactly that wrangler and miniflare) and @cloudflare/workers-types 5.20260926.1 (Wrangler's peer range). No other dependency, no runtime behavior, no source or Worker change, and no other repository is authorized. The secret-scan support is the narrow planning repair required for an immutable profile that repeats the existing public protobuf api_pb.js digest line (same class as the merged r7 admission and the GOV.10 repair): only the path pattern is extended, to r1 through r9 so that the following GOV.10 profile (ai-worker-r9, after this admission takes r8) needs no further change; the regex line, rule, scanner, workflow, baseline and every other configuration are unchanged, and passing full-history secret-scan evidence on the pull request head is required. GOV.10 carries an artifact start edge on this task, takes ai-worker-r9 and the following successors, and owns no .gitleaks.toml change: this task's r[123456789] pattern covers r9 and must not be rewritten.",
    "start": [],
+   "complete": []
+  },
+  {
+   "id": "GOV.20",
+   "title": "Build.Policy banned-symbol scanner: audit unmanaged function-pointer invocations instead of throwing",
+   "lane": "governance",
+   "repo": "DesktopPlatform",
+   "kind": "governance",
+   "size": "S",
+   "obligations": [
+    {
+     "ref": "WP-05.04",
+     "part": "shared-engine banned-symbol scanner mechanism: an invocation through an unmanaged or managed function pointer has no managed callee symbol, so the scanner must classify it without aborting the whole scan, while every other unresolvable invocation stays fail-closed, so that all seven banned categories can be enforced on production code that makes such calls (ArcScope's Native AOT executable)"
+    }
+   ],
+   "outcome": "BannedSymbolScanner.Scan in the existing ArcForges.Build.Policy engine no longer throws \"Unresolved invocation cannot be audited\" for an invocation whose bound operation is a function-pointer invocation (a delegate* unmanaged or delegate* managed call). Such a call has no managed callee symbol, so no symbol-based category (reflection, code generation, blocking, provider, logging) can apply to the call itself; the scan continues, the invocation's receiver and arguments are still visited by the same node walk (a banned call, secret-bearing logging argument or binary floating-point money value nested in the arguments is still reported), and the BAN-POINTER field rule is unchanged. Every other invocation with no resolved method symbol (except the existing nameof and AOT dynamic-invocation branches) still throws exactly as today, so the scanner stays fail-closed for anything it cannot classify. The seven-ID banned-API catalog, rule identifiers, messages and thresholds are unchanged: the function-pointer call is deliberately not a new category (WP-05.04 names none, and the sealed catalog is a stable seven IDs). The normal DesktopPlatform merge publishes the fixed candidate under the existing ArcForges.Build.Policy package identity. Positive and negative regressions pass: the exact reproducer (an unsafe class whose method calls a delegate* unmanaged[Cdecl]<uint*, uint*, int> obtained from NativeLibrary.GetExport with a null and an address-of argument, as in ArcScope NativePackageProof.cs) scans without throwing and yields zero findings; a managed function-pointer call does the same; a banned call, a blocking wait in an async method, a reflection entry point on an AOT path, a secret logged and a double price nested in the pointer call's arguments are still reported at their own nodes; a banned call elsewhere in the same file is still reported; an unresolved non-function-pointer invocation still throws.",
+   "provides": [
+    "banned-symbol-scanner-function-pointer-audit"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "GOV.06",
+     "need": "the published ArcForges.Build.Policy candidate (generated-source reconstruction and generated-type recognition) that the repair builds on",
+     "why": "This is a narrowly scoped producer repair to the shared Build.Policy banned-symbol scanner, made on top of the engine consumers already pin; it is neither a replacement scanner nor a consumer-side workaround or exception."
+    }
+   ],
+   "writes": [
+    "DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/BannedSymbolScanner.cs (the unresolved-invocation branch of Scan only; no category, rule identifier, message, threshold, catalog or other rule change)",
+    "DesktopPlatform:tests/ArchitectureTests/FunctionPointerInvocationTests.cs (new: positive, negative and security regressions over in-memory compilations only, including the exact reproducer)",
+    "DesktopPlatform:eng/provenance/files.json (append only the exact first-party regression source path of the new test file)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (only exact active-input hashes/review binding required by the existing dependency/provenance gates; no dependency or closure changes)",
+    "DesktopPlatform:eng/policy/dependency-reviews/gov-20-r1.json (new immutable successor only if an existing registered input changes; chain from the exact then-active receipt, preserve history and the full admitted closure)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-package-inventory",
+     "mode": "read"
+    }
+   ],
+   "validation": "Pinned SDK locked restore and applicable Release build; the ArchitectureTests regressions must reproduce the failure on the unrepaired scanner (the exact reproducer throws) and pass on the repaired one, with the retained SharedPolicyTests banned-category fixtures unchanged and passing; all existing DesktopPlatform PR CI and package-validation checks pass. The normal DesktopPlatform integration merge publishes the next candidate under the same ArcForges.Build.Policy package identity.",
+   "evidence": "Exact-head local and hosted results for the function-pointer regressions (red on the previous scanner, green on the repair) and the retained policy suite; exact source commit and successful publication receipt identifying the new ArcForges.Build.Policy candidate from the normal DesktopPlatform main merge.",
+   "baseline": {
+    "state": "not-started"
+   },
+   "notes": "Post-adoption planning repair of 2026-10-05, a gap with no frozen-baseline counterpart. Evidence: ArcScope GOV.07 (PR 23, merged, task delivered) found that BannedSymbolScanner.Scan (src/Build/ArcForges.Build.Policy/Architecture/BannedSymbolScanner.cs, the branch that throws InvalidOperationException(\"Unresolved invocation cannot be audited: ...\")) aborts on the unmanaged function-pointer call in src/ArcForges.ArcScope/NativePackageProof.cs, because model.GetSymbolInfo of a function-pointer invocation has no IMethodSymbol. ArcScope therefore classifies its Native AOT executable Production: false, and the executable's banned-API scan, public-API test binding and production-only layer rules are not enforced (a reviewer mutant adding .Wait(), Type.GetType and a double price to the executable passed the hosted gate); its deferral check fails once the engine can audit that file. GOV.06 is complete and out of scope for a repair, and its write scope names only ProjectGraph.cs and PolicyEngine.cs, so the scanner change needs its own task (ADP-07: a change outside an existing task's write scope requires the planning repair). The decision recorded here: a function-pointer invocation is not a banned API and not a managed symbol; the scan continues and still audits its operands, and the engine is not given a new category, a role exemption or a suppression. Only the unresolved branch for a function-pointer invocation is relaxed; the fallback stays fail-closed. No consumer pin moves in this task: ArcScope moves its own Build.Policy pin through the GOV.07 completion follow-up (GOV.07 now has a completion prerequisite on this task). Contracts (GOV.05) and Cloud (GOV.09) pin the new candidate only through their own reviewed successors, and only if and when their own scans meet the same failure; this task authorizes no change in them. No dependency, runtime, package identity or SDK change; do not edit the package inventory entry or any consumer pin here.",
    "complete": []
   },
   {
@@ -7920,7 +7981,7 @@
      "mode": "append"
     }
    ],
-   "validation": "Offline tests: reject ordinary UPDATE/DELETE and forged retention role; approved expiry purge; legal hold; exact-boundary maintenance-capability expiry using monotonic time despite wall-clock rollback; store-stamped audit occurrence and hold/release times with no caller timestamp; allowed and denied typed egress decisions append before return, preserve data class/destination/authority/risk/reason/correlation, and fail closed on append failure; typed capability-lease issue/revocation/expiry/task-end intake preserves the Guid-backed resource identity and unknown lifecycle kinds fail closed; telemetry separation test (also exercised jointly with PLT.49's redaction/separation evidence).",
+   "validation": "Offline tests: reject ordinary UPDATE/DELETE and forged retention role; approved expiry purge; legal hold; exact-boundary maintenance-capability expiry using monotonic time despite wall-clock rollback; store-stamped audit occurrence and hold/release times with no caller timestamp; the real PLT.41 EgressAuthority, through the audit-side IEgressAuditSink implementation, appends every allowed decision and every refused decision that reaches the sink to the durable store before returning (including each pre-classification refusal and each unavailable-source refusal; the AuditUnavailable refusal that the authority builds when an allowed decision could not be made durable is not written to the sink by PLT.41 as delivered, so it has no audit event and the failed Authorized write is the only trace), preserving the exact reason, the PLT.41 data-class tier or the explicit Unclassified marker, the destination class or the explicit Undetermined marker, the canonical destination identity (absent only for a malformed destination), the authority kind, reference and grant generation for an allowed decision (none for a refusal), the effective risk only when the producer supplies it (otherwise the explicit NotAssessed marker, never an inferred value), a one-way content reference fingerprint, and the correlation; a record the closed shape cannot represent, a foreign owner, a purged partition and a failing store fail closed so an allowed transfer is refused with AuditUnavailable; a late Authorized write that lands after the authority timed out and refused (the only way an Authorized event can sit beside a refusal) is accepted and tested as a valid event that authorizes nothing; typed capability-lease issue/revocation/expiry/task-end intake preserves the Guid-backed resource identity and unknown lifecycle kinds fail closed; telemetry separation test (also exercised jointly with PLT.49's redaction/separation evidence).",
    "evidence": "Audit immutability, store-owned time/monotonic-expiry, typed egress and lease-event intake, completeness and separation results; report actual PLT.41 egress and PLT.43 lease-emission integration separately.",
    "baseline": {
     "state": "not-started",
@@ -7940,7 +8001,7 @@
      "why": "[WP-11 BR-07](../../work-packages/11-security-foundation.md#rule-br-07) requires delegated leases to be scoped, expiring, revocable and audited. PLT.44 can deliver its append-only store and closed typed intake independently, but only a later integration against PLT.43's delivered lease implementation can prove that real lifecycle events reach the audit record without a fabricated runtime or substitute."
     }
    ],
-   "notes": "Time boundary: inject the delivered FND.04 IClock. The store, not callers, stamps audit occurrence and legal-hold placement/release from its wall Instant; caller-supplied event or hold timestamps are not accepted as authoritative or used to select a partition. The store evaluates retention with its own current Instant and uses the clock's monotonic timestamp/elapsed-time API exclusively for the in-process maintenance-capability TTL, so wall-clock rollback cannot revive an expired capability. The maintenance capability remains in-process, non-serializable and internally minted; no wall-clock timestamp is an authorization token. Egress boundary: consume only PLT.41's closed typed egress-decision fact, preserving its typed data class, destination class and canonical identity, authority ID/revision, risk, allow/deny decision and reason, and correlation in the durable audit event; do not accept transferred content, secret values or a free-form property bag. Both allowed and denied decisions are appended synchronously before the enforcement path returns; an append failure must prevent an allowed transfer from proceeding. Security owns the sink port and must not reference the Audit project. Lease boundary: PLT.43 must expose a non-empty immutable Guid-backed CapabilityLeaseId, and each issued/revoked/expired/task-ended lifecycle fact carries that same typed ID. Add only closed audit event/resource values for those four lifecycle kinds and map CapabilityLeaseId.Value directly into the Guid-valued AuditResourceReference; never stringify, hash or truncate the identity. Preserve the ID through append/query, reject unknown kinds, and do not fabricate a PLT.43 runtime or claim actual producer emission from intake-only tests. This task may be delivered with the append/query/retention store and both typed intakes complete, but it cannot be marked complete until real PLT.41 egress and PLT.43 lease lifecycle integrations satisfy both completion prerequisites. The production project sets IsPackable=true without changing package identity; The only permitted Directory.Packages.props edit adds exact conditions for MSBuildProjectName ArcForges.Security.Audit and ArcForges.Security.Audit.Tests selecting the already-admitted ArcForges.Contracts.Foundation 1.0.0-ci.216.1; preserve the default 1.0.0-ci.113.1 and every other project condition. This selects an existing admitted version and changes no package coordinate or aggregate closure. PLT.44 does not choose a PackageId, edit eng/packaging/packages.json, publish packages or claim package acceptance—PLT.46 alone admits the existing ArcForges.Security.Audit package and completes pack/publish/independent-consumer validation. Support writes are limited to the exact solution/test workflow, project/license/runtime/active-project registrations, RP-10 bindings, sorted provenance rows, dependency input map and immutable PLT.44 receipt listed above. Use only the existing Microsoft.Data.Sqlite 10.0.12 and admitted dependency closure. No new dependency, version, closure, external/wire schema change, signature/key algorithm, Security-to-Audit dependency or package identity is authorized. Scan-support extension (narrow ADP-07, same class as the merged PLT.40 allowlist, as the single durable repair): every dependency receipt chained after plt-40-r1 mirrors the existing Security.Secrets project input rows, and the pinned full-history scanner runs with fetch-depth 0 over all fetched branches, so a receipt line added on one open branch is reported by the secret-scan of every other open branch whose config does not cover it. Per-receipt groups would therefore deadlock concurrent branches. One additional .gitleaks.toml group is authorized: path pattern ^eng/policy/dependency-reviews/[A-Za-z0-9._-]+[.]json$ (a file directly in that directory, no subdirectory), targetRules generic-api-key, condition AND, regexTarget line, whose only two alternatives are these exact whole lines, shown with their indentation:      \"src/BuildingBlocks/ArcForges.Security.Secrets/ArcForges.Security.Secrets.csproj\": \"8ff03fdcaf23b09386fac47dd5e3e4f9689a665a569137f726456c9e59a9ecef\",      \"src/BuildingBlocks/ArcForges.Security.Secrets/Tests/ArcForges.Security.Secrets.Tests.csproj\": \"d6798bbbcf980fab4467c6d831871b075e55aeef6e09c7df67c4d72cd2334120\", each anchored as the scanner reports an added line (at most one optional leading newline and nothing else around the line). No other path, rule, clause, scanner behavior or workflow is authorized, no cross-combination of paths and digests, and every existing rule and allowlist, including the PLT.40 groups, is preserved. The focused eng/test_dependency_policy.py tests verify the actual config against the actual receipts: exactly the two lines are accepted in any receipt file under the directory (existing, PLT.44, PLT.09 and a hypothetical future one) and rejected in other paths, swapped key/digest/path pairs, changed digests, trailing text or credentials, unrelated 64-hex values and other rules. Passing pinned full-history secret-scan evidence on the PLT.44 head is required."
+   "notes": "Time boundary: inject the delivered FND.04 IClock. The store, not callers, stamps audit occurrence and legal-hold placement/release from its wall Instant; caller-supplied event or hold timestamps are not accepted as authoritative or used to select a partition. The store evaluates retention with its own current Instant and uses the clock's monotonic timestamp/elapsed-time API exclusively for the in-process maintenance-capability TTL, so wall-clock rollback cannot revive an expired capability. The maintenance capability remains in-process, non-serializable and internally minted; no wall-clock timestamp is an authorization token. Egress boundary (Architecture Owner decision, delegated to the completion follow-up and recorded as architecture/08 EG-06 to EG-09): the audit intake is a projection of PLT.41's delivered EgressAuditRecord taken at its IEgressAuditSink, not a second decision and not an audit-owned mirror of the fact. The audit vocabulary adopts PLT.41's data-class tiers (Public, Diagnostic, WorkspaceContent, SensitiveContent, SecretMaterial) plus the explicit Unclassified marker; the earlier storage-class vocabulary was a different axis (where data lives, not how sensitive it is) and is removed from the egress detail. The destination class gains the explicit Undetermined marker and the destination identity is optional only for a malformed destination, so refusals before classification are stored as what they are. The authority is its PLT.41 kind, reference and grant generation (allowed decisions only); the Guid authority object and numeric revision the first design assumed do not exist in PLT.41 and are not fabricated. Effective risk is assessed at pipeline step 9, after the step 8 egress decision, so the egress authority cannot hold it: the event stores R0 to R4 only if a producer supplies one and otherwise the explicit NotAssessed marker (permitted for egress events only). The opaque PLT.41 resource id and revision are not a typed Guid and may be path-like, so the event stores their SHA256 content reference fingerprint instead of a resource Guid; the exact reference stays in the correlated step 14 record by command id. The specific EgressReason is stored exactly alongside the closed audit reason it maps to; the decision reason of an allowed decision derives from its real authority kind. Occurrence time is stamped by the store, not taken from the record. No content, secret value, path or free-form property bag is stored. Both allowed and denied decisions are appended synchronously before the enforcement path returns; an append failure must prevent an allowed transfer from proceeding. Security owns the sink port and must not reference the Audit project; the Audit project implements the port by referencing Security. PLT.41 is unchanged by this decision: carrying the AuditUnavailable refusal into the sink would need a PLT.41 change and is not required, because that refusal means the sink already failed. AU-04 is met jointly: the egress event carries actor chain, executor, software identity, capability, decision, reason, origin, workspace and correlation, while effective risk (when assessed) and the exact resource reference are in the correlated step 14 security audit record of the same command. Schema: the store schema version moves from 1 to 2 and a version 1 file is refused (fail closed) with no migration, because no code outside the Audit project and its tests constructs an audit store, so no version 1 file exists beyond test temporary files. The fingerprint is unsalted and is a reference, not secrecy: a low-entropy or path-like id can be guessed offline by anyone who can read the audit file. Lease boundary: PLT.43 must expose a non-empty immutable Guid-backed CapabilityLeaseId, and each issued/revoked/expired/task-ended lifecycle fact carries that same typed ID. Add only closed audit event/resource values for those four lifecycle kinds and map CapabilityLeaseId.Value directly into the Guid-valued AuditResourceReference; never stringify, hash or truncate the identity. Preserve the ID through append/query, reject unknown kinds, and do not fabricate a PLT.43 runtime or claim actual producer emission from intake-only tests. This task may be delivered with the append/query/retention store and both typed intakes complete, but it cannot be marked complete until real PLT.41 egress and PLT.43 lease lifecycle integrations satisfy both completion prerequisites. The production project sets IsPackable=true without changing package identity; The only permitted Directory.Packages.props edit adds exact conditions for MSBuildProjectName ArcForges.Security.Audit and ArcForges.Security.Audit.Tests selecting the already-admitted ArcForges.Contracts.Foundation 1.0.0-ci.216.1; preserve the default 1.0.0-ci.113.1 and every other project condition. This selects an existing admitted version and changes no package coordinate or aggregate closure. PLT.44 does not choose a PackageId, edit eng/packaging/packages.json, publish packages or claim package acceptance—PLT.46 alone admits the existing ArcForges.Security.Audit package and completes pack/publish/independent-consumer validation. Support writes are limited to the exact solution/test workflow, project/license/runtime/active-project registrations, RP-10 bindings, sorted provenance rows, dependency input map and immutable PLT.44 receipt listed above. Use only the existing Microsoft.Data.Sqlite 10.0.12 and admitted dependency closure. No new dependency, version, closure, external/wire schema change, signature/key algorithm, Security-to-Audit dependency or package identity is authorized. Scan-support extension (narrow ADP-07, same class as the merged PLT.40 allowlist, as the single durable repair): every dependency receipt chained after plt-40-r1 mirrors the existing Security.Secrets project input rows, and the pinned full-history scanner runs with fetch-depth 0 over all fetched branches, so a receipt line added on one open branch is reported by the secret-scan of every other open branch whose config does not cover it. Per-receipt groups would therefore deadlock concurrent branches. One additional .gitleaks.toml group is authorized: path pattern ^eng/policy/dependency-reviews/[A-Za-z0-9._-]+[.]json$ (a file directly in that directory, no subdirectory), targetRules generic-api-key, condition AND, regexTarget line, whose only two alternatives are these exact whole lines, shown with their indentation:      \"src/BuildingBlocks/ArcForges.Security.Secrets/ArcForges.Security.Secrets.csproj\": \"8ff03fdcaf23b09386fac47dd5e3e4f9689a665a569137f726456c9e59a9ecef\",      \"src/BuildingBlocks/ArcForges.Security.Secrets/Tests/ArcForges.Security.Secrets.Tests.csproj\": \"d6798bbbcf980fab4467c6d831871b075e55aeef6e09c7df67c4d72cd2334120\", each anchored as the scanner reports an added line (at most one optional leading newline and nothing else around the line). No other path, rule, clause, scanner behavior or workflow is authorized, no cross-combination of paths and digests, and every existing rule and allowlist, including the PLT.40 groups, is preserved. The focused eng/test_dependency_policy.py tests verify the actual config against the actual receipts: exactly the two lines are accepted in any receipt file under the directory (existing, PLT.44, PLT.09 and a hypothetical future one) and rejected in other paths, swapped key/digest/path pairs, changed digests, trailing text or credentials, unrelated 64-hex values and other rules. Passing pinned full-history secret-scan evidence on the PLT.44 head is required."
   },
   {
    "id": "PLT.45",
@@ -8198,7 +8259,7 @@
    "obligations": [
     {
      "ref": "WP-12.01",
-     "part": "full"
+     "part": "the shared telemetry infrastructure and the originating edge: validated typed correlation created or accepted at the origin, propagation across the local hop kinds, causation, task/run resolution (the Cloud ingress, host, ResponseMeta/ArcError and queue-wake share is mapped to CLOUD.69)"
     }
    ],
    "outcome": "Correlation created at the originating edge or accepted from a validated client value, propagated across HTTP/queue/worker/realtime/provider calls once, in shared infrastructure; causation records which operation caused which; a user-visible task/run identifier resolves to its trace.",
@@ -8219,6 +8280,12 @@
      "task": "CLOUD.01",
      "need": "a real Cloud hop to prove the full HTTP/queue/worker/realtime/provider chain",
      "why": "the desktop side can only prove propagation up to its own local hops (RPC, in-process) until a real Cloud counterpart exists; the WP-12.90 receipt records this as a named later real-integration item."
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.69",
+     "need": "the Cloud-side correlation acceptance and propagation across ingress, host, ResponseMeta/ArcError and queue wake, observable in the isolated proof environment",
+     "why": "CLOUD.01's pipeline carries no correlation, so the connected cross-owner trace the task's acceptance names cannot be observed until CLOUD.69 delivers the Cloud hops; the follow-up then attaches the typed origin to a real generated request and records the trace (CR-01, CR-04)."
     }
    ],
    "shared": [
@@ -8241,7 +8308,8 @@
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Nothing exists."
-   }
+   },
+   "notes": "Planning repair 2026-10-05 (DLV-34, DLV-41; scope moves only; no obligation or acceptance removed). The completion edge CLOUD.01 alone could never be satisfied by an observation: CLOUD.01 delivered the ingress without any correlation handling, and no Cloud task owned it. CLOUD.69 now owns the Cloud share (HTTP, Worker, host, ResponseMeta/ArcError, queue wake). The completion follow-up, after CLOUD.01 and CLOUD.69 are complete, performs the task's own remaining acceptance as one local opt-in run (P2-017, the PLT.53 precedent): a throwaway consumer outside the repository restores only the published ArcForges.Observability and generated PublicApi packages, creates the typed origin with CorrelationPropagation.BeginOrigin, sends it in RequestMeta.correlationId to the isolated proof environment under the RES-cloud-deployment lease, and records that the identifier returns in ResponseMeta/ArcError and the wake path and that the task identifier resolves to the connected local trace. The evidence says 'every available hop kind': the realtime hop and the outbound provider hop have no Cloud producer yet, are not claimed, and are recorded as pending later owners with their closing gates (WP-12.90 staged integration): CLOUD.33 (event publication, Event.correlationId) and AIR.04 (provider request identifier, CR-05) start from the CLOUD.69 seam and keep that propagation in their own acceptance. PLT.48 write scope is unchanged."
   },
   {
    "id": "PLT.49",
@@ -14537,6 +14605,12 @@
      "task": "CLOUD.04",
      "need": "receipt/lease primitives to checkpoint job progress",
      "why": "a finite job's checkpoint/receipt/lease-then-yield cycle reuses the same guarded receipt mechanism, not a second one"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.69",
+     "need": "the Cloud-side correlation seam for wake messages and job-slice calls",
+     "why": "propagating correlation once is a Cloud seam (CR-06); this task builds on it instead of adding per-module propagation"
     }
    ],
    "writes": [
@@ -14554,7 +14628,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: no job runner exists"
    },
-   "notes": "This is the generic mechanism later background jobs plug into: WP-25.02's publisher, WP-25.06 realm-transfer jobs, WP-46 backup jobs, notification delivery retries.",
+   "notes": "This is the generic mechanism later background jobs plug into: WP-25.02's publisher, WP-25.06 realm-transfer jobs, WP-46 backup jobs, notification delivery retries. Planning repair 2026-10-05: job wake messages and job-slice calls carry correlationId and causationId through the CLOUD.69 seam; this task keeps them when it replaces the proof queue consumer (no new write scope).",
    "complete": []
   },
   {
@@ -16007,6 +16081,12 @@
      "task": "CLOUD.05",
      "need": "the finite-durable-job/Queue wake mechanism",
      "why": "wake hints are delivered via Queues using the same finite-job pattern CLOUD.05 establishes"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.69",
+     "need": "the Cloud-side correlation seam for event publication",
+     "why": "propagating correlation once is a Cloud seam (CR-06); this task builds on it instead of adding per-module propagation"
     }
    ],
    "writes": [
@@ -16024,7 +16104,8 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: none exists"
    },
-   "complete": []
+   "complete": [],
+   "notes": "Planning repair 2026-10-05: the bounded DO feed and the events it publishes carry the originating correlation (Event.correlationId, contracts 03) through the CLOUD.69 seam; this is part of this task's own acceptance and of the real realtime hop that PLT.48's correlation scenario names as a later owner (no new write scope)."
   },
   {
    "id": "CLOUD.34",
@@ -17461,6 +17542,58 @@
      "why": "the emitted notifications are persisted and delivered by the Notification owner"
     }
    ]
+  },
+  {
+   "id": "CLOUD.69",
+   "title": "Correlation acceptance and propagation across ingress, response meta and queue wake",
+   "lane": "cloud",
+   "repo": "Cloud",
+   "kind": "service",
+   "size": "M",
+   "obligations": [
+    {
+     "ref": "WP-12.01",
+     "part": "the Cloud share: acceptance of a validated client correlation value or creation at the Cloud edge, and its propagation across the HTTP ingress, Worker, host, ResponseMeta/ArcError and queue-wake hops (the shared infrastructure and the desktop origin stay with PLT.48)"
+    }
+   ],
+   "outcome": "The deployed Cloud ingress and host carry one correlation identity per call (CR-01, CR-03, CR-06, HP-06): a RequestMeta.correlationId is read, validated as a canonical lowercase UUID and bound to the call context without ever influencing authorization or the current-owner decision, an absent value is created at the edge, a malformed value is refused with the registered validation.invalid_request code, and the identity is returned in ResponseMeta.correlationId and ArcError.correlationId of every reply the host builds. The Worker and host join it to one W3C traceparent per call, and the job wake message and the private job-slice call carry correlationId and causationId (the originating request or the previous wake event), so one synthetic call is joined across HTTP, Worker, host and queue-wake by the identifier alone. The task provides the one Cloud-side seam (a call-scoped correlation context for the host and a correlation envelope for Worker-originated queue messages) that later hop owners reuse instead of re-implementing propagation per module. It adds no realtime or provider behavior and no new wire field, header or contract meaning: a need for one is raised to the Contracts owner under PA-02.",
+   "provides": [
+    "cloud-correlation-seam"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "CLOUD.01",
+     "need": "the deployed ingress and host pipeline (RpcPolicy, RequestEnvelopeReader, IngressPipeline, Worker pipeline and the wake queue consumer) in which correlation is read, bound and returned",
+     "why": "correlation propagation is a change inside the pipeline CLOUD.01 establishes and cannot be written without that real seam"
+    }
+   ],
+   "shared": [
+    {
+     "resource": "RES-cloud-deployment",
+     "mode": "append"
+    }
+   ],
+   "writes": [
+    "Cloud:worker/ingress/** (read, validate or create the correlation identity at the edge, forward it to the host with one W3C traceparent, and return it on Worker-built refusals only through fields the wire registry already defines)",
+    "Cloud:worker/foundation/queue.ts, Cloud:worker/foundation/types.ts and Cloud:worker/foundation/container-client.ts (only the job wake message correlationId/causationId metadata, its closed-key parser and its forwarding in the private job-slice call; no change to lease, fence, retry or backoff semantics)",
+    "Cloud:src/ArcForges.Cloud/Ingress/** (the existing Native AOT host project, which is the real layout of the planned Cloud.Host; RequestEnvelopeReader, Caller, RpcPolicy, IngressPipeline and the proof-only PipelineProbe replies; ADP-07 and ADP-10 forbid renaming it or adding a parallel project)",
+    "Cloud:src/ArcForges.Cloud/Foundation/JobSliceService.cs and the private job-slice request handling in Cloud:src/ArcForges.Cloud/Foundation/FoundationEndpoints.cs (only to accept the wake's correlation/causation and carry them in the call context)",
+    "Cloud:tests/ArcForges.Cloud.Tests/** and Cloud:tests/worker/**",
+    "Cloud:eng/verification/pipeline-scenarios.ts and Cloud:eng/verification/foundation-scenarios.ts (only added local cross-process and explicit opt-in deployed correlation scenarios: supplied, absent, malformed, error reply, queue wake; the deployed scenarios hold the lease leases/res-cloud-deployment for the live run only)",
+    "Cloud:package.json (the explicit test file list and the scenario scripts only; no dependency or version change)",
+    "Cloud:eng/policy/dependency-policy.json and Cloud:eng/policy/dependency-reviews/cloud-69-*.json (new immutable successor chained from the then-active receipt, only because the changed bundle, manifest and source inputs are hash-bound; no coordinate, integrity value or closure entry changes)",
+    "Cloud:eng/provenance/** (immutable successor release profile, Worker bundle and runtime-notice records only where an existing record binds an input this task changes, the first-party inventory files.json and the deterministic NOTICE.txt)",
+    "Cloud:docs/cloud-ingress.md and Cloud:AGENTS.md (factual description of correlation acceptance, the seam and what remains unobserved)"
+   ],
+   "validation": "Offline unit and cross-process tests: a valid supplied identifier is echoed in ResponseMeta and ArcError and reaches the wake message and job-slice call; an absent one is created; a malformed one is refused with validation.invalid_request before any handler or authorization decision; a supplied value never changes the authorization outcome; the Worker and host share one traceparent. Explicit local opt-in deployed scenarios against the isolated proof environment, once, under the RES-cloud-deployment lease. No hosted live, device, GUI or browser run (P2-017).",
+   "evidence": "Source commit, Worker bundle and image identity, local and deployed correlation scenario results with the untested hops named (realtime and provider are not exercised), and confirmation that no new wire field or header was introduced.",
+   "notes": "Planning repair 2026-10-05 (DLV-34: scope moves only; no obligation or acceptance is removed). PLT.48's completion follow-up found that its completion prerequisite CLOUD.01 delivers a pipeline that neither reads, validates, returns nor propagates a correlation identifier (no Cloud code or documentation handles RequestMeta.correlationId, ResponseMeta.correlationId, ArcError.correlationId or a traceparent; the wake message is a closed key set without correlation) and that no Cloud task owned CR-01, CR-03, CR-06 or HP-06 for the Cloud side. This task is that owner and is deliberately small: it uses only the fields already in wire registry 04 (RequestMeta tag 3, ResponseMeta tag 4, ArcError tag 6; the generated Contracts packages already carry them) and the existing private signed job-slice call. It does not add the realtime or provider hops: Event.correlationId is populated by the publication owners (CLOUD.33 and the stream owners) and a provider request identifier (CR-05) by the provider owners (AIR.04), each of which starts from this task's seam and keeps its own acceptance. The C# origin that makes the connected trace is not a Cloud or DesktopPlatform delivery task: PLT.48's completion follow-up performs it as one local opt-in consumer run outside the repository (the PLT.53 precedent) using the published ArcForges.Observability package to create the typed origin and the published generated PublicApi client to send it to the isolated proof environment, under the RES-cloud-deployment lease, and records the connected trace. The write scope of CLOUD.01 is not reopened. CLOUD.02 changes different files of the same host project (moved Storage and Hmac sources, module projects, composition listing); rebase after it merges, append to RES-cloud-host-composition only if a registration is needed (none is planned), and regenerate hash-bound provenance after the rebase.",
+   "complete": [],
+   "baseline": {
+    "state": "not-started",
+    "notes": "Planning repair 2026-10-05: no Cloud code or document handles correlation (CLOUD.01 delivered the ingress without it); nothing exists."
+   }
   },
   {
    "id": "COM.01",
@@ -20723,6 +20856,12 @@
      "task": "AIR.02",
      "need": "metered attempts to record interactions against",
      "why": "an interaction record without a metered attempt has nothing to redact/explain"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.69",
+     "need": "the Cloud-side correlation seam for the provider interaction record",
+     "why": "propagating correlation once is a Cloud seam (CR-06); this task builds on it instead of adding per-module propagation"
     }
    ],
    "writes": [
@@ -20734,7 +20873,8 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists."
    },
-   "complete": []
+   "complete": [],
+   "notes": "Planning repair 2026-10-05: every provider interaction record carries the call's correlation identity and the provider request identifier (CR-05) through the CLOUD.69 seam; this is part of this task's own acceptance and of the real provider hop that PLT.48's correlation scenario names as a later owner (no new write scope)."
   },
   {
    "id": "AIR.05",
