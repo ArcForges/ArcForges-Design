@@ -2028,6 +2028,63 @@
    "complete": []
   },
   {
+   "id": "GOV.21",
+   "title": "Scheduled and manual policy preview of the Design main branch (post-merge drift watch)",
+   "lane": "governance",
+   "repo": "DesktopPlatform",
+   "kind": "governance",
+   "size": "S",
+   "obligations": [
+    {
+     "ref": "WP-05.06",
+     "part": "continuing detection of specification-integrity drift on the Design main branch between design-policy pin updates: the existing design-policy checker runs in its existing preview mode against the current public Design main head on a schedule and on demand, so link, citation, superseded-name, decision-coverage, delivery-graph and citation-classification failures that accumulate after the pin are reported within one schedule interval instead of at the next pin update"
+    }
+   ],
+   "outcome": "A new DesktopPlatform workflow runs only on a weekly schedule and on manual dispatch (no pull_request or push trigger, contents: read only, ubuntu-latest, the same pinned action revisions and Python version file as pr-gate.yml). It initialises an isolated Git directory whose origin is https://github.com/ArcForges/ArcForges-Design.git, fetches the current main head at depth 1 with core.autocrlf=false and hooks disabled exactly as the checker's own pinned checkout does, checks it out detached, and runs python eng/design_policy.py --preview --design-root <that directory> with the report written to artifacts/evidence/design-drift.json and uploaded. A failing checker exits non-zero, so the scheduled run fails and GitHub reports it; a clean head passes. The workflow is not a job of pr-gate.yml, is not in any ci.needs list and gates no pull request, no merge and no release. docs/design-policy.md and the AGENTS.md design-policy line state what the watch is, that a failure means Design main drifted from the policy and is repaired by a reviewed Design planning repair (and its Plan view pair) rather than by editing the checker, and that the pin still moves only through the reviewed pin update. The checker, its classification and citation algorithms, its tests, the pin, the exports and every existing workflow are unchanged; nothing is relaxed, exempted or suppressed.",
+   "provides": [
+    "design-main-drift-watch"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "GOV.14",
+     "need": "the specification-integrity checker with its --preview mode over a Design checkout (spec-integrity-check-v1)",
+     "why": "The watch only invokes that existing mode against the current Design main head; it adds no check of its own."
+    },
+    {
+     "type": "artifact",
+     "task": "GOV.18",
+     "need": "the design-policy export re-pinned to this Design repository and the delivery-graph validation in the checker",
+     "why": "The preview must validate the delivery graph and generated views of the reduced family, not the retired serial graph."
+    }
+   ],
+   "writes": [
+    "DesktopPlatform:.github/workflows/design-drift.yml (new; schedule and workflow_dispatch triggers only; no new platform, no pull_request or push trigger, no macOS runner, no secret or token other than the default read-only repository token; no change to pr-gate.yml, deep-check.yml, package-validation.yml, native-abi.yml or publish-nuget.yml, and no job added to any ci.needs list)",
+    "DesktopPlatform:docs/design-policy.md (document the watch, its failure meaning and the repair route only)",
+    "DesktopPlatform:AGENTS.md (the one design-policy sentence only: name the watch)",
+    "DesktopPlatform:eng/provenance/files.json (append only the exact new workflow path)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (only exact active-input hashes/review binding required by the existing dependency/provenance gates; no dependency or closure changes)",
+    "DesktopPlatform:eng/policy/dependency-reviews/gov-21-r1.json (new immutable successor only if an existing registered input changes; chain from the exact then-active receipt, preserve history and the full admitted closure)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    }
+   ],
+   "validation": "Offline: the existing test_design_policy.py suite and the existing pre-commit hooks (workflow syntax and pinned-action checks) pass unchanged; the workflow YAML is validated by the repository's existing hooks. A single manual dispatch of the new workflow after merge reports pass or fail on the then-current Design main head; no repeat run and no deliberately broken Design head is created. All existing DesktopPlatform PR CI passes.",
+   "evidence": "Exact-head hosted results for the retained PR checks; the workflow file showing the trigger set, permissions and the isolated fetch; one dispatch run identifying the Design head it checked and its design-drift report.",
+   "baseline": {
+    "state": "not-started"
+   },
+   "notes": "Post-adoption planning repair of 2026-10-05, a gap with no frozen-baseline counterpart. Evidence: Design main failed python eng/design_policy.py --preview --design-root after about 138 commits (duplicate and bare-citation findings) because Design has no CI and DesktopPlatform's pr-gate verifies only its pinned Design commit; Design PR 231 and Plan PR 296 repaired it. Decision recorded here: the cheaper detection vehicle is a scheduled and manual DesktopPlatform workflow, not a Design CI workflow. A Design workflow would have to run an unpinned DesktopPlatform script against Design, reversing the dependency direction, would let a checker change break every Design pull request, and would change the documented no-CI merge model for the documentation repository; it is not authorized here and may be proposed by its own planning repair if drift recurs despite this watch. The watch detects after merge and gates nothing, so it does not replace the reviewed Design planning repair that fixes a failure, and a failing run is a prompt to open that repair, never to relax the checker. The classification register is keyed by exact line hash, so an edit to a generated lane line that names a hash-algorithm or character-encoding standard needs a new register row; whether such standard names in generated lane views or code spans should stop being treated as citations changes the checker's citation algorithm and is deliberately out of scope here: it needs its own Architecture Owner decision and planning task and must keep every genuine bare-citation and duplicate finding. No change to the checker, the pin, the exports, the classification register or any existing workflow; no new dependency, runtime, package identity or SDK; no secret or credential; no wsl.exe.",
+   "complete": []
+  },
+  {
    "id": "CON.01",
    "title": "Shard contended eng inventory/constraint files by domain; fix one-owner merge protocol",
    "lane": "contracts",
