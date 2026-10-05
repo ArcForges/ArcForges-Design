@@ -14978,7 +14978,20 @@
     }
    ],
    "writes": [
-    "Cloud:src/ArcForges.Cloud.Host/Readiness/**"
+    "Cloud:worker/readiness/** (new: the readiness model and its closed vocabulary, the declared required binding sets per environment, the component probes, the Container start-failure classification, the report and its HTTP form; the Worker half of the real layout of the planned src/ArcForges.Cloud.Host/Readiness/**)",
+    "Cloud:src/ArcForges.Cloud/Readiness/** (new: the host half, in the existing Native AOT host project, which is the real layout of the planned src/ArcForges.Cloud.Host/Readiness/**; the adoption rules forbid renaming it or adding a parallel project)",
+    "Cloud:worker/foundation/proof-routes.ts and Cloud:worker/foundation/types.ts (only to serve the operator readiness operation from the readiness module and to answer a Container that did not start with the classified refusal in the proof session forward), Cloud:worker/ingress/pipeline.ts (only the classified, retryable refusal of a Container that did not start; no change to routing, admission, credentials, deadlines or the frame guard), Cloud:src/ArcForges.Cloud/Foundation/FoundationOperations.cs, Cloud:src/ArcForges.Cloud/Foundation/FoundationJson.cs and Cloud:src/ArcForges.Cloud/Foundation/SessionService.cs (only the readiness operation and the readiness plan call that moves into Readiness/)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Readiness/**, Cloud:tests/worker/readiness-*.test.ts and the existing tests of the files named above (only where their pinned readiness or Container-refusal behavior changes)",
+    "Cloud:eng/verification/** (only the readiness scenarios of the explicit opt-in local and deployed runs, and the reading of the readiness reply by the existing scenarios), Cloud:package.json (only the new test files in the test list), Cloud:tsconfig.json (only includes of new Node files) and Cloud:.dockerignore (only the admission rule of the new Readiness source folder, so the image build context holds the sources that compile into the host)",
+    "Cloud:eng/policy/dependency-policy.json and Cloud:eng/policy/dependency-reviews/cloud-08-*.json (new immutable successor chained from the then-active receipt, only because the changed bundle, manifest and source inputs are hash-bound; no coordinate, integrity value or closure entry changes)",
+    "Cloud:eng/provenance/** (immutable successor release profile, Worker bundle and runtime-notice records only where an existing record binds an input this task changes, the first-party inventory files.json and the deterministic NOTICE.txt)",
+    "Cloud:docs/cloud-readiness.md (new, factual description of the components, the states, the reasons and what each probe does and does not prove), Cloud:docs/cloud-ingress.md and Cloud:docs/prf-07-foundation-proof.md (only factual pointers and the changed refusal) and Cloud:AGENTS.md (only a pointer)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-cloud-deployment",
+     "mode": "append"
+    }
    ],
    "validation": "opt-in local runtime tests: missing binding/plan mismatch fails readiness, not successful partial execution",
    "evidence": "missing-binding and plan-mismatch readiness-failure results",
@@ -14986,7 +14999,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: none exists; only a Hello /api/healthz stub"
    },
-   "notes": "Can be built in parallel with WP-22/23/24/25 once CLOUD.01/02 exist; readiness for R2/Queue/DO bindings can be checked even while those bindings are still otherwise unused stubs.",
+   "notes": "Can be built in parallel with WP-22/23/24/25 once CLOUD.01/02 exist; readiness for R2/Queue/DO bindings can be checked even while those bindings are still otherwise unused stubs. Planning repair 2026-10-05: the planned src/ArcForges.Cloud.Host/Readiness/** does not exist (the Native AOT host is the existing src/ArcForges.Cloud project, which the adoption rules forbid renaming), and the readiness of the Worker, the Container, D1, the Durable Object, R2 and the Queue is partly decided in the Worker (bindings, probes, the Container's start failures), so the write scope is bound to the real layout as for CLOUD.01, CLOUD.02, CLOUD.03 and COM.05: a Worker module and a host folder, the narrow edits of the existing proof route, ingress refusal and host operation that call them, tests, the opt-in scenarios, the dependency and provenance records that hash-bind the changed inputs, and the factual document. The task adds no public production route: the production Worker keeps serving the anonymous Hello method and its health route only, so the full report is served on the operator-signed proof surface. The launch-capacity.v1 readiness timeout (model 04) is a CLOUD.10 output, so this task uses a named default of the same value, and the gated D1 migration step is CLOUD.70.",
    "complete": []
   },
   {
