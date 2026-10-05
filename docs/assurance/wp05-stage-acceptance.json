@@ -4,9 +4,9 @@
   "substep": "05.90",
   "task": "GOV.15",
   "completedOn": "2026-10-05",
-  "status": "delivered",
+  "status": "complete",
   "scope": "Architecture and repository policy suites and the cross-repository integration graph over published metadata; no runtime, device, live-service or commercial acceptance",
-  "reasonNotComplete": "GOV.07 is delivered, not complete (executable function-pointer deferral, repair tracked as GOV.20); the completion edge GOV.15 -> GOV.07 is added by Design#230 / Plan#295",
+  "reasonNotComplete": null,
   "integrationEvidence": "wp05-90-integration-evidence.md",
   "implementation": {
     "repository": "DesktopPlatform",
@@ -141,13 +141,17 @@
     },
     {
       "task": "GOV.07",
-      "state": "delivered",
+      "state": "complete",
       "repository": "ArcScope",
       "pr": "https://github.com/ArcForges/ArcScope/pull/23",
       "reviewedHead": "0a9c2c053c3c1066029a032a4481e85b949ddef8",
       "mergeCommit": "80dd7f24009a5259cf432551b26d70b634b7b746",
       "source": "ledger",
-      "deferral": "executable classified non-production for banned-API and production-only layer rules; repair GOV.20"
+      "completionPr": "https://github.com/ArcForges/ArcScope/pull/24",
+      "completionReviewedHead": "c4407fff617a3e4c5377a2ccbb405eca589e7b3b",
+      "completionMergeCommit": "b0ff5cd18fb0ffbbaf1bd8b7b67cb7304e6ba794",
+      "dependency": "GOV.20 DesktopPlatform#143 head 49bb6e195b58f769914a0797e319e6937b7c82b1 merge 88fe5996b5835abd8911ab9036fda67743461f18",
+      "carveOut": "generated System.Text.Json files of the executable are filtered from BAN-REFLECTION at an anchored path and are not reflection-enforced"
     },
     {
       "task": "GOV.09",
@@ -209,12 +213,11 @@
   ],
   "noTask": "GOV.08 does not exist in the delivery graph",
   "openItems": [
-    "GOV.07 completion: Build.Policy function-pointer scanner repair (GOV.20) and ArcScope pin move",
     "PG-11 remains open: 406 of 406 invariants not yet implemented per GOV.13",
-    "Snapshot refresh after later metadata changes (local opt-in snapshot/drift); the pull-request gate evaluates the committed pin only",
-    "Scheduled or event-driven snapshot refresh is not implemented",
     "SI-09 gate shapes not detected: backgrounded gate, gate piped to tee, gate in a dead shell branch, needs on a job that never runs",
-    "Warning near 30 days before the 45-day snapshot failure (suggested follow-up)"
+    "Warning near 30 days and a scheduled refresh before the 45-day snapshot failure (follow-ups, not implemented)",
+    "Authenticated GitHub reads for the committed tool (proposed follow-up)",
+    "Reflection enforcement of the ArcScope executable generated System.Text.Json files (alternatives in ledger gov-07)"
   ],
   "notRun": [
     "runtime, device, GUI, browser, live-service, inference and installed-consumer tests",
@@ -227,6 +230,31 @@
     "enforcement": "verify fails SI-10 when the pin is older; refresh is manual (snapshot) and a drift comparison is local opt-in",
     "collectedOn": "2026-10-05",
     "failureBeginsAbout": "2026-11-19",
-    "blastRadius": "stage-integration, the aggregate ci job and the Publish NuGet main run fail for every DesktopPlatform change until the snapshot is refreshed"
+    "blastRadius": "stage-integration, the aggregate ci job and the Publish NuGet main run fail for every DesktopPlatform change until the snapshot is refreshed",
+    "firstFailingUtcDay": "2026-11-20"
+  },
+  "reasonNotCompleteHistory": "delivered while GOV.07 was open; GOV.07 completed (ArcScope#24 merge b0ff5cd18fb0ffbbaf1bd8b7b67cb7304e6ba794) after GOV.20 (DesktopPlatform#143 merge 88fe5996b5835abd8911ab9036fda67743461f18)",
+  "completionFollowUp": {
+    "snapshotRefreshPr": "https://github.com/ArcForges/DesktopPlatform/pull/148",
+    "mergeCommit": "6371d596b1ed8c92baaea90bd1622f7face61195",
+    "mainRun": "https://github.com/ArcForges/DesktopPlatform/actions/runs/37300476655",
+    "mainRunResult": "Publish NuGet succeeded (observed)",
+    "collectedOn": "2026-10-05",
+    "pins": {
+      "DesktopPlatform": "0e5244a1a9303ea12b6fefddb9c760f6ab424e3a",
+      "Contracts": "db9df61430cd8a6c3765a7986bcc4b4165307abc",
+      "ArcScope": "b0ff5cd18fb0ffbbaf1bd8b7b67cb7304e6ba794",
+      "Cloud": "b24b0cf2cd83b163514fd5f7fd31a559e73fa18d",
+      "AI": "5421c3789240093b2fce36322c2eb7773325ec7b",
+      "Web": "794ef933d3dba836c60b29a481091d40ab4a2b1a",
+      "Mobile": "377fa5d6e00b7a50d37d2f8434f915850c6d5b9f"
+    },
+    "findings": 0,
+    "driftCurrent": {
+      "differences": 3,
+      "findings": 0,
+      "detail": "DesktopPlatform 6371d596 differs in localProjects and projectRefs (NAT.14); Cloud moved to c588685ded5b",
+      "method": "one-off read-only gh api wrapper; the committed tool is unauthenticated and rate limited"
+    }
   }
 }
