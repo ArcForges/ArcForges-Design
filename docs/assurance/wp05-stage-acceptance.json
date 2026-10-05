@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "workPackage": "05",
+  "substep": "05.90",
+  "task": "GOV.15",
+  "completedOn": "2026-10-05",
+  "status": "delivered",
+  "scope": "Architecture and repository policy suites and the cross-repository integration graph over published metadata; no runtime, device, live-service or commercial acceptance",
+  "reasonNotComplete": "GOV.07 is delivered, not complete (executable function-pointer deferral, repair tracked as GOV.20); the completion edge GOV.15 -> GOV.07 is added by Design#230 / Plan#295",
+  "integrationEvidence": "wp05-90-integration-evidence.md",
+  "implementation": {
+    "repository": "DesktopPlatform",
+    "pullRequest": "https://github.com/ArcForges/DesktopPlatform/pull/142",
+    "path": "eng/stage_integration",
+    "rules": [
+      "SI-01",
+      "SI-02",
+      "SI-03",
+      "SI-04",
+      "SI-05",
+      "SI-06",
+      "SI-07",
+      "SI-08",
+      "SI-09",
+      "SI-10",
+      "SI-11"
+    ],
+    "planningRepair": [
+      "https://github.com/ArcForges/ArcForges-Design/pull/226",
+      "https://github.com/ArcForges/Plan/pull/292",
+      "https://github.com/ArcForges/ArcForges-Design/pull/230",
+      "https://github.com/ArcForges/Plan/pull/295"
+    ],
+    "aggregateGate": "stage-integration is listed in the ci job needs of pr-gate.yml; the repository has no required-status-check rule, so ci is the gate",
+    "reviewedRevisionHead": "2dfc0971f701d1e8571243b91e75ac5117645da1",
+    "pullRequestHostedRun": "https://github.com/ArcForges/DesktopPlatform/actions/runs/37267308609",
+    "pullRequestHostedResult": "all 21 checks passed including stage-integration and the aggregate ci job (observed)"
+  },
+  "pinnedMetadata": {
+    "readOn": "2026-10-05",
+    "method": "one tree listing plus metadata files per repository over HTTPS; no clone, no source read",
+    "findings": 0,
+    "repositories": [
+      {
+        "repository": "DesktopPlatform",
+        "boundary": "AGPL",
+        "commit": "5405d80a7e49d7d5b385db6859ab9ab3c5d6dd18",
+        "metadataFiles": 68,
+        "hostedMainRun": "https://github.com/ArcForges/DesktopPlatform/actions/runs/37208797893",
+        "hostedMainWorkflow": "Publish NuGet",
+        "conclusion": "success"
+      },
+      {
+        "repository": "Contracts",
+        "boundary": "Apache",
+        "commit": "db9df61430cd8a6c3765a7986bcc4b4165307abc",
+        "metadataFiles": 40,
+        "hostedMainRun": "https://github.com/ArcForges/Contracts/actions/runs/37251542304",
+        "hostedMainWorkflow": "CI",
+        "additionalRun": "https://github.com/ArcForges/Contracts/actions/runs/37251542319",
+        "additionalWorkflow": "Security",
+        "conclusion": "success"
+      },
+      {
+        "repository": "ArcScope",
+        "boundary": "AGPL",
+        "commit": "80dd7f24009a5259cf432551b26d70b634b7b746",
+        "metadataFiles": 10,
+        "hostedMainRun": "https://github.com/ArcForges/ArcScope/actions/runs/37227084942",
+        "hostedMainWorkflow": "CI",
+        "conclusion": "success"
+      },
+      {
+        "repository": "Cloud",
+        "boundary": "AGPL",
+        "commit": "ea08736d571cf0f4b44e022117cb44652a392e66",
+        "metadataFiles": 13,
+        "hostedMainRun": "https://github.com/ArcForges/Cloud/actions/runs/37255090427",
+        "hostedMainWorkflow": "CI",
+        "conclusion": "success"
+      },
+      {
+        "repository": "AI",
+        "boundary": "AGPL",
+        "commit": "5421c3789240093b2fce36322c2eb7773325ec7b",
+        "metadataFiles": 7,
+        "hostedMainRun": "https://github.com/ArcForges/AI/actions/runs/37207551785",
+        "hostedMainWorkflow": "CI",
+        "conclusion": "success"
+      },
+      {
+        "repository": "Web",
+        "boundary": "AGPL",
+        "commit": "794ef933d3dba836c60b29a481091d40ab4a2b1a",
+        "metadataFiles": 9,
+        "hostedMainRun": "https://github.com/ArcForges/Web/actions/runs/37111148859",
+        "hostedMainWorkflow": "CI",
+        "conclusion": "success"
+      },
+      {
+        "repository": "Mobile",
+        "boundary": "Apache",
+        "commit": "377fa5d6e00b7a50d37d2f8434f915850c6d5b9f",
+        "metadataFiles": 9,
+        "hostedMainRun": "https://github.com/ArcForges/Mobile/actions/runs/37072330027",
+        "hostedMainWorkflow": "CI",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "joinedTasks": [
+    {
+      "task": "GOV.04",
+      "state": "complete",
+      "repository": "DesktopPlatform",
+      "pr": "https://github.com/ArcForges/DesktopPlatform/pull/67",
+      "reviewedHead": "2e180f7826ef9cae0b679db7d10459e51027d4b2",
+      "mergeCommit": "8cb04f44116b5e77f7c3c54d58d89ac5b4ab78bc",
+      "source": "ledger"
+    },
+    {
+      "task": "GOV.05",
+      "state": "complete",
+      "repository": "Contracts",
+      "pr": "https://github.com/ArcForges/Contracts/pull/71",
+      "reviewedHead": "24b36e6caf3e411309532da42934fb495e0f796f",
+      "mergeCommit": "2b41656c52d4073e05923a189ef8dd4974b7dc39",
+      "source": "ledger"
+    },
+    {
+      "task": "GOV.06",
+      "state": "complete",
+      "repository": "DesktopPlatform",
+      "pr": "https://github.com/ArcForges/DesktopPlatform/pull/138",
+      "reviewedHead": "65abc363220989fc277504f5dd53f80e9d49afb1",
+      "mergeCommit": "d6e3fabf4dea2112d9c594c5eb5ac7f679c8be20",
+      "source": "ledger"
+    },
+    {
+      "task": "GOV.07",
+      "state": "delivered",
+      "repository": "ArcScope",
+      "pr": "https://github.com/ArcForges/ArcScope/pull/23",
+      "reviewedHead": "0a9c2c053c3c1066029a032a4481e85b949ddef8",
+      "mergeCommit": "80dd7f24009a5259cf432551b26d70b634b7b746",
+      "source": "ledger",
+      "deferral": "executable classified non-production for banned-API and production-only layer rules; repair GOV.20"
+    },
+    {
+      "task": "GOV.09",
+      "state": "complete",
+      "repository": "Cloud",
+      "pr": "https://github.com/ArcForges/Cloud/pull/43",
+      "reviewedHead": "1679749041988ed8181f21830bdcefd90f2b6a9a",
+      "mergeCommit": "ea08736d571cf0f4b44e022117cb44652a392e66",
+      "source": "ledger"
+    },
+    {
+      "task": "GOV.10",
+      "state": "complete",
+      "repository": "AI",
+      "pr": "https://github.com/ArcForges/AI/pull/28",
+      "reviewedHead": "fbe27687b57b78a1c88431b883f821a64084ad22",
+      "mergeCommit": "5421c3789240093b2fce36322c2eb7773325ec7b",
+      "source": "ledger"
+    },
+    {
+      "task": "GOV.11",
+      "state": "complete",
+      "repository": "Web",
+      "pr": "https://github.com/ArcForges/Web/pull/20",
+      "reviewedHead": "202483ae52513716325b382c1093bf0bd87bc951",
+      "mergeCommit": "cd65b035c85532cd4c0467d31ac90e1006d8fa9a",
+      "source": "ledger"
+    },
+    {
+      "task": "GOV.12",
+      "state": "complete",
+      "repository": "Mobile",
+      "pr": "https://github.com/ArcForges/Mobile/pull/17",
+      "reviewedHead": "ec43fc0f6abccc98d58fc46b2e21acb9c342343c",
+      "mergeCommit": "34c64e05fcfb9da81d41b999555090938263947e",
+      "source": "ledger"
+    },
+    {
+      "task": "GOV.13",
+      "state": "complete",
+      "repository": "DesktopPlatform",
+      "source": "ledger",
+      "invariants": {
+        "total": 406,
+        "enforcedPassing": 0,
+        "enforcedFailing": 0,
+        "notYetImplemented": 406
+      }
+    },
+    {
+      "task": "GOV.14",
+      "state": "complete",
+      "repository": "DesktopPlatform",
+      "pr": "https://github.com/ArcForges/DesktopPlatform/pull/68",
+      "reviewedHead": "fdffa0ce6c57e1bf7acb4e43bdd9651e40939bf2",
+      "mergeCommit": "357e8a56004ff08776767ff6a9e43e138071685e",
+      "source": "ledger"
+    }
+  ],
+  "noTask": "GOV.08 does not exist in the delivery graph",
+  "openItems": [
+    "GOV.07 completion: Build.Policy function-pointer scanner repair (GOV.20) and ArcScope pin move",
+    "PG-11 remains open: 406 of 406 invariants not yet implemented per GOV.13",
+    "Snapshot refresh after later metadata changes (local opt-in snapshot/drift); the pull-request gate evaluates the committed pin only",
+    "Scheduled or event-driven snapshot refresh is not implemented"
+  ],
+  "notRun": [
+    "runtime, device, GUI, browser, live-service, inference and installed-consumer tests",
+    "macOS CI",
+    "artifact download, hash audit, republish, tag, signing or deployment"
+  ],
+  "snapshotCurrency": {
+    "maxAgeDays": 45,
+    "owner": "DesktopPlatform integration owner (roles/integration-desktopplatform)",
+    "enforcement": "verify fails SI-10 when the pin is older; refresh is manual (snapshot) and a drift comparison is local opt-in"
+  }
+}
