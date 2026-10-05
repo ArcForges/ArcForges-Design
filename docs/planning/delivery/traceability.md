@@ -186,7 +186,7 @@ Every active numbered substep and every package-level obligation maps to the del
 | Obligation | Title | Delivery tasks (part) |
 |---|---|---|
 | [WP-12.00](../work-packages/12-observability-foundation.md#rule-wp-12.00) | Emission and dimensions | [PLT.47](lanes/platform.md#task-plt-47) (full) |
-| [WP-12.01](../work-packages/12-observability-foundation.md#rule-wp-12.01) | Correlation and causation | [PLT.48](lanes/platform.md#task-plt-48) (full) |
+| [WP-12.01](../work-packages/12-observability-foundation.md#rule-wp-12.01) | Correlation and causation | [PLT.48](lanes/platform.md#task-plt-48) (the shared telemetry infrastructure and the originating edge: validated typed correlation created or accepted at the origin, propagation across the local hop kinds, causation, task/run resolution (the Cloud ingress, host, ResponseMeta/ArcError and queue-wake share is mapped to CLOUD.69))<br>[CLOUD.69](lanes/cloud.md#task-cloud-69) (the Cloud share: acceptance of a validated client correlation value or creation at the Cloud edge, and its propagation across the HTTP ingress, Worker, host, ResponseMeta/ArcError and queue-wake hops (the shared infrastructure and the desktop origin stay with PLT.48)) |
 | [WP-12.02](../work-packages/12-observability-foundation.md#rule-wp-12.02) | Redaction by construction | [PLT.49](lanes/platform.md#task-plt-49) (full) |
 | [WP-12.03](../work-packages/12-observability-foundation.md#rule-wp-12.03) | Cardinality and sampling | [PLT.50](lanes/platform.md#task-plt-50) (full) |
 | [WP-12.04](../work-packages/12-observability-foundation.md#rule-wp-12.04) | Health probes | [PLT.51](lanes/platform.md#task-plt-51) (full) |
