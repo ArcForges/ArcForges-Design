@@ -1059,7 +1059,7 @@
    ],
    "writes": [
     "DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/ProjectGraph.cs (ReadCompilation source materialization and semantic reconstruction only)",
-    "DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/PolicyEngine.cs (the private generated-type recognition used by AT-11/AT-12 only; no other rule, rule identifier, message, threshold or exception-handling change)",
+    "DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/PolicyEngine.cs (the private generated-type recognition used by the two generated-type architecture rules only; no other rule, rule identifier, message, threshold or exception-handling change)",
     "DesktopPlatform:tests/ArchitectureTests/GeneratedSourceReconstructionTests.cs (GeneratedRegex partial-method regression only)",
     "DesktopPlatform:tests/ArchitectureTests/GeneratedTypeRecognitionTests.cs (positive and negative generated-type recognition regressions over in-memory compilations only)",
     "DesktopPlatform:eng/provenance/files.json (append only the exact first-party regression source paths of the new test files)",
@@ -1145,7 +1145,7 @@
     "ArcScope:tests/ArchitectureTests/**",
     "ArcScope:eng/policy/exceptions.json",
     "ArcScope:ArcScope.slnx (add the new host project only)",
-    "ArcScope:Directory.Packages.props (the exact ArcForges.Build.Policy pin moved to the published GOV.06 candidate, and the exact published ArcForges.Contracts.Validation candidate that carries the CON.23 build-only naming tools only if the naming scan is wired through it; no other coordinate, runtime or version change)",
+    "ArcScope:Directory.Packages.props (the exact ArcForges.Build.Policy pin moved to the published GOV.06 candidate and later, in the completion follow-up, to the published GOV.20 candidate, and the exact published ArcForges.Contracts.Validation candidate that carries the CON.23 build-only naming tools only if the naming scan is wired through it; no other coordinate, runtime or version change)",
     "ArcScope:tests/ArchitectureTests/packages.lock.json",
     "ArcScope:src/ArcForges.ArcScope.Domain/packages.lock.json, ArcScope:src/ArcForges.ArcScope.Core/packages.lock.json, ArcScope:src/ArcForges.ArcScope/packages.lock.json, ArcScope:tests/ArcForges.ArcScope.Tests/packages.lock.json, ArcScope:eng/ArcForges.Repository/packages.lock.json (regenerated only for the central pin change)",
     "ArcScope:eng/policy/dependency-policy.json",
@@ -1170,8 +1170,15 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "Fixture-driven; does not require ArcScope's own product work (WP33 to WP35) to have landed. Write scope extended by the 2026-10-04 governance-chain planning repair: adding the host project needs the solution entry, the exact ArcForges.Build.Policy pin move (ArcScope pins 1.0.0-ci.20.1, which predates GOV.04's engine candidate 1.0.0-ci.31.1 and GOV.06's repair), every project lock the central pin changes (Directory.Build.props gives every project the package reference), dependency and provenance bindings, the licence inventory row and CI wiring. ArcScope is AGPL-3.0-only, so the host needs no RP-03 exception and none may be added. No security-scanner, gitleaks or secret-scan configuration change is authorized; if a new receipt digest line triggers the secret scan, that needs its own narrow planning repair. The pin cannot move before GOV.06's candidate is published.",
-   "complete": []
+   "notes": "Fixture-driven; does not require ArcScope's own product work (WP33 to WP35) to have landed. Write scope extended by the 2026-10-04 governance-chain planning repair: adding the host project needs the solution entry, the exact ArcForges.Build.Policy pin move (ArcScope pins 1.0.0-ci.20.1, which predates GOV.04's engine candidate 1.0.0-ci.31.1 and GOV.06's repair), every project lock the central pin changes (Directory.Build.props gives every project the package reference), dependency and provenance bindings, the licence inventory row and CI wiring. ArcScope is AGPL-3.0-only, so the host needs no RP-03 exception and none may be added. No security-scanner, gitleaks or secret-scan configuration change is authorized; if a new receipt digest line triggers the secret scan, that needs its own narrow planning repair. The pin cannot move before GOV.06's candidate is published. Completion repair 2026-10-05: the executable (ArcForges.ArcScope, Native AOT, role UserInterface) was delivered classified Production: false because the pinned engine's BannedSymbolScanner.Scan throws on the unmanaged function-pointer calls in NativePackageProof.cs (Build.Policy 1.0.0-ci.94.1). GOV.20 repairs that scanner in DesktopPlatform; this task now has a completion prerequisite on GOV.20, and its completion follow-up (DLV-41) moves the Build.Policy pin to the exact published GOV.20 candidate through its own reviewed successor receipt, lets its self-expiring deferral check fail, restores Production: true for the executable with an updated per-rule fixture table and executable negatives (a banned call, a reflection entry point, a blocking wait and a binary floating-point price in the executable), and removes the deferral text; no other coordinate, rule or scanner change.",
+   "complete": [
+    {
+     "type": "integration",
+     "task": "GOV.20",
+     "need": "the published ArcForges.Build.Policy candidate whose banned-symbol scanner audits unmanaged function-pointer invocations instead of throwing",
+     "why": "ArcScope's Native AOT executable contains unmanaged function-pointer calls, so its banned-API scan, public-API test binding and production-only layer rules stay unenforced (Production: false) until the shared scanner can audit it; GOV.07 cannot complete with that deferral and must pin the exact candidate through its own reviewed successor."
+    }
+   ]
   },
   {
    "id": "GOV.09",
@@ -1684,11 +1691,16 @@
    ],
    "writes": [
     "DesktopPlatform:eng/**",
+    "DesktopPlatform:.github/workflows/pr-gate.yml (one new offline job that runs the cross-repository integration tests and verification in the pull-request pipeline; the only change to an existing job is appending the new job id to the aggregate ci job needs list so a failure fails the required aggregate gate; no other change to any existing job, trigger, permission, action pin or secret handling)",
     "Design:docs/assurance/wp05-90-*.md, wp05-stage-acceptance.md/.json"
    ],
    "shared": [
     {
      "resource": "RES-design-evidence",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-build-config",
      "mode": "append"
     }
    ],
@@ -1699,7 +1711,14 @@
    },
    "packageAcceptance": "WP-05",
    "notes": "Terminal task for WP05. WP06 and WP21 depend on this as their own external artifact prerequisite (README downstream index: 05 -> 06, 21).",
-   "complete": []
+   "complete": [
+    {
+     "type": "integration",
+     "task": "GOV.07",
+     "need": "ArcScope's own policy suite complete, including its executable's banned-API and production-only rules (the GOV.07 function-pointer deferral repaired through GOV.20)",
+     "why": "The WP05 stage receipt joins every repository's real policy result; a stage with one repository's executable deliberately unenforced is delivered, not complete."
+    }
+   ]
   },
   {
    "id": "GOV.16",
@@ -1959,6 +1978,115 @@
    },
    "notes": "Planning repair of 2026-10-04 (Cloud precedent: the PRF.07 claimant admitted Wrangler 4.143.1 as Cloud PR 32 under that task's write scope). AI main's unchanged lock fails npm audit --audit-level=high because new undici advisories (7.0.0 to 7.29.0) are reached through the locked wrangler 4.135.0, miniflare 5.20260918.0-alpha and @cloudflare/vitest-plugin 1.1.13, which pins wrangler and miniflare exactly; every AI pull request, including GOV.10, is blocked behind it. Dependabot PR 27 targets wrangler 4.147.0 and is left untouched. The smallest closure that clears the audit and equals Cloud's is wrangler 4.143.1 (miniflare 5.20260926.1-alpha, undici 7.29.1) with @cloudflare/vitest-plugin 1.3.2 (the release that pins exactly that wrangler and miniflare) and @cloudflare/workers-types 5.20260926.1 (Wrangler's peer range). No other dependency, no runtime behavior, no source or Worker change, and no other repository is authorized. The secret-scan support is the narrow planning repair required for an immutable profile that repeats the existing public protobuf api_pb.js digest line (same class as the merged r7 admission and the GOV.10 repair): only the path pattern is extended, to r1 through r9 so that the following GOV.10 profile (ai-worker-r9, after this admission takes r8) needs no further change; the regex line, rule, scanner, workflow, baseline and every other configuration are unchanged, and passing full-history secret-scan evidence on the pull request head is required. GOV.10 carries an artifact start edge on this task, takes ai-worker-r9 and the following successors, and owns no .gitleaks.toml change: this task's r[123456789] pattern covers r9 and must not be rewritten.",
    "start": [],
+   "complete": []
+  },
+  {
+   "id": "GOV.20",
+   "title": "Build.Policy banned-symbol scanner: audit unmanaged function-pointer invocations instead of throwing",
+   "lane": "governance",
+   "repo": "DesktopPlatform",
+   "kind": "governance",
+   "size": "S",
+   "obligations": [
+    {
+     "ref": "WP-05.04",
+     "part": "shared-engine banned-symbol scanner mechanism: an invocation through an unmanaged or managed function pointer has no managed callee symbol, so the scanner must classify it without aborting the whole scan, while every other unresolvable invocation stays fail-closed, so that all seven banned categories can be enforced on production code that makes such calls (ArcScope's Native AOT executable)"
+    }
+   ],
+   "outcome": "BannedSymbolScanner.Scan in the existing ArcForges.Build.Policy engine no longer throws \"Unresolved invocation cannot be audited\" for an invocation whose bound operation is a function-pointer invocation (a delegate* unmanaged or delegate* managed call). Such a call has no managed callee symbol, so no symbol-based category (reflection, code generation, blocking, provider, logging) can apply to the call itself; the scan continues, the invocation's receiver and arguments are still visited by the same node walk (a banned call, secret-bearing logging argument or binary floating-point money value nested in the arguments is still reported), and the BAN-POINTER field rule is unchanged. Every other invocation with no resolved method symbol (except the existing nameof and AOT dynamic-invocation branches) still throws exactly as today, so the scanner stays fail-closed for anything it cannot classify. The seven-ID banned-API catalog, rule identifiers, messages and thresholds are unchanged: the function-pointer call is deliberately not a new category (WP-05.04 names none, and the sealed catalog is a stable seven IDs). The normal DesktopPlatform merge publishes the fixed candidate under the existing ArcForges.Build.Policy package identity. Positive and negative regressions pass: the exact reproducer (an unsafe class whose method calls a delegate* unmanaged[Cdecl]<uint*, uint*, int> obtained from NativeLibrary.GetExport with a null and an address-of argument, as in ArcScope NativePackageProof.cs) scans without throwing and yields zero findings; a managed function-pointer call does the same; a banned call, a blocking wait in an async method, a reflection entry point on an AOT path, a secret logged and a double price nested in the pointer call's arguments are still reported at their own nodes; a banned call elsewhere in the same file is still reported; an unresolved non-function-pointer invocation still throws.",
+   "provides": [
+    "banned-symbol-scanner-function-pointer-audit"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "GOV.06",
+     "need": "the published ArcForges.Build.Policy candidate (generated-source reconstruction and generated-type recognition) that the repair builds on",
+     "why": "This is a narrowly scoped producer repair to the shared Build.Policy banned-symbol scanner, made on top of the engine consumers already pin; it is neither a replacement scanner nor a consumer-side workaround or exception."
+    }
+   ],
+   "writes": [
+    "DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/BannedSymbolScanner.cs (the unresolved-invocation branch of Scan only; no category, rule identifier, message, threshold, catalog or other rule change)",
+    "DesktopPlatform:tests/ArchitectureTests/FunctionPointerInvocationTests.cs (new: positive, negative and security regressions over in-memory compilations only, including the exact reproducer)",
+    "DesktopPlatform:eng/provenance/files.json (append only the exact first-party regression source path of the new test file)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (only exact active-input hashes/review binding required by the existing dependency/provenance gates; no dependency or closure changes)",
+    "DesktopPlatform:eng/policy/dependency-reviews/gov-20-r1.json (new immutable successor only if an existing registered input changes; chain from the exact then-active receipt, preserve history and the full admitted closure)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-package-inventory",
+     "mode": "read"
+    }
+   ],
+   "validation": "Pinned SDK locked restore and applicable Release build; the ArchitectureTests regressions must reproduce the failure on the unrepaired scanner (the exact reproducer throws) and pass on the repaired one, with the retained SharedPolicyTests banned-category fixtures unchanged and passing; all existing DesktopPlatform PR CI and package-validation checks pass. The normal DesktopPlatform integration merge publishes the next candidate under the same ArcForges.Build.Policy package identity.",
+   "evidence": "Exact-head local and hosted results for the function-pointer regressions (red on the previous scanner, green on the repair) and the retained policy suite; exact source commit and successful publication receipt identifying the new ArcForges.Build.Policy candidate from the normal DesktopPlatform main merge.",
+   "baseline": {
+    "state": "not-started"
+   },
+   "notes": "Post-adoption planning repair of 2026-10-05, a gap with no frozen-baseline counterpart. Evidence: ArcScope GOV.07 (PR 23, merged, task delivered) found that BannedSymbolScanner.Scan (src/Build/ArcForges.Build.Policy/Architecture/BannedSymbolScanner.cs, the branch that throws InvalidOperationException(\"Unresolved invocation cannot be audited: ...\")) aborts on the unmanaged function-pointer call in src/ArcForges.ArcScope/NativePackageProof.cs, because model.GetSymbolInfo of a function-pointer invocation has no IMethodSymbol. ArcScope therefore classifies its Native AOT executable Production: false, and the executable's banned-API scan, public-API test binding and production-only layer rules are not enforced (a reviewer mutant adding .Wait(), Type.GetType and a double price to the executable passed the hosted gate); its deferral check fails once the engine can audit that file. GOV.06 is complete and out of scope for a repair, and its write scope names only ProjectGraph.cs and PolicyEngine.cs, so the scanner change needs its own task (ADP-07: a change outside an existing task's write scope requires the planning repair). The decision recorded here: a function-pointer invocation is not a banned API and not a managed symbol; the scan continues and still audits its operands, and the engine is not given a new category, a role exemption or a suppression. Only the unresolved branch for a function-pointer invocation is relaxed; the fallback stays fail-closed. No consumer pin moves in this task: ArcScope moves its own Build.Policy pin through the GOV.07 completion follow-up (GOV.07 now has a completion prerequisite on this task). Contracts (GOV.05) and Cloud (GOV.09) pin the new candidate only through their own reviewed successors, and only if and when their own scans meet the same failure; this task authorizes no change in them. No dependency, runtime, package identity or SDK change; do not edit the package inventory entry or any consumer pin here.",
+   "complete": []
+  },
+  {
+   "id": "GOV.21",
+   "title": "Scheduled and manual policy preview of the Design main branch (post-merge drift watch)",
+   "lane": "governance",
+   "repo": "DesktopPlatform",
+   "kind": "governance",
+   "size": "S",
+   "obligations": [
+    {
+     "ref": "WP-05.06",
+     "part": "continuing detection of specification-integrity drift on the Design main branch between design-policy pin updates: the existing design-policy checker runs in its existing preview mode against the current public Design main head on a schedule and on demand, so link, citation, superseded-name, decision-coverage, delivery-graph and citation-classification failures that accumulate after the pin are reported within one schedule interval instead of at the next pin update"
+    }
+   ],
+   "outcome": "A new DesktopPlatform workflow runs only on a weekly schedule and on manual dispatch (no pull_request or push trigger, contents: read only, ubuntu-latest, a timeout-minutes and a concurrency group, the same SHA-pinned action revisions and Python version file as pr-gate.yml, and checkout with persist-credentials: false). It initialises an isolated Git directory whose origin is https://github.com/ArcForges/ArcForges-Design.git, fetches the current main head at depth 1 with core.autocrlf=false and hooks disabled exactly as the checker's own pinned checkout does, checks it out detached, and runs python eng/design_policy.py --preview --design-root <that directory> with --report artifacts/evidence/design-drift.json uploaded by an if: always() upload-artifact step. A failing checker exits non-zero, so the scheduled run fails and GitHub reports it; a clean head passes. The workflow is not a job of pr-gate.yml, is not in any ci.needs list and gates no pull request, no merge and no release. docs/design-policy.md and the AGENTS.md design-policy line state what the watch is, that a failure means Design main drifted from the policy and is repaired by a reviewed Design planning repair (and its Plan view pair) rather than by editing the checker, and that the pin still moves only through the reviewed pin update. The checker, its classification and citation algorithms, its tests, the pin, the exports and every existing workflow are unchanged; nothing is relaxed, exempted or suppressed.",
+   "provides": [
+    "design-main-drift-watch"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "GOV.14",
+     "need": "the specification-integrity checker with its --preview mode over a Design checkout (spec-integrity-check-v1)",
+     "why": "The watch only invokes that existing mode against the current Design main head; it adds no check of its own."
+    },
+    {
+     "type": "artifact",
+     "task": "GOV.18",
+     "need": "the design-policy export re-pinned to this Design repository and the delivery-graph validation in the checker",
+     "why": "The preview must validate the delivery graph and generated views of the reduced family, not the retired serial graph."
+    }
+   ],
+   "writes": [
+    "DesktopPlatform:.github/workflows/design-drift.yml (new; schedule and workflow_dispatch triggers only; no new platform, no pull_request or push trigger, no macOS runner, no secret or token other than the default read-only repository token; no change to pr-gate.yml, deep-check.yml, package-validation.yml, native-abi.yml or publish-nuget.yml, and no job added to any ci.needs list)",
+    "DesktopPlatform:docs/design-policy.md (document the watch, its failure meaning and the repair route only)",
+    "DesktopPlatform:AGENTS.md (the one design-policy sentence only: name the watch)",
+    "DesktopPlatform:eng/provenance/files.json (append only the exact new workflow path; the dependency-admission inputs do not include workflow files, so no dependency-policy or dependency-review change is authorized)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    }
+   ],
+   "validation": "Offline: the existing test_design_policy.py suite, the provenance policy (every tracked file listed in eng/provenance/files.json) and the existing PR CI pass unchanged; the reviewer confirms the trigger set, permissions: contents: read, the SHA-pinned actions copied from pr-gate.yml and the isolated fetch against the checker's own checkout(). A single manual dispatch of the new workflow after merge reports pass or fail on the then-current Design main head; no repeat run and no deliberately broken Design head is created.",
+   "evidence": "Exact-head hosted results for the retained PR checks; the workflow file showing the trigger set, permissions and the isolated fetch; one dispatch run identifying the Design head it checked and its design-drift report.",
+   "baseline": {
+    "state": "not-started"
+   },
+   "notes": "Post-adoption planning repair of 2026-10-05, a gap with no frozen-baseline counterpart. Evidence: Design main failed python eng/design_policy.py --preview --design-root after about 138 commits (duplicate and bare-citation findings) because Design has no CI and DesktopPlatform's pr-gate verifies only its pinned Design commit; Design PR 231 and Plan PR 296 repaired it. Decision recorded here: the cheaper detection vehicle is a scheduled and manual DesktopPlatform workflow, not a Design CI workflow. A Design workflow would have to run an unpinned DesktopPlatform script against Design, reversing the dependency direction, would let a checker change break every Design pull request, and would change the documented no-CI merge model for the documentation repository; it is not authorized here and may be proposed by its own planning repair if drift recurs despite this watch. The watch detects after merge and gates nothing, so it does not replace the reviewed Design planning repair that fixes a failure, and a failing run is a prompt to open that repair, never to relax the checker. The classification register is keyed by exact line hash, so an edit to a generated lane line that names a hash-algorithm or character-encoding standard needs a new register row; whether such standard names in generated lane views or code spans should stop being treated as citations changes the checker's citation algorithm and is deliberately out of scope here: it needs its own Architecture Owner decision and planning task and must keep every genuine bare-citation and duplicate finding. No change to the checker, the pin, the exports, the classification register or any existing workflow; no new dependency, runtime, package identity or SDK; no secret or credential; no wsl.exe.",
    "complete": []
   },
   {
@@ -2472,8 +2600,8 @@
     "Contracts:tests/StructureTests/IdentityCases.cs (new offline descriptor, shape, strict-codec, route and journey-integrity vectors; the Registry04 field oracle for all 176 generated descriptors, compact-vector expansion and frozen journey expectations; no runtime owner behavior)",
     "Contracts:tests/StructureTests/Program.cs (register IdentityCases only)",
     "Contracts:eng/generate_shapes.py (additionally: the strict application/x-www-form-urlencoded codec for string-only HTTP roots declared by x-arcforges-wire, the closed per-bundle route catalogue declared by x-arcforges-routes, the exact authChallengePurpose and nativeClientRedirect rules for JSON roots, the exact authChallengePurpose protobuf message rule, and the protoc C# reserved-member suffix rule in the generated C# shape validators (only Descriptor_ occurs in the output); no other generator behavior, schema output or algorithm change)",
-    "Contracts:eng/check_operation_scope.py (admit the literal risk R4 only for the exact public rows identity.requestAccountDeletion (binding arcforges.publicapi.v1.IdentityService/RequestAccountDeletion, idempotency IW) and workspace.requestDataDeletion (binding arcforges.publicapi.v1.WorkspaceService/RequestDataDeletion, idempotency CC), each with kind proto, source public/proto/arcforges/publicapi/v1/identity.proto, scope account, surface public, profile human-owner, stepUp true, patEligible false and actorKinds [human]; every other operation remains limited to R0-R3 plus the existing exact task.create R2+ exception and any other exact exception already authorized; preserve the exact eight-field, PAT, local-presence, tool, human-only and every other check, count and report field)",
-    "Contracts:docs/operation-scope.md (document only that risk remains R0-R3 except the existing exact exceptions and the two exact CON.07 account R4 rows; no other policy text)",
+    "Contracts:eng/check_operation_scope.py (admit the literal risk R4 only for the exact public rows identity.requestAccountDeletion (binding arcforges.publicapi.v1.IdentityService/RequestAccountDeletion, idempotency IW) and workspace.requestDataDeletion (binding arcforges.publicapi.v1.WorkspaceService/RequestDataDeletion, idempotency CC), each with kind proto, source public/proto/arcforges/publicapi/v1/identity.proto, scope account, surface public, profile human-owner, stepUp true, patEligible false and actorKinds [human]; every other operation remains limited to R0 through R3 plus the existing exact task.create R2+ exception and any other exact exception already authorized; preserve the exact eight-field, PAT, local-presence, tool, human-only and every other check, count and report field)",
+    "Contracts:docs/operation-scope.md (document only that risk remains R0 through R3 except the existing exact exceptions and the two exact CON.07 account R4 rows; no other policy text)",
     "Contracts:eng/provenance/NOTICE.txt (regenerate only with eng/check_provenance.py --write-notice from the reviewed active records)",
     "Contracts:.gitleaks.toml (append exactly three CON.07 path-anchored allowlist groups for only the generic-api-key findings the pinned full-history scan reports on this task's added lines: eng/policy/dependency-policy.json has one tuple (the eng/policy/contract-access.json input digest, repeated in inputHashes and review.inputHashes), eng/policy/dependency-reviews/con-07-r1.json has four tuples (contract-access.json, dokka-combokeys-licence-r1.json, dokka-object-keys-licence-r1.json and the ArcForges.Contracts.PublicApi.csproj input digests) and eng/provenance/artifact-profiles/dokka-2-2-0-r20.json has exactly 776 tuples (the page and generated-source hash rows whose keys contain key/token/secret/password-style words); the profile's canonical tuple-set fingerprint is SHA-256 363de168145ff560022fafbd6155f3fff30e53facf70ad9e9f8c321371a42b1d over the sorted lines generic-api-key<TAB>path<TAB>key<TAB>digest<LF>. Each group retains the existing targetRules=[generic-api-key], condition=AND and regexTarget=line semantics, is anchored to its exact outer path and matches only exact whole-line key/digest tuples. The rows were produced by reproducing the pinned scanner on the task's commit-by-commit added lines and were confirmed by the passing hosted Secret scan job 110688009017 (run 36958918479, final reviewed head 8c0a40442647d3190384c02dc9480ef16118e1b6, where eng/policy/contract-access.json has SHA-256 f29027466cb576910fa7a2d8f97a561eb86d15d69c74ae0ecf738d8f86518d0f: the dependency-policy row occurs on two lines (inputHashes and review.inputHashes) and is one of the four receipt rows); every dependency digest is the SHA-256 of the exact tracked Git blob it names, and the profile rows are the exact normalized generated-page and generated-source hashes recorded by the immutable r20 profile. Any different eng/policy/contract-access.json digest requires amended authority for the new head. Preserve all prior allowlist groups byte-for-byte and append only these three groups; no other path, rule, tuple, future digest, broad pattern, scanner/version/full-history/matcher change or suppression is authorized.)",
     "Contracts:tests/tooling/test_dependency_admission.py (update only the existing total allowlist-count expectation from 74 to 77 in its four existing methods that assert it (the root exact-exceptions test and the CON.11, CON.14 and CON.15 sibling methods), append [1, 4, 776] to the existing regex-count vector so its suffix is [1, 4, 360, 1, 4, 1, 4, 1, 4, 776], and restrict the existing CON.14 sibling method's group selection from config['allowlists'][72:] to config['allowlists'][72:74] so the three appended CON.07 groups are not selected by it; add only one test_con07_secret_scan_allowlists_bind_only_exact_public_digest_tuples sibling method for the three appended groups (config['allowlists'][74:77]): exact descriptions, outer paths, rule/AND/line semantics, the one policy row and four receipt rows bound to the current hashes and the tracked blobs they name, the 776 profile rows being a subset of the immutable r20 profile key/digest rows with the fingerprint above, previousReceipt eng/policy/dependency-reviews/con-14-r1.json, and rejection of changed/extra keys or digests, wrong paths, appended credential text and unrelated 64-hex lines. Preserve every other assertion, subtest, group, snapshot binding and negative of the existing methods, including the CON.14 and CON.15 snapshot reads already on main; no scanner, matcher, normalization, dependency/closure or other test change is authorized.)",
@@ -2754,7 +2882,7 @@
     "Contracts:eng/check_operation_scope.py (retain the exact public approval.decide proto gate; additionally admit the literal risk R2+ only for the exact public task.create/arcforges.publicapi.v1.TaskService/Create row from chat.proto with assistant scope, public surface, human-owner profile and [human] actor; fail closed for R2+ on every other operation/field/actor/scope/profile and preserve every other guard; additionally admit only these 14 CF transport rows as exact closed bindings: cf.ai.authorize=POST /internal/ai/v1/authorize, cf.ai.claim=POST /internal/ai/v1/claim, cf.ai.renew=POST /internal/ai/v1/renew, cf.ai.reconcile=POST /internal/ai/v1/reconcile, cf.ai.context=POST /internal/ai/v1/context, cf.ai.model-intent=POST /internal/ai/v1/model-intent, cf.ai.model-outcome=POST /internal/ai/v1/model-outcome, cf.ai.settle=POST /internal/ai/v1/settle, cf.ai.prepare-tools=POST /internal/ai/v1/prepare-tools, cf.ai.cloud-tool=POST /internal/ai/v1/cloud-tool, cf.ai.wait=POST /internal/ai/v1/wait, cf.ai.finalize=POST /internal/ai/v1/finalize, cf.ai.stream-state=POST /internal/ai/v1/stream-state, cf.ai.late-outcome=POST /internal/ai/v1/late-outcome; each has kind=http, source=internal/ai-http/v1/schema.json, sourceRule=docs/architecture/contracts/05-cloudflare-integration.md#3-exact-internal-ports, surface=cf-internal and profile=cf-service; only authorize has scope=resource-owner, the other 13 scope=assistant; all have capability=null, risk=R1, approval=none, stepUp=false, localPresence=false, egress=none, patEligible=false, actorKinds=[service]; risk=R1 describes only this HMAC service transport port and does not replace owner/policy/business-operation revalidation or promote underlying tool/model risk to caller authority; authorize/reconcile/context use idempotency=Q and the remaining 11 use IW as exact HMAC retry/command receipts that do not permit repeating external effects. The gate is metadata-only and exact to these IDs/tuples; preserve existing HMAC, owner/fence and business-operation revalidation semantics, and add no runtime behavior or general CON.18/profile expansion)",
     "Contracts:tests/tooling/test_operation_scope.py (retain existing approval and in-process profile regressions; add a positive exact task.create/TaskService.Create R2+ row and negatives for another operation/binding/source, non-human actor, non-assistant scope, non-public surface/profile, nonliteral R2+ values and R2+ in other authorization fields; add exact positive/negative cases for all 14 CF routes and reject drift in operation ID, HTTP method/path, source, sourceRule, scope, surface, profile, idempotency or any of the eight authorization fields; reject R2+ or public/human/PAT/egress variants on CF rows, preserving all non-CF rows)",
     "Contracts:tests/tooling/test_documentation_provenance.py (add only a hardcoded current-profile CON.10 r14-to-r15 closed-set regression, observed on source head 1c25a01395ec829cb74502b1cf366e003c7895ff: additions are exactly 11,092 contracts-proto page keys with SHA-256 3bfbc4bc5408b6d2ab40283e6b9b0d44e8f3f3414daaf3ef7fb58d49ba242e66, 138 contracts-connect-client keys with SHA-256 f204448d1cedbae377907d6ada5708d3bf08947eae9ae35e66532b0979845059, and zero contract-fixtures additions or any removals; each module fingerprint is SHA-256 over UTF-8 sorted module-relative keys joined by LF plus a final LF. Existing-page hash changes are exactly 45 proto helper pages (key-set SHA-256 0cc2b363d57649e759c7dcfe3fb11abc013ef72d1388e8defdfa3f698bd70df8; sorted path<TAB>r14-hash<TAB>normalized-current-hash rows SHA-256 23b33af3ca8b66aeaca29507a5168069d0c18487a2ca43a17f6468fc3439012e), four proto package/navigation pages (keys 1e58942c13917382318dd90004308d4580a9e93101a8093afd757dacb2704ea2; rows ac594eb5c0d5991c4614a3137fe41c413657aa3214b48519ceb6dbe4952ad3e0), and four Connect package/navigation pages (keys 22df5067ed7b3d4cc68b208d5fc85b26cec76af496776eda49eac131136145e6; rows f93e35b73f8fcedd0d880bf034ca8cf1896bf7cf8b55483a551c4453c6158e98). For delta hashes normalize only release token 1.0.0-ci.0.0 to {version} and CRLF to LF; row fingerprints use sorted module-relative path<TAB>r14 hash<TAB>normalized-current hash plus final LF. Require exact additions==permitted, exact task-owned publicApi markers/methods, and preserve every other current/historical page, source, fixed, excluded, component, fontTransform, retired-marker and unknown-extra invariant. No glob/prefix/inferred/unbound pages, other history changes, matcher broadening, or documentation parser/checker/normalizer/generator algorithm change.)",
-    "Design:docs/architecture/contracts/01-public-api-operations.md (only the TK-02 public-human-approval-decision profile; leave the local-only in-process profile in contracts/02 unchanged)",
+    "Design:docs/architecture/contracts/01-public-api-operations.md (only the public human-approval-decision profile; leave the local-only in-process profile in contracts/02 unchanged)",
     "Contracts:eng/generate_shapes.py (only add JSON Schema number primitive generation as C# double and TypeScript number; finite-only with existing minimum/maximum; add numeric string-only x-arcforges-max-utf8-bytes; and permit a root bundle alternative to reference a titled oneOf root to generate named Ai*Request route-union codecs, with branches limited to existing closed object/string references. Preserve strict JSON, unknown-keyword fail-closed behavior and every other output)",
     "Contracts:tests/tooling/test_json_shape_unions.py (fractional/boundary number acceptance; NaN and positive/negative infinity rejection; x-arcforges-max-utf8-bytes multibyte 4096-byte accept/4097-byte reject; each named Ai*Request route-union branch passes, empty/hybrid/multi-match fails, round-trips; nested/root-bundle generated-shape drift regression)",
     "Contracts:eng/contract-packages.json (register the new public chat.proto in existing public package producer lists only; existing internal ai-http package inputs are unchanged)",
@@ -2792,7 +2920,7 @@
     "Design:docs/architecture/contracts/11-operation-scope-manifest.md (only this task-owned private CF routes: unique route identities, exact bindings, existing owner-derived scope and complete eight-field cf-service authorization profile sourced from contracts05; independently review and merge authority before consuming)",
     "Contracts:eng/operation-scope-manifest.json (append this task-owned private route oracle rows only after Design authority merge; exact source commit and hash pin refresh; preserve existing rows)",
     "Contracts:eng/policy/contract-access.json (for the r3 successor only, update the existing src/public/ts/contract-fixtures/src/index.ts row from normalized SHA-256 c24424342ffa8aa2cc4fe4680ddce1af29bb21930f9d23e24b01a96f41ee6dee to 2043a98ffdd28b717db73fa04120309760f57b2fe1f99518afe4ae55e421c6bb; no other row, type, package, access, classification or distribution change)",
-    "Contracts:eng/policy/dependency-policy.json (for r3, change only the current contract-access and CON.10 provenance-record input hashes required by ADP-07, set reviewReceipt to con-10-r3.json and nested review.previousReceipt from con-10-r1.json to con-10-r2.json to match the active immutable r3 receipt; preserve the 145-coordinate dependency closure, all unrelated input hashes and every other policy/review field)",
+    "Contracts:eng/policy/dependency-policy.json (for r3, change only the current contract-access and CON.10 provenance-record input hashes required by the adoption metadata rules, set reviewReceipt to con-10-r3.json and nested review.previousReceipt from con-10-r1.json to con-10-r2.json to match the active immutable r3 receipt; preserve the 145-coordinate dependency closure, all unrelated input hashes and every other policy/review field)",
     "Contracts:eng/policy/dependency-reviews/con-10-r3.json (new immutable successor receipt with previousReceipt=con-10-r2.json; bind the actual committed source snapshot and exact current input hashes; preserve all dependency coordinates, versions, closure and unrelated fields)",
     "Contracts:eng/provenance/records/contract-bindings-con-10-r3.json (new immutable successor superseding contract-bindings-con-10-r2.json; preserve the same complete 1,759 active targets and all 1,758 unchanged output hashes, changing only the canonical fixture-barrel target hash from c24424342ffa8aa2cc4fe4680ddce1af29bb21930f9d23e24b01a96f41ee6dee to 2043a98ffdd28b717db73fa04120309760f57b2fe1f99518afe4ae55e421c6bb; sourceCommit must be the actual committed source snapshot)",
     "Contracts:eng/provenance/files.json (for r3, atomically remap exactly the complete active 1,759-target CON.10 r2 group to r3; preserve every other row and classification)",
@@ -3125,9 +3253,9 @@
     "Contracts:tests/public/SerializationProbe/Program.cs (add only the exact CloudInternal OperatorService catalogue assertion and test-only no-op/default endpoint bindings for all exact 31 methods; never invoke the stubs; preserve existing exact checks)",
     "Contracts:tests/StructureTests/OperatorCases.cs",
     "Contracts:tests/StructureTests/Program.cs (register OperatorCases only)",
-    "Contracts:eng/check_operation_scope.py (classify exactly one high-risk operator exception required by Registry04 section 9.1: operator.startBreakGlass may carry risk R4 only when operationId operator.startBreakGlass, binding arcforges.operator.v1.OperatorService/StartBreakGlass, kind proto, source internal/proto/arcforges/operator/v1/operator.proto, scope operator, surface operator, profile operator, idempotency CC and actorKinds [operator] all match exactly; every other operation remains limited to R0-R3 plus the existing exact task.create R2+ exception; preserve the exact eight-field authorization, operator-identity, PAT, local-presence, tool, human-only and every other check, count and report field)",
+    "Contracts:eng/check_operation_scope.py (classify exactly one high-risk operator exception required by Registry04 section 9.1: operator.startBreakGlass may carry risk R4 only when operationId operator.startBreakGlass, binding arcforges.operator.v1.OperatorService/StartBreakGlass, kind proto, source internal/proto/arcforges/operator/v1/operator.proto, scope operator, surface operator, profile operator, idempotency CC and actorKinds [operator] all match exactly; every other operation remains limited to R0 through R3 plus the existing exact task.create R2+ exception; preserve the exact eight-field authorization, operator-identity, PAT, local-presence, tool, human-only and every other check, count and report field)",
     "Contracts:tests/tooling/test_operation_scope.py (update only the real retained inventory expectation to the exact post-CON.14 registered/pending/reserved/total 280/55/7/342 (the post-CON.15 inventory: 249 registered plus the 31 CON.14 rows, 86-31 pending, 7 reserved, 342 oracle rows), and add focused cases for the exact R4 exception: accept only the exact operator.startBreakGlass row; reject R4 on any other operation or operator row, a wrong binding, wrong class, non-operator profile/surface/scope, a tool-bound capability, PAT eligibility and an invented risk such as R5; preserve every existing assertion and negative case)",
-    "Contracts:docs/operation-scope.md (document only that risk remains R0-R3 except the single exact operator.startBreakGlass R4 row and the CON.14 private-origin identity constraints; no other policy text)",
+    "Contracts:docs/operation-scope.md (document only that risk remains R0 through R3 except the single exact operator.startBreakGlass R4 row and the CON.14 private-origin identity constraints; no other policy text)",
     "Contracts:eng/contracts.py (in the existing internal npm import-owner rewrite only, extend the foundation|events|hello namespace alternation with the existing public publicapi and catalog namespaces, so generated operator-client imports of SupportCase, Grant, CreditLot, RefundView and the Catalog views resolve to the single canonical @arcforges/proto owner; no other generator behavior, output path, package identity, dependency or version change)",
     "Contracts:src/internal/ts/operator-client/README.md (factual documentation of the delivered @arcforges/operator-client contents only: the 31-method OperatorService, typed proposal records, shape checks and import boundary; no identity, license, dependency, package or behavior text change)",
     "Contracts:.gitleaks.toml (append exactly two CON.14 path-anchored allowlist groups for only the 6 observed generic-api-key occurrences / 5 unique outer-path/key/digest tuples from hosted Security run 36915931079 job 110549768370 at scan commit edb379e8c2da2c283578d956dbd31d1e067a9d1e: eng/policy/dependency-policy.json has two occurrences (lines 19 and 2494) of one eng/policy/contract-access.json digest tuple, and eng/policy/dependency-reviews/con-14-r1.json has four tuples (lines 22, 79, 146 and 202: contract-access.json, dokka-combokeys-licence-r1.json, dokka-object-keys-licence-r1.json and the ArcForges.Contracts.PublicApi.csproj input digests). Each group must retain the existing targetRules=[generic-api-key], condition=AND and regexTarget=line semantics and match only its exact observed whole-line tuples. Preserve all prior 72 allowlist groups byte-for-byte and append only these two groups; no other path, rule, tuple, future digest, broad pattern, scanner/version/full-history/matcher change or suppression is authorized. All six observed values were independently verified as public SHA-256 input references: each equals the SHA-256 of the exact tracked Git blob it names at the scan commit.)",
@@ -7479,8 +7607,8 @@
    ],
    "writes": [
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/**",
-    "DesktopPlatform:eng/policy/architecture-contract-tests.json (append only PLT.37 RP-10 direct public-API-to-[Fact] mappings from src/BuildingBlocks/ArcForges.Security/RiskModel.cs to src/BuildingBlocks/ArcForges.Security/Tests/RiskModelTests.cs)",
-    "DesktopPlatform:eng/provenance/files.json (ADP-07 append only firstParty rows for src/BuildingBlocks/ArcForges.Security/RiskModel.cs and src/BuildingBlocks/ArcForges.Security/Tests/RiskModelTests.cs)"
+    "DesktopPlatform:eng/policy/architecture-contract-tests.json (append only PLT.37 direct public-API-to-[Fact] mappings from src/BuildingBlocks/ArcForges.Security/RiskModel.cs to src/BuildingBlocks/ArcForges.Security/Tests/RiskModelTests.cs)",
+    "DesktopPlatform:eng/provenance/files.json (append only firstParty rows, per the adoption rules, for src/BuildingBlocks/ArcForges.Security/RiskModel.cs and src/BuildingBlocks/ArcForges.Security/Tests/RiskModelTests.cs)"
    ],
    "shared": [
     {
@@ -7857,7 +7985,8 @@
     "audit-subsystem",
     "audit-event-type",
     "egress-decision-audit-intake",
-    "capability-lease-audit-intake"
+    "capability-lease-audit-intake",
+    "audit-retention-runner"
    ],
    "start": [
     {
@@ -7884,6 +8013,7 @@
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/AuditModels.cs",
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/AuditRetention.cs",
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/AuditStore.cs",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/AuditRetentionRunner.cs",
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/EgressDecisionAuditAdapter.cs",
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/CapabilityLeaseAuditAdapter.cs",
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Audit/README.md",
@@ -7919,7 +8049,7 @@
      "mode": "append"
     }
    ],
-   "validation": "Offline tests: reject ordinary UPDATE/DELETE and forged retention role; approved expiry purge; legal hold; exact-boundary maintenance-capability expiry using monotonic time despite wall-clock rollback; store-stamped audit occurrence and hold/release times with no caller timestamp; allowed and denied typed egress decisions append before return, preserve data class/destination/authority/risk/reason/correlation, and fail closed on append failure; typed capability-lease issue/revocation/expiry/task-end intake preserves the Guid-backed resource identity and unknown lifecycle kinds fail closed; telemetry separation test (also exercised jointly with PLT.49's redaction/separation evidence).",
+   "validation": "Offline tests: reject ordinary UPDATE/DELETE and forged retention role; approved expiry purge; legal hold; exact-boundary maintenance-capability expiry using monotonic time despite wall-clock rollback; store-stamped audit occurrence and hold/release times with no caller timestamp; the real PLT.41 EgressAuthority, through the audit-side IEgressAuditSink implementation, appends every allowed decision and every refused decision that reaches the sink to the durable store before returning (including each pre-classification refusal and each unavailable-source refusal; the AuditUnavailable refusal that the authority builds when an allowed decision could not be made durable is not written to the sink by PLT.41 as delivered, so it has no audit event and the failed Authorized write is the only trace), preserving the exact reason, the PLT.41 data-class tier or the explicit Unclassified marker, the destination class or the explicit Undetermined marker, the canonical destination identity (absent only for a malformed destination), the authority kind, reference and grant generation for an allowed decision (none for a refusal), the effective risk only when the producer supplies it (otherwise the explicit NotAssessed marker, never an inferred value), a one-way content reference fingerprint, and the correlation; a record the closed shape cannot represent, a foreign owner, a purged partition and a failing store fail closed so an allowed transfer is refused with AuditUnavailable; a late Authorized write that lands after the authority timed out and refused (the only way an Authorized event can sit beside a refusal) is accepted and tested as a valid event that authorizes nothing; typed capability-lease issue/revocation/expiry/task-end intake preserves the Guid-backed resource identity and unknown lifecycle kinds fail closed; telemetry separation test (also exercised jointly with PLT.49's redaction/separation evidence). Retention runner: a narrow public runner of the Audit project purges only expired, unheld, complete UTC months of its own store under the declared policy with no caller-chosen partition or time, skips a held month, isolates a month that fails verification without touching other months or the partition, mints a fresh single-use capability per month, refuses a maintenance chain of another owner and leaves unexpired months untouched.",
    "evidence": "Audit immutability, store-owned time/monotonic-expiry, typed egress and lease-event intake, completeness and separation results; report actual PLT.41 egress and PLT.43 lease-emission integration separately.",
    "baseline": {
     "state": "not-started",
@@ -7936,10 +8066,16 @@
      "type": "integration",
      "task": "PLT.43",
      "need": "actual capability-lease issue, revocation, expiry and task-end events reach the PLT.44 typed audit intake with their stable identity",
-     "why": "[WP-11 BR-07](../../work-packages/11-security-foundation.md#rule-br-07) requires delegated leases to be scoped, expiring, revocable and audited. PLT.44 can deliver its append-only store and closed typed intake independently, but only a later integration against PLT.43's delivered lease implementation can prove that real lifecycle events reach the audit record without a fabricated runtime or substitute."
+     "why": "WP-11 [BR-07](../../work-packages/11-security-foundation.md#rule-br-07) requires delegated leases to be scoped, expiring, revocable and audited. PLT.44 can deliver its append-only store and closed typed intake independently, but only a later integration against PLT.43's delivered lease implementation can prove that real lifecycle events reach the audit record without a fabricated runtime or substitute."
+    },
+    {
+     "type": "integration",
+     "task": "PLT.57",
+     "need": "the real in-process product composition of PLT.57 passes EgressAuditSink and CapabilityLeaseEventAuditSink to the real EgressAuthority and CapabilityLeaseManager over one real AuditStore, and runs the production retention runner against that store under its declared policy",
+     "why": "WP-11.05 (every egress decision audited), WP-11 BR-07 (leases audited) and the WP-11.08 gate (audit bounded by the actual retention policy) are proven for the store, the two sinks and the runner in isolation, but not in one composed running product configuration; no host passes either sink and no host can call retention until the PLT.57 composition does so. The composition lives in the PLT.57 end-to-end scenario, the one in-process product composition the repository can host before an ArcScope process exists."
     }
    ],
-   "notes": "Time boundary: inject the delivered FND.04 IClock. The store, not callers, stamps audit occurrence and legal-hold placement/release from its wall Instant; caller-supplied event or hold timestamps are not accepted as authoritative or used to select a partition. The store evaluates retention with its own current Instant and uses the clock's monotonic timestamp/elapsed-time API exclusively for the in-process maintenance-capability TTL, so wall-clock rollback cannot revive an expired capability. The maintenance capability remains in-process, non-serializable and internally minted; no wall-clock timestamp is an authorization token. Egress boundary: consume only PLT.41's closed typed egress-decision fact, preserving its typed data class, destination class and canonical identity, authority ID/revision, risk, allow/deny decision and reason, and correlation in the durable audit event; do not accept transferred content, secret values or a free-form property bag. Both allowed and denied decisions are appended synchronously before the enforcement path returns; an append failure must prevent an allowed transfer from proceeding. Security owns the sink port and must not reference the Audit project. Lease boundary: PLT.43 must expose a non-empty immutable Guid-backed CapabilityLeaseId, and each issued/revoked/expired/task-ended lifecycle fact carries that same typed ID. Add only closed audit event/resource values for those four lifecycle kinds and map CapabilityLeaseId.Value directly into the Guid-valued AuditResourceReference; never stringify, hash or truncate the identity. Preserve the ID through append/query, reject unknown kinds, and do not fabricate a PLT.43 runtime or claim actual producer emission from intake-only tests. This task may be delivered with the append/query/retention store and both typed intakes complete, but it cannot be marked complete until real PLT.41 egress and PLT.43 lease lifecycle integrations satisfy both completion prerequisites. The production project sets IsPackable=true without changing package identity; The only permitted Directory.Packages.props edit adds exact conditions for MSBuildProjectName ArcForges.Security.Audit and ArcForges.Security.Audit.Tests selecting the already-admitted ArcForges.Contracts.Foundation 1.0.0-ci.216.1; preserve the default 1.0.0-ci.113.1 and every other project condition. This selects an existing admitted version and changes no package coordinate or aggregate closure. PLT.44 does not choose a PackageId, edit eng/packaging/packages.json, publish packages or claim package acceptance—PLT.46 alone admits the existing ArcForges.Security.Audit package and completes pack/publish/independent-consumer validation. Support writes are limited to the exact solution/test workflow, project/license/runtime/active-project registrations, RP-10 bindings, sorted provenance rows, dependency input map and immutable PLT.44 receipt listed above. Use only the existing Microsoft.Data.Sqlite 10.0.12 and admitted dependency closure. No new dependency, version, closure, external/wire schema change, signature/key algorithm, Security-to-Audit dependency or package identity is authorized. Scan-support extension (narrow ADP-07, same class as the merged PLT.40 allowlist, as the single durable repair): every dependency receipt chained after plt-40-r1 mirrors the existing Security.Secrets project input rows, and the pinned full-history scanner runs with fetch-depth 0 over all fetched branches, so a receipt line added on one open branch is reported by the secret-scan of every other open branch whose config does not cover it. Per-receipt groups would therefore deadlock concurrent branches. One additional .gitleaks.toml group is authorized: path pattern ^eng/policy/dependency-reviews/[A-Za-z0-9._-]+[.]json$ (a file directly in that directory, no subdirectory), targetRules generic-api-key, condition AND, regexTarget line, whose only two alternatives are these exact whole lines, shown with their indentation:      \"src/BuildingBlocks/ArcForges.Security.Secrets/ArcForges.Security.Secrets.csproj\": \"8ff03fdcaf23b09386fac47dd5e3e4f9689a665a569137f726456c9e59a9ecef\",      \"src/BuildingBlocks/ArcForges.Security.Secrets/Tests/ArcForges.Security.Secrets.Tests.csproj\": \"d6798bbbcf980fab4467c6d831871b075e55aeef6e09c7df67c4d72cd2334120\", each anchored as the scanner reports an added line (at most one optional leading newline and nothing else around the line). No other path, rule, clause, scanner behavior or workflow is authorized, no cross-combination of paths and digests, and every existing rule and allowlist, including the PLT.40 groups, is preserved. The focused eng/test_dependency_policy.py tests verify the actual config against the actual receipts: exactly the two lines are accepted in any receipt file under the directory (existing, PLT.44, PLT.09 and a hypothetical future one) and rejected in other paths, swapped key/digest/path pairs, changed digests, trailing text or credentials, unrelated 64-hex values and other rules. Passing pinned full-history secret-scan evidence on the PLT.44 head is required."
+   "notes": "Time boundary: inject the delivered FND.04 IClock. The store, not callers, stamps audit occurrence and legal-hold placement/release from its wall Instant; caller-supplied event or hold timestamps are not accepted as authoritative or used to select a partition. The store evaluates retention with its own current Instant and uses the clock's monotonic timestamp/elapsed-time API exclusively for the in-process maintenance-capability TTL, so wall-clock rollback cannot revive an expired capability. The maintenance capability remains in-process, non-serializable and internally minted; no wall-clock timestamp is an authorization token. Egress boundary (Architecture Owner decision, delegated to the completion follow-up and recorded as architecture/08 EG-06 to EG-09): the audit intake is a projection of PLT.41's delivered EgressAuditRecord taken at its IEgressAuditSink, not a second decision and not an audit-owned mirror of the fact. The audit vocabulary adopts PLT.41's data-class tiers (Public, Diagnostic, WorkspaceContent, SensitiveContent, SecretMaterial) plus the explicit Unclassified marker; the earlier storage-class vocabulary was a different axis (where data lives, not how sensitive it is) and is removed from the egress detail. The destination class gains the explicit Undetermined marker and the destination identity is optional only for a malformed destination, so refusals before classification are stored as what they are. The authority is its PLT.41 kind, reference and grant generation (allowed decisions only); the Guid authority object and numeric revision the first design assumed do not exist in PLT.41 and are not fabricated. Effective risk is assessed at pipeline step 9, after the step 8 egress decision, so the egress authority cannot hold it: the event stores R0 to R4 only if a producer supplies one and otherwise the explicit NotAssessed marker (permitted for egress events only). The opaque PLT.41 resource id and revision are not a typed Guid and may be path-like, so the event stores their SHA256 content reference fingerprint instead of a resource Guid; the exact reference stays in the correlated step 14 record by command id. The specific EgressReason is stored exactly alongside the closed audit reason it maps to; the decision reason of an allowed decision derives from its real authority kind. Occurrence time is stamped by the store, not taken from the record. No content, secret value, path or free-form property bag is stored. Both allowed and denied decisions are appended synchronously before the enforcement path returns; an append failure must prevent an allowed transfer from proceeding. Security owns the sink port and must not reference the Audit project; the Audit project implements the port by referencing Security. PLT.41 is unchanged by this decision: carrying the AuditUnavailable refusal into the sink would need a PLT.41 change and is not required, because that refusal means the sink already failed. AU-04 is met jointly: the egress event carries actor chain, executor, software identity, capability, decision, reason, origin, workspace and correlation, while effective risk (when assessed) and the exact resource reference are in the correlated step 14 security audit record of the same command. Schema: the store schema version moves from 1 to 2 and a version 1 file is refused (fail closed) with no migration, because no code outside the Audit project and its tests constructs an audit store, so no version 1 file exists beyond test temporary files. The fingerprint is unsalted and is a reference, not secrecy: a low-entropy or path-like id can be guessed offline by anyone who can read the audit file. Lease boundary: PLT.43 must expose a non-empty immutable Guid-backed CapabilityLeaseId, and each issued/revoked/expired/task-ended lifecycle fact carries that same typed ID. Add only closed audit event/resource values for those four lifecycle kinds and map CapabilityLeaseId.Value directly into the Guid-valued AuditResourceReference; never stringify, hash or truncate the identity. Preserve the ID through append/query, reject unknown kinds, and do not fabricate a PLT.43 runtime or claim actual producer emission from intake-only tests. This task may be delivered with the append/query/retention store and both typed intakes complete, but it cannot be marked complete until real PLT.41 egress and PLT.43 lease lifecycle integrations satisfy both completion prerequisites. The production project sets IsPackable=true without changing package identity; The only permitted Directory.Packages.props edit adds exact conditions for MSBuildProjectName ArcForges.Security.Audit and ArcForges.Security.Audit.Tests selecting the already-admitted ArcForges.Contracts.Foundation 1.0.0-ci.216.1; preserve the default 1.0.0-ci.113.1 and every other project condition. This selects an existing admitted version and changes no package coordinate or aggregate closure. PLT.44 does not choose a PackageId, edit eng/packaging/packages.json, publish packages or claim package acceptance—PLT.46 alone admits the existing ArcForges.Security.Audit package and completes pack/publish/independent-consumer validation. Support writes are limited to the exact solution/test workflow, project/license/runtime/active-project registrations, RP-10 bindings, sorted provenance rows, dependency input map and immutable PLT.44 receipt listed above. Use only the existing Microsoft.Data.Sqlite 10.0.12 and admitted dependency closure. No new dependency, version, closure, external/wire schema change, signature/key algorithm, Security-to-Audit dependency or package identity is authorized. Scan-support extension (narrow ADP-07, same class as the merged PLT.40 allowlist, as the single durable repair): every dependency receipt chained after plt-40-r1 mirrors the existing Security.Secrets project input rows, and the pinned full-history scanner runs with fetch-depth 0 over all fetched branches, so a receipt line added on one open branch is reported by the secret-scan of every other open branch whose config does not cover it. Per-receipt groups would therefore deadlock concurrent branches. One additional .gitleaks.toml group is authorized: path pattern ^eng/policy/dependency-reviews/[A-Za-z0-9._-]+[.]json$ (a file directly in that directory, no subdirectory), targetRules generic-api-key, condition AND, regexTarget line, whose only two alternatives are these exact whole lines, shown with their indentation:      \"src/BuildingBlocks/ArcForges.Security.Secrets/ArcForges.Security.Secrets.csproj\": \"8ff03fdcaf23b09386fac47dd5e3e4f9689a665a569137f726456c9e59a9ecef\",      \"src/BuildingBlocks/ArcForges.Security.Secrets/Tests/ArcForges.Security.Secrets.Tests.csproj\": \"d6798bbbcf980fab4467c6d831871b075e55aeef6e09c7df67c4d72cd2334120\", each anchored as the scanner reports an added line (at most one optional leading newline and nothing else around the line). No other path, rule, clause, scanner behavior or workflow is authorized, no cross-combination of paths and digests, and every existing rule and allowlist, including the PLT.40 groups, is preserved. The focused eng/test_dependency_policy.py tests verify the actual config against the actual receipts: exactly the two lines are accepted in any receipt file under the directory (existing, PLT.44, PLT.09 and a hypothetical future one) and rejected in other paths, swapped key/digest/path pairs, changed digests, trailing text or credentials, unrelated 64-hex values and other rules. Passing pinned full-history secret-scan evidence on the PLT.44 head is required. Completion repair (2026-10-05, follow-up epoch 3, ledger/tasks/plt-44.md): the production retention runner is a PLT.44 deliverable in the Audit project (new AuditRetentionRunner.cs, listed in the write scope above, built and tested by the epoch 3 follow-up), and the composition of both sinks and the runner in a running product configuration is proved by the PLT.57 integration prerequisite added above, whose write scope and validation were extended for exactly that (PLT.57 notes, same date). PLT.57 starts after PLT.44 is delivered and PLT.44 completes after PLT.57 completes; this is an ordered pair, not a cycle. A real ArcScope process remains with the app-composition and ArcScope tasks and is not a PLT.44 prerequisite."
   },
   {
    "id": "PLT.45",
@@ -8197,7 +8333,7 @@
    "obligations": [
     {
      "ref": "WP-12.01",
-     "part": "full"
+     "part": "the shared telemetry infrastructure and the originating edge: validated typed correlation created or accepted at the origin, propagation across the local hop kinds, causation, task/run resolution (the Cloud ingress, host, ResponseMeta/ArcError and queue-wake share is mapped to CLOUD.69)"
     }
    ],
    "outcome": "Correlation created at the originating edge or accepted from a validated client value, propagated across HTTP/queue/worker/realtime/provider calls once, in shared infrastructure; causation records which operation caused which; a user-visible task/run identifier resolves to its trace.",
@@ -8218,6 +8354,12 @@
      "task": "CLOUD.01",
      "need": "a real Cloud hop to prove the full HTTP/queue/worker/realtime/provider chain",
      "why": "the desktop side can only prove propagation up to its own local hops (RPC, in-process) until a real Cloud counterpart exists; the WP-12.90 receipt records this as a named later real-integration item."
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.69",
+     "need": "the Cloud-side correlation acceptance and propagation across ingress, host, ResponseMeta/ArcError and queue wake, observable in the isolated proof environment",
+     "why": "CLOUD.01's pipeline carries no correlation, so the connected cross-owner trace the task's acceptance names cannot be observed until CLOUD.69 delivers the Cloud hops; the follow-up then attaches the typed origin to a real generated request and records the trace (CR-01, CR-04)."
     }
    ],
    "shared": [
@@ -8240,7 +8382,8 @@
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Nothing exists."
-   }
+   },
+   "notes": "Planning repair 2026-10-05 (DLV-34, DLV-41; scope moves only; no obligation or acceptance removed). The completion edge CLOUD.01 alone could never be satisfied by an observation: CLOUD.01 delivered the ingress without any correlation handling, and no Cloud task owned it. CLOUD.69 now owns the Cloud share (HTTP, Worker, host, ResponseMeta/ArcError, queue wake). The completion follow-up, after CLOUD.01 and CLOUD.69 are complete, performs the task's own remaining acceptance as one local opt-in run (P2-017, the PLT.53 precedent): a throwaway consumer outside the repository restores only the published ArcForges.Observability and generated PublicApi packages, creates the typed origin with CorrelationPropagation.BeginOrigin, sends it in RequestMeta.correlationId to the isolated proof environment under the RES-cloud-deployment lease, and records that the identifier returns in ResponseMeta/ArcError and the wake path and that the task identifier resolves to the connected local trace. The evidence says 'every available hop kind': the realtime hop and the outbound provider hop have no Cloud producer yet, are not claimed, and are recorded as pending later owners with their closing gates (WP-12.90 staged integration): CLOUD.33 (event publication, Event.correlationId) and AIR.04 (provider request identifier, CR-05) start from the CLOUD.69 seam and keep that propagation in their own acceptance. PLT.48 write scope is unchanged."
   },
   {
    "id": "PLT.49",
@@ -8629,9 +8772,15 @@
      "task": "APP.01",
      "need": "real, delivered outcome of APP.01 (Assistant.Abstractions host ports and application identity)",
      "why": "this integration exercises the real assistant.Abstractions host ports and application identity instead of a substitute, so it cannot start before that outcome exists"
+    },
+    {
+     "type": "artifact",
+     "task": "PLT.44",
+     "need": "delivered ArcForges.Security.Audit: the durable store, EgressAuditSink, CapabilityLeaseEventAuditSink and the retention runner",
+     "why": "the composition added by the 2026-10-05 planning repair passes the real audit sinks to the real authority and lease manager and runs the retention runner; it cannot start before those outcomes exist."
     }
    ],
-   "validation": "Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI (P2-017).",
+   "validation": "Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI (P2-017). Audit composition (2026-10-05 repair): the end-to-end scenario composes one real AuditStore, the real EgressAuditSink and CapabilityLeaseEventAuditSink, the real EgressAuthority and CapabilityLeaseManager and the PLT.44 retention runner, drives an allowed and a refused egress, an issued, revoked, expired and task-ended lease and a purge of an expired month, and reads every event back from the store; a failing store refuses the allowed transfer and the lease issue.",
    "evidence": "that the WP-09.07 invocation pipeline's 'authorize' step, wired to the real WP-11.02 decision pipeline, actually gates a real product capability end to end (resolve -> availability -> freeze -> authorize -> invoke -> validate -> record -> audit), closing the IAuthorizer interface seam both PLT.24 and PLT.38 are built against.",
    "baseline": {
     "state": "not-started"
@@ -8640,7 +8789,7 @@
    "writes": [
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/CapabilityEnforcement/** (the new nested non-packable production project ArcForges.Security.CapabilityEnforcement with ArcForges.Security.CapabilityEnforcement.csproj, its source and packages.lock.json: the real CapabilityInvocationAuthorization adapter over the Security decision pipeline)",
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/ArcForges.Security.csproj (add only the Compile Remove of the nested CapabilityEnforcement source, exactly as the existing LocalRpcBoundary entry; no reference, package, version or setting change)",
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/Tests/** (new offline tests for the adapter and the end-to-end invocation scenario, and in ArcForges.Security.Tests.csproj only the ProjectReference to the new project, with the existing nested Tests lock regenerated)",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/Tests/** (new offline tests for the adapter and the end-to-end invocation scenario including the audit composition, and in ArcForges.Security.Tests.csproj only the ProjectReferences to the new project and to ArcForges.Security.Audit, with the existing nested Tests lock regenerated)",
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/README.md (factual status of the new nested project only)",
     "DesktopPlatform:DesktopPlatform.slnx (append only the ArcForges.Security.CapabilityEnforcement project line; the existing Security.Tests registration and CI test line already cover the tests)",
     "DesktopPlatform:Directory.Packages.props (append only ArcForges.Security.CapabilityEnforcement to the existing ArcForges.Contracts.Foundation 1.0.0-ci.216.1 MSBuildProjectName selector; preserve the 1.0.0-ci.113.1 default and every other entry)",
@@ -8667,7 +8816,7 @@
      "mode": "append"
     }
    ],
-   "notes": "Planning repair for the exact write scope (2026-10-04; DLV-34, scope moves only: no obligation, edge or acceptance is added, removed or retyped). The task had an empty write scope, but the outcome needs real code: the seam that PLT.24 built against is the CapabilityInvocationAuthorization delegate of ArcForges.Capabilities.InvocationPipeline (the 'IAuthorizer' of the outcome text is this seam; no type of that name exists), and PLT.38 delivered SecurityDecisionPipeline in ArcForges.Security. Neither project can host the adapter: ArcForges.Security is Foundation-only and must not reference the packable ArcForges.Capabilities (and its Sdk.Contracts package), and ArcForges.Capabilities is packable and cannot reference the non-packable Security, whose package admission PLT.46 owns. The adapter therefore lives in one new non-packable nested production project, ArcForges.Security.CapabilityEnforcement, inside the Security directory exactly as PLT.38 placed ArcForges.Security.LocalRpcBoundary (Design PR 205, Plan PR 242, Plan ledger/tasks/plt-38.md): it references only ArcForges.Security and ArcForges.Capabilities, produces the CapabilityInvocationAuthorization delegate backed by the real decision pipeline (resolve, availability, freeze, authorize, invoke, validate, record, audit stay in the Capabilities pipeline; the adapter supplies only the authorize step and maps the typed security decision to the pipeline's outcome without weakening owner-side final validation), and adds no package, version, native code, runtime owner or wire schema. The existing nested ArcForges.Security.Tests project (already in the solution and the package-validation workflow) references it for the offline tests, so no new test project, workflow or solution entry beyond the one production line is needed. Registered in the same policy files and under the same ADP-07 protocol as PLT.38 and APP.01 (solution, central-package selector, architecture-projects, licence-boundary, runtime-ownership, active-projects, provenance, dependency-policy and one new immutable receipt chained from the receipt active on main at merge). The only central-package change is appending the new project name to the existing ArcForges.Contracts.Foundation 1.0.0-ci.216.1 selector, as PLT.38 did, because central transitive pinning rejects restore of a project reaching ArcForges.Foundation under the 1.0.0-ci.113.1 default. The receipt re-binds only the changed project, lock and Directory.Packages.props input hashes with an unchanged NuGet closure (every coordinate the new closure contains is already recorded; the claimant verifies this by restoring the exact planned shape and comparing the lock to the recorded closure before editing, and stops for a planning repair if a coordinate is new). Package admission stays with PLT.46 (Security) and PLT.25 (Capabilities); this task adds no package. The APP.01 start edge is ordering only: the bound scope never references the APP.01 project. Not authorized: any other source file (including ArcForges.Capabilities and the ArcForges.Security sources delivered by PLT.38), any workflow, .gitleaks.toml or scan allowlist (add no hash-like literal and no file or project name containing a Gitleaks generic-api-key keyword such as key, secret, token or auth in any hashed inventory row; the project, directory and every file name under it must avoid those keywords, which is why the project is named CapabilityEnforcement and its source files must not be named for authorization; the claimant confirms with the pinned scanner evidence), eng/packaging/packages.json, tests/ArchitectureTests, any other task's rows, and any dependency, package version, closure expansion, package identity, schema or migration. The real permission, policy, trust and egress sources that the pipeline ports need are injected by the hosting product; this task proves the attachment and the unbypassable ordering with the real PLT.24 and PLT.38 implementations and records, honestly, which ports were test composition and what remains for a real product host. Resource owners and protocols: RES-desktopplatform-build-config (append) for the solution and selector lines, RES-architecture-tests (append) for the exact public API-to-test bindings, and RES-desktopplatform-policy-data (append) for the receipt chain, provenance, reconciliation and inventory rows; regenerate locks and re-append rows after rebase and chain the receipt from the receipt active on main at merge."
+   "notes": "Planning repair for the exact write scope (2026-10-04; DLV-34, scope moves only: no obligation, edge or acceptance is added, removed or retyped). The task had an empty write scope, but the outcome needs real code: the seam that PLT.24 built against is the CapabilityInvocationAuthorization delegate of ArcForges.Capabilities.InvocationPipeline (the 'IAuthorizer' of the outcome text is this seam; no type of that name exists), and PLT.38 delivered SecurityDecisionPipeline in ArcForges.Security. Neither project can host the adapter: ArcForges.Security is Foundation-only and must not reference the packable ArcForges.Capabilities (and its Sdk.Contracts package), and ArcForges.Capabilities is packable and cannot reference the non-packable Security, whose package admission PLT.46 owns. The adapter therefore lives in one new non-packable nested production project, ArcForges.Security.CapabilityEnforcement, inside the Security directory exactly as PLT.38 placed ArcForges.Security.LocalRpcBoundary (Design PR 205, Plan PR 242, Plan ledger/tasks/plt-38.md): it references only ArcForges.Security and ArcForges.Capabilities, produces the CapabilityInvocationAuthorization delegate backed by the real decision pipeline (resolve, availability, freeze, authorize, invoke, validate, record, audit stay in the Capabilities pipeline; the adapter supplies only the authorize step and maps the typed security decision to the pipeline's outcome without weakening owner-side final validation), and adds no package, version, native code, runtime owner or wire schema. The existing nested ArcForges.Security.Tests project (already in the solution and the package-validation workflow) references it for the offline tests, so no new test project, workflow or solution entry beyond the one production line is needed. Registered in the same policy files and under the same ADP-07 protocol as PLT.38 and APP.01 (solution, central-package selector, architecture-projects, licence-boundary, runtime-ownership, active-projects, provenance, dependency-policy and one new immutable receipt chained from the receipt active on main at merge). The only central-package change is appending the new project name to the existing ArcForges.Contracts.Foundation 1.0.0-ci.216.1 selector, as PLT.38 did, because central transitive pinning rejects restore of a project reaching ArcForges.Foundation under the 1.0.0-ci.113.1 default. The receipt re-binds only the changed project, lock and Directory.Packages.props input hashes with an unchanged NuGet closure (every coordinate the new closure contains is already recorded; the claimant verifies this by restoring the exact planned shape and comparing the lock to the recorded closure before editing, and stops for a planning repair if a coordinate is new). Package admission stays with PLT.46 (Security) and PLT.25 (Capabilities); this task adds no package. The APP.01 start edge is ordering only: the bound scope never references the APP.01 project. Not authorized: any other source file (including ArcForges.Capabilities and the ArcForges.Security sources delivered by PLT.38), any workflow, .gitleaks.toml or scan allowlist (add no hash-like literal and no file or project name containing a Gitleaks generic-api-key keyword such as key, secret, token or auth in any hashed inventory row; the project, directory and every file name under it must avoid those keywords, which is why the project is named CapabilityEnforcement and its source files must not be named for authorization; the claimant confirms with the pinned scanner evidence), eng/packaging/packages.json, tests/ArchitectureTests, any other task's rows, and any dependency, package version, closure expansion, package identity, schema or migration. The real permission, policy, trust and egress sources that the pipeline ports need are injected by the hosting product; this task proves the attachment and the unbypassable ordering with the real PLT.24 and PLT.38 implementations and records, honestly, which ports were test composition and what remains for a real product host. Resource owners and protocols: RES-desktopplatform-build-config (append) for the solution and selector lines, RES-architecture-tests (append) for the exact public API-to-test bindings, and RES-desktopplatform-policy-data (append) for the receipt chain, provenance, reconciliation and inventory rows; regenerate locks and re-append rows after rebase and chain the receipt from the receipt active on main at merge. Planning repair (2026-10-05, DLV-34; unlike the 2026-10-04 scope move above, this one adds acceptance): the PLT.57 completion follow-up gains the audit composition named in the validation text and the start edge on PLT.44, and PLT.44 gains a completion prerequisite on this task (PLT.44 notes and ledger/tasks/plt-44.md). The Security tests project may reference ArcForges.Security.Audit only as a ProjectReference (Audit already references Security, never the reverse, so there is no cycle; the Security.Tests lock and the dependency-policy input hashes it changes are in the dependency-policy scope above, the closure is unchanged because Microsoft.Data.Sqlite is already in that project lock, and the claimant stops for a planning repair if a coordinate is new). No file of ArcForges.Security.Audit is changed by this task; the retention runner is built by the PLT.44 follow-up. This composition is the strongest running configuration the repository can host before an ArcScope process exists; a real product process and the owner-side final validation of a real product capability remain acceptance of the app-composition and ArcScope tasks, and the follow-up must state exactly which parts were test composition."
   },
   {
    "id": "NAT.01",
@@ -9987,7 +10136,15 @@
    ],
    "writes": [
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Abstractions/**",
-    "DesktopPlatform:tests/AssistantAbstractionsTests/**"
+    "DesktopPlatform:tests/AssistantAbstractionsTests/**",
+    "DesktopPlatform:eng/policy/architecture-contract-tests.json (append only exact APP.07 public API-to-focused-test bindings in the AssistantAbstractionsTests project)",
+    "DesktopPlatform:eng/provenance/files.json (APP.07 owned-source inventory rows for the new source and test files only)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
+    }
    ],
    "validation": "Offline unit/process tests: two windows/different drafts, independent crash, no data loss; no live-environment CI.",
    "evidence": "Two-window and crash-recovery test results.",
@@ -9995,6 +10152,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: No lifecycle handling exists yet."
    },
+   "notes": "Write-scope repair 2026-10-05 (w-c20261005-app07): eng/policy/architecture-contract-tests.json and eng/provenance/files.json are append-only supporting bindings for the new Assistant.Abstractions lifecycle source and tests (RP-10 requires a [Fact] binding for every public API method of the Abstractions project; the provenance inventory lists every owned source file). They add no dependency, package ID, version, project or pin. The task composes no Shell, Capabilities or Persistence.Sqlite (APP.08 owns the real sample); its tests use test-only ports for the local draft store, Cloud link and canonical data.",
    "complete": []
   },
   {
@@ -14415,7 +14573,7 @@
     "Cloud:wrangler.json",
     "Cloud:Dockerfile",
     "Cloud:.dockerignore (only admit the new nested C# source folder of the existing host project by the same append-only explicit directory rule and *.cs rule used for its other source folders; every other ignore rule is preserved)",
-    "Cloud:src/ArcForges.Cloud/** (the existing Native AOT host project, which is the real layout of the planned src/ArcForges.Cloud.Host/**; ADP-07 and ADP-10 forbid renaming it or adding a parallel project)",
+    "Cloud:src/ArcForges.Cloud/** (the existing Native AOT host project, which is the real layout of the planned src/ArcForges.Cloud.Host/**; the adoption rules forbid renaming it or adding a parallel project)",
     "Cloud:tests/ArcForges.Cloud.Tests/**",
     "Cloud:tests/worker/**",
     "Cloud:eng/verification/** (the local cross-process and explicit opt-in live scenarios of the pipeline)",
@@ -14474,7 +14632,7 @@
     "Cloud:src/ArcForges.Cloud.Modules.*/** (one project per module, named ArcForges.Cloud.Modules.<Name> for the 19 owners of the Cloud schema map, plus ArcForges.Cloud.Modules.Abstractions for the shared boundary types; the Domain, Application and Infrastructure layers are folders and namespaces inside each project, enforced by architecture tests, instead of three projects per module)",
     "Cloud:src/ArcForges.Cloud.Storage.D1/** (new project that owns the named-plan binding mechanism; it receives, by move with namespaces preserved, the PRF.07 proof bridge now in Cloud:src/ArcForges.Cloud/Storage/** and Cloud:src/ArcForges.Cloud/Hmac/**: plan definitions, exact scalar values, executor, private request signing and the generated manifest)",
     "Cloud:storage/plans/** (the plan root and owner registry; it receives, by move, the reviewed plans now in Cloud:src/ArcForges.Cloud/Storage/Plans/**)",
-    "Cloud:src/ArcForges.Cloud/** (the existing Native AOT host project, which is the real layout of the planned Cloud.Host; only the removal of the moved Storage and Hmac sources, the project references, the module catalog listing in Composition/HostModules.cs and the project file; no behavior change and no rename, ADP-07 and ADP-10)",
+    "Cloud:src/ArcForges.Cloud/** (the existing Native AOT host project, which is the real layout of the planned Cloud.Host; only the removal of the moved Storage and Hmac sources, the project references, the module catalog listing in Composition/HostModules.cs and the project file; no behavior change and no rename, per the adoption rules)",
     "Cloud:Cloud.slnx, Cloud:Dockerfile, Cloud:.dockerignore and Cloud:eng/policy/licence-boundary.json (only project membership, the restore and publish context of the new projects by the same explicit directory and *.cs rules, and the licence boundary rows; every other rule is preserved)",
     "Cloud:tests/ArcForges.Cloud.Tests/** and Cloud:tests/worker/**",
     "Cloud:eng/verification/storage-plans.ts (the plan root, the owner and table ownership checks and the generated C# output path; the Worker dictionary format and the manifest hash algorithm are unchanged) and Cloud:package.json (the explicit test file list only; no dependency or version change)",
@@ -14626,6 +14784,12 @@
      "task": "CLOUD.04",
      "need": "receipt/lease primitives to checkpoint job progress",
      "why": "a finite job's checkpoint/receipt/lease-then-yield cycle reuses the same guarded receipt mechanism, not a second one"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.69",
+     "need": "the Cloud-side correlation seam for wake messages and job-slice calls",
+     "why": "propagating correlation once is a Cloud seam (CR-06); this task builds on it instead of adding per-module propagation"
     }
    ],
    "writes": [
@@ -14643,7 +14807,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: no job runner exists"
    },
-   "notes": "This is the generic mechanism later background jobs plug into: WP-25.02's publisher, WP-25.06 realm-transfer jobs, WP-46 backup jobs, notification delivery retries.",
+   "notes": "This is the generic mechanism later background jobs plug into: WP-25.02's publisher, WP-25.06 realm-transfer jobs, WP-46 backup jobs, notification delivery retries. Planning repair 2026-10-05: job wake messages and job-slice calls carry correlationId and causationId through the CLOUD.69 seam; this task keeps them when it replaces the proof queue consumer (no new write scope).",
    "complete": []
   },
   {
@@ -16096,6 +16260,12 @@
      "task": "CLOUD.05",
      "need": "the finite-durable-job/Queue wake mechanism",
      "why": "wake hints are delivered via Queues using the same finite-job pattern CLOUD.05 establishes"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.69",
+     "need": "the Cloud-side correlation seam for event publication",
+     "why": "propagating correlation once is a Cloud seam (CR-06); this task builds on it instead of adding per-module propagation"
     }
    ],
    "writes": [
@@ -16113,7 +16283,8 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: none exists"
    },
-   "complete": []
+   "complete": [],
+   "notes": "Planning repair 2026-10-05: the bounded DO feed and the events it publishes carry the originating correlation (Event.correlationId, contracts 03) through the CLOUD.69 seam; this is part of this task's own acceptance and of the real realtime hop that PLT.48's correlation scenario names as a later owner (no new write scope)."
   },
   {
    "id": "CLOUD.34",
@@ -16322,7 +16493,7 @@
    "writes": [
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Sync/**",
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Persistence.Sqlite/** (only the existing single sync_outbox schema and one store_content.acknowledged_cloud_shadow BLOB NULL column under the fixed cloud-38-sync-outbox-v1 forward migration; atomic local edit/state/journal/outbox/shadow transaction; recovery and downgrade-refusal behavior; payload remains opaque and byte-exact; protected-table migration authorization is limited to this exact migration touching sync_outbox and store_content after legacy-shape validation)",
-    "DesktopPlatform:tests/PersistenceTests/** (WP-25.01 sync_outbox regressions only)"
+    "DesktopPlatform:tests/PersistenceTests/** (sync_outbox regressions of the persistence work package only)"
    ],
    "shared": [
     {
@@ -17321,6 +17492,12 @@
      "task": "COM.09",
      "need": "real, delivered outcome of COM.09 (Ledgers and reconciliation)",
      "why": "this integration exercises the real ledgers and reconciliation instead of a substitute, so it cannot start before that outcome exists"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the real Entitlement D1 store and grant port as the Entitlement participant of the shared families",
+     "why": "this integration exercises the real Entitlement participation instead of an in-memory substitute, so it cannot start before the durable Entitlement store exists"
     }
    ],
    "validation": "Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI (P2-017).",
@@ -17552,6 +17729,58 @@
    ]
   },
   {
+   "id": "CLOUD.69",
+   "title": "Correlation acceptance and propagation across ingress, response meta and queue wake",
+   "lane": "cloud",
+   "repo": "Cloud",
+   "kind": "service",
+   "size": "M",
+   "obligations": [
+    {
+     "ref": "WP-12.01",
+     "part": "the Cloud share: acceptance of a validated client correlation value or creation at the Cloud edge, and its propagation across the HTTP ingress, Worker, host, ResponseMeta/ArcError and queue-wake hops (the shared infrastructure and the desktop origin stay with PLT.48)"
+    }
+   ],
+   "outcome": "The deployed Cloud ingress and host carry one correlation identity per call (CR-01, CR-03, CR-06, HP-06): a RequestMeta.correlationId is read, validated as a canonical lowercase UUID and bound to the call context without ever influencing authorization or the current-owner decision, an absent value is created at the edge, a malformed value is refused with the registered validation.invalid_request code, and the identity is returned in ResponseMeta.correlationId and ArcError.correlationId of every reply the host builds. The Worker and host join it to one W3C traceparent per call, and the job wake message and the private job-slice call carry correlationId and causationId (the originating request or the previous wake event), so one synthetic call is joined across HTTP, Worker, host and queue-wake by the identifier alone. The task provides the one Cloud-side seam (a call-scoped correlation context for the host and a correlation envelope for Worker-originated queue messages) that later hop owners reuse instead of re-implementing propagation per module. It adds no realtime or provider behavior and no new wire field, header or contract meaning: a need for one is raised to the Contracts owner under PA-02.",
+   "provides": [
+    "cloud-correlation-seam"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "CLOUD.01",
+     "need": "the deployed ingress and host pipeline (RpcPolicy, RequestEnvelopeReader, IngressPipeline, Worker pipeline and the wake queue consumer) in which correlation is read, bound and returned",
+     "why": "correlation propagation is a change inside the pipeline CLOUD.01 establishes and cannot be written without that real seam"
+    }
+   ],
+   "shared": [
+    {
+     "resource": "RES-cloud-deployment",
+     "mode": "append"
+    }
+   ],
+   "writes": [
+    "Cloud:worker/ingress/** (read, validate or create the correlation identity at the edge, forward it to the host with one W3C traceparent, and return it on Worker-built refusals only through fields the wire registry already defines)",
+    "Cloud:worker/foundation/queue.ts, Cloud:worker/foundation/types.ts and Cloud:worker/foundation/container-client.ts (only the job wake message correlationId/causationId metadata, its closed-key parser and its forwarding in the private job-slice call; no change to lease, fence, retry or backoff semantics)",
+    "Cloud:src/ArcForges.Cloud/Ingress/** (the existing Native AOT host project, which is the real layout of the planned Cloud.Host; RequestEnvelopeReader, Caller, RpcPolicy, IngressPipeline and the proof-only PipelineProbe replies; the adoption rules forbid renaming it or adding a parallel project)",
+    "Cloud:src/ArcForges.Cloud/Foundation/JobSliceService.cs and the private job-slice request handling in Cloud:src/ArcForges.Cloud/Foundation/FoundationEndpoints.cs (only to accept the wake's correlation/causation and carry them in the call context)",
+    "Cloud:tests/ArcForges.Cloud.Tests/** and Cloud:tests/worker/**",
+    "Cloud:eng/verification/pipeline-scenarios.ts and Cloud:eng/verification/foundation-scenarios.ts (only added local cross-process and explicit opt-in deployed correlation scenarios: supplied, absent, malformed, error reply, queue wake; the deployed scenarios hold the lease leases/res-cloud-deployment for the live run only)",
+    "Cloud:package.json (the explicit test file list and the scenario scripts only; no dependency or version change)",
+    "Cloud:eng/policy/dependency-policy.json and Cloud:eng/policy/dependency-reviews/cloud-69-*.json (new immutable successor chained from the then-active receipt, only because the changed bundle, manifest and source inputs are hash-bound; no coordinate, integrity value or closure entry changes)",
+    "Cloud:eng/provenance/** (immutable successor release profile, Worker bundle and runtime-notice records only where an existing record binds an input this task changes, the first-party inventory files.json and the deterministic NOTICE.txt)",
+    "Cloud:docs/cloud-ingress.md and Cloud:AGENTS.md (factual description of correlation acceptance, the seam and what remains unobserved)"
+   ],
+   "validation": "Offline unit and cross-process tests: a valid supplied identifier is echoed in ResponseMeta and ArcError and reaches the wake message and job-slice call; an absent one is created; a malformed one is refused with validation.invalid_request before any handler or authorization decision; a supplied value never changes the authorization outcome; the Worker and host share one traceparent. Explicit local opt-in deployed scenarios against the isolated proof environment, once, under the RES-cloud-deployment lease. No hosted live, device, GUI or browser run (P2-017).",
+   "evidence": "Source commit, Worker bundle and image identity, local and deployed correlation scenario results with the untested hops named (realtime and provider are not exercised), and confirmation that no new wire field or header was introduced.",
+   "notes": "Planning repair 2026-10-05 (DLV-34: scope moves only; no obligation or acceptance is removed). PLT.48's completion follow-up found that its completion prerequisite CLOUD.01 delivers a pipeline that neither reads, validates, returns nor propagates a correlation identifier (no Cloud code or documentation handles RequestMeta.correlationId, ResponseMeta.correlationId, ArcError.correlationId or a traceparent; the wake message is a closed key set without correlation) and that no Cloud task owned CR-01, CR-03, CR-06 or HP-06 for the Cloud side. This task is that owner and is deliberately small: it uses only the fields already in wire registry 04 (RequestMeta tag 3, ResponseMeta tag 4, ArcError tag 6; the generated Contracts packages already carry them) and the existing private signed job-slice call. It does not add the realtime or provider hops: Event.correlationId is populated by the publication owners (CLOUD.33 and the stream owners) and a provider request identifier (CR-05) by the provider owners (AIR.04), each of which starts from this task's seam and keeps its own acceptance. The C# origin that makes the connected trace is not a Cloud or DesktopPlatform delivery task: PLT.48's completion follow-up performs it as one local opt-in consumer run outside the repository (the PLT.53 precedent) using the published ArcForges.Observability package to create the typed origin and the published generated PublicApi client to send it to the isolated proof environment, under the RES-cloud-deployment lease, and records the connected trace. The write scope of CLOUD.01 is not reopened. CLOUD.02 changes different files of the same host project (moved Storage and Hmac sources, module projects, composition listing); rebase after it merges, append to RES-cloud-host-composition only if a registration is needed (none is planned), and regenerate hash-bound provenance after the rebase.",
+   "complete": [],
+   "baseline": {
+    "state": "not-started",
+    "notes": "Planning repair 2026-10-05: no Cloud code or document handles correlation (CLOUD.01 delivered the ingress without it); nothing exists."
+   }
+  },
+  {
    "id": "COM.01",
    "title": "Provider adapter boundary",
    "lane": "commerce",
@@ -17706,6 +17935,12 @@
      "task": "COM.03",
      "need": "CheckoutAttempt/Order identifiers to correlate events against",
      "why": "out-of-order handling and idempotency by event type+identifier require the purchase-side identifiers the event correlates to"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the published IssueGrant and RevokeGrant port and the durable Entitlement store behind it",
+     "why": "the last step of the fixed verification chain (EI-05) is the grant, and EO-03 lets Commerce write into Entitlement only through that port; replaying the inbox must reproduce the persisted grants, which needs the real store behind the port and not a test store"
     }
    ],
    "substitutes": [
@@ -17744,7 +17979,7 @@
    "obligations": [
     {
      "ref": "WP-42.04",
-     "part": "full"
+     "part": "the grant and revocation model, the resolver and the snapshot with per-capability reasons and version, with rebuild equivalence proven over the resolver's store port (the Commerce-facing grant interface in the shared Abstractions project, the GR-05 reason on the grant row, and the durable D1 store with its atomic snapshot commit are mapped to COM.16)"
     }
    ],
    "outcome": "Immutable grants and revocations resolve deterministically into an entitlement snapshot with a per-capability reason and version, and rebuilding the snapshot from its grants/revocations always reproduces the stored snapshot.",
@@ -17753,7 +17988,12 @@
     "entitlement-snapshot-resolver"
    ],
    "writes": [
-    "Cloud:src/Cloud/ArcForges.Cloud.Modules.Entitlement/**/Resolver/**"
+    "Cloud:src/ArcForges.Cloud.Modules.Entitlement/Resolver/** (the real layout of the planned src/Cloud/ArcForges.Cloud.Modules.Entitlement/**/Resolver/**: the one Entitlement project CLOUD.02 creates, whose Domain, Application and Infrastructure layers are folders and namespaces; the resolver and the grant and revocation model are folders inside it)",
+    "Cloud:src/ArcForges.Cloud.Modules.Entitlement/EntitlementModule.cs and Cloud:src/ArcForges.Cloud.Modules.Entitlement/ArcForges.Cloud.Modules.Entitlement.csproj (only the module's own Register entry point listing the resolver services, and InternalsVisibleTo for the existing test assembly so that no public method needs a public-API-to-test mapping; no package, reference or behavior change)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Entitlement/** and Cloud:tests/ArchitectureTests/** (resolver tests in the existing test projects; the architecture tests only for the reviewed project role and layering binding of the Entitlement project)",
+    "Cloud:eng/policy/dependency-policy.json and Cloud:eng/policy/dependency-reviews/com-05-*.json (new immutable successor chained from the then-active receipt, only because hash-bound project and release inputs change; no coordinate, integrity value or closure entry changes)",
+    "Cloud:eng/provenance/** (immutable successor release profile, Worker bundle and runtime-notice records only where an existing record binds an input this task changes, the first-party inventory files.json and the deterministic NOTICE.txt)",
+    "Cloud:docs/entitlement-resolver.md (new, factual description of the resolver and its fixtures) and Cloud:AGENTS.md (only if the module description changes)"
    ],
    "shared": [
     {
@@ -17801,6 +18041,12 @@
      "task": "CLOUD.23",
      "need": "typed-query/revision-precondition pattern",
      "why": "distributing a versioned snapshot to clients is expected to reuse the public API's revision-precondition idiom rather than invent a parallel versioning scheme; WP-23 not yet built so exact shape unconfirmed"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the durable Entitlement store that holds the stored snapshot with its EntitlementVersion",
+     "why": "distribution reads the persisted snapshot and version (ED-01, ES-03); it must not read a test store or the grant tables, and the store is where the snapshot is committed atomically with the records that cause it"
     }
    ],
    "writes": [
@@ -18001,6 +18247,12 @@
      "task": "COM.09",
      "need": "ledger entries to export",
      "why": "the evidence export is built from ledger + event + entitlement history, which only exist once COM.09 posts them"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the RevokeGrant side of the published grant port",
+     "why": "a refund rolls entitlement back by appending a revocation against the grant it funded (GR-03), which Commerce can do only through the published port (EO-03)"
     }
    ],
    "writes": [
@@ -18054,6 +18306,12 @@
      "task": "COM.04",
      "need": "deduplicated ProviderEvent stream",
      "why": "TM-02 requires provider-event dedup to live in commerce.provider_event so a replayed event cannot extend a term twice; the inbox is the only place that dedup exists"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the widened append path of the durable Entitlement store for service terms and term actions, with its D1 plans",
+     "why": "a term, a renewal or a plan-change supersede must commit atomically with the snapshot refresh it causes (the resolver port carried grants and revocations only); COM.16 provides the one append path and the D1 plans, COM.11 owns the term rules"
     }
    ],
    "writes": [
@@ -18170,6 +18428,12 @@
      "task": "COM.10",
      "need": "refund/rollback path",
      "why": "the refund RPC drives COM.10's refund-with-rollback mechanism"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the IssueGrant and RevokeGrant port carrying the GR-05 reason",
+     "why": "operator grant and revokeGrant (AdminGrant and Compensation sources) must reach Entitlement through the published interface with reason, operator and incident reference, never through its tables or its internal service"
     }
    ],
    "complete": [
@@ -18333,6 +18597,86 @@
     "state": "not-started"
    },
    "packageAcceptance": "WP-42",
+   "complete": []
+  },
+  {
+   "id": "COM.16",
+   "title": "Entitlement grant port and durable Entitlement store",
+   "lane": "commerce",
+   "repo": "Cloud",
+   "kind": "service",
+   "size": "L",
+   "obligations": [
+    {
+     "ref": "WP-42.04",
+     "part": "the Commerce-facing grant interface (EO-03: IssueGrant and RevokeGrant as a public port in the shared Abstractions project, implemented by the Entitlement module), the GR-05 reason carried on the grant row, and the durable D1 Entitlement store: grants, revocations, service terms and term actions committed atomically with the snapshot and its EntitlementVersion under one guarded plan, with rebuild equivalence over D1-stored records (the resolver, its rules and its in-memory-store rebuild equivalence are COM.05)"
+    }
+   ],
+   "outcome": "Commerce, the operator path and the refund path reach Entitlement only through one published IssueGrant/RevokeGrant port that lives in ArcForges.Cloud.Modules.Abstractions and is implemented by the Entitlement module (EO-03, MD-03), so no module references Entitlement internals or writes its tables; an administrative, compensation or migration grant carries its reason on the grant row (GR-05); and the Entitlement module has its production D1 store: grants, revocations, service terms, term actions and the derived snapshot are appended and replaced in one guarded named plan under the workspace revision together with the owner receipt and notification outbox row, so a grant or term never exists without the snapshot and EntitlementVersion that reflect it, a stale writer commits nothing, and the snapshot rebuilt from the D1-stored records equals the stored snapshot. The Entitlement store reaches D1 only through a generic plan-execution port that this task creates in ArcForges.Cloud.Modules.Abstractions (outside the Entitlement folder, so every later module reuses it) and a Storage.D1 adapter that implements it over the signed Worker executor; an Entitlement plan names only entitlement_ and platform_ tables. The port commits on its own; joining the same grant statements to the enumerated purchase unit of work is the Entitlement participation of CLOUD.63.",
+   "provides": [
+    "entitlement-grant-port",
+    "entitlement-d1-store"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "COM.05",
+     "need": "the grant and revocation model, the EntitlementService admission rules and the IEntitlementStore port contract",
+     "why": "the port exposes, and the D1 store implements, exactly the contract COM.05 defined and tested; nothing of the resolver or its admission rules is redefined here"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.03",
+     "need": "the physical entitlement tables (grant with its reason column, revocation, revision, snapshot, service_term and service_term_action), their append-only triggers and the typed bind/result adapters",
+     "why": "the store binds to the checked-in physical manifest and creates no table or column of its own; the manifest is generated from model 01, whose entitlement.grant now carries the GR-05 reason"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.04",
+     "need": "the owner receipt and notification outbox rows of a guarded write",
+     "why": "every atomic guarded write carries its receipt and outbox entry in the same batch, and the snapshot commit is such a write (ES-04: the realtime hint is published from that outbox row)"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.06",
+     "need": "the guarded-batch executor and its revision guard primitive with the SU-04 module order",
+     "why": "the commit is one guarded batch of the Entitlement participant; it runs through the shared engine instead of a private executor"
+    }
+   ],
+   "writes": [
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Entitlement/** (new and public: the IssueGrant and RevokeGrant port with its request, result and refusal types, built from primitives only and referencing no module and no Entitlement internal type; cross-module ports belong to this shared boundary project (architecture 01 section 5, MD-03); no change to IModuleBoundary or ModuleDescriptor; the generic plan-execution port is not part of this folder: see Abstractions/Storage/**)",
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Storage/** (new and public: the generic plan-execution port, a named plan id with exact typed parameters in, typed rows or a typed refusal out, that a module project may use because a module references only this project and never the storage layer; it names no table, no SQL and no module; CLOUD.02 published none, and CLOUD.04 and CLOUD.06 write only inside Storage.D1 and so cannot publish one)",
+  "Cloud:src/ArcForges.Cloud.Storage.D1/ModuleBinding/** and Cloud:src/ArcForges.Cloud.Storage.D1/ArcForges.Cloud.Storage.D1.csproj (new folder owned by this task, no overlap with the Migrations, Physical, Receipts, Outbox or SharedFamilies folders of CLOUD.03, CLOUD.04 and CLOUD.06: the adapter that implements the Abstractions plan-execution port over the existing signed Worker executor and refuses a plan id whose owner is not the caller's module descriptor; the project file only for the project reference to Abstractions; later module tasks reuse the adapter and add nothing here)",
+  "Cloud:src/ArcForges.Cloud.Modules.Entitlement/** except Resolver/Domain (the port adapter over EntitlementService that carries the reason, the widened EntitlementAppend that also carries service terms and term actions, the D1 IEntitlementStore under Persistence/** written against the Abstractions plan-execution port, and the module's own Register entry listing them; the resolver rules, rebuild semantics and admission rules of COM.05 are unchanged)",
+    "Cloud:storage/plans/entitlement/** and the generated plan manifest in Cloud:src/ArcForges.Cloud.Storage.D1/PlanManifest.g.cs (the Entitlement module's named plans as owner entitlement, naming only entitlement_ and platform_ tables (CM-01 to CM-03); the manifest hash is regenerated by the author after rebase; RES-cloud-storage-plans)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Migrations/** (an append-only expand migration only if the physical manifest delivered by CLOUD.03 lacks entitlement_grant.reason or an index the plans need; numbered at merge by the integration owner; RES-cloud-d1-migrations)",
+    "Cloud:src/ArcForges.Cloud/Composition/HostModules.cs (only the append that binds the Storage.D1 ModuleBinding adapter to the Abstractions plan-execution port, and the Entitlement store to the Entitlement port, by composition; RES-cloud-host-composition)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Entitlement/** and Cloud:tests/ArchitectureTests/** (port contract tests and store tests; the architecture tests only to assert that Commerce reaches Entitlement only through the Abstractions port and that the Abstractions project references no module)",
+    "Cloud:eng/policy/dependency-policy.json and Cloud:eng/policy/dependency-reviews/com-16-*.json (new immutable successor chained from the then-active receipt, only because hash-bound project and release inputs change; no coordinate, integrity value or closure entry changes)",
+    "Cloud:eng/provenance/** (immutable successor release profile, Worker bundle and runtime-notice records only where an existing record binds an input this task changes, the first-party inventory files.json and the deterministic NOTICE.txt)",
+    "Cloud:docs/entitlement-resolver.md (the port, the reason column and the store replace the stated limits it records), Cloud:docs/storage-plans.md (the entitlement owner) and Cloud:AGENTS.md (only if the module description changes)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-cloud-host-composition",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-storage-plans",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-d1-migrations",
+     "mode": "append"
+    }
+   ],
+   "validation": "Offline unit tests: port contract (idempotent replay by source reference, stale-version refusal, reason required for administrative, compensation and migration grants, no Entitlement type crosses the port), store tests through the plan-bridge fakes and the physical column map (atomic append and snapshot replace, a stale revision commits nothing, concurrent writers, append-only enforcement, reason round trip), rebuild equivalence over D1-stored fixture records, architecture tests for the Commerce-to-Entitlement path; opt-in local runtime run against a real D1 instance for the atomic commit and the concurrent-writer case per docs/validation-policy.md; no hosted runtime, live-service or browser CI (P2-017).",
+   "evidence": "Port contract and architecture test results; the D1 atomic-commit, stale-revision and concurrent-writer results (the local D1 run recorded once, or recorded as untested); rebuild-equivalence result over D1-stored records; reason round-trip result; source commit.",
+   "baseline": {
+    "state": "not-started",
+    "notes": "Observed, unreviewed: COM.05 (Cloud PR 47, in review) keeps the resolver service internal to the Entitlement project, tests it against an in-memory store only and records that the Commerce grant port, the GR-05 reason column and the D1 store have no owning task; CLOUD.02 (complete) published only IModuleBoundary and ModuleDescriptor in the Abstractions project."
+   },
+   "notes": "Added by the COM.05 review finding that nothing owned the EO-03 port, the GR-05 reason column or the D1 IEntitlementStore. Decisions: the port type lives in Abstractions (Commerce cannot reference the Entitlement project); the reason column is a model 01 correction made by the planning pair that added this task and is mapped by the CLOUD.03 manifest; the D1 store is the Entitlement module's own persistence (module owners own their plans, architecture 01 section 5), not CLOUD.63, which joins the same statements to the shared families once Commerce exists. Plan execution: a module project references only Abstractions (docs/storage-plans.md), so this task creates the generic plan-execution port in Abstractions/Storage/** and its adapter in Storage.D1/ModuleBinding/**, and an Entitlement plan may name only entitlement_ and platform_ tables. Revision guard: the per-workspace revision COM.05's port commits under is held in the new Entitlement-owned table entitlement.revision (model 01, added by the planning pair that added this task), never in a workspace_ table, and every Entitlement commit guards and increments it in the same batch. One point the model still does not settle is raised by this task through a Design pair before it edits, never decided in code (D-001; ADP-07 forbids new schema meanings): the persistence of the workspace status facts, feature releases and definitions activations that COM.05's record set reads (the model has no table for them; workspace.state and the commerce.subscription fields stay owned by their modules). Until that is settled the store covers the entitlement-owned tables only.",
    "complete": []
   },
   {
@@ -20106,7 +20450,7 @@
     "DesktopPlatform:eng/policy/runtime-ownership.json (task-owned extension project row only)",
     "DesktopPlatform:eng/policy/reconciliation/active-projects.json, eng/policy/reconciliation/project-updates.json and eng/policy/reconciliation/source.json (task-owned active project/update/source rows only; preserve history)",
     "DesktopPlatform:eng/provenance/files.json (task-owned source, test, AotProbe and generated project-input classifications only)",
-    "DesktopPlatform:artifacts/evidence/** (task-owned WP-41.02 evidence only)"
+    "DesktopPlatform:artifacts/evidence/** (task-owned evidence of the extension-host substep only)"
    ],
    "shared": [
     {
@@ -20812,6 +21156,12 @@
      "task": "AIR.02",
      "need": "metered attempts to record interactions against",
      "why": "an interaction record without a metered attempt has nothing to redact/explain"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.69",
+     "need": "the Cloud-side correlation seam for the provider interaction record",
+     "why": "propagating correlation once is a Cloud seam (CR-06); this task builds on it instead of adding per-module propagation"
     }
    ],
    "writes": [
@@ -20823,7 +21173,8 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists."
    },
-   "complete": []
+   "complete": [],
+   "notes": "Planning repair 2026-10-05: every provider interaction record carries the call's correlation identity and the provider request identifier (CR-05) through the CLOUD.69 seam; this is part of this task's own acceptance and of the real provider hop that PLT.48's correlation scenario names as a later owner (no new write scope)."
   },
   {
    "id": "AIR.05",

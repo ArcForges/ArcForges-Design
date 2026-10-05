@@ -18,30 +18,30 @@ Every row below is exercised by the same-engine `EveryRuleAcceptsItsValidFixture
 
 | Rule | Positive fixture | Rejected negative |
 |---|---|---|
-| AT-01 | Domain depends on abstractions | Infrastructure project edge; additional Domain/Application package-layer negatives |
-| AT-02 | Local adapter depends on abstractions | UI project dependency |
-| AT-03 | Public adapter depends on abstractions | UI project dependency |
-| AT-04 | Contracts depend on Foundation | Native adapter dependency |
-| AT-05 | Other-owner abstraction | Other-owner domain dependency |
-| AT-06 | Managed integer boundary | Raw pointer return; delegate pointer/SafeHandle signatures |
-| AT-07 | Same-module persistence | Other-module persistence |
-| AT-08 | Typed local RPC argument | Untyped object argument |
-| AT-09 | Nonproduction native test target | Production native executable; production-to-test dependency |
-| AT-10 | Reviewed safe HTTP fixture | Refit runtime dependency |
-| AT-11 | Generated canonical RPC base and application port | Missing port mapping |
-| AT-12 | Generated wire type bound to owned schema hash | Authored ungenerated wire type |
-| AT-13 | Cross-module abstraction | Cross-module infrastructure |
-| AT-14 | Shared Shell depends on Foundation | Product domain dependency |
-| RP-01 | Passing exact naming evidence | Failing naming evidence |
-| RP-02 | Correct SPDX boundary declaration | Empty licence |
-| RP-03 | Apache-to-Apache edge | Apache-to-AGPL edge |
-| RP-04 | Permitted MIT mobile package | GPL-only mobile package |
-| RP-05 | Central package management and locks | Central management disabled |
-| RP-06 | Exact admitted toolchain hash | Changed global.json |
-| RP-07 | Preserved diagnostics | Trim diagnostics suppressed |
-| RP-08 | Passing exact alias evidence | Failing alias evidence |
-| RP-09 | Passing exact secret evidence | Failing secret evidence |
-| RP-10 | Public API mapped to actual contract test | Missing mapping; Trait-only/non-test owner rejected |
+| [AT-01](../architecture/01-solution-and-project-layout.md#rule-at-01) | Domain depends on abstractions | Infrastructure project edge; additional Domain/Application package-layer negatives |
+| [AT-02](../architecture/01-solution-and-project-layout.md#rule-at-02) | Local adapter depends on abstractions | UI project dependency |
+| [AT-03](../architecture/01-solution-and-project-layout.md#rule-at-03) | Public adapter depends on abstractions | UI project dependency |
+| [AT-04](../architecture/01-solution-and-project-layout.md#rule-at-04) | Contracts depend on Foundation | Native adapter dependency |
+| [AT-05](../architecture/01-solution-and-project-layout.md#rule-at-05) | Other-owner abstraction | Other-owner domain dependency |
+| [AT-06](../architecture/01-solution-and-project-layout.md#rule-at-06) | Managed integer boundary | Raw pointer return; delegate pointer/SafeHandle signatures |
+| [AT-07](../architecture/01-solution-and-project-layout.md#rule-at-07) | Same-module persistence | Other-module persistence |
+| [AT-08](../architecture/01-solution-and-project-layout.md#rule-at-08) | Typed local RPC argument | Untyped object argument |
+| [AT-09](../architecture/01-solution-and-project-layout.md#rule-at-09) | Nonproduction native test target | Production native executable; production-to-test dependency |
+| [AT-10](../architecture/01-solution-and-project-layout.md#rule-at-10) | Reviewed safe HTTP fixture | Refit runtime dependency |
+| [AT-11](../architecture/01-solution-and-project-layout.md#rule-at-11) | Generated canonical RPC base and application port | Missing port mapping |
+| [AT-12](../architecture/01-solution-and-project-layout.md#rule-at-12) | Generated wire type bound to owned schema hash | Authored ungenerated wire type |
+| [AT-13](../architecture/01-solution-and-project-layout.md#rule-at-13) | Cross-module abstraction | Cross-module infrastructure |
+| [AT-14](../architecture/01-solution-and-project-layout.md#rule-at-14) | Shared Shell depends on Foundation | Product domain dependency |
+| [RP-01](../architecture/01-solution-and-project-layout.md#rule-rp-01) | Passing exact naming evidence | Failing naming evidence |
+| [RP-02](../architecture/01-solution-and-project-layout.md#rule-rp-02) | Correct SPDX boundary declaration | Empty licence |
+| [RP-03](../architecture/01-solution-and-project-layout.md#rule-rp-03) | Apache-to-Apache edge | Apache-to-AGPL edge |
+| [RP-04](../architecture/01-solution-and-project-layout.md#rule-rp-04) | Permitted MIT mobile package | GPL-only mobile package |
+| [RP-05](../architecture/01-solution-and-project-layout.md#rule-rp-05) | Central package management and locks | Central management disabled |
+| [RP-06](../architecture/01-solution-and-project-layout.md#rule-rp-06) | Exact admitted toolchain hash | Changed global.json |
+| [RP-07](../architecture/01-solution-and-project-layout.md#rule-rp-07) | Preserved diagnostics | Trim diagnostics suppressed |
+| [RP-08](../architecture/01-solution-and-project-layout.md#rule-rp-08) | Passing exact alias evidence | Failing alias evidence |
+| [RP-09](../architecture/01-solution-and-project-layout.md#rule-rp-09) | Passing exact secret evidence | Failing secret evidence |
+| [RP-10](../architecture/01-solution-and-project-layout.md#rule-rp-10) | Public API mapped to actual contract test | Missing mapping; Trait-only/non-test owner rejected |
 
 Seven semantic banned-symbol categories have compiled positive/negative examples: reflection on AOT paths, dynamic code generation, blocking waits on async paths (including nested lambdas/local functions and configured awaiters), direct provider SDK calls outside adapters, content/secret logging, floating-point money arithmetic and raw pointer fields. Additional tests cover semantic aliases/static imports, native stale/unclassified receipts, unresolved compilation rejection, and managed/recursive delegates without false pointer classification. Exact owned expiring exceptions are supported; current production exception list is empty.
 

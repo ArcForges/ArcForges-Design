@@ -12,7 +12,7 @@ Tasks: 10 · Owning repositories: AI, Cloud · Integration owner(s): AI integrat
 | [AIR.01](#task-air-01) | Tariffs and cost dimensions | service | M | [POL.02](policy.md#task-pol-02) (artifact) | not-started |
 | [AIR.02](#task-air-02) | Metering and settlement | service | L | [COM.08](commerce.md#task-com-08) (artifact), [AIR.00](#task-air-00) (artifact) | not-started |
 | [AIR.03](#task-air-03) | Selected supplier and realm routing (no BYOK) | service | M | [AIR.00](#task-air-00) (artifact) | not-started |
-| [AIR.04](#task-air-04) | Provider interaction records, redaction and cost transparency | service | M | [AIR.02](#task-air-02) (artifact) | not-started |
+| [AIR.04](#task-air-04) | Provider interaction records, redaction and cost transparency | service | M | [AIR.02](#task-air-02) (artifact), [CLOUD.69](cloud.md#task-cloud-69) (artifact) | not-started |
 | [AIR.05](#task-air-05) | Content-origin marking at the provider generation boundary | service | M | [AIR.00](#task-air-00) (artifact) | not-started |
 | [AIR.06](#task-air-06) | Funding and uncertain-outcome proof | service | M | [AIR.02](#task-air-02) (artifact) | not-started |
 | [AIR.07](#task-air-07) | Provider test-environment coverage | service | M | [AIR.00](#task-air-00) (artifact) | not-started |
@@ -126,7 +126,7 @@ Tasks: 10 · Owning repositories: AI, Cloud · Integration owner(s): AI integrat
 | Kind / size | service / M |
 | Obligations | [WP-43.04](../../work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.04) — interaction record, redaction, and cost-transparency surfaces (Cloud side) |
 | Provides | ai-interaction-records |
-| Start prerequisites | **artifact** [AIR.02](#task-air-02) — metered attempts to record interactions against. *Why:* an interaction record without a metered attempt has nothing to redact/explain |
+| Start prerequisites | **artifact** [AIR.02](#task-air-02) — metered attempts to record interactions against. *Why:* an interaction record without a metered attempt has nothing to redact/explain<br>**artifact** [CLOUD.69](cloud.md#task-cloud-69) — the Cloud-side correlation seam for the provider interaction record. *Why:* propagating correlation once is a Cloud seam ([CR-06](../../../architecture/13-observability-and-operations.md#rule-cr-06)); this task builds on it instead of adding per-module propagation |
 | Entry condition | [ADOPT.07.ai-routing](adoption.md#task-adopt-07-ai-routing) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [AIR.90](#task-air-90) |
@@ -134,6 +134,7 @@ Tasks: 10 · Owning repositories: AI, Cloud · Integration owner(s): AI integrat
 | Validation | Trace-separation test; content-redaction test; cost-explainability test -- offline. |
 | Completion evidence | Trace separation, redaction and cost explainability results. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
+| Notes | Planning repair 2026-10-05: every provider interaction record carries the call's correlation identity and the provider request identifier ([CR-05](../../../architecture/09-ai-and-agent-runtime-architecture.md#rule-cr-05)) through the CLOUD.69 seam; this is part of this task's own acceptance and of the real provider hop that PLT.48's correlation scenario names as a later owner (no new write scope). |
 
 <a id="task-air-05"></a>
 
