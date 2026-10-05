@@ -199,15 +199,16 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 
 | Delivery task | Satisfies | Start prerequisites outside this package |
 |---|---|---|
+| [CLOUD.69](../delivery/lanes/cloud.md#task-cloud-69) | [WP-12.01](12-observability-foundation.md#rule-wp-12.01) (the Cloud share: acceptance of a validated client correlation value or creation at the Cloud edge, and its propagation across the HTTP ingress, Worker, host, ResponseMeta/ArcError and queue-wake hops (the shared infrastructure and the desktop origin stay with PLT.48)) | [CLOUD.01](../delivery/lanes/cloud.md#task-cloud-01) (artifact) |
 | [PLT.47](../delivery/lanes/platform.md#task-plt-47) | [WP-12.00](12-observability-foundation.md#rule-wp-12.00) (full) | [FND.01](../delivery/lanes/foundation.md#task-fnd-01) (artifact) |
-| [PLT.48](../delivery/lanes/platform.md#task-plt-48) | [WP-12.01](12-observability-foundation.md#rule-wp-12.01) (full) | none |
+| [PLT.48](../delivery/lanes/platform.md#task-plt-48) | [WP-12.01](12-observability-foundation.md#rule-wp-12.01) (the shared telemetry infrastructure and the originating edge: validated typed correlation created or accepted at the origin, propagation across the local hop kinds, causation, task/run resolution (the Cloud ingress, host, ResponseMeta/ArcError and queue-wake share is mapped to CLOUD.69)) | none |
 | [PLT.49](../delivery/lanes/platform.md#task-plt-49) | [WP-12.02](12-observability-foundation.md#rule-wp-12.02) (full)<br>[WP-12](12-observability-foundation.md#rule-wp-12) eng/policy/telemetry-policy.json creation: dimension allowlist, metric label allowlist, sampling and retention configuration (package-level obligation contribution) | [PLT.40](../delivery/lanes/platform.md#task-plt-40) (artifact), [FND.05](../delivery/lanes/foundation.md#task-fnd-05) (artifact) |
 | [PLT.50](../delivery/lanes/platform.md#task-plt-50) | [WP-12.03](12-observability-foundation.md#rule-wp-12.03) (full)<br>[WP-12](12-observability-foundation.md#rule-wp-12) eng/policy/telemetry-policy.json creation: dimension allowlist, metric label allowlist, sampling and retention configuration (package-level obligation contribution) | none |
 | [PLT.51](../delivery/lanes/platform.md#task-plt-51) | [WP-12.04](12-observability-foundation.md#rule-wp-12.04) (full) | [PLT.23](../delivery/lanes/platform.md#task-plt-23) (artifact) |
 | [PLT.52](../delivery/lanes/platform.md#task-plt-52) | [WP-12.05](12-observability-foundation.md#rule-wp-12.05) (full) | [PLT.31](../delivery/lanes/platform.md#task-plt-31) (artifact) |
 | [PLT.53](../delivery/lanes/platform.md#task-plt-53) | [WP-12.90](12-observability-foundation.md#rule-wp-12.90) (full) | none |
 
-**Consumers outside this package:** [UPD.06](../delivery/lanes/updater.md#task-upd-06).
+**Consumers outside this package:** [AIR.04](../delivery/lanes/ai-routing.md#task-air-04), [CLOUD.05](../delivery/lanes/cloud.md#task-cloud-05), [CLOUD.33](../delivery/lanes/cloud.md#task-cloud-33), [UPD.06](../delivery/lanes/updater.md#task-upd-06).
 
 <!-- delivery-graph:end -->
 

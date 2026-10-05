@@ -132,7 +132,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [CLOUD.30](../delivery/lanes/cloud.md#task-cloud-30) | [WP-24.01](24-realtime-and-reliable-events.md#rule-wp-24.01) (all work except the parts mapped to DEV.14) | none |
 | [CLOUD.31](../delivery/lanes/cloud.md#task-cloud-31) | [WP-24.02](24-realtime-and-reliable-events.md#rule-wp-24.02) (full) | [CLOUD.04](../delivery/lanes/cloud.md#task-cloud-04) (artifact) |
 | [CLOUD.32](../delivery/lanes/cloud.md#task-cloud-32) | [WP-24.03](24-realtime-and-reliable-events.md#rule-wp-24.03) (full) | none |
-| [CLOUD.33](../delivery/lanes/cloud.md#task-cloud-33) | [WP-24.04](24-realtime-and-reliable-events.md#rule-wp-24.04) (full) | [CLOUD.05](../delivery/lanes/cloud.md#task-cloud-05) (artifact) |
+| [CLOUD.33](../delivery/lanes/cloud.md#task-cloud-33) | [WP-24.04](24-realtime-and-reliable-events.md#rule-wp-24.04) (full) | [CLOUD.05](../delivery/lanes/cloud.md#task-cloud-05) (artifact), [CLOUD.69](../delivery/lanes/cloud.md#task-cloud-69) (artifact) |
 | [CLOUD.34](../delivery/lanes/cloud.md#task-cloud-34) | [WP-24.05](24-realtime-and-reliable-events.md#rule-wp-24.05) (full) | none |
 | [CLOUD.35](../delivery/lanes/cloud.md#task-cloud-35) | [WP-24.06](24-realtime-and-reliable-events.md#rule-wp-24.06) (full) | none |
 | [CLOUD.36](../delivery/lanes/cloud.md#task-cloud-36) | [WP-24.90](24-realtime-and-reliable-events.md#rule-wp-24.90) (full, including the Tool-result acceptance subsection (toolRequestId dedup for Task and ChatTurn owners, command.reused_identifier refusal, wire registry + [TK-05](../../architecture/contracts/01-public-api-operations.md#rule-tk-05) + task.tool_result binding)) | none |

@@ -247,7 +247,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [AIR.01](../delivery/lanes/ai-routing.md#task-air-01) | [WP-43.01](43-managed-ai-routing-and-metering.md#rule-wp-43.01) (full) | [POL.02](../delivery/lanes/policy.md#task-pol-02) (artifact) |
 | [AIR.02](../delivery/lanes/ai-routing.md#task-air-02) | [WP-43.02](43-managed-ai-routing-and-metering.md#rule-wp-43.02) (full) | [COM.08](../delivery/lanes/commerce.md#task-com-08) (artifact) |
 | [AIR.03](../delivery/lanes/ai-routing.md#task-air-03) | [WP-43.03](43-managed-ai-routing-and-metering.md#rule-wp-43.03) (full) | none |
-| [AIR.04](../delivery/lanes/ai-routing.md#task-air-04) | [WP-43.04](43-managed-ai-routing-and-metering.md#rule-wp-43.04) (interaction record, redaction, and cost-transparency surfaces (Cloud side)) | none |
+| [AIR.04](../delivery/lanes/ai-routing.md#task-air-04) | [WP-43.04](43-managed-ai-routing-and-metering.md#rule-wp-43.04) (interaction record, redaction, and cost-transparency surfaces (Cloud side)) | [CLOUD.69](../delivery/lanes/cloud.md#task-cloud-69) (artifact) |
 | [AIR.05](../delivery/lanes/ai-routing.md#task-air-05) | [WP-43.04](43-managed-ai-routing-and-metering.md#rule-wp-43.04) (transparency marking mechanism at the provider generation boundary; marking-coverage per artifact type) | none |
 | [AIR.06](../delivery/lanes/ai-routing.md#task-air-06) | [WP-43.05](43-managed-ai-routing-and-metering.md#rule-wp-43.05) (full) | none |
 | [AIR.07](../delivery/lanes/ai-routing.md#task-air-07) | [WP-43.06](43-managed-ai-routing-and-metering.md#rule-wp-43.06) (full) | none |
