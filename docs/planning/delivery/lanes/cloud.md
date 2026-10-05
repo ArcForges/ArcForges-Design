@@ -4,7 +4,7 @@
 
 Host and D1 persistence, identity and sessions, public APIs, realtime events, sync and objects, backup and recovery.
 
-Tasks: 62 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s): Cloud integration owner, DesktopPlatform integration owner
+Tasks: 63 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s): Cloud integration owner, DesktopPlatform integration owner
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
@@ -70,6 +70,7 @@ Tasks: 62 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | [CLOUD.68](#task-cloud-68) | ArcScope library read model and companion notifications | service | M | [CON.24](contracts.md#task-con-24) (contract), [CLOUD.39](#task-cloud-39) (artifact), [CLOUD.21](#task-cloud-21) (artifact) | not-started |
 | [CLOUD.69](#task-cloud-69) | Correlation acceptance and propagation across ingress, response meta and queue wake | service | M | [CLOUD.01](#task-cloud-01) (artifact) | not-started |
 | [CLOUD.70](#task-cloud-70) | Gated D1 migration deployment step and compatible-rollback flow | service | S | [CLOUD.03](#task-cloud-03) (artifact), [CLOUD.01](#task-cloud-01) (artifact) | not-started |
+| [CLOUD.71](#task-cloud-71) | Serve the built Web profiles from the proof origin | service | S | [PRF.07](runtime-proofs.md#task-prf-07) (artifact), [PRF.08](runtime-proofs.md#task-prf-08) (artifact) | not-started |
 
 ## Tasks
 
@@ -257,7 +258,7 @@ Tasks: 62 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Start prerequisites | **artifact** [CLOUD.01](#task-cloud-01) — the deployed ingress/Container to expose readiness for. *Why:* readiness reports on the pipeline CLOUD.01 builds<br>**artifact** [CLOUD.02](#task-cloud-02) — the plan-manifest hash to check for mismatch. *Why:* one of the required readiness failure modes is a plan-hash mismatch |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [CLOUD.10](#task-cloud-10) |
+| Unblocks | [CLOUD.10](#task-cloud-10), [PRF.08](runtime-proofs.md#task-prf-08) |
 | Write scope | `Cloud:src/ArcForges.Cloud.Host/Readiness/**` |
 | Validation | opt-in local runtime tests: missing binding/plan mismatch fails readiness, not successful partial execution |
 | Completion evidence | missing-binding and plan-mismatch readiness-failure results |
@@ -560,7 +561,7 @@ Tasks: 62 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Start prerequisites | **contract** [CON.91](contracts.md#task-con-91) — the handwritten-proto-generated service/method definitions to register ([D-009](../../../decisions/phase-1-foundation-decisions.md#rule-d-009) authority). *Why:* [BR-01](../../../architecture/14-build-packaging-and-release.md#rule-br-01) requires endpoints be mapped from the contract set, not hand-written<br>**artifact** [CLOUD.13](#task-cloud-13) — session model and native session validation. *Why:* handlers are registered behind authenticated, tenancy-scoped requests; native session validation is enough to start, browser sessions join at completion |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [CLOUD.19](#task-cloud-19) — the browser cookie-session adapter and native session validation to authenticate requests before they reach a handler. *Why:* [WP-23.00](../../work-packages/23-public-api-and-generated-clients.md#rule-wp-23.00) registers handlers behind authenticated/tenancy-scoped requests; there is no caller identity without CLOUD.19/CLOUD.12 |
-| Unblocks | [AND.04](android.md#task-and-04), [CLOUD.22](#task-cloud-22), [CLOUD.23](#task-cloud-23), [CLOUD.24](#task-cloud-24), [CLOUD.25](#task-cloud-25), [CLOUD.28](#task-cloud-28), [CLOUD.29](#task-cloud-29), [CLOUD.64](#task-cloud-64), [CLOUD.66](#task-cloud-66), [CLOUD.68](#task-cloud-68), [COM.13](commerce.md#task-com-13), [PRF.05](runtime-proofs.md#task-prf-05), [SIM.05](simulator.md#task-sim-05) |
+| Unblocks | [AND.04](android.md#task-and-04), [CLOUD.22](#task-cloud-22), [CLOUD.23](#task-cloud-23), [CLOUD.24](#task-cloud-24), [CLOUD.25](#task-cloud-25), [CLOUD.28](#task-cloud-28), [CLOUD.29](#task-cloud-29), [CLOUD.64](#task-cloud-64), [CLOUD.66](#task-cloud-66), [CLOUD.68](#task-cloud-68), [COM.13](commerce.md#task-com-13), [PRF.05](runtime-proofs.md#task-prf-05), [PRF.08](runtime-proofs.md#task-prf-08), [SIM.05](simulator.md#task-sim-05) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.PublicApi/Endpoints/**` |
 | Validation | offline + opt-in tests: each method category through native and TS transport, malformed/unknown request values, denied scope before handler |
 | Completion evidence | every selected operation has a concrete typed endpoint and owner; no ad-hoc REST business API |
@@ -582,7 +583,7 @@ Tasks: 62 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Start prerequisites | **artifact** [CLOUD.21](#task-cloud-21) — the endpoint registration to attach error mapping to. *Why:* error mapping wraps the handlers CLOUD.21 registers |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [CLOUD.26](#task-cloud-26), [CLOUD.28](#task-cloud-28), [CLOUD.64](#task-cloud-64), [CLOUD.66](#task-cloud-66), [PRF.05](runtime-proofs.md#task-prf-05) |
+| Unblocks | [CLOUD.26](#task-cloud-26), [CLOUD.28](#task-cloud-28), [CLOUD.64](#task-cloud-64), [CLOUD.66](#task-cloud-66), [PRF.05](runtime-proofs.md#task-prf-05), [PRF.08](runtime-proofs.md#task-prf-08) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.PublicApi/Errors/**` |
 | Validation | offline + opt-in tests: HTTP200-with-error-trailers, partial frame, 64-bit values, deadline/cancel-after-dispatch, command-receipt reconciliation |
 | Completion evidence | every C#/TS/Kotlin client distinguishes transport uncertainty from a domain refusal |
@@ -1492,3 +1493,27 @@ Tasks: 62 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Completion evidence | the proof-environment run's job result and receipt report (receipt and fence values, never a secret), the refusal test results and the source commit |
 | Baseline (unreviewed unless accepted) | not-started Planning repair 2026-10-05: no workflow step, script or document applies migrations to a deployed D1 database; CLOUD.03's runner is run only locally and against workerd's D1. |
 | Notes | Planning repair 2026-10-05 ([DLV-34](../README.md#rule-dlv-34): a new task gives work no existing scope could hold; no obligation or acceptance is removed). CLOUD.03 delivers the runner and states that no workflow step runs it; CLOUD.07 (wrangler.json and capacity), CLOUD.09 (docs/deployment.md and eng/selfhost) and CLOUD.10 (artifacts/candidate) cannot hold a .github/workflows/ci.yml edit, and only the completed PRF.07 listed it. Modules whose live acceptance runs against a deployed schema (CLOUD.07, CLOUD.09, CLOUD.10, CLOUD.39) complete after it; no task's start waits for it, so offline and local-oracle module work is not delayed. |
+
+<a id="task-cloud-71"></a>
+
+### CLOUD.71 — Serve the built Web profiles from the proof origin
+
+**Outcome.** The two production profile builds of PRF.08 are served, byte for byte, by the proof Worker (custom domain proof.arcforges.com, workers.dev and previews stay disabled) as static assets on separate paths of the same origin that serves /api, /session/v1 and the operator-signed /proof/v1 surface, which keep going to the Worker first. The bytes come from one immutable digest-named bundle that the Web main-push build publishes; the Cloud proof deployment job (manual proof=deploy) downloads that exact asset, verifies its digest against the value pinned in the deployment manifest and binds it as the Worker's assets, so nothing is rebuilt and no Web source is read. Responses carry the profile Content-Security-Policy that PRF.08 derives. Production configuration and the Web apex Custom Domain are untouched. The result is exercised once with PRF.08's live script (apps/app/scripts/proof-run.ts) pointed at the served profiles under the RES-cloud-deployment lease and the run's result is recorded.
+
+| Field | Value |
+|---|---|
+| Owning repository | Cloud (`C:\MyFile\Projects\ArcForges\Cloud`); integration owner: Cloud integration owner, the holder of `roles/integration-cloud` |
+| Claim, branch and ledger | `claims/cloud-71` and ledger record `ledger/tasks/cloud-71.md` in the Plan repository; task branch `task/cloud-71` ([DLV-26](../README.md#rule-dlv-26)) |
+| Kind / size | service / S |
+| Obligations | [WP-06.05](../../work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.05) — the deployed same-origin hosting of the two built production profiles (Account and Chat) on the proof origin, so that the page, /api and /session/v1 share one origin, cookie and CSRF boundary on a deployed Cloudflare; the profile builds, their budgets and their offline proof stay with PRF.08 |
+| Provides | proof-origin-web-hosting |
+| Start prerequisites | **artifact** [PRF.07](runtime-proofs.md#task-prf-07) — the deployed proof environment, its custom domain, its operator-signed surface and its manual deployment job. *Why:* the profiles are served by the proof Worker and deployed by its existing job<br>**artifact** [PRF.08](runtime-proofs.md#task-prf-08) — the two production profile builds and their measured, deterministic output (npm run build:profiles) and the live script that exercises them. *Why:* there are no Web bytes to serve or live script to run before PRF.08 delivers them |
+| Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Completion prerequisites | none |
+| Unblocks | [PRF.08](runtime-proofs.md#task-prf-08) |
+| Write scope | `Cloud:wrangler.json (only env.proof: the static-assets binding and the routing so that /api, /session/v1 and /proof/v1 reach the Worker first; no production, no other environment and no binding change)`<br>`Cloud:worker/foundation/** (only the proof route fragment, and only if the assets configuration alone cannot keep the three route families on the Worker)`<br>`Cloud:.github/workflows/ci.yml and Cloud:eng/verification/proof-deploy.ts (only the manual proof deployment job: download the digest-named bundle asset, verify the pinned digest, stage it as the proof assets; no pull-request job gains a secret, a download or a live call)`<br>`Cloud:tests/worker/proof-assets*.test.ts (new files only: route precedence, digest refusal, headers)`<br>`Cloud:package.json (only the new test files in the test list)`<br>`Cloud:eng/policy/dependency-policy.json and Cloud:eng/policy/dependency-reviews/cloud-71-*.json (new immutable successor chained from the then-active receipt, only because hash-bound inputs change; no coordinate or closure entry changes)`<br>`Cloud:eng/provenance/** (immutable successor records only where an existing record binds an input this task changes, the first-party inventory files.json and the deterministic NOTICE.txt)`<br>`Cloud:docs/prf-07-foundation-proof.md and Cloud:docs/cloud-ingress.md (factual additions about the served profiles and the proof run)`<br>`Web:.github/workflows/ci.yml (only: one step of the existing main-push deployment job that publishes the two profile builds as one immutable digest-named release asset next to the existing candidate asset; no new job, runner, credential or pull-request step)`<br>`Web:apps/app/scripts/** and Web:docs/prf-08-*.md (only the bundling script for that asset and the factual record of the served-profile run, and the interaction-budgets.json that the live run produces)` |
+| Shared resources | [RES-cloud-deployment](../shared-resources.md#res-cloud-deployment) (append), [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append) |
+| Validation | offline tests of route precedence, digest verification and headers; one explicit proof-environment deployment and one live run under the RES-cloud-deployment lease per docs/validation-policy.md, recorded once; no pull-request job receives a secret and none runs a live service |
+| Completion evidence | the proof deployment job result with the verified bundle digest, the live run's output (observations and interaction timings, never a secret or a session handle) and the source commits |
+| Baseline (unreviewed unless accepted) | not-started Planning repair 2026-10-05: the proof Worker (arcforges-cloud-proof) serves /api, /session/v1 and /proof/v1 only; wrangler.json has no assets binding. |
+| Notes | Planning repair 2026-10-05 ([DLV-34](../README.md#rule-dlv-34): a new task gives work no existing scope could hold; no obligation or acceptance is removed). PRF.08's completion needs the built profiles to share an origin with the deployed ingress; the proof Worker has no assets binding and no existing Cloud or Web task owns one. WEB.30 cannot hold it because it consumes PRF.08, so an edge from PRF.08 to it would be a cycle; this task starts after PRF.08 delivers the profiles and PRF.08 completes after it. No task's start waits for it. |
