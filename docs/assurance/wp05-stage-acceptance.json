@@ -31,7 +31,10 @@
       "https://github.com/ArcForges/ArcForges-Design/pull/230",
       "https://github.com/ArcForges/Plan/pull/295"
     ],
-    "aggregateGate": "stage-integration is listed in the ci job needs of pr-gate.yml; the repository has no required-status-check rule, so ci is the gate"
+    "aggregateGate": "stage-integration is listed in the ci job needs of pr-gate.yml; the repository has no required-status-check rule, so ci is the gate",
+    "reviewedRevisionHead": "2dfc0971f701d1e8571243b91e75ac5117645da1",
+    "pullRequestHostedRun": "https://github.com/ArcForges/DesktopPlatform/actions/runs/37267308609",
+    "pullRequestHostedResult": "all 21 checks passed including stage-integration and the aggregate ci job (observed)"
   },
   "pinnedMetadata": {
     "readOn": "2026-10-05",
