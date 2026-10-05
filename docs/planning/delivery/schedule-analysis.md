@@ -8,9 +8,9 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 
 | Measure | Value |
 |---|---|
-| Delivery tasks | 440 (6 carried as accepted baseline), plus 50 adoption slices |
-| Dependency edges by type | artifact 1032, contract 109, design 1, integration(completion) 209, release 33 |
-| Remaining work (size units: S=1, M=2, L=4, XL=8) | 1122 |
+| Delivery tasks | 441 (6 carried as accepted baseline), plus 50 adoption slices |
+| Dependency edges by type | artifact 1033, contract 109, design 1, integration(completion) 210, release 33 |
+| Remaining work (size units: S=1, M=2, L=4, XL=8) | 1123 |
 | Longest dependency chain (levels) | 25 |
 | Widest level (tasks whose longest prerequisite chain has equal length) | 58 |
 | Critical path length (size units) | 81 |
@@ -21,7 +21,7 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 | Lane | Tasks | Size units | Owning repositories |
 |---|---|---|---|
 | [Adoption stage](lanes/adoption.md) | 9 | 10 | AI, ArcScope, Cloud, Contracts, Design, DesktopPlatform, Mobile, Plan, Web |
-| [Family governance and policy tests](lanes/governance.md) | 18 | 55 | AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web |
+| [Family governance and policy tests](lanes/governance.md) | 19 | 56 | AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web |
 | [Contracts schema closures](lanes/contracts.md) | 27 | 65 | Contracts |
 | [Foundation values](lanes/foundation.md) | 7 | 8 | DesktopPlatform |
 | [Runtime proofs](lanes/runtime-proofs.md) | 8 | 27 | ArcScope, Cloud, DesktopPlatform, Mobile, Web |
@@ -56,7 +56,7 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 | ArcScope | 33 | 6 | level 9: 9 | 2 | [APP.03](lanes/app-composition.md#task-app-03) Clean Native AOT package-consumer composition for ArcScope, [SCOPE.07](lanes/arcscope.md#task-scope-07) Durable capture writer, chunked verifiable store and crash recovery, [SCOPE.09](lanes/arcscope.md#task-scope-09) Long-running capture in the shell, [SCOPE.12](lanes/arcscope.md#task-scope-12) Visualisation: virtualised rendering, downsampling, cursors and markers |
 | Cloud | 133 | 13 | level 13: 17 | 8 | [AIR.90](lanes/ai-routing.md#task-air-90) Verify owned artifact and real integration (AI routing and metering), [CLOUD.10](lanes/cloud.md#task-cloud-10) Owned-artifact closure and launch-capacity.v1 acceptance, [COM.10](lanes/commerce.md#task-com-10) Refunds, disputes and evidence, [DEV.06](lanes/device-bridge.md#task-dev-06) Remote approval and steering |
 | Contracts | 30 | 4 | level 3: 7 | 7 | [CON.04](lanes/contracts.md#task-con-04) ContentSandbox service schema (15 methods: session/slot/image/PDF), [CON.05](lanes/contracts.md#task-con-05) Extension/Connector/LocalBootstrap service schema (annex09 helper closure minus ContentSandbox), [CON.12](lanes/contracts.md#task-con-12) Extension and policy schemas: manifest.v1/workflow.v1/panel.v1/policy body.v1/configuration.v1, [CON.16](lanes/contracts.md#task-con-16) Signed catalog/update/realm formats (catalog-index.v1, catalog-revocations.v1, android-update.v1, realm.v1) |
-| DesktopPlatform | 146 | 14 | level 7: 22 | 8 | [EXE.02](lanes/execution.md#task-exe-02) Lifecycle states and reason facets, [NAT.05](lanes/native.md#task-nat-05) Probe evidence, licence positions, conclusions and hardware-lab inventory seed, [PLT.11](lanes/platform.md#task-plt-11) Child registration lifecycle, [UPD.02](lanes/updater.md#task-upd-02) Background download and staging |
+| DesktopPlatform | 147 | 14 | level 7: 23 | 8 | [EXE.02](lanes/execution.md#task-exe-02) Lifecycle states and reason facets, [GOV.20](lanes/governance.md#task-gov-20) Build.Policy banned-symbol scanner: audit unmanaged function-pointer invocations instead of throwing, [NAT.05](lanes/native.md#task-nat-05) Probe evidence, licence positions, conclusions and hardware-lab inventory seed, [PLT.11](lanes/platform.md#task-plt-11) Child registration lifecycle |
 | Mobile | 30 | 4 | level 15: 5 | 1 | [AND.07](lanes/android.md#task-and-07) Foundation integration evidence: real candidate against deployed 22/23/24/25, [AND.08](lanes/android.md#task-and-08) Authentication, Home and workspace (AN01-AN06), [AND.12](lanes/android.md#task-and-12) Presence, push, links and settings (AN20-AN24), [AND.24](lanes/android.md#task-and-24) Real CF Harness generation/tool loop observed end to end on Android |
 | Web | 40 | 5 | level 10: 8 | 1 | [OPS.05](lanes/operations.md#task-ops-05) Operator console and support access, [PRF.08](lanes/runtime-proofs.md#task-prf-08) React production build and generated TS SDK proof, [WEB.11](lanes/web.md#task-web-11) Real browser session and step-up acceptance, [WEB.13](lanes/web.md#task-web-13) Workspace, storage and usage |
 
@@ -100,7 +100,7 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 | 4 | 24 |
 | 5 | 35 |
 | 6 | 36 |
-| 7 | 35 |
+| 7 | 36 |
 | 8 | 33 |
 | 9 | 45 |
 | 10 | 33 |
@@ -126,10 +126,10 @@ Assumptions: task effort is its relative size (S=1, M=2, L=4, XL=8 units, never 
 
 | Workers | Makespan (size units) | Estimated speed-up over one worker |
 |---|---|---|
-| 1 | 1122 | 1.0× |
-| 2 | 562 | 2.0× |
-| 4 | 282 | 4.0× |
-| 8 | 142 | 7.9× |
+| 1 | 1123 | 1.0× |
+| 2 | 563 | 2.0× |
+| 4 | 283 | 4.0× |
+| 8 | 143 | 7.9× |
 | 16 | 81 | 13.9× |
 | 32 | 81 | 13.9× |
 | 64 | 81 | 13.9× |
