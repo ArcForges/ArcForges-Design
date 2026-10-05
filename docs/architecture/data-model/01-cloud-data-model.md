@@ -36,7 +36,7 @@ Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) 
 | `audit` | Audit | `audit_event`, `operator_proposal`, `operator_approval` |
 | `support` | Support | `support_case`, `access_grant` |
 | `trustsafety` | TrustSafety | `report`, `enforcement_action` |
-| `platform` | shared infrastructure | `outbox`, `inbox`, `command`, `job_lease`, `operating_budget`, `operating_reservation`, `safety_receipt`, `recovery_epoch`, and the migration bookkeeping `schema_state`, `migration_receipt`, `backfill_checkpoint` ([model 04](04-d1-execution-profile.md#migration-bookkeeping-and-modes)) |
+| `platform` | shared infrastructure | `outbox`, `inbox`, `command`, `job_lease`, `commit_guard`, `sequence_stream`, `outbox_position`, `change_archive`, `operating_budget`, `operating_reservation`, `safety_receipt`, `recovery_epoch`, and the migration bookkeeping `schema_state`, `migration_receipt`, `backfill_checkpoint` ([model 04](04-d1-execution-profile.md#migration-bookkeeping-and-modes)) |
 
 ---
 
@@ -115,6 +115,22 @@ These exist once and are used by every module. They are the mechanism behind [TX
 
 - `IX (state, available_at)` — the only claim path
 - **Constraint** — acquisition conditionally updates `leased_until`, holder and `fence_token` together. A stale worker may still run after expiry but cannot commit an effect: every publication guards the current lease and fence in its registered D1 batch. Network uncertainty is handled by the dispatch barrier, not by the lease alone.
+
+### Commit support: guard, publication streams, outbox positions and change archive
+
+These four platform-owned records complete the mechanism of [D1 profile section 4](04-d1-execution-profile.md#4-atomic-command-algorithm-and-sql) for every guarded batch (CLOUD.04, WP-21.04). `platform.command` is the owner receipt; `platform.outbox` and `platform.inbox` are as above.
+
+| Table | Complete fields and constraints |
+|---|---|
+| platform.commit_guard | command_id:id PK; allowed:int NN with the named constraint `af_guard_failed` CHECK (allowed = 1). A batch inserts one row as its first statement, whose value is 1 only when every guard predicate holds, and deletes it as its last statement. A false predicate violates the constraint and rolls the whole batch back; no committed state ever holds a row. |
+| platform.sequence_stream | stream_key:Key PK (for an outbox stream, the owner scope of the write; for the change archive, the fixed key `archive`); last_sequence:int64 NN >= 0 monotonic (the allocation counter); published_watermark:int64 NN >= 0 monotonic and <= last_sequence; publish_rev:rev NN (advanced only by an acknowledgement or a fence change, never by an allocation, so a commit of unrelated work does not invalidate a publisher's selection); fence:int64 NN >= 0 monotonic; ack_receipt:text? (the publisher run or, for the archive, the independent storage receipt of the last acknowledgement); updated_at:instant NN |
+| platform.outbox_position | outbox_id:id PK referencing platform.outbox; stream_key:Key NN referencing platform.sequence_stream; sequence:int64 NN >= 1; UQ(stream_key, sequence). Append-only: never updated or deleted. |
+| platform.change_archive | archive_sequence:int64 PK >= 1; command_id:id NN, UQ (one row per committed command); schema_version:int64 NN >= 0; record:json NN, root object, at most 64 KiB (the ordered replay record of D1 profile section 7: resulting row revisions, after-images and deletion keys, never a temporary body or a credential); record_hash:hash NN (SHA-256 of the UTF-8 bytes of `record`); created_at:instant NN. Append-only: never updated or deleted. |
+
+- **Sequence allocation.** A commit that writes an outbox row increments its stream's `last_sequence` and inserts the row's `outbox_position` with that value in the same batch; every commit increments the `archive` stream and inserts its `change_archive` row. Because writes of one D1 database are serialized and a rolled-back batch releases its increments, the committed sequences of a stream are 1, 2, 3 and so on without a gap, in commit order.
+- **Publication** advances `published_watermark` only over a contiguous range of `pending` outbox rows (D1 profile section 5); a row that is `deadLettered` or missing stops the watermark. The change archive advances the same field only after the independent storage acknowledges the range, and records that receipt.
+- **Inbox key.** `platform.inbox.source` is the consuming handler and `message_id` is `<message id>@<recovery generation>` (decimal), so the uniqueness of D1 profile section 5, (consumer, event id, generation), is the composite primary key of the inbox.
+- **Command states.** The atomic commit writes `succeeded` with the original response; a definite refusal worth replaying is written alone as `failed` with its stable code; `inProgress` is not used by an atomic family. `result_rev` is null when the operation has no resulting aggregate revision.
 
 ---
 
