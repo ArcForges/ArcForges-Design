@@ -17388,6 +17388,12 @@
      "task": "COM.09",
      "need": "real, delivered outcome of COM.09 (Ledgers and reconciliation)",
      "why": "this integration exercises the real ledgers and reconciliation instead of a substitute, so it cannot start before that outcome exists"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the real Entitlement D1 store and grant port as the Entitlement participant of the shared families",
+     "why": "this integration exercises the real Entitlement participation instead of an in-memory substitute, so it cannot start before the durable Entitlement store exists"
     }
    ],
    "validation": "Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI (P2-017).",
@@ -17825,6 +17831,12 @@
      "task": "COM.03",
      "need": "CheckoutAttempt/Order identifiers to correlate events against",
      "why": "out-of-order handling and idempotency by event type+identifier require the purchase-side identifiers the event correlates to"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the published IssueGrant and RevokeGrant port and the durable Entitlement store behind it",
+     "why": "the last step of the fixed verification chain (EI-05) is the grant, and EO-03 lets Commerce write into Entitlement only through that port; replaying the inbox must reproduce the persisted grants, which needs the real store behind the port and not a test store"
     }
    ],
    "substitutes": [
@@ -17863,7 +17875,7 @@
    "obligations": [
     {
      "ref": "WP-42.04",
-     "part": "full"
+     "part": "the grant and revocation model, the resolver and the snapshot with per-capability reasons and version, with rebuild equivalence proven over the resolver's store port (the Commerce-facing grant interface in the shared Abstractions project, the GR-05 reason on the grant row, and the durable D1 store with its atomic snapshot commit are mapped to COM.16)"
     }
    ],
    "outcome": "Immutable grants and revocations resolve deterministically into an entitlement snapshot with a per-capability reason and version, and rebuilding the snapshot from its grants/revocations always reproduces the stored snapshot.",
@@ -17925,6 +17937,12 @@
      "task": "CLOUD.23",
      "need": "typed-query/revision-precondition pattern",
      "why": "distributing a versioned snapshot to clients is expected to reuse the public API's revision-precondition idiom rather than invent a parallel versioning scheme; WP-23 not yet built so exact shape unconfirmed"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the durable Entitlement store that holds the stored snapshot with its EntitlementVersion",
+     "why": "distribution reads the persisted snapshot and version (ED-01, ES-03); it must not read a test store or the grant tables, and the store is where the snapshot is committed atomically with the records that cause it"
     }
    ],
    "writes": [
@@ -18125,6 +18143,12 @@
      "task": "COM.09",
      "need": "ledger entries to export",
      "why": "the evidence export is built from ledger + event + entitlement history, which only exist once COM.09 posts them"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the RevokeGrant side of the published grant port",
+     "why": "a refund rolls entitlement back by appending a revocation against the grant it funded (GR-03), which Commerce can do only through the published port (EO-03)"
     }
    ],
    "writes": [
@@ -18178,6 +18202,12 @@
      "task": "COM.04",
      "need": "deduplicated ProviderEvent stream",
      "why": "TM-02 requires provider-event dedup to live in commerce.provider_event so a replayed event cannot extend a term twice; the inbox is the only place that dedup exists"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the widened append path of the durable Entitlement store for service terms and term actions, with its D1 plans",
+     "why": "a term, a renewal or a plan-change supersede must commit atomically with the snapshot refresh it causes (the resolver port carried grants and revocations only); COM.16 provides the one append path and the D1 plans, COM.11 owns the term rules"
     }
    ],
    "writes": [
@@ -18294,6 +18324,12 @@
      "task": "COM.10",
      "need": "refund/rollback path",
      "why": "the refund RPC drives COM.10's refund-with-rollback mechanism"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the IssueGrant and RevokeGrant port carrying the GR-05 reason",
+     "why": "operator grant and revokeGrant (AdminGrant and Compensation sources) must reach Entitlement through the published interface with reason, operator and incident reference, never through its tables or its internal service"
     }
    ],
    "complete": [
@@ -18457,6 +18493,84 @@
     "state": "not-started"
    },
    "packageAcceptance": "WP-42",
+   "complete": []
+  },
+  {
+   "id": "COM.16",
+   "title": "Entitlement grant port and durable Entitlement store",
+   "lane": "commerce",
+   "repo": "Cloud",
+   "kind": "service",
+   "size": "L",
+   "obligations": [
+    {
+     "ref": "WP-42.04",
+     "part": "the Commerce-facing grant interface (EO-03: IssueGrant and RevokeGrant as a public port in the shared Abstractions project, implemented by the Entitlement module), the GR-05 reason carried on the grant row, and the durable D1 Entitlement store: grants, revocations, service terms and term actions committed atomically with the snapshot and its EntitlementVersion under one guarded plan, with rebuild equivalence over D1-stored records (the resolver, its rules and its in-memory-store rebuild equivalence are COM.05)"
+    }
+   ],
+   "outcome": "Commerce, the operator path and the refund path reach Entitlement only through one published IssueGrant/RevokeGrant port that lives in ArcForges.Cloud.Modules.Abstractions and is implemented by the Entitlement module (EO-03, MD-03), so no module references Entitlement internals or writes its tables; an administrative, compensation or migration grant carries its reason on the grant row (GR-05); and the Entitlement module has its production D1 store: grants, revocations, service terms, term actions and the derived snapshot are appended and replaced in one guarded named plan under the workspace revision together with the owner receipt and notification outbox row, so a grant or term never exists without the snapshot and EntitlementVersion that reflect it, a stale writer commits nothing, and the snapshot rebuilt from the D1-stored records equals the stored snapshot. The port commits on its own; joining the same grant statements to the enumerated purchase unit of work is the Entitlement participation of CLOUD.63.",
+   "provides": [
+    "entitlement-grant-port",
+    "entitlement-d1-store"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "COM.05",
+     "need": "the grant and revocation model, the EntitlementService admission rules and the IEntitlementStore port contract",
+     "why": "the port exposes, and the D1 store implements, exactly the contract COM.05 defined and tested; nothing of the resolver or its admission rules is redefined here"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.03",
+     "need": "the physical entitlement tables (grant with its reason column, revocation, snapshot, service_term and service_term_action), their append-only triggers and the typed bind/result adapters",
+     "why": "the store binds to the checked-in physical manifest and creates no table or column of its own; the manifest is generated from model 01, whose entitlement.grant now carries the GR-05 reason"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.04",
+     "need": "the owner receipt and notification outbox rows of a guarded write",
+     "why": "every atomic guarded write carries its receipt and outbox entry in the same batch, and the snapshot commit is such a write (ES-04: the realtime hint is published from that outbox row)"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.06",
+     "need": "the guarded-batch executor and its revision guard primitive with the SU-04 module order",
+     "why": "the commit is one guarded batch of the Entitlement participant; it runs through the shared engine instead of a private executor"
+    }
+   ],
+   "writes": [
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Entitlement/** (new and public: the IssueGrant and RevokeGrant port with its request, result and refusal types, built from primitives only and referencing no module and no Entitlement internal type; cross-module ports belong to this shared boundary project (architecture 01 section 5, MD-03); no change to IModuleBoundary or ModuleDescriptor; a plan-execution port only if the engine of CLOUD.06 has not already published one that module projects may use)",
+    "Cloud:src/ArcForges.Cloud.Modules.Entitlement/** except Resolver/Domain (the port adapter over EntitlementService that carries the reason, the widened EntitlementAppend that also carries service terms and term actions, the D1 IEntitlementStore under Persistence/**, and the module's own Register entry listing them; the resolver rules, rebuild semantics and admission rules of COM.05 are unchanged)",
+    "Cloud:storage/plans/entitlement/** and the generated plan manifest in Cloud:src/ArcForges.Cloud.Storage.D1/PlanManifest.g.cs (the Entitlement module's named plans as owner entitlement; the manifest hash is regenerated by the author after rebase; RES-cloud-storage-plans)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Migrations/** (an append-only expand migration only if the physical manifest delivered by CLOUD.03 lacks entitlement_grant.reason or an index the plans need; numbered at merge by the integration owner; RES-cloud-d1-migrations)",
+    "Cloud:src/ArcForges.Cloud/Composition/HostModules.cs (only the append that binds the Storage.D1 plan executor to the Entitlement store by composition; RES-cloud-host-composition)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Entitlement/** and Cloud:tests/ArchitectureTests/** (port contract tests and store tests; the architecture tests only to assert that Commerce reaches Entitlement only through the Abstractions port and that the Abstractions project references no module)",
+    "Cloud:eng/policy/dependency-policy.json and Cloud:eng/policy/dependency-reviews/com-16-*.json (new immutable successor chained from the then-active receipt, only because hash-bound project and release inputs change; no coordinate, integrity value or closure entry changes)",
+    "Cloud:eng/provenance/** (immutable successor release profile, Worker bundle and runtime-notice records only where an existing record binds an input this task changes, the first-party inventory files.json and the deterministic NOTICE.txt)",
+    "Cloud:docs/entitlement-resolver.md (the port, the reason column and the store replace the stated limits it records), Cloud:docs/storage-plans.md (the entitlement owner) and Cloud:AGENTS.md (only if the module description changes)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-cloud-host-composition",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-storage-plans",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-d1-migrations",
+     "mode": "append"
+    }
+   ],
+   "validation": "Offline unit tests: port contract (idempotent replay by source reference, stale-version refusal, reason required for administrative, compensation and migration grants, no Entitlement type crosses the port), store tests through the plan-bridge fakes and the physical column map (atomic append and snapshot replace, a stale revision commits nothing, concurrent writers, append-only enforcement, reason round trip), rebuild equivalence over D1-stored fixture records, architecture tests for the Commerce-to-Entitlement path; opt-in local runtime run against a real D1 instance for the atomic commit and the concurrent-writer case per docs/validation-policy.md; no hosted runtime, live-service or browser CI (P2-017).",
+   "evidence": "Port contract and architecture test results; the D1 atomic-commit, stale-revision and concurrent-writer results (the local D1 run recorded once, or recorded as untested); rebuild-equivalence result over D1-stored records; reason round-trip result; source commit.",
+   "baseline": {
+    "state": "not-started",
+    "notes": "Observed, unreviewed: COM.05 (Cloud PR 47, in review) keeps the resolver service internal to the Entitlement project, tests it against an in-memory store only and records that the Commerce grant port, the GR-05 reason column and the D1 store have no owning task; CLOUD.02 (complete) published only IModuleBoundary and ModuleDescriptor in the Abstractions project."
+   },
+   "notes": "Added by the COM.05 review finding that nothing owned the EO-03 port, the GR-05 reason column or the D1 IEntitlementStore. Decisions: the port type lives in Abstractions (Commerce cannot reference the Entitlement project); the reason column is a model 01 correction made by the planning pair that added this task and is mapped by the CLOUD.03 manifest; the D1 store is the Entitlement module's own persistence (module owners own their plans, architecture 01 section 5), not CLOUD.63, which joins the same statements to the shared families once Commerce exists. Two points the model does not settle are raised by this task through a Design pair before it edits, never decided in code (D-001; ADP-07 forbids new schema meanings): the store's revision guard (the snapshot row carries entitlement_version and computed_at but no rev, while COM.05's port commits under a workspace revision) and the persistence of the workspace status facts, feature releases and definitions activations that COM.05's record set reads (the model has no table for them; workspace.state and the commerce.subscription fields stay owned by their modules). Until those are settled the store covers the entitlement-owned tables only.",
    "complete": []
   },
   {
