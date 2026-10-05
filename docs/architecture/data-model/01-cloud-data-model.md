@@ -20,7 +20,7 @@ Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) 
 | `identity` | Identity | `user`, `auth_identity`, `session` |
 | `workspace` | Workspace | `workspace` — **no membership table** ([WO-01](#rule-wo-01)) |
 | `device` | Devices | `device`, `installation` |
-| `entitlement` | Entitlement | `grant`, `revision`, `snapshot`, `usage_counter`, `service_term`, `capacity_bucket`, `capacity_policy_period`, `capacity_reservation` |
+| `entitlement` | Entitlement | `grant`, `revision`, `snapshot`, `definitions_activation`, `workspace_status_fact`, `feature_release`, `usage_counter`, `service_term`, `capacity_bucket`, `capacity_policy_period`, `capacity_reservation` |
 | `commerce` | Commerce | `billing_account`, `order`, `subscription`, `credit_lot`, `provider_event`, `logical_ai_request`, `provider_attempt`, `attempt_usage`, `supplier_cost_entry`, `customer_settlement`, `refund`, `compensation_adjustment` |
 | `chat` | Chat | `conversation`, `message` and their committed content; Task owns iteration output, CF DO owns transient stream projection |
 | `task` | Task | `task`, `automation_definition`, `automation_occurrence` |
@@ -469,12 +469,27 @@ The Entitlement module is **independent of Commerce** (`§2.1` of the commerce a
 | `entitlement_version` | `bigint NN` | Increments on every change; clients compare this |
 | `computed_at` | `instant NN` | |
 | `valid_until` | `instant?` | The next time-based transition, so the resolver knows when to recompute |
-| `capabilities` | `json NN` | Capability → `{granted, reason, sourceGrantId}` |
-| `quotas` | `json NN` | Quota key → `{limit, reason, sourceGrantId}` |
-| `features` | `json NN` | |
+| `capabilities` | `json NN` | Root object: capability key → `{granted, reason, sourceGrantIds}` |
+| `quotas` | `json NN` | Root object: quota key → `{limit, reason, contributions}`, each contribution `{grantId, source, amount}` |
+| `features` | `json NN` | Root object holding the rest of the resolver output, so that the stored row is the whole snapshot and a rebuild can be compared with it in full: `features` (feature key → `{available, reason}`), `service` (`{state, paidThrough, graceEndsAt, paidTermActive}`, the instants as whole UTC microseconds), `allowances` (key → `{granted, reason, capacityPlanRef, selectedGrantId, supersededGrantIds}`), `definitionsVersion`, `unrecognizedGrantIds` and `ignoredTermIds`. Entries are written in the resolver's sorted key order and every 64-bit value is a JSON integer read back exactly (never through a floating-point number) |
 
 - **Constraint** — a rebuild must equal the stored snapshot for every fixture account ([WP-42.04](../../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.04)). A difference is a defect, not a refresh.
 - **Rule** — `valid_until` exists so the resolver is deterministic without a clock scan: the sweeper recomputes exactly the workspaces whose `valid_until` has passed.
+
+### `entitlement.definitions_activation`, `entitlement.workspace_status_fact`, `entitlement.feature_release` *(new — COM.16)*
+
+The resolver reads three more append-only inputs besides grants, revocations and service terms ([EN-02](../16-billing-and-commerce-architecture.md#rule-en-02), [BN-02](../../requirements/04-commerce-entitlement-and-credits.md#rule-bn-02), [SU-03](../../requirements/04-commerce-entitlement-and-credits.md#rule-su-03), [ES-03](../../requirements/04-commerce-entitlement-and-credits.md#rule-es-03)): the activations of definitions versions, the workspace status facts and the feature releases. They are Entitlement-owned records so that the whole record set a snapshot is derived from is stored in `entitlement_` tables and a rebuild from stored records is possible. `workspace.state` and the `commerce.subscription` fields stay owned by their modules: a status fact is the Entitlement module's own appended copy of the fact the owning admission decided, recorded at the authoritative commit time, and no resolver read reaches another module's table.
+
+| Table | Complete fields and constraints |
+|---|---|
+| entitlement.definitions_activation | workspace_id:id PK part 1 (no foreign key: the guard names only `entitlement_` tables); activated_at:instant PK part 2; definitions_version:Key NN. The first activation of a workspace records its starting definitions and does not raise the version; each later one does (BN-02). Append-only |
+| entitlement.workspace_status_fact | status_fact_id:id PK; workspace_id:id NN; recorded_at:instant NN; status:enum(normal, restricted, suspended) NN; auto_renew:bool NN; purchase_pending:bool NN (two independent facts, never merged into one flag, SU-03); source_ref:text NN, UQ (the owning admission's reference: one append per source reference); IX (workspace_id, recorded_at). Append-only; the newest fact recorded at or before the evaluated instant applies |
+| entitlement.feature_release | feature_key:Key PK; released_at:instant NN. Global, not per workspace: a feature is released once from `released_at`, and a feature with no row is not released. Append-only |
+
+- **Authoritative writer.** Only the Entitlement module appends to these tables. A status fact and a definitions activation commit under the workspace's `entitlement.revision` together with the snapshot they change (the same guarded batch as a grant); the activation is recorded by the module itself the first time it applies a different definitions version. A feature release is a global append that takes no workspace revision: a snapshot learns of it at its next refresh, because a release is known only from its own `released_at` and a stored snapshot computed earlier is unchanged by it (knowledge time, TM-01). Owner admissions (trust and safety for status facts, configuration for releases) must stamp the authoritative commit time as `recorded_at` or `released_at`, and reach the module through a published port added by their own tasks; COM.16 publishes none for them.
+- **Constraint** — `recorded_at` and `activated_at` of a commit are later than the stored computation of the workspace snapshot; an admission that would make the derived version fall is refused (`InvalidHistory`), never reordered. Of status facts recorded at one instant the resolver's total order decides, never row order.
+
+---
 
 ### `entitlement.usage_counter`
 
