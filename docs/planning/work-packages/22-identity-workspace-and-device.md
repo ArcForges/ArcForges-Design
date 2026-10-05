@@ -255,7 +255,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 
 | Delivery task | Satisfies | Start prerequisites outside this package |
 |---|---|---|
-| [CLOUD.11](../delivery/lanes/cloud.md#task-cloud-11) | [WP-22.00](22-identity-workspace-and-device.md#rule-wp-22.00) (all work except the parts mapped to CLOUD.20) | [CLOUD.02](../delivery/lanes/cloud.md#task-cloud-02) (artifact), [CLOUD.03](../delivery/lanes/cloud.md#task-cloud-03) (artifact), [CLOUD.06](../delivery/lanes/cloud.md#task-cloud-06) (artifact) |
+| [CLOUD.11](../delivery/lanes/cloud.md#task-cloud-11) | [WP-22.00](22-identity-workspace-and-device.md#rule-wp-22.00) (all work except the parts mapped to CLOUD.20) | [CLOUD.02](../delivery/lanes/cloud.md#task-cloud-02) (artifact), [CLOUD.03](../delivery/lanes/cloud.md#task-cloud-03) (artifact), [CLOUD.06](../delivery/lanes/cloud.md#task-cloud-06) (artifact), [CLOUD.04](../delivery/lanes/cloud.md#task-cloud-04) (artifact) |
 | [CLOUD.12](../delivery/lanes/cloud.md#task-cloud-12) | [WP-22.01](22-identity-workspace-and-device.md#rule-wp-22.01) (full) | none |
 | [CLOUD.13](../delivery/lanes/cloud.md#task-cloud-13) | [WP-22.02](22-identity-workspace-and-device.md#rule-wp-22.02) (full) | [CLOUD.06](../delivery/lanes/cloud.md#task-cloud-06) (artifact) |
 | [CLOUD.14](../delivery/lanes/cloud.md#task-cloud-14) | [WP-22.03](22-identity-workspace-and-device.md#rule-wp-22.03) (full) | none |
