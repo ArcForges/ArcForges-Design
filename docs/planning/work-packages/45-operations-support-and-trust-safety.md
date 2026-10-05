@@ -63,8 +63,8 @@
 
 | Location | Change |
 |---|---|
-| Cloud `src/Modules/{Support,TrustSafety,Audit,Policy,Configuration,PackageCatalog}/<Name>.{Domain,Application,Infrastructure}` | Existing domain owners implement support/access, enforcement, proposals/audit, controls, configuration and catalog; Cloud.Host composes OperatorService. There is no unowned Operations persistence module. |
-| Cloud `src/Modules/Notification/Notification.{Domain,Application,Infrastructure}` | Transactional and broadcast email adapters with separated streams and a secondary path |
+| Cloud `src/ArcForges.Cloud.Modules.{Support,TrustSafety,Audit,Policy,Configuration,PackageCatalog}` (Domain, Application and Infrastructure as folders and namespaces) | Existing domain owners implement support/access, enforcement, proposals/audit, controls, configuration and catalog; Cloud.Host composes OperatorService. There is no unowned Operations persistence module. |
+| Cloud `src/ArcForges.Cloud.Modules.Notification` (Domain, Application and Infrastructure as folders and namespaces) | Transactional and broadcast email adapters with separated streams and a secondary path |
 | Web `apps/app` (operations profile) | The operator console on its own origin and identity system |
 | `deploy/monitoring/` | Alert definitions, service-level objective definitions, status component mapping |
 | `docs/runbooks/` in the implementation repository | The required runbook set with rehearsal records |

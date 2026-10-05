@@ -20212,9 +20212,7 @@
     }
    ],
    "writes": [
-    "Cloud:src/Modules/PackageCatalog/PackageCatalog.Domain/**",
-    "Cloud:src/Modules/PackageCatalog/PackageCatalog.Application/**",
-    "Cloud:src/Modules/PackageCatalog/PackageCatalog.Infrastructure/**"
+    "Cloud:src/ArcForges.Cloud.Modules.PackageCatalog/** (the one project of the module, CLOUD.02 layout; its Domain, Application and Infrastructure layers are folders and namespaces)"
    ],
    "shared": [
     {

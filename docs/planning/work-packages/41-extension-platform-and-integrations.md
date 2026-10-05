@@ -170,7 +170,7 @@
 
 ---
 
-**PackageCatalog ownership.** Cloud catalog tables, publication and review/revocation handlers live in `src/Modules/PackageCatalog/PackageCatalog.{Domain,Application,Infrastructure}`. OperatorService authenticates the operator and calls this owner; neither the Extensions implementation nor the console writes its tables. Verify owner references against the 21-module schema map.
+**PackageCatalog ownership.** Cloud catalog tables, publication and review/revocation handlers live in `src/ArcForges.Cloud.Modules.PackageCatalog` (Domain, Application and Infrastructure as folders and namespaces). OperatorService authenticates the operator and calls this owner; neither the Extensions implementation nor the console writes its tables. Verify owner references against the 21-module schema map.
 
 ## 6. Impacts
 
