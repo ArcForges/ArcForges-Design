@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "workPackage": "03",
+  "substep": "03.90",
+  "observedOn": "2026-10-04",
+  "completedOn": "2026-10-05",
+  "status": "verified",
+  "scope": "Contracts-owned artifact and real (non-consumer) integration of the WP-03 contract closure CON.02-CON.25; not VG-04 or F-026 closure, not runtime behavior of any operation, not product acceptance",
+  "task": {
+    "id": "CON.19",
+    "claimEpoch": 2,
+    "worker": "w-c20261004-con19",
+    "firstAttempt": {
+      "epoch": 1,
+      "candidate": "1.0.0-ci.287.1",
+      "pr": "https://github.com/ArcForges/Contracts/pull/75",
+      "outcome": "not accepted: four findings, all resolved"
+    }
+  },
+  "plan": {
+    "planningRepairs": [
+      {
+        "design": "https://github.com/ArcForges/ArcForges-Design/pull/211",
+        "plan": "263",
+        "purpose": "consumer-restore evidence form under P2-017"
+      },
+      {
+        "design": "https://github.com/ArcForges/ArcForges-Design/pull/215",
+        "plan": "270",
+        "purpose": "CON.25 secret-scan allowlist groups"
+      },
+      {
+        "design": "https://github.com/ArcForges/ArcForges-Design/pull/217",
+        "plan": "279",
+        "purpose": "consume-diagnostic repair paths"
+      },
+      {
+        "design": "https://github.com/ArcForges/ArcForges-Design/pull/219",
+        "plan": "282",
+        "purpose": "refined consume-diagnostic repair paths"
+      }
+    ]
+  },
+  "source": {
+    "repository": "ArcForges/Contracts",
+    "commit": "a6c5c02f349479ee2fc50a512285744753b5e61c",
+    "pr": "https://github.com/ArcForges/Contracts/pull/85",
+    "reviewedHead": "69edd280918dd0c812717c8d15b7bca269b7f86c",
+    "predecessors": [
+      "1eb74c2704bf51d378aa711aab97507b1a2025bc",
+      "cc5bc99822a7e741b84721ebb563b8fdb6ff27b4"
+    ],
+    "recordPr": "https://github.com/ArcForges/Contracts/pull/86"
+  },
+  "candidate": {
+    "nugetNpmVersion": "1.0.0-ci.320.1",
+    "versionDerivation": "hosted job log (Verified candidate contents)",
+    "mavenVersion": "1.0.0-SNAPSHOT",
+    "mavenSnapshotTimestamp": "20261004.234018",
+    "mavenBuildNumber": 52,
+    "run": "https://github.com/ArcForges/Contracts/actions/runs/37243548599",
+    "runNumber": 320,
+    "runAttempt": 1,
+    "security": "https://github.com/ArcForges/Contracts/actions/runs/37243548623",
+    "jobs": {
+      "buildCandidate": 111556864778,
+      "verify": 111559781917,
+      "publishNuget": 111559800315,
+      "publishMavenChannel": 111559800701,
+      "publishNpm": 111559800739
+    },
+    "candidateArchive": {
+      "artifactId": 11318451913,
+      "name": "contracts-candidate-37243548599-1",
+      "bytes": 159794187,
+      "sha256": "ed82448c4746263e70d662b953822dc09054a3d9499e534f985632e545667f82",
+      "source": "GitHub artifact API digest",
+      "downloaded": false
+    },
+    "evidenceArchive": {
+      "artifactId": 11318935958,
+      "sha256": "1642dec5f198037e97da468132695dc5a8da9f70471d593296626f97bc36cc3d"
+    },
+    "mavenDeploymentReceipt": {
+      "artifactId": 11318148847,
+      "sha256": "b73d4dfe5537ea6e30f1ab1ba06e6133c014c1a0872e12d669835b0422b88f06"
+    },
+    "packageHashAuthority": "manifest inside the original candidate archive (not downloaded; no registry hash comparison)"
+  },
+  "validation": {
+    "hostedGates": {
+      "operationScope": {
+        "registered": 335,
+        "pending": 0,
+        "reserved": 7
+      },
+      "nodeTests": 304,
+      "toolingTests": 420,
+      "foundation": {
+        "messages": 109,
+        "idDomains": 47,
+        "negativeCases": 11,
+        "independentCases": 362
+      },
+      "serialization": {
+        "lockEntries": 406,
+        "protoFiles": 27,
+        "catalogueServices": 69
+      },
+      "nativeAotLinux": {
+        "binaryVectors": 31,
+        "jsonVectors": 51,
+        "messages": 1174,
+        "boundMethods": 244,
+        "dynamicCodeSupported": false
+      }
+    },
+    "registry04": {
+      "operationRows": 297,
+      "authored": 252,
+      "inProcessPorts": 38,
+      "reservedHub": 7,
+      "recordNames": 300,
+      "recordsAbsent": 0
+    },
+    "compatibilityMatrix": {
+      "pinnedDescriptors": 10,
+      "exchangeLegs": 20,
+      "closedJsonSchemas": 13,
+      "errors": 0,
+      "baseline": "1.0.0-ci.113.1 Foundation and PublicApi"
+    },
+    "providerReceipts": {
+      "nuget": {
+        "packagesPushed": 12,
+        "indexesListingVersion": 12
+      },
+      "npm": {
+        "packages": 5,
+        "signedProvenance": 5,
+        "latestPointsToCandidate": true
+      },
+      "maven": {
+        "coordinates": 3,
+        "channel": "sonatype snapshot"
+      },
+      "downloads": "none"
+    },
+    "localConsume": {
+      "command": "python eng/contracts.py consume",
+      "result": "completed without error",
+      "sourceCommit": "a6c5c02f349479ee2fc50a512285744753b5e61c",
+      "worktree": "clean dedicated, HEAD unchanged",
+      "candidate": "local pack 1.0.0-ci.0.0 (not the published bytes)",
+      "csharp": "restore, build and real gRPC checks passed",
+      "typescript": "restore, tsc and real gRPC-Web checks passed",
+      "kotlin": "restore, compile, identity, CON.11/22/21/24/25/07 cases and real Hello checks over gRPC-Web and gRPC passed",
+      "aot": "not requested",
+      "snapshotRegistry": "not requested",
+      "environment": "Windows 11 10.0.26300, .NET SDK 10.0.400, Node 24.20.0 (pin 24.21.0), npm 12.0.2 (pin 11.19.0), JDK 17.0.20.1, Gradle 9.7.1",
+      "adaptations": [
+        "Node/npm pin check relaxed and engine-strict off",
+        "Visual Studio Installer directory on PATH",
+        "ArchitectureTests assembly omitted from one build-identity inspection (duplicate build id on this workstation)",
+        "npm 12 pack --json output reshaped"
+      ]
+    },
+    "stoppedAttempts": [
+      {
+        "stop": "NU1506 duplicate PublicApi PackageVersion",
+        "path": "eng/consumer_tools.py",
+        "repair": "PR 84"
+      },
+      {
+        "stop": "compileKotlin: server-streaming calls written as unary",
+        "path": "tests/public/KotlinConnectClient/.../Con11ApplicationStreamsCases.kt",
+        "repair": "PR 84"
+      },
+      {
+        "stop": "NullPointerException at ContractSet.values for contract-fixtures",
+        "path": "tests/public/KotlinConnectClient/.../Main.kt",
+        "repair": "PR 85"
+      },
+      {
+        "stop": "repository-root lookup, camelCase name mapping and encodedBodyAlternative shape (found by the fix-validation Kotlin leg)",
+        "path": "Con11ApplicationStreamsCases.kt and eng/consumer_tools.py",
+        "repair": "PR 85"
+      }
+    ]
+  },
+  "realVersusFixture": {
+    "protoFromRegistry": "real authored schema, complete",
+    "publicInternalSplitApacheClosure": "real build and static policy output",
+    "generatedClients": "real generation, compilation, packaging and publication",
+    "fixturesAndVectors": "fixture (declarative or shape-level; no owner runtime behavior)",
+    "openApiRemoval": "static policy evidence",
+    "determinismCompatibilityReservedFields": "offline static and codec checks",
+    "threeEcosystemRestore": "provider receipts and registry metadata for the original candidate plus a local consume run from the locally packed candidate; not the published bytes",
+    "privateCfBindings": "mapped to CON.15, not re-verified"
+  },
+  "gateContributions": {
+    "P2-009": "WP-03.90 gate conditions pass on one candidate closure, CON.15 parts as stated",
+    "VG-04": "WP03.04 producer contribution observed again; gate remains OPEN pending published-host RPC proof of package 06",
+    "F-026": "WP03.02 contribution observed again including a Windows Native AOT probe; gate remains OPEN pending WP06.02"
+  },
+  "remainingOwners": [
+    "operation runtime behavior (packages 04, 05, 06, 09, 21, 23, 30 and their owners)",
+    "Cloud runtime owner and provider callback schema for ConnectorService (deferred by CON.25)",
+    "IM.* integration proposals"
+  ],
+  "untestedCoverage": [
+    "published package bytes and candidate manifest hashes",
+    "installed-package consumers in CI (prohibited by P2-017)",
+    "Native AOT C# client call and live snapshot consumer of consume",
+    "Kotlin vector behavior in hosted CI",
+    "tooling suite on the local workstation",
+    "macOS",
+    "live service, device, browser, GUI, real inference",
+    "operation runtime behavior"
+  ],
+  "designReceipt": {
+    "configuredCi": false,
+    "requiredChecks": [
+      "Complete document review",
+      "JSON, links and document consistency",
+      "Expected merge and clean primary fast-forward"
+    ],
+    "reviewBoundary": "Documentation contribution reviewed with JSON, link and consistency checks; no additional product build or runtime test"
+  }
+}
