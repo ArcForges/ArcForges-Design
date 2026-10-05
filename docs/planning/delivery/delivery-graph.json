@@ -17663,7 +17663,12 @@
     "entitlement-snapshot-resolver"
    ],
    "writes": [
-    "Cloud:src/Cloud/ArcForges.Cloud.Modules.Entitlement/**/Resolver/**"
+    "Cloud:src/ArcForges.Cloud.Modules.Entitlement/Resolver/** (the real layout of the planned src/Cloud/ArcForges.Cloud.Modules.Entitlement/**/Resolver/**: the one Entitlement project CLOUD.02 creates, whose Domain, Application and Infrastructure layers are folders and namespaces; the resolver and the grant and revocation model are folders inside it)",
+    "Cloud:src/ArcForges.Cloud.Modules.Entitlement/EntitlementModule.cs and Cloud:src/ArcForges.Cloud.Modules.Entitlement/ArcForges.Cloud.Modules.Entitlement.csproj (only the module's own Register entry point listing the resolver services, and InternalsVisibleTo for the existing test assembly so that no public method needs an RP-10 mapping; no package, reference or behavior change)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Entitlement/** and Cloud:tests/ArchitectureTests/** (resolver tests in the existing test projects; the architecture tests only for the reviewed project role and layering binding of the Entitlement project)",
+    "Cloud:eng/policy/dependency-policy.json and Cloud:eng/policy/dependency-reviews/com-05-*.json (new immutable successor chained from the then-active receipt, only because hash-bound project and release inputs change; no coordinate, integrity value or closure entry changes)",
+    "Cloud:eng/provenance/** (immutable successor release profile, Worker bundle and runtime-notice records only where an existing record binds an input this task changes, the first-party inventory files.json and the deterministic NOTICE.txt)",
+    "Cloud:docs/entitlement-resolver.md (new, factual description of the resolver and its fixtures) and Cloud:AGENTS.md (only if the module description changes)"
    ],
    "shared": [
     {
