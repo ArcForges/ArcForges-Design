@@ -355,7 +355,7 @@ Tasks: 18 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | none |
-| Write scope | `DesktopPlatform:eng/**`<br>`Design:docs/assurance/wp05-90-*.md, wp05-stage-acceptance.md/.json` |
+| Write scope | `DesktopPlatform:eng/**`<br>`DesktopPlatform:.github/workflows/pr-gate.yml (one new offline job that runs the cross-repository integration tests and verification in the pull-request pipeline; no change to any existing job, trigger, permission, action pin or secret handling)`<br>`Design:docs/assurance/wp05-90-*.md, wp05-stage-acceptance.md/.json` |
 | Shared resources | [RES-design-evidence](../shared-resources.md#res-design-evidence) (append) |
 | Validation | Reads published package manifests only (no full clone of every repository); offline; PR CI. |
 | Completion evidence | Stage-acceptance receipt joining all eleven preceding GOV.04-14 substeps' real results. |
