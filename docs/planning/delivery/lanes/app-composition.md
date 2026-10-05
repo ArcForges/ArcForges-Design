@@ -175,10 +175,12 @@ Tasks: 8 · Owning repositories: ArcScope, DesktopPlatform · Integration owner(
 | Entry condition | [ADOPT.02.app-composition](adoption.md#task-adopt-02-app-composition) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [APP.08](#task-app-08) |
-| Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Abstractions/**`<br>`DesktopPlatform:tests/AssistantAbstractionsTests/**` |
+| Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Abstractions/**`<br>`DesktopPlatform:tests/AssistantAbstractionsTests/**`<br>`DesktopPlatform:eng/policy/architecture-contract-tests.json (append only exact APP.07 public API-to-focused-test bindings in the AssistantAbstractionsTests project)`<br>`DesktopPlatform:eng/provenance/files.json (APP.07 owned-source inventory rows for the new source and test files only)` |
+| Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append) |
 | Validation | Offline unit/process tests: two windows/different drafts, independent crash, no data loss; no live-environment CI. |
 | Completion evidence | Two-window and crash-recovery test results. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: No lifecycle handling exists yet. |
+| Notes | Write-scope repair 2026-10-05 (w-c20261005-app07): eng/policy/architecture-contract-tests.json and eng/provenance/files.json are append-only supporting bindings for the new Assistant.Abstractions lifecycle source and tests ([RP-10](../../../architecture/01-solution-and-project-layout.md#rule-rp-10) requires a [Fact] binding for every public API method of the Abstractions project; the provenance inventory lists every owned source file). They add no dependency, package ID, version, project or pin. The task composes no Shell, Capabilities or Persistence.Sqlite (APP.08 owns the real sample); its tests use test-only ports for the local draft store, Cloud link and canonical data. |
 
 <a id="task-app-08"></a>
 
