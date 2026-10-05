@@ -1711,7 +1711,14 @@
    },
    "packageAcceptance": "WP-05",
    "notes": "Terminal task for WP05. WP06 and WP21 depend on this as their own external artifact prerequisite (README downstream index: 05 -> 06, 21).",
-   "complete": []
+   "complete": [
+    {
+     "type": "integration",
+     "task": "GOV.07",
+     "need": "ArcScope's own policy suite complete, including its executable's banned-API and production-only rules (the GOV.07 function-pointer deferral repaired through GOV.20)",
+     "why": "The WP05 stage receipt joins every repository's real policy result; a stage with one repository's executable deliberately unenforced is delivered, not complete."
+    }
+   ]
   },
   {
    "id": "GOV.16",
