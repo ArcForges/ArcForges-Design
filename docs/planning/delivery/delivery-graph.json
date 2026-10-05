@@ -7992,9 +7992,9 @@
    "complete": [
     {
      "type": "integration",
-     "task": "NAT.14",
-     "need": "production PDF/image parser composition rebuilt and signed on top of this same helper",
-     "why": "this task's own gate is explicit: 'WP13 later adds production parser composition to the same host and publishes a new immutable Runtime version; this stage has no reverse dependency on those parsers.' Full PG-22 closure additionally needs the WP-41.00 real extension proof."
+     "task": "NAT.15",
+     "need": "production PDF/image parser composition over the real PDFium rebuilt and signed on top of this same helper",
+     "why": "this task's own gate is explicit: 'WP13 later adds production parser composition to the same host and publishes a new immutable Runtime version; this stage has no reverse dependency on those parsers.' Real-library composition is NAT.15 (NAT.14 delivers only the interface and fake-backend seam). Full PG-22 closure additionally needs the WP-41.00 real extension proof."
     }
    ],
    "substitutes": [
@@ -8580,9 +8580,9 @@
     },
     {
      "type": "artifact",
-     "task": "NAT.14",
-     "need": "real, delivered outcome of NAT.14 (Pdf family: PDFium and production parser containment in the WP11 helper (NEW library))",
-     "why": "this integration exercises the real pdf family: PDFium and production parser containment in the WP11 helper (NEW library) instead of a substitute, so it cannot start before that outcome exists"
+     "task": "NAT.15",
+     "need": "real, delivered outcome of NAT.15 (Pdf family: real PDFium (chromium/8044) build admission, binding and real-parser containment acceptance)",
+     "why": "this integration re-verifies the OS containment mechanics against the real production parser libraries (PDFium and the still-image parsers) instead of the substitute; NAT.14 alone delivers only the interface, composition seam and fake-backend tests, so it cannot start before NAT.15 exists"
     }
    ],
    "validation": "Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI (P2-017).",
@@ -9022,7 +9022,7 @@
   },
   {
    "id": "NAT.14",
-   "title": "Pdf family: PDFium and production parser containment in the WP11 helper (NEW library)",
+   "title": "Pdf family: arcpdf-abi export set, ArcForges.Native.Pdf binding and production parser composition seam in the WP11 helper (NEW library; real PDFium is NAT.15)",
    "lane": "native",
    "repo": "DesktopPlatform",
    "kind": "producer",
@@ -9030,21 +9030,20 @@
    "obligations": [
     {
      "ref": "WP-13.13",
-     "part": "all work except the parts mapped to PLT.54"
+     "part": "composition, interfaces, limits and fake-backend containment tests; excludes the real PDFium build/binding and real-parser containment acceptance (NAT.15) and the parts mapped to PLT.54"
     },
     {
      "ref": "WP-13:ss1-nd-05-probe-scaffolds-13-00-13-03-ar",
-     "part": "package-level obligation contribution"
+     "part": "package-level obligation contribution (interface-level part: probe scaffolds retired or kept as regression fixtures for the PDF family seam; the real-library part is NAT.15)"
     },
     {
      "ref": "WP-13:ss4-major-types-note-no-native-pointer-b",
-     "part": "package-level obligation contribution"
+     "part": "package-level obligation contribution (interface-level part: major-types note and no native pointer crossing the ABI for the PDF family; the real-library part is NAT.15)"
     }
    ],
-   "outcome": "A new arcpdf-abi native library and ArcForges.Native.Pdf managed package implement arc_pdf_* over actual PDFium; PDFium and all approved parser wrappers are composed into the existing WP-11.09 ContentSandbox host using generated local gRPC controls (no second helper, no duplicate DTO owner); the next immutable ContentSandbox.Runtime.<rid> version is published; test-parser production registration is removed (hostile regression fixture retained). Contributes real evidence to PG-12 and PG-22.",
+   "outcome": "A new arcpdf-abi native library implements the complete arc_pdf_* export set (open, page_info, render, text, close) with the handle table, limits, cancellation, bounded buffers and text/geometry encoding over a PDF-backend interface; the non-packable ArcForges.Native.Pdf managed binding is added (it is not packable until NAT.25 and NAT.15 admit it); and the production parser composition is added to the existing WP-11.09 ContentSandbox host using generated local gRPC controls (no second helper, no duplicate DTO owner): a PDF parser wrapper over arc_pdf_*, the production parser profile registered, the native library pre-loaded before the OS profile is applied, hostile-PDF failure, limits and containment tests against a test-only fake PDF backend, test-parser production registration removed and the hostile regression fixture retained. The real PDFium (chromium/8044) backend is NOT part of this task: the fake backend is test-only and must never be registered in a release composition, and no ContentSandbox.Runtime.<rid> version is published here. The real PDFium build and binding, real-parser containment acceptance and the next immutable ContentSandbox.Runtime.<rid> input are NAT.15.",
    "provides": [
-    "arc-pdf-functions",
-    "contentsandbox-production-parser-runtime"
+    "arc-pdf-functions"
    ],
    "start": [
     {
@@ -9073,8 +9072,82 @@
     "DesktopPlatform:native/arcpdf-abi/**",
     "DesktopPlatform:src/Native/ArcForges.Native.Pdf/**",
     "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/**",
+    "DesktopPlatform:native/CMakeLists.txt"
+   ],
+   "shared": [
+    {
+     "resource": "RES-desktopplatform-native-build",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-workstation-build-slot",
+     "mode": "exclusive"
+    }
+   ],
+   "validation": "Offline unit and ABI tests for every arc_pdf_* export (handle table, limits, cancellation, bounded buffers, text/geometry encoding, malformed arguments) and Windows/Linux compilation; hostile-PDF failure, limit and containment tests through the production parser composition against the test-only fake backend, including a check that the fake backend and the test parser are not registered in a production composition; no real PDFium, packaged-RID containment or native-crash evidence is claimed here (NAT.15).",
+   "evidence": "arcpdf-abi export-set, ABI-layout and limit test results; the PDF parser composition in the ContentSandbox host with fake-backend failure/limit/containment test results and the production-registration negative test; explicit statement that the real PDFium dependency, PG-12 real-library evidence and PG-22 real-parser runtime evidence are NAT.15, not this task.",
+   "baseline": {
+    "state": "not-started",
+    "notes": "Observed none, unreviewed: src/DesktopHelpers/ArcForges.ContentSandbox exists with only a minimal Program.cs (the WP11.09 foundation shell); no arcpdf-abi, no ArcForges.Native.Pdf, no production parser composition yet. PDFium is not present in any vcpkg port or CMake profile found in this pass. Planning repair (NAT.14 split): a re-check found no admitted way to obtain PDFium here (no vcpkg port, no PDFium source, binary or admission receipt in DesktopPlatform; public downloads and toolchain installs are forbidden), so the real-library parts moved to NAT.15."
+   },
+   "notes": "Planning repair (split of NAT.14, claim NAT.14 epoch 1): architecture/01 builds PDFium from verified chromium/8044 source in a Platform isolated profile, but DesktopPlatform has no PDFium source, binary or dependency-admission receipt, no vcpkg port exists and policy forbids public downloads and toolchain installs, so the real library cannot be obtained by any admitted path. This task keeps everything deliverable without it: the complete arc_pdf_* export set over a PDF-backend interface, the non-packable ArcForges.Native.Pdf binding, and the production parser composition in the existing WP-11.09 ContentSandbox host with hostile-PDF failure, limit and containment tests against a test-only fake backend. The fake backend is test-only and is never registered in a release composition (a test asserts this); the production parser profile registers the arc_pdf_* wrapper only. This task adds no package inventory entry (eng/packaging/packages.json waits for a real PDFium, NAT.15/NAT.25) and publishes no ContentSandbox.Runtime.<rid> version. Delivering this task does not satisfy PG-12/PG-22 real-parser evidence: NAT.15 (real PDFium admission, binding and containment acceptance) and then PLT.54 and NAT.25 follow. Hard prerequisite for NAT.15.",
+   "complete": []
+  },
+  {
+   "id": "NAT.15",
+   "title": "Pdf family: real PDFium (chromium/8044) build admission, binding and real-parser containment acceptance",
+   "lane": "native",
+   "repo": "DesktopPlatform",
+   "kind": "producer",
+   "size": "L",
+   "obligations": [
+    {
+     "ref": "WP-13.13",
+     "part": "the real PDFium (chromium/8044) build and binding, the packaged PDF page/text/tile fixtures, malformed/native-crash/hang and parent-death cleanup against the real library on every admitted RID, rerun of the actual image-parser containment, and the next immutable ContentSandbox.Runtime.<rid> composition input; the composition, interfaces, limits and fake-backend tests are NAT.14"
+    },
+    {
+     "ref": "WP-13:ss1-nd-05-probe-scaffolds-13-00-13-03-ar",
+     "part": "package-level obligation contribution (real-library part: probe scaffolds retired against the real PDFium build; the interface-level part is NAT.14)"
+    },
+    {
+     "ref": "WP-13:ss4-major-types-note-no-native-pointer-b",
+     "part": "package-level obligation contribution (real-library part: major-types note verified against the real PDFium binding; the interface-level part is NAT.14)"
+    }
+   ],
+   "outcome": "PDFium built from verified chromium/8044 source (or an equivalently admitted build provenance) in a Platform isolated profile, admitted through the DesktopPlatform dependency admission (provenance, licence and SBOM receipts) and bound behind the arc_pdf_* backend interface delivered by NAT.14, replacing the test-only fake backend; ArcForges.Native.Pdf and the PDF parser composition in the existing WP-11.09 ContentSandbox host run over actual PDFium (no second helper, no duplicate DTO owner); the packaged PDF page/text/tile fixtures, malformed, native-crash, hang and parent-death cleanup cases pass against the real library on every admitted RID; the actual image-parser containment is rerun; and the composition input for the next immutable ContentSandbox.Runtime.<rid> version is produced (published by NAT.25). Contributes real evidence to PG-12 and PG-22.",
+   "provides": [
+    "contentsandbox-production-parser-runtime"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "NAT.14",
+     "need": "arc_pdf_* export set over the PDF-backend interface, the non-packable ArcForges.Native.Pdf binding and the production parser composition seam in the ContentSandbox host",
+     "why": "the real library is bound behind exactly this interface and composed through exactly this seam; NAT.15 replaces the test-only fake backend rather than reimplementing the ABI or forking a second helper"
+    },
+    {
+     "type": "artifact",
+     "task": "PLT.45",
+     "need": "published ArcForges.ContentSandbox.Contracts,.Broker and the foundation Runtime.<rid> package (built around a deliberately hostile first-party TEST parser)",
+     "why": "WP11 'solely owns' the host/protocol/launcher; WP13.13 composes the real parser into that SAME host and 'no future parser is an input to WP11 and no already-published artifact is modified' -- a fixture or reimplementation is not acceptable, this must be the real published foundation binary"
+    }
+   ],
+   "substitutes": [
+    "SUB-hostile-test-parser"
+   ],
+   "writes": [
+    "DesktopPlatform:native/arcpdf-abi/**",
+    "DesktopPlatform:src/Native/ArcForges.Native.Pdf/**",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/**",
     "DesktopPlatform:native/CMakeLists.txt",
-    "DesktopPlatform:eng/packaging/packages.json"
+    "DesktopPlatform:eng/packaging/packages.json",
+    "DesktopPlatform:eng/native/vcpkg/** (only the PDFium admission inputs: overlay port or build profile and triplet entries for the chromium/8044 build)",
+    "DesktopPlatform:eng/provenance/** (only the PDFium source/build provenance records, artifact-profile successor and files.json rows)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (only the PDFium admission entry and the exact input hashes it refreshes; point reviewReceipt to the NAT.15 successor)",
+    "DesktopPlatform:eng/policy/dependency-reviews/** (only the new immutable NAT.15 receipt successor chained from the receipt active on main at merge)",
+    "DesktopPlatform:third-party/** (only the PDFium licence and notice texts)",
+    "DesktopPlatform:eng/native_provenance.py (only the changes the PDFium build inputs require)",
+    "DesktopPlatform:eng/test_native_provenance.py (matching tests for the native_provenance.py change)"
    ],
    "shared": [
     {
@@ -9086,18 +9159,22 @@
      "mode": "append"
     },
     {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
      "resource": "RES-workstation-build-slot",
      "mode": "exclusive"
     }
    ],
-   "validation": "Packaged PDF page/text/tile fixtures, malformed/native-crash/hang and parent-death cleanup on every admitted RID; rerun of actual image parser containment (not just PDF)",
-   "evidence": "Actual PDF dependency and containment evidence contributing to PG-12; PG-22 runtime evidence for the real-parser leg (11.09 supplies the mechanism leg)",
+   "validation": "Packaged PDF page/text/tile fixtures, malformed/native-crash/hang and parent-death cleanup against the real PDFium library on every admitted RID; rerun of actual image parser containment (not just PDF); the dependency-admission, provenance and licence checks for the PDFium build run in CI as offline/static checks (no public download or toolchain install in CI or locally beyond what the admission records); no real-library evidence is claimed for a RID that was not run.",
+   "evidence": "Actual PDF dependency and containment evidence contributing to PG-12; PG-22 runtime evidence for the real-parser leg (11.09 supplies the mechanism leg); PDFium admission receipts (source/build provenance, licence, SBOM).",
    "baseline": {
     "state": "not-started",
-    "notes": "Observed none, unreviewed: src/DesktopHelpers/ArcForges.ContentSandbox exists with only a minimal Program.cs (the WP11.09 foundation shell); no arcpdf-abi, no ArcForges.Native.Pdf, no production parser composition yet. PDFium is not present in any vcpkg port or CMake profile found in this pass."
+    "notes": "Observed none, unreviewed: no PDFium source, binary, vcpkg port, CMake profile or admission receipt exists in DesktopPlatform (no vcpkg port exists for PDFium; ports for other PDF libraries are not PDFium and are not admitted)."
    },
    "earlyRiskProof": true,
-   "notes": "Highest residual security-relevant risk of the seven native families (hostile content inside a real isolation boundary) -- flagged as an early risk proof even though it is scheduled after NAT.06, unlike WP13's four canonical probes.",
+   "notes": "Created by the planning repair that split NAT.14 (claim NAT.14 epoch 1). Blocking prerequisite: an admitted way to obtain and build PDFium chromium/8044 here -- verified source or build provenance, licence and SBOM receipts, and a build toolchain -- which is a Platform dependency admission change (Design architecture/01 requires verified chromium/8044 source built in a Platform isolated profile; policy forbids public downloads and toolchain installs outside admitted paths). Until that admission exists this task cannot start in practice and must be recorded blocked with that exact missing input rather than satisfied with the fake backend; the fake backend from NAT.14 is test-only and must never be registered in a release composition. Highest residual security-relevant risk of the seven native families (hostile content inside a real isolation boundary) -- flagged as an early risk proof even though it is scheduled after NAT.06. This task owns the real-library PDF obligations of WP-13.13 and the real-library halves of the two WP-13 package-level contributions that NAT.14 carries at interface level; PLT.54 re-verifies the containment mechanics against the real parser closure and NAT.25 packages it. No ContentSandbox.Runtime.<rid> is published here; NAT.25 publishes the next immutable version from this composition input.",
    "complete": []
   },
   {
@@ -9241,9 +9318,9 @@
    "start": [
     {
      "type": "artifact",
-     "task": "NAT.14",
-     "need": "complete arc_pdf_* export set and the composed ContentSandbox parser registration",
-     "why": "13.15 gate: complete family required before packaging; also 'never alter already released WP11 package bytes' means this republishes a NEW version, not a patch"
+     "task": "NAT.15",
+     "need": "the real PDFium backend and binding behind the complete arc_pdf_* export set, and the composition input for the production ContentSandbox parser registration",
+     "why": "13.15 gate: complete family required before packaging, and package production needs the real binary; also 'never alter already released WP11 package bytes' means this republishes a NEW version, not a patch"
     },
     {
      "type": "artifact",
@@ -9441,8 +9518,14 @@
     {
      "type": "artifact",
      "task": "NAT.14",
-     "need": "real, delivered outcome of NAT.14 (Pdf family: PDFium and production parser containment in the WP11 helper (NEW library))",
-     "why": "this integration exercises the real pdf family: PDFium and production parser containment in the WP11 helper (NEW library) instead of a substitute, so it cannot start before that outcome exists"
+     "need": "real, delivered outcome of NAT.14 (Pdf family: arcpdf-abi export set, ArcForges.Native.Pdf binding and production parser composition seam in the WP11 helper)",
+     "why": "this integration exercises the real pdf export set and composition seam instead of a substitute, so it cannot start before that outcome exists"
+    },
+    {
+     "type": "artifact",
+     "task": "NAT.15",
+     "need": "real, delivered outcome of NAT.15 (Pdf family: real PDFium (chromium/8044) build admission, binding and real-parser containment acceptance)",
+     "why": "this integration exercises the real pdf family over actual PDFium instead of the fake backend, so it cannot start before NAT.15 exists"
     },
     {
      "type": "artifact",
@@ -26360,11 +26443,11 @@
    "contract": "ArcForges.Contracts.LocalRpc.Sandbox ContentSandboxService",
    "proves": "OS-level containment mechanics only (AppContainer/Job Object, Landlock/seccomp, App-Sandbox/XPC denial, resource bounds, crash/hang/parent-death cleanup) against a deliberately hostile FIRST-PARTY test parser, not real format-parsing correctness",
    "realProducer": [
-    "NAT.14"
+    "NAT.15"
    ],
    "replacedBy": "PLT.54",
    "realEvidence": "packaged RID containment matrix re-run against the real PDFium and still-image parser libraries, including malformed-input, crash and hang cases",
-   "origin": "Named scaffolding introduced by WP-11.09; WP-13.13 replaces production fixture registration; the malicious regression fixture stays test-only.",
+   "origin": "Named scaffolding introduced by WP-11.09; WP-13.13 replaces production fixture registration; the malicious regression fixture stays test-only. NAT.14 adds a test-only fake PDF backend for fake-backend containment tests; the real producer is NAT.15.",
    "class": "behavior"
   },
   {
@@ -27314,6 +27397,7 @@
     "NAT.11",
     "NAT.13",
     "NAT.14",
+    "NAT.15",
     "NAT.28",
     "SCOPE.11",
     "SCOPE.26"
@@ -27388,6 +27472,7 @@
    "contribution": "Contribution ONLY: the common ContentSandbox host/broker/OS-launch-profile containment evidence. The full gate additionally needs WP-13.13's real PDFium parser composition; this area does not close PG-12 alone. 13.13 supplies the actual PDF dependency and packaged ContentSandbox containment evidence for the assistant PDF preview. PDF dependency and containment: 11.09, 13.13.",
    "tasks": [
     "NAT.14",
+    "NAT.15",
     "NAT.25",
     "PLT.45"
    ]
@@ -27452,6 +27537,7 @@
    "tasks": [
     "EXT.00",
     "NAT.14",
+    "NAT.15",
     "NAT.25",
     "PLT.45"
    ]
