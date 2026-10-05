@@ -559,7 +559,7 @@ Tasks: 61 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Start prerequisites | **contract** [CON.91](contracts.md#task-con-91) — the handwritten-proto-generated service/method definitions to register ([D-009](../../../decisions/phase-1-foundation-decisions.md#rule-d-009) authority). *Why:* [BR-01](../../../architecture/14-build-packaging-and-release.md#rule-br-01) requires endpoints be mapped from the contract set, not hand-written<br>**artifact** [CLOUD.13](#task-cloud-13) — session model and native session validation. *Why:* handlers are registered behind authenticated, tenancy-scoped requests; native session validation is enough to start, browser sessions join at completion |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [CLOUD.19](#task-cloud-19) — the browser cookie-session adapter and native session validation to authenticate requests before they reach a handler. *Why:* [WP-23.00](../../work-packages/23-public-api-and-generated-clients.md#rule-wp-23.00) registers handlers behind authenticated/tenancy-scoped requests; there is no caller identity without CLOUD.19/CLOUD.12 |
-| Unblocks | [AND.04](android.md#task-and-04), [CLOUD.22](#task-cloud-22), [CLOUD.23](#task-cloud-23), [CLOUD.24](#task-cloud-24), [CLOUD.25](#task-cloud-25), [CLOUD.28](#task-cloud-28), [CLOUD.29](#task-cloud-29), [CLOUD.64](#task-cloud-64), [CLOUD.66](#task-cloud-66), [CLOUD.68](#task-cloud-68), [COM.13](commerce.md#task-com-13), [SIM.05](simulator.md#task-sim-05) |
+| Unblocks | [AND.04](android.md#task-and-04), [CLOUD.22](#task-cloud-22), [CLOUD.23](#task-cloud-23), [CLOUD.24](#task-cloud-24), [CLOUD.25](#task-cloud-25), [CLOUD.28](#task-cloud-28), [CLOUD.29](#task-cloud-29), [CLOUD.64](#task-cloud-64), [CLOUD.66](#task-cloud-66), [CLOUD.68](#task-cloud-68), [COM.13](commerce.md#task-com-13), [PRF.05](runtime-proofs.md#task-prf-05), [SIM.05](simulator.md#task-sim-05) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.PublicApi/Endpoints/**` |
 | Validation | offline + opt-in tests: each method category through native and TS transport, malformed/unknown request values, denied scope before handler |
 | Completion evidence | every selected operation has a concrete typed endpoint and owner; no ad-hoc REST business API |
@@ -581,7 +581,7 @@ Tasks: 61 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Start prerequisites | **artifact** [CLOUD.21](#task-cloud-21) — the endpoint registration to attach error mapping to. *Why:* error mapping wraps the handlers CLOUD.21 registers |
 | Entry condition | [ADOPT.07.cloud](adoption.md#task-adopt-07-cloud) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [CLOUD.26](#task-cloud-26), [CLOUD.28](#task-cloud-28), [CLOUD.64](#task-cloud-64), [CLOUD.66](#task-cloud-66) |
+| Unblocks | [CLOUD.26](#task-cloud-26), [CLOUD.28](#task-cloud-28), [CLOUD.64](#task-cloud-64), [CLOUD.66](#task-cloud-66), [PRF.05](runtime-proofs.md#task-prf-05) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.PublicApi/Errors/**` |
 | Validation | offline + opt-in tests: HTTP200-with-error-trailers, partial frame, 64-bit values, deadline/cancel-after-dispatch, command-receipt reconciliation |
 | Completion evidence | every C#/TS/Kotlin client distinguishes transport uncertainty from a domain refusal |
