@@ -36,7 +36,7 @@ Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) 
 | `audit` | Audit | `audit_event`, `operator_proposal`, `operator_approval` |
 | `support` | Support | `support_case`, `access_grant` |
 | `trustsafety` | TrustSafety | `report`, `enforcement_action` |
-| `platform` | shared infrastructure | `outbox`, `inbox`, `command`, `job_lease`, `operating_budget`, `operating_reservation`, `safety_receipt`, `recovery_epoch`, and the migration bookkeeping `schema_state`, `migration_receipt`, `backfill_checkpoint` ([model 04](04-d1-execution-profile.md#migration-bookkeeping-and-modes)) |
+| `platform` | shared infrastructure | `outbox`, `inbox`, `command`, `command_guard`, `job_lease`, `operating_budget`, `operating_reservation`, `safety_receipt`, `recovery_epoch`, and the migration bookkeeping `schema_state`, `migration_receipt`, `backfill_checkpoint` ([model 04](04-d1-execution-profile.md#migration-bookkeeping-and-modes)) |
 
 ---
 
@@ -63,6 +63,17 @@ These exist once and are used by every module. They are the mechanism behind [TX
 - `UQ (command_id)`
 - `IX (expires_at)` — the retention sweep
 - **Constraint** — a second call with the same `command_id` and a different `request_hash` is rejected as `command.reused_identifier`, never executed
+
+### `platform.command_guard`
+
+| Field | Type | Notes |
+|---|---|---|
+| `command_id` | `id` | **PK part 1**. The command of the guarded batch |
+| `guard_key` | `Key NN` | **PK part 2**. `<module>.<stable key>` of one guard statement |
+| `allowed` | `bool NN` | `1` when the guard's predicate held, `0` when it did not |
+
+- `PK (command_id, guard_key)`
+- **Constraint** — the table check named `af_guard_failed` requires `allowed = 1`, so a false guard rolls back the whole D1 batch and the Worker classifies it as `precondition` ([model 04 section 4](04-d1-execution-profile.md#4-atomic-command-algorithm-and-sql)). Only a guarded family or owner plan writes it, only inside the batch, and the batch's last statement deletes the command's rows; no committed state holds a row.
 
 ### `platform.outbox`
 
