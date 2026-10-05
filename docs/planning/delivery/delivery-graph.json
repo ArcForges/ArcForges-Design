@@ -5451,14 +5451,16 @@
     "Web:tooling/build-identity.ts (only: accept a published ContractSet subject that names a closed sources list instead of one source, still requiring every producer schema source to be named once with its digest; every other check is unchanged)",
     "Web:tooling/browser-provenance.ts (only: the active browser profile path)",
     "Web:tests/unit/app-*.test.ts and Web:tests/unit/app-*.test.tsx and Web:tests/fixtures/app-probe.ts (new tests and fixture for the profiles) and Web:tests/provenance/build-identity.test.ts (only: tests for the multi-source subject shape; the two pin-bound counts become derived from the receipt, every other assertion is preserved)",
-    "Web:eng/policy/dependency-policy.json (task-owned admission bindings only: the exact Contracts candidate pin 1.0.0-ci.287.1 (CON.07 merge ca45f36cccbdd31380f76b8f6cdecc958fdcb430, publication run 36966686225), the Wrangler 4.143.1 closure, the apps/app manifest and its input hashes, the active review and artifact-record pointers)",
-    "Web:eng/policy/dependency-reviews/** (one immutable successor receipt)",
+    "Web:eng/policy/dependency-policy.json (task-owned admission bindings only: the exact Contracts candidate pin 1.0.0-ci.287.1 (CON.07 merge ca45f36cccbdd31380f76b8f6cdecc958fdcb430, publication run 36966686225), the Wrangler 4.143.1 closure, the apps/app manifest and its input hashes, the esproj input hash and the embedded review of the second receipt, the active review and artifact-record pointers)",
+    "Web:eng/policy/dependency-reviews/** (one immutable successor receipt for the first change and a second successor receipt, prf08-admission-r2, for the esproj input change of the completion follow-up)",
     "Web:eng/policy/naming-candidate.json (only: move the exact published naming-asset pin to the Contracts candidate 1.0.0-ci.287.1 (CON.07 merge ca45f36cccbdd31380f76b8f6cdecc958fdcb430, publication run 36966686225))",
     "Web:eng/policy/licence-boundary.json (only: register the apps/app manifest)",
     "Web:eng/policy/architecture.md (only: factual note of the pin and the unchanged HTTP-exception posture)",
     "Web:eng/provenance/** (immutable successor records and browser profile for the lock and pin change, the inventory and the regenerated notice summary; no earlier record is edited)",
     "Web:.gitleaks.toml (only the 14 findings the hosted scan reported on the r8 profile, nothing else: extend the existing path class browser-resources-r[1234567] to browser-resources-r[12345678] with the five existing exact line regexes unchanged, which match 8 lines of the r8 profile, plus exactly six new exact line rows for the paths node_modules/@arcforges/api-client/dist/shapes/gen/<name>.js with the digests of the r8 profile: BrowserAuthChallenge 891b19e99fa03497ff68f403fd3832ac067697120bc954da63032dc1d252e0b9; BrowserBeginAuthenticationRequest fce555772bab8329f8a02534d9b8e8858e08655b520bd233b1e68b2f7b602af7; BrowserCompleteAuthenticationRequest de3cf6790a96043bb48e889961a37e271078abbbff144d1288f26e93c56f315b; NativeAuthRoutes 0b89a2c69f172696b89f32421ba609f6d857f00f597e8a5ae5415ce742291dfd; NativeTokenRequest 79d75ee79a5b6d52433e6425de6eefdaa1e829fd58ee2dcda204cf391e3517df; NativeTokenResponse 725cac5a5ceeba78f775804a26b8b5de99a7eeaf250d37335fc59bdd5ec58ce1; no other row, rule, path, hash or future revision, and no pattern is widened)",
-    "Web:docs/prf-08-*.md (plus factual updates to README.md, docs/development.md, docs/provenance.md and docs/cloud-hello.md)"
+    "Web:docs/prf-08-*.md (plus factual updates to README.md, docs/development.md, docs/provenance.md and docs/cloud-hello.md)",
+    "Web:tooling/ide.ts (only: the expected BuildCommand value npm run build && npm run build:profiles, and one assertion that the solution build output shows the two profile builds; every other assertion is unchanged)",
+    "Web:ArcForges.Web.esproj (only: the BuildCommand also runs npm run build:profiles after npm run build, so the esproj and win.slnx build entry points build the two profiles; win.slnx already builds this project and needs no edit, and no other property, target, restore or SDK pin changes; the esproj is an input of the dependency-admission policy, so its change is bound by the second successor receipt named above)"
    ],
    "shared": [
     {
@@ -5477,7 +5479,32 @@
     "notes": "Observed scaffold, unreviewed: wp02-03-runtime-boundary-evidence.md confirms win.slnx/esproj Build/Deploy wiring and a working local IDE + portable npm dev flow already exist and were verified end-to-end against deployed Cloud's Hello boundary at web-0.1.0-ci.24.1; production Account/Chat profile itself is not yet built."
    },
    "notes": "Lower novel-technology risk than the native/AOT proofs (React/Node toolchain is well understood); still a required PG-23 contribution.",
-   "complete": []
+   "complete": [
+    {
+     "type": "integration",
+     "task": "CLOUD.21",
+     "need": "the real generated public methods of ArcForges.Contracts.PublicApi registered on the deployed gRPC-Web ingress behind the real session, scope and current-owner gate, with exact request/reply validation (for example WorkspaceService.GetHealth with its uint64 counters and WorkspaceService.UpdateSettings with its Revision precondition)",
+     "why": "WP-06.05 requires exact values and typed failures on the real call path; the deployed Hello method carries strings only and the proof surface exposes no generated gRPC-Web service carrying int64, uint64 or decimal values, so no earlier task provides a generated method the built profiles can call with exact primitives"
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.22",
+     "need": "the exact mapping of generated ArcResult domain errors and gRPC-Web statuses and trailers, including 64-bit values, HTTP 200 with error trailers, and deadline and cancel-after-dispatch behavior",
+     "why": "the profiles' typed failures and cancellation are consumed against the real typed mapping on the deployed path, not against fixtures"
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.71",
+     "need": "the built Account and Chat profiles served from the proof origin itself, next to /api and /session/v1",
+     "why": "WP-06.05 requires the profiles to call the real AOT Cloud probe through same-origin routing, cookie and CSRF on a deployed Cloudflare; the proof Worker serves no Web assets and a local forwarder is only a substitute"
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.08",
+     "need": "readiness surfaces that separate Ingress, Container, D1, Durable Object, R2 and Queue health, so a Container that is not ready is told apart from an application failure",
+     "why": "the first live run of the profiles found the proof foundation Container answering 503 on every session request for more than 40 minutes and then flapping; a repeatable browser round trip needs a deployed ingress whose readiness is observable and stable, and CLOUD.08 is the task that owns the readiness surface and the diagnosis of that behavior"
+    }
+   ]
   },
   {
    "id": "PRF.09",
@@ -17897,6 +17924,68 @@
    "baseline": {
     "state": "not-started",
     "notes": "Planning repair 2026-10-05: no workflow step, script or document applies migrations to a deployed D1 database; CLOUD.03's runner is run only locally and against workerd's D1."
+   }
+  },
+  {
+   "id": "CLOUD.71",
+   "title": "Serve the built Web profiles from the proof origin",
+   "lane": "cloud",
+   "repo": "Cloud",
+   "kind": "service",
+   "size": "S",
+   "obligations": [
+    {
+     "ref": "WP-06.05",
+     "part": "the deployed same-origin hosting of the two built production profiles (Account and Chat) on the proof origin, so that the page, /api and /session/v1 share one origin, cookie and CSRF boundary on a deployed Cloudflare; the profile builds, their budgets and their offline proof stay with PRF.08"
+    }
+   ],
+   "outcome": "The two production profile builds of PRF.08 are served, byte for byte, by the proof Worker (custom domain proof.arcforges.com, workers.dev and previews stay disabled) as static assets on separate paths of the same origin that serves /api, /session/v1 and the operator-signed /proof/v1 surface, which keep going to the Worker first. The bytes come from one immutable digest-named bundle that the Web main-push build publishes; the Cloud proof deployment job (manual proof=deploy) downloads that exact asset, verifies its digest against the value pinned in the deployment manifest and binds it as the Worker's assets, so nothing is rebuilt and no Web source is read. Responses carry the profile Content-Security-Policy that PRF.08 derives. Production configuration and the Web apex Custom Domain are untouched. The result is exercised once with PRF.08's live script (apps/app/scripts/proof-run.ts) pointed at the served profiles under the RES-cloud-deployment lease and the run's result is recorded.",
+   "provides": [
+    "proof-origin-web-hosting"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "PRF.07",
+     "need": "the deployed proof environment, its custom domain, its operator-signed surface and its manual deployment job",
+     "why": "the profiles are served by the proof Worker and deployed by its existing job"
+    },
+    {
+     "type": "artifact",
+     "task": "PRF.08",
+     "need": "the two production profile builds and their measured, deterministic output (npm run build:profiles) and the live script that exercises them",
+     "why": "there are no Web bytes to serve or live script to run before PRF.08 delivers them"
+    }
+   ],
+   "shared": [
+    {
+     "resource": "RES-cloud-deployment",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-host-composition",
+     "mode": "append"
+    }
+   ],
+   "writes": [
+    "Cloud:wrangler.json (only env.proof: the static-assets binding and the routing so that /api, /session/v1 and /proof/v1 reach the Worker first; no production, no other environment and no binding change)",
+    "Cloud:worker/foundation/** (only the proof route fragment, and only if the assets configuration alone cannot keep the three route families on the Worker)",
+    "Cloud:.github/workflows/ci.yml and Cloud:eng/verification/proof-deploy.ts (only the manual proof deployment job: download the digest-named bundle asset, verify the pinned digest, stage it as the proof assets; no pull-request job gains a secret, a download or a live call)",
+    "Cloud:tests/worker/proof-assets*.test.ts (new files only: route precedence, digest refusal, headers)",
+    "Cloud:package.json (only the new test files in the test list)",
+    "Cloud:eng/policy/dependency-policy.json and Cloud:eng/policy/dependency-reviews/cloud-71-*.json (new immutable successor chained from the then-active receipt, only because hash-bound inputs change; no coordinate or closure entry changes)",
+    "Cloud:eng/provenance/** (immutable successor records only where an existing record binds an input this task changes, the first-party inventory files.json and the deterministic NOTICE.txt)",
+    "Cloud:docs/prf-07-foundation-proof.md and Cloud:docs/cloud-ingress.md (factual additions about the served profiles and the proof run)",
+    "Web:.github/workflows/ci.yml (only: one step of the existing main-push deployment job that publishes the two profile builds as one immutable digest-named release asset next to the existing candidate asset; no new job, runner, credential or pull-request step)",
+    "Web:apps/app/scripts/** and Web:docs/prf-08-*.md (only the bundling script for that asset and the factual record of the served-profile run, and the interaction-budgets.json that the live run produces)"
+   ],
+   "validation": "offline tests of route precedence, digest verification and headers; one explicit proof-environment deployment and one live run under the RES-cloud-deployment lease per docs/validation-policy.md, recorded once; no pull-request job receives a secret and none runs a live service",
+   "evidence": "the proof deployment job result with the verified bundle digest, the live run's output (observations and interaction timings, never a secret or a session handle) and the source commits",
+   "notes": "Planning repair 2026-10-05 (DLV-34: a new task gives work no existing scope could hold; no obligation or acceptance is removed). PRF.08's completion needs the built profiles to share an origin with the deployed ingress; the proof Worker has no assets binding and no existing Cloud or Web task owns one. WEB.30 cannot hold it because it consumes PRF.08, so an edge from PRF.08 to it would be a cycle; this task starts after PRF.08 delivers the profiles and PRF.08 completes after it. No task's start waits for it.",
+   "complete": [],
+   "baseline": {
+    "state": "not-started",
+    "notes": "Planning repair 2026-10-05: the proof Worker (arcforges-cloud-proof) serves /api, /session/v1 and /proof/v1 only; wrangler.json has no assets binding."
    }
   },
   {
