@@ -1691,12 +1691,16 @@
    ],
    "writes": [
     "DesktopPlatform:eng/**",
-    "DesktopPlatform:.github/workflows/pr-gate.yml (one new offline job that runs the cross-repository integration tests and verification in the pull-request pipeline; no change to any existing job, trigger, permission, action pin or secret handling)",
+    "DesktopPlatform:.github/workflows/pr-gate.yml (one new offline job that runs the cross-repository integration tests and verification in the pull-request pipeline; the only change to an existing job is appending the new job id to the aggregate ci job needs list so a failure fails the required aggregate gate; no other change to any existing job, trigger, permission, action pin or secret handling)",
     "Design:docs/assurance/wp05-90-*.md, wp05-stage-acceptance.md/.json"
    ],
    "shared": [
     {
      "resource": "RES-design-evidence",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-build-config",
      "mode": "append"
     }
    ],
