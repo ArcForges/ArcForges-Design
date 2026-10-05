@@ -14937,7 +14937,14 @@
     "notes": "Observed none, unreviewed: no capacity harness exists; wrangler.json today has a single lite/1-instance placeholder container"
    },
    "notes": "Can proceed in parallel with WP-22/23/24/25 module work once CLOUD.01-04/06 exist, because it uses its own guarded-batch fixtures rather than waiting for real module business logic.",
-   "complete": []
+   "complete": [
+    {
+     "type": "integration",
+     "task": "CLOUD.70",
+     "need": "the gated migration step that applies the locked migrations to the deployed D1 database",
+     "why": "the real D1 rollback, duplicate, competing-writer and cold-start measurements run against a deployed schema"
+    }
+   ]
   },
   {
    "id": "CLOUD.08",
@@ -15030,7 +15037,14 @@
     "notes": "Observed none, unreviewed: no selfhost profile exists; wrangler.json has only the single official arcforges.com route/environment"
    },
    "notes": "WP-21's own completion gate states this task hands WP-46 'a runnable deployment and complete configuration inventory'; production PG-25 evidence stays external. Can run in parallel with WP-22/23/24/25 once CLOUD.01/03 exist.",
-   "complete": []
+   "complete": [
+    {
+     "type": "integration",
+     "task": "CLOUD.70",
+     "need": "the gated migration step to provision a fresh realm's database",
+     "why": "fresh development account and realm provisioning applies the schema through the same step"
+    }
+   ]
   },
   {
    "id": "CLOUD.10",
@@ -15121,6 +15135,12 @@
      "task": "CLOUD.09",
      "need": "final candidate build",
      "why": "closure requires every preceding substep complete"
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.70",
+     "need": "final candidate build",
+     "why": "closure requires the deployment pipeline to apply the migrations it ships against"
     }
    ],
    "writes": [
@@ -16621,7 +16641,14 @@
    },
    "earlyRiskProof": true,
    "notes": "Early risk proof: this is the two-writer D1 guarded-batch algorithm underlying PG-17. Proving it under contention before WP-25.03-07 build on top avoids invalidating that downstream work. PG-17 explicitly 'consumes the publisher from package 21' (CLOUD.04/CLOUD.06) -- this task is where that consumption happens for Sync specifically, together with the real Sync owner transaction.",
-   "complete": []
+   "complete": [
+    {
+     "type": "integration",
+     "task": "CLOUD.70",
+     "need": "the gated migration step that applies the locked migrations to the deployed D1 database",
+     "why": "real D1 clients converge against a deployed schema"
+    }
+   ]
   },
   {
    "id": "CLOUD.40",
@@ -17797,6 +17824,61 @@
    "baseline": {
     "state": "not-started",
     "notes": "Planning repair 2026-10-05: no Cloud code or document handles correlation (CLOUD.01 delivered the ingress without it); nothing exists."
+   }
+  },
+  {
+   "id": "CLOUD.70",
+   "title": "Gated D1 migration deployment step and compatible-rollback flow",
+   "lane": "cloud",
+   "repo": "Cloud",
+   "kind": "service",
+   "size": "S",
+   "obligations": [
+    {
+     "ref": "WP-21.03",
+     "part": "the deployment-job application of the migration runner and its compatibility flow: a gated migration step in the existing deployment pipeline that holds the migrator lease and fence, applies the pending locked migrations in sequence with receipts, surfaces the receipts and the compatibility record in the job, orders expand, backfill, cutover and contract across deployments, and refuses an application build that the schema horizons exclude (the compatible-rollback rule); the manifest, the runner, the adapters and the conformance evidence stay with CLOUD.03"
+    }
+   ],
+   "outcome": "Migrations reach a deployed D1 database only through one gated step of the deployment pipeline (Design D1 profile section 6: never from Container startup). The step runs the CLOUD.03 runner against the target environment's business database under the migrator lease and fence, applies the pending migrations in sequence, prints the receipts and compatibility record without any secret, applies a backfill, cutover or contract migration only when the release manifest names it for this deployment (contract only with the explicit consent flag and after its soak), and before promoting a Worker or image checks the compatible-rollback rule so that a build the read or write horizon excludes is never promoted. The step is exercised once against the proof environment under the RES-cloud-deployment lease and records its result; production receives the same step only through the existing gated main-push deployment job. It adds no schema, no runner behavior and no deployment secret to pull-request code.",
+   "provides": [
+    "d1-migration-deployment"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "CLOUD.03",
+     "need": "the migration runner, its REST client, the locked migration catalog and the compatible-rollback rule to run from the deployment job",
+     "why": "the deployment step is a thin gated caller of the runner; there is nothing to run before CLOUD.03 delivers it"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.01",
+     "need": "the existing gated deployment job and the proof environment the step is added to and exercised in",
+     "why": "the step extends the deployment pipeline CLOUD.01 established and is proven in its proof environment"
+    }
+   ],
+   "shared": [
+    {
+     "resource": "RES-cloud-deployment",
+     "mode": "append"
+    }
+   ],
+   "writes": [
+    "Cloud:.github/workflows/ci.yml (only one gated migration step in the existing main-push deployment job and the proof deployment job, run before the Worker or image is promoted; the pull-request jobs gain no secret and no migration step; the workflow is shared build configuration and the Cloud integration owner resolves ordering conflicts at merge)",
+    "Cloud:tooling/cloudflare.ts and Cloud:eng/migrations/deploy.ts (the deployment-time caller of the runner: environment-to-database selection from the existing deployment configuration, the release manifest's migration plan, the compatible-rollback check and the receipt report; no change to the runner, the catalog, the manifest or the adapters)",
+    "Cloud:tests/worker/d1-migration-deploy*.test.ts (new files only: the step against the SQLite and fake-REST oracles, the refusal of an excluded build, no secret in any output)",
+    "Cloud:package.json (only the new test files in the test list and one script) and Cloud:tsconfig.json (only if a new folder needs the include)",
+    "Cloud:eng/policy/dependency-policy.json and Cloud:eng/policy/dependency-reviews/cloud-70-*.json (new immutable successor chained from the then-active receipt, only because hash-bound inputs change; no coordinate, integrity value or closure entry changes)",
+    "Cloud:eng/provenance/** (immutable successor records only where an existing record binds an input this task changes, the first-party inventory files.json and the deterministic NOTICE.txt)",
+    "Cloud:docs/d1-migration-deployment.md (new, factual description of the gated step, its environment variables by name only, the proof-environment run and the rollback flow; docs/deployment.md stays with CLOUD.09)"
+   ],
+   "validation": "offline tests of the deployment caller against the SQLite oracle and a fake REST client (gated order, receipts printed, excluded build refused, no secret in any output, a contract refused without consent); one explicit proof-environment run under the RES-cloud-deployment lease per docs/validation-policy.md, recorded once; no pull-request job receives a secret and none runs a live service",
+   "evidence": "the proof-environment run's job result and receipt report (receipt and fence values, never a secret), the refusal test results and the source commit",
+   "notes": "Planning repair 2026-10-05 (DLV-34: a new task gives work no existing scope could hold; no obligation or acceptance is removed). CLOUD.03 delivers the runner and states that no workflow step runs it; CLOUD.07 (wrangler.json and capacity), CLOUD.09 (docs/deployment.md and eng/selfhost) and CLOUD.10 (artifacts/candidate) cannot hold a .github/workflows/ci.yml edit, and only the completed PRF.07 listed it. Modules whose live acceptance runs against a deployed schema (CLOUD.07, CLOUD.09, CLOUD.10, CLOUD.39) complete after it; no task's start waits for it, so offline and local-oracle module work is not delayed.",
+   "complete": [],
+   "baseline": {
+    "state": "not-started",
+    "notes": "Planning repair 2026-10-05: no workflow step, script or document applies migrations to a deployed D1 database; CLOUD.03's runner is run only locally and against workerd's D1."
    }
   },
   {
