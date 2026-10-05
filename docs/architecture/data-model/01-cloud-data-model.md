@@ -36,7 +36,7 @@ Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) 
 | `audit` | Audit | `audit_event`, `operator_proposal`, `operator_approval` |
 | `support` | Support | `support_case`, `access_grant` |
 | `trustsafety` | TrustSafety | `report`, `enforcement_action` |
-| `platform` | shared infrastructure | `outbox`, `inbox`, `command`, `job_lease`, `operating_budget`, `operating_reservation`, `safety_receipt`, `recovery_epoch`, and the migration bookkeeping `schema_state`, `migration_receipt`, `backfill_checkpoint` ([model 04](04-d1-execution-profile.md#migration-bookkeeping-and-modes)) |
+| `platform` | shared infrastructure | `outbox`, `inbox`, `command`, `command_guard`, `job_lease`, `sequence_stream`, `outbox_position`, `change_archive`, `operating_budget`, `operating_reservation`, `safety_receipt`, `recovery_epoch`, and the migration bookkeeping `schema_state`, `migration_receipt`, `backfill_checkpoint` ([model 04](04-d1-execution-profile.md#migration-bookkeeping-and-modes)) |
 
 ---
 
@@ -64,6 +64,17 @@ These exist once and are used by every module. They are the mechanism behind [TX
 - `IX (expires_at)` — the retention sweep
 - **Constraint** — a second call with the same `command_id` and a different `request_hash` is rejected as `command.reused_identifier`, never executed
 
+### `platform.command_guard`
+
+| Field | Type | Notes |
+|---|---|---|
+| `command_id` | `id` | **PK part 1**. The command of the guarded batch |
+| `guard_key` | `Key NN` | **PK part 2**. `<module>.<stable key>` of one guard statement |
+| `allowed` | `bool NN` | `1` when the guard's predicate held, `0` when it did not |
+
+- `PK (command_id, guard_key)`
+- **Constraint** — the table check named `af_guard_failed` requires `allowed = 1`, so a false guard rolls back the whole D1 batch and the Worker classifies it as `precondition` ([model 04 section 4](04-d1-execution-profile.md#4-atomic-command-algorithm-and-sql)). Only a guarded family or owner plan writes it, only inside the batch, and the batch's last statement deletes the command's rows; no committed state holds a row.
+
 ### `platform.outbox`
 
 | Field | Type | Notes |
@@ -82,7 +93,7 @@ These exist once and are used by every module. They are the mechanism behind [TX
 | `created_at` | `instant NN` | |
 | `dispatched_at` | `instant?` | |
 
-- `IX (state, created_at)` — the dispatcher's only query path
+- `IX (state, created_at)` — the dispatch-state index (the retry and dead-letter scans); publication itself reads by `platform.outbox_position` ([model 04 section 5](04-d1-execution-profile.md#5-claim-publish-and-reconcile))
 - `IX (aggregate_kind, aggregate_id, aggregate_rev)` — replay for one aggregate
 
 ### `platform.inbox`
@@ -115,6 +126,23 @@ These exist once and are used by every module. They are the mechanism behind [TX
 
 - `IX (state, available_at)` — the only claim path
 - **Constraint** — acquisition conditionally updates `leased_until`, holder and `fence_token` together. A stale worker may still run after expiry but cannot commit an effect: every publication guards the current lease and fence in its registered D1 batch. Network uncertainty is handled by the dispatch barrier, not by the lease alone.
+
+### Commit support: publication streams, outbox positions and change archive
+
+These three platform-owned records complete the mechanism of [D1 profile section 4](04-d1-execution-profile.md#4-atomic-command-algorithm-and-sql) for every guarded batch (CLOUD.04, WP-21.04). `platform.command` is the owner receipt; `platform.outbox` and `platform.inbox` are as above; the guard rows of a batch are `platform.command_guard` (CLOUD.06, WP-21.05), which this task only follows and never writes.
+
+| Table | Complete fields and constraints |
+|---|---|
+| platform.sequence_stream | stream_key:Key PK (for an outbox stream, the owner scope of the write; for the change archive, the fixed key `platform:change-archive`); last_sequence:int64 NN >= 0 monotonic (the allocation counter); published_watermark:int64 NN >= 0 monotonic and <= last_sequence; publish_rev:rev NN (advanced only by an acknowledgement or a fence change, never by an allocation, so a commit of unrelated work does not invalidate a publisher's selection); fence:int64 NN >= 0 monotonic; ack_receipt:text? (the publisher run or, for the archive, the independent storage receipt of the last acknowledgement); updated_at:instant NN |
+| platform.outbox_position | outbox_id:id PK referencing platform.outbox; stream_key:Key NN referencing platform.sequence_stream; sequence:int64 NN >= 1; UQ(stream_key, sequence). Never updated; deleted only by the purge rule below. |
+| platform.change_archive | archive_sequence:int64 PK >= 1; command_id:id NN, UQ (one row per committed command); schema_version:int64 NN >= 0; record:json NN, root object, at most 64 KiB (the ordered replay record of D1 profile section 7: resulting row revisions, after-images and deletion keys, never a temporary body or a credential); record_hash:hash NN (SHA-256 of the UTF-8 bytes of `record`); created_at:instant NN. Never updated; deleted only by the purge rule below. |
+
+- **Sequence allocation.** A commit that writes an outbox row increments its stream's `last_sequence` and inserts the row's `outbox_position` with that value in the same batch; every commit increments the `platform:change-archive` stream and inserts its `change_archive` row. Because writes of one D1 database are serialized and a rolled-back batch releases its increments, the committed sequences of a stream are 1, 2, 3 and so on without a gap, in commit order.
+- **Publication** advances `published_watermark` only over a contiguous range of `pending` outbox rows (D1 profile section 5); a row that is `deadLettered` or missing stops the watermark. The change archive advances the same field only after the independent storage acknowledges the range, and records that receipt.
+- **Inbox key and retention.** `platform.inbox.source` stays the producing system (OB-04); `message_id` is `<message id>@<recovery generation>` (decimal), so the uniqueness of [D1 profile section 5](04-d1-execution-profile.md#5-claim-publish-and-reconcile), (consumer, event id, generation), is the composite primary key. A message that two handlers apply carries each handler's name in `source` as `<producing system>/<handler>`, so each handler dedups on its own. The retention window OB-04 requires is declared here: `expires_at` is at least 30 days after receipt and at least the longest redelivery or provider-reconciliation lookback and the recovery-generation window; the retention sweep removes only rows past it.
+- **Command states.** The atomic commit writes `succeeded` with the original response; a definite refusal worth replaying is written alone as `failed` with its stable code; `inProgress` is not used by an atomic family. `result_rev` is null when the operation has no resulting aggregate revision.
+- **Command fence.** The retention sweep of `platform.command` deletes a full response at `expires_at` but keeps a compact fence (command id, request hash, actor, operation) for the owner's lifetime and applicable audit retention, because `command.receipt_expired` ([command replay retention profile](../contracts/00-operation-catalogue.md#command-replay-retention-profile)) needs the id to stay known.
+- **Purge rule.** `outbox_position` and `change_archive` are append-only for every module and family plan. Only the platform purge plans delete them: a change record only at or below the acknowledged `published_watermark` of the archive stream and past the expiry of every dependent backup (the caller supplies that cutoff); a position, and then its `dispatched` outbox row, only at or below the stream's watermark and past the outbox retention window. A position is deleted before its outbox row, so the foreign key never blocks outbox retention; the sequences above the watermark are untouched, so contiguity of the unpublished range holds.
 
 ---
 
