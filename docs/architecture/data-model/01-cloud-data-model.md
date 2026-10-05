@@ -20,7 +20,7 @@ Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) 
 | `identity` | Identity | `user`, `auth_identity`, `session` |
 | `workspace` | Workspace | `workspace` — **no membership table** ([WO-01](#rule-wo-01)) |
 | `device` | Devices | `device`, `installation` |
-| `entitlement` | Entitlement | `grant`, `snapshot`, `usage_counter`, `service_term`, `capacity_bucket`, `capacity_policy_period`, `capacity_reservation` |
+| `entitlement` | Entitlement | `grant`, `revision`, `snapshot`, `usage_counter`, `service_term`, `capacity_bucket`, `capacity_policy_period`, `capacity_reservation` |
 | `commerce` | Commerce | `billing_account`, `order`, `subscription`, `credit_lot`, `provider_event`, `logical_ai_request`, `provider_attempt`, `attempt_usage`, `supplier_cost_entry`, `customer_settlement`, `refund`, `compensation_adjustment` |
 | `chat` | Chat | `conversation`, `message` and their committed content; Task owns iteration output, CF DO owns transient stream projection |
 | `task` | Task | `task`, `automation_definition`, `automation_occurrence` |
@@ -419,6 +419,16 @@ The Entitlement module is **independent of Commerce** (`§2.1` of the commerce a
 
 - **Append-only.** A revocation is how a grant ends; the grant row is never mutated
 - `IX (grant_id)`
+
+### `entitlement.revision`
+
+| Field | Type | Notes |
+|---|---|---|
+| `workspace_id` | `id` | **PK** |
+| `rev` | `rev NN` | Per-workspace write fence of the Entitlement module |
+| `updated_at` | `instant NN` | |
+
+- **Rule** — every Entitlement commit for a workspace (grant, revocation, service term, term action, snapshot replacement) guards the `rev` it read and increments it in the same guarded batch, so two writers can never each derive a snapshot from a history the other has already changed. The guard names only `entitlement_` tables (a module plan may not name another module's table, CM-01 to CM-03); it is never the `workspace` row. The row is created with the workspace's first Entitlement commit; it is not derived and not part of the rebuild comparison
 
 ### `entitlement.snapshot`
 
