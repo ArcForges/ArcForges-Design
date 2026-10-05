@@ -40,3 +40,4 @@ No runtime, device, GUI, browser, live-service, inference or installed-consumer 
 
 - SI-09 does not detect a gate that is backgrounded, piped to `tee`, placed in a dead shell branch, or listed under a job whose `needs` never runs; these gate shapes are undetected.
 - `verify` fails hard once the snapshot is 45 days old; a warning near 30 days is a suggested follow-up, not implemented.
+- The snapshot was collected 2026-10-05, so the 45-day failure begins about 2026-11-19. It fails `stage-integration`, therefore the aggregate `ci` job and the Publish NuGet main run, for every DesktopPlatform change until the integration owner refreshes the snapshot. The 30-day warning is a recorded follow-up, not implemented.
