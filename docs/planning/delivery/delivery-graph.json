@@ -15258,7 +15258,7 @@
    "obligations": [
     {
      "ref": "WP-22.00",
-     "part": "all work except the parts mapped to CLOUD.20"
+     "part": "all work except the parts mapped to CLOUD.20 and CLOUD.72"
     }
    ],
    "outcome": "Realm, user, authentication identity and single-owner workspace exist with ownership as a direct workspace.owner_user_id check; no membership/role/seat table exists anywhere in schema, contracts or operations.",
@@ -15321,7 +15321,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: no identity module exists"
    },
-   "notes": "First real module built on the WP-21 foundation; unlocks the rest of WP-22. Planning repair 2026-10-05: the write scope named a layout (`src/Cloud/...`) that does not exist and could not hold the plans, the family, the tests or the successor records the task needs, so it is bound to the real layout (precedents: CLOUD.03, CLOUD.06, COM.05). Decisions recorded in this repair (raised to the Architecture Owner, D-001, in the pull request): (1) a realm is deployment configuration, not a table (one D1 authority per realm, model 00 section 6.1.1; model 01 declares `realm_id` columns and no realm table), so the core model carries a realm value and every plan and rule scopes by it; (2) no task in the graph owns the Workspace module's tables, so the single-owner workspace provisioning is carried here, as the family statements of module `workspace` in the enrollment family and the minimal workspace model of the Identity core; (3) the enrollment row of the shared units of work (data model 00 section 6.1.1, rule su-01 in docs/architecture/data-model/00-data-model-overview.md: 'Authentication/enrollment completion and default workspace provisioning') lists Device, Entitlement and Notification, which belong to CLOUD.12/13/19 and the grant tasks, so the registered `account-enrollment` family declares Identity and Workspace as required participants and Device, Entitlement and Notification as conditional on the completion that creates a session, applies configured initial grants or notifies, and the later tasks append their own plans of the same family; (4) the module cannot reference the plan bridge, so the typed bridge from the module's statements to a plan call is the Abstractions-level port that COM.16 delivers; binding the Identity store port (IIdentityStore) to it has no owning task yet and is a follow-up for the Architecture Owner (CLOUD.12 is the first task that needs a live store and carries no COM.16 edge), and this task proves the plans against the real migrations and the shared vectors instead; (5) the plans declare the commit tail that CLOUD.04 delivered, so a CLOUD.04 artifact start edge is added (CLOUD.04 is complete, so it changes no ordering). No membership, role, invitation or seat concept is added; the structural tests that forbid it are part of this task.",
+   "notes": "First real module built on the WP-21 foundation; unlocks the rest of WP-22. Planning repair 2026-10-05: the write scope named a layout (`src/Cloud/...`) that does not exist and could not hold the plans, the family, the tests or the successor records the task needs, so it is bound to the real layout (precedents: CLOUD.03, CLOUD.06, COM.05). Decisions recorded in this repair (raised to the Architecture Owner, D-001, in the pull request): (1) a realm is deployment configuration, not a table (one D1 authority per realm, model 00 section 6.1.1; model 01 declares `realm_id` columns and no realm table), so the core model carries a realm value and every plan and rule scopes by it; (2) no task in the graph owns the Workspace module's tables, so the single-owner workspace provisioning is carried here, as the family statements of module `workspace` in the enrollment family and the minimal workspace model of the Identity core; (3) the enrollment row of the shared units of work (data model 00 section 6.1.1, rule su-01 in docs/architecture/data-model/00-data-model-overview.md: 'Authentication/enrollment completion and default workspace provisioning') lists Device, Entitlement and Notification, which belong to CLOUD.12/13/19 and the grant tasks, so the registered `account-enrollment` family declares Identity and Workspace as required participants and Device, Entitlement and Notification as conditional on the completion that creates a session, applies configured initial grants or notifies, and the later tasks append their own plans of the same family; (4) the module cannot reference the plan bridge, so the typed bridge from the module's statements to a plan call is the Abstractions-level port that COM.16 delivers; binding the Identity store port (IIdentityStore) to it, the production identifier source and the receipt reused-identifier mapping are owned by CLOUD.72 (planning repair 2026-10-05, after this task completed without a production store; CLOUD.12 starts after CLOUD.72), and this task proves the plans against the real migrations and the shared vectors instead; (5) the plans declare the commit tail that CLOUD.04 delivered, so a CLOUD.04 artifact start edge is added (CLOUD.04 is complete, so it changes no ordering). No membership, role, invitation or seat concept is added; the structural tests that forbid it are part of this task.",
    "complete": []
   },
   {
@@ -15348,6 +15348,12 @@
      "task": "CLOUD.11",
      "need": "the core identity/authIdentity model to attach auth methods to",
      "why": "authentication ceremonies operate on the AuthIdentity/User records CLOUD.11 defines"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.72",
+     "need": "the production Identity store and identifier source over the plan-execution port, including the account-enrollment family call and the replay mapping",
+     "why": "CLOUD.12 is the first task that needs a live Identity store (a passkey or email completion enrolls or signs in a real user); CLOUD.11 delivered the core without one, and a real-provider acceptance cannot run against an unbound store"
     }
    ],
    "external": [
@@ -15366,7 +15372,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: no auth ceremonies or mail adapters exist"
    },
-   "notes": "Must-be-real-early per implementation-sequence §3 ('Identity, refresh/session contention and real email delivery/recovery at WP22' is explicitly listed as Must be real early, not Push-until-later). Keep this must-be-real-early placement; do not move it later.",
+   "notes": "Must-be-real-early per implementation-sequence §3 ('Identity, refresh/session contention and real email delivery/recovery at WP22' is explicitly listed as Must be real early, not Push-until-later). Keep this must-be-real-early placement; do not move it later. Planning repair 2026-10-05: starts after CLOUD.72, which binds the Identity store and identifier source to the plan-execution port; this task binds its own Auth and Notification stores the same way. Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one. The write scope above still names the nonexistent `src/Cloud/...` layout; its claimant binds it to the real layout (precedents: CLOUD.03, CLOUD.06, CLOUD.11).",
    "complete": []
   },
   {
@@ -15398,6 +15404,12 @@
      "task": "CLOUD.06",
      "need": "the shared atomic family engine, since device revocation is a named shared-transaction family",
      "why": "cascading revocation across sessions/registrations is guarded, not a plain cascade delete"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.72",
+     "need": "the Abstractions family port and the Identity production store, to execute the account-enrollment and device-revocation families and bind the Device store over the plan-execution port",
+     "why": "device revocation and the Device participant of enrollment are shared-transaction families that run through the family port CLOUD.72 adds; the Device store is this task's own binding of the plan-execution port"
     }
    ],
    "writes": [
@@ -15419,7 +15431,8 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: none exists"
    },
-   "complete": []
+   "complete": [],
+   "notes": "Planning repair 2026-10-05: starts after CLOUD.72 (the family port and the plan-execution port it builds on). Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one. The write scope above still names the nonexistent `src/Cloud/...` layout; its claimant binds it to the real layout."
   },
   {
    "id": "CLOUD.14",
@@ -15523,6 +15536,12 @@
      "task": "CLOUD.11",
      "need": "the core identity model a token belongs to",
      "why": "a PAT is issued to a user/workspace"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the generic plan-execution port, to bind the token store to D1",
+     "why": "hash-only token storage is a live store of this module; a module reaches D1 only through the Abstractions plan-execution port that COM.16 delivers"
     }
    ],
    "complete": [
@@ -15541,7 +15560,8 @@
    "baseline": {
     "state": "not-started",
     "notes": "Observed none, unreviewed: none exists"
-   }
+   },
+   "notes": "Planning repair 2026-10-05: starts after COM.16 (the plan-execution port). Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one. The write scope above still names the nonexistent `src/Cloud/...` layout; its claimant binds it to the real layout."
   },
   {
    "id": "CLOUD.17",
@@ -15789,6 +15809,12 @@
      "task": "CLOUD.19",
      "need": "final candidate",
      "why": "closure requires every preceding WP-22 substep"
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.72",
+     "need": "the production Identity store and identifier source over the plan-execution port",
+     "why": "closure of WP-22 requires every task mapped to WP-22.00, and the real identity implementation it wires end to end needs a bound store"
     }
    ],
    "writes": [
@@ -16740,7 +16766,7 @@
     "notes": "Observed none, unreviewed: none exists"
    },
    "earlyRiskProof": true,
-   "notes": "Early risk proof: this is the two-writer D1 guarded-batch algorithm underlying PG-17. Proving it under contention before WP-25.03-07 build on top avoids invalidating that downstream work. PG-17 explicitly 'consumes the publisher from package 21' (CLOUD.04/CLOUD.06) -- this task is where that consumption happens for Sync specifically, together with the real Sync owner transaction.",
+   "notes": "Early risk proof: this is the two-writer D1 guarded-batch algorithm underlying PG-17. Proving it under contention before WP-25.03-07 build on top avoids invalidating that downstream work. PG-17 explicitly 'consumes the publisher from package 21' (CLOUD.04/CLOUD.06) -- this task is where that consumption happens for Sync specifically, together with the real Sync owner transaction. Planning repair 2026-10-05: Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one.",
    "complete": [
     {
      "type": "integration",
@@ -16888,7 +16914,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: none exists; only the WP-06 minimal R2 transport probe exists upstream (the native and runtime-proof lanes, not this repo)"
    },
-   "notes": "Must-be-real-early per implementation-sequence §3 ('Object storage adapters' may be mocked only at the schema/protocol layer -- 'Upload interruption, hashing, resumption and quota' must be real). Keep this must-be-real-early placement; do not defer real R2 behind fixture evidence.",
+   "notes": "Must-be-real-early per implementation-sequence §3 ('Object storage adapters' may be mocked only at the schema/protocol layer -- 'Upload interruption, hashing, resumption and quota' must be real). Keep this must-be-real-early placement; do not defer real R2 behind fixture evidence. Planning repair 2026-10-05: Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one.",
    "complete": []
   },
   {
@@ -17458,7 +17484,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: none exists"
    },
-   "notes": "POSSIBLE DESIGN OVERLAP with CLOUD.43 (WP-25.06 realm-transfer workflow) -- see that task's notes.",
+   "notes": "POSSIBLE DESIGN OVERLAP with CLOUD.43 (WP-25.06 realm-transfer workflow) -- see that task's notes. Planning repair 2026-10-05: Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one.",
    "complete": []
   },
   {
@@ -18042,6 +18068,78 @@
     "state": "not-started",
     "notes": "Planning repair 2026-10-05: the proof Worker (arcforges-cloud-proof) serves /api, /session/v1 and /proof/v1 only; wrangler.json has no assets binding."
    }
+  },
+  {
+   "id": "CLOUD.72",
+   "title": "Identity production store, identifier source and enrollment family call over the plan-execution port",
+   "lane": "cloud",
+   "repo": "Cloud",
+   "kind": "service",
+   "size": "M",
+   "obligations": [
+    {
+     "ref": "WP-22.00",
+     "part": "the production persistence and identifier binding of the core identity model: the production IIdentityStore written against the Abstractions plan-execution port (the named identity plans and the enrollment family call), the production IIdentityIdSource with unpredictable collision-safe identifiers, and the mapping of the receipt's replay and reused-identifier outcomes to the service result (a replayed enrollment answers CreatedUser=false, a reused command identifier with different content is refused); the model, rules, service, plans and family stay with CLOUD.11"
+    }
+   ],
+   "outcome": "The Identity module has a production store and identifier source, so its service can be resolved and served. IIdentityStore is implemented by one internal D1 store under the Identity project's own Persistence folder, written only against the Abstractions plan-execution port that COM.16 delivered (named identity plans with exact typed values; no SQL, no table name, no reference to the plan bridge); its commit variants call the named identity plans and the enrollment call executes the registered family `account-enrollment` (plan `families.account-enrollment.create-user`) through a generic family-execution port that this task adds to ArcForges.Cloud.Modules.Abstractions (outside the Identity folder, so every later family participant reuses it) and a Storage.D1 adapter that implements it over the existing shared-family engine, refusing a family or a statement contribution the calling module may not make. IIdentityIdSource is implemented with identifiers from the platform's cryptographic random generator in the canonical lower-case UUID form, so a user, credential or workspace identifier is unpredictable, and a collision is never an overwrite (the primary keys and the revision-zero guards refuse it as a whole-batch precondition and the commit retries with fresh identifiers). The receipt reused-identifier mapping that CLOUD.11 deferred is delivered: a repeated enrollment command with the same content is answered from its receipt as a replay (the service returns CreatedUser=false and the existing user, credential and workspace), a command identifier reused with different content is refused as an identifier conflict, an expired receipt is never executed as a new command, and an unknown outcome is retried only as the same command; the other plan statuses map to the service's typed refusals. The Identity service is registered by composition and resolves. No new plan, table or migration is added.",
+   "provides": [
+    "identity-production-store",
+    "module-family-port"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "CLOUD.11",
+     "need": "the core identity model, the IIdentityStore and IIdentityIdSource ports, the identity plans and the account-enrollment family with their argument builders",
+     "why": "this task binds exactly the ports and statements CLOUD.11 defined and tested against the real migrations; nothing of the model or rules is redefined here"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "the generic plan-execution port in the Abstractions project and the Storage.D1 ModuleBinding adapter that implements it over the signed Worker executor",
+     "why": "a module reaches D1 only through that port; the Identity store is written against it and the family port is added beside it"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.06",
+     "need": "the shared-family engine (FamilyUnitOfWork, FamilyExecutor, the closed family registry and the fixed SU-04 lock order)",
+     "why": "the enrollment call is executed by the existing engine, not by a second execution path"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.04",
+     "need": "the owner receipt store, the commit tail and the replay and reused-identifier outcomes",
+     "why": "the replay and reused-identifier mapping reads the command receipt the commit tail writes"
+    }
+   ],
+   "shared": [
+    {
+     "resource": "RES-cloud-host-composition",
+     "mode": "append"
+    }
+   ],
+   "writes": [
+    "Cloud:src/ArcForges.Cloud.Modules.Identity/Persistence/** (new, internal: the D1 IIdentityStore over IModulePlanPort and the account-enrollment family port, the row codecs from the plans' typed rows to the Core records, and the cryptographically random IIdentityIdSource; no SQL text, no table name, no reference to Storage.D1)",
+    "Cloud:src/ArcForges.Cloud.Modules.Identity/IdentityModule.cs and Cloud:src/ArcForges.Cloud.Modules.Identity/Core/** (only the Register entry that binds the store and the identifier source with the plan port created for the module's own descriptor, and the minimal Application and Infrastructure edits the replay and reused-identifier mapping needs: the commit outcome gains the replayed and identifier-conflict results, the service answers a replayed enrollment with CreatedUser=false, and the statement builders hand their typed values to the ports; the model, the rules and the plans of CLOUD.11 are unchanged)",
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Families/** (new and public: the generic family-execution port, a registered family id with the calling module's typed statement contributions by module, class and stable key plus the commit tail in, a typed status out that reuses the plan-execution port's status vocabulary; built from primitives only, referencing no module and no storage type; the plan-execution port of COM.16 under Abstractions/Storage/** is unchanged)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/FamilyBinding/** (new folder owned by this task, no overlap with the ModuleBinding folder of COM.16 or the SharedFamilies folder of CLOUD.06: the adapter that implements the Abstractions family port over FamilyUnitOfWork and FamilyExecutor, checks that the calling module is a participant of the family and contributes only statements of its own module, with one explicit reviewed exception: the enrollment initiator also contributes the `workspace` statements, because no Workspace module project exists and CLOUD.11 carries the single-owner workspace provisioning, and maps the executor and receipt outcomes to the typed statuses)",
+    "Cloud:src/ArcForges.Cloud/Composition/HostModules.cs (only the append that binds the Storage.D1 FamilyBinding adapter to the Abstractions family port, beside the COM.16 binding of the plan-execution port; RES-cloud-host-composition)",
+    "Cloud:src/**/packages.lock.json and Cloud:tests/**/packages.lock.json (only project-reference entries, if the new files need any; no package coordinate or integrity value changes)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Identity/** and Cloud:tests/ArcForges.Cloud.Tests/Families/** and Cloud:tests/ArchitectureTests/** (new files and only the minimal edits of the CLOUD.11 tests that the new commit outcomes require: store tests through the plan-port fakes and the SQLite-oracle bridge that COM.16 added, identifier source tests, the replay, reused-identifier, expired and unknown-outcome mapping, family port contract tests, and architecture tests that Identity references only Abstractions and that the Abstractions project still references no module)",
+    "Cloud:tests/worker/identity-store-*.test.ts and Cloud:tests/worker/support/identity-store-*.ts (new files only: the production store and the enrollment family call on the real migrations through the SQLite oracle) and Cloud:eng/verification/d1-identity-local.ts and Cloud:package.json (only the extension of the existing opt-in local workerd run and the new test files in the test list; never CI)",
+    "Cloud:eng/policy/dependency-policy.json and Cloud:eng/policy/dependency-reviews/cloud-72-*.json (new immutable successor chained from the then-active receipt, only because hash-bound project and release inputs change; no coordinate, integrity value or closure entry changes)",
+    "Cloud:eng/provenance/** (immutable successor release profile, Worker bundle and runtime-notice records only where an existing record binds an input this task changes, the first-party inventory files.json and the deterministic NOTICE.txt)",
+    "Cloud:docs/identity-core.md (the stated limit that no production store exists is replaced by what this task delivers), Cloud:docs/shared-families.md and Cloud:docs/storage-plans.md and Cloud:AGENTS.md (only factual pointers)"
+   ],
+   "validation": "Offline unit tests: the store against the plan-port fakes and the SQLite oracle on the real migrations (every read scoped by realm, every commit variant, a refused guard commits nothing, concurrent enrollments of one credential commit once), the enrollment call through the family port to the real family plan, identifier unpredictability and format (version 4, canonical, no repeat in a large draw, a forced collision is refused whole and retried with fresh identifiers), the replay mapping (same content replays with CreatedUser=false, different content is a conflict, an expired receipt is never executed, an unknown outcome retries only the same command), the family port contract (a non-participant, a foreign statement and an unknown family are refused before the executor) and the architecture tests; one explicit local opt-in run against workerd's D1 per docs/validation-policy.md, recorded once; no hosted runtime, live-service or browser CI (P2-017).",
+   "evidence": "Store, identifier-source, replay-mapping and family-port test results; the enrollment and concurrent-writer results on the oracle and the local workerd D1 run (recorded once, or recorded as untested); the architecture test results; source commit.",
+   "baseline": {
+    "state": "not-started",
+    "notes": "Planning repair 2026-10-05: CLOUD.11 (complete, Cloud PR 54) ships the Identity core with no production IIdentityStore or IIdentityIdSource, so the registered service cannot be resolved; COM.16 (Cloud PR 55, in review) delivers the generic plan-execution port, which refuses any plan id outside the calling module's owner, so it cannot execute the shared family plan families.account-enrollment.create-user."
+   },
+   "notes": "Planning repair 2026-10-05 (DLV-34: a new task gives work no existing scope could hold; no obligation or acceptance is removed). Design #248 decision 4 left the binding of IIdentityStore to the plan-execution port with no owner, and CLOUD.11's record lists the identifier source and the receipt reused-identifier mapping with it; nothing in the graph owned any of the three. Decisions: (1) one new small task, not an extension of CLOUD.12: CLOUD.12 is an L task whose acceptance needs external provider accounts and DNS that this binding does not, so absorbing it would hold the offline store work behind the Operations Owner, and a separate task keeps the enrollment path testable offline on the oracle and gives CLOUD.13 and later Identity tasks the same base. (2) It starts after COM.16 (the plan-execution port, delivered when merged per DLV-24) and CLOUD.11, and only CLOUD.12 and CLOUD.13 start after it (CLOUD.12 is the first live-store consumer; CLOUD.13 runs the device-revocation family and the Device participant of enrollment through the family port); CLOUD.16 gains a COM.16 edge for its own token store; CLOUD.20 completes after it. GOV.16 needs only the static metadata CLOUD.11 delivered (its edge is on CLOUD.11 and is unchanged), and no in-scope task waits for this one. (3) The COM.16 port refuses a plan whose owner is not the caller, so a shared family plan cannot pass through it; the family-execution port is therefore a new generic port in Abstractions with its own adapter folder in Storage.D1, neither of which overlaps COM.16's folders, and every later family participant (CLOUD.13, CLOUD.39, CLOUD.42, CLOUD.53, CLOUD.63) reuses it. Until the Workspace module has a project, the enrollment initiator contributes the workspace statements by one explicit adapter exception. (4) Identifiers: random version 4 UUIDs from the platform's cryptographic generator (the Entitlement store uses the same form); a replayed enrollment discards the identifiers it generated for the retry. (5) No plan, table or migration changes, so no RES-cloud-storage-plans or migration append; if the replay mapping proves to need one, that is a planning repair. Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one.",
+   "complete": []
   },
   {
    "id": "COM.01",
