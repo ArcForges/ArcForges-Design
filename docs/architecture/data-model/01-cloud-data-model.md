@@ -36,7 +36,7 @@ Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) 
 | `audit` | Audit | `audit_event`, `operator_proposal`, `operator_approval` |
 | `support` | Support | `support_case`, `access_grant` |
 | `trustsafety` | TrustSafety | `report`, `enforcement_action` |
-| `platform` | shared infrastructure | `outbox`, `inbox`, `command`, `job_lease`, `operating_budget`, `operating_reservation` |
+| `platform` | shared infrastructure | `outbox`, `inbox`, `command`, `job_lease`, `operating_budget`, `operating_reservation`, `safety_receipt`, `recovery_epoch`, and the migration bookkeeping `schema_state`, `migration_receipt`, `backfill_checkpoint` ([model 04](04-d1-execution-profile.md#migration-bookkeeping-and-modes)) |
 
 ---
 
