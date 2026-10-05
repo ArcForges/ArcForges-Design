@@ -8258,7 +8258,7 @@
    "obligations": [
     {
      "ref": "WP-12.01",
-     "part": "full"
+     "part": "the shared telemetry infrastructure and the originating edge: validated typed correlation created or accepted at the origin, propagation across the local hop kinds, causation, task/run resolution (the Cloud ingress, host, ResponseMeta/ArcError and queue-wake share is mapped to CLOUD.69)"
     }
    ],
    "outcome": "Correlation created at the originating edge or accepted from a validated client value, propagated across HTTP/queue/worker/realtime/provider calls once, in shared infrastructure; causation records which operation caused which; a user-visible task/run identifier resolves to its trace.",
@@ -8279,6 +8279,12 @@
      "task": "CLOUD.01",
      "need": "a real Cloud hop to prove the full HTTP/queue/worker/realtime/provider chain",
      "why": "the desktop side can only prove propagation up to its own local hops (RPC, in-process) until a real Cloud counterpart exists; the WP-12.90 receipt records this as a named later real-integration item."
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.69",
+     "need": "the Cloud-side correlation acceptance and propagation across ingress, host, ResponseMeta/ArcError and queue wake, observable in the isolated proof environment",
+     "why": "CLOUD.01's pipeline carries no correlation, so the connected cross-owner trace the task's acceptance names cannot be observed until CLOUD.69 delivers the Cloud hops; the follow-up then attaches the typed origin to a real generated request and records the trace (CR-01, CR-04)."
     }
    ],
    "shared": [
@@ -8301,7 +8307,8 @@
    "baseline": {
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Nothing exists."
-   }
+   },
+   "notes": "Planning repair 2026-10-05 (DLV-34, DLV-41; scope moves only; no obligation or acceptance removed). The completion edge CLOUD.01 alone could never be satisfied by an observation: CLOUD.01 delivered the ingress without any correlation handling, and no Cloud task owned it. CLOUD.69 now owns the Cloud share (HTTP, Worker, host, ResponseMeta/ArcError, queue wake). The completion follow-up, after CLOUD.01 and CLOUD.69 are complete, performs the task's own remaining acceptance as one local opt-in run (P2-017, the PLT.53 precedent): a throwaway consumer outside the repository restores only the published ArcForges.Observability and generated PublicApi packages, creates the typed origin with CorrelationPropagation.BeginOrigin, sends it in RequestMeta.correlationId to the isolated proof environment under the RES-cloud-deployment lease, and records that the identifier returns in ResponseMeta/ArcError and the wake path and that the task identifier resolves to the connected local trace. The evidence says 'every available hop kind': the realtime hop and the outbound provider hop have no Cloud producer yet, are not claimed, and are recorded as pending later owners with their closing gates (WP-12.90 staged integration): CLOUD.33 (event publication, Event.correlationId) and AIR.04 (provider request identifier, CR-05) start from the CLOUD.69 seam and keep that propagation in their own acceptance. PLT.48 write scope is unchanged."
   },
   {
    "id": "PLT.49",
@@ -14597,6 +14604,12 @@
      "task": "CLOUD.04",
      "need": "receipt/lease primitives to checkpoint job progress",
      "why": "a finite job's checkpoint/receipt/lease-then-yield cycle reuses the same guarded receipt mechanism, not a second one"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.69",
+     "need": "the Cloud-side correlation seam for wake messages and job-slice calls",
+     "why": "propagating correlation once is a Cloud seam (CR-06); this task builds on it instead of adding per-module propagation"
     }
    ],
    "writes": [
@@ -14614,7 +14627,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: no job runner exists"
    },
-   "notes": "This is the generic mechanism later background jobs plug into: WP-25.02's publisher, WP-25.06 realm-transfer jobs, WP-46 backup jobs, notification delivery retries.",
+   "notes": "This is the generic mechanism later background jobs plug into: WP-25.02's publisher, WP-25.06 realm-transfer jobs, WP-46 backup jobs, notification delivery retries. Planning repair 2026-10-05: job wake messages and job-slice calls carry correlationId and causationId through the CLOUD.69 seam; this task keeps them when it replaces the proof queue consumer (no new write scope).",
    "complete": []
   },
   {
@@ -16067,6 +16080,12 @@
      "task": "CLOUD.05",
      "need": "the finite-durable-job/Queue wake mechanism",
      "why": "wake hints are delivered via Queues using the same finite-job pattern CLOUD.05 establishes"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.69",
+     "need": "the Cloud-side correlation seam for event publication",
+     "why": "propagating correlation once is a Cloud seam (CR-06); this task builds on it instead of adding per-module propagation"
     }
    ],
    "writes": [
@@ -16084,7 +16103,8 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: none exists"
    },
-   "complete": []
+   "complete": [],
+   "notes": "Planning repair 2026-10-05: the bounded DO feed and the events it publishes carry the originating correlation (Event.correlationId, contracts 03) through the CLOUD.69 seam; this is part of this task's own acceptance and of the real realtime hop that PLT.48's correlation scenario names as a later owner (no new write scope)."
   },
   {
    "id": "CLOUD.34",
@@ -17521,6 +17541,58 @@
      "why": "the emitted notifications are persisted and delivered by the Notification owner"
     }
    ]
+  },
+  {
+   "id": "CLOUD.69",
+   "title": "Correlation acceptance and propagation across ingress, response meta and queue wake",
+   "lane": "cloud",
+   "repo": "Cloud",
+   "kind": "service",
+   "size": "M",
+   "obligations": [
+    {
+     "ref": "WP-12.01",
+     "part": "the Cloud share: acceptance of a validated client correlation value or creation at the Cloud edge, and its propagation across the HTTP ingress, Worker, host, ResponseMeta/ArcError and queue-wake hops (the shared infrastructure and the desktop origin stay with PLT.48)"
+    }
+   ],
+   "outcome": "The deployed Cloud ingress and host carry one correlation identity per call (CR-01, CR-03, CR-06, HP-06): a RequestMeta.correlationId is read, validated as a canonical lowercase UUID and bound to the call context without ever influencing authorization or the current-owner decision, an absent value is created at the edge, a malformed value is refused with the registered validation.invalid_request code, and the identity is returned in ResponseMeta.correlationId and ArcError.correlationId of every reply the host builds. The Worker and host join it to one W3C traceparent per call, and the job wake message and the private job-slice call carry correlationId and causationId (the originating request or the previous wake event), so one synthetic call is joined across HTTP, Worker, host and queue-wake by the identifier alone. The task provides the one Cloud-side seam (a call-scoped correlation context for the host and a correlation envelope for Worker-originated queue messages) that later hop owners reuse instead of re-implementing propagation per module. It adds no realtime or provider behavior and no new wire field, header or contract meaning: a need for one is raised to the Contracts owner under PA-02.",
+   "provides": [
+    "cloud-correlation-seam"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "CLOUD.01",
+     "need": "the deployed ingress and host pipeline (RpcPolicy, RequestEnvelopeReader, IngressPipeline, Worker pipeline and the wake queue consumer) in which correlation is read, bound and returned",
+     "why": "correlation propagation is a change inside the pipeline CLOUD.01 establishes and cannot be written without that real seam"
+    }
+   ],
+   "shared": [
+    {
+     "resource": "RES-cloud-deployment",
+     "mode": "append"
+    }
+   ],
+   "writes": [
+    "Cloud:worker/ingress/** (read, validate or create the correlation identity at the edge, forward it to the host with one W3C traceparent, and return it on Worker-built refusals only through fields the wire registry already defines)",
+    "Cloud:worker/foundation/queue.ts, Cloud:worker/foundation/types.ts and Cloud:worker/foundation/container-client.ts (only the job wake message correlationId/causationId metadata, its closed-key parser and its forwarding in the private job-slice call; no change to lease, fence, retry or backoff semantics)",
+    "Cloud:src/ArcForges.Cloud/Ingress/** (the existing Native AOT host project, which is the real layout of the planned Cloud.Host; RequestEnvelopeReader, Caller, RpcPolicy, IngressPipeline and the proof-only PipelineProbe replies; ADP-07 and ADP-10 forbid renaming it or adding a parallel project)",
+    "Cloud:src/ArcForges.Cloud/Foundation/JobSliceService.cs and the private job-slice request handling in Cloud:src/ArcForges.Cloud/Foundation/FoundationEndpoints.cs (only to accept the wake's correlation/causation and carry them in the call context)",
+    "Cloud:tests/ArcForges.Cloud.Tests/** and Cloud:tests/worker/**",
+    "Cloud:eng/verification/pipeline-scenarios.ts and Cloud:eng/verification/foundation-scenarios.ts (only added local cross-process and explicit opt-in deployed correlation scenarios: supplied, absent, malformed, error reply, queue wake; the deployed scenarios hold the lease leases/res-cloud-deployment for the live run only)",
+    "Cloud:package.json (the explicit test file list and the scenario scripts only; no dependency or version change)",
+    "Cloud:eng/policy/dependency-policy.json and Cloud:eng/policy/dependency-reviews/cloud-69-*.json (new immutable successor chained from the then-active receipt, only because the changed bundle, manifest and source inputs are hash-bound; no coordinate, integrity value or closure entry changes)",
+    "Cloud:eng/provenance/** (immutable successor release profile, Worker bundle and runtime-notice records only where an existing record binds an input this task changes, the first-party inventory files.json and the deterministic NOTICE.txt)",
+    "Cloud:docs/cloud-ingress.md and Cloud:AGENTS.md (factual description of correlation acceptance, the seam and what remains unobserved)"
+   ],
+   "validation": "Offline unit and cross-process tests: a valid supplied identifier is echoed in ResponseMeta and ArcError and reaches the wake message and job-slice call; an absent one is created; a malformed one is refused with validation.invalid_request before any handler or authorization decision; a supplied value never changes the authorization outcome; the Worker and host share one traceparent. Explicit local opt-in deployed scenarios against the isolated proof environment, once, under the RES-cloud-deployment lease. No hosted live, device, GUI or browser run (P2-017).",
+   "evidence": "Source commit, Worker bundle and image identity, local and deployed correlation scenario results with the untested hops named (realtime and provider are not exercised), and confirmation that no new wire field or header was introduced.",
+   "notes": "Planning repair 2026-10-05 (DLV-34: scope moves only; no obligation or acceptance is removed). PLT.48's completion follow-up found that its completion prerequisite CLOUD.01 delivers a pipeline that neither reads, validates, returns nor propagates a correlation identifier (no Cloud code or documentation handles RequestMeta.correlationId, ResponseMeta.correlationId, ArcError.correlationId or a traceparent; the wake message is a closed key set without correlation) and that no Cloud task owned CR-01, CR-03, CR-06 or HP-06 for the Cloud side. This task is that owner and is deliberately small: it uses only the fields already in wire registry 04 (RequestMeta tag 3, ResponseMeta tag 4, ArcError tag 6; the generated Contracts packages already carry them) and the existing private signed job-slice call. It does not add the realtime or provider hops: Event.correlationId is populated by the publication owners (CLOUD.33 and the stream owners) and a provider request identifier (CR-05) by the provider owners (AIR.04), each of which starts from this task's seam and keeps its own acceptance. The C# origin that makes the connected trace is not a Cloud or DesktopPlatform delivery task: PLT.48's completion follow-up performs it as one local opt-in consumer run outside the repository (the PLT.53 precedent) using the published ArcForges.Observability package to create the typed origin and the published generated PublicApi client to send it to the isolated proof environment, under the RES-cloud-deployment lease, and records the connected trace. The write scope of CLOUD.01 is not reopened. CLOUD.02 changes different files of the same host project (moved Storage and Hmac sources, module projects, composition listing); rebase after it merges, append to RES-cloud-host-composition only if a registration is needed (none is planned), and regenerate hash-bound provenance after the rebase.",
+   "complete": [],
+   "baseline": {
+    "state": "not-started",
+    "notes": "Planning repair 2026-10-05: no Cloud code or document handles correlation (CLOUD.01 delivered the ingress without it); nothing exists."
+   }
   },
   {
    "id": "COM.01",
@@ -20783,6 +20855,12 @@
      "task": "AIR.02",
      "need": "metered attempts to record interactions against",
      "why": "an interaction record without a metered attempt has nothing to redact/explain"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.69",
+     "need": "the Cloud-side correlation seam for the provider interaction record",
+     "why": "propagating correlation once is a Cloud seam (CR-06); this task builds on it instead of adding per-module propagation"
     }
    ],
    "writes": [
@@ -20794,7 +20872,8 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists."
    },
-   "complete": []
+   "complete": [],
+   "notes": "Planning repair 2026-10-05: every provider interaction record carries the call's correlation identity and the provider request identifier (CR-05) through the CLOUD.69 seam; this is part of this task's own acceptance and of the real provider hop that PLT.48's correlation scenario names as a later owner (no new write scope)."
   },
   {
    "id": "AIR.05",
