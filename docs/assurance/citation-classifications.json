@@ -1612,6 +1612,96 @@
       "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
       "reviewOwner": "w-20260927-adoc",
       "reviewed": "2026-09-27"
+    },
+    {
+      "path": "docs/architecture/08-security-architecture.md",
+      "lineSha256": "5b1c7a71801a8ab51c549934d9681535977491f6e743dc6b2ab4d1663548e623",
+      "token": "SHA-256",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "w-c20261005-dsgnfix",
+      "reviewed": "2026-10-05"
+    },
+    {
+      "path": "docs/planning/delivery/lanes/contracts.md",
+      "lineSha256": "5045dcecaca9d50c51ceec732fd7bce87350b25f5e73937951fd2a8c8c1aa9c2",
+      "token": "SHA-256",
+      "occurrences": 4,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "w-c20261005-dsgnfix",
+      "reviewed": "2026-10-05"
+    },
+    {
+      "path": "docs/planning/delivery/lanes/contracts.md",
+      "lineSha256": "51aae69bfeb4443cc6dfb4376aa71bf00bb357806edcc3566de61711f2b88771",
+      "token": "SHA-256",
+      "occurrences": 2,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "w-c20261005-dsgnfix",
+      "reviewed": "2026-10-05"
+    },
+    {
+      "path": "docs/planning/delivery/lanes/contracts.md",
+      "lineSha256": "69f4ddaf432d38b606ef3a5def4fc3bfa3e3d1d8953e018edce253f9349dc44d",
+      "token": "SHA-256",
+      "occurrences": 25,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "w-c20261005-dsgnfix",
+      "reviewed": "2026-10-05"
+    },
+    {
+      "path": "docs/planning/delivery/lanes/contracts.md",
+      "lineSha256": "6e9cfeb38dcc4239a3ac1006c58fa4aa9e9fa0ce34ab773f092d7ca17676ec79",
+      "token": "SHA-256",
+      "occurrences": 6,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "w-c20261005-dsgnfix",
+      "reviewed": "2026-10-05"
+    },
+    {
+      "path": "docs/planning/delivery/lanes/contracts.md",
+      "lineSha256": "c2b3af9d6db8f3ad9f01b811391fc05a3b89661617ae7deb077f5047f46ed6ee",
+      "token": "SHA-256",
+      "occurrences": 2,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "w-c20261005-dsgnfix",
+      "reviewed": "2026-10-05"
+    },
+    {
+      "path": "docs/planning/delivery/lanes/contracts.md",
+      "lineSha256": "f0a92a713583bc07f223aaa9d08ce055848db294e7cc1ecff3d138876dfd3d19",
+      "token": "SHA-256",
+      "occurrences": 2,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "w-c20261005-dsgnfix",
+      "reviewed": "2026-10-05"
+    },
+    {
+      "path": "docs/planning/delivery/lanes/platform.md",
+      "lineSha256": "461f3e8da061d212a8d2500e8eb6872cbcbb2b5a1503f987d4048d39e864d8b0",
+      "token": "SHA-256",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "w-c20261005-dsgnfix",
+      "reviewed": "2026-10-05"
+    },
+    {
+      "path": "docs/planning/delivery/lanes/platform.md",
+      "lineSha256": "461f3e8da061d212a8d2500e8eb6872cbcbb2b5a1503f987d4048d39e864d8b0",
+      "token": "UTF-16",
+      "occurrences": 1,
+      "kind": "standard-name",
+      "reason": "Standard algorithm, encoding, floating-point format or curve name; not an ArcForges document-scoped rule identifier.",
+      "reviewOwner": "w-c20261005-dsgnfix",
+      "reviewed": "2026-10-05"
     }
   ]
 }
