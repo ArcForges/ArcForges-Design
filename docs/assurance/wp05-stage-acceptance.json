@@ -229,7 +229,7 @@
     "owner": "DesktopPlatform integration owner (roles/integration-desktopplatform)",
     "enforcement": "verify fails SI-10 when the pin is older; refresh is manual (snapshot) and a drift comparison is local opt-in",
     "collectedOn": "2026-10-05",
-    "failureBeginsAbout": "2026-11-19",
+    "failureBeginsAbout": "2026-11-20",
     "blastRadius": "stage-integration, the aggregate ci job and the Publish NuGet main run fail for every DesktopPlatform change until the snapshot is refreshed",
     "firstFailingUtcDay": "2026-11-20"
   },
