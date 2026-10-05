@@ -14381,11 +14381,23 @@
     }
    ],
    "writes": [
-    "Cloud:src/ArcForges.Cloud.Modules.*/**",
-    "Cloud:src/ArcForges.Cloud.Storage.D1/**",
-    "Cloud:storage/plans/**"
+    "Cloud:src/ArcForges.Cloud.Modules.*/** (one project per module, named ArcForges.Cloud.Modules.<Name> for the 19 owners of the Cloud schema map, plus ArcForges.Cloud.Modules.Abstractions for the shared boundary types; the Domain, Application and Infrastructure layers are folders and namespaces inside each project, enforced by architecture tests, instead of three projects per module)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/** (new project that owns the named-plan binding mechanism; it receives, by move with namespaces preserved, the PRF.07 proof bridge now in Cloud:src/ArcForges.Cloud/Storage/** and Cloud:src/ArcForges.Cloud/Hmac/**: plan definitions, exact scalar values, executor, private request signing and the generated manifest)",
+    "Cloud:storage/plans/** (the plan root and owner registry; it receives, by move, the reviewed plans now in Cloud:src/ArcForges.Cloud/Storage/Plans/**)",
+    "Cloud:src/ArcForges.Cloud/** (the existing Native AOT host project, which is the real layout of the planned Cloud.Host; only the removal of the moved Storage and Hmac sources, the project references, the module catalog listing in Composition/HostModules.cs and the project file; no behavior change and no rename, ADP-07 and ADP-10)",
+    "Cloud:Cloud.slnx, Cloud:Dockerfile, Cloud:.dockerignore and Cloud:eng/policy/licence-boundary.json (only project membership, the restore and publish context of the new projects by the same explicit directory and *.cs rules, and the licence boundary rows; every other rule is preserved)",
+    "Cloud:tests/ArcForges.Cloud.Tests/** and Cloud:tests/worker/**",
+    "Cloud:eng/verification/storage-plans.ts (the plan root, the owner and table ownership checks and the generated C# output path; the Worker dictionary format and the manifest hash algorithm are unchanged) and Cloud:package.json (the explicit test file list only; no dependency or version change)",
+    "Cloud:tooling/dependency-policy.ts and Cloud:tooling/dependency-policy.test.ts (only to admit src/ArcForges.Cloud.Storage.D1/ as the second consumer root of the private generated CloudInternal records, which moved with the bridge; no new package, owner or coordinate), and Cloud:tooling/release-provenance.ts only if an existing check enumerates the host source root",
+    "Cloud:eng/policy/dependency-policy.json and Cloud:eng/policy/dependency-reviews/cloud-02-*.json (new immutable successor chained from the then-active receipt, only because the hash-bound project, lock and source inputs change; no coordinate, integrity value or closure entry changes)",
+    "Cloud:eng/provenance/** (immutable successor release profile, Worker bundle and runtime-notice records only where an existing record binds an input this task changes, the first-party inventory files.json and the deterministic NOTICE.txt)",
+    "Cloud:docs/storage-plans.md (new), Cloud:docs/development.md, Cloud:docs/prf-07-foundation-proof.md (path references only) and Cloud:AGENTS.md (factual description of the module projects and the plan root)"
    ],
    "shared": [
+    {
+     "resource": "RES-cloud-host-composition",
+     "mode": "append"
+    },
     {
      "resource": "RES-cloud-storage-plans",
      "mode": "append"
@@ -14395,7 +14407,7 @@
    "evidence": "architecture/import/plan-hash/wrong-container/public-access refusal test results, source commit and plan-manifest hash",
    "baseline": {
     "state": "not-started",
-    "notes": "Observed none, unreviewed: no module projects or D1 storage layer exist in the repo yet"
+    "notes": "Observed, unreviewed: PRF.07 (delivered) left a proof bridge in src/ArcForges.Cloud/Storage and src/ArcForges.Cloud/Hmac with its plans in src/ArcForges.Cloud/Storage/Plans; no module project, Storage.D1 project or storage/plans root exists yet"
    },
    "earlyRiskProof": true,
    "notes": "Foundation task and the security-model proof: if the C#-decides/Worker-executes-approved-SQL-only boundary is wrong, every module built on it inherits the defect. Every module task (Identity, Sync, Resource, etc.) in this and other areas starts against this.",
@@ -20200,9 +20212,7 @@
     }
    ],
    "writes": [
-    "Cloud:src/Modules/PackageCatalog/PackageCatalog.Domain/**",
-    "Cloud:src/Modules/PackageCatalog/PackageCatalog.Application/**",
-    "Cloud:src/Modules/PackageCatalog/PackageCatalog.Infrastructure/**"
+    "Cloud:src/ArcForges.Cloud.Modules.PackageCatalog/** (the one project of the module, CLOUD.02 layout; its Domain, Application and Infrastructure layers are folders and namespaces)"
    ],
    "shared": [
     {
