@@ -176,6 +176,7 @@ Daily budgets record completed operations against the actual dispatch day and ca
 | `rev` | `rev NN` | Profile and credential-lifecycle guard |
 
 - `IX (realm_id, state)`
+- **Realm** — a realm is deployment configuration, not a table: one D1 authority database serves one realm ([00 section 6.1.1](00-data-model-overview.md#611-shared-units-of-work)), and every identity and workspace row carries the configured `realm_id`. Identity is `(realm_id, user_id)` ([ID-10](../../requirements/02-identity-account-and-workspace.md#rule-id-10)); a lookup, a uniqueness rule and an ownership check always include the realm, so the same credential or email in another realm is a different identity ([ID-11](../../requirements/02-identity-account-and-workspace.md#rule-id-11)). The `FK →` realm of `realm_id` therefore has no physical form.
 - **Constraint** — a `deleted` user retains the row with all personal fields cleared; the identifier is never reused ([ID-05](00-data-model-overview.md#rule-id-05))
 
 ### `identity.auth_identity`
