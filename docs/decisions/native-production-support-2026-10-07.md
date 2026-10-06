@@ -1,0 +1,23 @@
+# Minimum native production support — 2026-10-07
+
+Two available production components need exact supporting scope. NAT22 owns the distinct Linux Image prerequisite/legal/tool inventory. NAT25 owns the dedicated release signing CLI. Task outcomes, prerequisites, whole acceptance, old source/legal records and published identities remain unchanged.
+
+## Linux Image prerequisite and tool boundary
+
+Pinned vcpkg36677bbd0b3bf11da7376e62e14bffcc54d2eaeb selects OpenSSL3.6.3/core and host vcpkg-cmake-get-vars2025-05-29 only on Linux x64/arm64 through minizip-ng wzaes/openssl. Windows/macOS closures and historical win-x64 r4 stay unchanged; no AES feature workaround or toolchain upgrade. OpenSSL source is e5c234b0c471a676ae6141d2f157df61eb293477; the exact original archive SHA512 is a89c08101fa1d7e3c09b14f4a90d450bcf336a4f6a3e6e4ea990e4deddcd9ce250472f9114438fd134ff4b47fe93dd47232308567088b2b1c0b2eb50e3b56bdf. The pinned OpenSSL recipe has20 files; get-vars has6, including its nested CMakeLists. Preserve complete immutable recipes and original archive.
+
+The selected compiled runtime and selected Configure templates have individually assessed Apache terms. The whole retained original source archive also includes external/perl/Text-Template-1.56 and its original18412-byte dual GPL-1.0-or-later OR Artistic-1.0 LICENSE, LF SHA2569837f05336ef3cbacb6a96e1672a0426d81ad01191f214b8d48e22ca62338181. Preserve and explicitly describe that original corresponding-source/legal aggregate; never call the entire archive Apache, prune or rewrite it. Archival original material does not grant implementation/source/template/input/output reuse or runtime linking permission. Existing prohibited copied material and generation checks remain unchanged.
+
+Introduce only a distinct closed optional externalTools inventory for noncopying external host make/Perl and actual utility execution. Capture actual executable identities, versions and SHA256, exact recipe role and full original legal evidence at the build handoff; compare with reviewed expected inputs and refuse missing/mismatched evidence. These tool implementations are not admitted generation source/template/input, linked runtime or generated output. The exact Text-Template expression GPL-1.0-or-later OR Artistic-1.0, Perl kit expression GPL-1.0-or-later OR Artistic-1.0-Perl, and make expression GPL-3.0-or-later are recognized conservatively for original legal/tool observation, with no existing decision-table weakening. Tests must reject tool-to-copied-input/output/category bypass, wrong executable/hash/version and missing legal observations. Planning version leads are not actual receipts. Ordinary source/components proceed, while available Linux builds, byte sealing and applicable CI remain mandatory for publication.
+
+NOTICE regeneration covers only the owned existing21 portable Image records, sse2neon ARM prerequisite, the two new Linux prerequisites and narrowly necessary exact original tool/legal attribution. Historical records and every unrelated notice are preserved.
+
+## Real offline release signer
+
+NAT25 supplies one nonpackable net10 SDK-only ArcForges.Native.ReleaseSigner CLI under eng/packaging, using the existing internal actual ES256 signer and self-verification. Admit only that exact internal friend, solution entry, actual project classifications/active blob, immutable input/provenance successors and focused CLI contract tests. No new package, dependency, toolchain install, public signer/loader or helper parser startup role.
+
+The CLI consumes an approved public SPKI and a real certificate-store or PEM reference; it never emits private material. Missing/foreign/unapproved credentials, invalid signature, wrong public key and cancellation refuse. Test fixtures establish component mechanisms only and cannot be production enrollment. Actual signed publication, OS trust and full native acceptance remain independently required.
+
+## Immediate Linux linkage
+
+The existing NativeLibrary.Load boundary uses lazy Linux linkage and does not establish immediate unresolved-symbol refusal. NAT25 alone implements the already root-validated helper loader through exact libdl.so.2 dlopen with RTLD_NOW|RTLD_LOCAL, dlsym, dlclose and dlerror. Admit only those four helper import-owner rows and source-generated declarations plus actual available Linux loader/error/cleanup tests. Preserve the signed closure, pinned directory/file descriptors, bounded path/export/error handling and every existing syscall/isolation gate. No arbitrary resolver, global search path, extra public API or whole-OS acceptance is admitted.
