@@ -259,7 +259,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [GOV.20](../delivery/lanes/governance.md#task-gov-20) | [WP-05.04](05-architecture-and-repository-policy-tests.md#rule-wp-05.04) (shared-engine banned-symbol scanner mechanism: an invocation through an unmanaged or managed function pointer has no managed callee symbol, so the scanner must classify it without aborting the whole scan, while every other unresolvable invocation stays fail-closed, so that all seven banned categories can be enforced on production code that makes such calls (ArcScope's Native AOT executable)) | none |
 | [GOV.21](../delivery/lanes/governance.md#task-gov-21) | [WP-05.06](05-architecture-and-repository-policy-tests.md#rule-wp-05.06) (continuing detection of specification-integrity drift on the Design main branch between design-policy pin updates: the existing design-policy checker runs in its existing preview mode against the current public Design main head on a schedule and on demand, so link, citation, superseded-name, decision-coverage, delivery-graph and citation-classification failures that accumulate after the pin are reported within one schedule interval instead of at the next pin update) | [GOV.18](../delivery/lanes/governance.md#task-gov-18) (artifact) |
 
-**Consumers outside this package:** [GOV.22](../delivery/lanes/governance.md#task-gov-22), [WEB.01](../delivery/lanes/web.md#task-web-01).
+**Consumers outside this package:** [GOV.22](../delivery/lanes/governance.md#task-gov-22), [GOV.23](../delivery/lanes/governance.md#task-gov-23), [WEB.01](../delivery/lanes/web.md#task-web-01).
 
 <!-- delivery-graph:end -->
 

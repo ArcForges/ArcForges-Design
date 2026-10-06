@@ -36,7 +36,7 @@ Tasks: 12 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Kind / size | service / M |
 | Obligations | [WP-26.00](../../work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26.00) — full |
 | Provides | application-presence-service |
-| Start prerequisites | **artifact** [CLOUD.13](cloud.md#task-cloud-13) — real device/installation/instance/session authority in D1 (not a placeholder). *Why:* the DO projects this real installation authority; Cloud repo currently has only a hello-world endpoint, no identity model<br>**artifact** [CLOUD.29](cloud.md#task-cloud-29) — real Durable-Object-backed connection/authentication substrate. *Why:* presence heartbeat/disconnect rides the same authenticated realtime connection<br>**contract** [CON.11](contracts.md#task-con-11) — published ApplicationService.List/Heartbeat/Disconnect wire definitions. *Why:* the Cloud implementation is generated-contract-first |
+| Start prerequisites | **artifact** [CLOUD.13](cloud.md#task-cloud-13) — actual D1 device/installation/session durable authority and typed instance-target authorization. *Why:* ApplicationPresenceDO owns instanceEpoch and presence in DEV.01; it projects current durable installation/session authority, without a D1 instance-presence table or dependency cycle.<br>**artifact** [CLOUD.29](cloud.md#task-cloud-29) — real Durable-Object-backed connection/authentication substrate. *Why:* presence heartbeat/disconnect rides the same authenticated realtime connection<br>**contract** [CON.11](contracts.md#task-con-11) — published ApplicationService.List/Heartbeat/Disconnect wire definitions. *Why:* the Cloud implementation is generated-contract-first |
 | Entry condition | [ADOPT.07.device-bridge](adoption.md#task-adopt-07-device-bridge) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [DEV.02](#task-dev-02), [DEV.09](#task-dev-09), [DEV.14](#task-dev-14) |
@@ -45,7 +45,7 @@ Tasks: 12 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Validation | Offline/local Worker+DO test harness only (per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017), no hosted live-service CI): expiry/renewal timers, restarted epoch, offline-without-false-availability. |
 | Completion evidence | Expiry/renewal timer test results, restarted-epoch test, per-device-row isolation proof. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: Cloud repo HEAD ce0a32a has only the ArcForges.Cloud hello-world project (BuildIdentity/HealthStatus/HelloEndpoint/Program); no Application/Presence service exists. |
-| Notes | Exact Cloud-side project path for the WP21 to WP26 service split is not yet established in-repo; glob is a reasonable placeholder pending that layout decision (the Cloud lane / WP22 to WP23 territory). |
+| Notes | Exact Cloud-side project path for the WP21 to WP26 service split is not yet established in-repo; glob is a reasonable placeholder pending that layout decision (the Cloud lane / WP22 to WP23 territory).  2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). CLOUD.13 supplies actual durable device/installation/session authority plus typed instance-target authorization. ApplicationPresenceDO instanceEpoch/presence stays DEV.01-owned, never a fictitious D1 instance-presence prerequisite or reverse cycle. |
 
 <a id="task-dev-02"></a>
 

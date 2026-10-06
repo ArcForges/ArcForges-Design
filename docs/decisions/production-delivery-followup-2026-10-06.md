@@ -38,3 +38,5 @@ Only GetSession/CreateAnnotation use the existing explicit capability adapter pr
 ## Delivery and acceptance
 
 Complete production contracts, core logic, adapters, persistence and feasible composition/component tests remain required. Actual device/provider/OS/RID/collector and whole-series acceptance stays with the named task owner and exact evidence class; mocks cannot close those gates. Work continues using retained worktrees, current claims/shared-resource protocols, immutable reviewed input successors, independent exact-head review and applicable CI/publication. This paired repair changes neither completed ledgers nor deployment state; workers.dev remains disabled and production routes/data are protected.
+
+The [narrow verified production addendum](production-delivery-addendum-2026-10-06.md) binds subsequent observed CI inventory and Config durable framing/transport prerequisites without changing this decision's completed history.

@@ -4,7 +4,7 @@
 
 Accepted freeze, reconciliation and build-governance baselines, and the per-repository architecture and policy test suites.
 
-Tasks: 21 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web · Integration owner(s): AI integration owner, ArcScope integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner, Mobile integration owner, Web integration owner
+Tasks: 22 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web · Integration owner(s): AI integration owner, ArcScope integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner, Mobile integration owner, Web integration owner
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
@@ -29,6 +29,7 @@ Tasks: 21 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | [GOV.20](#task-gov-20) | Build.Policy banned-symbol scanner: audit unmanaged function-pointer invocations instead of throwing | governance | S | [GOV.06](#task-gov-06) (artifact) | not-started |
 | [GOV.21](#task-gov-21) | Scheduled and manual policy preview of the Design main branch (post-merge drift watch) | governance | S | [GOV.14](#task-gov-14) (artifact), [GOV.18](#task-gov-18) (artifact) | not-started |
 | [GOV.22](#task-gov-22) | Cloud devtool sharp security admission successor | producer | S | [GOV.09](#task-gov-09) (artifact) | not-started |
+| [GOV.23](#task-gov-23) | Desktop CI virtualenv security admission successor | producer | S | [GOV.09](#task-gov-09) (artifact) | not-started |
 
 ## Tasks
 
@@ -212,7 +213,7 @@ Tasks: 21 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Start prerequisites | **artifact** [GOV.04](#task-gov-04) — published shared rule engine. *Why:* reuse one tested engine rather than reimplementing per repository<br>**artifact** [GOV.05](#task-gov-05) — contract/serialization policy helpers. *Why:* Cloud hosts the generated public API surface that 05.03 validates<br>**artifact** [GOV.06](#task-gov-06) — the published ArcForges.Build.Policy candidate carrying generated-source reconstruction and generated-type recognition. *Why:* Cloud uses System.Text.Json source generators throughout its AOT host; the earlier engine reconstructs generated sources incorrectly, so the host must pin the repaired candidate. |
 | Entry condition | [ADOPT.07.governance](adoption.md#task-adopt-07-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [GOV.15](#task-gov-15), [GOV.22](#task-gov-22) |
+| Unblocks | [GOV.15](#task-gov-15), [GOV.22](#task-gov-22), [GOV.23](#task-gov-23) |
 | Write scope | `Cloud:tests/ArchitectureTests/**`<br>`Cloud:eng/policy/exceptions.json`<br>`Cloud:Cloud.slnx (add the new host project only)`<br>`Cloud:Directory.Packages.props (the exact ArcForges.Build.Policy pin moved to the published GOV.06 candidate; no other coordinate, runtime or version change)`<br>`Cloud:tests/ArchitectureTests/packages.lock.json`<br>`Cloud:src/ArcForges.Cloud/packages.lock.json, Cloud:tests/ArcForges.Cloud.Tests/packages.lock.json, Cloud:tests/ArcForges.Cloud.Consumer/packages.lock.json (regenerated only for the central pin change)`<br>`Cloud:eng/policy/dependency-policy.json`<br>`Cloud:eng/policy/dependency-reviews/gov-09-*.json (new immutable successor chained from the then-active receipt)`<br>`Cloud:eng/policy/licence-boundary.json (the host project row)`<br>`Cloud:eng/provenance/files.json`<br>`Cloud:eng/provenance/records/gov-09-*.json (new immutable successors only where an existing record binds an input this task changes)`<br>`Cloud:eng/policy/naming-candidate.json (exact published @arcforges/proto naming-tool identity and asset hashes, as in Web)`<br>`Cloud:tooling/project.ts (wire the forbidden-term scan into the existing check gate only)`<br>`Cloud:package.json (a policy script and the exact already-locked @arcforges/proto devDependency; no version change)`<br>`Cloud:package-lock.json (reflect that manifest change only)`<br>`Cloud:.github/workflows/ci.yml (wire the host build and policy run into the existing pull-request job; no new platform, scheduled or manual workflow, no weakened or removed check)` |
 | Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline unit tests, negative fixtures, PR CI; per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) (Cloud's real AOT publish proof is WP06/WP21, not claimed here). |
@@ -530,3 +531,27 @@ Tasks: 21 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Completion evidence | Exact advisory/patched coordinate, independent source/admission review, applicable latest-head CI and normal deployment receipt. |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | The advisory was published2026-10-06; current Wrangler4.147.0 still pins vulnerable sharp through Miniflare. Earlier green CI predates disclosure. This is a necessary diagnosed CI/security prerequisite, not optional upgrade churn. |
+
+<a id="task-gov-23"></a>
+
+### GOV.23 — Desktop CI virtualenv security admission successor
+
+**Outcome.** Adopt preserved Dependabot PR116 exact virtualenv21.5.1-to-21.7.13 hash-pinned CI patch for high GHSA-p58f-9548-mpm2, with actual Python transitive/licence closure and immutable reviewed input/provenance successors; retain all existing security and release gates.
+
+| Field | Value |
+|---|---|
+| Owning repository | DesktopPlatform (`C:\MyFile\Projects\ArcForges\DesktopPlatform`); integration owner: DesktopPlatform integration owner, the holder of `roles/integration-desktopplatform` |
+| Claim, branch and ledger | `claims/gov-23` and ledger record `ledger/tasks/gov-23.md` in the Plan repository; task branch `task/gov-23` ([DLV-26](../README.md#rule-dlv-26)) |
+| Kind / size | producer / S |
+| Obligations | [WP-02.05](../../work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.05) — minimum current DesktopPlatform CI Python security dependency admission; exact virtualenv patched closure only |
+| Provides | desktop-ci-python-security-closure |
+| Start prerequisites | **artifact** [GOV.09](#task-gov-09) — actual completed shared policy/dependency audit and immutable admission mechanism. *Why:* Preserve current required audit/admission process while patching diagnosed CI dependency vulnerability. |
+| Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Completion prerequisites | none |
+| Unblocks | none |
+| Write scope | `DesktopPlatform:eng/requirements-ci.txt (only exact virtualenv21.7.13 pin and verified distribution hashes from preserved PR116)`<br>`DesktopPlatform:eng/policy/dependency-policy.json (only actual affected Python closure/licence/input bindings)`<br>`DesktopPlatform:eng/policy/dependency-reviews/gov-23-*.json (new immutable reviewed successors)`<br>`DesktopPlatform:eng/provenance/files.json (owned input binding only)`<br>`DesktopPlatform:eng/provenance/records/gov-23-*.json (new immutable owned successors only)`<br>`DesktopPlatform:eng/provenance/NOTICE.txt (regenerate only if actual affected legal closure requires)`<br>`DesktopPlatform:eng/test_dependency_policy.py (focused affected Python admission/closure negatives only)`<br>`DesktopPlatform:docs/ci-python-security-2026-10-06.md` |
+| Shared resources | [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append), [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append), [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append) |
+| Validation | Actual hash-pinned affected Python closure/licence admission and focused negative tests; independent exact-head review and all applicable retained latest-head CI. No security suppression or generalized toolchain upgrade. |
+| Completion evidence | Exact reviewed advisory/patched coordinate, preserved PR116 source and actual immutable admission/provenance receipts; passing current CI and normal publication prerequisites. |
+| Baseline (unreviewed unless accepted) | not-started |
+| Notes | 2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). Observed DesktopPlatform requirements-ci21.5.1 vulnerable; existing Dependabot PR116 head57801a0e67799b6d695f0bdc2428e5ec31f09341 already contains exact pin/hash patch. Root owns source/admission adoption in retained worktree and integration. Preserve existing work/history and unrelated versions; do not mark new producer inherited complete. This is a necessary diagnosed release CI security prerequisite, not optional upgrade churn. |
