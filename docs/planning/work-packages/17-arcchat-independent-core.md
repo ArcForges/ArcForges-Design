@@ -138,7 +138,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 
 | Delivery task | Satisfies | Start prerequisites outside this package |
 |---|---|---|
-| [AST.10](../delivery/lanes/assistant.md#task-ast-10) | [WP-17.00](17-arcchat-independent-core.md#rule-wp-17.00) (full) | [EXE.01](../delivery/lanes/execution.md#task-exe-01) (artifact), [AST.01](../delivery/lanes/assistant.md#task-ast-01) (artifact), [AST.02](../delivery/lanes/assistant.md#task-ast-02) (artifact), [AST.04](../delivery/lanes/assistant.md#task-ast-04) (artifact), [AST.05](../delivery/lanes/assistant.md#task-ast-05) (artifact), [AST.06](../delivery/lanes/assistant.md#task-ast-06) (artifact), [AST.07](../delivery/lanes/assistant.md#task-ast-07) (artifact) |
+| [AST.10](../delivery/lanes/assistant.md#task-ast-10) | [WP-17.00](17-arcchat-independent-core.md#rule-wp-17.00) (full) | [APP.01](../delivery/lanes/app-composition.md#task-app-01) (artifact), [PLT.59](../delivery/lanes/platform.md#task-plt-59) (artifact) |
 | [AST.11](../delivery/lanes/assistant.md#task-ast-11) | [WP-17.01](17-arcchat-independent-core.md#rule-wp-17.01) (full) | [CON.10](../delivery/lanes/contracts.md#task-con-10) (contract), [PRF.05](../delivery/lanes/runtime-proofs.md#task-prf-05) (artifact), [AST.01](../delivery/lanes/assistant.md#task-ast-01) (artifact) |
 | [AST.12](../delivery/lanes/assistant.md#task-ast-12) | [WP-17.02](17-arcchat-independent-core.md#rule-wp-17.02) (full) | [APP.05](../delivery/lanes/app-composition.md#task-app-05) (artifact), [PLT.39](../delivery/lanes/platform.md#task-plt-39) (artifact) |
 | [AST.13](../delivery/lanes/assistant.md#task-ast-13) | [WP-17.03](17-arcchat-independent-core.md#rule-wp-17.03) (full) | [EXE.01](../delivery/lanes/execution.md#task-exe-01) (artifact), [EXE.05](../delivery/lanes/execution.md#task-exe-05) (artifact) |
@@ -148,7 +148,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [AST.17](../delivery/lanes/assistant.md#task-ast-17) | [WP-17.07](17-arcchat-independent-core.md#rule-wp-17.07) (full) | none |
 | [AST.18](../delivery/lanes/assistant.md#task-ast-18) | [WP-17.90](17-arcchat-independent-core.md#rule-wp-17.90) (full) | none |
 
-**Consumers outside this package:** [AIR.08](../delivery/lanes/ai-routing.md#task-air-08), [AST.19](../delivery/lanes/assistant.md#task-ast-19), [AST.20](../delivery/lanes/assistant.md#task-ast-20), [AST.22](../delivery/lanes/assistant.md#task-ast-22), [DEV.03](../delivery/lanes/device-bridge.md#task-dev-03), [DEV.14](../delivery/lanes/device-bridge.md#task-dev-14), [HAR.03](../delivery/lanes/harness.md#task-har-03), [HAR.05](../delivery/lanes/harness.md#task-har-05), [SCOPE.20](../delivery/lanes/arcscope.md#task-scope-20), [SCOPE.21](../delivery/lanes/arcscope.md#task-scope-21).
+**Consumers outside this package:** [AIR.08](../delivery/lanes/ai-routing.md#task-air-08), [APP.03](../delivery/lanes/app-composition.md#task-app-03), [AST.19](../delivery/lanes/assistant.md#task-ast-19), [AST.20](../delivery/lanes/assistant.md#task-ast-20), [AST.22](../delivery/lanes/assistant.md#task-ast-22), [DEV.03](../delivery/lanes/device-bridge.md#task-dev-03), [DEV.14](../delivery/lanes/device-bridge.md#task-dev-14), [HAR.03](../delivery/lanes/harness.md#task-har-03), [HAR.05](../delivery/lanes/harness.md#task-har-05), [SCOPE.20](../delivery/lanes/arcscope.md#task-scope-20), [SCOPE.21](../delivery/lanes/arcscope.md#task-scope-21).
 
 <!-- delivery-graph:end -->
 

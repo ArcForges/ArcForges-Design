@@ -6248,7 +6248,12 @@
     "DesktopPlatform:Directory.Packages.props (exact published Contracts.LocalRpc.Platform324 and Foundation324 selectors for BOTH LocalRpc and LocalRpc.Tests only, coordinate shared pins)",
     "DesktopPlatform:eng/packaging/packages.json (LocalRpc actual Platform324 and CPM-generated Foundation324 resolved nuspec dependencies only)",
     "DesktopPlatform:src/BuildingBlocks/ArcForges.LocalRpc/**/packages.lock.json (regenerate actual owned closure only)",
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.LocalRpc/Tests/packages.lock.json (regenerate affected generated Bootstrap adapter test closure only)"
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.LocalRpc/Tests/packages.lock.json (regenerate affected generated Bootstrap adapter test closure only)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox.Broker/packages.lock.json (regenerate only actual project-reference LocalRpc Foundation324 dependency metadata; no coordinate upgrade or source change, coordinate NAT25/NI lock appends)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox.Contracts/packages.lock.json (regenerate only actual project-reference LocalRpc Foundation324 dependency metadata; no coordinate upgrade or source change, coordinate NAT25/NI lock appends)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/packages.lock.json (regenerate only actual project-reference LocalRpc Foundation324 dependency metadata; no coordinate upgrade or source change, coordinate NAT25/NI lock appends)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Tests/packages.lock.json (regenerate only actual project-reference LocalRpc Foundation324 dependency metadata; no coordinate upgrade or source change, coordinate NAT25/NI lock appends)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Fixture/packages.lock.json (regenerate only actual project-reference LocalRpc Foundation324 dependency metadata; no coordinate upgrade or source change, coordinate NAT25/NI lock appends)"
    ],
    "validation": "Offline/local tests: expired/stale child cannot call, parent restart requires fresh grants.",
    "evidence": "Expired/stale child cannot call; parent restart requires fresh grants.",
@@ -6257,7 +6262,7 @@
     "notes": "Observed scaffold, unreviewed: Nothing exists."
    },
    "complete": [],
-   "notes": "\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Completion follow-ups implement/compose the actual generated LocalBootstrap helper adapter and lifecycle against existing LocalRpc, not merely state-machine fixtures. PLT.11 owns the missing service adapter and parent connection wiring; PRF.04 owns real AOT probe composition. Full unavailable-OS acceptance stays explicit; no sibling product RPC or shared application hub is introduced.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Actual generated LocalBootstrap Platform324 contract admission, central selector/catalogue dependency and owned regenerated locks are required to compile the existing real parent lifecycle adapter. Preserve Broker adapter and public semantics; no duplicate implementation. Coordinate source/pin/input appends with Observability/PLT59 integrator. Managed activation can publish independently first, then exact LocalRpc producer successor. Exact Platform324 selector applies to BOTH LocalRpc and LocalRpc.Tests existing direct references; retain Google/Framework third-party closure and append actual nuspec dependency. Leaving testPlatform216 would NU1605, no downgrade suppression. Actual test project is src/BuildingBlocks/ArcForges.LocalRpc/Tests/ArcForges.LocalRpc.Tests.csproj. Exact Platform324 AND Foundation324 central selectors bind BOTH library and test projects; CentralPackageTransitivePinningEnabled may emit Foundation324 as a direct nuspec dependency, so catalogue admits only that observed compatible closure. No wider version relaxation.",
+   "notes": "\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Completion follow-ups implement/compose the actual generated LocalBootstrap helper adapter and lifecycle against existing LocalRpc, not merely state-machine fixtures. PLT.11 owns the missing service adapter and parent connection wiring; PRF.04 owns real AOT probe composition. Full unavailable-OS acceptance stays explicit; no sibling product RPC or shared application hub is introduced.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Actual generated LocalBootstrap Platform324 contract admission, central selector/catalogue dependency and owned regenerated locks are required to compile the existing real parent lifecycle adapter. Preserve Broker adapter and public semantics; no duplicate implementation. Coordinate source/pin/input appends with Observability/PLT59 integrator. Managed activation can publish independently first, then exact LocalRpc producer successor. Exact Platform324 selector applies to BOTH LocalRpc and LocalRpc.Tests existing direct references; retain Google/Framework third-party closure and append actual nuspec dependency. Leaving testPlatform216 would NU1605, no downgrade suppression. Actual test project is src/BuildingBlocks/ArcForges.LocalRpc/Tests/ArcForges.LocalRpc.Tests.csproj. Exact Platform324 AND Foundation324 central selectors bind BOTH library and test projects; CentralPackageTransitivePinningEnabled may emit Foundation324 as a direct nuspec dependency, so catalogue admits only that observed compatible closure. No wider version relaxation.\n\n2026-10-06 assistant runtime/UI producer repair (docs/decisions/assistant-runtime-and-ui-producers-2026-10-06.md). Actual LocalRpc direct Foundation324 requirement changes five existing helper project-reference lock dependency records. Admit exact five downstream lock regenerations only, preserving coordinate/version/source/catalogue and locked-mode negatives. Coordinate one append/rebase with native/helper owners; never suppress NU1004 or invent a dependency upgrade.",
    "shared": [
     {
      "resource": "RES-desktopplatform-build-config",
@@ -10428,7 +10433,8 @@
     "ArcScope:eng/policy/dependency-policy.json (bind exact actual owned consumer closure/input successors; no feed/hash/version/gate relaxation)",
     "ArcScope:eng/provenance/** (only owned immutable APP03 tools/package/legal input successors and exact inventory/NOTICE bindings; preserve history)",
     "ArcScope:eng/ArcForges.Repository/DependencyPolicy.cs (append ONLY exact verified DesktopPlatform publishers/licences for actual Assistant.Core and Assistant.Persistence.Sqlite, and exact Contracts Events/Validation producer identities when actually consumed)",
-    "ArcScope:tests/ArcForges.ArcScope.Tests/DependencyPolicyTests.cs (only exact newly consumed producer identity/licence acceptance plus foreign/adjacent-name negatives)"
+    "ArcScope:tests/ArcForges.ArcScope.Tests/DependencyPolicyTests.cs (only exact newly consumed producer identity/licence acceptance plus foreign/adjacent-name negatives)",
+    "ArcScope:eng/ArcForges.Repository/DependencyPolicy.cs and tests/ArcForges.ArcScope.Tests/DependencyPolicyTests.cs (append only exact actual Assistant.Avalonia DesktopPlatform publisher/licence identity and focused foreign/adjacent/wrong-licence negatives; no wildcard/feed/hash/version weakening)"
    ],
    "validation": "Native AOT publish/run in CI (package-only restore), offline command/cancel/result tests; no installed-package or public-release install/upgrade CI per P2-017.",
    "evidence": "AOT publish log, package hash manifest, command/cancel/result and owner-refusal test results.",
@@ -10437,7 +10443,7 @@
     "notes": "Observed scaffold, unreviewed: the ArcScope host project (ArcForges.ArcScope) exists only as a hello-world Avalonia bootstrap; no host-port composition yet."
    },
    "earlyRiskProof": true,
-   "notes": "Narrow early-risk proof: first real evidence that the whole Assistant.Abstractions/host-port composition model survives Native AOT package-only consumption for an actual product. Failure here invalidates the composition model assumed by WP15 to WP17.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Owns the actual base Avalonia product shell, shared reusable assistant UI/host/lifecycle integration, menu/focus/state/RTL adapters, real security/audit/lease/observability composition and clean AOT consumer. Product-owned services may be existing own Core/Domain project references; package-only applies to external Platform/Contracts producers, not a nonexistent product-service package. No sibling product RPC/hub, second assistant executable or removal of shared AI capabilities. Native/device/manual assistive/reference-hardware checks remain distinct acceptance; component implementation, tests and feasible local runs continue.\n\n2026-10-06 guarded production follow-up (docs/decisions/guarded-production-followup-2026-10-06.md). Actual product composition consumes published exact Assistant.Abstractions, Desktop.Shell, Observability and Observability.Desktop packages and their approved licences; append only these exact publisher identities, plus Security.Secrets only for actual host use. Preserve all foreign publisher/adjacent name/wrong licence/hash/feed/version negatives and immutable closure receipts; no wildcard publisher or general allowance. Shared assistant remains a separate trusted actor-bound endpoint with real current lease/task/revocation and actor-bound audit, never a human fallback.\n\nGuarded follow-up ordering: GOV.07 is the actual existing ArcScope policy-host/tools-receipt producer; its artifact precedes these exact owned policy successor appends. No unrelated policy inputs or history may be replaced.\n\n2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md). Compose the actual shared AST01 factory/history/turn services with existing AssistantHost and UI, preserving one shared assistant and its real provider/tool capabilities. Use a distinct trusted Agent endpoint with real current lease/approval and actor-bound recorder. Product-private conversations, fake history/model dispatch and local-human fallback do not satisfy this composition. Actual profile/account/call-invoker adapters remain owner-bound; current missing remote authorization refuses explicitly while component implementation continues.",
+   "notes": "Narrow early-risk proof: first real evidence that the whole Assistant.Abstractions/host-port composition model survives Native AOT package-only consumption for an actual product. Failure here invalidates the composition model assumed by WP15 to WP17.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Owns the actual base Avalonia product shell, shared reusable assistant UI/host/lifecycle integration, menu/focus/state/RTL adapters, real security/audit/lease/observability composition and clean AOT consumer. Product-owned services may be existing own Core/Domain project references; package-only applies to external Platform/Contracts producers, not a nonexistent product-service package. No sibling product RPC/hub, second assistant executable or removal of shared AI capabilities. Native/device/manual assistive/reference-hardware checks remain distinct acceptance; component implementation, tests and feasible local runs continue.\n\n2026-10-06 guarded production follow-up (docs/decisions/guarded-production-followup-2026-10-06.md). Actual product composition consumes published exact Assistant.Abstractions, Desktop.Shell, Observability and Observability.Desktop packages and their approved licences; append only these exact publisher identities, plus Security.Secrets only for actual host use. Preserve all foreign publisher/adjacent name/wrong licence/hash/feed/version negatives and immutable closure receipts; no wildcard publisher or general allowance. Shared assistant remains a separate trusted actor-bound endpoint with real current lease/task/revocation and actor-bound audit, never a human fallback.\n\nGuarded follow-up ordering: GOV.07 is the actual existing ArcScope policy-host/tools-receipt producer; its artifact precedes these exact owned policy successor appends. No unrelated policy inputs or history may be replaced.\n\n2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md). Compose the actual shared AST01 factory/history/turn services with existing AssistantHost and UI, preserving one shared assistant and its real provider/tool capabilities. Use a distinct trusted Agent endpoint with real current lease/approval and actor-bound recorder. Product-private conversations, fake history/model dispatch and local-human fallback do not satisfy this composition. Actual profile/account/call-invoker adapters remain owner-bound; current missing remote authorization refuses explicitly while component implementation continues.\n\n2026-10-06 assistant runtime/UI producer repair (docs/decisions/assistant-runtime-and-ui-producers-2026-10-06.md). Consume actual published Assistant.Avalonia alongside the real shared Core/SQLite factory, preserving Hello/native/build-info opt-in proofs and current actor-bound human/Agent ports. Add only exact verified publisher/licence admission and mandatory locked peer closure; no duplicate private assistant or GUID-derived DeviceLocal authority.",
    "complete": [
     {
      "type": "integration",
@@ -10450,6 +10456,12 @@
      "task": "AST.01",
      "need": "actual published shared Assistant.Core factory and Assistant.Persistence.Sqlite owner store",
      "why": "Base product shell can advance independently, but full shared assistant composition cannot use an abstract/test/private factory."
+    },
+    {
+     "type": "integration",
+     "task": "AST.10",
+     "need": "actual published shared Assistant.Avalonia control/controller",
+     "why": "Full product composition must consume the shared producer; base shell continues and no private fake UI may substitute."
     }
    ]
   },
@@ -10833,7 +10845,8 @@
     "DesktopPlatform:eng/policy/dependency-policy.json and dependency-reviews/ast-01-*.json (actual evaluated owned closure/input bindings and new immutable reviewed successors)",
     "DesktopPlatform:eng/provenance/** (only owned actual first-party and immutable producer/legal/input successors and deterministic NOTICE bindings)",
     "DesktopPlatform:.github/workflows/pr-gate.yml and package-validation.yml (append only actual owned ordinary managed component test/producer inputs; preserve existing gates/triggers)",
-    "DesktopPlatform:docs/assistant-session-factory.md (real API, physical store, lifecycle and explicit unavailable dependency/acceptance ownership)"
+    "DesktopPlatform:docs/assistant-session-factory.md (real API, physical store, lifecycle and explicit unavailable dependency/acceptance ownership)",
+    "DesktopPlatform:Directory.Packages.props and exact owned affected packages.lock.json (only published CON32 same-release mandatory first-party consumer closure when actually needed; preserve unrelated coordinates)"
    ],
    "shared": [
     {
@@ -10864,13 +10877,19 @@
     "notes": "Observed none, unreviewed: No Assistant.Core or Assistant.Persistence.Sqlite project exists in DesktopPlatform yet."
    },
    "earlyRiskProof": true,
-   "notes": "Foundation for all other WP15 substeps and for WP16/17's reuse of conversation identities; a schema mistake here invalidates branches, attachments, projects, skills, search and export simultaneously, so it should land and stabilize early.\n\n2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md). The artifact includes the real reusable Assistant.Core AssistantSessionFactory/IAssistantSession and typed history/turn/draft services, backed by the complete model05 Assistant.Persistence.Sqlite owner store. Interfaces, a test factory, product-private conversation database or injected success factory are insufficient. OpenAsync validates existing AssistantHostOptions, actual IAssistantProfileStoreProvider, current IAssistantProfileAuthority and IAssistantTurnBackend; captured services remain immutable profile/generation-bound and refuse after revocation. DeviceLocal versus Authenticated profile authority is explicit, never inferred from GUIDs. The physical typed AssistantDataRoot path contains product/installation/profile and history.sqlite3. Temporary sessions are memory-only. Existing APP01/APP07 ports and original model05 obligations are retained. Independent nullable stable draft_id, complete versioned ConversationView and nullable actual turn/progress/run payloads follow the reviewed model05 amendment; no fake conversation or remote completion. Existing typed outbox is sole pending authority, using actual generated named Chat and Execution requests rather than generic Sync/ChangeProposal writes. Implement the real authenticated supplied-CallInvoker GrpcAssistantTurnBackend, durable after-commit retry/outbox, output cursor/hash/terminal verification and acknowledgement/cancellation. Only unavailable remote transport/auth sources may be faked in ordinary component tests; no client model loop. Consume exact published Events324/Validation324 and already admitted Microsoft.Data.Sqlite10.0.12, preserving package identities and third-party closure. One AST01 claim/PR: audit owns Core and factory/backend/profile tests; observability owns Sqlite and AssistantCoreTests/Sqlite. Shared typed store boundary is frozen before support integration. Actual normal package publication is required for product consumption; full provider/tool/OS/system acceptance remains separately owned. The normative history path is Path.Combine(options.DataRoot.GetProfileDirectory(partition), \"assistant\", \"history.sqlite3\") from the shipped typed producer; its layout is <platformDataRoot>/<product>/<installation N>/profiles/<profile N>. platformDataRoot is already the trusted OS-private base and may contain ArcForges; never add a second fixed segment or reconstruct a server/caller path. Actual same-owner metadata and semantic journal co-commit with receipt/outbox are explicitly assistant-owned derived support; the generic product Persistence journal cannot atomically join these tables or fabricate a Cloud UserId for DeviceLocal. Preserve receipt as sole immutable replay-result authority. Closed history.queue permits a real Cloud create request in outbox without a fake acknowledged canonical conversation. Failed/cancelled/interrupted terminal facts need no invented MessageView; successful completion requires an actual immutable terminal. FTS is derived only from committed nondeleted normal history and search joins canonical identity/tombstone state, never draft/prefix/pending/temporary bodies.",
+   "notes": "Foundation for all other WP15 substeps and for WP16/17's reuse of conversation identities; a schema mistake here invalidates branches, attachments, projects, skills, search and export simultaneously, so it should land and stabilize early.\n\n2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md). The artifact includes the real reusable Assistant.Core AssistantSessionFactory/IAssistantSession and typed history/turn/draft services, backed by the complete model05 Assistant.Persistence.Sqlite owner store. Interfaces, a test factory, product-private conversation database or injected success factory are insufficient. OpenAsync validates existing AssistantHostOptions, actual IAssistantProfileStoreProvider, current IAssistantProfileAuthority and IAssistantTurnBackend; captured services remain immutable profile/generation-bound and refuse after revocation. DeviceLocal versus Authenticated profile authority is explicit, never inferred from GUIDs. The physical typed AssistantDataRoot path contains product/installation/profile and history.sqlite3. Temporary sessions are memory-only. Existing APP01/APP07 ports and original model05 obligations are retained. Independent nullable stable draft_id, complete versioned ConversationView and nullable actual turn/progress/run payloads follow the reviewed model05 amendment; no fake conversation or remote completion. Existing typed outbox is sole pending authority, using actual generated named Chat and Execution requests rather than generic Sync/ChangeProposal writes. Implement the real authenticated supplied-CallInvoker GrpcAssistantTurnBackend, durable after-commit retry/outbox, output cursor/hash/terminal verification and acknowledgement/cancellation. Only unavailable remote transport/auth sources may be faked in ordinary component tests; no client model loop. Consume exact published Events324/Validation324 and already admitted Microsoft.Data.Sqlite10.0.12, preserving package identities and third-party closure. One AST01 claim/PR: audit owns Core and factory/backend/profile tests; observability owns Sqlite and AssistantCoreTests/Sqlite. Shared typed store boundary is frozen before support integration. Actual normal package publication is required for product consumption; full provider/tool/OS/system acceptance remains separately owned. The normative history path is Path.Combine(options.DataRoot.GetProfileDirectory(partition), \"assistant\", \"history.sqlite3\") from the shipped typed producer; its layout is <platformDataRoot>/<product>/<installation N>/profiles/<profile N>. platformDataRoot is already the trusted OS-private base and may contain ArcForges; never add a second fixed segment or reconstruct a server/caller path. Actual same-owner metadata and semantic journal co-commit with receipt/outbox are explicitly assistant-owned derived support; the generic product Persistence journal cannot atomically join these tables or fabricate a Cloud UserId for DeviceLocal. Preserve receipt as sole immutable replay-result authority. Closed history.queue permits a real Cloud create request in outbox without a fake acknowledged canonical conversation. Failed/cancelled/interrupted terminal facts need no invented MessageView; successful completion requires an actual immutable terminal. FTS is derived only from committed nondeleted normal history and search joins canonical identity/tombstone state, never draft/prefix/pending/temporary bodies.\n\n2026-10-06 assistant runtime/UI producer repair (docs/decisions/assistant-runtime-and-ui-producers-2026-10-06.md). Complete actual durable turn recovery and genuine tool lineage: nullable actual chatTurn/task owner identity, immutable selected generated AgentProfile/SkillRecord snapshots, terminal seal, exact StreamPosition/global uint64 offset, and actual ToolCallId/ToolResultFor. Message/turn DTOs preserve these complete facts, never infer IDs/offsets from command or displayed text. Closed generated TaskServiceCancel arm and factual AcknowledgeHistoryPending are required; history.queue admits actual closed named controls, outbox.acknowledge co-commits only exact received result and pending command/hash. Branch own ordinals restart at0; resolve frozen ancestor prefixes then child own messages without global renumber/sort. Shared compaction-source.v1 frames exact known TranscriptMessage fields in resolved ancestry order and strict UTF8 summary hash, with bounded actual vectors. Real archive tool lineage consumes CON32 published optional fields; core/plaintext work advances independently. Existing safe lifecycle scope includes exact immutable-generation OpenProfileView admission, with no old-view redirection or mutable initial HostServices identity.",
    "complete": [
     {
      "type": "integration",
      "task": "PLT.59",
      "need": "actual compatible published managed production peer closure",
      "why": "Ordinary implementation proceeds from existing generated and abstract contracts; package delivery must consume the real compatible published peers."
+    },
+    {
+     "type": "integration",
+     "task": "CON.32",
+     "need": "actual published complete archive tool-lineage fields",
+     "why": "Full tool archive roundtrip requires actual generated producer; ordinary Core/SQLite implementation proceeds without pretending missing fields exist."
     }
    ]
   },
@@ -11277,55 +11296,52 @@
    "start": [
     {
      "type": "artifact",
-     "task": "EXE.01",
-     "need": "the real execution chain to surface job state in navigation",
-     "why": "AS05/AS10-linked navigation elements read real ProductJob state"
+     "task": "APP.01",
+     "need": "actual shared storage-free host/session/lifecycle ports",
+     "why": "Implement the real shared producer against stable typed ports and reviewed immutable AST01 source checkpoint; no fake product factory."
     },
     {
      "type": "artifact",
-     "task": "AST.01",
-     "need": "the real application history store the shell hosts",
-     "why": "the consumer builds on these delivered producers; the package acceptance receipt is a roll-up, never a start barrier"
-    },
-    {
-     "type": "artifact",
-     "task": "AST.02",
-     "need": "real branches and window drafts to navigate",
-     "why": "the consumer builds on these delivered producers; the package acceptance receipt is a roll-up, never a start barrier"
-    },
-    {
-     "type": "artifact",
-     "task": "AST.04",
-     "need": "real projects and profiles to navigate",
-     "why": "the consumer builds on these delivered producers; the package acceptance receipt is a roll-up, never a start barrier"
-    },
-    {
-     "type": "artifact",
-     "task": "AST.05",
-     "need": "real skills to navigate",
-     "why": "the consumer builds on these delivered producers; the package acceptance receipt is a roll-up, never a start barrier"
-    },
-    {
-     "type": "artifact",
-     "task": "AST.06",
-     "need": "real local search to surface",
-     "why": "the consumer builds on these delivered producers; the package acceptance receipt is a roll-up, never a start barrier"
-    },
-    {
-     "type": "artifact",
-     "task": "AST.07",
-     "need": "real local history export and import to surface",
-     "why": "the consumer builds on these delivered producers; the package acceptance receipt is a roll-up, never a start barrier"
+     "task": "PLT.59",
+     "need": "actual compatible324 managed producer cohort",
+     "why": "Exact restored shared peer contracts precede genuine project/package composition."
     }
    ],
    "writes": [
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Avalonia/**",
-    "DesktopPlatform:samples/AssistantHost/**"
+    "DesktopPlatform:samples/AssistantHost/**",
+    "DesktopPlatform:tests/AssistantAvaloniaTests/** (actual headless control/controller/session/draft/focus/accessibility component tests)",
+    "DesktopPlatform:DesktopPlatform.slnx (append actual owned Assistant.Avalonia/test/sample projects only)",
+    "DesktopPlatform:Directory.Packages.props (exact Avalonia12.1.3 base producer and test-only Headless12.1.3/Themes.Fluent12.1.3 plus actual mandatory closure; preserve unrelated selectors)",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Avalonia/**/packages.lock.json and tests/AssistantAvaloniaTests/**/packages.lock.json and samples/AssistantHost/**/packages.lock.json (actual owned locked closure)",
+    "DesktopPlatform:eng/packaging/packages.json and eng/packaging/test_packages.py (only actual Assistant.Avalonia producer catalogue and focused missing/extra/closure negatives)",
+    "DesktopPlatform:eng/policy/architecture-projects.json and architecture-evidence.json and architecture-contract-tests.json (actual owned project/public API/test bindings only)",
+    "DesktopPlatform:eng/policy/licence-boundary.json and naming-package-policy.json and runtime-ownership.json (only actual owned producer/test closure classifications)",
+    "DesktopPlatform:eng/policy/reconciliation/active-projects.json and project-updates.json (actual owned blobs only; frozen history intact)",
+    "DesktopPlatform:eng/policy/dependency-policy.json and dependency-reviews/ast-10-*.json (exact verified managed base and actual headless test-native/font closure plus owned evaluated input successors)",
+    "DesktopPlatform:eng/provenance/files.json and records/ast-10-*.json and NOTICE.txt (only actual owned first-party/immutable legal/input successors)",
+    "DesktopPlatform:.github/workflows/pr-gate.yml and publish-nuget.yml (owned ordinary component/package producer inputs only; no GUI/end-to-end/macOS CI)"
    ],
    "shared": [
     {
      "resource": "RES-desktopplatform-build-config",
      "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-package-inventory",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-workstation-build-slot",
+     "mode": "exclusive"
     }
    ],
    "validation": "Offline UI tests: minimum-size reachability, window/draft/account/keyboard/accessibility matrix; no live Cloud in CI.",
@@ -11334,8 +11350,57 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: No Assistant.Avalonia or samples/AssistantHost exists yet in DesktopPlatform."
    },
-   "notes": "This is the navigation shell/chrome only; deeper per-surface behavior (security, task centre, automation, history, preview) is separately owned by AST.12-16 and composed into this shell.",
-   "complete": []
+   "notes": "This is the navigation shell/chrome only; deeper per-surface behavior (security, task centre, automation, history, preview) is separately owned by AST.12-16 and composed into this shell.\n\n2026-10-06 assistant runtime/UI producer repair (docs/decisions/assistant-runtime-and-ui-producers-2026-10-06.md). Platform UI is sole shared Assistant.Avalonia producer author. Use a retained stacked branch on an immutable actual reviewed AST01 producer checkpoint with same-repository project reference; deliver/rechain AST01 first, never copy fake Core interfaces or create a product-private assistant. Preserve all AS01-AS13/advanced obligations and require each original producer at completion/activation. Base Avalonia12.1.3 managed package inherits host theme; Headless12.1.3/Themes.Fluent12.1.3 and their actual Fonts.Inter/HarfBuzz assets are test-only admitted closure, not production native-backend or hosted GUI acceptance. Actual docked/floating/expanded views share one session/history/draft generation and typed13-route extension registry. IME preedit blocks Enter-send through actual TextPresenter state; missing template refuses shortcut, explicit Send remains real action. Local resources use PLT62 resource-bound resolver; no successful-string callback or duplicate formatter.",
+   "complete": [
+    {
+     "type": "integration",
+     "task": "EXE.01",
+     "need": "the real execution chain to surface job state in navigation",
+     "why": "Preserve the complete original advanced surface obligation and mandatory real-producer activation/integration; base shared controller/control implementation proceeds independently."
+    },
+    {
+     "type": "integration",
+     "task": "AST.01",
+     "need": "the real application history store the shell hosts",
+     "why": "Preserve the complete original advanced surface obligation and mandatory real-producer activation/integration; base shared controller/control implementation proceeds independently."
+    },
+    {
+     "type": "integration",
+     "task": "AST.02",
+     "need": "real branches and window drafts to navigate",
+     "why": "Preserve the complete original advanced surface obligation and mandatory real-producer activation/integration; base shared controller/control implementation proceeds independently."
+    },
+    {
+     "type": "integration",
+     "task": "AST.04",
+     "need": "real projects and profiles to navigate",
+     "why": "Preserve the complete original advanced surface obligation and mandatory real-producer activation/integration; base shared controller/control implementation proceeds independently."
+    },
+    {
+     "type": "integration",
+     "task": "AST.05",
+     "need": "real skills to navigate",
+     "why": "Preserve the complete original advanced surface obligation and mandatory real-producer activation/integration; base shared controller/control implementation proceeds independently."
+    },
+    {
+     "type": "integration",
+     "task": "AST.06",
+     "need": "real local search to surface",
+     "why": "Preserve the complete original advanced surface obligation and mandatory real-producer activation/integration; base shared controller/control implementation proceeds independently."
+    },
+    {
+     "type": "integration",
+     "task": "AST.07",
+     "need": "real local history export and import to surface",
+     "why": "Preserve the complete original advanced surface obligation and mandatory real-producer activation/integration; base shared controller/control implementation proceeds independently."
+    },
+    {
+     "type": "integration",
+     "task": "PLT.62",
+     "need": "actual shared resource-bound localization/audit resolver",
+     "why": "Shared Assistant and product resource keys must use the real formatter/audit instead of a private duplicate or false successful callback."
+    }
+   ]
   },
   {
    "id": "AST.11",
@@ -28709,7 +28774,7 @@
     "Contracts:docs/operation-authorization-catalog.md",
     "Contracts:docs/architecture.md (factual pointer)",
     "Contracts:.gitleaks.toml (append only three exact observed CON26 generic-api-key public-digest AND groups, counts 1/4/4)",
-    "Contracts:tests/tooling/test_dependency_admission.py (exact CON26 tuple-negative regressions and existing total allowlist count 83 to 86 only)",
+    "Contracts:tests/tooling/test_dependency_admission.py (exact CON26 tuple-negative regressions and preserve the actual accepted CON28 prefix/indices and update exact resulting total85 to88 after its two groups, append only owned vector[1,4,4])",
     "Contracts:tests/ArchitectureTests/HostedPolicyGate.cs (actual optional closed non-wire metadata binding consumption only)",
     "Contracts:tests/ArchitectureTests/ArchitectureFixtureTests.cs (focused exact classification and unchanged wire negatives)",
     "Contracts:tests/ArchitectureTests/OperationMetadataBindings.cs (new exact qualified symbol/project/source/hash/kind bindings for only the three actual non-wire operation metadata types)",
@@ -28783,7 +28848,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Added from verified current-source dependency evidence, not an inherited baseline. Original Final selection is unchanged. Ordinary implementation and component testing are required even when wider acceptance is deferred.\n\n2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). Security run 37503752501 job 112407047628 reports ten occurrences of nine distinct public SHA256 tuples; append exact anchored path/key/hash whole-line AND groups targeting only generic-api-key. Canonical sorted tuple set SHA256 9db3cd5d69899fb0416554a390966c4d36c1b00d19c7656003b8eec751d63878. Preserve all 83 historical groups, three unchanged old inputs and retained SecretScan. Negative tests must reject changed digest/key/path, adjacent token-bearing content and other rules. No blanket hash/path exclusion or secret-scanning algorithm change.\n\n2026-10-06 non-wire policy producer repair (docs/decisions/non-wire-metadata-policy-repair-2026-10-06.md). The actual private Build.Policy94.1 gate currently treats the three immutable metadata classes as authored wire DTOs. Consume the independently reviewed and published GOV24 producer via exact pin/lock/input successors and real host semantic bindings to the three qualified types and their owned source hashes only. Existing generated-wire/serializer/interface/descriptor checks remain; no generated attribute/header fiction, shape-only blanket exclusion, CI waiver or broad source-path exception. Normal full CI and canonical publication follow exact consumer review. Existing metadata source/admission histories remain intact."
+   "notes": "2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Added from verified current-source dependency evidence, not an inherited baseline. Original Final selection is unchanged. Ordinary implementation and component testing are required even when wider acceptance is deferred.\n\n2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). Security run 37503752501 job 112407047628 reports ten occurrences of nine distinct public SHA256 tuples; append exact anchored path/key/hash whole-line AND groups targeting only generic-api-key. Canonical sorted tuple set SHA256 9db3cd5d69899fb0416554a390966c4d36c1b00d19c7656003b8eec751d63878. Preserve all 83 historical groups, three unchanged old inputs and retained SecretScan. Negative tests must reject changed digest/key/path, adjacent token-bearing content and other rules. No blanket hash/path exclusion or secret-scanning algorithm change.\n\n2026-10-06 non-wire policy producer repair (docs/decisions/non-wire-metadata-policy-repair-2026-10-06.md). The actual private Build.Policy94.1 gate currently treats the three immutable metadata classes as authored wire DTOs. Consume the independently reviewed and published GOV24 producer via exact pin/lock/input successors and real host semantic bindings to the three qualified types and their owned source hashes only. Existing generated-wire/serializer/interface/descriptor checks remain; no generated attribute/header fiction, shape-only blanket exclusion, CI waiver or broad source-path exception. Normal full CI and canonical publication follow exact consumer review. Existing metadata source/admission histories remain intact.\n\n2026-10-06 assistant runtime/UI producer repair (docs/decisions/assistant-runtime-and-ui-producers-2026-10-06.md). CON28 is actually merged first and its two exact groups make the accepted prefix85. CON26 adds its already-reviewed three unchanged groups: exact total88 with vector[1,4,4] after accepted[1,3]. Preserve every accepted group/index/tuple/rule; update only resulting-prefix maintenance, no new waiver or source behavior."
   },
   {
    "id": "CON.27",
@@ -29485,6 +29550,128 @@
     "state": "not-started"
    },
    "notes": "2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md).Actual CreateAnnotation is R2/perOperation. Product UI needs the exact same shared Gate effect binding to request a real ApprovalCoordinator decision; copied hashing or changing descriptor risk would break production authorization. Existing digest representation, target binding and exclusions remain byte-identical. Root assigns a source owner after this reviewed admission; existing frozen PLT59 head is not modified."
+  },
+  {
+   "id": "CON.32",
+   "title": "Complete archive genuine tool-lineage fields",
+   "repo": "Contracts",
+   "lane": "contracts",
+   "kind": "producer",
+   "size": "S",
+   "obligations": [
+    {
+     "ref": "WP-03.05",
+     "part": "minimum compatible assistant-history.v1 tool-lineage producer; all original archive/operation obligations preserved"
+    }
+   ],
+   "outcome": "Append optional Foundation.Id tool_call_id4 and tool_result_for5 to existing publicapi HistoryMessage, preserving MessageView1/ordinal2/created_at3 and old plaintext serialization. Publish actual complete generated DTOs and C#/TS shape validators; pairing authority remains the actual history owner.",
+   "provides": [
+    "assistant-archive-genuine-tool-lineage"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "CON.11",
+     "need": "actual application/history archive producer",
+     "why": "Extend the existing owned HistoryMessage and constraint shard; no consumer-copied wire type or AST cycle."
+    }
+   ],
+   "complete": [],
+   "writes": [
+    "Contracts:public/proto/arcforges/publicapi/v1/application.proto (HistoryMessage optional Foundation.Id tags4 tool_call_id and5 tool_result_for only)",
+    "Contracts:public/proto/constraints/con-11-application-streams.json and public/proto/constraints.json (exact optional fields/nested Id validity; regenerate aggregate)",
+    "Contracts:fixtures/public/con-11-application-streams.json and tests/StructureTests/Con11ApplicationStreamsCases.cs and tests/public/con-11-application-streams.test.mjs (old absence/plaintext, real distinct tool IDs/invalid UUIDs/roundtrip and unchanged1MiB archive record bound)",
+    "Contracts:src/public/dotnet/ArcForges.Contracts.Validation/Generated/Shapes/ProtoValidation.g.cs (exact generated mirror)",
+    "Contracts:eng/policy/contract-access.json and eng/provenance/** (only actual owner-generated descriptor/access/type/hash/input/immutable source bindings and NOTICE successors)",
+    "Contracts:eng/policy/dependency-policy.json and dependency-reviews/con-32-*.json (owned evaluated input hash successors; no unrelated coordinate change)",
+    "Contracts:tests/kotlin/** (only genuine generated HistoryMessage absent/present serialization compatibility and distinct-ID roundtrip)",
+    "Contracts:docs/assistant-archive-tool-lineage.md",
+    "Contracts:src/public/dotnet/ArcForges.Contracts.PublicApi/Generated/Proto/Application.cs (regenerate existing HistoryMessage owner DTO)",
+    "Contracts:src/public/dotnet/ArcForges.Contracts.PublicApi/Generated/Shapes/ProtoValidation.g.cs (regenerate exact optional nested Id rules)",
+    "Contracts:src/public/ts/proto/src/gen/arcforges/publicapi/v1/application_pb.ts (regenerate actual DTO)",
+    "Contracts:src/public/ts/proto/src/shapes/gen/proto.ts (regenerate exact optional nested Id rules)",
+    "Contracts:src/public/kotlin/contracts-proto/generated/java/io/github/arcforges/contracts/publicapi/v1/HistoryMessage.java (regenerate actual wire DTO)",
+    "Contracts:src/public/kotlin/contracts-proto/generated/java/io/github/arcforges/contracts/publicapi/v1/HistoryMessageOrBuilder.java (regenerate actual wire interface)",
+    "Contracts:src/public/kotlin/contracts-proto/generated/kotlin/io/github/arcforges/contracts/publicapi/v1/HistoryMessageKt.kt (regenerate actual wire DSL)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-contracts-schema-sources",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-contracts-generated-baseline",
+     "mode": "regenerate"
+    },
+    {
+     "resource": "RES-contracts-publication",
+     "mode": "append"
+    }
+   ],
+   "validation": "Actual C#/TS serializer/shape and Kotlin generated-wire roundtrip compatibility; malformed/zero UUIDs and original1MiB record cap, exact descriptor/access/lock/provenance/package gates. No shape rule fabricates tool-pair authority.",
+   "evidence": "Independent exact-head review, applicable CI and actual immutable producer publication with exact consumer handoff.",
+   "baseline": {
+    "state": "not-started"
+   },
+   "notes": "Minimum additive archive producer. ToolProposal.ProposalId and ToolResult.InvocationId are distinct; MessageView has no genuine pairing relation. Actual AST integrity validates supplied real TranscriptMessage/owned invocation metadata. No new service, operation ID, package, public authentication or generic archive hash rule."
+  },
+  {
+   "id": "PLT.62",
+   "title": "Shared resource-bound localization and accessibility audit",
+   "repo": "DesktopPlatform",
+   "lane": "platform",
+   "kind": "producer",
+   "size": "S",
+   "obligations": [
+    {
+     "ref": "WP-10.07",
+     "part": "minimum reusable embedded-resource resolver/audit producer for actual shared Assistant and product surfaces; original shell matrix retained"
+    }
+   ],
+   "outcome": "Add immutable ShellResourceScope bound to an actual embedded ResourceManager, resolving LocalizedText with the existing formatter/pseudo/culture policy and supplying an explicit ShellAccessibilityAudit overload. Existing default Shell APIs stay compatible; missing/empty/invalid resources refuse.",
+   "provides": [
+    "shell-resource-bound-localization-audit"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "PLT.33",
+     "need": "actual shared Shell accessibility/localization producer",
+     "why": "Extend the real existing formatter/audit; preserve frozen reviewed Shell source and avoid private duplicate UI audits."
+    },
+    {
+     "type": "artifact",
+     "task": "PLT.59",
+     "need": "actual compatible managed peer cohort",
+     "why": "Consumer/package closure must use actual published peer contracts."
+    }
+   ],
+   "complete": [],
+   "writes": [
+    "DesktopPlatform:src/DesignSystem/ArcForges.Desktop.Shell/Localization/ShellResourceScope.cs (new exact immutable actual ResourceManager-bound resolver)",
+    "DesktopPlatform:src/DesignSystem/ArcForges.Desktop.Shell/Localization/ShellText.cs and ShellMessageFormatter.cs (only shared actual resource lookup/format reuse if required; preserve default behavior)",
+    "DesktopPlatform:src/DesignSystem/ArcForges.Desktop.Shell/Accessibility/ShellAccessibilityAudit.cs (add exact resource-scope overload, preserve existing default overload and audit checks)",
+    "DesktopPlatform:src/DesignSystem/ArcForges.Desktop.Shell/Tests/Localization/ResourceScopeTests.cs and Tests/Accessibility/ShellAccessibilityAuditTests.cs and Tests/Localization/ResourceScopeStrings.resx (focused real embedded-resource/missing/empty/format/culture/pseudo/RTL/component coverage)",
+    "DesktopPlatform:src/DesignSystem/ArcForges.Desktop.Shell/README.md (actual resource-bound API/evidence)",
+    "DesktopPlatform:eng/policy/architecture-contract-tests.json and architecture-evidence.json (only actual new public API/test bindings)",
+    "DesktopPlatform:eng/provenance/files.json (owned new source/test/resource rows only)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
+    }
+   ],
+   "validation": "Actual embedded ResourceManager tests for independent module keys, default compatibility, missing/empty/format/throw refusal, culture/plural/pseudo/RTL and accessible-name audit. No OS/UI acceptance claim.",
+   "evidence": "Independent exact-head source review, applicable CI and actual shared Shell package successor.",
+   "baseline": {
+    "state": "not-started"
+   },
+   "notes": "Pure additive exact shared producer, not an arbitrary successful-string callback. Platform UI owns implementation after actual PLT33 delivery; real Assistant/package integration retains full matrix and mandatory advanced source activation."
   }
  ],
  "adoptionSlices": [
