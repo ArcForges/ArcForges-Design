@@ -42,7 +42,7 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Completion prerequisites | none |
 | Unblocks | [OPS.02](#task-ops-02), [OPS.04](#task-ops-04), [OPS.12](#task-ops-12) |
 | Write scope | `Cloud:deploy/monitoring/**` |
-| Shared resources | [RES-cloud-runbooks-and-fixtures](../shared-resources.md#res-cloud-runbooks-and-fixtures) (append) |
+| Shared resources | [RES-cloud-runbooks-and-fixtures](../shared-resources.md#res-cloud-runbooks-and-fixtures) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline tests: indicator correctness against synthetic failures, dependency-attribution, alert-routing, alert-to-runbook completeness assertion. |
 | Completion evidence | Alert-to-runbook completeness assertion (every deployed alert names an existing runbook). |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -65,6 +65,7 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Completion prerequisites | none |
 | Unblocks | [OPS.03](#task-ops-03), [OPS.09](#task-ops-09), [OPS.12](#task-ops-12) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Support/**/Incidents/**` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline tests: severity-classification exercise, independence assertion for the incident system, breach-classification test. |
 | Completion evidence | Breach-classification-automatic-highest-severity test result. |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -87,7 +88,7 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Completion prerequisites | **integration** [CLOUD.51](cloud.md#task-cloud-51) — the DR drill programme's runbooks. *Why:* recovery runbooks depend on [WP-46](../../work-packages/46-backup-recovery-and-data-health.md#rule-wp-46) (backup/recovery, out of this package's scope) to have something to rehearse<br>**integration** [HAR.04](harness.md#task-har-04) — Cloud Harness provider-failure/effect-certainty procedures. *Why:* CF-related runbook cases are explicitly named as awaiting [WP-46](../../work-packages/46-backup-recovery-and-data-health.md#rule-wp-46)/[WP-52](../../work-packages/52-cloud-harness.md#rule-wp-52) and remain pending until WP50 joins them per [WP-45](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45)'s own completion gate text |
 | Unblocks | [OPS.12](#task-ops-12) |
 | Write scope | `Cloud:docs/runbooks/**` |
-| Shared resources | [RES-cloud-runbooks-and-fixtures](../shared-resources.md#res-cloud-runbooks-and-fixtures) (append) |
+| Shared resources | [RES-cloud-runbooks-and-fixtures](../shared-resources.md#res-cloud-runbooks-and-fixtures) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Completeness check against the required runbook set (docs/requirements/products/arcforges-cloud.md §9.1); a dated rehearsal record per runbook, executed under existing environment per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) (no new infra spun up for the rehearsal itself). |
 | Completion evidence | Completeness check result; dated rehearsal record per implemented-owner runbook; explicit pending markers for DR/CF cases awaiting [WP-46](../../work-packages/46-backup-recovery-and-data-health.md#rule-wp-46)/[WP-52](../../work-packages/52-cloud-harness.md#rule-wp-52). |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -158,7 +159,7 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Completion prerequisites | none |
 | Unblocks | [OPS.12](#task-ops-12) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Support/**/BreakGlass/**` |
-| Shared resources | [RES-cloud-runbooks-and-fixtures](../shared-resources.md#res-cloud-runbooks-and-fixtures) (append) |
+| Shared resources | [RES-cloud-runbooks-and-fixtures](../shared-resources.md#res-cloud-runbooks-and-fixtures) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline tests: activation alerting, expiry enforcement, review-requirement, owner-visibility. |
 | Completion evidence | Expiry-enforcement test; owner-visibility test. |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -181,6 +182,7 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Completion prerequisites | none |
 | Unblocks | [OPS.08](#task-ops-08), [OPS.12](#task-ops-12) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Support/**/Cases/**` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline tests: no-data-by-default assertion, reference-resolution, lifecycle. |
 | Completion evidence | No-data-by-default assertion result. |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -203,6 +205,7 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Completion prerequisites | none |
 | Unblocks | [OPS.12](#task-ops-12) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.TrustSafety/**` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline tests: ladder-progression, communication-completeness, appeal-path, enforcement-audit. |
 | Completion evidence | Ladder-progression test; appeal-path test. |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -225,7 +228,7 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Completion prerequisites | none |
 | Unblocks | [OPS.10](#task-ops-10), [OPS.12](#task-ops-12) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Notification/**`<br>`Cloud:src/Cloud/ArcForges.Cloud.Modules.TrustSafety/**/Advisories/**` |
-| Shared resources | [RES-cloud-runbooks-and-fixtures](../shared-resources.md#res-cloud-runbooks-and-fixtures) (append) |
+| Shared resources | [RES-cloud-runbooks-and-fixtures](../shared-resources.md#res-cloud-runbooks-and-fixtures) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline tests where possible (spoofed/replayed callback, bounced/complained suppression, content-redaction) plus recorded live-provider drill evidence (unknown send, DNS readiness, independent status/incident during a real Cloud outage) kept outside routine CI per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
 | Completion evidence | Live operational evidence and rollback-contact record; signed advisory authenticity and affected-version-matching results; no disclosure before approved publication. |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -250,6 +253,7 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Unblocks | [AND.26](android.md#task-and-26), [OPS.12](#task-ops-12) |
 | Permitted substitutes | [SUB-fcm-recorded-responses](../substitutes.md#sub-fcm-recorded-responses) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Notification/**/Push/**` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Live isolated Firebase project send (kept outside routine CI per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017), real service) plus offline tests for token-rotation race, crash-after-acceptance duplicates, TTL expiry, revoke-before-send, no-secret-logging. |
 | Completion evidence | Recorded invalid-token/payload/project/rate-limit responses; no-secret-logging scan. |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -297,6 +301,7 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Completion prerequisites | none |
 | Unblocks | [REL.06](release.md#task-rel-06), [REL.09](release.md#task-rel-09) |
 | Write scope | `Cloud:eng/provenance/records/**` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Aggregation of OPS.01-11 evidence; no-second-host architecture assertion. |
 | Completion evidence | The owned-artifact/real-integration receipt; no-second-Node-host assertion. |
 | Baseline (unreviewed unless accepted) | not-started |

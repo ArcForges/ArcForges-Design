@@ -4,7 +4,7 @@
 
 Accepted freeze, reconciliation and build-governance baselines, and the per-repository architecture and policy test suites.
 
-Tasks: 20 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web · Integration owner(s): AI integration owner, ArcScope integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner, Mobile integration owner, Web integration owner
+Tasks: 21 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web · Integration owner(s): AI integration owner, ArcScope integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner, Mobile integration owner, Web integration owner
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
@@ -28,6 +28,7 @@ Tasks: 20 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | [GOV.19](#task-gov-19) | AI Wrangler and undici dependency admission (clear the repository security gate) | governance | S | none | not-started |
 | [GOV.20](#task-gov-20) | Build.Policy banned-symbol scanner: audit unmanaged function-pointer invocations instead of throwing | governance | S | [GOV.06](#task-gov-06) (artifact) | not-started |
 | [GOV.21](#task-gov-21) | Scheduled and manual policy preview of the Design main branch (post-merge drift watch) | governance | S | [GOV.14](#task-gov-14) (artifact), [GOV.18](#task-gov-18) (artifact) | not-started |
+| [GOV.22](#task-gov-22) | Cloud devtool sharp security admission successor | producer | S | [GOV.09](#task-gov-09) (artifact) | not-started |
 
 ## Tasks
 
@@ -211,9 +212,9 @@ Tasks: 20 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Start prerequisites | **artifact** [GOV.04](#task-gov-04) — published shared rule engine. *Why:* reuse one tested engine rather than reimplementing per repository<br>**artifact** [GOV.05](#task-gov-05) — contract/serialization policy helpers. *Why:* Cloud hosts the generated public API surface that 05.03 validates<br>**artifact** [GOV.06](#task-gov-06) — the published ArcForges.Build.Policy candidate carrying generated-source reconstruction and generated-type recognition. *Why:* Cloud uses System.Text.Json source generators throughout its AOT host; the earlier engine reconstructs generated sources incorrectly, so the host must pin the repaired candidate. |
 | Entry condition | [ADOPT.07.governance](adoption.md#task-adopt-07-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [GOV.15](#task-gov-15) |
+| Unblocks | [GOV.15](#task-gov-15), [GOV.22](#task-gov-22) |
 | Write scope | `Cloud:tests/ArchitectureTests/**`<br>`Cloud:eng/policy/exceptions.json`<br>`Cloud:Cloud.slnx (add the new host project only)`<br>`Cloud:Directory.Packages.props (the exact ArcForges.Build.Policy pin moved to the published GOV.06 candidate; no other coordinate, runtime or version change)`<br>`Cloud:tests/ArchitectureTests/packages.lock.json`<br>`Cloud:src/ArcForges.Cloud/packages.lock.json, Cloud:tests/ArcForges.Cloud.Tests/packages.lock.json, Cloud:tests/ArcForges.Cloud.Consumer/packages.lock.json (regenerated only for the central pin change)`<br>`Cloud:eng/policy/dependency-policy.json`<br>`Cloud:eng/policy/dependency-reviews/gov-09-*.json (new immutable successor chained from the then-active receipt)`<br>`Cloud:eng/policy/licence-boundary.json (the host project row)`<br>`Cloud:eng/provenance/files.json`<br>`Cloud:eng/provenance/records/gov-09-*.json (new immutable successors only where an existing record binds an input this task changes)`<br>`Cloud:eng/policy/naming-candidate.json (exact published @arcforges/proto naming-tool identity and asset hashes, as in Web)`<br>`Cloud:tooling/project.ts (wire the forbidden-term scan into the existing check gate only)`<br>`Cloud:package.json (a policy script and the exact already-locked @arcforges/proto devDependency; no version change)`<br>`Cloud:package-lock.json (reflect that manifest change only)`<br>`Cloud:.github/workflows/ci.yml (wire the host build and policy run into the existing pull-request job; no new platform, scheduled or manual workflow, no weakened or removed check)` |
-| Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append) |
+| Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline unit tests, negative fixtures, PR CI; per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) (Cloud's real AOT publish proof is WP06/WP21, not claimed here). |
 | Completion evidence | Per-rule pass/fail fixture table for Cloud's project graph. |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -505,3 +506,27 @@ Tasks: 20 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Completion evidence | Exact-head hosted results for the retained PR checks; the workflow file showing the trigger set, permissions and the isolated fetch; one dispatch run identifying the Design head it checked and its design-drift report. |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | Post-adoption planning repair of 2026-10-05, a gap with no frozen-baseline counterpart. Evidence: Design main failed python eng/design_policy.py --preview --design-root after about 138 commits (duplicate and bare-citation findings) because Design has no CI and DesktopPlatform's pr-gate verifies only its pinned Design commit; Design PR 231 and Plan PR 296 repaired it. Decision recorded here: the cheaper detection vehicle is a scheduled and manual DesktopPlatform workflow, not a Design CI workflow. A Design workflow would have to run an unpinned DesktopPlatform script against Design, reversing the dependency direction, would let a checker change break every Design pull request, and would change the documented no-CI merge model for the documentation repository; it is not authorized here and may be proposed by its own planning repair if drift recurs despite this watch. The watch detects after merge and gates nothing, so it does not replace the reviewed Design planning repair that fixes a failure, and a failing run is a prompt to open that repair, never to relax the checker. The classification register is keyed by exact line hash, so an edit to a generated lane line that names a hash-algorithm or character-encoding standard needs a new register row; whether such standard names in generated lane views or code spans should stop being treated as citations changes the checker's citation algorithm and is deliberately out of scope here: it needs its own Architecture Owner decision and planning task and must keep every genuine bare-citation and duplicate finding. No change to the checker, the pin, the exports, the classification register or any existing workflow; no new dependency, runtime, package identity or SDK; no secret or credential; no wsl.exe. |
+
+<a id="task-gov-22"></a>
+
+### GOV.22 — Cloud devtool sharp security admission successor
+
+**Outcome.** Fix the newly disclosed high GHSA-wq5f-xc86-pv6w in Cloud devtool sharp0.35.4 using the exact miniflare sharp0.35.5 override, preserving Wrangler/Miniflare versions and shipped Worker/container closure. Bind the actual lock/optional platform closure and licences to immutable reviewed successors; retain the mandatory npm high audit gate.
+
+| Field | Value |
+|---|---|
+| Owning repository | Cloud (`C:\MyFile\Projects\ArcForges\Cloud`); integration owner: Cloud integration owner, the holder of `roles/integration-cloud` |
+| Claim, branch and ledger | `claims/gov-22` and ledger record `ledger/tasks/gov-22.md` in the Plan repository; task branch `task/gov-22` ([DLV-26](../README.md#rule-dlv-26)) |
+| Kind / size | producer / S |
+| Obligations | [WP-05.06](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.06) — current Cloud security dependency admission and retained CI; exact patched devtool transitive closure |
+| Provides | cloud-devtool-security-closure |
+| Start prerequisites | **artifact** [GOV.09](#task-gov-09) — current Cloud policy/dependency audit mechanism. *Why:* Preserve existing gate and admission process. |
+| Entry condition | [ADOPT.07.governance](adoption.md#task-adopt-07-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Completion prerequisites | none |
+| Unblocks | none |
+| Write scope | `Cloud:package.json (exact nested miniflare sharp0.35.5 override only)`<br>`Cloud:package-lock.json (regenerate actual declared override closure)`<br>`Cloud:eng/policy/dependency-policy.json (actual closure/input admission, no hash-only refresh)`<br>`Cloud:eng/policy/dependency-reviews/gov-22-*.json`<br>`Cloud:eng/provenance/** (actual owned devtool/release input successors)`<br>`Cloud:docs/devtool-security-2026-10-06.md` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
+| Validation | Actual locked installation, npm high audit and affected retained type/build/offline checks; no broad automatic dependency upgrades or gate suppression. |
+| Completion evidence | Exact advisory/patched coordinate, independent source/admission review, applicable latest-head CI and normal deployment receipt. |
+| Baseline (unreviewed unless accepted) | not-started |
+| Notes | The advisory was published2026-10-06; current Wrangler4.147.0 still pins vulnerable sharp through Miniflare. Earlier green CI predates disclosure. This is a necessary diagnosed CI/security prerequisite, not optional upgrade churn. |

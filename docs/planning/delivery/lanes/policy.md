@@ -39,11 +39,12 @@ Tasks: 11 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Entry condition | [ADOPT.07.policy](adoption.md#task-adopt-07-policy) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [POL.02](#task-pol-02), [POL.04](#task-pol-04) |
-| Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Policy/**/Boundaries/**` |
+| Write scope | `Cloud:src/ArcForges.Cloud.Modules.Policy/**/Boundaries/**`<br>`Cloud:tests/ArcForges.Cloud.Tests/** (task-owned component tests only)`<br>`Cloud:tests/worker/** (task-owned actual storage/adapter tests only)`<br>`Cloud:tests/ArchitectureTests/** (exact owned API/layer bindings only)`<br>`Cloud:eng/policy/dependency-policy.json (actual changed-input binding to a new immutable reviewed receipt)`<br>`Cloud:eng/policy/dependency-reviews/pol-01-*.json`<br>`Cloud:eng/provenance/** (only owned first-party and immutable input successors)`<br>`Cloud:docs/pol-01-implementation.md`<br>`Cloud:storage/plans/** (only task-owned module/family plans, preserve owner declarations)`<br>`Cloud:src/ArcForges.Cloud.Storage.D1/PlanManifest.g.cs (regenerate only)`<br>`Cloud:worker/storage/plans.generated.ts (regenerate only)`<br>`Cloud:src/ArcForges.Cloud.Modules.Abstractions/** (task-owned primitive production cross-owner ports, no duplicate wire schemas)`<br>`Cloud:src/ArcForges.Cloud/Composition/** (append only real task-owned service/owner registration)`<br>`Cloud:.dockerignore (task-owned source inclusion only)` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append), [RES-cloud-storage-plans](../shared-resources.md#res-cloud-storage-plans) (append), [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append) |
 | Validation | Offline architecture test (assembly/namespace dependency scan) plus four negative fixtures. |
 | Completion evidence | Four boundary negative-fixture results plus the architecture-test pass log. |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Cheap structural invariant that every other Policy task must respect; wrong here silently corrupts POL.02-09. |
+| Notes | Cheap structural invariant that every other Policy task must respect; wrong here silently corrupts POL.02-09.  2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh. |
 
 <a id="task-pol-02"></a>
 
@@ -61,12 +62,13 @@ Tasks: 11 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Start prerequisites | **contract** [CON.12](contracts.md#task-con-12) — policy.body.v1 and configuration.v1 published message schemas per architecture/contracts/08 §4/§6. *Why:* only tooling-level 'policy' files (dependency/licence policy) exist in Contracts at HEAD e6c4a77f; no PolicyBody or Configuration wire message was found, so there is nothing generated to validate against yet<br>**artifact** [POL.01](#task-pol-01) — boundary markers. *Why:* schema validation must reject a body that reaches into entitlement/settings/health/data-plane territory, which POL.01 defines |
 | Entry condition | [ADOPT.07.policy](adoption.md#task-adopt-07-policy) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [AIR.01](ai-routing.md#task-air-01), [POL.03](#task-pol-03), [POL.04](#task-pol-04), [POL.05](#task-pol-05), [POL.06](#task-pol-06), [POL.07](#task-pol-07), [POL.08](#task-pol-08), [SRCH.90](search.md#task-srch-90), [WEB.14](web.md#task-web-14) |
-| Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Configuration/**` |
-| Shared resources | [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append) |
+| Unblocks | [AIR.01](ai-routing.md#task-air-01), [COM.02](commerce.md#task-com-02), [POL.03](#task-pol-03), [POL.04](#task-pol-04), [POL.05](#task-pol-05), [POL.06](#task-pol-06), [POL.07](#task-pol-07), [POL.08](#task-pol-08), [SRCH.90](search.md#task-srch-90), [WEB.14](web.md#task-web-14) |
+| Write scope | `Cloud:src/ArcForges.Cloud.Modules.Configuration/**`<br>`Cloud:tests/ArcForges.Cloud.Tests/** (task-owned component tests only)`<br>`Cloud:tests/worker/** (task-owned actual storage/adapter tests only)`<br>`Cloud:tests/ArchitectureTests/** (exact owned API/layer bindings only)`<br>`Cloud:eng/policy/dependency-policy.json (actual changed-input binding to a new immutable reviewed receipt)`<br>`Cloud:eng/policy/dependency-reviews/pol-02-*.json`<br>`Cloud:eng/provenance/** (only owned first-party and immutable input successors)`<br>`Cloud:docs/pol-02-implementation.md`<br>`Cloud:src/ArcForges.Cloud.Modules.Configuration/** (actual configuration persistence, proposal/dual-approval/CAS activation and verified Commerce projection)`<br>`Cloud:src/ArcForges.Cloud.Modules.Abstractions/Commerce/** (consume the producer projection without duplicate DTO authority)`<br>`Cloud:storage/plans/config/**`<br>`Cloud:src/ArcForges.Cloud/Composition/** (actual Configuration owner binding)`<br>`Cloud:storage/plans/** (only task-owned module/family plans, preserve owner declarations)`<br>`Cloud:src/ArcForges.Cloud.Storage.D1/PlanManifest.g.cs (regenerate only)`<br>`Cloud:worker/storage/plans.generated.ts (regenerate only)`<br>`Cloud:src/ArcForges.Cloud.Modules.Abstractions/** (task-owned primitive production cross-owner ports, no duplicate wire schemas)`<br>`Cloud:src/ArcForges.Cloud/Composition/** (append only real task-owned service/owner registration)`<br>`Cloud:.dockerignore (task-owned source inclusion only)` |
+| Shared resources | [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append), [RES-cloud-storage-plans](../shared-resources.md#res-cloud-storage-plans) (append), [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append) |
 | Validation | Offline tests: unknown key/field/version, invalid commercial route, secret-in-body, conflicting rule priority, stale parent, mixed-replica version, rollback; AOT-publish check. |
 | Completion evidence | Atomic-rejection test (no partial apply); AOT-clean publish result. |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes |   2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.  2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Owns the missing authoritative approved configuration source consumed by COM.02, including canonical content hash/revision/validity/publisher and distinct dual approval. Core catalogue implementation does not wait on configuration acceptance; its follow-up retains actual source integration. |
 
 <a id="task-pol-03"></a>
 
@@ -86,7 +88,7 @@ Tasks: 11 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Completion prerequisites | none |
 | Unblocks | [POL.10](#task-pol-10), [SIM.07](simulator.md#task-sim-07) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Policy/**/HardLimits/**` |
-| Shared resources | [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append) |
+| Shared resources | [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline tests: per-hard-limit loosening-rejection, tightening-acceptance, audit assertion on rejection. |
 | Completion evidence | Loosening-rejection test per compiled hard limit, with audit record. |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -110,7 +112,7 @@ Tasks: 11 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Completion prerequisites | none |
 | Unblocks | [POL.09](#task-pol-09) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Policy/**/Rollout/**` |
-| Shared resources | [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append) |
+| Shared resources | [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline tests: independent byte/hash/bucket vectors, boundary 0/9999, holdout, overlapping exclusion group, account/device change, cached signed bundle expiry. |
 | Completion evidence | Cross-language hash/bucket vector match; boundary 0/9999 test. |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -133,7 +135,7 @@ Tasks: 11 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Completion prerequisites | none |
 | Unblocks | [CLOUD.64](cloud.md#task-cloud-64), [OPS.05](operations.md#task-ops-05), [OPS.13](operations.md#task-ops-13), [POL.10](#task-pol-10) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Policy/**/KillSwitch/**` |
-| Shared resources | [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append) |
+| Shared resources | [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline tests: per-mode activation/propagation, user-visibility, audit-completeness, reversal. |
 | Completion evidence | Per-mode propagation test with user-visible reason and complete audit record. |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -156,6 +158,7 @@ Tasks: 11 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Completion prerequisites | none |
 | Unblocks | [POL.10](#task-pol-10) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Policy/**/Resolution/**` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline tests: resolution-order matrix, explainability per scope, workspace-policy override. |
 | Completion evidence | Resolution-order matrix result; explainability-per-scope result. |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -178,6 +181,7 @@ Tasks: 11 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Completion prerequisites | **integration** [UPD.08](updater.md#task-upd-08) — the update feed actually stopping an offer for a blocked version. *Why:* [WP-44](../../work-packages/44-dynamic-policy-and-configuration.md#rule-wp-44)'s own downstream list names 53 as a consumer; a compatibility rule is only proven real once the update feed enforces it, which POL.07 does not own |
 | Unblocks | [POL.10](#task-pol-10) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Policy/**/Compatibility/**` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline tests: range-blocking precision, grace-period enforcement; update-feed integration test stays with the [WP-53](../../work-packages/53-desktop-distribution-and-update.md#rule-wp-53) consumer per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) (no cross-repo E2E in this task's CI). |
 | Completion evidence | Range-blocking precision test; grace-period enforcement test. |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -200,6 +204,7 @@ Tasks: 11 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Completion prerequisites | none |
 | Unblocks | [AIR.00](ai-routing.md#task-air-00), [POL.09](#task-pol-09), [POL.11](#task-pol-11), [SRCH.06](search.md#task-srch-06), [WEB.29](web.md#task-web-29) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Policy/**/Publication/**` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline tests: publication audit, staleness-signal correctness. |
 | Completion evidence | Publication audit test. |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -248,6 +253,7 @@ Tasks: 11 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Completion prerequisites | none |
 | Unblocks | [REL.06](release.md#task-rel-06), [REL.08](release.md#task-rel-08) |
 | Write scope | `Cloud:eng/provenance/records/**` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Aggregation of POL.01-09 evidence at the candidate closure. |
 | Completion evidence | The owned-artifact/real-integration receipt. |
 | Baseline (unreviewed unless accepted) | not-started |

@@ -39,7 +39,7 @@ Tasks: 10 · Owning repositories: ArcScope, Cloud · Integration owner(s): ArcSc
 | Completion prerequisites | none |
 | Unblocks | [SIM.02](#task-sim-02), [SIM.08](#task-sim-08), [SIM.10](#task-sim-10) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Scope/Definitions/**`<br>`Cloud:src/Cloud/ArcForges.Cloud.Modules.Scope/Ast/**`<br>`Cloud:tests/Cloud.Tests.Integration/Scope/Ast/**` |
-| Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append) |
+| Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | malformed-AST corpus rejected before any side effect; cyclic-dependency case; each bound exceeded; definition-edit-does-not-affect-existing-runs test; CSV replay with bounded parse report; URL-fetch/host-file-read/cross-workspace-reference each denied — pure in-process unit tests, no D1/R2/host needed yet |
 | Completion evidence | AST bounds, cyclic-dependency and sandbox-denial results |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo (HEAD ce0a32a) has zero files matching scope/simulat*; this is entirely new |
@@ -63,6 +63,7 @@ Tasks: 10 · Owning repositories: ArcScope, Cloud · Integration owner(s): ArcSc
 | Completion prerequisites | none |
 | Unblocks | [SIM.03](#task-sim-03), [SIM.08](#task-sim-08) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Scope/Generators/**`<br>`Cloud:src/Cloud/ArcForges.Cloud.Modules.Scope/Faults/**`<br>`Cloud:tests/Cloud.Tests.Integration/Scope/Generators/**` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | pure in-process determinism tests (hash equality, seed sensitivity, fault-position exactness, RNG-stream independence) — no host/D1/R2 needed for this half |
 | Completion evidence | determinism and fault-position results (algorithmic tier) |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -86,7 +87,7 @@ Tasks: 10 · Owning repositories: ArcScope, Cloud · Integration owner(s): ArcSc
 | Completion prerequisites | none |
 | Unblocks | [SIM.04](#task-sim-04), [SIM.07](#task-sim-07), [SIM.08](#task-sim-08) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.BackgroundJobs/SimulationPacer/**`<br>`Cloud:tests/Cloud.Tests.Integration/Scope/Pacer/**` |
-| Shared resources | [RES-cloud-leased-singletons](../shared-resources.md#res-cloud-leased-singletons) (append) |
+| Shared resources | [RES-cloud-leased-singletons](../shared-resources.md#res-cloud-leased-singletons) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | at-least-once alarm, exhausted retry, sleeping Container, pause/cancel race, duplicate segment, delayed catch-up, accelerated mode, and the full slice-recovery Container-kill matrix — this genuinely needs a real (local/dev) Cloud host+D1+Container environment, kept to local/affected-scope per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017), not hosted CI |
 | Completion evidence | replica contention, fenced takeover, bounded-batch and slice-recovery results; determinism/pacing-equality/fault-position results carried over from [WP-51.01](../../work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.01)'s real-host half |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -110,7 +111,7 @@ Tasks: 10 · Owning repositories: ArcScope, Cloud · Integration owner(s): ArcSc
 | Completion prerequisites | none |
 | Unblocks | [SIM.05](#task-sim-05), [SIM.08](#task-sim-08) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Scope/Publication/**`<br>`Cloud:tests/Cloud.Tests.Integration/Scope/Publication/**` |
-| Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append), [RES-cloud-leased-singletons](../shared-resources.md#res-cloud-leased-singletons) (append) |
+| Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append), [RES-cloud-leased-singletons](../shared-resources.md#res-cloud-leased-singletons) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | stale-holder-resumes-after-takeover; cancellation racing segment promotion and quota release; pause/resume producing same remaining data; host loss/takeover producing no duplicate/no missing range; crash-between-object-write-and-manifest-commit leaving a swept invisible object; committed manifest row never referencing an unverified object — real local Cloud host/D1/R2 environment, local/affected-scope per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |
 | Completion evidence | recovery equality across pause, host loss and takeover |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -133,7 +134,7 @@ Tasks: 10 · Owning repositories: ArcScope, Cloud · Integration owner(s): ArcSc
 | Completion prerequisites | none |
 | Unblocks | [AND.27](android.md#task-and-27), [SIM.06](#task-sim-06), [SIM.08](#task-sim-08), [SIM.09](#task-sim-09), [WEB.33](web.md#task-web-33) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.PublicApi/Scope/**`<br>`Cloud:tests/Cloud.Tests.Integration/Scope/Api/**` |
-| Shared resources | [RES-cloud-leased-singletons](../shared-resources.md#res-cloud-leased-singletons) (append) |
+| Shared resources | [RES-cloud-leased-singletons](../shared-resources.md#res-cloud-leased-singletons) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | duplicate/stale/out-of-order commands; terminal-run resists resurrection; hash-mismatched segment rejected; reconnect-with-realtime-disabled proves polling is a complete authoritative fallback — real local Cloud host per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017); offline run-list authorization/paging and stale-revision/illegal-predecessor vectors |
 | Completion evidence | command idempotency and realtime-disabled fallback results (Cloud-side) |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -179,7 +180,7 @@ Tasks: 10 · Owning repositories: ArcScope, Cloud · Integration owner(s): ArcSc
 | Completion prerequisites | none |
 | Unblocks | [SIM.08](#task-sim-08) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Scope/Limits/**`<br>`Cloud:tests/Cloud.Tests.Integration/Scope/Limits/**` |
-| Shared resources | [RES-cloud-leased-singletons](../shared-resources.md#res-cloud-leased-singletons) (append) |
+| Shared resources | [RES-cloud-leased-singletons](../shared-resources.md#res-cloud-leased-singletons) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | quota exhaustion before side effects; cross-workspace denial; term expiring mid-run; suspension mid-run; storage exhaustion; retention pass with active readers; partial-cancellation reporting partial; 24-hour bounded-resource soak — real local Cloud host, local/affected-scope per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) (the 24h soak is the one long-running exception explicitly required by this substep) |
 | Completion evidence | limit enforcement, entitlement, expiry and 24-hour soak results |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -203,6 +204,7 @@ Tasks: 10 · Owning repositories: ArcScope, Cloud · Integration owner(s): ArcSc
 | Completion prerequisites | **integration** [SIM.09](#task-sim-09) — completed end-to-end proof. *Why:* [WP-51.90](../../work-packages/51-arcscope-cloud-simulator.md#rule-wp-51.90)'s own gate is this exact end-to-end chain |
 | Unblocks | [REL.06](release.md#task-rel-06) |
 | Write scope | `Cloud:docs/wp-51-integration-receipt.md` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | real AOT simulation -> R2 verified publication -> ArcScope ingest/measurement; no Workers AI dependency; proportionate under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) given this is explicitly a real-service/real-storage/real-native-adapter gate ([PG-14b](../../../assurance/open-gates-register.md#rule-pg-14b) text: 'preview/test fakes are insufficient') |
 | Completion evidence | owned-artifact and real-integration receipt covering the full [SIM-01](../../../requirements/products/arcscope.md#rule-sim-01)..[SIM-20](../../../requirements/products/arcscope.md#rule-sim-20) acceptance list |
 | Baseline (unreviewed unless accepted) | not-started |

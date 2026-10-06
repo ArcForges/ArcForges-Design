@@ -178,7 +178,7 @@ Tasks: 12 · Owning repositories: AI, Cloud, Contracts, DesktopPlatform · Integ
 | Completion prerequisites | none |
 | Unblocks | [EXT.07](#task-ext-07), [EXT.08](#task-ext-08), [EXT.90](#task-ext-90), [OPS.11](operations.md#task-ops-11) |
 | Write scope | `Cloud:src/ArcForges.Cloud.Modules.PackageCatalog/** (the one project of the module, CLOUD.02 layout; its Domain, Application and Infrastructure layers are folders and namespaces)` |
-| Shared resources | [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append) |
+| Shared resources | [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Owner/PAT/operator separation, duplicate-version conflict, invalid archive, review/revoke replay, signed-index rollback/expiry, offline installed-package behavior -- Cloud integration tests against ephemeral D1, no live DNS/public network in CI. |
 | Completion evidence | Hostile catalog and unreachable-catalog results. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
