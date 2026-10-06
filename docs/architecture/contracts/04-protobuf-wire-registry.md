@@ -791,11 +791,11 @@ OperatorService uses internal/proto/arcforges/operator/v1 (Apache-2.0, restricte
 | `operator.decideEnforcement` | `OperatorService.DecideEnforcement` | `10 actionId:Id`; `11 proposalHash:Hash`; `12 approve:bool` | `10 action:OperatorAction` |
 | `operator.getAppeal` | `OperatorService.GetAppeal` | `10 appealId:Id` | `10 case:SupportCase`; `11 action:OperatorAction` |
 | `operator.resolveAppeal` | `OperatorService.ResolveAppeal` | `10 appealId:Id`; `11 actionId:Id`; `12 decision:Key`; `13 reason:Text` | `10 action:OperatorAction` |
-| `operator.stageConfiguration` | `OperatorService.StageConfiguration` | `10 configId:Id`; `11 parentVersion:Key`; `12 document:ConfigurationDocument` | `10 validation:ConfigValidation` |
+| `operator.stageConfiguration` | `OperatorService.StageConfiguration` | `10 configId:Id`; `11 parentVersion:Key`; `12 document:ConfigurationDocument?`; `13 documentRef:BlobRef?` (exactly one) | `10 validation:ConfigValidation` |
 | `operator.validateConfiguration` | `OperatorService.ValidateConfiguration` | `10 configId:Id` | `10 validation:ConfigValidation` |
 | `operator.approveConfiguration` | `OperatorService.ApproveConfiguration` | `10 configId:Id`; `11 validationHash:Hash`; `12 approve:bool`; `13 reason:Text` | `10 approvalId:Id`; `11 expiresAt:Instant` |
 | `operator.activateConfiguration` | `OperatorService.ActivateConfiguration` | `10 configId:Id`; `11 validationHash:Hash`; `12 secondApprovalId:Id` | `10 activeVersion:Key` |
-| `operator.getConfiguration` | `OperatorService.GetConfiguration` | `10 configId:Id?` | `10 document:ConfigurationDocument`; `11 validation:ConfigValidation` |
+| `operator.getConfiguration` | `OperatorService.GetConfiguration` | `10 configId:Id?` | `10 document:ConfigurationDocument?`; `11 validation:ConfigValidation`; `12 documentRef:BlobRef?` (exactly one document arm) |
 | `operator.setKillSwitch` | `OperatorService.SetKillSwitch` | `10 actionId:Id`; `11 mode:Key`; `12 scope:AggregateRef?`; `13 reason:Text`; `14 until:Instant` | `10 action:OperatorAction` |
 | `operator.startBreakGlass` | `OperatorService.StartBreakGlass` | `10 accessId:Id`; `11 incidentId:Id`; `12 resources:AggregateRef[]`; `13 reason:Text` | `10 access:OperatorAccess` |
 | `operator.endBreakGlass` | `OperatorService.EndBreakGlass` | `10 accessId:Id`; `11 outcome:Text` | `10 receipt:Receipt` |
@@ -810,6 +810,8 @@ OperatorService uses internal/proto/arcforges/operator/v1 (Apache-2.0, restricte
 | `operator.getCatalogSubmission` | `OperatorService.GetCatalogSubmission` | `10 submissionId:Id` | `10 submission:CatalogSubmissionView` |
 | `operator.replyCase` | `OperatorService.ReplyCase` | `10 caseId:Id`; `11 messageId:Id`; `12 text:Text` | `10 case:SupportCase` |
 | `operator.setCaseState` | `OperatorService.SetCaseState` | `10 caseId:Id`; `11 state:SupportCaseState`; `12 reason:Text` | `10 case:SupportCase` |
+
+Configuration document reference (CON.28, 2026-10-06 production authority repair): StageConfiguration and GetConfiguration use exactly one existing inline document or optional Foundation BlobRef. BlobRef names an owner-authorized immutable object containing exact complete generated ConfigurationDocument protobuf binary bytes, size 1..2097152. Its contentHash is SHA256 of those exact stored bytes, distinct from decoded documentHash of canonicalJson. No canonical-protobuf serialization claim is made. Resolve only the fixed authorized Config object facade; verify realm/object identity, declared byte length and complete object hash with bounded timeout/cancellation before parsing, then validate the complete generated envelope and existing canonicalJson<=1048576/field/schema constraints. Unknown fields and invalid envelope refuse. No caller URL/latest alias, reference sentinel inside canonicalJson, inline body budget or transport262144 cap increase. Legal maximum known-field documents remain representable.
 
 OperatorAccess, OperatorAction and ConfigValidation use the numbered internal-only records in §4, including revision in responses for IW preconditions. Operator request/result fields in each table cell are numbered from 10 in the listed order.
 

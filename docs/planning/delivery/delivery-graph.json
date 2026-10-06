@@ -6235,7 +6235,11 @@
     "DesktopPlatform:src/BuildingBlocks/ArcForges.LocalRpc/** (generated LocalBootstrap service and parent lifecycle adapter)",
     "DesktopPlatform:tests/LocalRpcTests/**",
     "DesktopPlatform:eng/policy/** (owned API/project/input/immutable receipt bindings only)",
-    "DesktopPlatform:eng/provenance/** (owned inputs only)"
+    "DesktopPlatform:eng/provenance/** (owned inputs only)",
+    "DesktopPlatform:Directory.Packages.props (exact published Contracts.LocalRpc.Platform324 and Foundation324 selectors for BOTH LocalRpc and LocalRpc.Tests only, coordinate shared pins)",
+    "DesktopPlatform:eng/packaging/packages.json (LocalRpc actual Platform324 and CPM-generated Foundation324 resolved nuspec dependencies only)",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.LocalRpc/**/packages.lock.json (regenerate actual owned closure only)",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.LocalRpc/Tests/packages.lock.json (regenerate affected generated Bootstrap adapter test closure only)"
    ],
    "validation": "Offline/local tests: expired/stale child cannot call, parent restart requires fresh grants.",
    "evidence": "Expired/stale child cannot call; parent restart requires fresh grants.",
@@ -6244,7 +6248,21 @@
     "notes": "Observed scaffold, unreviewed: Nothing exists."
    },
    "complete": [],
-   "notes": "\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Completion follow-ups implement/compose the actual generated LocalBootstrap helper adapter and lifecycle against existing LocalRpc, not merely state-machine fixtures. PLT.11 owns the missing service adapter and parent connection wiring; PRF.04 owns real AOT probe composition. Full unavailable-OS acceptance stays explicit; no sibling product RPC or shared application hub is introduced."
+   "notes": "\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Completion follow-ups implement/compose the actual generated LocalBootstrap helper adapter and lifecycle against existing LocalRpc, not merely state-machine fixtures. PLT.11 owns the missing service adapter and parent connection wiring; PRF.04 owns real AOT probe composition. Full unavailable-OS acceptance stays explicit; no sibling product RPC or shared application hub is introduced.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Actual generated LocalBootstrap Platform324 contract admission, central selector/catalogue dependency and owned regenerated locks are required to compile the existing real parent lifecycle adapter. Preserve Broker adapter and public semantics; no duplicate implementation. Coordinate source/pin/input appends with Observability/PLT59 integrator. Managed activation can publish independently first, then exact LocalRpc producer successor. Exact Platform324 selector applies to BOTH LocalRpc and LocalRpc.Tests existing direct references; retain Google/Framework third-party closure and append actual nuspec dependency. Leaving testPlatform216 would NU1605, no downgrade suppression. Actual test project is src/BuildingBlocks/ArcForges.LocalRpc/Tests/ArcForges.LocalRpc.Tests.csproj. Exact Platform324 AND Foundation324 central selectors bind BOTH library and test projects; CentralPackageTransitivePinningEnabled may emit Foundation324 as a direct nuspec dependency, so catalogue admits only that observed compatible closure. No wider version relaxation.",
+   "shared": [
+    {
+     "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-package-inventory",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    }
+   ]
   },
   {
    "id": "PLT.12",
@@ -9301,7 +9319,9 @@
     "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Tests/ProductionPdfCompositionTests.cs (only the one image-factory assertion reflecting the actual NativeImageParser producer)",
     "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Tests/packages.lock.json (regenerate actual helper Image project-reference closure only)",
     "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Fixture/packages.lock.json (regenerate actual helper Image project-reference closure only)",
-    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Tests/ArcForges.ContentSandbox.Tests.csproj (direct Image project reference only if actually required)"
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Tests/ArcForges.ContentSandbox.Tests.csproj (direct Image project reference only if actually required)",
+    "DesktopPlatform:tests/ArchitectureTests/RepositoryPolicyTests.cs (only actual Image LibraryImport inventory open/read/close; preserve historical preambles and all other families)",
+    "DesktopPlatform:tests/ArchitectureTests/PublicBoundaryContractTests.cs (external non-friend Image parse compile-refusal and existing diagnostic positives only)"
    ],
    "shared": [
     {
@@ -9323,6 +9343,10 @@
     {
      "resource": "RES-desktopplatform-package-inventory",
      "mode": "append"
+    },
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
     }
    ],
    "validation": "Bit depth/metadata round trip, edge tiles, decompression bomb, failed codec, incomplete-output refusal",
@@ -9331,7 +9355,7 @@
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: the still-image shim and src/Native/ArcForges.Native.Image exist at ABI1.0 probe level (GOV.17 moves the shim to native/arcimage-abi); OpenImageIO already required by the 'shim-static' CMake profile."
    },
-   "notes": "Consumed by the assistant image previews through the ContentSandbox per the platform matrix SS3.2 slot table.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Owns the production NativeImageParser adapter and image branch of the existing helper profile, including bounded input/metadata/tile/error/cancellation/lifecycle behavior. No second helper or fake decoder enters release composition. Coordinate the shared ProductionParserProfile with NAT.15; NAT.22 owns RID runtime publication. Existing admitted OIIO/OpenEXR/Imath pins are retained. Native and managed component tests load real available codecs; unobserved OS/RID containment remains explicitly deferred. TIFF zip/jpeg feature activation at existing pinned TIFF/zlib/jpeg versions is an actual implementation dependency admission; record exact feature closure and licences in an immutable reviewed successor, no validation-only toolchain reinstall. New implemented functional exports require exact closed inventory and additive ABI1.1 producer manifest, preserving ABI1.0 probe profiles/history and layouts; do not keep a hard-coded three-export probe inventory for a working library.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. Exact closed functional exports are Image6 and Pdf8 with additive ABI1.1. Keep three historical preamble/import checks and actual ABI manifest compatibility. Existing approved image r4 already admits TIFF jpeg/lzma/zip; no new feature/version admission is implied. Local cache repair for component tests is not published native payload evidence.",
+   "notes": "Consumed by the assistant image previews through the ContentSandbox per the platform matrix SS3.2 slot table.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Owns the production NativeImageParser adapter and image branch of the existing helper profile, including bounded input/metadata/tile/error/cancellation/lifecycle behavior. No second helper or fake decoder enters release composition. Coordinate the shared ProductionParserProfile with NAT.15; NAT.22 owns RID runtime publication. Existing admitted OIIO/OpenEXR/Imath pins are retained. Native and managed component tests load real available codecs; unobserved OS/RID containment remains explicitly deferred. TIFF zip/jpeg feature activation at existing pinned TIFF/zlib/jpeg versions is an actual implementation dependency admission; record exact feature closure and licences in an immutable reviewed successor, no validation-only toolchain reinstall. New implemented functional exports require exact closed inventory and additive ABI1.1 producer manifest, preserving ABI1.0 probe profiles/history and layouts; do not keep a hard-coded three-export probe inventory for a working library.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. Exact closed functional exports are Image6 and Pdf8 with additive ABI1.1. Keep three historical preamble/import checks and actual ABI manifest compatibility. Existing approved image r4 already admits TIFF jpeg/lzma/zip; no new feature/version admission is implied. Local cache repair for component tests is not published native payload evidence.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Actual pack CI exposes a stale Image-only LibraryImport inventory after complete functional implementation. Bind actual open/read/close entries and non-friend internal parse boundary cases, not a blanket architectural exemption. Functional source/ABI/preamble history stays intact; malformed TRX from NUL policy-report separator is failure fallout, not proof of transient success. Final boundary decision from actual IS01/02/03 helper-only compressed parsing: unreleased Image parse types are internal with existing helper/test friend access; retain public ImageAbi diagnostics, native C ABI and all historical published artifacts. Therefore nine proposed public API correspondence rows are unnecessary and are not authorized. Only Image3 functional LibraryImport inventory plus actual non-friend compile refusal/diagnostic positives are supporting test repairs.",
    "complete": []
   },
   {
@@ -9619,7 +9643,37 @@
     "DesktopPlatform:src/Native/ArcForges.Native.Image.Runtime.osx-x64/**",
     "DesktopPlatform:src/Native/ArcForges.Native.Image.Runtime.linux-x64/**",
     "DesktopPlatform:src/Native/ArcForges.Native.Image.Runtime.linux-arm64/**",
-    "DesktopPlatform:eng/packaging/packages.json"
+    "DesktopPlatform:eng/packaging/packages.json",
+    "DesktopPlatform:src/Native/ArcForges.Native.Image.Runtime.win-x64/**",
+    "DesktopPlatform:src/Native/ArcForges.Native.Image/README.md (truthful per-RID producer/loader status only)",
+    "DesktopPlatform:DesktopPlatform.slnx (register actual Image runtime producer projects only)",
+    "DesktopPlatform:CMakePresets.json (closed six-native-RID Image producer presets)",
+    "DesktopPlatform:eng/native/vcpkg/triplets/arm64-windows-static-md.cmake",
+    "DesktopPlatform:eng/native/vcpkg/triplets/arm64-linux.cmake",
+    "DesktopPlatform:eng/native/vcpkg/system-dependencies.v2.json (closed six-native-RID OS prerequisite allowlists, preserve v1 history)",
+    "DesktopPlatform:native/arcimage-abi/CMakeLists.txt (portable install-name/rpath/compiler-runtime flags and producer composition only; functional exports unchanged)",
+    "DesktopPlatform:eng/native/image-runtime-producers.v1.json",
+    "DesktopPlatform:eng/packaging/native_binary.py (single coordinated bounded PE32+/ELF64/Mach-O inspector owned by NAT22)",
+    "DesktopPlatform:tests/tooling/test_native_binary.py",
+    "DesktopPlatform:eng/packaging/image_runtime.py",
+    "DesktopPlatform:tests/tooling/test_image_runtime.py",
+    "DesktopPlatform:eng/packaging/packages.py (Image catalogue/package dispatch only, preserve PDF contract)",
+    "DesktopPlatform:eng/packaging/test_packages.py (owned Image portable package negatives)",
+    "DesktopPlatform:eng/packaging/native_consumer.py (closed per-RID Image C17/C# adapters, available real candidate diagnostics)",
+    "DesktopPlatform:.github/workflows/native-abi.yml (owned Image producer/staging inputs, actual supported artifacts only)",
+    "DesktopPlatform:.github/workflows/package-validation.yml (owned Image package inputs only)",
+    "DesktopPlatform:eng/provenance/artifact-profiles/image-runtime-producer-v1.json",
+    "DesktopPlatform:eng/provenance/files.json (owned Image producer source/input successors only)",
+    "DesktopPlatform:eng/provenance/records/** (new immutable owned Image runtime producer receipts only)",
+    "DesktopPlatform:eng/policy/reconciliation/active-projects.json (actual Image runtime projects only)",
+    "DesktopPlatform:eng/policy/runtime-ownership.json (Image runtime records only)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (exact changed owned inputs and unchanged approved source/legal closure)",
+    "DesktopPlatform:eng/policy/dependency-reviews/nat-22-*.json (new immutable owned successors only)",
+    "DesktopPlatform:eng/policy/licence-boundary.json (only actual owned Image Runtime project/package classification rows)",
+    "DesktopPlatform:eng/policy/architecture-projects.json (only actual owned Image Runtime BuildTool classifications)",
+    "DesktopPlatform:eng/policy/reconciliation/project-updates.json (only actually changed owned Image project blobs; preserve frozen directory/history records)",
+    "DesktopPlatform:.github/workflows/publish-nuget.yml (only owned actual Image portable producer/artifact/package inputs; preserve triggers/gate policy)",
+    "DesktopPlatform:.github/workflows/pr-gate.yml (only owned actual Image producer/artifact inputs; no trigger or security-policy change)"
    ],
    "shared": [
     {
@@ -9633,6 +9687,18 @@
     {
      "resource": "RES-workstation-build-slot",
      "mode": "exclusive"
+    },
+    {
+     "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
     }
    ],
    "validation": "Clean-cache C17/C# AOT consumers per RID; missing/transitive/wrong-RID library, hash collision, absent export, revoked artifact, source-unavailable negatives",
@@ -9641,7 +9707,7 @@
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: win-x64 already scaffolded."
    },
-   "notes": "Independent of the other packaging tasks.",
+   "notes": "Independent of the other packaging tasks.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Implement complete six native RID producer/admission/staging/consumer contracts for win-x64,win-arm64,linux-x64,linux-arm64,osx-x64,osx-arm64. Preserve existing r4 source/legal pins and all published identities. NAT22 owns the sole shared PE/ELF/Mach inspector; NAT25 consumes it and alone extends NativeAbi.cs. Existing MSVC Hostx64/arm64 and matching CRT allow actual available cross-production investigation. Unavailable compiler/artifact inputs fail closed, never invented attestations or six-output publication. Full OS/product acceptance is distinct from core production implementation and ordinary component tests.",
    "complete": []
   },
   {
@@ -9770,7 +9836,13 @@
     "DesktopPlatform:eng/provenance/records/** (new immutable owned PDF/helper producer/package records only)",
     "DesktopPlatform:eng/provenance/NOTICE.txt (regenerate exact admitted PDF/helper legal closure)",
     "DesktopPlatform:src/Native/ArcForges.Native.Abstractions/NativeAbi.cs (closed per-admitted-RID loader/composition extension; public types/C ABI/friend boundary unchanged)",
-    "DesktopPlatform:tests/NativeAbiTests/** (focused owned loader/adapter/error component tests)"
+    "DesktopPlatform:tests/NativeAbiTests/** (focused owned loader/adapter/error component tests)",
+    "DesktopPlatform:CMakePresets.json (closed per-RID PDFium producer flags/prefix/runtime recipe only)",
+    "DesktopPlatform:native/arcpdf-abi/CMakeLists.txt (platform install/rpath only if required; functional ABI unchanged)",
+    "DesktopPlatform:eng/native/vcpkg/** (new immutable per-RID pinned PDFium archive/Sigstore/member/legal/SBOM/build profiles; preserve win-x64 history)",
+    "DesktopPlatform:eng/native_provenance.py (bounded per-RID PDFium acquire/admission and sealed consumer adapters, exact source/toolchain evidence)",
+    "DesktopPlatform:tests/tooling/test_native_provenance.py (owned portable sealed-input positive and negative cases)",
+    "DesktopPlatform:DesktopPlatform.slnx (append only actual owned PDF Runtime/helper Runtime producer projects, coordinate Image appends)"
    ],
    "shared": [
     {
@@ -9804,8 +9876,15 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: no Pdf packaging scaffolding yet."
    },
-   "notes": "Depends on NAT.14 landing first (unlike the other packaging tasks, this one also republishes the shared ContentSandbox helper, so it is more tightly sequenced).\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). Managed Pdf package activation is required for actual helper consumption; keep PdfAbi/PdfDocument/parser records internal, and the helper friend boundary intact. Product APIs remain the ContentSandbox.Broker facade. Actual supported RID production and truthful missing-OS acceptance remain distinct; no invented all-RID artifacts.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. Consume NAT.15 actual sealed artifacts/pdfium-production-input: source-bound ArcPdfNative DLL, PDFium/CRT complete imports, SDK, 15 full legal texts/original CRT grants, SBOM/profile/attestation/build receipt and closed hash manifest. Implement a dedicated verifier/stager/packager; no PDFium vcpkg port exists and no other-RID artifact may be invented. Windows win-x64 first. Actual release helper signing/trust is required where supported; current hash-only launcher or unsigned local OS tests do not prove release signing. Preserve internal managed parser types and ContentSandbox.Broker product facade. Ordinary adapter/error/lifecycle/packaging tests proceed independently of whole OS/RID acceptance. Current NativeLoader.LoadValidated is explicitly win-x64-only. NAT.25 is the single coordinated owner of the closed loader/composition extension needed for admitted PDF/helper RIDs, coordinating the shared file with NAT.22; no arbitrary loader, public ABI change or fabricated Mach/ELF payload. Per-RID implementation/contracts and feasible adapter tests are distinct from actual publication/OS acceptance.",
-   "complete": []
+   "notes": "Depends on NAT.14 landing first (unlike the other packaging tasks, this one also republishes the shared ContentSandbox helper, so it is more tightly sequenced).\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). Managed Pdf package activation is required for actual helper consumption; keep PdfAbi/PdfDocument/parser records internal, and the helper friend boundary intact. Product APIs remain the ContentSandbox.Broker facade. Actual supported RID production and truthful missing-OS acceptance remain distinct; no invented all-RID artifacts.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. Consume NAT.15 actual sealed artifacts/pdfium-production-input: source-bound ArcPdfNative DLL, PDFium/CRT complete imports, SDK, 15 full legal texts/original CRT grants, SBOM/profile/attestation/build receipt and closed hash manifest. Implement a dedicated verifier/stager/packager; no PDFium vcpkg port exists and no other-RID artifact may be invented. Windows win-x64 first. Actual release helper signing/trust is required where supported; current hash-only launcher or unsigned local OS tests do not prove release signing. Preserve internal managed parser types and ContentSandbox.Broker product facade. Ordinary adapter/error/lifecycle/packaging tests proceed independently of whole OS/RID acceptance. Current NativeLoader.LoadValidated is explicitly win-x64-only. NAT.25 is the single coordinated owner of the closed loader/composition extension needed for admitted PDF/helper RIDs, coordinating the shared file with NAT.22; no arbitrary loader, public ABI change or fabricated Mach/ELF payload. Per-RID implementation/contracts and feasible adapter tests are distinct from actual publication/OS acceptance.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Complete portable PDF/helper sealed-input producer contracts and actual available-RID publication; pinned archives/member/legal/CRT closure and real compiler/runtime receipts are mandatory. No fake vcpkg PDF port or invented ELF/Mach output. NAT25 is sole closed NativeAbi loader owner; NAT22 is sole shared Python binary inspector owner, integrated through reviewed coordination. Existing win-x64 producer/history remains intact.",
+   "complete": [
+    {
+     "type": "integration",
+     "task": "NAT.22",
+     "need": "actual shared closed portable PE/ELF/Mach inspector and per-RID recipe contracts",
+     "why": "Independent PDF sealed producer/core advances; shared inspector sole source is NAT22-owned, no duplicate parser."
+    }
+   ]
   },
   {
    "id": "NAT.28",
@@ -10191,7 +10270,9 @@
     "ArcScope:src/ArcForges.ArcScope.Core/ArcForges.ArcScope.Core.csproj",
     "ArcScope:Directory.Packages.props (required exact published producer admission)",
     "ArcScope:eng/policy/** (owned project/API/closure/immutable receipt inputs)",
-    "ArcScope:eng/provenance/** (owned first-party/input successors)"
+    "ArcScope:eng/provenance/** (owned first-party/input successors)",
+    "ArcScope:eng/ArcForges.Repository/DependencyPolicy.cs (append only exact verified first-party managed producer publisher/licence identities; preserve feed/hash/licence and closure checks)",
+    "ArcScope:tests/ArcForges.ArcScope.Tests/DependencyPolicyTests.cs (focused exact producer acceptance and foreign/mismatch negatives only)"
    ],
    "validation": "Offline unit tests (descriptor/risk/context validation, one write path); no live Cloud in CI.",
    "evidence": "Source commit, command receipt samples, validation-failure cases.",
@@ -10199,7 +10280,7 @@
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: ArcScope HEAD 31551f8 has only the src/ArcForges.ArcScope(.Core) bootstrap (ArcScopeApp, BuildIdentity, CloudHelloClient, HelloViewModel, LiveSmoke, MainWindow, Program); no Domain/Application/Infrastructure/AssistantIntegration trees exist."
    },
-   "notes": "This is the ONLY product-repo work in WP14 to WP17/26; professional ArcScope completion is WP33-WP35, not here.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Binds the current Core/Domain project layout, without renaming identities. Owns actual typed read/create/annotation handlers, single durable local write/receipt path, expected-revision and final-owner authorization/approval/context/resource checks shared by UI and own-app capability calls, and the product durable ILeaseStore adapter. Implements cancellation, unknown outcome, replay, concurrency, restart and lifecycle against actual persistence; no Hello/test owner is a real product service. Supporting project/solution/locks/pins are reviewed under ADP-07 and dependency admission. Appending means CreateAnnotation adds a new independently identified annotation to the selected session; no invented AppendAnnotation/UpdateAnnotation wire method. The product owns an internal minimal session bootstrap operation and actual durable IApprovalStore as well as ILeaseStore, with one transactional persistence authority.\n\nOperation-local StructuredValue mapping is explicit for only GetSession and CreateAnnotation: use authored json_name record keys, ASCII ordinal sorted/unique at most200 and reject unknown keys; Id uses canonical lowercase GUID D text and published UuidBoundary wire conversion; complete uint64 uses canonical unsigned decimal text (0 through UInt64Max; positive revisions), never floating point or overflowing signed64. RequestMeta fields and generated DTO fields are mapped explicitly and bounded by existing list200/depth16/schema budgets. This is a local capability adapter profile, not new wire schema, reflection/ProtoJSON semantics or a generic cross-product encoding.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. GetSession/CreateAnnotation local StructuredValue profile additionally preserves optional bytes as canonical standard padded base64 TEXT with exact round-trip/presence and authored byte/schema budgets; sint64 uses signed64 Integer, uint32 uses Integer 0..UInt32Max, authored double uses finite Number, and Decimal uses its exact published producer record without floating point. Full ScopeSession configuration/captures metadata round-trips without dropping fields. Existing canonical UUID/uint64/json_name/unknown-key/list/depth rules remain; no generic wire schema is introduced. Trusted human-only bootstrap requires full validated user-owned Name and ScopeConfiguration, including actual generated required configured channels/framing. An intentionally authored canonicalReplay session may persist empty captures; reads never synthesize configuration/profile/native revision and assistant/foreign actors cannot bypass creation authority. This is not device/I/O/sample proof.",
+   "notes": "This is the ONLY product-repo work in WP14 to WP17/26; professional ArcScope completion is WP33-WP35, not here.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Binds the current Core/Domain project layout, without renaming identities. Owns actual typed read/create/annotation handlers, single durable local write/receipt path, expected-revision and final-owner authorization/approval/context/resource checks shared by UI and own-app capability calls, and the product durable ILeaseStore adapter. Implements cancellation, unknown outcome, replay, concurrency, restart and lifecycle against actual persistence; no Hello/test owner is a real product service. Supporting project/solution/locks/pins are reviewed under ADP-07 and dependency admission. Appending means CreateAnnotation adds a new independently identified annotation to the selected session; no invented AppendAnnotation/UpdateAnnotation wire method. The product owns an internal minimal session bootstrap operation and actual durable IApprovalStore as well as ILeaseStore, with one transactional persistence authority.\n\nOperation-local StructuredValue mapping is explicit for only GetSession and CreateAnnotation: use authored json_name record keys, ASCII ordinal sorted/unique at most200 and reject unknown keys; Id uses canonical lowercase GUID D text and published UuidBoundary wire conversion; complete uint64 uses canonical unsigned decimal text (0 through UInt64Max; positive revisions), never floating point or overflowing signed64. RequestMeta fields and generated DTO fields are mapped explicitly and bounded by existing list200/depth16/schema budgets. This is a local capability adapter profile, not new wire schema, reflection/ProtoJSON semantics or a generic cross-product encoding.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. GetSession/CreateAnnotation local StructuredValue profile additionally preserves optional bytes as canonical standard padded base64 TEXT with exact round-trip/presence and authored byte/schema budgets; sint64 uses signed64 Integer, uint32 uses Integer 0..UInt32Max, authored double uses finite Number, and Decimal uses its exact published producer record without floating point. Full ScopeSession configuration/captures metadata round-trips without dropping fields. Existing canonical UUID/uint64/json_name/unknown-key/list/depth rules remain; no generic wire schema is introduced. Trusted human-only bootstrap requires full validated user-owned Name and ScopeConfiguration, including actual generated required configured channels/framing. An intentionally authored canonicalReplay session may persist empty captures; reads never synthesize configuration/profile/native revision and assistant/foreign actors cannot bypass creation authority. This is not device/I/O/sample proof.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). The exact published managed producer identifiers require their first-party publisher/licence allowlist binding in the existing dependency gate. Append only actual independently admitted coordinates/identity/licence expectations and focused negatives; no feed, hash, generic validation or security-gate weakening. Existing immutable provenance inputs remain retained.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Local annotation history projection is returned only after trusted GetSession gating and fresh current actor/lease/equal owner resource/version validation, cloning only owner data. This is internal product composition, no new public wire operation or raw repository/store exposure. ProductComposition is sole runtime-owned composition; shared assistant uses its distinct prebound Agent endpoint and real current lease, never human fallback.",
    "complete": []
   },
   {
@@ -15397,8 +15478,32 @@
     "SUB-guarded-batch-capacity-fixtures"
    ],
    "writes": [
-    "Cloud:src/ArcForges.Cloud.Capacity/**",
-    "Cloud:wrangler.json"
+    "Cloud:src/ArcForges.Cloud/Capacity/** (actual measurement/orchestration and bounded infrastructure adapters)",
+    "Cloud:src/ArcForges.Cloud.Modules.Entitlement/Quota/Kernel/** (real kernel over existing owned quota tables, no fake used/held zero)",
+    "Cloud:src/ArcForges.Cloud.Modules.Entitlement/EntitlementModule.cs (register actual task-owned quota kernel only; preserve existing resolver/distribution entries)",
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Quota/** (typed primitive quota kernel ports only)",
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Capacity/** (typed primitive capacity/job/pacer infrastructure ports only)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Capacity/** (actual Platform-owned job lease reader/adapter using existing descriptor/factory)",
+    "Cloud:storage/plans/platform/capacity-job-*.sql (bounded actual job lease/capacity plans only)",
+    "Cloud:storage/plans/entitlement/quota-kernel-*.sql (bounded actual owned quota kernel plans only)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/PlanManifest.g.cs (regenerate only)",
+    "Cloud:worker/storage/plans.generated.ts (regenerate only)",
+    "Cloud:src/ArcForges.Cloud/Composition/** (register exact real task-owned capacity/kernel binding only)",
+    "Cloud:worker/capacity/** (actual bounded SimulationPacer/host infrastructure only)",
+    "Cloud:worker/index.ts (exact capacity/pacer binding only; preserve other dispatcher/routes)",
+    "Cloud:.dockerignore (include exact task-owned source roots only)",
+    "Cloud:package.json (register owned offline tests only)",
+    "Cloud:wrangler.json (only exact owned existing capacity/pacer bindings, preserve production routes/data/workers.dev=false)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Capacity/**",
+    "Cloud:tests/ArcForges.Cloud.Tests/Quota/**",
+    "Cloud:tests/worker/capacity.test.ts",
+    "Cloud:tests/worker/quota-kernel.test.ts",
+    "Cloud:tests/ArchitectureTests/** (exact owned layer/API binding only)",
+    "Cloud:eng/policy/dependency-policy.json (exact changed owned inputs only)",
+    "Cloud:eng/policy/dependency-reviews/cloud-07-*.json (new immutable reviewed successors)",
+    "Cloud:eng/provenance/** (owned first-party/input successor records only)",
+    "Cloud:docs/cloud-07-implementation.md",
+    "Cloud:tests/worker/release-provenance.test.ts (only actual owned sealed Worker successor hash/bytes and observed input/output closure counts; preserve all negative cases and histories)"
    ],
    "shared": [
     {
@@ -15408,6 +15513,14 @@
     {
      "resource": "RES-cloud-policy-inputs",
      "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-storage-plans",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-host-composition",
+     "mode": "append"
     }
    ],
    "validation": "opt-in local + real-deployed D1 rollback/duplicate/competing-writer/cold-start tests; public/internal denial, blocked egress, forged service headers, stream-limit and headroom measurement",
@@ -15416,7 +15529,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: no capacity harness exists; wrangler.json today has a single lite/1-instance placeholder container"
    },
-   "notes": "Can proceed in parallel with WP-22/23/24/25 module work once CLOUD.01-04/06 exist, because it uses its own guarded-batch fixtures rather than waiting for real module business logic.",
+   "notes": "Can proceed in parallel with WP-22/23/24/25 module work once CLOUD.01-04/06 exist, because it uses its own guarded-batch fixtures rather than waiting for real module business logic.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Bind old logical Cloud.Capacity roots to actual host Capacity orchestration, Entitlement-owned quota kernel over existing rows and typed Abstractions ports, Storage.D1 Platform job lease adapter and actual pacer infrastructure. Use real existing Platform descriptor authority, never fabricate a module/project or alias proof FoundationOptions. Complete cancellation/retry/fencing/rollback/concurrency/used-held persistence kernel tests; unavailable remote D1 only may be faked. Measured live L16 and full series acceptance remain distinct, run scoped existing environment only after lease and actual current infrastructure verification. Preserve all production routes/data/workers.dev=false, no reuse of completed unaffected proof as a new measurement. COM07 consumes actual kernel/persistent accounting, COM06 full usage projection joins COM07. Current invalid nonexistent Cloud.Capacity and broad wrangler scope are replaced by the actual narrowly owned roots/binding above; historical baseline and measured obligations remain unchanged. Storage.D1 owns actual Platform infrastructure factory/executor authority, never module-side invented ModuleDescriptor.Create authority or a phantom project. Existing tables only, no new physical schema/migration.",
    "complete": [
     {
      "type": "integration",
@@ -15776,6 +15889,12 @@
      "task": "CLOUD.72",
      "need": "the production Identity store and identifier source over the plan-execution port, including the account-enrollment family call and the replay mapping",
      "why": "CLOUD.12 is the first task that needs a live Identity store (a passkey or email completion enrolls or signs in a real user); CLOUD.11 delivered the core without one, and a real-provider acceptance cannot run against an unbound store"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.75",
+     "need": "actual required realm authentication epoch and persisted current/open recovery generation",
+     "why": "Session/authentication issuance cannot use constant1, proof options or downstream C19 authority; shared producer is cycle-free."
     }
    ],
    "external": [
@@ -15803,7 +15922,12 @@
     "Cloud:src/ArcForges.Cloud.Modules.Identity/Auth/**",
     "Cloud:src/ArcForges.Cloud.Modules.Identity/IdentityModule.cs",
     "Cloud:src/ArcForges.Cloud/Session/** (native auth exception transport and source-generated published-schema projections)",
-    "Cloud:worker/** (native auth/rate-limit/profile fragment only)"
+    "Cloud:worker/** (native auth/rate-limit/profile fragment only)",
+    "Cloud:src/ArcForges.Cloud.Modules.Notification/IdentitySecurity/** (owner-sealed authentication/enrollment security delivery contribution)",
+    "Cloud:src/ArcForges.Cloud.Modules.Notification/NotificationModule.cs (register authentication IdentitySecurity participant only)",
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Notification/IdentitySecurityParticipant.cs (typed opaque owner participant only)",
+    "Cloud:src/ArcForges.Cloud.Modules.Identity/OperatorIdentity/** (shared actual configured Entra PKCE/code exchange and validation core only)",
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Identity/OperatorIdentityPort.cs (typed verified operator identity seam only)"
    ],
    "validation": "actual email delivery/recovery and prepared-secondary tests; PKCE/state/redirect/code-replay, Credential Manager/RP origin fixtures, refresh contention and revocation -- real provider evidence, no CI hosted live-service run (per P2-017, this stays local opt-in)",
    "evidence": "real provider identity flow results; required accounts/DNS recorded as external inputs, never replaced by a stub acceptance",
@@ -15811,7 +15935,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: no auth ceremonies or mail adapters exist"
    },
-   "notes": "Must-be-real-early per implementation-sequence §3 ('Identity, refresh/session contention and real email delivery/recovery at WP22' is explicitly listed as Must be real early, not Push-until-later). Keep this must-be-real-early placement; do not move it later. Planning repair 2026-10-05: starts after CLOUD.72, which binds the Identity store and identifier source to the plan-execution port; this task binds its own Auth and Notification stores the same way. Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one. The write scope above still names the nonexistent `src/Cloud/...` layout; its claimant binds it to the real layout (precedents: CLOUD.03, CLOUD.06, CLOUD.11).\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.",
+   "notes": "Must-be-real-early per implementation-sequence §3 ('Identity, refresh/session contention and real email delivery/recovery at WP22' is explicitly listed as Must be real early, not Push-until-later). Keep this must-be-real-early placement; do not move it later. Planning repair 2026-10-05: starts after CLOUD.72, which binds the Identity store and identifier source to the plan-execution port; this task binds its own Auth and Notification stores the same way. Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one. The write scope above still names the nonexistent `src/Cloud/...` layout; its claimant binds it to the real layout (precedents: CLOUD.03, CLOUD.06, CLOUD.11).\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Authentication/enrollment security delivery uses actual Notification-owned opaque contribution and real User-to-delivery-to-attempt immediate FK ordering; provider sends stay outside commit. Shared participant changes are coordinated with CLOUD15/17, no foreign table authority or fabricated delivery.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Own shared actual configured Entra operator exchange/validation core, with bounded standard protocol adapters and no raw credential/token persistence; CLOUD19 alone owns separate origin cookie/CSRF/server session integration. No customer identity alias or direct JS bearer.",
    "complete": [
     {
      "type": "integration",
@@ -15876,6 +16000,12 @@
      "task": "CLOUD.72",
      "need": "the Abstractions family port and the Identity production store, to execute the account-enrollment and device-revocation families and bind the Device store over the plan-execution port",
      "why": "device revocation and the Device participant of enrollment are shared-transaction families that run through the family port CLOUD.72 adds; the Device store is this task's own binding of the plan-execution port"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.75",
+     "need": "actual required realm authentication epoch and persisted current/open recovery generation",
+     "why": "Session/authentication issuance cannot use constant1, proof options or downstream C19 authority; shared producer is cycle-free."
     }
    ],
    "writes": [
@@ -15899,7 +16029,14 @@
     "Cloud:src/ArcForges.Cloud.Modules.Workspace/SessionIssuance/** (actual owner-sealed realm/owner/active/revision contribution)",
     "Cloud:src/ArcForges.Cloud.Modules.Workspace/WorkspaceModule.cs (owned SessionIssuance registration only)",
     "Cloud:src/ArcForges.Cloud.Modules.Notification/DeviceRevocation/** (actual atomic owner push-registration cleanup contribution)",
-    "Cloud:src/ArcForges.Cloud.Modules.Notification/NotificationModule.cs (owned DeviceRevocation registration only)"
+    "Cloud:src/ArcForges.Cloud.Modules.Notification/NotificationModule.cs (owned DeviceRevocation registration only)",
+    "Cloud:eng/verification/storage-plans.ts (closed per-plan exact owner/class/key record-mutation order only)",
+    "Cloud:storage/plans/families.json (only exact task-owned per-plan immediate-FK-safe record order)",
+    "Cloud:storage/plans/families.expanded.json (regenerate only)",
+    "Cloud:tests/worker/family-plans.test.ts (owned ordering and malformed/duplicate/foreign-role negatives)",
+    "Cloud:tests/worker/family-oracle.test.ts (actual first-session and enrollment immediate-FK behavior)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Vectors/family-lock-order.json (owned fixed-lock versus record-execution order cases)",
+    "Cloud:eng/verification/d1-families-local.ts (one explicit existing-environment task-owned immediate-FK scenario only)"
    ],
    "shared": [
     {
@@ -15930,7 +16067,7 @@
     "notes": "Observed none, unreviewed: none exists"
    },
    "complete": [],
-   "notes": "Planning repair 2026-10-05: starts after CLOUD.72 (the family port and the plan-execution port it builds on). Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one. The write scope above still names the nonexistent `src/Cloud/...` layout; its claimant binds it to the real layout.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.\n\n2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). Workspace alone seals current realm/owner/active/revision SessionIssuance authority; Notification alone seals its DeviceRevocation push-registration cleanup contribution. Identity coordinates opaque module participants through existing C13 ports/family SQL, without expanding CLOUD.72 create-user exception. Actual completed CLOUD.72 remains prerequisite before C13 claim; owner-specific source work cannot fabricate foreign authority."
+   "notes": "Planning repair 2026-10-05: starts after CLOUD.72 (the family port and the plan-execution port it builds on). Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one. The write scope above still names the nonexistent `src/Cloud/...` layout; its claimant binds it to the real layout.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.\n\n2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). Workspace alone seals current realm/owner/active/revision SessionIssuance authority; Notification alone seals its DeviceRevocation push-registration cleanup contribution. Identity coordinates opaque module participants through existing C13 ports/family SQL, without expanding CLOUD.72 create-user exception. Actual completed CLOUD.72 remains prerequisite before C13 claim; owner-specific source work cannot fabricate foreign authority.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Guard and SU04 lock order remain fixed. Optional closed per-plan record role order may sequence actual User then Device then Session immediate foreign keys; every declared owner/class/key record occurs once, no foreign role, quota/bucket/reservation reorder, platform-tail movement or release-last change. Missing override preserves existing plan bytes. Production auth/recovery authority must come from the shared real producer; constant1/proof-only options do not satisfy it. Exact optional property mutationRoleOrder maps named planID to static [{module,class,key}] record roles; absent property keeps old bytes, malformed/unknown/missing/duplicate/nonrecord roles reject. Fresh enrollment obeys Identity user/credential then Workspace then Device/device-installation then Identity session immediate FKs, with unchanged guard/lock and platform tails. Exact unbound installation tuple public_key emptystring AND key_version0 represents absence of signing authority; any mixed empty/nonpositive tuple invalid. Ordinary browser-cookie sessions are usable only where authored operation requires no key. Key/instance/remote-bound operations refuse unbound. Only authorized Register with validated supplied public key/current actor/proof may bind; existing rotation needs explicit current authority and cannot overwrite silently. No fake/generated client key, wire change or locked migration. First admitted mutationRoleOrder is record-only: any bucket/reservation presence rejects the override. Existing quota plans remain byte-identical. CLOUD12/Entitlement own a reviewed follow-up preserving fixed quota subsequences if real configured initial grants need such plans; never split the required atomic enrollment commit."
   },
   {
    "id": "CLOUD.14",
@@ -16019,7 +16156,11 @@
     "Cloud:worker/storage/plans.generated.ts (regenerate only)",
     "Cloud:src/ArcForges.Cloud.Modules.Abstractions/** (task-owned primitive production cross-owner ports, no duplicate wire schemas)",
     "Cloud:src/ArcForges.Cloud/Composition/** (append only real task-owned service/owner registration)",
-    "Cloud:.dockerignore (task-owned source inclusion only)"
+    "Cloud:.dockerignore (task-owned source inclusion only)",
+    "Cloud:src/ArcForges.Cloud.Modules.Identity/IdentityModule.cs (register only task-owned real services)",
+    "Cloud:src/ArcForges.Cloud.Modules.Notification/IdentitySecurity/** (owner-sealed task-specific durable security-delivery contribution)",
+    "Cloud:src/ArcForges.Cloud.Modules.Notification/NotificationModule.cs (register task-owned IdentitySecurity participant only)",
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Notification/IdentitySecurityParticipant.cs (typed opaque owner participant, no foreign SQL)"
    ],
    "validation": "offline coverage-enumeration test, window-expiry test, app-unlock-does-not-substitute negative test",
    "evidence": "step-up coverage, expiry and non-substitution results",
@@ -16027,7 +16168,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: none exists"
    },
-   "notes": "Aggregate-gate risk: WP-22.04's completion gate says 'every enumerated operation demands step-up', but the full enumeration spans Commerce (WP-42), PublicApi (WP-23) and client apps outside this area. This task delivers the mechanism plus Identity's own operations; see integration_proposals for the cross-product completion.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.",
+   "notes": "Aggregate-gate risk: WP-22.04's completion gate says 'every enumerated operation demands step-up', but the full enumeration spans Commerce (WP-42), PublicApi (WP-23) and client apps outside this area. This task delivers the mechanism plus Identity's own operations; see integration_proposals for the cross-product completion.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Identity registers its real service; Notification alone seals durable task-specific security delivery authority. Actual immediate FKs require existing user before notification_delivery and delivery before delivery_attempt; provider I/O remains outside the atomic family. Coordinate one shared participant source owner, preserving other task methods/registrations and current epoch authority.",
    "complete": [],
    "shared": [
     {
@@ -16093,6 +16234,12 @@
      "task": "CLOUD.15",
      "need": "the step-up mechanism, since one-time PAT display happens after step-up",
      "why": "PAT issuance display is gated by step-up per the WP text"
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.75",
+     "need": "real current shared realm/recovery authority adapter",
+     "why": "Core PAT implementation continues; production use must recheck actual epoch authority."
     }
    ],
    "writes": [
@@ -16118,7 +16265,9 @@
     "Cloud:storage/plans/families.expanded.json (regenerate only)",
     "Cloud:src/ArcForges.Cloud.Modules.Workspace/TokenIssuance/**",
     "Cloud:src/ArcForges.Cloud.Modules.Workspace/WorkspaceModule.cs (register actual Workspace-owned token-issuance participant only)",
-    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Workspace/TokenIssuanceParticipant.cs (typed opaque Workspace participant port only)"
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Workspace/TokenIssuanceParticipant.cs (typed opaque Workspace participant port only)",
+    "Cloud:tests/worker/storage-plan-ownership.test.ts (append exact token-issuance family inventory only; Workspace owner row remains CLOUD72-owned)",
+    "Cloud:tests/worker/release-provenance.test.ts (only actual successor Worker bundle SHA256/byte count and counts if actual closure changes)"
    ],
    "validation": "offline enumeration of eligible/denied methods from the generated manifest; cookie+bearer conflict, scope escalation and agent-substitution negative vectors",
    "evidence": "no missing/default PAT metadata, no generic token bypass",
@@ -16126,7 +16275,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: none exists"
    },
-   "notes": "Planning repair 2026-10-05: starts after COM.16 (the plan-execution port). Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one. The write scope above still names the nonexistent `src/Cloud/...` layout; its claimant binds it to the real layout.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Uses hash-only256-bit opaque bearer storage; no automatic mutation replay, human-delegated actor chain derived from persisted owner, no caller-asserted actor facts. Token issuance atomically validates owned workspace/user/session and consumes a proved exact-class/targetHash/session/epoch challenge no older than five minutes; maximum expiry365days. Unknown operation/scope/actor/boundary, mixed cookie/bearer or absent epoch authority fail closed. CLOUD.19/.21 own generated Contracts metadata projection, verified invocation provenance, current auth/recovery epoch and normal primary/entitlement/budget checks; PAT never shortcuts them. PAT actorKind remains the authored human actor, with token identifier in verified delegation/credential provenance; never invent a pat actor kind or trust client actor fields. Verified publisher ownership is a catalog.submitVersion final-owner check owned by EXT.06/CLOUD.21; token issuance does not require a PackageCatalog producer or fabricate publisher permission. The token is only a scoped principal and never bypasses the real owner.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. Workspace is an actual production project. Its own registered participant obtains its module factory inside Workspace and produces opaque contributions for token-issuance.create-token, binding workspace_id/realm_id/owner_user_id/state1. Identity coordinates opaque sets and retains only its admitted eligibility precheck; it cannot manufacture Workspace authority. The existing enrollment-only exception is unchanged. No new Workspace reads/tables/schema or module foreign reference is authorized.",
+   "notes": "Planning repair 2026-10-05: starts after COM.16 (the plan-execution port). Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one. The write scope above still names the nonexistent `src/Cloud/...` layout; its claimant binds it to the real layout.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Uses hash-only256-bit opaque bearer storage; no automatic mutation replay, human-delegated actor chain derived from persisted owner, no caller-asserted actor facts. Token issuance atomically validates owned workspace/user/session and consumes a proved exact-class/targetHash/session/epoch challenge no older than five minutes; maximum expiry365days. Unknown operation/scope/actor/boundary, mixed cookie/bearer or absent epoch authority fail closed. CLOUD.19/.21 own generated Contracts metadata projection, verified invocation provenance, current auth/recovery epoch and normal primary/entitlement/budget checks; PAT never shortcuts them. PAT actorKind remains the authored human actor, with token identifier in verified delegation/credential provenance; never invent a pat actor kind or trust client actor fields. Verified publisher ownership is a catalog.submitVersion final-owner check owned by EXT.06/CLOUD.21; token issuance does not require a PackageCatalog producer or fabricate publisher permission. The token is only a scoped principal and never bypasses the real owner.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. Workspace is an actual production project. Its own registered participant obtains its module factory inside Workspace and produces opaque contributions for token-issuance.create-token, binding workspace_id/realm_id/owner_user_id/state1. Identity coordinates opaque sets and retains only its admitted eligibility precheck; it cannot manufacture Workspace authority. The existing enrollment-only exception is unchanged. No new Workspace reads/tables/schema or module foreign reference is authorized.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Token issuance regenerates actual family bundle and exact closed inventory; seal a new immutable successor then update its observed identity constants, preserving all negative checker cases and historical profiles. Serialize these shared scalar bindings with CLOUD72/COM02.",
    "shared": [
     {
      "resource": "RES-cloud-policy-inputs",
@@ -16185,7 +16334,11 @@
     "Cloud:worker/storage/plans.generated.ts (regenerate only)",
     "Cloud:src/ArcForges.Cloud.Modules.Abstractions/** (task-owned primitive production cross-owner ports, no duplicate wire schemas)",
     "Cloud:src/ArcForges.Cloud/Composition/** (append only real task-owned service/owner registration)",
-    "Cloud:.dockerignore (task-owned source inclusion only)"
+    "Cloud:.dockerignore (task-owned source inclusion only)",
+    "Cloud:src/ArcForges.Cloud.Modules.Identity/IdentityModule.cs (register only task-owned real services)",
+    "Cloud:src/ArcForges.Cloud.Modules.Notification/IdentitySecurity/** (owner-sealed task-specific durable security-delivery contribution)",
+    "Cloud:src/ArcForges.Cloud.Modules.Notification/NotificationModule.cs (register task-owned IdentitySecurity participant only)",
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Notification/IdentitySecurityParticipant.cs (typed opaque owner participant, no foreign SQL)"
    ],
    "validation": "offline recovery-abuse tests, state-transition capability matrix, deletion-preserves-local-data test",
    "evidence": "recovery abuse-resistance, state matrix and deletion results",
@@ -16208,7 +16361,7 @@
      "mode": "append"
     }
    ],
-   "notes": "\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh."
+   "notes": "\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Identity registers its real service; Notification alone seals durable task-specific security delivery authority. Actual immediate FKs require existing user before notification_delivery and delivery before delivery_attempt; provider I/O remains outside the atomic family. Coordinate one shared participant source owner, preserving other task methods/registrations and current epoch authority."
   },
   {
    "id": "CLOUD.18",
@@ -16305,6 +16458,12 @@
      "task": "CON.26",
      "need": "published complete public authorization metadata",
      "why": "Host verifies actors and projects exact published scope/PAT eligibility without inventing DTO meaning."
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.12",
+     "need": "actual shared configured Entra exchange/verification core",
+     "why": "The sole browser Operator adapter consumes the real identity-owner producer, not parallel authentication or customer-session aliases."
     }
    ],
    "complete": [
@@ -16340,7 +16499,18 @@
     "Cloud:worker/storage/plans.generated.ts (regenerate only)",
     "Cloud:src/ArcForges.Cloud.Modules.Abstractions/** (task-owned primitive production cross-owner ports, no duplicate wire schemas)",
     "Cloud:src/ArcForges.Cloud/Composition/** (append only real task-owned service/owner registration)",
-    "Cloud:.dockerignore (task-owned source inclusion only)"
+    "Cloud:.dockerignore (task-owned source inclusion only)",
+    "Cloud:src/ArcForges.Cloud/Ingress/RpcPolicy.cs (dedicated Operator authentication mode only)",
+    "Cloud:src/ArcForges.Cloud/Ingress/IngressPipeline.cs (verified bounded Operator credential path only)",
+    "Cloud:src/ArcForges.Cloud/Ingress/Caller.cs (qualified separate Operator principal, not customer workspace actor)",
+    "Cloud:src/ArcForges.Cloud/Ingress/OperatorCredential.cs (typed operator assertion context/verifier port only)",
+    "Cloud:worker/ingress/routes.ts (exact Operator route policy only)",
+    "Cloud:worker/ingress/pipeline.ts (bounded single operator bearer forwarding only)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Ingress/** (owned operator/customer separation negatives)",
+    "Cloud:tests/worker/ingress-pipeline.test.ts (exact operator forwarding/redaction negatives)",
+    "Cloud:tests/worker/ingress-routes.test.ts (exact route-policy negatives)",
+    "Cloud:src/ArcForges.Cloud/Operator/** (actual separate origin cookie/CSRF/PKCE server-session adapter and private assertion projection only)",
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Identity/OperatorIdentityPort.cs (typed current operator identity/directory seam, no customer actor alias)"
    ],
    "validation": "opt-in local + real D1 tests: one-use challenge, lost-login response, idle-vs-revoke race, expiry, replica failover, exact Origin/CSRF on unsafe RPC/session/stream/object operations, native-token route refusal, gRPC-Web stream authorization, two-products-one-OS-user isolation",
    "evidence": "one server-owned session authority, no JS bearer, no cross-origin reuse or session resurrection; real database/concurrency, origin/CSRF/expiry and multi-replica results",
@@ -16348,7 +16518,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: none exists"
    },
-   "notes": "Gate: PG-23 (this task's contribution; WP-23.05 contributes the other side). Feeds WP-23 and full portal acceptance -- WP-23 cannot consume this contract until it passes; a written P2-003 decision alone is insufficient per the WP text.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.",
+   "notes": "Gate: PG-23 (this task's contribution; WP-23.05 contributes the other side). Feeds WP-23 and full portal acceptance -- WP-23 cannot consume this contract until it passes; a written P2-003 decision alone is insufficient per the WP text.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). CLOUD19 is the sole real browser/Operator ingress adapter owner, consuming CLOUD12 shared Entra PKCE/code exchange and validation core. Preserve separate Operator origin opaque server session cookie+CSRF; no browser JS bearer, customer cookie/native/PAT/Agent alias. Only bounded trusted server-to-host assertions are forwarded internally, with configured issuer/audience/client/current directory and exact role/method/case/MFA validation. POL02 supplies owner config handler/current directory contract composition, not a parallel session implementation.",
    "shared": [
     {
      "resource": "RES-cloud-policy-inputs",
@@ -19230,7 +19400,9 @@
     "Cloud:worker/storage/plans.generated.ts (regenerate only)",
     "Cloud:tests/worker/identity-core-oracle.test.ts (only the two credential-list fixture argument updates for the bounded created_at/auth_identity_id keyset cursor; assertions unchanged)",
     "Cloud:tests/worker/storage-plan-ownership.test.ts (append actual workspace owner expectation only)",
-    "Cloud:tests/worker/release-provenance.test.ts (exact actual approved Worker bundle SHA256/byte-count assertion only)"
+    "Cloud:tests/worker/release-provenance.test.ts (exact actual approved Worker bundle SHA256/byte-count assertion only)",
+    "Cloud:tests/worker/identity-plan-calls.test.ts (only three test credential property labels password to passwordHash; identical verifier/expected plan-argument fingerprint bytes; four vector input labels and one decoder literal intentionally change)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Identity/IdentityStatementTests.cs (one input decoder password to passwordHash literal only; plan arguments/hash assertions unchanged)"
    ],
    "validation": "Offline unit tests: the store against the plan-port fakes and the SQLite oracle on the real migrations (every read scoped by realm, every commit variant, a refused guard commits nothing, concurrent enrollments of one credential commit once), the enrollment call through the family port to the real family plan, identifier unpredictability and format (version 4, canonical, no repeat in a large draw, a forced collision is refused whole and retried with fresh identifiers), the replay mapping (same content replays with CreatedUser=false, different content is a conflict, an expired receipt is never executed, an unknown outcome retries only the same command), the family port contract (a non-participant, a foreign statement and an unknown family are refused before the executor) and the architecture tests; one explicit local opt-in run against workerd's D1 per docs/validation-policy.md, recorded once; no hosted runtime, live-service or browser CI (P2-017).",
    "evidence": "Store, identifier-source, replay-mapping and family-port test results; the enrollment and concurrent-writer results on the oracle and the local workerd D1 run (recorded once, or recorded as untested); the architecture test results; source commit.",
@@ -19238,7 +19410,7 @@
     "state": "not-started",
     "notes": "Planning repair 2026-10-05: CLOUD.11 (complete, Cloud PR 54) ships the Identity core with no production IIdentityStore or IIdentityIdSource, so the registered service cannot be resolved; COM.16 (Cloud PR 55, in review) delivers the generic plan-execution port, which refuses any plan id outside the calling module's owner, so it cannot execute the shared family plan families.account-enrollment.create-user."
    },
-   "notes": "Planning repair 2026-10-05 (DLV-34: a new task gives work no existing scope could hold; no obligation or acceptance is removed). Design #248 decision 4 left the binding of IIdentityStore to the plan-execution port with no owner, and CLOUD.11's record lists the identifier source and the receipt reused-identifier mapping with it; nothing in the graph owned any of the three. Decisions: (1) one new small task, not an extension of CLOUD.12: CLOUD.12 is an L task whose acceptance needs external provider accounts and DNS that this binding does not, so absorbing it would hold the offline store work behind the Operations Owner, and a separate task keeps the enrollment path testable offline on the oracle and gives CLOUD.13 and later Identity tasks the same base. (2) It starts after COM.16 (the plan-execution port, delivered when merged per DLV-24) and CLOUD.11, and only CLOUD.12 and CLOUD.13 start after it (CLOUD.12 is the first live-store consumer; CLOUD.13 runs the device-revocation family and the Device participant of enrollment through the family port); CLOUD.16 gains a COM.16 edge for its own token store; CLOUD.20 completes after it. GOV.16 needs only the static metadata CLOUD.11 delivered (its edge is on CLOUD.11 and is unchanged), and no in-scope task waits for this one. (3) The COM.16 port refuses a plan whose owner is not the caller, so a shared family plan cannot pass through it; the family-execution port is therefore a new generic port in Abstractions with its own adapter folder in Storage.D1, neither of which overlaps COM.16's folders, and every later family participant (CLOUD.13, CLOUD.39, CLOUD.42, CLOUD.53, CLOUD.63) reuses it. Until the Workspace module has a project, the enrollment initiator contributes the workspace statements by one explicit adapter exception. (4) Identifiers: random version 4 UUIDs from the platform's cryptographic generator (the Entitlement store uses the same form); a replayed enrollment discards the identifiers it generated for the retry. (5) No plan, table or migration changes, so no RES-cloud-storage-plans or migration append; if the replay mapping proves to need one, that is a planning repair. Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Corrects missing read projections, stable replay semantics and the stale claim that the Workspace project does not exist. Enrollment fingerprint binds verified caller content and excludes newly generated identities; stored receipt contains result identities, and preflight precedes existing-credential shortcuts so expiry/reuse/unknown-outcome rules hold. Identity has exactly two temporary Workspace ownership reads through the generic family port; named workspace plans stay Workspace-owned and no arbitrary foreign read is authorized. Generic multi-owner families compose opaque contributions sealed by each actual owning module factory; coordinators cannot assert foreign authority. Real store and family component tests include concurrency/cancellation/partial and unknown outcomes. Production host executor activation belongs to CLOUD.21.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. The two credential-list fixtures use realm/user plus int64 long.MinValue and empty text cursor parameters; no migration or plan inventory change is needed for those fixture repairs.\n\n2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). Actual Workspace read plans add only its exact owner inventory entry and sealed Worker bundle identity assertions; no generic owner/provenance bypass. Shared Worker inventory changes serialize with COM.02 under existing resource protocols and rebase on the actual approved generated bytes.",
+   "notes": "Planning repair 2026-10-05 (DLV-34: a new task gives work no existing scope could hold; no obligation or acceptance is removed). Design #248 decision 4 left the binding of IIdentityStore to the plan-execution port with no owner, and CLOUD.11's record lists the identifier source and the receipt reused-identifier mapping with it; nothing in the graph owned any of the three. Decisions: (1) one new small task, not an extension of CLOUD.12: CLOUD.12 is an L task whose acceptance needs external provider accounts and DNS that this binding does not, so absorbing it would hold the offline store work behind the Operations Owner, and a separate task keeps the enrollment path testable offline on the oracle and gives CLOUD.13 and later Identity tasks the same base. (2) It starts after COM.16 (the plan-execution port, delivered when merged per DLV-24) and CLOUD.11, and only CLOUD.12 and CLOUD.13 start after it (CLOUD.12 is the first live-store consumer; CLOUD.13 runs the device-revocation family and the Device participant of enrollment through the family port); CLOUD.16 gains a COM.16 edge for its own token store; CLOUD.20 completes after it. GOV.16 needs only the static metadata CLOUD.11 delivered (its edge is on CLOUD.11 and is unchanged), and no in-scope task waits for this one. (3) The COM.16 port refuses a plan whose owner is not the caller, so a shared family plan cannot pass through it; the family-execution port is therefore a new generic port in Abstractions with its own adapter folder in Storage.D1, neither of which overlaps COM.16's folders, and every later family participant (CLOUD.13, CLOUD.39, CLOUD.42, CLOUD.53, CLOUD.63) reuses it. Until the Workspace module has a project, the enrollment initiator contributes the workspace statements by one explicit adapter exception. (4) Identifiers: random version 4 UUIDs from the platform's cryptographic generator (the Entitlement store uses the same form); a replayed enrollment discards the identifiers it generated for the retry. (5) No plan, table or migration changes, so no RES-cloud-storage-plans or migration append; if the replay mapping proves to need one, that is a planning repair. Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Corrects missing read projections, stable replay semantics and the stale claim that the Workspace project does not exist. Enrollment fingerprint binds verified caller content and excludes newly generated identities; stored receipt contains result identities, and preflight precedes existing-credential shortcuts so expiry/reuse/unknown-outcome rules hold. Identity has exactly two temporary Workspace ownership reads through the generic family port; named workspace plans stay Workspace-owned and no arbitrary foreign read is authorized. Generic multi-owner families compose opaque contributions sealed by each actual owning module factory; coordinators cannot assert foreign authority. Real store and family component tests include concurrency/cancellation/partial and unknown outcomes. Production host executor activation belongs to CLOUD.21.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. The two credential-list fixtures use realm/user plus int64 long.MinValue and empty text cursor parameters; no migration or plan inventory change is needed for those fixture repairs.\n\n2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). Actual Workspace read plans add only its exact owner inventory entry and sealed Worker bundle identity assertions; no generic owner/provenance bypass. Shared Worker inventory changes serialize with COM.02 under existing resource protocols and rebase on the actual approved generated bytes.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Test support credential field explicitly carries a versioned salted password verifier, not plaintext. Rename only owned support property/reads/default and three existing fixture labels to passwordHash, preserving exact hash bytes, vectors and guards; no detector suppression, credential echo or cryptographic relaxation. The four shared-vector credential input labels and one managed input decoder literal match passwordHash; expected plan argument/fingerprint bytes remain identical. Existing vector ownership is unchanged.",
    "complete": []
   },
   {
@@ -19665,7 +19837,8 @@
     "Cloud:worker/storage/plans.generated.ts (regenerate only)",
     "Cloud:src/ArcForges.Cloud.Modules.Abstractions/** (task-owned primitive production cross-owner ports, no duplicate wire schemas)",
     "Cloud:src/ArcForges.Cloud/Composition/** (append only real task-owned service/owner registration)",
-    "Cloud:.dockerignore (task-owned source inclusion only)"
+    "Cloud:.dockerignore (task-owned source inclusion only)",
+    "Cloud:src/ArcForges.Cloud.Modules.Entitlement/EntitlementModule.cs (register only actual distribution/enforcement services; preserve COM05/16 entries)"
    ],
    "shared": [
     {
@@ -19690,8 +19863,15 @@
    "baseline": {
     "state": "not-started"
    },
-   "complete": [],
-   "notes": "\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh."
+   "complete": [
+    {
+     "type": "integration",
+     "task": "COM.07",
+     "need": "actual persistent used/held quota accounting projection over CLOUD07 kernel",
+     "why": "Core versioned entitlement distribution advances; full usage projection cannot report fake zero/no-op without authoritative accounting source."
+    }
+   ],
+   "notes": "\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Real Entitlement entrypoint owns additive distribution/enforcement registration; host composition invokes the real module, no success-returning unbound adapter."
   },
   {
    "id": "COM.07",
@@ -20497,7 +20677,13 @@
     "Cloud:Directory.Packages.props (one exact verified published Contracts.Validation producer pin only)",
     "Cloud:src/ArcForges.Cloud/ArcForges.Cloud.csproj (host Contracts.Validation PackageReference only)",
     "Cloud:src/ArcForges.Cloud/packages.lock.json (regenerate actual admitted host Validation closure only)",
-    "Cloud:tests/**/packages.lock.json (regenerate only affected Validation consumer/test closure)"
+    "Cloud:tests/**/packages.lock.json (regenerate only affected Validation consumer/test closure)",
+    "Cloud:worker/configuration/objects.ts (production Config-owned signed immutable object facade)",
+    "Cloud:worker/configuration/routes.ts (fixed private Config object routes only)",
+    "Cloud:worker/router.ts (exact private Config object dispatcher if existing composition requires it)",
+    "Cloud:worker/index.ts (exact production Config object binding/dispatcher only)",
+    "Cloud:tests/worker/configuration-objects.test.ts (actual immutable facade auth/hash/size/conflict/cancel negatives)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Physical/manifest/config.json (owner immutable activation evidence parts and exact manifest/context references only)"
    ],
    "shared": [
     {
@@ -20526,8 +20712,21 @@
    "baseline": {
     "state": "not-started"
    },
-   "complete": [],
-   "notes": "\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Owns the missing authoritative approved configuration source consumed by COM.02, including canonical content hash/revision/validity/publisher and distinct dual approval. Core catalogue implementation does not wait on configuration acceptance; its follow-up retains actual source integration.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. Dedicated generated configuration RPCs require a second approval ID but Configuration is absent from the generic OperatorMutation union. Config owns its dedicated proposal/approval records and ports; generic Audit ownership is preserved. Implement signed distinct current eligible subjects, exact realm/environment/parent/hash/revision/CAS/recovery generation and <=15-minute expiry, durable platform receipts and atomic activation/proposal consumption. Keep published ConfigurationDocument exact schema unchanged. Resolve immutable owner-only catalogue.offer-materialization.v1 profiles from signed referenced artifacts, persist globally unique stable offer GUID and exact CatalogueCanonical projection bound to proposal/config hashes; absent/mismatched profiles refuse, never guess defaults. Host uses actual published generated PolicyBody validation, not a copied schema. The host current-directory adapter must verify trusted signed operator identity and fresh enabled app-role ID bindings at approval and execution; JWT roles are values, not configured app-role GUID authority. Missing/unknown directory refuses; customer/app-only principals cannot approve. Store assertion digests and subjects, never JWT/credentials.\n\n2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). Consume closed private config.activation-manifest.v1 with detached configured trusted-key RS256 signature over exact canonical bytes; persist canonical manifest/signature/keyId or an exact immutable verified signed-object reference and signed published call context, not raw JWT/identity blobs. Qualified verified subjects plus assertion digests and fresh directory authority suffice. Bounded owner-only immutable staging chunks preserve the existing 262144-byte ExecutePlan request cap and 1MiB ConfigurationDocument schema; application reconstructs and revalidates actual SHA256/count/realm/context before atomic finalization. SQL guards immutable exact chunk identities/hash/count/realm/expiry; no unverified SQL cryptographic function or trusted user-supplied digest substitutes for complete content verification. Reopen/retry resolves only exact immutable artifact hashes, never mutable latest aliases. Actual cancellation/conflict/expiry/corrupt-chunk/unknown-receipt/concurrency/persistence component tests are required. Root-approved actual projection capacity: <=512 chunks, <=32768 surrogate-pair-safe UTF16 code units/chunk, total canonical UTF8 <=16 MiB, <=15-minute TTL. Measure actual escaped request/reply sizes; bounded read slices <=16384 Unicode scalar points or smaller and small receipt finalization. Keep ConfigurationDocument <=1MiB and ExecutePlan request <=262144 bytes. Manifest contextHash binds exact safe published business context excluding transport correlation; durable canonical_manifest/public signature/keyId/call_context records contain no JWT/identity blobs. Private manifest artifacts <=1024/canonical bytes<=1MiB preserves complete valid256offers/model/profileclosure; contextHash hashes exact canonical {contextId,contextKind,environment,purpose,realmId,reason} with published case/incident semantics and transport correlation excluded. ExecutePlanResponse remains<=262144, so document/manifest reads are sliced and finalization returns a small receipt. VerifiedD1 string/BLOB/row<=2000000bytes, SQLstatement<=100000bytes, queryparams<=100/functionargs<=32. Fixed immutable component_key partitions document/manifest/context/each exact typed Catalogue projection; SQL reconstructs only bounded components and atomically stages all rows, never whole16MiBtemporaryaggregate. Application alone reassembles andSHAvalidatesfullinput; component identities/hash/count/realm/expiry remain guarded."
+   "complete": [
+    {
+     "type": "integration",
+     "task": "CON.28",
+     "need": "actual published bounded Stage/Get immutable configuration-document reference",
+     "why": "Complete valid1MiB document transport without increasing262144 RPC budget or changing canonical schema."
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.19",
+     "need": "actual separate Operator origin/session/CSRF and current verified Entra directory ingress adapter",
+     "why": "Config core/store/contracts advance; production operator authority must use actual browser-session producer and cannot alias customer/native/PAT identity."
+    }
+   ],
+   "notes": "\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Owns the missing authoritative approved configuration source consumed by COM.02, including canonical content hash/revision/validity/publisher and distinct dual approval. Core catalogue implementation does not wait on configuration acceptance; its follow-up retains actual source integration.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. Dedicated generated configuration RPCs require a second approval ID but Configuration is absent from the generic OperatorMutation union. Config owns its dedicated proposal/approval records and ports; generic Audit ownership is preserved. Implement signed distinct current eligible subjects, exact realm/environment/parent/hash/revision/CAS/recovery generation and <=15-minute expiry, durable platform receipts and atomic activation/proposal consumption. Keep published ConfigurationDocument exact schema unchanged. Resolve immutable owner-only catalogue.offer-materialization.v1 profiles from signed referenced artifacts, persist globally unique stable offer GUID and exact CatalogueCanonical projection bound to proposal/config hashes; absent/mismatched profiles refuse, never guess defaults. Host uses actual published generated PolicyBody validation, not a copied schema. The host current-directory adapter must verify trusted signed operator identity and fresh enabled app-role ID bindings at approval and execution; JWT roles are values, not configured app-role GUID authority. Missing/unknown directory refuses; customer/app-only principals cannot approve. Store assertion digests and subjects, never JWT/credentials.\n\n2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). Consume closed private config.activation-manifest.v1 with detached configured trusted-key RS256 signature over exact canonical bytes; persist canonical manifest/signature/keyId or an exact immutable verified signed-object reference and signed published call context, not raw JWT/identity blobs. Qualified verified subjects plus assertion digests and fresh directory authority suffice. Bounded owner-only immutable staging chunks preserve the existing 262144-byte ExecutePlan request cap and 1MiB ConfigurationDocument schema; application reconstructs and revalidates actual SHA256/count/realm/context before atomic finalization. SQL guards immutable exact chunk identities/hash/count/realm/expiry; no unverified SQL cryptographic function or trusted user-supplied digest substitutes for complete content verification. Reopen/retry resolves only exact immutable artifact hashes, never mutable latest aliases. Actual cancellation/conflict/expiry/corrupt-chunk/unknown-receipt/concurrency/persistence component tests are required. Root-approved actual projection capacity: <=512 chunks, <=32768 surrogate-pair-safe UTF16 code units/chunk, total canonical UTF8 <=16 MiB, <=15-minute TTL. Measure actual escaped request/reply sizes; bounded read slices <=16384 Unicode scalar points or smaller and small receipt finalization. Keep ConfigurationDocument <=1MiB and ExecutePlan request <=262144 bytes. Manifest contextHash binds exact safe published business context excluding transport correlation; durable canonical_manifest/public signature/keyId/call_context records contain no JWT/identity blobs. Private manifest artifacts <=1024/canonical bytes<=1MiB preserves complete valid256offers/model/profileclosure; contextHash hashes exact canonical {contextId,contextKind,environment,purpose,realmId,reason} with published case/incident semantics and transport correlation excluded. ExecutePlanResponse remains<=262144, so document/manifest reads are sliced and finalization returns a small receipt. VerifiedD1 string/BLOB/row<=2000000bytes, SQLstatement<=100000bytes, queryparams<=100/functionargs<=32. Fixed immutable component_key partitions document/manifest/context/each exact typed Catalogue projection; SQL reconstructs only bounded components and atomically stages all rows, never whole16MiBtemporaryaggregate. Application alone reassembles andSHAvalidatesfullinput; component identities/hash/count/realm/expiry remain guarded.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Dedicated Operator ingress verifies exact configured Entra user signature/issuer/audience/client and current trusted directory before handler; each mutation enforces exact published case/incident, OP/SE and <=5-minute MFA. Single bounded bearer assertion only, no customer cookies/session alias, no raw JWT persistence. Production Config objects use signed private objects.internal fixed route and realm/configuration/artifacts/objectUUID/SHA256 prefix, exact immutable owner id/hash/length, bounded reads and timeout/cancel typed refusal, redirects disabled; existing Foundation diagnostic probe is not a production adapter. Actual referenced bytes are fully verified. Stage/Get oversized documents consume actual CON28 producer after publication, exactly-one inline/ref; no URL/latest/canonicalJson sentinel/transport increase. Existing inline/core code advances independently. Referenced payload is exact complete generated ConfigurationDocument protobuf binary bytes<=2MiB; exact objectSHA/length checked before parsing, decoded documentHash independently binds canonicalJson<=1MiB and existing shape constraints. No canonical-protobuf claim or inline RPC budget increase. Signed fixed Config object facade enforces operator authority, realm prefix and bounded range/stream reads. Root preserves full published purpose/reason Text bounds; no silent128/4096 narrowing. Signed canonical business context and manifest are promoted as bounded immutable durable components with exact proposal identity/hash/length references, not oversized proposal JSON rows. Verified final authority survives staging TTL purge, reopen/cancel/retry; completecontextHash truncates nothing. Immutable activation_evidence_part holds finalized canonical manifest/context bytes in bounded<=32768UTF16 parts with proposal/component/ordinal PK and exact content hash. Proposal stores manifest_ref/context_ref identity/hash/UTF8length/part-range references plus keyID/public signature; no oversized inline JSON. Preserve whole published purpose/reason each<=262144UTF8, partition context metadata/purpose/reason, full six-fieldcontextHashverifiedinapplication. Promote verified parts atomically and protect finalauthorityfromstagingTTLpurge; approvedretentiongovernsdeletion. Unknown/missing/conflicting parts orfullSHA mismatchdeny."
   },
   {
    "id": "POL.03",
@@ -28516,7 +28715,13 @@
     "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox.Contracts/README.md (owned managed package status only)",
     "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox.Broker/README.md (owned managed package status only)",
     "DesktopPlatform:Directory.Packages.props (exact coordinated published Contracts Foundation/PublicApi/LocalRpc.Platform/Sdk and Sandbox if actually required; no version-range or historical fixture relaxation)",
-    "DesktopPlatform:src/**/packages.lock.json (regenerate only affected production consumer closure after actual producer admission; preserve historical PreviousClient fixtures)"
+    "DesktopPlatform:src/**/packages.lock.json (regenerate only affected production consumer closure after actual producer admission; preserve historical PreviousClient fixtures)",
+    "DesktopPlatform:tests/AssistantAbstractionsTests/packages.lock.json (regenerate exact affected production peer closure only)",
+    "DesktopPlatform:tests/LocalRpcAotTests/packages.lock.json (regenerate exact affected production peer closure only)",
+    "DesktopPlatform:tests/PersistenceTests/packages.lock.json (regenerate exact affected production peer closure only)",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/README.md (truthful managed package activation status only)",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/LocalRpcBoundary/README.md (truthful managed package activation status only)",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/CapabilityEnforcement/README.md (truthful managed package activation status only)"
    ],
    "start": [
     {
@@ -28606,7 +28811,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Added from verified current-source dependency evidence, not an inherited baseline. Original Final selection is unchanged. Ordinary implementation and component testing are required even when wider acceptance is deferred. A newly observed current CI defect uses real date in a deterministic fixture test and then checks against yesterday TODAY, falsely failing SI-10. Fix only the test clock; do not weaken the snapshot/freshness implementation or gate.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. ContentSandbox.Contracts and Broker live under DesktopHelpers; no nonexistent BuildingBlocks project is an activation target.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. Existing production Foundation/Persistence104.4 pins Contracts.Foundation216.1 and cannot compose with the actual ArcScope Contracts324.1 DTO producer (NU1608). Admit only the verified published compatible production peer closure, regenerate affected locks and exact licence/NOTICE/input receipts; never suppress NU1608 or modify historical fixtures. Actual managed publication precedes package-only product composition."
+   "notes": "2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Added from verified current-source dependency evidence, not an inherited baseline. Original Final selection is unchanged. Ordinary implementation and component testing are required even when wider acceptance is deferred. A newly observed current CI defect uses real date in a deterministic fixture test and then checks against yesterday TODAY, falsely failing SI-10. Fix only the test clock; do not weaken the snapshot/freshness implementation or gate.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. ContentSandbox.Contracts and Broker live under DesktopHelpers; no nonexistent BuildingBlocks project is an activation target.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. Existing production Foundation/Persistence104.4 pins Contracts.Foundation216.1 and cannot compose with the actual ArcScope Contracts324.1 DTO producer (NU1608). Admit only the verified published compatible production peer closure, regenerate affected locks and exact licence/NOTICE/input receipts; never suppress NU1608 or modify historical fixtures. Actual managed publication precedes package-only product composition.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Coordinated published production Contracts upgrade also regenerates affected actual test locks; no lock hand merge, historical consumer fixture rewrite or dependency suppression."
   },
   {
    "id": "CLOUD.74",
@@ -28738,7 +28943,7 @@
     "desktop-ci-python-security-closure"
    ],
    "writes": [
-    "DesktopPlatform:eng/requirements-ci.txt (only exact virtualenv21.7.13 pin and verified distribution hashes from preserved PR116)",
+    "DesktopPlatform:eng/requirements-ci.txt (only verified exact virtualenv21.7.13 and required python-discovery1.6.0 pins/distribution hashes; preserve PR116 patch and all unrelated coordinates)",
     "DesktopPlatform:eng/policy/dependency-policy.json (only actual affected Python closure/licence/input bindings)",
     "DesktopPlatform:eng/policy/dependency-reviews/gov-23-*.json (new immutable reviewed successors)",
     "DesktopPlatform:eng/provenance/files.json (owned input binding only)",
@@ -28775,7 +28980,139 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). Observed DesktopPlatform requirements-ci21.5.1 vulnerable; existing Dependabot PR116 head57801a0e67799b6d695f0bdc2428e5ec31f09341 already contains exact pin/hash patch. Root owns source/admission adoption in retained worktree and integration. Preserve existing work/history and unrelated versions; do not mark new producer inherited complete. This is a necessary diagnosed release CI security prerequisite, not optional upgrade churn."
+   "notes": "2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). Observed DesktopPlatform requirements-ci21.5.1 vulnerable; existing Dependabot PR116 head57801a0e67799b6d695f0bdc2428e5ec31f09341 already contains exact pin/hash patch. Root owns source/admission adoption in retained worktree and integration. Preserve existing work/history and unrelated versions; do not mark new producer inherited complete. This is a necessary diagnosed release CI security prerequisite, not optional upgrade churn.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Actual virtualenv21.7.13 requires python-discovery>=1.6; admit only independently verified exact python-discovery1.6.0 pin/distribution hashes and complete affected legal/admission closure alongside preserved Dependabot source patch. Other coordinates stay unchanged; require-hashes resolution must actually pass, never suppress mismatch."
+  },
+  {
+   "id": "CON.28",
+   "title": "Bounded immutable configuration-document reference contract",
+   "repo": "Contracts",
+   "lane": "contracts",
+   "kind": "producer",
+   "size": "M",
+   "obligations": [
+    {
+     "ref": "WP-03.05",
+     "part": "minimum producer prerequisite: compatible internal operator Stage/GetConfiguration immutable document reference and exact schema/negative validation; not whole operator acceptance"
+    }
+   ],
+   "outcome": "Add compatible optional documentRef using existing Foundation BlobRef to internal arcforges.operator.v1.OperatorServiceStageConfigurationRequest and arcforges.operator.v1.OperatorServiceGetConfigurationValue. Exactly one inline document or reference; immutable object id/content hash/size at most2MiB; decoded canonicalJson remains at most1MiB. Preserve existing inline semantics, transport262144 cap, package identities and all unrelated operator fields.",
+   "provides": [
+    "bounded-configuration-document-reference"
+   ],
+   "writes": [
+    "Contracts:internal/proto/arcforges/operator/v1/operator.proto (arcforges.operator.v1.OperatorServiceStageConfigurationRequest field13 and arcforges.operator.v1.OperatorServiceGetConfigurationValue field12 document_ref only)",
+    "Contracts:internal/proto/constraints/con-14-operator.json (only exact inline/reference rows, same message owner)",
+    "Contracts:internal/proto/constraints.json (regenerate only)",
+    "Contracts:fixtures/internal/con-14-operator.json (exact affected optional field/shape oracles only)",
+    "Contracts:eng/generate_shapes.py (typed exactly-one inline/reference and reference size1..2097152 validation only)",
+    "Contracts:src/internal/dotnet/ArcForges.Contracts.CloudInternal/Generated/Proto/** (regenerate owned operator output)",
+    "Contracts:src/internal/dotnet/ArcForges.Contracts.CloudInternal/Generated/Shapes/** (regenerate owned shape output)",
+    "Contracts:src/internal/ts/operator-client/src/gen/** (regenerate owned operator Proto/validator/barrel outputs)",
+    "Contracts:tests/StructureTests/OperatorCases.cs (owned reference shape negatives and inline compatibility)",
+    "Contracts:tests/public/operator-contract.test.mjs (owned typed reference/inline negatives)",
+    "Contracts:eng/policy/dependency-policy.json (exact changed owned producer inputs only)",
+    "Contracts:eng/policy/dependency-reviews/con-28-*.json (new immutable reviewed successor)",
+    "Contracts:eng/provenance/** (owned first-party/input successors and regenerated NOTICE only)",
+    "Contracts:docs/configuration-document-reference.md",
+    "Contracts:eng/policy/contract-access.json (only exact affected compiled CloudInternal hashes/type inventory)",
+    "Contracts:eng/provenance/records/contract-bindings-con-28-*.json (new immutable owned schema/validator source bindings)"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "CON.14",
+     "need": "actual internal operator request/value and existing Foundation BlobRef producer",
+     "why": "Extend authored existing internal schemas and validators, never copy a consumer wire schema."
+    }
+   ],
+   "complete": [],
+   "shared": [
+    {
+     "resource": "RES-contracts-schema-sources",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-contracts-generated-baseline",
+     "mode": "regenerate"
+    },
+    {
+     "resource": "RES-contracts-publication",
+     "mode": "append"
+    }
+   ],
+   "validation": "Actual C#/TypeScript serializer/shape tests: inline compatibility, exact-one alternatives, empty/both/invalidid/hash/oversize full-object reference and legal maximum canonicalJson envelope negatives; existing descriptor and AOT/package gates. No invented uploaded/deployed object evidence.",
+   "evidence": "Independent exact-head review, retained applicable CI, actual immutable CloudInternal/operator package publication and exact consumer handoff.",
+   "baseline": {
+    "state": "not-started"
+   },
+   "notes": "2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). New minimum producer from actual1MiB ConfigurationDocument versus262144 RPC budget. No public Kotlin/catalog surface or duplicate constraint shard. CON26 reviewed head/publication remains separate; coordinate next actual producer successor. Original Final selection remains171 unchanged. BlobRef contentHash/sizeBytes bind exact complete generated ConfigurationDocument protobuf binary object bytes (<=2097152), never inner canonicalJson alone or canonical-protobuf claims. Decoded documentHash separately binds canonicalJson<=1048576 with all existing field/shape limits; strict generated complete-envelope validation after bounded exact-size/hash read. Task-specific reference limit 1..2097152 leaves global BlobRef rules unchanged."
+  },
+  {
+   "id": "CLOUD.75",
+   "title": "Authoritative shared realm authentication and persisted recovery epoch source",
+   "repo": "Cloud",
+   "lane": "cloud",
+   "kind": "producer",
+   "size": "M",
+   "obligations": [
+    {
+     "ref": "WP-22.02",
+     "part": "minimum production prerequisite: shared configured realm authentication epoch and persisted Platform recovery epoch source; not whole native-session acceptance"
+    }
+   ],
+   "outcome": "Provide typed current realm/AuthEpoch/RecoveryGeneration authority from required canonical configured realm epoch plus real Platform-owned persisted current/open recovery row. Missing, invalid, unavailable, closed or mismatched authority refuses; no proof constant or user revision substitute.",
+   "provides": [
+    "shared-realm-recovery-authority"
+   ],
+   "writes": [
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Platform/RecoveryEpochPort.cs",
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Platform/RealmAuthorityPort.cs",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Platform/RecoveryEpochReader.cs",
+    "Cloud:storage/plans/platform/recovery-current.sql",
+    "Cloud:src/ArcForges.Cloud/Composition/RealmAuthorityModule.cs",
+    "Cloud:src/ArcForges.Cloud/Composition/HostModules.cs (append exact actual RealmAuthority host module only)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/PlanManifest.g.cs (regenerate only)",
+    "Cloud:worker/storage/plans.generated.ts (regenerate only)",
+    "Cloud:tests/ArcForges.Cloud.Tests/RealmAuthority/**",
+    "Cloud:tests/worker/realm-authority.test.ts",
+    "Cloud:tests/ArchitectureTests/** (exact owned API/owner bindings only)",
+    "Cloud:.dockerignore (exact owned Platform reader/Abstractions/host source includes)",
+    "Cloud:package.json (register owned offline test only)",
+    "Cloud:eng/policy/dependency-policy.json (exact owned changed inputs only)",
+    "Cloud:eng/policy/dependency-reviews/cloud-75-*.json (new immutable reviewed successor)",
+    "Cloud:eng/provenance/** (owned first-party/input successors only)",
+    "Cloud:docs/cloud-75-implementation.md",
+    "Cloud:tests/worker/release-provenance.test.ts (exact actual sealed successor bundle SHA256/byte constants only; counts only if actual closure changes)"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "actual implemented ModulePlanPortFactory and durable owner-bound named read contract",
+     "why": "C75 Platform-owned current read/config/core tests advance independently of C72 family delivery and downstream C19; actual accepted factory exists."
+    }
+   ],
+   "complete": [],
+   "shared": [
+    {
+     "resource": "RES-cloud-storage-plans",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-host-composition",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-policy-inputs",
+     "mode": "append"
+    }
+   ],
+   "validation": "Actual bounded named-read adapter and configuration/parser tests: missing/invalid/noncanonical epoch, wrong realm/state, closed recovery, missing/corrupt rows, cancellation/timeouts/concurrency and durable current-version changes. Mocks only unavailable signed executor transport; ordinary core tests do not wait for account/device acceptance.",
+   "evidence": "Exact reviewed source and real typed owner composition, applicable CI/publication, actual component results and separately deferred production restore acceptance.",
+   "baseline": {
+    "state": "not-started"
+   },
+   "notes": "2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Source owner cloud_pat. Required AF_REALM_ID and canonical positive int64 AF_AUTH_EPOCH are validated lazily on requested authority to preserve existing production health/routes, never defaulted. RecoveryEpochReader seals Platform descriptor authority and reads one exact realm current/open state4, nonnegative generation and positive revision from platform_recovery_epoch. No new module/project/package reference, user column or C19 dependency; C12/C13 consume actual delivered shared authority before claim, C16 wires its adapter after actual producer delivery. Production signed executor/Worker environment activation stays CLOUD21-owned; unavailable transport cannot be described as deployed success. Require configured AF_RECOVERY_GENERATION canonical nonnegative generation and exact current/open DB equality; do not silently adopt newer DB generation or switch realm. The single shared RealmAuthorityPort.cs lives in Abstractions/Platform, never an Identity duplicate."
   }
  ],
  "adoptionSlices": [
