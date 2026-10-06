@@ -179,6 +179,28 @@ Daily budgets record completed operations against the actual dispatch day and ca
 - **Realm** — a realm is deployment configuration, not a table: one D1 authority database serves one realm ([00 section 6.1.1](00-data-model-overview.md#611-shared-units-of-work)), and every identity and workspace row carries the configured `realm_id`. Identity is `(realm_id, user_id)` ([ID-10](../../requirements/02-identity-account-and-workspace.md#rule-id-10)); a lookup, a uniqueness rule and an ownership check always include the realm, so the same credential or email in another realm is a different identity ([ID-11](../../requirements/02-identity-account-and-workspace.md#rule-id-11)). The `FK →` realm of `realm_id` therefore has no physical form.
 - **Constraint** — a `deleted` user retains the row with all personal fields cleared; the identifier is never reused ([ID-05](00-data-model-overview.md#rule-id-05))
 
+### `identity.account_deletion` (immutable disclosed lifecycle)
+
+This Identity-owned row is the actual CLOUD79 deadline authority. `identity_user.deletion_requested_at` remains compatible, but cannot alone prove a disclosed immutable deadline. Existing user rows and accepted migrations remain unchanged; add a forward-only expand migration.
+
+| Field | Type | Notes |
+|---|---|---|
+| `deletion_id` | `id` | PK; never reused |
+| `realm_id` | `id NN` | exact configured realm |
+| `user_id` | `id NN` | FK identity.user, RESTRICT |
+| `requested_at` | `instant NN` | actual server request instant |
+| `grace_ends_at` | `instant NN` | strictly after requested_at; checked requested_at + grace_seconds × 1000000 |
+| `policy_version` | `Key NN` | actual captured required policy identity |
+| `grace_seconds` | `int64 NN` | positive captured policy duration, no business default; overflow refuses |
+| `previous_user_state` | `identity.user_state NN` | only active1/restricted2/suspended3; cancellation restores this actual captured state |
+| `state` | `identity.deletion_state NN` | pending1/cancelled2/purging3/purged4 |
+| `cancelled_at` / `completed_at` | `instant?` | factual corresponding terminal outcome only |
+| `rev` | `rev NN` | positive lifecycle fence |
+
+Partial UQ(user_id) WHERE state IN(1,3); IX(state,grace_ends_at); IX(user_id,requested_at). The disclosed requested instant, deadline, duration, policy and previous state are immutable while pending/purging. Pending has no terminal timestamps; cancelled has actual cancelled_at and no completed_at; purging has neither terminal timestamp; purged has actual completed_at and no cancelled_at. A cancelled request remains retained history and a later new request has a new deletionId. Epoch/recovery and current UserRevision guards remain required; no fabricated purge success or local-data deletion.
+
+Required lazy policy inputs are AF_IDENTITY_DELETION_POLICY_VERSION and AF_IDENTITY_DELETION_GRACE_SECONDS. Missing/invalid settings return typed unavailable and do not break anonymous health. Configuration changes cannot shorten, extend or recompute a persisted request's disclosed grace. CLOUD79's actual Read/Prepare producer returns immutable DeletionId/RealmId/UserId/requested/deadline/policy/lifecycleRevision/UserRevision and only own opaque identity deletion-current/deletion-revision guards. Purpose5 cancellation rechecks current pending User and lifecycle revisions plus actual final database-clock deadline, and restores captured previous state; it never mints normal/remote/PAT authority. Full recovery/authentication integration remains separately mandatory.
+
 ### `identity.auth_identity`
 
 | Field | Type | Notes |
