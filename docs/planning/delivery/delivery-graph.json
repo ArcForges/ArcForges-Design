@@ -28943,7 +28943,7 @@
     "desktop-ci-python-security-closure"
    ],
    "writes": [
-    "DesktopPlatform:eng/requirements-ci.txt (only exact virtualenv21.7.13 pin and verified distribution hashes from preserved PR116)",
+    "DesktopPlatform:eng/requirements-ci.txt (only verified exact virtualenv21.7.13 and required python-discovery1.6.0 pins/distribution hashes; preserve PR116 patch and all unrelated coordinates)",
     "DesktopPlatform:eng/policy/dependency-policy.json (only actual affected Python closure/licence/input bindings)",
     "DesktopPlatform:eng/policy/dependency-reviews/gov-23-*.json (new immutable reviewed successors)",
     "DesktopPlatform:eng/provenance/files.json (owned input binding only)",
