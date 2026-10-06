@@ -28558,7 +28558,14 @@
     "Contracts:docs/operation-authorization-catalog.md",
     "Contracts:docs/architecture.md (factual pointer)",
     "Contracts:.gitleaks.toml (append only three exact observed CON26 generic-api-key public-digest AND groups, counts 1/4/4)",
-    "Contracts:tests/tooling/test_dependency_admission.py (exact CON26 tuple-negative regressions and existing total allowlist count 83 to 86 only)"
+    "Contracts:tests/tooling/test_dependency_admission.py (exact CON26 tuple-negative regressions and existing total allowlist count 83 to 86 only)",
+    "Contracts:tests/ArchitectureTests/HostedPolicyGate.cs (actual optional closed non-wire metadata binding consumption only)",
+    "Contracts:tests/ArchitectureTests/ArchitectureFixtureTests.cs (focused exact classification and unchanged wire negatives)",
+    "Contracts:tests/ArchitectureTests/OperationMetadataBindings.cs (new exact qualified symbol/project/source/hash/kind bindings for only the three actual non-wire operation metadata types)",
+    "Contracts:Directory.Packages.props (only actual published GOV24 ArcForges.Build.Policy producer pin; no unrelated versions)",
+    "Contracts:tests/ArchitectureTests/packages.lock.json (regenerate only exact affected private policy-host producer closure)",
+    "Contracts:eng/dependency_admission.py (exact new producer key/input binding and closed scope only; no algorithm/receipt verification relaxation)",
+    "Contracts:tests/tooling/test_dependency_admission.py (focused exact policy producer pin/hash/input/foreign scope negatives only)"
    ],
    "start": [
     {
@@ -28598,7 +28605,14 @@
      "why": "Generate from authoritative existing records, not inferred handwritten consumer metadata."
     }
    ],
-   "complete": [],
+   "complete": [
+    {
+     "type": "integration",
+     "task": "GOV.24",
+     "need": "actual published closed non-wire operation metadata policy producer",
+     "why": "Metadata generation/core tests continue; retained architecture gate and normal publication require a real compatible policy engine, not a fake generated marker or blanket AT12 bypass."
+    }
+   ],
    "shared": [
     {
      "resource": "RES-contracts-schema-sources",
@@ -28618,7 +28632,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Added from verified current-source dependency evidence, not an inherited baseline. Original Final selection is unchanged. Ordinary implementation and component testing are required even when wider acceptance is deferred.\n\n2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). Security run 37503752501 job 112407047628 reports ten occurrences of nine distinct public SHA256 tuples; append exact anchored path/key/hash whole-line AND groups targeting only generic-api-key. Canonical sorted tuple set SHA256 9db3cd5d69899fb0416554a390966c4d36c1b00d19c7656003b8eec751d63878. Preserve all 83 historical groups, three unchanged old inputs and retained SecretScan. Negative tests must reject changed digest/key/path, adjacent token-bearing content and other rules. No blanket hash/path exclusion or secret-scanning algorithm change."
+   "notes": "2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Added from verified current-source dependency evidence, not an inherited baseline. Original Final selection is unchanged. Ordinary implementation and component testing are required even when wider acceptance is deferred.\n\n2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). Security run 37503752501 job 112407047628 reports ten occurrences of nine distinct public SHA256 tuples; append exact anchored path/key/hash whole-line AND groups targeting only generic-api-key. Canonical sorted tuple set SHA256 9db3cd5d69899fb0416554a390966c4d36c1b00d19c7656003b8eec751d63878. Preserve all 83 historical groups, three unchanged old inputs and retained SecretScan. Negative tests must reject changed digest/key/path, adjacent token-bearing content and other rules. No blanket hash/path exclusion or secret-scanning algorithm change.\n\n2026-10-06 non-wire policy producer repair (docs/decisions/non-wire-metadata-policy-repair-2026-10-06.md). The actual private Build.Policy94.1 gate currently treats the three immutable metadata classes as authored wire DTOs. Consume the independently reviewed and published GOV24 producer via exact pin/lock/input successors and real host semantic bindings to the three qualified types and their owned source hashes only. Existing generated-wire/serializer/interface/descriptor checks remain; no generated attribute/header fiction, shape-only blanket exclusion, CI waiver or broad source-path exception. Normal full CI and canonical publication follow exact consumer review. Existing metadata source/admission histories remain intact."
   },
   {
    "id": "CON.27",
@@ -29113,6 +29127,123 @@
     "state": "not-started"
    },
    "notes": "2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Source owner cloud_pat. Required AF_REALM_ID and canonical positive int64 AF_AUTH_EPOCH are validated lazily on requested authority to preserve existing production health/routes, never defaulted. RecoveryEpochReader seals Platform descriptor authority and reads one exact realm current/open state4, nonnegative generation and positive revision from platform_recovery_epoch. No new module/project/package reference, user column or C19 dependency; C12/C13 consume actual delivered shared authority before claim, C16 wires its adapter after actual producer delivery. Production signed executor/Worker environment activation stays CLOUD21-owned; unavailable transport cannot be described as deployed success. Require configured AF_RECOVERY_GENERATION canonical nonnegative generation and exact current/open DB equality; do not silently adopt newer DB generation or switch realm. The single shared RealmAuthorityPort.cs lives in Abstractions/Platform, never an Identity duplicate."
+  },
+  {
+   "id": "GOV.24",
+   "title": "Closed non-wire operation metadata classification in shared Build.Policy",
+   "repo": "DesktopPlatform",
+   "lane": "governance",
+   "kind": "producer",
+   "size": "M",
+   "obligations": [
+    {
+     "ref": "WP-05.03",
+     "part": "minimum actual shared AT12 producer repair for immutable non-wire operation authorization metadata; preserve generated-wire and descriptor checks"
+    }
+   ],
+   "outcome": "Publish a real optional exact non-wire metadata binding in the shared architecture engine, with symbol/project/owned source path/normalized SHA256 and closed shape/kind validation. No arbitrary DTO, mutable or serialized/transport type may bypass AT12; default and all generated-wire checks remain unchanged.",
+   "provides": [
+    "closed-non-wire-operation-metadata-policy"
+   ],
+   "writes": [
+    "DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/PolicyModels.cs (optional exact non-wire metadata binding model only)",
+    "DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/PolicyEngine.cs (actual closed classification/validation integration only; preserve AT12 wire/generated checks)",
+    "DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/NonWireMetadataPolicy.cs (new internal bounded semantic/source/transport validation helper only)",
+    "DesktopPlatform:tests/ArchitectureTests/NonWireMetadataBindingTests.cs (real engine positive and hostile binding/shape/transport negatives)",
+    "DesktopPlatform:tests/ArchitectureTests/GeneratedTypeRecognitionTests.cs (only focused compatibility coverage if necessary)",
+    "DesktopPlatform:src/Build/ArcForges.Build.Policy/README.md (actual closed binding contract and preserved failure behavior)",
+    "DesktopPlatform:eng/provenance/files.json (append only actual owned new helper/test firstParty source identities; preserve histories)"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "GOV.06",
+     "need": "actual published shared policy engine and generated-type recognition producer",
+     "why": "Repair the real retained engine; no consumer-side schema fiction or parallel scanner."
+    }
+   ],
+   "complete": [],
+   "shared": [
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    }
+   ],
+   "validation": "Actual semantic engine tests accept only the exact immutable non-wire policy/catalog shapes and reject arbitrary or mutable DTO, serializer/RPC payload, wrong/missing symbol/project/path/hash/kind, duplicate/ambiguous binding and generated-wire regression. Existing applicable Windows/Linux/static/AOT/security/package gates remain; no unrun policy result is presented as passing.",
+   "evidence": "Independent exact-head review, passing actual engine component and applicable hosted CI, normal immutable Build.Policy package publication and exact Contracts consumer handoff.",
+   "baseline": {
+    "state": "not-started"
+   },
+   "notes": "2026-10-06 non-wire policy producer repair (docs/decisions/non-wire-metadata-policy-repair-2026-10-06.md). Required by actual CON26 Security37510528428 job112430178460 ValidatePolicyResults AT12 failures on only PublicOperationPolicy/PublicOperationCatalog/EventOperationCatalog, with other retained build/history/CodeQL gates passing. AT12 governs wire types; these are immutable operation metadata, not fake wire DTOs. Closed kinds OperationAuthorizationPolicy and OperationAuthorizationCatalog require real semantic/source/transport validation; normalized source SHA binds exact UTF8 content with LF newline normalization and optional leading BOM removal only. No arbitrary allowlist, detector suppression or transport/serializer exemption. No new public package/project/dependency or third-party coordinate change. Pure owned source/README/new-test inventory requires no dependency receipt if no actual admitted input changes; preserve GOV23 Python receipt/closure. Original Final selection171 and all existing baselines/closed history unchanged."
+  },
+  {
+   "id": "PLT.60",
+   "title": "Early content-helper isolation and guaranteed lifetime cleanup repair",
+   "repo": "DesktopPlatform",
+   "lane": "platform",
+   "kind": "producer",
+   "size": "M",
+   "obligations": [
+    {
+     "ref": "WP-11.09",
+     "part": "minimum early actual content-helper isolation/lifetime producer repair; full PLT45/46/54 acceptance remains separately owned"
+    }
+   ],
+   "outcome": "Fix actual pooled Windows AppContainer storage persistence/reuse and diagnostic timeout teardown, and restrict Linux helper tgkill to its own complete PID argument. Implement guaranteed bounded owner lifetime cleanup and meaningful concurrency/error/cancellation/actual available Windows component tests, without waiting for unrelated full native acceptance.",
+   "provides": [
+    "content-helper-isolation-lifetime-repair"
+   ],
+   "writes": [
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox.Broker/Windows/AppContainerSlots.cs (exclusive fresh-profile cleanup/reuse; preserve eight bounded names/locks)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox.Broker/Windows/WindowsHelperLauncher.cs (guaranteed diagnostic/stream/mapping/job/process/lease cleanup on timeout/fault/cancel only)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox.Broker/Native/WindowsNative.cs (only actual Userenv.dll DeleteAppContainerProfile and GetAppContainerFolderPath UTF16 bindings)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Host/LinuxSandboxProfile.cs (tgkill own PID low/high argument-word BPF policy only)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Native/LinuxEnforcement.cs (supply actual helper PID to filter only)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Tests/LinuxProfileTests.cs (actual BPF interpreter low/high/foreign PID and retained-rule regressions)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Tests/WindowsLifetimeTests.cs (new focused real resource fault/concurrency/lifetime tests)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Tests/OsIsolationTests.cs (actual opt-in owned pooled storage persistence denial/reuse cases only)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Fixture/HostileTestParser.cs (test-only hostile pooled-storage fixture only)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox.Broker/HelperResourceLifetime.cs (new internal guaranteed teardown core only if necessary)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox.Broker/README.md (truthful scoped isolation/lifecycle evidence)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/README.md (truthful scoped isolation/lifecycle evidence)",
+    "DesktopPlatform:tests/ArchitectureTests/RepositoryPolicyTests.cs (only exact owned DeleteAppContainerProfile/GetAppContainerFolderPath native binding inventory rows; preserve every existing row and policy)",
+    "DesktopPlatform:eng/provenance/files.json (only actual new owned source/test firstParty path appends)"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "PLT.45",
+     "need": "actual delivered production ContentSandbox helper and launcher/resource lifetime implementation",
+     "why": "Repair concrete existing pooled isolation/lifetime defects; full native parser acceptance is not needed to implement or component-test these actual adapters."
+    },
+    {
+     "type": "artifact",
+     "task": "PLT.57",
+     "need": "actual accepted durable security audit/lifecycle producer",
+     "why": "Preserve accepted owner/audit/lifecycle composition while repairing actual helper teardown."
+    }
+   ],
+   "complete": [],
+   "shared": [
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    }
+   ],
+   "validation": "Actual bounded Windows pool/resource cleanup tests including competing slot owners, profile storage reuse denial, diagnostics timeout/fault/cancel and repeated cleanup. Actual Linux BPF interpreter verifies own PID low/high words and foreign PID refusal with all existing rules retained. Scoped opt-in actual available Windows helper tests use only owned fixture processes; no mocked result proves OS isolation. Unconfirmed child-exit cases must retain bounded slot quarantine and complete owned cleanup continuation, with no release/profile deletion before confirmed termination.",
+   "evidence": "Independent exact-head source review, applicable retained CI and actual available component results, normal publication/ledger handoff; unrun platform/signing/native/full-product acceptance remains explicit with original owners.",
+   "baseline": {
+    "state": "not-started"
+   },
+   "notes": "2026-10-06 non-wire policy producer repair (docs/decisions/non-wire-metadata-policy-repair-2026-10-06.md). Minimum separate early producer because the delivered PLT45 follow-up launcher currently waits for NAT15 full acceptance while actual pooled AppContainer storage persists and diagnostic timeout may skip disposal cleanup. User explicitly authorizes minimum prerequisites and actual component tests now. Do not globally weaken claim or acceptance rules; PLT45/46/54 acceptance remains unchanged. Preserve bounded eight profiles and locks, actual production isolation and existing helper contracts. No new packages, versions, project, locks, signing, loader or whole OS/RID acceptance claim. Available actual OS APIs are tested as components; only unavailable dependencies/fault outcomes may be faked. Actual named SID-owned profile storage path is obtained through GetAppContainerFolderPath; DeleteAppContainerProfile alone does not prove removal because open handles can retain storage. Verify bounded expected profile storage removal/freshness fail-closed and test planted-storage reuse denial; never recursively delete an arbitrary/computed nonprofile path. Guaranteed teardown owns and attempts every resource despite diagnostic failure, but never releases/reuses a lease while the actual child is live or exit is unconfirmed. Close kill-on-close Job and verify termination before profile deletion; unconfirmed exit quarantines that bounded slot with an owned cleanup continuation/typed refusal until actual termination, rather than unsafe SID reuse or abandoned lifetime."
   }
  ],
  "adoptionSlices": [

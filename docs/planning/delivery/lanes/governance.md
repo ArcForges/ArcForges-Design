@@ -4,7 +4,7 @@
 
 Accepted freeze, reconciliation and build-governance baselines, and the per-repository architecture and policy test suites.
 
-Tasks: 22 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web · Integration owner(s): AI integration owner, ArcScope integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner, Mobile integration owner, Web integration owner
+Tasks: 23 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web · Integration owner(s): AI integration owner, ArcScope integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner, Mobile integration owner, Web integration owner
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
@@ -30,6 +30,7 @@ Tasks: 22 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | [GOV.21](#task-gov-21) | Scheduled and manual policy preview of the Design main branch (post-merge drift watch) | governance | S | [GOV.14](#task-gov-14) (artifact), [GOV.18](#task-gov-18) (artifact) | not-started |
 | [GOV.22](#task-gov-22) | Cloud devtool sharp security admission successor | producer | S | [GOV.09](#task-gov-09) (artifact) | not-started |
 | [GOV.23](#task-gov-23) | Desktop CI virtualenv security admission successor | producer | S | [GOV.09](#task-gov-09) (artifact) | not-started |
+| [GOV.24](#task-gov-24) | Closed non-wire operation metadata classification in shared Build.Policy | producer | M | [GOV.06](#task-gov-06) (artifact) | not-started |
 
 ## Tasks
 
@@ -165,7 +166,7 @@ Tasks: 22 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Start prerequisites | **artifact** [GOV.04](#task-gov-04) — the published shared ProjectGraph reader and architecture-policy package. *Why:* This is a narrowly scoped producer repair to GOV.04's shared Build.Policy project-graph reader and generated-type recognition, not a replacement engine or consumer-side workaround. |
 | Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [GOV.05](#task-gov-05), [GOV.07](#task-gov-07), [GOV.09](#task-gov-09), [GOV.20](#task-gov-20) |
+| Unblocks | [GOV.05](#task-gov-05), [GOV.07](#task-gov-07), [GOV.09](#task-gov-09), [GOV.20](#task-gov-20), [GOV.24](#task-gov-24) |
 | Write scope | `DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/ProjectGraph.cs (ReadCompilation source materialization and semantic reconstruction only)`<br>`DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/PolicyEngine.cs (the private generated-type recognition used by the two generated-type architecture rules only; no other rule, rule identifier, message, threshold or exception-handling change)`<br>`DesktopPlatform:tests/ArchitectureTests/GeneratedSourceReconstructionTests.cs (GeneratedRegex partial-method regression only)`<br>`DesktopPlatform:tests/ArchitectureTests/GeneratedTypeRecognitionTests.cs (positive and negative generated-type recognition regressions over in-memory compilations only)`<br>`DesktopPlatform:eng/provenance/files.json (append only the exact first-party regression source paths of the new test files)`<br>`DesktopPlatform:eng/policy/dependency-policy.json (only exact active-input hashes/review binding required by the existing dependency/provenance gates; no dependency or closure changes)`<br>`DesktopPlatform:eng/policy/dependency-reviews/gov-06-r1.json (new immutable successor only if an existing registered input changes; chain from the exact then-active receipt, preserve history and the full admitted closure)` |
 | Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append), [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append), [RES-desktopplatform-package-inventory](../shared-resources.md#res-desktopplatform-package-inventory) (read) |
 | Validation | Pinned SDK 10.0.400 locked restore and applicable Release build; ArchitectureTests GeneratedRegex regression must show SDK-produced partial implementation in the reconstructed compilation and keep compiler diagnostics fail-closed; all existing DesktopPlatform PR CI and package-validation checks pass. The normal DesktopPlatform integration merge publishes the next candidate under the same ArcForges.Build.Policy package identity. |
@@ -555,3 +556,27 @@ Tasks: 22 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Completion evidence | Exact reviewed advisory/patched coordinate, preserved PR116 source and actual immutable admission/provenance receipts; passing current CI and normal publication prerequisites. |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | 2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). Observed DesktopPlatform requirements-ci21.5.1 vulnerable; existing Dependabot PR116 head57801a0e67799b6d695f0bdc2428e5ec31f09341 already contains exact pin/hash patch. Root owns source/admission adoption in retained worktree and integration. Preserve existing work/history and unrelated versions; do not mark new producer inherited complete. This is a necessary diagnosed release CI security prerequisite, not optional upgrade churn.  2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Actual virtualenv21.7.13 requires python-discovery>=1.6; admit only independently verified exact python-discovery1.6.0 pin/distribution hashes and complete affected legal/admission closure alongside preserved Dependabot source patch. Other coordinates stay unchanged; require-hashes resolution must actually pass, never suppress mismatch. |
+
+<a id="task-gov-24"></a>
+
+### GOV.24 — Closed non-wire operation metadata classification in shared Build.Policy
+
+**Outcome.** Publish a real optional exact non-wire metadata binding in the shared architecture engine, with symbol/project/owned source path/normalized SHA256 and closed shape/kind validation. No arbitrary DTO, mutable or serialized/transport type may bypass AT12; default and all generated-wire checks remain unchanged.
+
+| Field | Value |
+|---|---|
+| Owning repository | DesktopPlatform (`C:\MyFile\Projects\ArcForges\DesktopPlatform`); integration owner: DesktopPlatform integration owner, the holder of `roles/integration-desktopplatform` |
+| Claim, branch and ledger | `claims/gov-24` and ledger record `ledger/tasks/gov-24.md` in the Plan repository; task branch `task/gov-24` ([DLV-26](../README.md#rule-dlv-26)) |
+| Kind / size | producer / M |
+| Obligations | [WP-05.03](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.03) — minimum actual shared AT12 producer repair for immutable non-wire operation authorization metadata; preserve generated-wire and descriptor checks |
+| Provides | closed-non-wire-operation-metadata-policy |
+| Start prerequisites | **artifact** [GOV.06](#task-gov-06) — actual published shared policy engine and generated-type recognition producer. *Why:* Repair the real retained engine; no consumer-side schema fiction or parallel scanner. |
+| Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Completion prerequisites | none |
+| Unblocks | [CON.26](contracts.md#task-con-26) |
+| Write scope | `DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/PolicyModels.cs (optional exact non-wire metadata binding model only)`<br>`DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/PolicyEngine.cs (actual closed classification/validation integration only; preserve AT12 wire/generated checks)`<br>`DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/NonWireMetadataPolicy.cs (new internal bounded semantic/source/transport validation helper only)`<br>`DesktopPlatform:tests/ArchitectureTests/NonWireMetadataBindingTests.cs (real engine positive and hostile binding/shape/transport negatives)`<br>`DesktopPlatform:tests/ArchitectureTests/GeneratedTypeRecognitionTests.cs (only focused compatibility coverage if necessary)`<br>`DesktopPlatform:src/Build/ArcForges.Build.Policy/README.md (actual closed binding contract and preserved failure behavior)`<br>`DesktopPlatform:eng/provenance/files.json (append only actual owned new helper/test firstParty source identities; preserve histories)` |
+| Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append), [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append) |
+| Validation | Actual semantic engine tests accept only the exact immutable non-wire policy/catalog shapes and reject arbitrary or mutable DTO, serializer/RPC payload, wrong/missing symbol/project/path/hash/kind, duplicate/ambiguous binding and generated-wire regression. Existing applicable Windows/Linux/static/AOT/security/package gates remain; no unrun policy result is presented as passing. |
+| Completion evidence | Independent exact-head review, passing actual engine component and applicable hosted CI, normal immutable Build.Policy package publication and exact Contracts consumer handoff. |
+| Baseline (unreviewed unless accepted) | not-started |
+| Notes | 2026-10-06 non-wire policy producer repair (docs/decisions/non-wire-metadata-policy-repair-2026-10-06.md). Required by actual CON26 Security37510528428 job112430178460 ValidatePolicyResults AT12 failures on only PublicOperationPolicy/PublicOperationCatalog/EventOperationCatalog, with other retained build/history/CodeQL gates passing. AT12 governs wire types; these are immutable operation metadata, not fake wire DTOs. Closed kinds OperationAuthorizationPolicy and OperationAuthorizationCatalog require real semantic/source/transport validation; normalized source SHA binds exact UTF8 content with LF newline normalization and optional leading BOM removal only. No arbitrary allowlist, detector suppression or transport/serializer exemption. No new public package/project/dependency or third-party coordinate change. Pure owned source/README/new-test inventory requires no dependency receipt if no actual admitted input changes; preserve GOV23 Python receipt/closure. Original Final selection171 and all existing baselines/closed history unchanged. |
