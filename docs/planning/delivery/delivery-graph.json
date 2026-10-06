@@ -9694,7 +9694,9 @@
     "DesktopPlatform:eng/check_provenance.py (only distinct closed optional externalTools inventory for noncopying host executable identities/version/hash/legal evidence; retain copied implementation/source/patch/template/generation input/output licence refusal and every existing record meaning)",
     "DesktopPlatform:tests/tooling/test_provenance.py (only genuine external-tool identity/legal acceptance and copied input/output/category bypass negatives)",
     "DesktopPlatform:eng/policy/reuse-policy.json (recognize only exact observed original GPL-1.0-or-later OR Artistic-1.0 (Text-Template), GPL-1.0-or-later OR Artistic-1.0-Perl (Perl kit) and GPL-3.0-or-later (make) legal/tool expressions conservatively; preserve existing decision table and copied material prohibitions; no permission to link/copy prohibited implementation into runtime or generated output)",
-    "DesktopPlatform:eng/provenance/records/native-image-openssl-r1.json, native-image-vcpkg-cmake-get-vars-r1.json and native-image-linux-external-tools-r1.json (new immutable Linux-only component and original external-tool/legal inventories; actual source/recipe/archive/legal and observed tool binary evidence, not copied runtime host tools)"
+    "DesktopPlatform:eng/provenance/records/native-image-openssl-r1.json (new immutable Linux-only component or original external-tool/legal inventory; actual source/recipe/archive/legal and observed tool binary evidence, not copied runtime host tools)",
+    "DesktopPlatform:eng/provenance/records/native-image-vcpkg-cmake-get-vars-r1.json (new immutable Linux-only component or original external-tool/legal inventory; actual source/recipe/archive/legal and observed tool binary evidence, not copied runtime host tools)",
+    "DesktopPlatform:eng/provenance/records/native-image-linux-external-tools-r1.json (new immutable Linux-only component or original external-tool/legal inventory; actual source/recipe/archive/legal and observed tool binary evidence, not copied runtime host tools)"
    ],
    "shared": [
     {
