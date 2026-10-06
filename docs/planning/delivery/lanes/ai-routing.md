@@ -63,7 +63,7 @@ Tasks: 10 · Owning repositories: AI, Cloud · Integration owner(s): AI integrat
 | Completion prerequisites | none |
 | Unblocks | [AIR.90](#task-air-90) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Agent/Tariffs/**` |
-| Shared resources | [RES-private-configuration](../shared-resources.md#res-private-configuration) (append) |
+| Shared resources | [RES-private-configuration](../shared-resources.md#res-private-configuration) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Rate-change immutability test, historical-explainability reconstruction test, per-dimension metering tests -- offline. |
 | Completion evidence | Rate-change immutability and historical explainability results. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
@@ -86,6 +86,7 @@ Tasks: 10 · Owning repositories: AI, Cloud · Integration owner(s): AI integrat
 | Completion prerequisites | **integration** [COM.12](commerce.md#task-com-12) — the real capacity admission participant. *Why:* metering starts from the credits participant; its settlement acceptance also runs against the real capacity admission participant |
 | Unblocks | [AIR.04](#task-air-04), [AIR.06](#task-air-06), [AIR.08](#task-air-08) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Agent/Metering/**` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Actual CF normal/interrupted/lost outcome with concurrent duplicates and replayed receipts; cancelled/unknown hold sweep; tariff-change and operator-job isolation tests. Real-CF cases only at the credentialed candidate gate. |
 | Completion evidence | Metering accounting, idempotency, sweep and overdraft results. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
@@ -108,7 +109,7 @@ Tasks: 10 · Owning repositories: AI, Cloud · Integration owner(s): AI integrat
 | Completion prerequisites | none |
 | Unblocks | [AIR.90](#task-air-90) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Agent/Routing/**` |
-| Shared resources | [RES-ai-workflow-and-routes](../shared-resources.md#res-ai-workflow-and-routes) (append), [RES-private-configuration](../shared-resources.md#res-private-configuration) (append) |
+| Shared resources | [RES-ai-workflow-and-routes](../shared-resources.md#res-ai-workflow-and-routes) (append), [RES-private-configuration](../shared-resources.md#res-private-configuration) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Unavailable/withdrawn model, missing price/config, pre-dispatch-refusal-vs-unknown-dispatch, explicit-new-model-request tests -- offline. |
 | Completion evidence | No-BYOK structural assertions and credential-custody results. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
@@ -131,6 +132,7 @@ Tasks: 10 · Owning repositories: AI, Cloud · Integration owner(s): AI integrat
 | Completion prerequisites | none |
 | Unblocks | [AIR.90](#task-air-90) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Agent/InteractionRecords/**` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Trace-separation test; content-redaction test; cost-explainability test -- offline. |
 | Completion evidence | Trace separation, redaction and cost explainability results. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
@@ -178,7 +180,7 @@ Tasks: 10 · Owning repositories: AI, Cloud · Integration owner(s): AI integrat
 | Completion prerequisites | none |
 | Unblocks | [AIR.90](#task-air-90), [HAR.04](harness.md#task-har-04), [SRCH.06](search.md#task-srch-06) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Agent/Metering/UncertainOutcome/**` |
-| Shared resources | [RES-ai-workflow-and-routes](../shared-resources.md#res-ai-workflow-and-routes) (append) |
+| Shared resources | [RES-ai-workflow-and-routes](../shared-resources.md#res-ai-workflow-and-routes) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Search-without-customer-debit, model-debit-once, crash-before/after-dispatch, unknown-deadline, late-usage-after-closed, no-automatic-retry tests -- offline with real-CF-shaped fixtures; real dispatch only at AIR.08's gate. |
 | Completion evidence | Degradation, reservation-release and alert results. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
@@ -251,6 +253,7 @@ Tasks: 10 · Owning repositories: AI, Cloud · Integration owner(s): AI integrat
 | Completion prerequisites | none |
 | Unblocks | [REL.06](release.md#task-rel-06) |
 | Write scope | `Cloud:tests/Cloud.Tests.Integration/AiMetering/**` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Real selected model/tool/embedding cases and provider refusal/lost-result/usage reconciliation tied to C# admitted call and config identity; [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) proportionate. |
 | Completion evidence | Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/provider, scenario, result, real-vs-fixture status. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |

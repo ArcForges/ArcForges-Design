@@ -131,7 +131,7 @@ Tasks: 8 · Owning repositories: AI, Cloud · Integration owner(s): AI integrati
 | Completion prerequisites | none |
 | Unblocks | [HAR.05](#task-har-05), [HAR.06](#task-har-06), [OPS.03](operations.md#task-ops-03) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Task/EffectCertainty/**` |
-| Shared resources | [RES-ai-workflow-and-routes](../shared-resources.md#res-ai-workflow-and-routes) (append), [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append) |
+| Shared resources | [RES-ai-workflow-and-routes](../shared-resources.md#res-ai-workflow-and-routes) (append), [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Timeout-before-first-token asserting unknown-not-retry; lost response reconciled against the provider's own record; platform-caused retry charged once and fully visible in supplier cost; deadline-expiry releasing customer hold while retaining supplier liability. |
 | Completion evidence | Effect-certainty classification and deadline-release results ([PG-18](../../../assurance/open-gates-register.md#rule-pg-18), joint with HAR.02). |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
@@ -179,7 +179,7 @@ Tasks: 8 · Owning repositories: AI, Cloud · Integration owner(s): AI integrati
 | Unblocks | [AST.20](assistant.md#task-ast-20), [HAR.90](#task-har-90) |
 | Permitted substitutes | [SUB-automation-fixture](../substitutes.md#sub-automation-fixture) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Task/Automation/**` |
-| Shared resources | [RES-ai-workflow-and-routes](../shared-resources.md#res-ai-workflow-and-routes) (append), [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append) |
+| Shared resources | [RES-ai-workflow-and-routes](../shared-resources.md#res-ai-workflow-and-routes) (append), [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Duplicate schedule/event, catch-up/coalescing, service/grant expiry, disable-during-wait tests; actual CF occurrence/usage with one linked Task at the credentialed gate. |
 | Completion evidence | Real automation scheduling, missed-run policy, occurrence deduplication, cancellation and fixture-removal results (core mechanics). |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |

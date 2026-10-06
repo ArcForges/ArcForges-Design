@@ -108,6 +108,7 @@ Tasks: 9 · Owning repositories: ArcScope, Cloud, Contracts, DesktopPlatform, Mo
 | Completion prerequisites | **integration** [REL.09](#task-rel-09) — the combined disaster drill actually exercised against this deployed production topology. *Why:* [L-16](../../../assurance/release-gates.md#rule-l-16) and the cloud go-live threshold require a completed game day; deployment alone does not prove 'failure behaves correctly' |
 | Unblocks | [REL.07](#task-rel-07), [REL.09](#task-rel-09), [REL.11](#task-rel-11) |
 | Write scope | `Cloud:eng/release/**`<br>`Cloud:deploy/production/**`<br>`Design:docs/assurance/wp50-04-cloud-*.md` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Production-shaped migration/rollback rehearsal against real Cloudflare topology; archived launch-capacity.v1 hash, actual standard-2 allocation/four global slots/ten-minute sleep, warm/cold/burst/fallback-read workload, D1/Vectorize/R2 dimensions and provider prices; explicit Product/Operations approval required for [L-16](../../../assurance/release-gates.md#rule-l-16)/[PG-26](../../../assurance/open-gates-register.md#rule-pg-26) - not markable complete from document checks alone. |
 | Completion evidence | Per-gate go-live evidence [L-01](../../../assurance/release-gates.md#rule-l-01)..[L-16](../../../assurance/release-gates.md#rule-l-16) (except the drill); backup/restore proof; self-host deployment evidence. |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -154,6 +155,7 @@ Tasks: 9 · Owning repositories: ArcScope, Cloud, Contracts, DesktopPlatform, Mo
 | Completion prerequisites | none |
 | Unblocks | [REL.07](#task-rel-07), [REL.11](#task-rel-11) |
 | Write scope | `Cloud:eng/release/commercial/**`<br>`Design:docs/assurance/wp50-05-commercial-*.md` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Full commercial gate evidence set from WP42; configuration assertion on the regional route; a received payout is required, not merely a successful test transaction, per [BR-05](../../../architecture/14-build-packaging-and-release.md#rule-br-05). |
 | Completion evidence | Commercial gate evidence set including the received payout; regional-route configuration assertion. |
 | Baseline (unreviewed unless accepted) | not-started |
@@ -177,6 +179,7 @@ Tasks: 9 · Owning repositories: ArcScope, Cloud, Contracts, DesktopPlatform, Mo
 | Completion prerequisites | none |
 | Unblocks | [REL.06](#task-rel-06), [REL.11](#task-rel-11) |
 | Write scope | `Cloud:eng/release/game-day/**`<br>`Design:docs/assurance/wp50-04-gameday-*.md, wp50-07-operational-readiness-*.md` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | A real exercise across the severity ladder against real production topology; alert-to-runbook completeness assertion; on-call verification; support-path end-to-end test; local/opt-in per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017), no synthetic-only substitution. |
 | Completion evidence | Game-day record with per-gate go-live evidence; alert-to-runbook, on-call and support-path results. |
 | Baseline (unreviewed unless accepted) | not-started |

@@ -41,7 +41,7 @@ Tasks: 12 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Completion prerequisites | none |
 | Unblocks | [DEV.02](#task-dev-02), [DEV.09](#task-dev-09), [DEV.14](#task-dev-14) |
 | Write scope | `Cloud:src/ArcForges.Cloud/Presence/**` |
-| Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append) |
+| Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline/local Worker+DO test harness only (per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017), no hosted live-service CI): expiry/renewal timers, restarted epoch, offline-without-false-availability. |
 | Completion evidence | Expiry/renewal timer test results, restarted-epoch test, per-device-row isolation proof. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: Cloud repo HEAD ce0a32a has only the ArcForges.Cloud hello-world project (BuildIdentity/HealthStatus/HelloEndpoint/Program); no Application/Presence service exists. |
@@ -65,7 +65,7 @@ Tasks: 12 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Completion prerequisites | none |
 | Unblocks | [AND.25](android.md#task-and-25), [DEV.04](#task-dev-04), [DEV.06](#task-dev-06), [DEV.07](#task-dev-07), [DEV.08](#task-dev-08), [DEV.09](#task-dev-09), [DEV.13](#task-dev-13), [DEV.14](#task-dev-14), [WEB.28](web.md#task-web-28) |
 | Write scope | `Cloud:src/ArcForges.Cloud/ToolBridge/**` |
-| Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append) |
+| Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline/local Worker+D1 test harness: another-app-cannot-claim, duplicate/lost-ack/expiry, per-owner budget. |
 | Completion evidence | Claim-isolation, duplicate/lost-ack, expiry and budget test results. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: |
@@ -110,7 +110,7 @@ Tasks: 12 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Completion prerequisites | none |
 | Unblocks | [DEV.09](#task-dev-09), [DEV.12](#task-dev-12), [DEV.13](#task-dev-13), [DEV.14](#task-dev-14) |
 | Write scope | `Cloud:src/ArcForges.Cloud/ToolBridge/**` |
-| Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append) |
+| Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline/local D1 test harness: multi-request-per-attempt, identical replay, changed-hash refusal, stale epoch, cross-application delivery rejection. |
 | Completion evidence | Dedup/replay/hash-mismatch/stale-epoch test results. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: |
@@ -158,7 +158,7 @@ Tasks: 12 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Completion prerequisites | none |
 | Unblocks | [AND.25](android.md#task-and-25), [DEV.09](#task-dev-09), [DEV.13](#task-dev-13), [WEB.28](web.md#task-web-28) |
 | Write scope | `Cloud:src/ArcForges.Cloud/ToolBridge/**` |
-| Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append) |
+| Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline/local test harness: mobile-biometric-cannot-substitute, stale-approval-fails. |
 | Completion evidence | Biometric-substitution-refusal and stale-approval test results. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: |
@@ -181,7 +181,7 @@ Tasks: 12 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Completion prerequisites | none |
 | Unblocks | [AND.25](android.md#task-and-25), [DEV.09](#task-dev-09), [WEB.28](web.md#task-web-28) |
 | Write scope | `Cloud:src/ArcForges.Cloud/ToolBridge/**` |
-| Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append) |
+| Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline/local test harness: disconnect/revoke/reinstall, no silent retarget. |
 | Completion evidence | Disconnect/revoke/reinstall test results. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: |
@@ -204,7 +204,7 @@ Tasks: 12 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Completion prerequisites | none |
 | Unblocks | [DEV.09](#task-dev-09), [HAR.05](harness.md#task-har-05) |
 | Write scope | `Cloud:src/ArcForges.Cloud/ToolBridge/**` |
-| Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append) |
+| Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline/local test harness: own-app multi-tool workflow, cross-product-absent assertion. |
 | Completion evidence | Multi-tool workflow and cross-product-absence test results. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: |
@@ -228,6 +228,7 @@ Tasks: 12 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Completion prerequisites | none |
 | Unblocks | none |
 | Write scope | `Cloud:artifacts/evidence/**` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Clean-environment build/pack across both repos; [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) scope only (no live-service CI); real cross-repo dedup agreement proven per IM.tool-bridge-dedup-agreement. |
 | Completion evidence | Source commits (both repos), artifact versions/hashes, environment, UX-D/E rows, real-boundary test results. |
 | Baseline (unreviewed unless accepted) | not-started |

@@ -38,7 +38,7 @@ Tasks: 8 · Owning repositories: Cloud · Integration owner(s): Cloud integratio
 | Unblocks | [HAR.01](harness.md#task-har-01), [SRCH.01](#task-srch-01) |
 | Permitted substitutes | [SUB-web-search-fixture](../substitutes.md#sub-web-search-fixture) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Retrieval/Sources/**`<br>`Cloud:tests/Cloud.Tests.Integration/Retrieval/Sources/**` |
-| Shared resources | [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append) |
+| Shared resources | [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline unit + Cloud integration tests against the real D1 schema in an ephemeral test host; no live web fetch in CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) forbids live-service CI) -- the web-source path is exercised through the fixture web-search response only. |
 | Completion evidence | Rejection-before-snippet test matrix (other-product/realm/private), consent/origin record contents, source registration receipt. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
@@ -63,7 +63,7 @@ Tasks: 8 · Owning repositories: Cloud · Integration owner(s): Cloud integratio
 | Unblocks | [SRCH.02](#task-srch-02), [SRCH.05](#task-srch-05), [SRCH.06](#task-srch-06) |
 | Permitted substitutes | [SUB-embedding-rerank-fixture](../substitutes.md#sub-embedding-rerank-fixture) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Retrieval/Indexing/**` |
-| Shared resources | [RES-ai-workflow-and-routes](../shared-resources.md#res-ai-workflow-and-routes) (append), [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append) |
+| Shared resources | [RES-ai-workflow-and-routes](../shared-resources.md#res-ai-workflow-and-routes) (append), [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline unit tests for index math with fixture vectors; D1/Vectorize behavior exercised against local/emulated CF bindings per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) (no live CF in ordinary CI); [L-16](../../../assurance/release-gates.md#rule-l-16) index/namespace footprint measured locally. |
 | Completion evidence | Cross-product/tenant isolation before topK, stale deletion, unavailable canonical owner, lexical fallback, [L-16](../../../assurance/release-gates.md#rule-l-16) footprint measurement. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
@@ -87,7 +87,7 @@ Tasks: 8 · Owning repositories: Cloud · Integration owner(s): Cloud integratio
 | Unblocks | [SRCH.03](#task-srch-03), [SRCH.06](#task-srch-06) |
 | Permitted substitutes | [SUB-embedding-rerank-fixture](../substitutes.md#sub-embedding-rerank-fixture) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Retrieval/Ranking/**` |
-| Shared resources | [RES-ai-workflow-and-routes](../shared-resources.md#res-ai-workflow-and-routes) (append), [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append) |
+| Shared resources | [RES-ai-workflow-and-routes](../shared-resources.md#res-ai-workflow-and-routes) (append), [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline unit tests: budget bounds, multilingual/no-match/partial queries, exact decimal vector comparison against fixture vectors. |
 | Completion evidence | Budget-bound test matrix; multilingual/no-match/partial results; decimal-vector exactness. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
@@ -110,6 +110,7 @@ Tasks: 8 · Owning repositories: Cloud · Integration owner(s): Cloud integratio
 | Completion prerequisites | none |
 | Unblocks | [SRCH.04](#task-srch-04), [SRCH.90](#task-srch-90) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Retrieval/PermissionRecheck/**` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline integration test with a revocation injected mid-query and a deliberately stale index row. |
 | Completion evidence | Revocation-during-query and stale-index-cannot-expose-content test results. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
@@ -132,6 +133,7 @@ Tasks: 8 · Owning repositories: Cloud · Integration owner(s): Cloud integratio
 | Completion prerequisites | none |
 | Unblocks | [SRCH.90](#task-srch-90) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Retrieval/Citations/**` |
+| Shared resources | [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline unit tests for stale/missing source labelling and anti-fabrication assertions. |
 | Completion evidence | Stale/missing source label tests; no-fabricated-citation assertion. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
@@ -154,7 +156,7 @@ Tasks: 8 · Owning repositories: Cloud · Integration owner(s): Cloud integratio
 | Completion prerequisites | none |
 | Unblocks | [SRCH.90](#task-srch-90) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Retrieval/Privacy/**` |
-| Shared resources | [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append) |
+| Shared resources | [RES-cloud-host-composition](../shared-resources.md#res-cloud-host-composition) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Offline marker test, cross-app/account leakage test, purge test. |
 | Completion evidence | Marker test, cross-app/account leakage and purge results. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
@@ -177,7 +179,7 @@ Tasks: 8 · Owning repositories: Cloud · Integration owner(s): Cloud integratio
 | Completion prerequisites | **integration** [SRCH.90](#task-srch-90) — index capacity acceptance evidence. *Why:* this task's real-path evidence feeds the package-level acceptance in SRCH.90 |
 | Unblocks | [SRCH.90](#task-srch-90) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Retrieval/Indexing/**`<br>`Cloud:src/Cloud/ArcForges.Cloud.Modules.Retrieval/Ranking/**` |
-| Shared resources | [RES-ai-workflow-and-routes](../shared-resources.md#res-ai-workflow-and-routes) (append), [RES-private-configuration](../shared-resources.md#res-private-configuration) (append) |
+| Shared resources | [RES-ai-workflow-and-routes](../shared-resources.md#res-ai-workflow-and-routes) (append), [RES-private-configuration](../shared-resources.md#res-private-configuration) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Real compatible client/owner/index version test against deployed CF bindings (credentialed candidate gate, not ordinary CI, per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)'s 'no real AI inference in CI'); explicit lexical-only degradation test. |
 | Completion evidence | Real compatible client/owner/index versions; explicit lexical-only degradation. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
@@ -201,7 +203,7 @@ Tasks: 8 · Owning repositories: Cloud · Integration owner(s): Cloud integratio
 | Completion prerequisites | **integration** [POL.02](policy.md#task-pol-02) — launch-capacity.v1 signed configuration snapshot. *Why:* capacity/threshold-refusal tests need the real signed budget document, not an invented number |
 | Unblocks | [REL.06](release.md#task-rel-06), [SRCH.06](#task-srch-06) |
 | Write scope | `Cloud:tests/Cloud.Tests.Integration/Retrieval/**` |
-| Shared resources | [RES-private-configuration](../shared-resources.md#res-private-configuration) (append) |
+| Shared resources | [RES-private-configuration](../shared-resources.md#res-private-configuration) (append), [RES-cloud-policy-inputs](../shared-resources.md#res-cloud-policy-inputs) (append) |
 | Validation | Package/contract/owner/version compatibility and failure/recovery tests; [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) proportionate (no live paid-provider CI loop; capacity thresholds tested against recorded/replayable fixtures where the real CF budget document is unavailable in CI). |
 | Completion evidence | Index capacity acceptance ledger: reservations, overlap, tombstone reconciliation, threshold refusal, rebuild pause/recovery. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
