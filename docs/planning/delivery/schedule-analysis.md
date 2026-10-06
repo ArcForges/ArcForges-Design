@@ -8,9 +8,9 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 
 | Measure | Value |
 |---|---|
-| Delivery tasks | 464 (6 carried as accepted baseline), plus 50 adoption slices |
-| Dependency edges by type | artifact 1123, contract 110, design 1, integration(completion) 280, release 33 |
-| Remaining work (size units: S=1, M=2, L=4, XL=8) | 1162 |
+| Delivery tasks | 466 (6 carried as accepted baseline), plus 50 adoption slices |
+| Dependency edges by type | artifact 1129, contract 110, design 1, integration(completion) 286, release 33 |
+| Remaining work (size units: S=1, M=2, L=4, XL=8) | 1164 |
 | Longest dependency chain (levels) | 25 |
 | Widest level (tasks whose longest prerequisite chain has equal length) | 58 |
 | Critical path length (size units) | 81 |
@@ -33,7 +33,7 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 | [Application presence and tool bridge](lanes/device-bridge.md) | 12 | 22 | Cloud, DesktopPlatform |
 | [ArcScope](lanes/arcscope.md) | 27 | 67 | ArcScope |
 | [ArcScope Cloud simulator](lanes/simulator.md) | 10 | 36 | ArcScope, Cloud |
-| [Cloud core](lanes/cloud.md) | 69 | 153 | Cloud, DesktopPlatform |
+| [Cloud core](lanes/cloud.md) | 71 | 155 | Cloud, DesktopPlatform |
 | [Commerce, entitlement and credits](lanes/commerce.md) | 16 | 56 | Cloud |
 | [Dynamic policy and configuration](lanes/policy.md) | 11 | 26 | Cloud, DesktopPlatform |
 | [Operations, support and trust and safety](lanes/operations.md) | 13 | 35 | Cloud, Web |
@@ -54,11 +54,11 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 |---|---|---|---|---|---|
 | AI | 13 | 4 | level 8: 3 | 1 | [AIR.05](lanes/ai-routing.md#task-air-05) Content-origin marking at the provider generation boundary, [EXT.10](lanes/extensions.md#task-ext-10) Cloud MCP HTTP through the AI Worker adapter, [AIR.07](lanes/ai-routing.md#task-air-07) Provider test-environment coverage |
 | ArcScope | 33 | 6 | level 9: 8 | 2 | [SCOPE.07](lanes/arcscope.md#task-scope-07) Durable capture writer, chunked verifiable store and crash recovery, [SCOPE.09](lanes/arcscope.md#task-scope-09) Long-running capture in the shell, [SCOPE.12](lanes/arcscope.md#task-scope-12) Visualisation: virtualised rendering, downsampling, cursors and markers, [SCOPE.13](lanes/arcscope.md#task-scope-13) Triggers with pre/post windows |
-| Cloud | 143 | 13 | level 10: 14 | 7 | [CLOUD.12](lanes/cloud.md#task-cloud-12) Native and browser authentication with real Postmark/SES mail delivery, [HAR.04](lanes/harness.md#task-har-04) Provider failure and effect-certainty classification, [POL.10](lanes/policy.md#task-pol-10) Owned-artifact receipt, [SIM.03](lanes/simulator.md#task-sim-03) Fenced slices and SimulationPacer (DO alarm coordinator, bounded Container segments, D1 checkpoint/fence) |
+| Cloud | 145 | 13 | level 10: 16 | 7 | [CLOUD.12](lanes/cloud.md#task-cloud-12) Native and browser authentication with real Postmark/SES mail delivery, [HAR.04](lanes/harness.md#task-har-04) Provider failure and effect-certainty classification, [POL.10](lanes/policy.md#task-pol-10) Owned-artifact receipt, [SIM.03](lanes/simulator.md#task-sim-03) Fenced slices and SimulationPacer (DO alarm coordinator, bounded Container segments, D1 checkpoint/fence) |
 | Contracts | 34 | 4 | level 3: 7 | 7 | [CON.04](lanes/contracts.md#task-con-04) ContentSandbox service schema (15 methods: session/slot/image/PDF), [CON.05](lanes/contracts.md#task-con-05) Extension/Connector/LocalBootstrap service schema (annex09 helper closure minus ContentSandbox), [CON.12](lanes/contracts.md#task-con-12) Extension and policy schemas: manifest.v1/workflow.v1/panel.v1/policy body.v1/configuration.v1, [CON.16](lanes/contracts.md#task-con-16) Signed catalog/update/realm formats (catalog-index.v1, catalog-revocations.v1, android-update.v1, realm.v1) |
 | DesktopPlatform | 156 | 14 | level 7: 24 | 8 | [EXE.02](lanes/execution.md#task-exe-02) Lifecycle states and reason facets, [GOV.20](lanes/governance.md#task-gov-20) Build.Policy banned-symbol scanner: audit unmanaged function-pointer invocations instead of throwing, [NAT.05](lanes/native.md#task-nat-05) Probe evidence, licence positions, conclusions and hardware-lab inventory seed, [PLT.11](lanes/platform.md#task-plt-11) Child registration lifecycle |
-| Mobile | 30 | 4 | level 13: 4 | 1 | [AND.03](lanes/android.md#task-and-03) Android runtime and OS adapters (Compose, Credential Manager, Keystore wrapper, WorkManager, FCM registration, SAF/MediaStore), [AND.04](lanes/android.md#task-and-04) Published gRPC-Web contract consumption (Connect Kotlin client, binary framing, session/stream/retry adapters), [AND.05](lanes/android.md#task-and-05) Room history, drafts, outbox and receipts, [AND.20](lanes/android.md#task-and-20) Play and direct-channel signed update client |
-| Web | 40 | 5 | level 10: 7 | 1 | [OPS.05](lanes/operations.md#task-ops-05) Operator console and support access, [PRF.08](lanes/runtime-proofs.md#task-prf-08) React production build and generated TS SDK proof, [WEB.13](lanes/web.md#task-web-13) Workspace, storage and usage, [WEB.14](lanes/web.md#task-web-14) Subscription, capacity, credits and hosted checkout |
+| Mobile | 30 | 4 | level 15: 5 | 1 | [AND.07](lanes/android.md#task-and-07) Foundation integration evidence: real candidate against deployed 22/23/24/25, [AND.08](lanes/android.md#task-and-08) Authentication, Home and workspace (AN01-AN06), [AND.12](lanes/android.md#task-and-12) Presence, push, links and settings (AN20-AN24), [AND.24](lanes/android.md#task-and-24) Real CF Harness generation/tool loop observed end to end on Android |
+| Web | 40 | 5 | level 11: 8 | 1 | [WEB.11](lanes/web.md#task-web-11) Real browser session and step-up acceptance, [WEB.20](lanes/web.md#task-web-20) Conversation and generated output streams, [WEB.21](lanes/web.md#task-web-21) Tasks, approval and steering, [WEB.22](lanes/web.md#task-web-22) Artifacts and sandboxing |
 
 ## Critical path
 
@@ -103,18 +103,18 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 | 7 | 34 |
 | 8 | 29 |
 | 9 | 47 |
-| 10 | 40 |
-| 11 | 37 |
-| 12 | 25 |
-| 13 | 27 |
-| 14 | 17 |
-| 15 | 18 |
-| 16 | 20 |
-| 17 | 11 |
-| 18 | 6 |
-| 19 | 6 |
+| 10 | 42 |
+| 11 | 40 |
+| 12 | 28 |
+| 13 | 25 |
+| 14 | 20 |
+| 15 | 21 |
+| 16 | 17 |
+| 17 | 8 |
+| 18 | 5 |
+| 19 | 4 |
 | 20 | 2 |
-| 21 | 2 |
+| 21 | 1 |
 | 22 | 2 |
 | 23 | 1 |
 | 24 | 2 |
@@ -126,14 +126,14 @@ Assumptions: task effort is its relative size (S=1, M=2, L=4, XL=8 units, never 
 
 | Workers | Makespan (size units) | Estimated speed-up over one worker |
 |---|---|---|
-| 1 | 1162 | 1.0× |
-| 2 | 582 | 2.0× |
-| 4 | 292 | 4.0× |
-| 8 | 147 | 7.9× |
-| 16 | 81 | 14.3× |
-| 32 | 81 | 14.3× |
-| 64 | 81 | 14.3× |
-| unbounded | 81 | 14.3× |
+| 1 | 1164 | 1.0× |
+| 2 | 583 | 2.0× |
+| 4 | 293 | 4.0× |
+| 8 | 148 | 7.9× |
+| 16 | 81 | 14.4× |
+| 32 | 81 | 14.4× |
+| 64 | 81 | 14.4× |
+| unbounded | 81 | 14.4× |
 
 ## Provisional initial ready set
 
