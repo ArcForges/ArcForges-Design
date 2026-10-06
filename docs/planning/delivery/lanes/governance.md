@@ -518,7 +518,7 @@ Tasks: 21 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Owning repository | Cloud (`C:\MyFile\Projects\ArcForges\Cloud`); integration owner: Cloud integration owner, the holder of `roles/integration-cloud` |
 | Claim, branch and ledger | `claims/gov-22` and ledger record `ledger/tasks/gov-22.md` in the Plan repository; task branch `task/gov-22` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | producer / S |
-| Obligations | [WP-05.06](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.06) — current Cloud security dependency admission and retained CI; exact patched devtool transitive closure |
+| Obligations | [WP-02.05](../../work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.05) — current Cloud security dependency admission and retained CI; exact patched devtool transitive closure |
 | Provides | cloud-devtool-security-closure |
 | Start prerequisites | **artifact** [GOV.09](#task-gov-09) — current Cloud policy/dependency audit mechanism. *Why:* Preserve existing gate and admission process. |
 | Entry condition | [ADOPT.07.governance](adoption.md#task-adopt-07-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
