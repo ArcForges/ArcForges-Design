@@ -49,7 +49,7 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Owning repository | Mobile (`C:\MyFile\Projects\ArcForges\Mobile`); integration owner: Mobile integration owner, the holder of `roles/integration-mobile` |
 | Claim, branch and ledger | `claims/and-01` and ledger record `ledger/tasks/and-01.md` in the Plan repository; task branch `task/and-01` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | producer / M · early risk proof |
-| Obligations | [WP-30.00](../../work-packages/30-mobile-shared-architecture.md#rule-wp-30.00) — all work except the parts mapped to AND.04<br>[WP-30](../../work-packages/30-mobile-shared-architecture.md#rule-wp-30) §3 binding rules: Apache-2.0 boundary, no GPL-family implementation, immutable producer artifacts — package-level obligation contribution |
+| Obligations | [WP-30.00](../../work-packages/30-mobile-shared-architecture.md#rule-wp-30.00) — all work except the parts mapped to AND.04<br>[WP-30](../../work-packages/30-mobile-shared-architecture.md#rule-wp-30) Â§3 binding rules: Apache-2.0 boundary, no GPL-family implementation, immutable producer artifacts — package-level obligation contribution |
 | Provides | android-app-identity; android-stable-toolchain |
 | Start prerequisites | **artifact** [PRF.10](runtime-proofs.md#task-prf-10) — immutable toolchain compatibility manifest (exact AGP/Kotlin/Compose/Gradle versions proven together on a real release build). *Why:* WP30.00 Follow-up F-1 must commit exact producer pins against a proven-compatible stack; the transport probe already runs in this repo's own CI (CloudHelloClient, F-023-evidenced candidates), so this is a recorded-manifest join, not a functional blocker |
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
@@ -60,7 +60,7 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Validation | Windows/Linux full build, dependency-verification metadata check, package/certificate inspection under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017); device install and App Link fixture-key tests are local opt-in, not CI gates |
 | Completion evidence | Exact pinned tuple + wrapper checksums + regenerated locks; [F-023](../../../assurance/open-gates-register.md#rule-f-023) re-run showing closure holds after the identity change |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: app/ is a Hello World module with applicationId io.github.arcforges.mobile (dev-prerelease id); shared/ is a Kotlin-Multiplatform module (android+desktop jvm targets) used only for a Compose Hot Reload preview per AGENTS.md, not a production target; CI already builds/signs/publishes real signed candidates (android-0.1.0-ci.14.1, [F-023](../../../assurance/open-gates-register.md#rule-f-023) closed for that candidate) which is de facto WP06 evidence |
-| Notes | Must also decide the KMP shared/ preview module's fate: arch-27's module map (core/*, feature/*) has no KMP target, so shared/ stays a dev-only convenience outside the shipped app graph, never a second production plan (per WP30 §4). |
+| Notes | Must also decide the KMP shared/ preview module's fate: arch-27's module map (core/*, feature/*) has no KMP target, so shared/ stays a dev-only convenience outside the shipped app graph, never a second production plan (per WP30 Â§4). |
 
 <a id="task-and-02"></a>
 
@@ -224,7 +224,7 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Validation | Instrumented UI tests offline where feasible; scope/permission, wrong/stale target, loss/retry and expiry scenarios against real WP22/23 are local opt-in |
 | Completion evidence | Full account/attention path walkthrough against real Cloud endpoints |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Does not need WP26 (remote bridge), WP45 (push sender) or WP52 (Harness) to start or complete — only WP30's own foundation and the already-deployed WP22/23. Demonstrates that not all Android features wait on the complete Harness. |
+| Notes | Does not need WP26 (remote bridge), WP45 (push sender) or WP52 (Harness) to start or complete â€” only WP30's own foundation and the already-deployed WP22/23. Demonstrates that not all Android features wait on the complete Harness. |
 
 <a id="task-and-09"></a>
 
@@ -293,7 +293,7 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Validation | Offline transfer-journal unit tests; resumable-upload/hash-mismatch/process-death-during-transfer scenarios are local opt-in on real devices |
 | Completion evidence | No unavailable bytes represented as empty success; resumable journal survives process death |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Independent of WP26/WP45/WP52 — can complete in parallel with AND.09/AND.10 once the foundation (AND.07) lands. |
+| Notes | Independent of WP26/WP45/WP52 â€” can complete in parallel with AND.09/AND.10 once the foundation (AND.07) lands. |
 
 <a id="task-and-12"></a>
 
@@ -351,7 +351,7 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Owning repository | Mobile (`C:\MyFile\Projects\ArcForges\Mobile`); integration owner: Mobile integration owner, the holder of `roles/integration-mobile` |
 | Claim, branch and ledger | `claims/and-14` and ledger record `ledger/tasks/and-14.md` in the Plan repository; task branch `task/and-14` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | acceptance / S |
-| Obligations | [WP-31.06](../../work-packages/31-arcchat-mobile-android.md#rule-wp-31.06) — full<br>[WP-30](../../work-packages/30-mobile-shared-architecture.md#rule-wp-30) §3 binding rules: Apache-2.0 boundary, no GPL-family implementation, immutable producer artifacts — package-level obligation contribution |
+| Obligations | [WP-31.06](../../work-packages/31-arcchat-mobile-android.md#rule-wp-31.06) — full<br>[WP-30](../../work-packages/30-mobile-shared-architecture.md#rule-wp-30) Â§3 binding rules: Apache-2.0 boundary, no GPL-family implementation, immutable producer artifacts — package-level obligation contribution |
 | Provides | android-scope-enforced |
 | Start prerequisites | **artifact** [AND.08](#task-and-08) — features exist to audit. *Why:* surface-action inventory cross-check needs the real surfaces<br>**artifact** [AND.09](#task-and-09) — features exist to audit. *Why:* same<br>**artifact** [AND.10](#task-and-10) — features exist to audit. *Why:* same |
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
@@ -498,7 +498,7 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Validation | Expired/rollback/wrong-certificate/URL/hash and offline-stale-feed tests, offline where feasible |
 | Completion evidence | Play primary + direct APK flow complete with no silent install |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Explicitly does NOT wait on WP53 (production feed/signing) — [WP-32.04](../../work-packages/32-mobile-release-and-store-gates.md#rule-wp-32.04)'s own text states WP53's replacement is verified at WP50, not a backward input to this task. |
+| Notes | Explicitly does NOT wait on WP53 (production feed/signing) â€” [WP-32.04](../../work-packages/32-mobile-release-and-store-gates.md#rule-wp-32.04)'s own text states WP53's replacement is verified at WP50, not a backward input to this task. |
 
 <a id="task-and-21"></a>
 
@@ -518,7 +518,7 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Completion prerequisites | none |
 | Unblocks | [AND.23](#task-and-23), [AND.26](#task-and-26) |
 | Write scope | `Mobile:eng/mobile.py` |
-| Validation | Actual local/server unknown-effect replay, encrypted draft/outbox retention through upgrade, signing-key recovery rehearsal — all local opt-in under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |
+| Validation | Actual local/server unknown-effect replay, encrypted draft/outbox retention through upgrade, signing-key recovery rehearsal â€” all local opt-in under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |
 | Completion evidence | All mandatory scenarios pass; material device limits disclosed; no pending user work lost |
 | Baseline (unreviewed unless accepted) | not-started |
 
@@ -565,7 +565,7 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Unblocks | [AND.26](#task-and-26), [REL.04](release.md#task-rel-04) |
 | Write scope | `Mobile:eng/mobile.py` |
 | Shared resources | [RES-android-signing-and-store](../shared-resources.md#res-android-signing-and-store) (append) |
-| Validation | Download public candidate in a clean device path, verify signature/hash, exercise actual services — local opt-in |
+| Validation | Download public candidate in a clean device path, verify signature/hash, exercise actual services â€” local opt-in |
 | Completion evidence | Distribution complete only with real receipts; [VG-13](../../../assurance/open-gates-register.md#rule-vg-13) store-submission confirmation |
 | Baseline (unreviewed unless accepted) | not-started |
 

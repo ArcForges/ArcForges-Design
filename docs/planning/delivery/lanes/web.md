@@ -57,13 +57,13 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Kind / size | producer / L |
 | Obligations | [WP-47.00](../../work-packages/47-static-public-site.md#rule-wp-47.00) — full |
 | Provides | web-static-generator |
-| Start prerequisites | **artifact** [GOV.03](governance.md#task-gov-03) — Node/npm workspace and toolchain pins. *Why:* already satisfied — the repo's root package.json/workspaces/.node-version already implement this<br>**artifact** [GOV.11](governance.md#task-gov-11) — prior Web security-config exception authority and r7 exact-pattern baseline. *Why:* WEB.01 r8 exact exception appends only after the merged r7 config-owner update |
+| Start prerequisites | **artifact** [GOV.03](governance.md#task-gov-03) — Node/npm workspace and toolchain pins. *Why:* already satisfied â€” the repo's root package.json/workspaces/.node-version already implement this<br>**artifact** [GOV.11](governance.md#task-gov-11) — prior Web security-config exception authority and r7 exact-pattern baseline. *Why:* WEB.01 r8 exact exception appends only after the merged r7 config-owner update |
 | Entry condition | [ADOPT.09.web](adoption.md#task-adopt-09-web) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [WEB.02](#task-web-02), [WEB.03](#task-web-03), [WEB.04](#task-web-04), [WEB.05](#task-web-05), [WEB.06](#task-web-06), [WEB.07](#task-web-07) |
 | Write scope | `Web:apps/site/**`<br>`Web:.gitleaks.toml (only exact-path-and-digest generic-api-key exceptions for the eight observed lines/six unique verified public SHA256 values in the browser resource profile)`<br>`Web:tests/provenance/candidate.test.ts (only tests for the r8 Gitleaks exact-exception boundary and its positive/negative cases; read the actual config and profile, without changing candidate generation)` |
 | Shared resources | [RES-contract-consumer-pins](../shared-resources.md#res-contract-consumer-pins) (append) |
-| Validation | Two full builds with identical inputs compared byte-for-byte; no-script navigation/content tests; single-content-change diff; build with network disabled after approved restore — CI-eligible offline checks. Keep the pinned Gitleaks scan enabled. Its generic-api-key exception may match only the eight observed lines/six unique verified public SHA256 values in eng/provenance/profiles/browser-resources-r8.json, requiring the exact path and digest on the same line (AND); `tests/provenance/candidate.test.ts` must test the actual config/profile exact bindings and positive/negative cases for changed digest, another path, unrelated 64-hex and credential-looking text. Do not allow generic 64-hex patterns, whole-file or commit suppressions, scanner/workflow/rule-algorithm changes, candidate-generation algorithm changes, or new dependencies. |
+| Validation | Two full builds with identical inputs compared byte-for-byte; no-script navigation/content tests; single-content-change diff; build with network disabled after approved restore â€” CI-eligible offline checks. Keep the pinned Gitleaks scan enabled. Its generic-api-key exception may match only the eight observed lines/six unique verified public SHA256 values in eng/provenance/profiles/browser-resources-r8.json, requiring the exact path and digest on the same line (AND); `tests/provenance/candidate.test.ts` must test the actual config/profile exact bindings and positive/negative cases for changed digest, another path, unrelated 64-hex and credential-looking text. Do not allow generic 64-hex patterns, whole-file or commit suppressions, scanner/workflow/rule-algorithm changes, candidate-generation algorithm changes, or new dependencies. |
 | Completion evidence | Determinism comparison and diff-minimality results; pinned Gitleaks results with eight observed findings bound by six exact path/digest pairs and negative path/digest-boundary evidence |
 | Baseline (unreviewed unless accepted) | not-started Observed partial, unreviewed: apps/site already has a working react-router static generator (react-router.config.ts prerenders /, /hello, /cloud-hello) with a working build/deploy pipeline; needs generalizing to the full catalogue-driven public inventory |
 | Notes | Its only real start need (WP00/WP02) is already satisfied; the current serial plan defers WP47 until after WP40, but nothing blocks starting this immediately. The candidate provenance test reads the actual .gitleaks.toml and browser-resources-r8.json, verifies the six unique exact path/digest bindings for the eight observed findings, and rejects changed-digest, different-path, unrelated-64-hex and credential-text cases; it must not alter candidate generation. |
@@ -86,7 +86,7 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Completion prerequisites | none |
 | Unblocks | [WEB.09](#task-web-09) |
 | Write scope | `Web:apps/site/content/**`<br>`Web:apps/site/app/catalogue.json` |
-| Validation | Hard-coded-version/price scan; comparison of public projection to the selected approved snapshot — offline |
+| Validation | Hard-coded-version/price scan; comparison of public projection to the selected approved snapshot â€” offline |
 | Completion evidence | No independently hard-coded product version/private supplier price |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | Private candidate builds may use named test-only offer/release fixtures per [WP-47.01](../../work-packages/47-static-public-site.md#rule-wp-47.01); the real WP42/44 numeric join for public promotion is explicitly deferred to WP50, not required to close this task's own gate. |
@@ -110,7 +110,7 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Unblocks | [WEB.09](#task-web-09) |
 | Write scope | `Web:apps/site/**`<br>`Web:tooling/**` |
 | Shared resources | [RES-web-build-config](../shared-resources.md#res-web-build-config) (append) |
-| Validation | No-script render test; critical-path resource audit; p75 performance measurement; global-reachability check on every third-party host — offline/lab |
+| Validation | No-script render test; critical-path resource audit; p75 performance measurement; global-reachability check on every third-party host â€” offline/lab |
 | Completion evidence | No-script render, critical-path audit and performance measurements |
 | Baseline (unreviewed unless accepted) | not-started |
 
@@ -132,7 +132,7 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Completion prerequisites | none |
 | Unblocks | [WEB.09](#task-web-09) |
 | Write scope | `Web:apps/site/**` |
-| Validation | Locale routing/annotation tests, no-trap assertion, pseudo-localisation pass — offline |
+| Validation | Locale routing/annotation tests, no-trap assertion, pseudo-localisation pass â€” offline |
 | Completion evidence | Locale routing, no-trap and pseudo-localisation results |
 | Baseline (unreviewed unless accepted) | not-started |
 
@@ -154,7 +154,7 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Completion prerequisites | none |
 | Unblocks | [WEB.09](#task-web-09) |
 | Write scope | `Web:apps/site/content/**`<br>`Web:apps/site/app/routes/**` |
-| Validation | Documentation version routing; download integrity verification against published hashes; no-account-gate assertion; legal version-history tests — offline against labelled fixtures |
+| Validation | Documentation version routing; download integrity verification against published hashes; no-account-gate assertion; legal version-history tests â€” offline against labelled fixtures |
 | Completion evidence | Download integrity, no-gate and legal versioning results |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | Private candidate download fixtures are labelled; public promotion with real signed Desktop/Android artifacts is joined at WP50, not required to close this task. |
@@ -177,7 +177,7 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Completion prerequisites | none |
 | Unblocks | [WEB.09](#task-web-09) |
 | Write scope | `Web:apps/site/**` |
-| Validation | Automated accessibility checks (axe-core, already a pinned devDependency) plus a dated manual verification; analytics payload audit — offline |
+| Validation | Automated accessibility checks (axe-core, already a pinned devDependency) plus a dated manual verification; analytics payload audit â€” offline |
 | Completion evidence | Accessibility checks pass with a dated manual record; analytics carry no cross-site identifier |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: @axe-core/playwright is already a pinned devDependency in package.json though no pages exist to audit yet |
 
@@ -200,7 +200,7 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Unblocks | [WEB.09](#task-web-09), [WEB.30](#task-web-30), [WEB.31](#task-web-31) |
 | Write scope | `Web:wrangler.json`<br>`Web:worker/**`<br>`Web:.github/workflows/ci.yml`<br>`Web:tooling/cloudflare.ts` |
 | Shared resources | [RES-web-app-routing](../shared-resources.md#res-web-app-routing) (append), [RES-web-build-config](../shared-resources.md#res-web-build-config) (append) |
-| Validation | Cloud-outage independence test, atomic deployment test, rollback test — offline/local against the real Cloudflare account under existing CI secrets |
+| Validation | Cloud-outage independence test, atomic deployment test, rollback test â€” offline/local against the real Cloudflare account under existing CI secrets |
 | Completion evidence | A full cloud outage leaves the site fully available; deployment is atomic; rollback restores the previous set |
 | Baseline (unreviewed unless accepted) | not-started Observed partial, unreviewed: wrangler.json + worker/index.js (www redirect) + the CI deploy job already implement build-once/promote-same-bytes deployment to Cloudflare for the site; this task extends/validates it, not builds it fresh |
 
@@ -226,7 +226,7 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Validation | React Testing Library behavior tests; production-rendered Playwright visual snapshots for representative viewport/theme/locale combinations (local opt-in per playwright.config.ts's CI guard); automated accessibility and dated human visual/keyboard review; dependency/licence/provenance checks |
 | Completion evidence | Approved consumer layouts and complete accessible states |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: packages/ui currently exports only Arrow/Button/Shell (a minimal site header/footer); needs the full token system and component catalogue |
-| Notes | Has NO dependency on WEB.01-WEB.07 (different package, only needs WP02 which is already satisfied) and should be started in parallel with the site generator work, not after it — it is the critical-path input for both WEB.10 (account) and WEB.19 (chat). |
+| Notes | Has NO dependency on WEB.01-WEB.07 (different package, only needs WP02 which is already satisfied) and should be started in parallel with the site generator work, not after it â€” it is the critical-path input for both WEB.10 (account) and WEB.19 (chat). |
 
 <a id="task-web-09"></a>
 
@@ -271,7 +271,7 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Unblocks | [WEB.11](#task-web-11), [WEB.13](#task-web-13), [WEB.14](#task-web-14), [WEB.15](#task-web-15), [WEB.16](#task-web-16), [WEB.19](#task-web-19) |
 | Write scope | `Web:apps/app/**`<br>`Web:package.json` |
 | Shared resources | [RES-contract-consumer-pins](../shared-resources.md#res-contract-consumer-pins) (append), [RES-web-app-routing](../shared-resources.md#res-web-app-routing) (append), [RES-web-build-config](../shared-resources.md#res-web-build-config) (append), [RES-web-shared-ui](../shared-resources.md#res-web-shared-ui) (append) |
-| Validation | TypeScript/RTL checks; no-cookie-leakage/state/PKCE/origin-mismatch and Android-verified-links tests; production route/chunk isolation, both themes, keyboard/narrow layouts — fixture-backed CI plus local opt-in real-browser evidence |
+| Validation | TypeScript/RTL checks; no-cookie-leakage/state/PKCE/origin-mismatch and Android-verified-links tests; production route/chunk isolation, both themes, keyboard/narrow layouts â€” fixture-backed CI plus local opt-in real-browser evidence |
 | Completion evidence | Profile isolation and composition results |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: apps/app currently contains only a README stating the design is not yet implemented |
 
@@ -288,7 +288,7 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Kind / size | feature / L |
 | Obligations | [WP-48.01](../../work-packages/48-account-portal.md#rule-wp-48.01) — full |
 | Provides | web-browser-session |
-| Start prerequisites | **artifact** [CLOUD.19](cloud.md#task-cloud-19) — the [P2-003](../../../decisions/phase-2-specification-decisions.md#rule-p2-003) same-origin cookie-session adapter. *Why:* [WP-48.01](../../work-packages/48-account-portal.md#rule-wp-48.01)'s own text: "Use the [P2-003](../../../decisions/phase-2-specification-decisions.md#rule-p2-003) adapter implemented in [WP-22.08](../../work-packages/22-identity-workspace-and-device.md#rule-wp-22.08), not a new auth choice" — a precise single-substep need, not all of WP22<br>**artifact** [WEB.10](#task-web-10) — account shell. *Why:* session UI lives in the shell |
+| Start prerequisites | **artifact** [CLOUD.19](cloud.md#task-cloud-19) — the [P2-003](../../../decisions/phase-2-specification-decisions.md#rule-p2-003) same-origin cookie-session adapter. *Why:* [WP-48.01](../../work-packages/48-account-portal.md#rule-wp-48.01)'s own text: "Use the [P2-003](../../../decisions/phase-2-specification-decisions.md#rule-p2-003) adapter implemented in [WP-22.08](../../work-packages/22-identity-workspace-and-device.md#rule-wp-22.08), not a new auth choice" â€” a precise single-substep need, not all of WP22<br>**artifact** [WEB.10](#task-web-10) — account shell. *Why:* session UI lives in the shell |
 | Entry condition | [ADOPT.09.web](adoption.md#task-adopt-09-web) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [WEB.12](#task-web-12), [WEB.18](#task-web-18) |
@@ -315,7 +315,7 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Completion prerequisites | none |
 | Unblocks | [WEB.17](#task-web-17), [WEB.18](#task-web-18) |
 | Write scope | `Web:apps/app/app/features/account/**` |
-| Validation | Device-revocation-propagation, passkey add/remove, security-event-visibility and step-up-required-per-action tests — fixture CI plus local opt-in real-Cloud evidence |
+| Validation | Device-revocation-propagation, passkey add/remove, security-event-visibility and step-up-required-per-action tests â€” fixture CI plus local opt-in real-Cloud evidence |
 | Completion evidence | Device revocation, passkey and step-up coverage results |
 | Baseline (unreviewed unless accepted) | not-started |
 
@@ -334,7 +334,7 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Provides | web-workspace-storage-ui |
 | Start prerequisites | **artifact** [WEB.10](#task-web-10) — account shell. *Why:* lives in the shell |
 | Entry condition | [ADOPT.09.web](adoption.md#task-adopt-09-web) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | **integration** [CLOUD.42](cloud.md#task-cloud-42) — R2/committed-object accounting. *Why:* displayed storage must match server-side computed values exactly<br>**integration** [CLOUD.52](cloud.md#task-cloud-52) — data-health status projection (read-only surface only). *Why:* the portal needs only WP46's read-only health/status projection, not backup/restore execution itself — must not block the whole portal on one recovery capability |
+| Completion prerequisites | **integration** [CLOUD.42](cloud.md#task-cloud-42) — R2/committed-object accounting. *Why:* displayed storage must match server-side computed values exactly<br>**integration** [CLOUD.52](cloud.md#task-cloud-52) — data-health status projection (read-only surface only). *Why:* the portal needs only WP46's read-only health/status projection, not backup/restore execution itself â€” must not block the whole portal on one recovery capability |
 | Unblocks | [WEB.17](#task-web-17), [WEB.18](#task-web-18) |
 | Write scope | `Web:apps/app/app/features/workspace/**` |
 | Validation | Accounting comparison against server-side figures; structural test asserting no membership/invitation/role/seat operation; projection test asserting no supplier rate/route-weight leakage; capacity-vs-credits never-summed display test |
@@ -356,10 +356,10 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Provides | web-commerce-ui |
 | Start prerequisites | **artifact** [WEB.10](#task-web-10) — account shell. *Why:* lives in the shell<br>**contract** [CON.08](contracts.md#task-con-08) — commerce/entitlement wire records. *Why:* already available for building/unit-testing against fixtures |
 | Entry condition | [ADOPT.09.web](adoption.md#task-adopt-09-web) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | **integration** [COM.14](commerce.md#task-com-14) — real commerce ledger/test-mode checkout environment. *Why:* per the producer stage matrix, WP48 "activates only with required real provider evidence"; unlike WP47.01's pricing display, this gate cannot be closed with candidate fixtures alone — duplicate-click, cancelled/failed/late confirmation and refund scenarios need a real test-mode provider<br>**integration** [POL.02](policy.md#task-pol-02) — real policy projections for rate-limit/recovery reasons. *Why:* server-provided reasons must be real, not scripted |
+| Completion prerequisites | **integration** [COM.14](commerce.md#task-com-14) — real commerce ledger/test-mode checkout environment. *Why:* per the producer stage matrix, WP48 "activates only with required real provider evidence"; unlike WP47.01's pricing display, this gate cannot be closed with candidate fixtures alone â€” duplicate-click, cancelled/failed/late confirmation and refund scenarios need a real test-mode provider<br>**integration** [POL.02](policy.md#task-pol-02) — real policy projections for rate-limit/recovery reasons. *Why:* server-provided reasons must be real, not scripted |
 | Unblocks | [WEB.17](#task-web-17), [WEB.18](#task-web-18), [WEB.29](#task-web-29), [WEB.30](#task-web-30), [WEB.31](#task-web-31) |
 | Write scope | `Web:apps/app/app/features/commerce/**` |
-| Validation | Real C# accounting/checkout-test-environment flows; exact-amount display above JS safe-integer boundaries; duplicate-click/cancelled/failed/late-confirmation/refund/term-expiry/stale-price tests — local opt-in against a real test-mode provider |
+| Validation | Real C# accounting/checkout-test-environment flows; exact-amount display above JS safe-integer boundaries; duplicate-click/cancelled/failed/late-confirmation/refund/term-expiry/stale-price tests â€” local opt-in against a real test-mode provider |
 | Completion evidence | Entitlement reason coverage, credit separation and no-payment-field scan |
 | Baseline (unreviewed unless accepted) | not-started |
 
@@ -404,7 +404,7 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Unblocks | [WEB.18](#task-web-18) |
 | Write scope | `Web:deploy/edge/account/**` |
 | Shared resources | [RES-web-app-routing](../shared-resources.md#res-web-app-routing) (append), [RES-web-build-config](../shared-resources.md#res-web-build-config) (append) |
-| Validation | Policy header verification; bundle secret scan; sandbox escape test on hostile content; budget measurements with regression gate — offline/CI-eligible |
+| Validation | Policy header verification; bundle secret scan; sandbox escape test on hostile content; budget measurements with regression gate â€” offline/CI-eligible |
 | Completion evidence | Policy headers, bundle secret scan and budget measurements |
 | Baseline (unreviewed unless accepted) | not-started |
 
@@ -449,7 +449,7 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Completion prerequisites | none |
 | Unblocks | [REL.05](release.md#task-rel-05) |
 | Write scope | `Web:apps/app/**` |
-| Validation | Real browser against the AOT release: cookie secrecy, CSRF, expiry/revocation, privacy/export and admission/usage display — local opt-in per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |
+| Validation | Real browser against the AOT release: cookie secrecy, CSRF, expiry/revocation, privacy/export and admission/usage display â€” local opt-in per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |
 | Completion evidence | Owned-artifact-and-real-integration receipt; contributes its scoped evidence toward [PG-23](../../../assurance/open-gates-register.md#rule-pg-23) (closed later at WP50, not here) |
 | Baseline (unreviewed unless accepted) | not-started |
 
@@ -630,7 +630,7 @@ Tasks: 33 · Owning repositories: Web · Integration owner(s): Web integration o
 | Completion prerequisites | **integration** [WEB.27](#task-web-27) — real Harness. *Why:* unlike WP47's deferrable numeric join, [WP-49](../../work-packages/49-arcchat-web-companion.md#rule-wp-49)'s own text states "49 consumes 52" as a hard requirement recorded at this task's own gate, not deferred to WP50 |
 | Unblocks | [REL.05](release.md#task-rel-05) |
 | Write scope | `Web:apps/app/**` |
-| Validation | Full real admitted CF turn/tool/approval/reconnect in a browser — local opt-in per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |
+| Validation | Full real admitted CF turn/tool/approval/reconnect in a browser â€” local opt-in per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |
 | Completion evidence | Owned-artifact-and-real-integration receipt; contributes its scoped evidence toward [PG-23](../../../assurance/open-gates-register.md#rule-pg-23) (closed later at WP50) |
 | Baseline (unreviewed unless accepted) | not-started |
 

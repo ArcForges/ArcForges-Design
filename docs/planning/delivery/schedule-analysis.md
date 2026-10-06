@@ -8,9 +8,9 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 
 | Measure | Value |
 |---|---|
-| Delivery tasks | 454 (6 carried as accepted baseline), plus 50 adoption slices |
-| Dependency edges by type | artifact 1108, contract 109, design 1, integration(completion) 239, release 33 |
-| Remaining work (size units: S=1, M=2, L=4, XL=8) | 1148 |
+| Delivery tasks | 456 (6 carried as accepted baseline), plus 50 adoption slices |
+| Dependency edges by type | artifact 1113, contract 109, design 1, integration(completion) 244, release 33 |
+| Remaining work (size units: S=1, M=2, L=4, XL=8) | 1152 |
 | Longest dependency chain (levels) | 25 |
 | Widest level (tasks whose longest prerequisite chain has equal length) | 58 |
 | Critical path length (size units) | 81 |
@@ -22,7 +22,7 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 |---|---|---|---|
 | [Adoption stage](lanes/adoption.md) | 9 | 10 | AI, ArcScope, Cloud, Contracts, Design, DesktopPlatform, Mobile, Plan, Web |
 | [Family governance and policy tests](lanes/governance.md) | 22 | 59 | AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web |
-| [Contracts schema closures](lanes/contracts.md) | 29 | 69 | Contracts |
+| [Contracts schema closures](lanes/contracts.md) | 30 | 71 | Contracts |
 | [Foundation values](lanes/foundation.md) | 7 | 8 | DesktopPlatform |
 | [Runtime proofs](lanes/runtime-proofs.md) | 8 | 27 | ArcScope, Cloud, DesktopPlatform, Mobile, Web |
 | [Desktop platform mechanisms](lanes/platform.md) | 57 | 136 | DesktopPlatform |
@@ -33,7 +33,7 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 | [Application presence and tool bridge](lanes/device-bridge.md) | 12 | 22 | Cloud, DesktopPlatform |
 | [ArcScope](lanes/arcscope.md) | 27 | 67 | ArcScope |
 | [ArcScope Cloud simulator](lanes/simulator.md) | 10 | 36 | ArcScope, Cloud |
-| [Cloud core](lanes/cloud.md) | 65 | 148 | Cloud, DesktopPlatform |
+| [Cloud core](lanes/cloud.md) | 66 | 150 | Cloud, DesktopPlatform |
 | [Commerce, entitlement and credits](lanes/commerce.md) | 16 | 56 | Cloud |
 | [Dynamic policy and configuration](lanes/policy.md) | 11 | 26 | Cloud, DesktopPlatform |
 | [Operations, support and trust and safety](lanes/operations.md) | 13 | 35 | Cloud, Web |
@@ -54,8 +54,8 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 |---|---|---|---|---|---|
 | AI | 13 | 4 | level 8: 3 | 1 | [AIR.05](lanes/ai-routing.md#task-air-05) Content-origin marking at the provider generation boundary, [EXT.10](lanes/extensions.md#task-ext-10) Cloud MCP HTTP through the AI Worker adapter, [AIR.07](lanes/ai-routing.md#task-air-07) Provider test-environment coverage |
 | ArcScope | 33 | 6 | level 9: 8 | 2 | [SCOPE.07](lanes/arcscope.md#task-scope-07) Durable capture writer, chunked verifiable store and crash recovery, [SCOPE.09](lanes/arcscope.md#task-scope-09) Long-running capture in the shell, [SCOPE.12](lanes/arcscope.md#task-scope-12) Visualisation: virtualised rendering, downsampling, cursors and markers, [SCOPE.13](lanes/arcscope.md#task-scope-13) Triggers with pre/post windows |
-| Cloud | 139 | 13 | level 15: 14 | 7 | [CLOUD.32](lanes/cloud.md#task-cloud-32) Durable unary fallback (Poll/readOutput), [COM.09](lanes/commerce.md#task-com-09) Ledgers and reconciliation, [DEV.04](lanes/device-bridge.md#task-dev-04) Execution and result deduplication -- Cloud D1 attempt/result store, [SIM.05](lanes/simulator.md#task-sim-05) Cloud-side simulation.* operations, manifest listing and segment fetch |
-| Contracts | 32 | 4 | level 3: 7 | 7 | [CON.04](lanes/contracts.md#task-con-04) ContentSandbox service schema (15 methods: session/slot/image/PDF), [CON.05](lanes/contracts.md#task-con-05) Extension/Connector/LocalBootstrap service schema (annex09 helper closure minus ContentSandbox), [CON.12](lanes/contracts.md#task-con-12) Extension and policy schemas: manifest.v1/workflow.v1/panel.v1/policy body.v1/configuration.v1, [CON.16](lanes/contracts.md#task-con-16) Signed catalog/update/realm formats (catalog-index.v1, catalog-revocations.v1, android-update.v1, realm.v1) |
+| Cloud | 140 | 13 | level 15: 14 | 7 | [CLOUD.32](lanes/cloud.md#task-cloud-32) Durable unary fallback (Poll/readOutput), [COM.09](lanes/commerce.md#task-com-09) Ledgers and reconciliation, [DEV.04](lanes/device-bridge.md#task-dev-04) Execution and result deduplication -- Cloud D1 attempt/result store, [SIM.05](lanes/simulator.md#task-sim-05) Cloud-side simulation.* operations, manifest listing and segment fetch |
+| Contracts | 33 | 4 | level 3: 7 | 7 | [CON.04](lanes/contracts.md#task-con-04) ContentSandbox service schema (15 methods: session/slot/image/PDF), [CON.05](lanes/contracts.md#task-con-05) Extension/Connector/LocalBootstrap service schema (annex09 helper closure minus ContentSandbox), [CON.12](lanes/contracts.md#task-con-12) Extension and policy schemas: manifest.v1/workflow.v1/panel.v1/policy body.v1/configuration.v1, [CON.16](lanes/contracts.md#task-con-16) Signed catalog/update/realm formats (catalog-index.v1, catalog-revocations.v1, android-update.v1, realm.v1) |
 | DesktopPlatform | 152 | 14 | level 7: 23 | 8 | [EXE.02](lanes/execution.md#task-exe-02) Lifecycle states and reason facets, [GOV.20](lanes/governance.md#task-gov-20) Build.Policy banned-symbol scanner: audit unmanaged function-pointer invocations instead of throwing, [NAT.05](lanes/native.md#task-nat-05) Probe evidence, licence positions, conclusions and hardware-lab inventory seed, [PLT.11](lanes/platform.md#task-plt-11) Child registration lifecycle |
 | Mobile | 30 | 4 | level 13: 4 | 1 | [AND.03](lanes/android.md#task-and-03) Android runtime and OS adapters (Compose, Credential Manager, Keystore wrapper, WorkManager, FCM registration, SAF/MediaStore), [AND.04](lanes/android.md#task-and-04) Published gRPC-Web contract consumption (Connect Kotlin client, binary framing, session/stream/retry adapters), [AND.05](lanes/android.md#task-and-05) Room history, drafts, outbox and receipts, [AND.20](lanes/android.md#task-and-20) Play and direct-channel signed update client |
 | Web | 40 | 5 | level 10: 7 | 1 | [OPS.05](lanes/operations.md#task-ops-05) Operator console and support access, [PRF.08](lanes/runtime-proofs.md#task-prf-08) React production build and generated TS SDK proof, [WEB.13](lanes/web.md#task-web-13) Workspace, storage and usage, [WEB.14](lanes/web.md#task-web-14) Subscription, capacity, credits and hosted checkout |
@@ -99,10 +99,10 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 | 3 | 27 |
 | 4 | 25 |
 | 5 | 34 |
-| 6 | 36 |
+| 6 | 37 |
 | 7 | 33 |
 | 8 | 27 |
-| 9 | 43 |
+| 9 | 44 |
 | 10 | 32 |
 | 11 | 35 |
 | 12 | 21 |
@@ -126,9 +126,9 @@ Assumptions: task effort is its relative size (S=1, M=2, L=4, XL=8 units, never 
 
 | Workers | Makespan (size units) | Estimated speed-up over one worker |
 |---|---|---|
-| 1 | 1148 | 1.0× |
-| 2 | 575 | 2.0× |
-| 4 | 289 | 4.0× |
+| 1 | 1152 | 1.0× |
+| 2 | 577 | 2.0× |
+| 4 | 290 | 4.0× |
 | 8 | 146 | 7.9× |
 | 16 | 81 | 14.2× |
 | 32 | 81 | 14.2× |

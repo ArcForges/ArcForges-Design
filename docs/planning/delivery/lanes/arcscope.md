@@ -81,10 +81,10 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Unblocks | [SCOPE.05](#task-scope-05), [SCOPE.06](#task-scope-06), [SCOPE.11](#task-scope-11), [SCOPE.12](#task-scope-12), [SCOPE.14](#task-scope-14) |
 | Write scope | `ArcScope:src/ArcForges.ArcScope.Domain/ArcForges.ArcScope.Domain.csproj`<br>`ArcScope:src/ArcForges.ArcScope.Domain/packages.lock.json`<br>`ArcScope:src/ArcForges.ArcScope.Domain/Time/**`<br>`ArcScope:src/ArcForges.ArcScope.Domain/Channels/**`<br>`ArcScope:ArcScope.slnx`<br>`ArcScope:tests/ArcForges.ArcScope.Tests/ArcForges.ArcScope.Tests.csproj`<br>`ArcScope:tests/ArcForges.ArcScope.Tests/packages.lock.json`<br>`ArcScope:tests/ArcForges.ArcScope.Tests/TimeModel/**`<br>`ArcScope:eng/policy/licence-boundary.json`<br>`ArcScope:eng/policy/dependency-review.json`<br>`ArcScope:eng/provenance/files.json`<br>`ArcScope:eng/provenance/records/arcnotes-provenance-tools-r9.json`<br>`ArcScope:eng/provenance/NOTICE.txt` |
 | Shared resources | [RES-product-solutions](../shared-resources.md#res-product-solutions) (append) |
-| Validation | offline unit tests: precision across rate domains, alignment with two sources, conversion exactness — pure math, no external environment |
+| Validation | offline unit tests: precision across rate domains, alignment with two sources, conversion exactness â€” pure math, no external environment |
 | Completion evidence | precision/alignment/conversion test results |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: no Channel/Signal/time types exist in the repo yet |
-| Notes | Follow architecture 27 §4 and [WP-33](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) §5: create the canonical ArcForges.ArcScope.Domain project and put the model in that domain owner, not ArcForges.ArcScope.Core (the published gRPC client) or the desktop host. Add only the Domain project and its Time/Channels source, plus TimeModel tests in the existing CI-executed ArcForges.ArcScope.Tests project; add the exact Domain ProjectReference there and append the Domain project to ArcScope.slnx. The Domain library may depend only on the already-admitted ArcForges.Foundation package or have no package dependency; no third-party dependency, package identity/version/closure change, central package edit, app/AOT-host reference, new test project, workflow/runner registration, migration or shared runtime behavior is authorized. Append the project/solution entry under RES-product-solutions; regenerate required lock files after rebase rather than hand-merging. Update the exact licence and dependency-review inputs and classify new authored files in provenance. The current dependency-review.json and licence-boundary.json targets are bound to immutable ArcNotes provenance r8, so append the exact r9 successor and regenerate NOTICE; preserve all historical r1-r8 records. No other runtime, reconciliation, publication or package inventory changes are authorized. |
+| Notes | Follow architecture 27 Â§4 and [WP-33](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) Â§5: create the canonical ArcForges.ArcScope.Domain project and put the model in that domain owner, not ArcForges.ArcScope.Core (the published gRPC client) or the desktop host. Add only the Domain project and its Time/Channels source, plus TimeModel tests in the existing CI-executed ArcForges.ArcScope.Tests project; add the exact Domain ProjectReference there and append the Domain project to ArcScope.slnx. The Domain library may depend only on the already-admitted ArcForges.Foundation package or have no package dependency; no third-party dependency, package identity/version/closure change, central package edit, app/AOT-host reference, new test project, workflow/runner registration, migration or shared runtime behavior is authorized. Append the project/solution entry under RES-product-solutions; regenerate required lock files after rebase rather than hand-merging. Update the exact licence and dependency-review inputs and classify new authored files in provenance. The current dependency-review.json and licence-boundary.json targets are bound to immutable ArcNotes provenance r8, so append the exact r9 successor and regenerate NOTICE; preserve all historical r1-r8 records. No other runtime, reconciliation, publication or package inventory changes are authorized. |
 
 <a id="task-scope-03"></a>
 
@@ -104,10 +104,10 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Completion prerequisites | none |
 | Unblocks | [SCOPE.05](#task-scope-05), [SCOPE.11](#task-scope-11) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.Acquisition/Adapters/Network/**`<br>`ArcScope:src/ArcScope/ArcScope.Acquisition/Adapters/FileReplay/**`<br>`ArcScope:tests/ArcScopePipelineTests/Adapters/Network/**` |
-| Validation | real-transport tests using.NET Socket/TcpListener/UdpClient loopback and local files — no native dependency, no emulator/CI restriction applies; proportionate under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |
+| Validation | real-transport tests using.NET Socket/TcpListener/UdpClient loopback and local files â€” no native dependency, no emulator/CI restriction applies; proportionate under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |
 | Completion evidence | per-adapter real-transport connect/disconnect/reconnect results |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: no adapters exist yet |
-| Notes | This is the implementation-sequence.md §3 'must be real early' item: real serial/TCP/UDP transports must not be mocked. |
+| Notes | This is the implementation-sequence.md Â§3 'must be real early' item: real serial/TCP/UDP transports must not be mocked. |
 
 <a id="task-scope-04"></a>
 
@@ -120,9 +120,9 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Owning repository | ArcScope (`C:\MyFile\Projects\ArcForges\ArcScope`); integration owner: ArcScope integration owner, the holder of `roles/integration-arcscope` |
 | Claim, branch and ledger | `claims/scope-04` and ledger record `ledger/tasks/scope-04.md` in the Plan repository; task branch `task/scope-04` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | feature / M |
-| Obligations | [WP-33.00](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.00) — serial/USB concrete adapters over the shared contract<br>[WP-33.90](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.90) — generic-USB-V1 body text (enumeration, explicit interface/endpoint open, control/bulk/interrupt transfers, partial writes, cancellation, driver/permission/busy refusal per Tier 1 RID; no automatic kernel-driver detach; hot unplug records an explicit capture gap) — this text sits orphaned between [WP-33](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) §6 and §7 in the source doc with no substep id of its own; folded here since it is entirely about the serial/USB adapter, not §33.90's own verify-and-integration content<br>[WP-33](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) orphaned 'Generic USB is V1' body text (enumeration/open/transfer/cancel/refusal per Tier-1 RID, no auto kernel-driver detach, hot-unplug=explicit gap) sitting between §6 Impacts and §7 Tests with no substep id — package-level obligation contribution |
+| Obligations | [WP-33.00](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.00) — serial/USB concrete adapters over the shared contract<br>[WP-33.90](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.90) — generic-USB-V1 body text (enumeration, explicit interface/endpoint open, control/bulk/interrupt transfers, partial writes, cancellation, driver/permission/busy refusal per Tier 1 RID; no automatic kernel-driver detach; hot unplug records an explicit capture gap) â€” this text sits orphaned between [WP-33](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) Â§6 and Â§7 in the source doc with no substep id of its own; folded here since it is entirely about the serial/USB adapter, not Â§33.90's own verify-and-integration content<br>[WP-33](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) orphaned 'Generic USB is V1' body text (enumeration/open/transfer/cancel/refusal per Tier-1 RID, no auto kernel-driver detach, hot-unplug=explicit gap) sitting between Â§6 Impacts and Â§7 Tests with no substep id — package-level obligation contribution |
 | Provides | scope.adapters.serial-usb |
-| Start prerequisites | **artifact** [SCOPE.01](#task-scope-01) — DataSource/SourceAdapter contract and connection profile model. *Why:* concrete adapters implement the shared contract<br>**artifact** [NAT.13](native.md#task-nat-13) — published ArcInstrumentsNative package (arc_instruments_* ABI) — at minimum its fixture/simulated-hardware tier build. *Why:* [BR-10](../../work-packages/00-specification-naming-and-rights-freeze.md#rule-br-10) confines the acquisition loop/lifecycle to C# and restricts native code to transport, device access, timestamps and primitives only; DesktopPlatform HEAD fe8476d has no arc_instruments ABI at all yet (grep for 'instrument' is empty) — this is a genuine not-yet-produced artifact, not a design gap. |
+| Start prerequisites | **artifact** [SCOPE.01](#task-scope-01) — DataSource/SourceAdapter contract and connection profile model. *Why:* concrete adapters implement the shared contract<br>**artifact** [NAT.13](native.md#task-nat-13) — published ArcInstrumentsNative package (arc_instruments_* ABI) â€” at minimum its fixture/simulated-hardware tier build. *Why:* [BR-10](../../work-packages/00-specification-naming-and-rights-freeze.md#rule-br-10) confines the acquisition loop/lifecycle to C# and restricts native code to transport, device access, timestamps and primitives only; DesktopPlatform HEAD fe8476d has no arc_instruments ABI at all yet (grep for 'instrument' is empty) â€” this is a genuine not-yet-produced artifact, not a design gap. |
 | Entry condition | [ADOPT.05.arcscope](adoption.md#task-adopt-05-arcscope) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [SCOPE.11](#task-scope-11) |
@@ -131,7 +131,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Validation | fixture/simulated-hardware unit tests at this task's own gate; real per-RID hardware acceptance deferred to SCOPE.11/[PG-08](../../../assurance/open-gates-register.md#rule-pg-08) per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) (no device/hardware CI) |
 | Completion evidence | enumeration/open/transfer/cancel/refusal results against fixture tier now; real-hardware receipt at SCOPE.11 |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: no serial/USB adapter code exists; [WP-13.12](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.12) producer itself not started (DesktopPlatform has no arc_instruments ABI directory) |
-| Notes | This is the one [WP-33.00](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.00) sub-path that genuinely needs a WP13 native family, and only [WP-13.12](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.12) (not the whole WP13 package). It is the correct place to attach [PG-08](../../../assurance/open-gates-register.md#rule-pg-08)'s per-RID USB acceptance text, which the source document places oddly (orphaned paragraph after [WP-33](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) §6, before §7) with no substep id. |
+| Notes | This is the one [WP-33.00](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.00) sub-path that genuinely needs a WP13 native family, and only [WP-13.12](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.12) (not the whole WP13 package). It is the correct place to attach [PG-08](../../../assurance/open-gates-register.md#rule-pg-08)'s per-RID USB acceptance text, which the source document places oddly (orphaned paragraph after [WP-33](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) Â§6, before Â§7) with no substep id. |
 
 <a id="task-scope-05"></a>
 
@@ -151,10 +151,10 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Completion prerequisites | none |
 | Unblocks | [SCOPE.06](#task-scope-06), [SCOPE.11](#task-scope-11), [SCOPE.13](#task-scope-13) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.Acquisition/Pipeline/**`<br>`ArcScope:tests/ArcScopePipelineTests/Throughput/**` |
-| Validation | sustained-throughput runs with recorded rate/memory/drop counts; induced overrun; timing-source assertions — local, offline, repeatable |
+| Validation | sustained-throughput runs with recorded rate/memory/drop counts; induced overrun; timing-source assertions â€” local, offline, repeatable |
 | Completion evidence | throughput/memory/overrun/timing-source results |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | [WP-13.02](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.02) ('Probe C: high-throughput acquisition', the native and runtime-proof lanes/WP13) is a near-identical early risk proof of the same ring-buffer/throughput/overrun approach, done earlier and cheaper. It validates the approach but ships no reusable package ([BR-10](../../work-packages/00-specification-naming-and-rights-freeze.md#rule-br-10) keeps the real loop in C# here regardless) — treated as an informative precedent, not a start edge. |
+| Notes | [WP-13.02](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.02) ('Probe C: high-throughput acquisition', the native and runtime-proof lanes/WP13) is a near-identical early risk proof of the same ring-buffer/throughput/overrun approach, done earlier and cheaper. It validates the approach but ships no reusable package ([BR-10](../../work-packages/00-specification-naming-and-rights-freeze.md#rule-br-10) keeps the real loop in C# here regardless) â€” treated as an informative precedent, not a start edge. |
 
 <a id="task-scope-06"></a>
 
@@ -175,7 +175,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Unblocks | [SCOPE.07](#task-scope-07), [SCOPE.09](#task-scope-09), [SCOPE.11](#task-scope-11), [SCOPE.12](#task-scope-12), [SCOPE.13](#task-scope-13), [SCOPE.14](#task-scope-14), [SCOPE.15](#task-scope-15), [SCOPE.17](#task-scope-17), [SCOPE.20](#task-scope-20), [SCOPE.22](#task-scope-22) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.Domain/Session/**`<br>`ArcScope:src/ArcScope/ArcScope.Domain/Capture/**`<br>`ArcScope:tests/ArcScopePipelineTests/Lifecycle/**` |
 | Shared resources | [RES-arcscope-migrations](../shared-resources.md#res-arcscope-migrations) (append) |
-| Validation | lifecycle coverage including interruption; pause-view-while-recording test; segment/gap integrity after disconnect — offline |
+| Validation | lifecycle coverage including interruption; pause-view-while-recording test; segment/gap integrity after disconnect â€” offline |
 | Completion evidence | lifecycle, pause-view and gap-integrity results |
 | Baseline (unreviewed unless accepted) | not-started |
 
@@ -192,12 +192,12 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Kind / size | feature / L |
 | Obligations | [WP-33.04](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.04) — full |
 | Provides | scope.durable-capture-store |
-| Start prerequisites | **artifact** [SCOPE.06](#task-scope-06) — session/capture lifecycle types. *Why:* the writer persists Capture/CaptureSegment objects defined there<br>**artifact** [PLT.06](platform.md#task-plt-06) — published chunked/large-append verifiable store primitive. *Why:* [BR-11](../../work-packages/00-specification-naming-and-rights-freeze.md#rule-br-11) forbids database blobs for raw capture; this is a real evidence-integrity requirement (immutability, per-chunk checksum, crash-boundary recovery) that a hand-rolled substitute would not honestly prove — the substitute rules treat evidence-integrity storage as a case where a substitute is not acceptable |
+| Start prerequisites | **artifact** [SCOPE.06](#task-scope-06) — session/capture lifecycle types. *Why:* the writer persists Capture/CaptureSegment objects defined there<br>**artifact** [PLT.06](platform.md#task-plt-06) — published chunked/large-append verifiable store primitive. *Why:* [BR-11](../../work-packages/00-specification-naming-and-rights-freeze.md#rule-br-11) forbids database blobs for raw capture; this is a real evidence-integrity requirement (immutability, per-chunk checksum, crash-boundary recovery) that a hand-rolled substitute would not honestly prove â€” the substitute rules treat evidence-integrity storage as a case where a substitute is not acceptable |
 | Entry condition | [ADOPT.05.arcscope](adoption.md#task-adopt-05-arcscope) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [SCOPE.08](#task-scope-08), [SCOPE.11](#task-scope-11), [SCOPE.23](#task-scope-23), [SCOPE.24](#task-scope-24), [SCOPE.25](#task-scope-25) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.Recording/**`<br>`ArcScope:src/ArcScope/ArcScope.Infrastructure/CaptureStore/**`<br>`ArcScope:tests/ArcScopePipelineTests/DurableCapture/**` |
-| Validation | kill-during-capture at chunk boundaries and mid-chunk; recovered-prefix verification; immutability test — offline, deterministic fault injection, no live environment needed |
+| Validation | kill-during-capture at chunk boundaries and mid-chunk; recovered-prefix verification; immutability test â€” offline, deterministic fault injection, no live environment needed |
 | Completion evidence | crash-recovery prefix verification and immutability results |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | [WP-07.05](../../work-packages/07-local-persistence-foundation.md#rule-wp-07.05) is named precisely (not 'whole WP07') because [WP-07.00](../../work-packages/07-local-persistence-foundation.md#rule-wp-07.00)/.03 (store abstraction, migrations) are consumed earlier by SCOPE.01/06 for ordinary relational state, while raw capture specifically needs the large-append/chunked primitive. |
@@ -238,12 +238,12 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Kind / size | feature / S |
 | Obligations | [WP-33.06](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.06) — full |
 | Provides | scope.capture-shell-integration |
-| Start prerequisites | **artifact** [SCOPE.06](#task-scope-06) — capture lifecycle (running/interrupted states) to bind the shell prompt to. *Why:* the close-prompt decision depends on live capture state<br>**artifact** [PLT.32](platform.md#task-plt-32) — published generic shell lifecycle/shutdown-prompt mechanism. *Why:* [WP-33](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) §2 lists [WP-10](../../work-packages/10-design-system-and-desktop-shell.md#rule-wp-10) shell output as a required input; this substep specialises the generic close/shutdown prompt for capture-in-progress rather than inventing a second prompt mechanism |
+| Start prerequisites | **artifact** [SCOPE.06](#task-scope-06) — capture lifecycle (running/interrupted states) to bind the shell prompt to. *Why:* the close-prompt decision depends on live capture state<br>**artifact** [PLT.32](platform.md#task-plt-32) — published generic shell lifecycle/shutdown-prompt mechanism. *Why:* [WP-33](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) Â§2 lists [WP-10](../../work-packages/10-design-system-and-desktop-shell.md#rule-wp-10) shell output as a required input; this substep specialises the generic close/shutdown prompt for capture-in-progress rather than inventing a second prompt mechanism |
 | Entry condition | [ADOPT.05.arcscope](adoption.md#task-adopt-05-arcscope) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [SCOPE.11](#task-scope-11) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.Presentation/**`<br>`ArcScope:src/ArcScope/ArcScope.Desktop/CaptureLifecycle/**` |
-| Validation | window-close-during-capture prompt test; background-residency test; visibility assertion — desktop-GUI-adjacent, kept to the offline/local tier per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) (no desktop GUI CI; local manual/scripted verification) |
+| Validation | window-close-during-capture prompt test; background-residency test; visibility assertion â€” desktop-GUI-adjacent, kept to the offline/local tier per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) (no desktop GUI CI; local manual/scripted verification) |
 | Completion evidence | window-close, background and visibility results |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | The old upstream edge [WP-33](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33)<-26 (remote action/tool bridge) does not apply here or anywhere else in WP33: [WP-26](../../work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26) is about remote-triggered tool execution on a running instance (durable target queue, owner reauth, remote approval), and none of WP-33.00-33.07's substep bodies mention it.. |
@@ -291,7 +291,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Completion prerequisites | none |
 | Unblocks | [REL.02](release.md#task-rel-02) |
 | Write scope | `ArcScope:docs/wp-33-integration-receipt.md` |
-| Validation | real packaged hardware-path and throughput/overrun/recovery acceptance; offline-acceptance-matrix rows (fresh shell, hydrated outage, unavailable content, signout, restart) where applicable; no macOS CI, no device/emulator CI per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) — evidence is recorded from local/lab runs |
+| Validation | real packaged hardware-path and throughput/overrun/recovery acceptance; offline-acceptance-matrix rows (fresh shell, hydrated outage, unavailable content, signout, restart) where applicable; no macOS CI, no device/emulator CI per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) â€” evidence is recorded from local/lab runs |
 | Completion evidence | owned-artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations, real-vs-fixture status |
 | Baseline (unreviewed unless accepted) | not-started |
 
@@ -313,7 +313,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Completion prerequisites | none |
 | Unblocks | [SCOPE.19](#task-scope-19) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.Visualization/**`<br>`ArcScope:tests/ArcScopePipelineTests/Visualization/**` |
-| Validation | scale-corpus interaction measurements; downsampling-disclosure assertion; downsampled-vs-full-resolution cursor correctness — desktop rendering kept to local/offline tier per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |
+| Validation | scale-corpus interaction measurements; downsampling-disclosure assertion; downsampled-vs-full-resolution cursor correctness â€” desktop rendering kept to local/offline tier per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |
 | Completion evidence | responsiveness, disclosure and cursor-exactness results |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | RESOLVED FINDING, not an edge: ArcScope's native surface (12-native-interop-and-media.md section 8) is device, transport and high-rate acquisition primitives only, with no graphics family. ArcScope already carries Avalonia (Skia-based managed rendering, see ArcScope third-party/Avalonia.LICENSE.txt), which is sufficient for plotting/downsampling in pure C#. |
@@ -336,7 +336,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Completion prerequisites | none |
 | Unblocks | [SCOPE.19](#task-scope-19) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.Domain/Triggers/**`<br>`ArcScope:tests/ArcScopePipelineTests/Triggers/**` |
-| Validation | pre/post-window correctness; data-immutability assertion; trigger-storm bound test — offline |
+| Validation | pre/post-window correctness; data-immutability assertion; trigger-storm bound test â€” offline |
 | Completion evidence | trigger window, immutability and storm-bound results |
 | Baseline (unreviewed unless accepted) | not-started |
 
@@ -351,14 +351,14 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Owning repository | ArcScope (`C:\MyFile\Projects\ArcForges\ArcScope`); integration owner: ArcScope integration owner, the holder of `roles/integration-arcscope` |
 | Claim, branch and ledger | `claims/scope-14` and ledger record `ledger/tasks/scope-14.md` in the Plan repository; task branch `task/scope-14` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | feature / L |
-| Obligations | [WP-34.02](../../work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34.02) — full, including the required-design-implementation text: every basic family via declared population/sample-weighted formulas, half-open input selection, calibrated units, coverage/status rules, recorded pulse thresholds/interpolation, independent statistical hand-calculation and digital/analog/gap vectors<br>[WP-34](../../work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34) orphaned §6/§7 body text: 'Pearson independent vectors: x=[1,2,3], y=[2,4,6] gives r=1; y=[3,2,1] gives r=-1. Constant input is unavailable; preserve the declared lag and overlap rules' — a concrete correlation-family acceptance vector with no substep id of its own — orphaned §6/§7 body text: 'Pearson independent vectors: x=[1,2,3], y=[2,4,6] gives r=1; y=[3,2,1] gives r=-1. Constant input is unavailable; preserve the declared lag and overlap rules' — a concrete correlation-family acceptance vector with no substep id of its own; package-level obligation contribution<br>[WP-34](../../work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34) §8 additional completion requirement: every basic family has its formula/status oracle; reproduction uses the defined tolerance rather than an undefined byte-equality claim — §8 additional completion requirement: every basic family has its formula/status oracle; reproduction uses the defined tolerance rather than an undefined byte-equality claim; package-level obligation contribution |
+| Obligations | [WP-34.02](../../work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34.02) — full, including the required-design-implementation text: every basic family via declared population/sample-weighted formulas, half-open input selection, calibrated units, coverage/status rules, recorded pulse thresholds/interpolation, independent statistical hand-calculation and digital/analog/gap vectors<br>[WP-34](../../work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34) orphaned Â§6/Â§7 body text: 'Pearson independent vectors: x=[1,2,3], y=[2,4,6] gives r=1; y=[3,2,1] gives r=-1. Constant input is unavailable; preserve the declared lag and overlap rules' â€” a concrete correlation-family acceptance vector with no substep id of its own — orphaned Â§6/Â§7 body text: 'Pearson independent vectors: x=[1,2,3], y=[2,4,6] gives r=1; y=[3,2,1] gives r=-1. Constant input is unavailable; preserve the declared lag and overlap rules' â€” a concrete correlation-family acceptance vector with no substep id of its own; package-level obligation contribution<br>[WP-34](../../work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34) Â§8 additional completion requirement: every basic family has its formula/status oracle; reproduction uses the defined tolerance rather than an undefined byte-equality claim — Â§8 additional completion requirement: every basic family has its formula/status oracle; reproduction uses the defined tolerance rather than an undefined byte-equality claim; package-level obligation contribution |
 | Provides | scope.measurements |
-| Start prerequisites | **contract** [CON.91](contracts.md#task-con-91) — the published scope.measurement.v1 profile (families, formulas, units, coverage/status rules) in Contracts. *Why:* [WP-34](../../work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34) §2 states this is a frozen design input owned by Contracts; the measurement implementation is a direct realisation of that published profile, not a locally re-derived one<br>**artifact** [SCOPE.02](#task-scope-02) — time/channel model. *Why:* measurements operate over signals/events defined there<br>**artifact** [SCOPE.06](#task-scope-06) — capture/configuration snapshot. *Why:* a measurement records the configuration under which it was taken ([BR-05](../../../architecture/14-build-packaging-and-release.md#rule-br-05)) |
+| Start prerequisites | **contract** [CON.91](contracts.md#task-con-91) — the published scope.measurement.v1 profile (families, formulas, units, coverage/status rules) in Contracts. *Why:* [WP-34](../../work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34) Â§2 states this is a frozen design input owned by Contracts; the measurement implementation is a direct realisation of that published profile, not a locally re-derived one<br>**artifact** [SCOPE.02](#task-scope-02) — time/channel model. *Why:* measurements operate over signals/events defined there<br>**artifact** [SCOPE.06](#task-scope-06) — capture/configuration snapshot. *Why:* a measurement records the configuration under which it was taken ([BR-05](../../../architecture/14-build-packaging-and-release.md#rule-br-05)) |
 | Entry condition | [ADOPT.05.arcscope](adoption.md#task-adopt-05-arcscope) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [SCOPE.16](#task-scope-16), [SCOPE.18](#task-scope-18), [SCOPE.19](#task-scope-19), [SCOPE.21](#task-scope-21), [SCOPE.24](#task-scope-24), [SIM.06](simulator.md#task-sim-06), [SIM.09](simulator.md#task-sim-09) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.Analysis/Measurements/**`<br>`ArcScope:tests/ArcScopePipelineTests/Measurements/**` |
-| Validation | reference-value tests per measurement kind; unit-handling test; reproduction-from-recorded-configuration test — offline, deterministic tolerance-based comparison |
+| Validation | reference-value tests per measurement kind; unit-handling test; reproduction-from-recorded-configuration test â€” offline, deterministic tolerance-based comparison |
 | Completion evidence | measurement reference and reproduction results, including the Pearson vectors |
 | Baseline (unreviewed unless accepted) | not-started |
 
@@ -380,10 +380,10 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Completion prerequisites | none |
 | Unblocks | [SCOPE.16](#task-scope-16), [SCOPE.18](#task-scope-18), [SCOPE.19](#task-scope-19), [SCOPE.21](#task-scope-21) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.Decoders/**`<br>`ArcScope:tests/ArcScopePipelineTests/Decoders/**` |
-| Validation | per-decoder fixture corpora including malformed input; error-visibility assertion; structural no-device-write test — offline |
+| Validation | per-decoder fixture corpora including malformed input; error-visibility assertion; structural no-device-write test â€” offline |
 | Completion evidence | per-decoder fixtures, error visibility and no-write assertion |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Independent of SCOPE.14 (measurements); the two can proceed in parallel. Decoder scope (UART/I2C/SPI) is fixed by the already-frozen analysis.v1 profile in architecture doc 26-product-behavior-profiles.md — note this is the ARCHITECTURE document numbered 26, unrelated to [WP-26](../../work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26) (Remote action and tool bridge); no start edge needed since the design is already frozen, not missing. |
+| Notes | Independent of SCOPE.14 (measurements); the two can proceed in parallel. Decoder scope (UART/I2C/SPI) is fixed by the already-frozen analysis.v1 profile in architecture doc 26-product-behavior-profiles.md â€” note this is the ARCHITECTURE document numbered 26, unrelated to [WP-26](../../work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26) (Remote action and tool bridge); no start edge needed since the design is already frozen, not missing. |
 
 <a id="task-scope-16"></a>
 
@@ -403,10 +403,10 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Completion prerequisites | none |
 | Unblocks | [SCOPE.18](#task-scope-18), [SCOPE.19](#task-scope-19), [SCOPE.21](#task-scope-21) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.Analysis/Recipes/**`<br>`ArcScope:tests/ArcScopePipelineTests/Analysis/**` |
-| Validation | reconstruction test deleting all results and rebuilding; long-analysis cancellation; version-change test — offline |
+| Validation | reconstruction test deleting all results and rebuilding; long-analysis cancellation; version-change test â€” offline |
 | Completion evidence | result reconstruction and version-recording results |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | 'Native ProductJobs' reads as ArcScope's own in-process long-running Task/CancellationToken job pattern ('under their product owner'), not a shared cross-repo service; DesktopPlatform already carries a BuildingBlocks ArcForges.Application.Abstractions package this can reuse. Not modelled as a hard external artifact edge — checked [WP-08](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08) specifically and ruled it out: [WP-08](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08) is local IPC/process registration, not a job-execution abstraction. |
+| Notes | 'Native ProductJobs' reads as ArcScope's own in-process long-running Task/CancellationToken job pattern ('under their product owner'), not a shared cross-repo service; DesktopPlatform already carries a BuildingBlocks ArcForges.Application.Abstractions package this can reuse. Not modelled as a hard external artifact edge â€” checked [WP-08](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08) specifically and ruled it out: [WP-08](../../work-packages/08-local-ipc-and-registration.md#rule-wp-08) is local IPC/process registration, not a job-execution abstraction. |
 
 <a id="task-scope-17"></a>
 
@@ -426,7 +426,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Completion prerequisites | none |
 | Unblocks | [SCOPE.18](#task-scope-18), [SCOPE.19](#task-scope-19), [SCOPE.22](#task-scope-22) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.Domain/Annotations/**`<br>`ArcScope:tests/ArcScopePipelineTests/Annotations/**` |
-| Validation | structural raw-capture-untouched test; comparison correctness with deliberate misalignment; finding history tests — offline |
+| Validation | structural raw-capture-untouched test; comparison correctness with deliberate misalignment; finding history tests â€” offline |
 | Completion evidence | raw-capture immutability and comparison alignment results |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | Independent of SCOPE.14/15/16 (measurements/decoders/recipes); can run in parallel with them. |
@@ -442,17 +442,17 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Owning repository | ArcScope (`C:\MyFile\Projects\ArcForges\ArcScope`); integration owner: ArcScope integration owner, the holder of `roles/integration-arcscope` |
 | Claim, branch and ledger | `claims/scope-18` and ledger record `ledger/tasks/scope-18.md` in the Plan repository; task branch `task/scope-18` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | feature / L |
-| Obligations | [WP-34.06](../../work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34.06) — full, including both required-design-implementation paragraphs: report/UI/offline-recomputation comparison with rendering/rounding never changing the stored numeric result; report-section origin plus enclosing union; deterministic measurement beside AI narrative never relabelled<br>[WP-34](../../work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34) §8 additional completion requirement: every basic family has its formula/status oracle; reproduction uses the defined tolerance rather than an undefined byte-equality claim — package-level obligation contribution |
+| Obligations | [WP-34.06](../../work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34.06) — full, including both required-design-implementation paragraphs: report/UI/offline-recomputation comparison with rendering/rounding never changing the stored numeric result; report-section origin plus enclosing union; deterministic measurement beside AI narrative never relabelled<br>[WP-34](../../work-packages/34-arcscope-analysis-and-reporting.md#rule-wp-34) Â§8 additional completion requirement: every basic family has its formula/status oracle; reproduction uses the defined tolerance rather than an undefined byte-equality claim — package-level obligation contribution |
 | Provides | scope.reports |
 | Start prerequisites | **artifact** [SCOPE.14](#task-scope-14) — measurements. *Why:* reports compose measurement results<br>**artifact** [SCOPE.15](#task-scope-15) — decoders. *Why:* reports trace decoder version<br>**artifact** [SCOPE.16](#task-scope-16) — analysis results. *Why:* reports compose analysis output<br>**artifact** [SCOPE.17](#task-scope-17) — annotations/findings. *Why:* reports compose findings |
 | Entry condition | [ADOPT.05.arcscope](adoption.md#task-adopt-05-arcscope) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [SCOPE.19](#task-scope-19), [SCOPE.22](#task-scope-22), [SIM.09](simulator.md#task-sim-09) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.Reporting/**`<br>`ArcScope:tests/ArcScopePipelineTests/Reports/**` |
-| Validation | traceability completeness test; regeneration-equivalence test; export fidelity check; content-origin carrier vectors including unknown input and failed publication — offline |
+| Validation | traceability completeness test; regeneration-equivalence test; export fidelity check; content-origin carrier vectors including unknown input and failed publication â€” offline |
 | Completion evidence | traceability completeness and regeneration equivalence results; carrier/propagation/failure vectors with payload and manifest hashes A companion-readable PDF bundle with stored snapshots, provenance appendix and mandatory origin sidecar; verified resource identity and unavailable-artifact behavior. |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Content-origin behavior (requirements/07-security-privacy-and-trust.md) and the carrier schema (requirements/13-data-formats-and-portability.md) are named as frozen design inputs fixed before this package — already satisfied, not a start edge; implement per spec without choosing a different marking mechanism. |
+| Notes | Content-origin behavior (requirements/07-security-privacy-and-trust.md) and the carrier schema (requirements/13-data-formats-and-portability.md) are named as frozen design inputs fixed before this package â€” already satisfied, not a start edge; implement per spec without choosing a different marking mechanism. |
 
 <a id="task-scope-19"></a>
 
@@ -496,7 +496,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Completion prerequisites | **integration** [AST.12](assistant.md#task-ast-12) — real ArcChat security/approval surface actually enforcing these descriptors end to end. *Why:* declaring capabilities does not require ArcChat's enforcement code to exist first; the real cross-product proof is a completion-time integration, and [WP-17.02](../../work-packages/17-arcchat-independent-core.md#rule-wp-17.02) ('Security and approval surface') is the plausible ArcChat-side owner |
 | Unblocks | [HAR.05](harness.md#task-har-05), [SCOPE.25](#task-scope-25), [SCOPE.26](#task-scope-26) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.AssistantIntegration/**`<br>`ArcScope:tests/ArcScopePipelineTests/Capabilities/**` |
-| Validation | descriptor validation per capability; owner-side refusal tests; operational-capability risk assertion — offline |
+| Validation | descriptor validation per capability; owner-side refusal tests; operational-capability risk assertion â€” offline |
 | Completion evidence | capability descriptor and refusal results |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | The old WP33<-26 edge does not transfer here either: [WP-26](../../work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26) is the remote *execution* bridge, which would consume these capability descriptors as a downstream caller, not produce anything [WP-35.00](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.00) needs to start. |
@@ -512,14 +512,14 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Owning repository | ArcScope (`C:\MyFile\Projects\ArcForges\ArcScope`); integration owner: ArcScope integration owner, the holder of `roles/integration-arcscope` |
 | Claim, branch and ledger | `claims/scope-21` and ledger record `ledger/tasks/scope-21.md` in the Plan repository; task branch `task/scope-21` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | feature / M |
-| Obligations | [WP-35.01](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.01) — full, including required-design-implementation text: project measurement values with profile, immutable source/configuration binding, counts, coverage and status into bounded context/report references; unknown-profile and insufficient results are never silently rendered as numeric zero<br>[WP-35](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35) §4 content-origin/content-unit binding obligation applying broadly to WP35's changed files — package-level obligation contribution |
+| Obligations | [WP-35.01](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.01) — full, including required-design-implementation text: project measurement values with profile, immutable source/configuration binding, counts, coverage and status into bounded context/report references; unknown-profile and insufficient results are never silently rendered as numeric zero<br>[WP-35](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35) Â§4 content-origin/content-unit binding obligation applying broadly to WP35's changed files — package-level obligation contribution |
 | Provides | scope.bounded-context |
 | Start prerequisites | **artifact** [SCOPE.14](#task-scope-14) — measurements. *Why:* context projects measurement values<br>**artifact** [SCOPE.16](#task-scope-16) — analysis results. *Why:* context projects analysis outputs<br>**artifact** [SCOPE.15](#task-scope-15) — decoders. *Why:* context projects decoded event summaries |
 | Entry condition | [ADOPT.05.arcscope](adoption.md#task-adopt-05-arcscope) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [AST.15](assistant.md#task-ast-15) — real ArcChat 'Ask ArcChat' consumption of the bounded context reference. *Why:* producing the bounded, structurally-raw-capture-free context does not require the real AI consumer to exist first; the end-to-end proof that ArcChat actually receives and uses the reference (never the raw capture) is a completion-time integration. |
 | Unblocks | [SCOPE.26](#task-scope-26) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.Application/Context/**`<br>`ArcScope:tests/ArcScopePipelineTests/Context/**` |
-| Validation | structural test asserting raw capture cannot enter a context payload; bounding test; visibility test — offline |
+| Validation | structural test asserting raw capture cannot enter a context payload; bounding test; visibility test â€” offline |
 | Completion evidence | structural raw-capture exclusion and bounding results |
 | Baseline (unreviewed unless accepted) | not-started |
 
@@ -542,7 +542,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Unblocks | [AND.27](android.md#task-and-27), [SCOPE.26](#task-scope-26), [SCOPE.27](#task-scope-27), [WEB.32](web.md#task-web-32) |
 | Permitted substitutes | [SUB-scope-sync-fixture](../substitutes.md#sub-scope-sync-fixture) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.CloudClient/SyncScope/**`<br>`ArcScope:tests/SyncConflictTests/ArcScope/**` |
-| Validation | enable-sync test asserting no raw bytes transferred; policy-visibility test; convergence test across devices for included scope — early development against a contract-bound sync fixture, real convergence at [WP-35.90](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.90); offline fixtures cover project rename/delete, parent/session arrival order and withholding a report reference until its resource is verified |
+| Validation | enable-sync test asserting no raw bytes transferred; policy-visibility test; convergence test across devices for included scope â€” early development against a contract-bound sync fixture, real convergence at [WP-35.90](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.90); offline fixtures cover project rename/delete, parent/session arrival order and withholding a report reference until its resource is verified |
 | Completion evidence | no-raw-bytes sync assertion and convergence results |
 | Baseline (unreviewed unless accepted) | not-started |
 
@@ -572,14 +572,14 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 
 ### SCOPE.24 — Import, export and format fixtures
 
-**Outcome.** Native full-fidelity bundle export/import round-trips with equivalence; tabular export carries explicit precision warnings; import enters the unified session model with a recorded origin (never disguised as a live device); every claimed import version has a fixture — satisfying [PG-07](../../../assurance/open-gates-register.md#rule-pg-07) for ArcScope.
+**Outcome.** Native full-fidelity bundle export/import round-trips with equivalence; tabular export carries explicit precision warnings; import enters the unified session model with a recorded origin (never disguised as a live device); every claimed import version has a fixture â€” satisfying [PG-07](../../../assurance/open-gates-register.md#rule-pg-07) for ArcScope.
 
 | Field | Value |
 |---|---|
 | Owning repository | ArcScope (`C:\MyFile\Projects\ArcForges\ArcScope`); integration owner: ArcScope integration owner, the holder of `roles/integration-arcscope` |
 | Claim, branch and ledger | `claims/scope-24` and ledger record `ledger/tasks/scope-24.md` in the Plan repository; task branch `task/scope-24` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | feature / L |
-| Obligations | [WP-35.04](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04) — full, including required-design-implementation text: native bundles preserve origin, measurement profile/configuration and simulator provenance separately; CSV/JSON/report export publishes required sidecars atomically; structured context carries selected origins and measurement quality, never raw capture<br>[WP-35](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35) §4 content-origin/content-unit binding obligation applying broadly to WP35's changed files — package-level obligation contribution<br>[WP-35](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35) §8 additional completion requirements (measurement meaning/numerical profile survives portability; content-origin carrier vectors) — package-level obligation contribution |
+| Obligations | [WP-35.04](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04) — full, including required-design-implementation text: native bundles preserve origin, measurement profile/configuration and simulator provenance separately; CSV/JSON/report export publishes required sidecars atomically; structured context carries selected origins and measurement quality, never raw capture<br>[WP-35](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35) Â§4 content-origin/content-unit binding obligation applying broadly to WP35's changed files — package-level obligation contribution<br>[WP-35](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35) Â§8 additional completion requirements (measurement meaning/numerical profile survives portability; content-origin carrier vectors) — package-level obligation contribution |
 | Provides | scope.import-export-bundle |
 | Start prerequisites | **artifact** [SCOPE.07](#task-scope-07) — durable capture format to bundle/export. *Why:* native bundle wraps the real capture format<br>**artifact** [SCOPE.14](#task-scope-14) — measurement profile/configuration to carry in the bundle. *Why:* bundles preserve measurement profile/configuration separately per the required-design text |
 | Entry condition | [ADOPT.05.arcscope](adoption.md#task-adopt-05-arcscope) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
@@ -587,10 +587,10 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Unblocks | [SCOPE.26](#task-scope-26), [SIM.06](simulator.md#task-sim-06), [SIM.09](simulator.md#task-sim-09) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.ImportExport/**`<br>`ArcScope:fixtures/formats/arcscope/**`<br>`ArcScope:tests/ArcScopePipelineTests/ImportExport/**` |
 | Shared resources | [RES-arcscope-format-fixtures](../shared-resources.md#res-arcscope-format-fixtures) (append) |
-| Validation | bundle round-trip equivalence; precision-warning assertions; origin-recording test; fixture coverage for every claimed version — offline |
+| Validation | bundle round-trip equivalence; precision-warning assertions; origin-recording test; fixture coverage for every claimed version â€” offline |
 | Completion evidence | bundle round-trip, precision warnings, origin and fixture coverage |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | This task also carries the bundle-side half of [WP-51](../../work-packages/51-arcscope-cloud-simulator.md#rule-wp-51)'s 'simulator provenance separately' requirement — SIM.06 (ArcScope-side simulator ingestion) depends on this task so simulated captures round-trip through the same bundle format with their synthetic labelling intact. |
+| Notes | This task also carries the bundle-side half of [WP-51](../../work-packages/51-arcscope-cloud-simulator.md#rule-wp-51)'s 'simulator provenance separately' requirement â€” SIM.06 (ArcScope-side simulator ingestion) depends on this task so simulated captures round-trip through the same bundle format with their synthetic labelling intact. |
 
 <a id="task-scope-25"></a>
 
@@ -610,7 +610,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Completion prerequisites | none |
 | Unblocks | [SCOPE.26](#task-scope-26) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.AssistantIntegration/ExtensionBoundary/**`<br>`ArcScope:tests/ArcScopePipelineTests/ExtensionBoundary/**` |
-| Validation | structural test asserting no extension-reachable raw-write path exists; owner-side refusal test from an extension caller — offline |
+| Validation | structural test asserting no extension-reachable raw-write path exists; owner-side refusal test from an extension caller â€” offline |
 | Completion evidence | extension no-write structural results |
 | Baseline (unreviewed unless accepted) | not-started |
 
@@ -633,7 +633,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Completion prerequisites | none |
 | Unblocks | [REL.02](release.md#task-rel-02) |
 | Write scope | `ArcScope:docs/wp-35-integration-receipt.md` |
-| Validation | metadata sync and explicit-upload behavior remain distinct; context/report data retain measurement identity across real service calls — real Cloud integration exercised here, not at earlier SCOPE tasks |
+| Validation | metadata sync and explicit-upload behavior remain distinct; context/report data retain measurement identity across real service calls â€” real Cloud integration exercised here, not at earlier SCOPE tasks |
 | Completion evidence | owned-artifact and real-integration receipt |
 | Baseline (unreviewed unless accepted) | not-started |
 
