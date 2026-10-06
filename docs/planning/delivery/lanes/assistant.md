@@ -194,7 +194,7 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Validation | Offline full round-trip tests: malformed/hash/foreign references, draft exclusion, branch cycles, canceled import; no Cloud in CI. |
 | Completion evidence | Round-trip hash manifests, malformed/cycle/cancel test results, named-fixture manifest entry for this substitute. |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | One of the named scaffolding rows in implementation-sequence.md Â§3.1. See integration_proposals IM.history-export-cloud-promotion. |
+| Notes | One of the named scaffolding rows in implementation-sequence.md §3.1. See integration_proposals IM.history-export-cloud-promotion. |
 
 <a id="task-ast-08"></a>
 
@@ -357,7 +357,7 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Validation | Offline tests: offline edits remain drafts; no live scheduler in CI. |
 | Completion evidence | Named-fixture manifest entry, offline-draft test results. |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Second of the four named scaffolding rows in implementation-sequence.md Â§3.1. |
+| Notes | Second of the four named scaffolding rows in implementation-sequence.md §3.1. |
 
 <a id="task-ast-15"></a>
 

@@ -399,10 +399,10 @@ Data-health states detected/repairing/repaired/irrecoverable/acknowledged preser
 | `last_active_at` | `instant NN` | |
 | `platform` | `text NN` | windows/linux/macos/android/web |
 | `public_key`, `key_version` | `text NN`, `bigint NN` | Installation proof and rotation |
-
-Unbound installation authority (2026-10-06 production authority repair): the exact tuple public_key empty string and key_version zero means no signing key. Every other mixed empty/nonpositive tuple is invalid. Existing optional InstallationClaim/BrowserInstallationClaim fields do not permit synthesizing a key. Ordinary browser-cookie operations remain usable only where the authored operation needs no key; all key-, instance- and remote-bound operations deny an unbound installation. Only authorized Device.Register with a validated supplied public key, current actor and exact proof binds it; rotation of an existing key requires explicit current authority and never silently overwrites. Component tests cover tuple validation, immediate FKs, unbound refusal, binding, replay, rotation and revoke lifecycle. No locked migration or wire-schema change.
 | `revoked_at` | `instant?` | Revokes sessions, presence and delivery eligibility |
 | `rev` | `rev NN` | Installation authorization guard |
+
+Unbound installation authority (2026-10-06 production authority repair): the exact tuple public_key empty string and key_version zero means no signing key. Every other mixed empty/nonpositive tuple is invalid. Existing optional InstallationClaim/BrowserInstallationClaim fields do not permit synthesizing a key. Ordinary browser-cookie operations remain usable only where the authored operation needs no key; all key-, instance- and remote-bound operations deny an unbound installation. Only authorized Device.Register with a validated supplied public key, current actor and exact proof binds it; rotation of an existing key requires explicit current authority and never silently overwrites. Component tests cover tuple validation, immediate FKs, unbound refusal, binding, replay, rotation and revoke lifecycle. No locked migration or wire-schema change.
 
 - `UQ (device_id, product_id)`
 - `IX (contract_set_version)` — the minimum-version rollout query ([UP-11](../../requirements/10-distribution-update-and-support.md#rule-up-11))
