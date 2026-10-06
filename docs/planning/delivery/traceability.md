@@ -169,7 +169,7 @@ Every active numbered substep and every package-level obligation maps to the del
 |---|---|---|
 | [WP-11.00](../work-packages/11-security-foundation.md#rule-wp-11.00) | Principals and the actor chain | [PLT.36](lanes/platform.md#task-plt-36) (full) |
 | [WP-11.01](../work-packages/11-security-foundation.md#rule-wp-11.01) | Risk model and classification | [PLT.37](lanes/platform.md#task-plt-37) (full) |
-| [WP-11.02](../work-packages/11-security-foundation.md#rule-wp-11.02) | The decision pipeline and enforcement points | [PLT.38](lanes/platform.md#task-plt-38) (all work except the parts mapped to PLT.57)<br>[PLT.57](lanes/platform.md#task-plt-57) (real invocation-pipeline attachment) |
+| [WP-11.02](../work-packages/11-security-foundation.md#rule-wp-11.02) | The decision pipeline and enforcement points | [PLT.38](lanes/platform.md#task-plt-38) (all work except the parts mapped to PLT.57)<br>[PLT.57](lanes/platform.md#task-plt-57) (real invocation-pipeline attachment)<br>[PLT.61](lanes/platform.md#task-plt-61) (minimum production prerequisite: readonly shared Gate effect binding for actual R2/perOperation approval preparation; original final-owner decision obligations remain) |
 | [WP-11.03](../work-packages/11-security-foundation.md#rule-wp-11.03) | Approval, steering and step-up | [PLT.39](lanes/platform.md#task-plt-39) (full) |
 | [WP-11.04](../work-packages/11-security-foundation.md#rule-wp-11.04) | Per-application secrets and session isolation | [PLT.40](lanes/platform.md#task-plt-40) (full) |
 | [WP-11.05](../work-packages/11-security-foundation.md#rule-wp-11.05) | Egress control | [PLT.41](lanes/platform.md#task-plt-41) (full) |

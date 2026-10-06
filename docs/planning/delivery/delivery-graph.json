@@ -10317,8 +10317,15 @@
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: ArcScope HEAD 31551f8 has only the src/ArcForges.ArcScope(.Core) bootstrap (ArcScopeApp, BuildIdentity, CloudHelloClient, HelloViewModel, LiveSmoke, MainWindow, Program); no Domain/Application/Infrastructure/AssistantIntegration trees exist."
    },
-   "notes": "This is the ONLY product-repo work in WP14 to WP17/26; professional ArcScope completion is WP33-WP35, not here.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Binds the current Core/Domain project layout, without renaming identities. Owns actual typed read/create/annotation handlers, single durable local write/receipt path, expected-revision and final-owner authorization/approval/context/resource checks shared by UI and own-app capability calls, and the product durable ILeaseStore adapter. Implements cancellation, unknown outcome, replay, concurrency, restart and lifecycle against actual persistence; no Hello/test owner is a real product service. Supporting project/solution/locks/pins are reviewed under ADP-07 and dependency admission. Appending means CreateAnnotation adds a new independently identified annotation to the selected session; no invented AppendAnnotation/UpdateAnnotation wire method. The product owns an internal minimal session bootstrap operation and actual durable IApprovalStore as well as ILeaseStore, with one transactional persistence authority.\n\nOperation-local StructuredValue mapping is explicit for only GetSession and CreateAnnotation: use authored json_name record keys, ASCII ordinal sorted/unique at most200 and reject unknown keys; Id uses canonical lowercase GUID D text and published UuidBoundary wire conversion; complete uint64 uses canonical unsigned decimal text (0 through UInt64Max; positive revisions), never floating point or overflowing signed64. RequestMeta fields and generated DTO fields are mapped explicitly and bounded by existing list200/depth16/schema budgets. This is a local capability adapter profile, not new wire schema, reflection/ProtoJSON semantics or a generic cross-product encoding.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. GetSession/CreateAnnotation local StructuredValue profile additionally preserves optional bytes as canonical standard padded base64 TEXT with exact round-trip/presence and authored byte/schema budgets; sint64 uses signed64 Integer, uint32 uses Integer 0..UInt32Max, authored double uses finite Number, and Decimal uses its exact published producer record without floating point. Full ScopeSession configuration/captures metadata round-trips without dropping fields. Existing canonical UUID/uint64/json_name/unknown-key/list/depth rules remain; no generic wire schema is introduced. Trusted human-only bootstrap requires full validated user-owned Name and ScopeConfiguration, including actual generated required configured channels/framing. An intentionally authored canonicalReplay session may persist empty captures; reads never synthesize configuration/profile/native revision and assistant/foreign actors cannot bypass creation authority. This is not device/I/O/sample proof.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). The exact published managed producer identifiers require their first-party publisher/licence allowlist binding in the existing dependency gate. Append only actual independently admitted coordinates/identity/licence expectations and focused negatives; no feed, hash, generic validation or security-gate weakening. Existing immutable provenance inputs remain retained.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Local annotation history projection is returned only after trusted GetSession gating and fresh current actor/lease/equal owner resource/version validation, cloning only owner data. This is internal product composition, no new public wire operation or raw repository/store exposure. ProductComposition is sole runtime-owned composition; shared assistant uses its distinct prebound Agent endpoint and real current lease, never human fallback.\n\n2026-10-06 guarded production follow-up (docs/decisions/guarded-production-followup-2026-10-06.md). Use exact nativeAdmission: existing-framework-closure; admitted DesktopPlatform Image ABI1.0 win-x64 exact candidate; admitted Microsoft.Data.Sqlite10.0.12 SQLitePCLRaw.lib.e_sqlite3 2.1.12 owner-store runtime closure. This is the real closed persistent SQLite runtime prerequisite, not new Image or OS proof. Native/package/version/hash/feed/licence/admission gates remain exact. Human-only bootstrap also requires the current enabled CreateAnnotation owner-write permission ceiling with valid lifetime/constraints, not merely a trusted identity; no new public wire capability or Agent fallback is introduced.\n\nGuarded follow-up ordering: GOV.07 is the actual existing ArcScope policy-host/tools-receipt producer; its artifact precedes these exact owned policy successor appends. No unrelated policy inputs or history may be replaced.",
-   "complete": []
+   "notes": "This is the ONLY product-repo work in WP14 to WP17/26; professional ArcScope completion is WP33-WP35, not here.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Binds the current Core/Domain project layout, without renaming identities. Owns actual typed read/create/annotation handlers, single durable local write/receipt path, expected-revision and final-owner authorization/approval/context/resource checks shared by UI and own-app capability calls, and the product durable ILeaseStore adapter. Implements cancellation, unknown outcome, replay, concurrency, restart and lifecycle against actual persistence; no Hello/test owner is a real product service. Supporting project/solution/locks/pins are reviewed under ADP-07 and dependency admission. Appending means CreateAnnotation adds a new independently identified annotation to the selected session; no invented AppendAnnotation/UpdateAnnotation wire method. The product owns an internal minimal session bootstrap operation and actual durable IApprovalStore as well as ILeaseStore, with one transactional persistence authority.\n\nOperation-local StructuredValue mapping is explicit for only GetSession and CreateAnnotation: use authored json_name record keys, ASCII ordinal sorted/unique at most200 and reject unknown keys; Id uses canonical lowercase GUID D text and published UuidBoundary wire conversion; complete uint64 uses canonical unsigned decimal text (0 through UInt64Max; positive revisions), never floating point or overflowing signed64. RequestMeta fields and generated DTO fields are mapped explicitly and bounded by existing list200/depth16/schema budgets. This is a local capability adapter profile, not new wire schema, reflection/ProtoJSON semantics or a generic cross-product encoding.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. GetSession/CreateAnnotation local StructuredValue profile additionally preserves optional bytes as canonical standard padded base64 TEXT with exact round-trip/presence and authored byte/schema budgets; sint64 uses signed64 Integer, uint32 uses Integer 0..UInt32Max, authored double uses finite Number, and Decimal uses its exact published producer record without floating point. Full ScopeSession configuration/captures metadata round-trips without dropping fields. Existing canonical UUID/uint64/json_name/unknown-key/list/depth rules remain; no generic wire schema is introduced. Trusted human-only bootstrap requires full validated user-owned Name and ScopeConfiguration, including actual generated required configured channels/framing. An intentionally authored canonicalReplay session may persist empty captures; reads never synthesize configuration/profile/native revision and assistant/foreign actors cannot bypass creation authority. This is not device/I/O/sample proof.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). The exact published managed producer identifiers require their first-party publisher/licence allowlist binding in the existing dependency gate. Append only actual independently admitted coordinates/identity/licence expectations and focused negatives; no feed, hash, generic validation or security-gate weakening. Existing immutable provenance inputs remain retained.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Local annotation history projection is returned only after trusted GetSession gating and fresh current actor/lease/equal owner resource/version validation, cloning only owner data. This is internal product composition, no new public wire operation or raw repository/store exposure. ProductComposition is sole runtime-owned composition; shared assistant uses its distinct prebound Agent endpoint and real current lease, never human fallback.\n\n2026-10-06 guarded production follow-up (docs/decisions/guarded-production-followup-2026-10-06.md). Use exact nativeAdmission: existing-framework-closure; admitted DesktopPlatform Image ABI1.0 win-x64 exact candidate; admitted Microsoft.Data.Sqlite10.0.12 SQLitePCLRaw.lib.e_sqlite3 2.1.12 owner-store runtime closure. This is the real closed persistent SQLite runtime prerequisite, not new Image or OS proof. Native/package/version/hash/feed/licence/admission gates remain exact. Human-only bootstrap also requires the current enabled CreateAnnotation owner-write permission ceiling with valid lifetime/constraints, not merely a trusted identity; no new public wire capability or Agent fallback is introduced.\n\nGuarded follow-up ordering: GOV.07 is the actual existing ArcScope policy-host/tools-receipt producer; its artifact precedes these exact owned policy successor appends. No unrelated policy inputs or history may be replaced.\n\n2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md). Implement actual trusted direct-human approval preparation and decision through the existing durable ApprovalCoordinator, using published shared Gate ComputeEffectSha256 and actual registered R2/perOperation risk/resource/command binding. An approval ID is not authority: current actor/permission/lease, exact resource/effect/command/owner/risk and expiry/revocation remain checked by the real Gate. No human recorder fallback for Agent. For a committed same-command replay only, an internal owner receipt matcher clones and derives the SAME trusted RequestMeta before its existing normalized argument SHA, verifies the exact actual committed command/fingerprint/session/owner/generation and returns immutable original native revision/committed version evidence. Product service authorization may bind that proved original revision under fresh actor/grant/lease and matching unexpired approval. This does not authorize a stale new mutation or changed fingerprint; final owner checks current revision for every new effect. Owner/journal replay must retain exact real receipt behavior, including crash after owner commit before invocation journal finish. Never equate owner normalized argument SHA with Gate effect digest or original bare request bytes. The helper is internal evidence only, no public raw store/receipt API or constructed AuthorizedExecution. Test real approval missing/denied/expired/effect/target mismatch, revoked current authority, append v1-to-v2 then original command/precondition1 replay exact2, changed content refusal, concurrent commands and restart/crash boundaries using actual SQLite/Coordinator/Gate/pipeline; unavailable host auth sources alone may be faked.",
+   "complete": [
+    {
+     "type": "integration",
+     "task": "PLT.61",
+     "need": "actual published shared Gate readonly approval-effect binding",
+     "why": "Complete trusted human approval preparation/decision must use the real production Gate binding, preserving R2/perOperation semantics."
+    }
+   ]
   },
   {
    "id": "APP.03",
@@ -10417,7 +10424,9 @@
     "ArcScope:eng/ArcForges.Repository/DependencyPolicy.cs (append ONLY exact first-party publishers/licences for actual Assistant.Abstractions, Desktop.Shell, Observability and Observability.Desktop consumer packages; Security.Secrets ONLY if actual host consumes it)",
     "ArcScope:tests/ArcForges.ArcScope.Tests/DependencyPolicyTests.cs (exact new publisher foreign/adjacent-name and wrong-licence negatives only)",
     "ArcScope:eng/policy/dependency-policy.json (bind exact actual owned consumer closure/input successors; no feed/hash/version/gate relaxation)",
-    "ArcScope:eng/provenance/** (only owned immutable APP03 tools/package/legal input successors and exact inventory/NOTICE bindings; preserve history)"
+    "ArcScope:eng/provenance/** (only owned immutable APP03 tools/package/legal input successors and exact inventory/NOTICE bindings; preserve history)",
+    "ArcScope:eng/ArcForges.Repository/DependencyPolicy.cs (append ONLY exact verified DesktopPlatform publishers/licences for actual Assistant.Core and Assistant.Persistence.Sqlite, and exact Contracts Events/Validation producer identities when actually consumed)",
+    "ArcScope:tests/ArcForges.ArcScope.Tests/DependencyPolicyTests.cs (only exact newly consumed producer identity/licence acceptance plus foreign/adjacent-name negatives)"
    ],
    "validation": "Native AOT publish/run in CI (package-only restore), offline command/cancel/result tests; no installed-package or public-release install/upgrade CI per P2-017.",
    "evidence": "AOT publish log, package hash manifest, command/cancel/result and owner-refusal test results.",
@@ -10426,13 +10435,19 @@
     "notes": "Observed scaffold, unreviewed: the ArcScope host project (ArcForges.ArcScope) exists only as a hello-world Avalonia bootstrap; no host-port composition yet."
    },
    "earlyRiskProof": true,
-   "notes": "Narrow early-risk proof: first real evidence that the whole Assistant.Abstractions/host-port composition model survives Native AOT package-only consumption for an actual product. Failure here invalidates the composition model assumed by WP15 to WP17.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Owns the actual base Avalonia product shell, shared reusable assistant UI/host/lifecycle integration, menu/focus/state/RTL adapters, real security/audit/lease/observability composition and clean AOT consumer. Product-owned services may be existing own Core/Domain project references; package-only applies to external Platform/Contracts producers, not a nonexistent product-service package. No sibling product RPC/hub, second assistant executable or removal of shared AI capabilities. Native/device/manual assistive/reference-hardware checks remain distinct acceptance; component implementation, tests and feasible local runs continue.\n\n2026-10-06 guarded production follow-up (docs/decisions/guarded-production-followup-2026-10-06.md). Actual product composition consumes published exact Assistant.Abstractions, Desktop.Shell, Observability and Observability.Desktop packages and their approved licences; append only these exact publisher identities, plus Security.Secrets only for actual host use. Preserve all foreign publisher/adjacent name/wrong licence/hash/feed/version negatives and immutable closure receipts; no wildcard publisher or general allowance. Shared assistant remains a separate trusted actor-bound endpoint with real current lease/task/revocation and actor-bound audit, never a human fallback.\n\nGuarded follow-up ordering: GOV.07 is the actual existing ArcScope policy-host/tools-receipt producer; its artifact precedes these exact owned policy successor appends. No unrelated policy inputs or history may be replaced.",
+   "notes": "Narrow early-risk proof: first real evidence that the whole Assistant.Abstractions/host-port composition model survives Native AOT package-only consumption for an actual product. Failure here invalidates the composition model assumed by WP15 to WP17.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Owns the actual base Avalonia product shell, shared reusable assistant UI/host/lifecycle integration, menu/focus/state/RTL adapters, real security/audit/lease/observability composition and clean AOT consumer. Product-owned services may be existing own Core/Domain project references; package-only applies to external Platform/Contracts producers, not a nonexistent product-service package. No sibling product RPC/hub, second assistant executable or removal of shared AI capabilities. Native/device/manual assistive/reference-hardware checks remain distinct acceptance; component implementation, tests and feasible local runs continue.\n\n2026-10-06 guarded production follow-up (docs/decisions/guarded-production-followup-2026-10-06.md). Actual product composition consumes published exact Assistant.Abstractions, Desktop.Shell, Observability and Observability.Desktop packages and their approved licences; append only these exact publisher identities, plus Security.Secrets only for actual host use. Preserve all foreign publisher/adjacent name/wrong licence/hash/feed/version negatives and immutable closure receipts; no wildcard publisher or general allowance. Shared assistant remains a separate trusted actor-bound endpoint with real current lease/task/revocation and actor-bound audit, never a human fallback.\n\nGuarded follow-up ordering: GOV.07 is the actual existing ArcScope policy-host/tools-receipt producer; its artifact precedes these exact owned policy successor appends. No unrelated policy inputs or history may be replaced.\n\n2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md). Compose the actual shared AST01 factory/history/turn services with existing AssistantHost and UI, preserving one shared assistant and its real provider/tool capabilities. Use a distinct trusted Agent endpoint with real current lease/approval and actor-bound recorder. Product-private conversations, fake history/model dispatch and local-human fallback do not satisfy this composition. Actual profile/account/call-invoker adapters remain owner-bound; current missing remote authorization refuses explicitly while component implementation continues.",
    "complete": [
     {
      "type": "integration",
      "task": "NAT.01",
      "need": "actual native device-tool AOT proof",
      "why": "Minimal annotation and shared assistant/shell composition use no device ABI; native proof remains required for actual native capability acceptance."
+    },
+    {
+     "type": "integration",
+     "task": "AST.01",
+     "need": "actual published shared Assistant.Core factory and Assistant.Persistence.Sqlite owner store",
+     "why": "Base product shell can advance independently, but full shared assistant composition cannot use an abstract/test/private factory."
     }
    ]
   },
@@ -10772,7 +10787,9 @@
    "outcome": "Assistant.Persistence.Sqlite implements the full data-model-05 schema (assistant_conversation/branch/message/draft/turn/receipt/outbox/history_import/attachment/project/conversation_project/profile/skill/context/task_projection/compaction), migrations and typed payloads, plus Android logical-schema fixtures. Competing model-02 conversation tables retired.",
    "provides": [
     "assistant-history-store",
-    "assistant-core-pkg"
+    "assistant-core-pkg",
+    "assistant-session-factory",
+    "assistant-typed-history-turn-services"
    ],
    "start": [
     {
@@ -10797,7 +10814,24 @@
    "writes": [
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Core/**",
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Persistence.Sqlite/**",
-    "DesktopPlatform:tests/AssistantCoreTests/**"
+    "DesktopPlatform:tests/AssistantCoreTests/**",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Abstractions/AssistantLifecycle.cs (only actual safe profile-store/generation handoff; preserve immutable initial HostServices identity)",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Abstractions/HostPorts.cs (only an exact reusable typed handoff port if the real lifecycle composition requires it; no product-private router)",
+    "DesktopPlatform:tests/AssistantAbstractionsTests/LifecycleProfileSwitchTests.cs (actual candidate authorization/recovery, dirty flush refusal, old-view and abandoned-save fencing, cancellation/error and shutdown tests)",
+    "DesktopPlatform:DesktopPlatform.slnx (append only actual owned Core/Assistant.Persistence.Sqlite/component test projects)",
+    "DesktopPlatform:Directory.Packages.props (exact published Events324 and Validation324 selectors and metadata-required admitted peers for actual Assistant Core/Sqlite consumers only)",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Core/**/packages.lock.json (regenerate actual owned production closure only)",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Persistence.Sqlite/**/packages.lock.json (regenerate actual owned production closure only)",
+    "DesktopPlatform:tests/AssistantCoreTests/**/packages.lock.json (regenerate actual owned component closure only)",
+    "DesktopPlatform:tests/AssistantAbstractionsTests/packages.lock.json (regenerate only an actual affected lifecycle consumer closure)",
+    "DesktopPlatform:eng/packaging/packages.json (register only the two real verified Assistant.Core and Assistant.Persistence.Sqlite managed producers with exact dependencies/legal assets)",
+    "DesktopPlatform:eng/policy/architecture-projects.json and licence-boundary.json (only actual owned new project/package classifications)",
+    "DesktopPlatform:eng/policy/architecture-contract-tests.json and architecture-evidence.json (only actual owned public API/source/behavior test bindings)",
+    "DesktopPlatform:eng/policy/reconciliation/active-projects.json and project-updates.json (only actual owned project blobs; preserve frozen history)",
+    "DesktopPlatform:eng/policy/dependency-policy.json and dependency-reviews/ast-01-*.json (actual evaluated owned closure/input bindings and new immutable reviewed successors)",
+    "DesktopPlatform:eng/provenance/** (only owned actual first-party and immutable producer/legal/input successors and deterministic NOTICE bindings)",
+    "DesktopPlatform:.github/workflows/pr-gate.yml and package-validation.yml (append only actual owned ordinary managed component test/producer inputs; preserve existing gates/triggers)",
+    "DesktopPlatform:docs/assistant-session-factory.md (real API, physical store, lifecycle and explicit unavailable dependency/acceptance ownership)"
    ],
    "shared": [
     {
@@ -10806,6 +10840,18 @@
     },
     {
      "resource": "RES-desktopplatform-build-config",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-package-inventory",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-architecture-tests",
      "mode": "append"
     }
    ],
@@ -10816,8 +10862,15 @@
     "notes": "Observed none, unreviewed: No Assistant.Core or Assistant.Persistence.Sqlite project exists in DesktopPlatform yet."
    },
    "earlyRiskProof": true,
-   "notes": "Foundation for all other WP15 substeps and for WP16/17's reuse of conversation identities; a schema mistake here invalidates branches, attachments, projects, skills, search and export simultaneously, so it should land and stabilize early.",
-   "complete": []
+   "notes": "Foundation for all other WP15 substeps and for WP16/17's reuse of conversation identities; a schema mistake here invalidates branches, attachments, projects, skills, search and export simultaneously, so it should land and stabilize early.\n\n2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md). The artifact includes the real reusable Assistant.Core AssistantSessionFactory/IAssistantSession and typed history/turn/draft services, backed by the complete model05 Assistant.Persistence.Sqlite owner store. Interfaces, a test factory, product-private conversation database or injected success factory are insufficient. OpenAsync validates existing AssistantHostOptions, actual IAssistantProfileStoreProvider, current IAssistantProfileAuthority and IAssistantTurnBackend; captured services remain immutable profile/generation-bound and refuse after revocation. DeviceLocal versus Authenticated profile authority is explicit, never inferred from GUIDs. The physical typed AssistantDataRoot path contains product/installation/profile and history.sqlite3. Temporary sessions are memory-only. Existing APP01/APP07 ports and original model05 obligations are retained. Independent nullable stable draft_id, complete versioned ConversationView and nullable actual turn/progress/run payloads follow the reviewed model05 amendment; no fake conversation or remote completion. Existing typed outbox is sole pending authority, using actual generated named Chat and Execution requests rather than generic Sync/ChangeProposal writes. Implement the real authenticated supplied-CallInvoker GrpcAssistantTurnBackend, durable after-commit retry/outbox, output cursor/hash/terminal verification and acknowledgement/cancellation. Only unavailable remote transport/auth sources may be faked in ordinary component tests; no client model loop. Consume exact published Events324/Validation324 and already admitted Microsoft.Data.Sqlite10.0.12, preserving package identities and third-party closure. One AST01 claim/PR: audit owns Core and factory/backend/profile tests; observability owns Sqlite and AssistantCoreTests/Sqlite. Shared typed store boundary is frozen before support integration. Actual normal package publication is required for product consumption; full provider/tool/OS/system acceptance remains separately owned. The normative history path is Path.Combine(options.DataRoot.GetProfileDirectory(partition), \"assistant\", \"history.sqlite3\") from the shipped typed producer; its layout is <platformDataRoot>/<product>/<installation N>/profiles/<profile N>. platformDataRoot is already the trusted OS-private base and may contain ArcForges; never add a second fixed segment or reconstruct a server/caller path. Actual same-owner metadata and semantic journal co-commit with receipt/outbox are explicitly assistant-owned derived support; the generic product Persistence journal cannot atomically join these tables or fabricate a Cloud UserId for DeviceLocal. Preserve receipt as sole immutable replay-result authority. Closed history.queue permits a real Cloud create request in outbox without a fake acknowledged canonical conversation. Failed/cancelled/interrupted terminal facts need no invented MessageView; successful completion requires an actual immutable terminal. FTS is derived only from committed nondeleted normal history and search joins canonical identity/tombstone state, never draft/prefix/pending/temporary bodies.",
+   "complete": [
+    {
+     "type": "integration",
+     "task": "PLT.59",
+     "need": "actual compatible published managed production peer closure",
+     "why": "Ordinary implementation proceeds from existing generated and abstract contracts; package delivery must consume the real compatible published peers."
+    }
+   ]
   },
   {
    "id": "AST.02",
@@ -15554,7 +15607,10 @@
     "Cloud:eng/verification/storage-plans.ts (ONLY exact reserved COLUMN \"limit\" quoted-identifier admission for owned entitlement_quota_budget grammar; no quoted table/alias/foreign scope admission)",
     "Cloud:tests/worker/storage-plans-generator.test.ts (exact owned reserved-column positive and quoted table/foreign/malformed identifier negatives only)",
     "Cloud:tests/worker/storage-plan-ownership.test.ts (exact quoted-column ownership negatives only; preserve owner inventory and all existing bypass cases)",
-    "Cloud:tests/worker/container-classes.test.ts (append only actual capacity.internal/http:capacity.internal/https:capacity.internal to three closed outbound host arrays and one SDK intercept list; preserve all prior hosts, Internet=false and no wildcards)"
+    "Cloud:tests/worker/container-classes.test.ts (append only actual capacity.internal/http:capacity.internal/https:capacity.internal to three closed outbound host arrays and one SDK intercept list; preserve all prior hosts, Internet=false and no wildcards)",
+    "Cloud:wrangler.json (append only production/proof minute recovery cron to existing triggers.crons, preserving all existing triggers/routes/data/workers.dev=false and capacity default-disabled flag)",
+    "Cloud:storage/plans/platform/capacity-job-due.sql (actual realm/current-generation/registered-job-type bounded due/expired-lease keyset recovery read, at most ten rows)",
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Capacity/CapacityJobContracts.cs (complete Create definition/input authorization, required original recovery generation, read-only mutation reconciliation and trusted current recovery-scope ports only)"
    ],
    "shared": [
     {
@@ -15580,13 +15636,19 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: no capacity harness exists; wrangler.json today has a single lite/1-instance placeholder container"
    },
-   "notes": "Can proceed in parallel with WP-22/23/24/25 module work once CLOUD.01-04/06 exist, because it uses its own guarded-batch fixtures rather than waiting for real module business logic.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Bind old logical Cloud.Capacity roots to actual host Capacity orchestration, Entitlement-owned quota kernel over existing rows and typed Abstractions ports, Storage.D1 Platform job lease adapter and actual pacer infrastructure. Use real existing Platform descriptor authority, never fabricate a module/project or alias proof FoundationOptions. Complete cancellation/retry/fencing/rollback/concurrency/used-held persistence kernel tests; unavailable remote D1 only may be faked. Measured live L16 and full series acceptance remain distinct, run scoped existing environment only after lease and actual current infrastructure verification. Preserve all production routes/data/workers.dev=false, no reuse of completed unaffected proof as a new measurement. COM07 consumes actual kernel/persistent accounting, COM06 full usage projection joins COM07. Current invalid nonexistent Cloud.Capacity and broad wrangler scope are replaced by the actual narrowly owned roots/binding above; historical baseline and measured obligations remain unchanged. Storage.D1 owns actual Platform infrastructure factory/executor authority, never module-side invented ModuleDescriptor.Create authority or a phantom project. Existing tables only, no new physical schema/migration.\n\n2026-10-06 guarded production follow-up (docs/decisions/guarded-production-followup-2026-10-06.md). Locked entitlement_quota_budget has physical column limit, a SQLite reserved word: real reads/upserts require double-quoted COLUMN \"limit\". Admit only that exact quoted column in syntactic column positions resolving to the registered owned budget table; preserve quoted tables/aliases/foreign identifiers, unknown columns, malformed escaping and scope-bypass refusal. No migration, replacement column, fake query or generalized quoted-identifier grammar. Existing unquoted plans retain exact source/hash/generated bytes. Tests use actual SQLite budget SQL and generator ownership positives/negatives; this is a necessary parser producer for actual quota persistence.\n\nActual C7 signed pacer requires only its precise capacity.internal entries in the existing closed Container/SDK inventory expectations; no provider transport code or Internet/route policy expansion.\n\nThe exact owned capacity/pacer fragment includes the necessary new CAPACITY_PACER binding and capacity-pacer-v1 Durable Object class metadata in production/proof. Existing class migrations/routes/data are preserved; capacity remains disabled by default and workers.dev=false. This adds no D1 business schema/migration or unrequested deployment.",
+   "notes": "Can proceed in parallel with WP-22/23/24/25 module work once CLOUD.01-04/06 exist, because it uses its own guarded-batch fixtures rather than waiting for real module business logic.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Bind old logical Cloud.Capacity roots to actual host Capacity orchestration, Entitlement-owned quota kernel over existing rows and typed Abstractions ports, Storage.D1 Platform job lease adapter and actual pacer infrastructure. Use real existing Platform descriptor authority, never fabricate a module/project or alias proof FoundationOptions. Complete cancellation/retry/fencing/rollback/concurrency/used-held persistence kernel tests; unavailable remote D1 only may be faked. Measured live L16 and full series acceptance remain distinct, run scoped existing environment only after lease and actual current infrastructure verification. Preserve all production routes/data/workers.dev=false, no reuse of completed unaffected proof as a new measurement. COM07 consumes actual kernel/persistent accounting, COM06 full usage projection joins COM07. Current invalid nonexistent Cloud.Capacity and broad wrangler scope are replaced by the actual narrowly owned roots/binding above; historical baseline and measured obligations remain unchanged. Storage.D1 owns actual Platform infrastructure factory/executor authority, never module-side invented ModuleDescriptor.Create authority or a phantom project. Existing tables only, no new physical schema/migration.\n\n2026-10-06 guarded production follow-up (docs/decisions/guarded-production-followup-2026-10-06.md). Locked entitlement_quota_budget has physical column limit, a SQLite reserved word: real reads/upserts require double-quoted COLUMN \"limit\". Admit only that exact quoted column in syntactic column positions resolving to the registered owned budget table; preserve quoted tables/aliases/foreign identifiers, unknown columns, malformed escaping and scope-bypass refusal. No migration, replacement column, fake query or generalized quoted-identifier grammar. Existing unquoted plans retain exact source/hash/generated bytes. Tests use actual SQLite budget SQL and generator ownership positives/negatives; this is a necessary parser producer for actual quota persistence.\n\nActual C7 signed pacer requires only its precise capacity.internal entries in the existing closed Container/SDK inventory expectations; no provider transport code or Internet/route policy expansion.\n\nThe exact owned capacity/pacer fragment includes the necessary new CAPACITY_PACER binding and capacity-pacer-v1 Durable Object class metadata in production/proof. Existing class migrations/routes/data are preserved; capacity remains disabled by default and workers.dev=false. This adds no D1 business schema/migration or unrequested deployment.\n\n2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md). Durable job definitions include required canonical unsigned-decimal original RecoveryGeneration metadata; create/load/receipt replay and publication compare it with the trusted current generation. Older-generation jobs refuse until explicit owner recovery/reconciliation; no new physical column or guessed generation. AuthorizeCreateAsync binds the full exact definition/approved operation/artifact/profile/workload/source snapshot, not owner hints alone. Actual lease publication also binds stored owner realm/workspace/kind/ownerId and original generation. ReconcileAsync is read-only under current read authority and exact committed actor/workspace/operation/job/generation/expiry receipt. Lost initial wake after durable create is repaired by bounded due-job recovery: actual trusted deployment authority supplies realm/current generation, a signed closed recover endpoint carries requestId/cursor only, fixed registered job types and at most ten due/expired-leased rows. Minute cron is a hint only, enabled-capacity only, at most100 bounded hints/20-second whole scan with persisted fair cursor; no keepalive, caller business authority or per-account Container allocation. Existing jobs/leases/quotas and routes/data remain unchanged. C21 owns real production authority/executor registration, C7 owns scheduler/kernel measurement logic.",
    "complete": [
     {
      "type": "integration",
      "task": "CLOUD.70",
      "need": "the gated migration step that applies the locked migrations to the deployed D1 database",
      "why": "the real D1 rollback, duplicate, competing-writer and cold-start measurements run against a deployed schema"
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.21",
+     "need": "actual production signed executor and trusted realm/current-generation deployment authority composition",
+     "why": "Kernel/pacer/store components advance independently; production activation cannot bind proof-only executor or permissive owner authorization."
     }
    ]
   },
@@ -16735,7 +16797,9 @@
    ],
    "outcome": "Generated proto service methods are registered with exact request/reply/semantic validation from the registry; binary gRPC-Web unary calls and declared server streams go through the same owner handlers; owner mutations and the Sync allowlist are mapped exactly; no ad-hoc REST business API exists.",
    "provides": [
-    "public-api-endpoints"
+    "public-api-endpoints",
+    "production-signed-plan-executor",
+    "production-realm-generation-composition"
    ],
    "start": [
     {
@@ -16743,12 +16807,6 @@
      "task": "CON.91",
      "need": "the handwritten-proto-generated service/method definitions to register (D-009 authority)",
      "why": "BR-01 requires endpoints be mapped from the contract set, not hand-written"
-    },
-    {
-     "type": "artifact",
-     "task": "CLOUD.13",
-     "need": "session model and native session validation",
-     "why": "handlers are registered behind authenticated, tenancy-scoped requests; native session validation is enough to start, browser sessions join at completion"
     },
     {
      "type": "artifact",
@@ -16763,6 +16821,18 @@
      "task": "CLOUD.19",
      "need": "the browser cookie-session adapter and native session validation to authenticate requests before they reach a handler",
      "why": "WP-23.00 registers handlers behind authenticated/tenancy-scoped requests; there is no caller identity without CLOUD.19/CLOUD.12"
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.13",
+     "need": "real native/session/Device owner validation before authenticated endpoint activation",
+     "why": "Separate production executor/configuration/dispatch implementation can advance from CON91 and COM16; delivery never declares authenticated endpoints complete before the real session producer."
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.75",
+     "need": "actual required configured realm/AuthEpoch/expected recovery generation and current persisted recovery authority",
+     "why": "Global signed executor/module factories must use the same required configured generation as the real authority producer, never FoundationOptions or database generation adoption."
     }
    ],
    "writes": [
@@ -16782,7 +16852,15 @@
     "Cloud:src/**/packages.lock.json (regenerate exact owned producer closure)",
     "Cloud:worker/** (matching signed executor/service binding only)",
     "Cloud:wrangler.json (only existing task-owned Worker/Container and signed D1 binding/profile inputs; preserve production routes, data and workers.dev=false)",
-    "Cloud:.dockerignore (append only exact existing task-owned PublicApi/Infrastructure host/provider source-directory and C# inclusion rules; preserve every unrelated rule and bin/obj exclusion)"
+    "Cloud:.dockerignore (append only exact existing task-owned PublicApi/Infrastructure host/provider source-directory and C# inclusion rules; preserve every unrelated rule and bin/obj exclusion)",
+    "Cloud:worker/index.ts (only actual production storage.internal signed executor, Config immutable objects and Capacity host/pacer dispatcher composition; preserve existing proof/provider behavior and enableInternet=false)",
+    "Cloud:worker/storage/execute-plan.ts and handler.ts (only matching production signed storage binding/configuration and actual bounded transport/lifecycle changes if required; preserve closed plan authority and budgets)",
+    "Cloud:wrangler.json (only actual production/proof signed storage D1/Container configuration bindings after inspecting existing infrastructure; preserve routes/data/class migrations/workers.dev=false)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/WorkerPlanExecutor.cs (only actual signed transport ownership/timeout/cancellation/error composition if needed; preserve named-plan/generated request/reply and unknown-write-outcome contracts)",
+    "Cloud:src/ArcForges.Cloud/Composition/RealmAuthorityModule.cs (consume actual C75 required immutable configured realm/AuthEpoch/expected generation accessor; preserve fail-closed resolution and health)",
+    "Cloud:tests/worker/container-classes.test.ts (append only exact production storage.internal closed intercept and required immutable object/Capacity composition bindings; no wildcard or Internet enablement)",
+    "Cloud:tests/worker/release-provenance.test.ts (only exact actual sealed owned Worker bundle SHA/bytes/closure counts when composition changes inputs; preserve all integrity negatives)",
+    "Cloud:package.json (append only actual task-owned production binding/component suites; preserve tool/dependency/lock closure)"
    ],
    "validation": "offline + opt-in tests: each method category through native and TS transport, malformed/unknown request values, denied scope before handler",
    "evidence": "every selected operation has a concrete typed endpoint and owner; no ad-hoc REST business API",
@@ -16808,7 +16886,7 @@
      "mode": "append"
     }
    ],
-   "notes": "\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Owns complete generated binary gRPC-Web dispatch, validation and registration of delivered real module owner handlers plus the production D1 executor/recovery/config bindings. Each business module task owns its actual method handler and publishes its registration; unsupported/unimplemented owner operations are explicit refused contracts, never success stubs or silently served fake handlers. Release composition fails closed for a declared served method without a real handler. Module-specific remaining operations stay with their existing implementation owners and full-system acceptance, preserving all catalogue obligations. No proof-only executor or fixture registration enters production."
+   "notes": "\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Owns complete generated binary gRPC-Web dispatch, validation and registration of delivered real module owner handlers plus the production D1 executor/recovery/config bindings. Each business module task owns its actual method handler and publishes its registration; unsupported/unimplemented owner operations are explicit refused contracts, never success stubs or silently served fake handlers. Release composition fails closed for a declared served method without a real handler. Module-specific remaining operations stay with their existing implementation owners and full-system acceptance, preserving all catalogue obligations. No proof-only executor or fixture registration enters production.\n\n2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md). C13 is moved from an implementation-start gate to mandatory completion/integration; real authenticated endpoint activation still requires C13/C19. Implement and own the actual production signed D1 executor, required configured realm/AuthEpoch/expected recovery generation, module/family factory binding and closed Worker storage.internal interception, with health/Hello remaining available when business config is missing. Existing FoundationOptions/proof storage handler is not production authority. Inspect existing Cloudflare production/proof resources and secret names safely before provisioning; do not duplicate/reuse arbitrary proof data or expose values. Missing/invalid configured generation refuses business paths; no constant0/1, implicit database adoption or async DI blocking. Global factories capture the same required expected generation as C75. Configuration/AuthEpoch changes fence/drain stale container composition; persisted recovery generation/state/revision remains the atomic D1 fence. Own actual HTTP/key lifetime/cancellation and read unavailable/write unknown semantics, no automatic replay of possibly committed writes. Config object dispatch passes actual Worker ExecutionContext/DO waitUntil so permits and cleanup remain owned through cancellation. Bind the real C7 executor/current-generation and exact configured owner/artifact/measurement/recovery authority ports; never always-authorized owner hints or proof options. Available current infrastructure is preserved and any live environment mutation uses the required short deployment lease/review/CI. Release composition refuses a declared served operation without a real owner handler; complete generated endpoint/stream/error/auth contracts remain original task obligations."
   },
   {
    "id": "CLOUD.22",
@@ -28808,7 +28886,8 @@
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/LocalRpcBoundary/README.md (truthful managed package activation status only)",
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/CapabilityEnforcement/README.md (truthful managed package activation status only)",
     "DesktopPlatform:.gitleaks.toml (only three exact new Secrets csproj SHA line patterns 7b3577f9fc163d52e3c5a433976220c5231f35c97cdadd195cebf932e3ebae89 for current policy four/six-space and immutable receipt six-space forms; preserve old exact AND/path/generic-api-key boundaries)",
-    "DesktopPlatform:eng/test_dependency_policy.py (only exact Secrets activated csproj hash successor expectation and hostile/adjacent negatives)"
+    "DesktopPlatform:eng/test_dependency_policy.py (only exact Secrets activated csproj hash successor expectation and hostile/adjacent negatives)",
+    "DesktopPlatform:eng/packaging/test_packages.py (AssistantAbstractionsPackageGuards.external_version exact actual admitted Contracts.Foundation324.1 fixture successor only; preserve every missing/extra/repin negative)"
    ],
    "start": [
     {
@@ -28898,7 +28977,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Added from verified current-source dependency evidence, not an inherited baseline. Original Final selection is unchanged. Ordinary implementation and component testing are required even when wider acceptance is deferred. A newly observed current CI defect uses real date in a deterministic fixture test and then checks against yesterday TODAY, falsely failing SI-10. Fix only the test clock; do not weaken the snapshot/freshness implementation or gate.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. ContentSandbox.Contracts and Broker live under DesktopHelpers; no nonexistent BuildingBlocks project is an activation target.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. Existing production Foundation/Persistence104.4 pins Contracts.Foundation216.1 and cannot compose with the actual ArcScope Contracts324.1 DTO producer (NU1608). Admit only the verified published compatible production peer closure, regenerate affected locks and exact licence/NOTICE/input receipts; never suppress NU1608 or modify historical fixtures. Actual managed publication precedes package-only product composition.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Coordinated published production Contracts upgrade also regenerates affected actual test locks; no lock hand merge, historical consumer fixture rewrite or dependency suppression.\n\nGuarded production follow-up: actual Secrets activation changes only its normalized csproj hash from8ff03fdcaf23b09386fac47dd5e3e4f9689a665a569137f726456c9e59a9ecef to7b3577f9fc163d52e3c5a433976220c5231f35c97cdadd195cebf932e3ebae89. Admit only three observed exact hash-line scanner patterns plus exact dependency-unit expectation/hostile negatives. Old patterns, required path/rule AND boundaries and all coordinate/hash/security checks stay intact; no wildcard, general suppression or immutable receipt rewrite."
+   "notes": "2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Added from verified current-source dependency evidence, not an inherited baseline. Original Final selection is unchanged. Ordinary implementation and component testing are required even when wider acceptance is deferred. A newly observed current CI defect uses real date in a deterministic fixture test and then checks against yesterday TODAY, falsely failing SI-10. Fix only the test clock; do not weaken the snapshot/freshness implementation or gate.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. ContentSandbox.Contracts and Broker live under DesktopHelpers; no nonexistent BuildingBlocks project is an activation target.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. Existing production Foundation/Persistence104.4 pins Contracts.Foundation216.1 and cannot compose with the actual ArcScope Contracts324.1 DTO producer (NU1608). Admit only the verified published compatible production peer closure, regenerate affected locks and exact licence/NOTICE/input receipts; never suppress NU1608 or modify historical fixtures. Actual managed publication precedes package-only product composition.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Coordinated published production Contracts upgrade also regenerates affected actual test locks; no lock hand merge, historical consumer fixture rewrite or dependency suppression.\n\nGuarded production follow-up: actual Secrets activation changes only its normalized csproj hash from8ff03fdcaf23b09386fac47dd5e3e4f9689a665a569137f726456c9e59a9ecef to7b3577f9fc163d52e3c5a433976220c5231f35c97cdadd195cebf932e3ebae89. Admit only three observed exact hash-line scanner patterns plus exact dependency-unit expectation/hostile negatives. Old patterns, required path/rule AND boundaries and all coordinate/hash/security checks stay intact; no wildcard, general suppression or immutable receipt rewrite.\n\n2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md). Actual hosted product build/test/package succeeds but two ordinary packaging guards still assume Foundation216.1 while the reviewed production peer closure is324.1. Correct only AssistantAbstractionsPackageGuards.external_version fixture constant to actual admitted324.1, preserve all negative behavior and run the actual focused guard suite. Test source is not an evaluated dependency input; no invented receipt refresh or gate relaxation."
   },
   {
    "id": "CLOUD.74",
@@ -29102,7 +29181,8 @@
     "Contracts:eng/provenance/** (owned first-party/input successors and regenerated NOTICE only)",
     "Contracts:docs/configuration-document-reference.md",
     "Contracts:eng/policy/contract-access.json (only exact affected compiled CloudInternal hashes/type inventory)",
-    "Contracts:eng/provenance/records/contract-bindings-con-28-*.json (new immutable owned schema/validator source bindings)"
+    "Contracts:eng/provenance/records/contract-bindings-con-28-*.json (new immutable owned schema/validator source bindings)",
+    "Contracts:src/internal/ts/operator-client/src/shapes/gen/proto.ts (regenerate ONLY the existing exact Stage/Get inline-document/reference validator rules from owned generator; preserve every unrelated validator)"
    ],
    "start": [
     {
@@ -29132,7 +29212,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). New minimum producer from actual1MiB ConfigurationDocument versus262144 RPC budget. No public Kotlin/catalog surface or duplicate constraint shard. CON26 reviewed head/publication remains separate; coordinate next actual producer successor. Original Final selection remains171 unchanged. BlobRef contentHash/sizeBytes bind exact complete generated ConfigurationDocument protobuf binary object bytes (<=2097152), never inner canonicalJson alone or canonical-protobuf claims. Decoded documentHash separately binds canonicalJson<=1048576 with all existing field/shape limits; strict generated complete-envelope validation after bounded exact-size/hash read. Task-specific reference limit 1..2097152 leaves global BlobRef rules unchanged."
+   "notes": "2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). New minimum producer from actual1MiB ConfigurationDocument versus262144 RPC budget. No public Kotlin/catalog surface or duplicate constraint shard. CON26 reviewed head/publication remains separate; coordinate next actual producer successor. Original Final selection remains171 unchanged. BlobRef contentHash/sizeBytes bind exact complete generated ConfigurationDocument protobuf binary object bytes (<=2097152), never inner canonicalJson alone or canonical-protobuf claims. Decoded documentHash separately binds canonicalJson<=1048576 with all existing field/shape limits; strict generated complete-envelope validation after bounded exact-size/hash read. Task-specific reference limit 1..2097152 leaves global BlobRef rules unchanged.\n\n2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md). The actual typed TypeScript shape producer writes src/internal/ts/operator-client/src/shapes/gen/proto.ts, outside the older gen/** path. Admit only regeneration of the two owned operator inline/reference rules in that existing file; no broader generated ownership or schema change."
   },
   {
    "id": "CLOUD.75",
@@ -29342,6 +29422,65 @@
     "state": "not-started"
    },
    "notes": "2026-10-06 non-wire policy producer repair (docs/decisions/non-wire-metadata-policy-repair-2026-10-06.md). Minimum separate early producer because the delivered PLT45 follow-up launcher currently waits for NAT15 full acceptance while actual pooled AppContainer storage persists and diagnostic timeout may skip disposal cleanup. User explicitly authorizes minimum prerequisites and actual component tests now. Do not globally weaken claim or acceptance rules; PLT45/46/54 acceptance remains unchanged. Preserve bounded eight profiles and locks, actual production isolation and existing helper contracts. No new packages, versions, project, locks, signing, loader or whole OS/RID acceptance claim. Available actual OS APIs are tested as components; only unavailable dependencies/fault outcomes may be faked. Actual named SID-owned profile storage path is obtained through GetAppContainerFolderPath; DeleteAppContainerProfile alone does not prove removal because open handles can retain storage. Verify bounded expected profile storage removal/freshness fail-closed and test planted-storage reuse denial; never recursively delete an arbitrary/computed nonprofile path. Guaranteed teardown owns and attempts every resource despite diagnostic failure, but never releases/reuses a lease while the actual child is live or exit is unconfirmed. Close kill-on-close Job and verify termination before profile deletion; unconfirmed exit quarantines that bounded slot with an owned cleanup continuation/typed refusal until actual termination, rather than unsafe SID reuse or abandoned lifetime.\n\nGuarded production follow-up lifetime refinement: flush a bounded durable pending launch record under the canonical per-user/profile identity lock before CreateProcess; atomically assign the actual kill-on-close Job through JOB_LIST and flush PID plus actual creation time and verified AppContainerSID before Resume. Retain actual BCL Process/Job handles and use existing token/SID verification; confirmed original process exit is mandatory before profile deletion/reuse. Unknown, malformed, pending or prior-live same-boot state quarantines the bounded slot and never kills a prior PID. Named Job namespaces can disappear and reopen as a different empty job while an old child lives; reopened count0 is never exit proof. Optional actual QueryInformationJobObject BasicAccounting is supplemental only. Existing exact native imports suffice for the minimum implementation; no PID-only authority or invented namespace proof. Preserve guaranteed resource teardown and actual fresh-storage checks."
+  },
+  {
+   "id": "PLT.61",
+   "title": "Shared capability approval-effect binding producer",
+   "repo": "DesktopPlatform",
+   "lane": "platform",
+   "kind": "producer",
+   "size": "S",
+   "obligations": [
+    {
+     "ref": "WP-11.02",
+     "part": "minimum production prerequisite: readonly shared Gate effect binding for actual R2/perOperation approval preparation; original final-owner decision obligations remain"
+    }
+   ],
+   "outcome": "Expose a readonly production ComputeEffectSha256 binding primitive on CapabilityEnforcementGate using exactly its existing effect digest bytes, and use that same primitive in service and owner comparisons. This computes binding only and grants no permission, approval, risk, resource authority or execution ticket.",
+   "provides": [
+    "capability-approval-effect-binding"
+   ],
+   "writes": [
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/CapabilityEnforcement/CapabilityGate.cs (only expose actual readonly ComputeEffectSha256 and route existing private digest call sites through identical bytes; no decision/enforcement semantics change)",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/Tests/CapabilityApprovalBindingTests.cs (new actual digest bytes/included fields/exclusions/invalid inputs and real Gate matching approval tests)",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security/CapabilityEnforcement/README.md (readonly API/binding limitations only)",
+    "DesktopPlatform:eng/policy/architecture-evidence.json and architecture-contract-tests.json (only owned actual public method/source/test correspondence)",
+    "DesktopPlatform:eng/provenance/files.json (only actual new owned test/changed owned source inventory bindings)",
+    "DesktopPlatform:eng/policy/dependency-policy.json and dependency-reviews/plt-61-*.json (new immutable exact changed-input successors only if actual evaluated inputs change)",
+    "DesktopPlatform:eng/provenance/** (only actual owned immutable producer input/legal successors when existing bindings require them)"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "PLT.38",
+     "need": "actual existing production CapabilityEnforcementGate and Security decision pipeline",
+     "why": "Publish one exact shared producer rather than duplicate private digest algorithms in product code."
+    }
+   ],
+   "complete": [
+    {
+     "type": "integration",
+     "task": "PLT.59",
+     "need": "actual compatible managed Security/CapabilityEnforcement publication cohort",
+     "why": "Ordinary source/component work progresses independently; product consumption requires normal published compatible packages."
+    }
+   ],
+   "shared": [
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-package-inventory",
+     "mode": "append"
+    }
+   ],
+   "validation": "Actual existing digest byte vectors and real Gate approval matching; target product/device/installation/instance/epoch, command, arguments and preconditions alter the binding; invocationId/context/approvalId/leaseId remain excluded exactly as before. Null/mismatched capability/malformed identities refuse. Verify no mutation of caller protobuf objects and no changed service/owner decision behavior.",
+   "evidence": "Independent exact-head review, applicable component/security/AOT/package CI and normal exact producer publication; digest computation is never approval or deployed acceptance.",
+   "baseline": {
+    "state": "not-started"
+   },
+   "notes": "2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md).Actual CreateAnnotation is R2/perOperation. Product UI needs the exact same shared Gate effect binding to request a real ApprovalCoordinator decision; copied hashing or changing descriptor risk would break production authorization. Existing digest representation, target binding and exclusions remain byte-identical. Root assigns a source owner after this reviewed admission; existing frozen PLT59 head is not modified."
   }
  ],
  "adoptionSlices": [

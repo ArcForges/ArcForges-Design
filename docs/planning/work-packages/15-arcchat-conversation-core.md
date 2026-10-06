@@ -147,7 +147,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [AST.08](../delivery/lanes/assistant.md#task-ast-08) | [WP-15.07](15-arcchat-conversation-core.md#rule-wp-15.07) (full) | none |
 | [AST.09](../delivery/lanes/assistant.md#task-ast-09) | [WP-15.90](15-arcchat-conversation-core.md#rule-wp-15.90) (full) | none |
 
-**Consumers outside this package:** [AST.10](../delivery/lanes/assistant.md#task-ast-10), [AST.11](../delivery/lanes/assistant.md#task-ast-11), [AST.15](../delivery/lanes/assistant.md#task-ast-15), [AST.21](../delivery/lanes/assistant.md#task-ast-21), [AST.22](../delivery/lanes/assistant.md#task-ast-22).
+**Consumers outside this package:** [APP.03](../delivery/lanes/app-composition.md#task-app-03), [AST.10](../delivery/lanes/assistant.md#task-ast-10), [AST.11](../delivery/lanes/assistant.md#task-ast-11), [AST.15](../delivery/lanes/assistant.md#task-ast-15), [AST.21](../delivery/lanes/assistant.md#task-ast-21), [AST.22](../delivery/lanes/assistant.md#task-ast-22).
 
 <!-- delivery-graph:end -->
 
