@@ -16053,7 +16053,9 @@
     "Cloud:package.json (owned offline test-list additions)",
     "Cloud:docs/personal-access-tokens.md",
     "Cloud:worker/storage/plans.generated.ts (regenerate only)",
-    "Cloud:.dockerignore (actual owned Tokens/Abstractions Identity sources only)"
+    "Cloud:.dockerignore (actual owned Tokens/Abstractions Identity sources only)",
+    "Cloud:storage/plans/families.json (append exact task-owned token family)",
+    "Cloud:storage/plans/families.expanded.json (regenerate only)"
    ],
    "validation": "offline enumeration of eligible/denied methods from the generated manifest; cookie+bearer conflict, scope escalation and agent-substitution negative vectors",
    "evidence": "no missing/default PAT metadata, no generic token bypass",
@@ -16061,7 +16063,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: none exists"
    },
-   "notes": "Planning repair 2026-10-05: starts after COM.16 (the plan-execution port). Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one. The write scope above still names the nonexistent `src/Cloud/...` layout; its claimant binds it to the real layout.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Uses hash-only256-bit opaque bearer storage; no automatic mutation replay, human-delegated actor chain derived from persisted owner, no caller-asserted actor facts. Token issuance atomically validates owned workspace/user/session and consumes a proved exact-class/targetHash/session/epoch challenge no older than five minutes; maximum expiry365days. Unknown operation/scope/actor/boundary, mixed cookie/bearer or absent epoch authority fail closed. CLOUD.19/.21 own generated Contracts metadata projection, verified invocation provenance, current auth/recovery epoch and normal primary/entitlement/budget checks; PAT never shortcuts them. PAT actorKind remains the authored human actor, with token identifier in verified delegation/credential provenance; never invent a pat actor kind or trust client actor fields.",
+   "notes": "Planning repair 2026-10-05: starts after COM.16 (the plan-execution port). Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one. The write scope above still names the nonexistent `src/Cloud/...` layout; its claimant binds it to the real layout.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Uses hash-only256-bit opaque bearer storage; no automatic mutation replay, human-delegated actor chain derived from persisted owner, no caller-asserted actor facts. Token issuance atomically validates owned workspace/user/session and consumes a proved exact-class/targetHash/session/epoch challenge no older than five minutes; maximum expiry365days. Unknown operation/scope/actor/boundary, mixed cookie/bearer or absent epoch authority fail closed. CLOUD.19/.21 own generated Contracts metadata projection, verified invocation provenance, current auth/recovery epoch and normal primary/entitlement/budget checks; PAT never shortcuts them. PAT actorKind remains the authored human actor, with token identifier in verified delegation/credential provenance; never invent a pat actor kind or trust client actor fields. Verified publisher ownership is a catalog.submitVersion final-owner check owned by EXT.06/CLOUD.21; token issuance does not require a PackageCatalog producer or fabricate publisher permission. The token is only a scoped principal and never bypasses the real owner.",
    "shared": [
     {
      "resource": "RES-cloud-policy-inputs",
@@ -16073,6 +16075,10 @@
     },
     {
      "resource": "RES-cloud-host-composition",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-shared-transaction-families",
      "mode": "append"
     }
    ]
@@ -19358,9 +19364,10 @@
     "Cloud:src/ArcForges.Cloud.Modules.Abstractions/** (task-owned primitive production cross-owner ports, no duplicate wire schemas)",
     "Cloud:src/ArcForges.Cloud/Composition/** (append only real task-owned service/owner registration)",
     "Cloud:.dockerignore (task-owned source inclusion only)",
-    "Cloud:storage/migrations/** (new Commerce-prefixed additive migrations only; sequence allocated at merge)",
-    "Cloud:storage/physical/** (owned Commerce schema manifest only)",
-    "Cloud:src/ArcForges.Cloud.Modules.Commerce/** (only own purchase/inbox/ledger behavior, preserve Adapters/Catalogue owners)"
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Migrations/pending/** (new Commerce-prefixed additive migrations only; sequence allocated at merge)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Physical/manifest/commerce.json (owned Commerce schema manifest only)",
+    "Cloud:src/ArcForges.Cloud.Modules.Commerce/** (only own purchase/inbox/ledger behavior, preserve Adapters/Catalogue owners)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Physical/PhysicalSchema.g.cs (regenerate only)"
    ],
    "shared": [
     {
@@ -19449,9 +19456,10 @@
     "Cloud:src/ArcForges.Cloud.Modules.Abstractions/** (task-owned primitive production cross-owner ports, no duplicate wire schemas)",
     "Cloud:src/ArcForges.Cloud/Composition/** (append only real task-owned service/owner registration)",
     "Cloud:.dockerignore (task-owned source inclusion only)",
-    "Cloud:storage/migrations/** (new Commerce-prefixed additive migrations only; sequence allocated at merge)",
-    "Cloud:storage/physical/** (owned Commerce schema manifest only)",
-    "Cloud:src/ArcForges.Cloud.Modules.Commerce/** (only own purchase/inbox/ledger behavior, preserve Adapters/Catalogue owners)"
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Migrations/pending/** (new Commerce-prefixed additive migrations only; sequence allocated at merge)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Physical/manifest/commerce.json (owned Commerce schema manifest only)",
+    "Cloud:src/ArcForges.Cloud.Modules.Commerce/** (only own purchase/inbox/ledger behavior, preserve Adapters/Catalogue owners)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Physical/PhysicalSchema.g.cs (regenerate only)"
    ],
    "shared": [
     {
@@ -19768,9 +19776,10 @@
     "Cloud:src/ArcForges.Cloud.Modules.Abstractions/** (task-owned primitive production cross-owner ports, no duplicate wire schemas)",
     "Cloud:src/ArcForges.Cloud/Composition/** (append only real task-owned service/owner registration)",
     "Cloud:.dockerignore (task-owned source inclusion only)",
-    "Cloud:storage/migrations/** (new Commerce-prefixed additive migrations only; sequence allocated at merge)",
-    "Cloud:storage/physical/** (owned Commerce schema manifest only)",
-    "Cloud:src/ArcForges.Cloud.Modules.Commerce/** (only own purchase/inbox/ledger behavior, preserve Adapters/Catalogue owners)"
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Migrations/pending/** (new Commerce-prefixed additive migrations only; sequence allocated at merge)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Physical/manifest/commerce.json (owned Commerce schema manifest only)",
+    "Cloud:src/ArcForges.Cloud.Modules.Commerce/** (only own purchase/inbox/ledger behavior, preserve Adapters/Catalogue owners)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Physical/PhysicalSchema.g.cs (regenerate only)"
    ],
    "shared": [
     {
@@ -28420,7 +28429,7 @@
     "DesktopPlatform:eng/policy/** (actual owned project/API/closure/admission input successors)",
     "DesktopPlatform:eng/provenance/** (owned first-party/immutable input successors)",
     "DesktopPlatform:docs/security-managed-publication.md",
-    "DesktopPlatform:tests/tooling/test_stage_integration.py (freeze the deterministic snapshot test clock to its existing TODAY fixture; preserve all freshness/security gates)"
+    "DesktopPlatform:eng/stage_integration/test_stage_integration.py (freeze the deterministic snapshot test clock to its existing TODAY fixture; preserve all freshness/security gates)"
    ],
    "start": [
     {
