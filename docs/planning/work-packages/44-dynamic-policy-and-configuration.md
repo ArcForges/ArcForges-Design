@@ -86,9 +86,9 @@
 
 ### WP-44.01 — Schema-constrained configuration
 
-**What must be fully done.** Consume policy.body.v1 and configuration.v1 from annex 08; implement full exact-key/type/scope/limit/cross-reference validation and dry-run proposal/dual-approval/activation CAS.
+**What must be fully done.** Consume policy.body.v1 and configuration.v1 from annex 08; implement full exact-key/type/scope/limit/cross-reference validation and dry-run proposal/dual-approval/activation CAS. Dedicated configuration proposal/approval persistence belongs to Config, preserving generic Audit ownership and the exact published ConfigurationDocument schema. Implement signed distinct current subjects, exact realm/environment/parent/hash/revision/generation, <=15-minute expiry, durable command receipts and atomic activation/proposal consumption. Materialize the signed immutable catalogue.offer-materialization.v1 profile to the actual typed CatalogueCanonical projection, with stable persisted offer GUIDs and no missing-profile fallback or historical repricing ([decision](../../decisions/production-delivery-followup-2026-10-06.md)).
 
-**Testing requirements.** Unknown key/field/version, invalid commercial route, secret-in-body, conflicting rule priority, stale parent, mixed-replica version and rollback tests.
+**Testing requirements.** Unknown key/field/version, invalid commercial route, secret-in-body, conflicting rule priority, stale parent, mixed-replica version and rollback tests. Cover forged/expired assertions, same-subject or revoked-role approval, changed hash/profile/parent/generation, concurrent activation CAS, cancellation/unknown receipt retry, durable persistence and missing/mismatched catalogue profiles; affected host AOT composition consumes the actual published generated validator.
 
 **Completion gate.** No JSON payload with implementer-defined keys can activate.
 

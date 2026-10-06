@@ -112,7 +112,7 @@
 
 ### WP-42.03 — Provider event inbox
 
-**What must be fully done.** Persist-before-process; signature verification mandatory; idempotency by event type and identifier; asynchronous processing; the fixed eight-step verification chain; out-of-order handling by state; quarantine with alerting for unprocessable events; raw payload retention; and idempotent replay.
+**What must be fully done.** Persist-before-process; signature verification mandatory; idempotency by event type and identifier; asynchronous processing; the fixed eight-step verification chain; out-of-order handling by state; quarantine with alerting for unprocessable events; allowlisted lossless financial/business projection retention with original raw-byte digest/size and immutable verification receipt; and integrity-protected idempotent replay. Bounded raw bytes are ephemeral signature input only. No payment instruments, credentials or arbitrary provider fields may persist in quarantine/audit/export. Replay is not original-signature reverification; independently verified provider reconciliation stays separate ([decision](../../decisions/production-delivery-followup-2026-10-06.md)).
 
 **Testing requirements.** Duplicate, out-of-order, unsigned, unknown-product and replay tests; a backlog alert test; a convergence test replaying the inbox from a point in time.
 
