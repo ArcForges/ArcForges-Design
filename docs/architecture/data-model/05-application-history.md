@@ -44,6 +44,7 @@ CREATE TABLE assistant_message (
  id TEXT PRIMARY KEY, branch_id TEXT NOT NULL REFERENCES assistant_branch(id),
  ordinal INTEGER NOT NULL, role TEXT NOT NULL,
  body_proto BLOB NOT NULL, source_kind TEXT NOT NULL,
+ tool_call_id TEXT, tool_result_for TEXT,
  created_us INTEGER NOT NULL, UNIQUE(branch_id,ordinal)
 );
 CREATE TABLE assistant_draft (
@@ -60,7 +61,15 @@ CREATE TABLE assistant_turn (
  expected_revision INTEGER NOT NULL, execution_id TEXT UNIQUE,
  state TEXT NOT NULL, output_cursor TEXT, output_prefix BLOB,
  turn_proto BLOB, progress_proto BLOB, run_proto BLOB,
- terminal_hash TEXT, committed_message_id TEXT, revision INTEGER NOT NULL
+ owner_kind TEXT, owner_id TEXT, configuration_proto BLOB,
+ terminal_committed INTEGER NOT NULL DEFAULT 0 CHECK(terminal_committed IN (0,1)),
+ output_position_proto BLOB, output_offset TEXT,
+ terminal_hash TEXT, committed_message_id TEXT, revision INTEGER NOT NULL,
+ CHECK((owner_kind IS NULL AND owner_id IS NULL) OR
+       (owner_kind IS NOT NULL AND owner_kind IN ('chatTurn','task') AND owner_id IS NOT NULL)),
+ CHECK((output_position_proto IS NULL AND output_offset IS NULL) OR
+       (output_position_proto IS NOT NULL AND output_offset IS NOT NULL)),
+ UNIQUE(owner_kind,owner_id)
 );
 CREATE TABLE assistant_receipt (
  command_id TEXT PRIMARY KEY, request_hash TEXT NOT NULL,
@@ -136,7 +145,7 @@ CREATE TABLE assistant_journal (
  operation TEXT NOT NULL CHECK(operation IN (
   'history.create','history.queue','history.edit','history.trash','history.fork',
   'draft.save','draft.discard','turn.submit','turn.prefix','history.acknowledge',
-  'turn.complete','turn.facts','outbox.update','outbox.quarantine',
+  'turn.complete','turn.facts','outbox.update','outbox.quarantine','outbox.acknowledge',
   'history.import','catalog.put','catalog.remove')),
  semantic_sha256 TEXT NOT NULL CHECK(length(semantic_sha256)=64 AND semantic_sha256 NOT GLOB '*[^0-9a-f]*'),
  committed_us INTEGER NOT NULL CHECK(committed_us>=0),
@@ -178,12 +187,25 @@ assistant_journal is derived owner metadata and co-commits with its receipt, can
 
 assistant_message_fts and SQLite-generated shadows/sqlite_sequence are derived provider support, not another canonical schema. Index only generated committed MessageView text in current nondeleted local or acknowledged Cloud normal history. Never drafts, prefixes, pending proposals/configuration, temporary sessions or resource bytes. Trash/index changes co-commit; rebuild resolves committed canonical rows only. Search always joins current canonical conversation/message/branch identity and deletion state rather than trusting FTS alone. Metadata/journal/index schema and migration hashes remain explicitly sealed with the original model05 tables.
 
+
+### Genuine execution lineage and durable recovery
+
+HistoryTurn exposes optional actual owner kind/ID, immutable Configuration snapshots, IsSealed, Position and OutputOffset. owner_kind/owner_id remain jointly null until real ChatTurnView.TurnId, RunView.Owner or ExecutionProgress.Execution supplies the registered chatTurn/task owner; do not infer from submission CommandId. An indexed unique owner pair supports bounded root control lookup and every read/update compares complete generated facts. configuration_proto is the closed version1 frame of actual generated AgentProfile and SkillRecord snapshots selected at Submit, immutable thereafter, at most1000 skills/4MiB total with exact Profile.SkillIds set agreement; null only when genuinely no agent configuration was selected. Retain exact snapshots after outbox deletion, never refill from current/latest catalog heads.
+
+Only CompleteHistoryTurn sets terminal_committed/IsSealed. Prefix/fact changes refuse sealed turns. Failed/cancelled/no-answer outcomes can seal without inventing message/hash; an interrupted factual snapshot remains resumable only under genuine current owner facts. Stream completion does not prove owner success. output_position_proto is actual generated Events.StreamPosition; output_offset is canonical uint64 decimal TEXT (0 allowed), checked losslessly by the owner. They are jointly absent until real received facts, with cursor at most4096 UTF8 bytes and exact attempt/stream/generation/sequence/global offset. Never derive offsets from displayed answer text: toolStatus/usage share the stream. Partial UTF8 input does not advance the durable page cursor; resume/replay the prior complete checkpoint after interruption.
+
+assistant_message tool_call_id/tool_result_for are optional genuine UUID metadata from actual TranscriptMessage or the owned invocation relationship. ToolProposal.ProposalId and ToolResult.InvocationId are distinct and cannot imply pairing. Tool-containing rows without genuine complete association refuse compaction/window construction; plaintext has no fabricated IDs. CON32 appends archive HistoryMessage optional Id tags4/5, preserves original tags1/2/3 and plaintext compatibility, and requires the actual published consumer before full tool archive roundtrip.
+
+Existing outbox remains the sole pending authority. Its closed named request union includes actual TaskServiceCancelRequest/Response and RootKind task, with genuine TaskId owner binding, plus existing Chat/Agent/Execution/catalog controls. history.queue queues each closed named request without fake acknowledged canonical rows. AcknowledgeHistoryPending (outbox.acknowledge) binds the exact pending CommandId and expected request hash to a genuine closed generated response. In one owner transaction apply only actual returned project/profile/skill facts, record journal/receipt, and remove only that matching dispatch. Control acknowledgment never manufactures conversation/model success. Conversation acknowledgment and terminal completion stay separately typed.
+
+Each branch owns contiguous ordinals from0. Resolved history concatenates the oldest frozen selected ancestor prefix and child-owned rows, preserving original ordinals that may overlap across lineage. Cursor binds resolved position plus actual messageId, not a supposed global ordinal. ThroughOrdinal covers the selected branch's own prefix together with unchanged frozen inheritance. No global renumber or sort can rewrite authored history.
+
 ## 4. Required queries and atomic operations
 
 | Operation | Fixed behavior / SQL shape |
 |---|---|
 | List | `WHERE deleted_us IS NULL` and keyset `(updated_us < :t OR (updated_us=:t AND id>:id)) ORDER BY updated_us DESC,id LIMIT :limit`; first page omits cursor, default 50/max 100; scope/query-bound cursor. |
-| Read branch | resolve parent chain only to the frozen fork message; merge immutable prefix and branch-owned messages by ordinal; refuse corrupt/cyclic lineage with evidence preserved. |
+| Read branch | resolve parent chain only to the frozen fork message; concatenate oldest selected ancestor frozen prefix then each child branch's own messages, preserving owner-local ordinals; refuse corrupt/cyclic lineage with evidence preserved. |
 | Rename / trash | one `BEGIN IMMEDIATE` transaction: check expected revision and mode, update title/tombstone and revision, update index/journal, insert receipt; Cloud mode queues the typed proposal and keeps acknowledged vs pending versions separate. |
 | Submit | validate frozen context/egress and draft revision; transaction creates immutable user message/turn and outbox record, clears only the submitted window draft if its revision still matches. Network starts after commit. Offline drafts remain visible; no pre-admission “sent” claim. |
 | Retry send | reuse command ID/hash until receipt proves absent/same outcome; changed content is a new turn/branch, never overwrites a sent message. |
@@ -217,7 +239,7 @@ Finalization is idempotent by `(scope, importId, manifestHash)`, yields a new Cl
 
 Switching account/workspace/realm cancels streams, locks the old store/session, clears previews/clipboard grants and opens the new partition. Pending old-profile work remains sealed; it is never sent under the new account. Logout offers retain OS-private app data or explicitly remove local data after export opportunity; access to a retained signed-in partition requires that account to authenticate again. Anonymous history remains device-local; sign-in does not silently attach/upload it. Android process death restores persisted drafts/pending receipts; temporary sessions show expired/interrupted rather than resurrecting bodies. Web logout clears memory and allowed cached identifiers, not server history.
 
-The shared lifecycle profile handoff is two-phase: authorize/open/recover the candidate, fence new views/work, flush or refuse old dirty/local work, cancel/close/drain old views, lock the old store generation, then promote the new immutable store and recovered drafts. Captured old view/service/draft ports remain bound to their old partition and refuse revoked generation before commit, including abandoned timeout saves; they never redirect to the new store. Failure before promotion preserves old authority and unsaved durable state. Initial immutable HostServices identity remains unchanged.
+The shared lifecycle profile handoff is two-phase: authorize/open/recover the candidate, fence new views/work, flush or refuse old dirty/local work, cancel/close/drain old views, then atomically activate the new immutable history/draft generation and retire the old commit permission under synchronized gates; drain/dispose old physical storage afterward. Captured old view/service/draft ports remain bound to their old partition and refuse revoked generation before commit, including abandoned timeout saves; they never redirect to the new store. Failure before promotion preserves old authority and unsaved durable state. Initial immutable HostServices identity remains unchanged.
 
 Schema migration backs up/verifies the existing database, applies numbered transactional steps, checks integrity and publishes the new schema marker only after success. A version unable to read/write the resulting schema refuses downgrade and uses the updater interlock. Tests cover power loss at every local commit/promotion stage, disk full, missing objects, two windows, account switch, same product on two devices and different products on one device. SQLite tests are E2 mechanism evidence; packaged AOT/Room/Cloud consumers supply E3/E4 acceptance.
 
@@ -232,3 +254,24 @@ For a terminal local/temporary outcome, first verify the immutable encrypted obj
 Application presence has durable identity/trust/install records in D1. Frequent heartbeat timestamps/capability availability live in a scope-bound DO, expire after 30s and cannot authorize a tool by themselves. New registration obtains an epoch through guarded durable owner state; DO loss is rebuilt as offline until a current verified heartbeat. A stale instance cannot resurrect its predecessor's lease.
 
 History imports expire24h after Begin unless already committed. Finalize transitions staging→verifying→ready→committed; verification failure→failed, precommit Cancel→canceled, timeout→expired. Transition and epoch checks prevent a canceled/expired verifier from activating a manifest. All Chat list/get/search/sync readers filter the committed visibility pointer. Records staged in earlier batches cannot leak through an alternate read path.
+
+## Shared compaction integrity framing
+
+This closes an undefined ordinary production consistency predicate in model05/annex10, without adding a wire message. Current Cloud source has only compaction physical schema, no implemented source-hash producer; preserve that fact and require its later producer to use these same vectors.
+
+SourceHash is the existing published CanonicalSemanticHash (SHA256 over canonical semantic JSON) of:
+{"schemaVersion":"arcforges.assistant.compaction-source.v1","messages":[...]}
+Messages are the full frozen resolved prefix in resolved ancestry concatenation order, preserving every original owner-local uint64 ordinal (which can overlap between ancestor and child); no synthetic message IDs, branch IDs, changed role, partial tool-call/result pair, omitted protected content, or reordered parts. Each actual TranscriptMessage projection uses the exact known field names:
+message_id (lowercase dashed network-order UUID), ordinal (canonical unsigned decimal string), role (canonical enum integer decimal string), parts (ordered known MessagePart projection), optional tool_call_id, optional tool_result_for.
+MessagePart and nested bodies/origins/resources use the same explicit Contracts324 known-field projection as the current owner Core (AssistantPayloadProjection); all actual optional known presence and native uint64 arms are retained, unknown protobuf fields are inert and excluded from semantic identity.
+A message ID is unique in the prefix. Actual generated shape validation runs before projection. ToolProposal and ToolResult parts require genuine separately supplied ToolCallId/ToolResultFor metadata; distinct proposal/invocation IDs cannot be equated. Unknown role or invalid tool-pair/ordinal structure refuses before a summary is used.
+The prefix hash contains no branch identity or branch revision: those remain separate exact CompactionRecord bindings. An unaffected identical prefix may remain verifiable after a fork; changed message identity/content/ordinal invalidates it. ThroughOrdinal binds the selected branch own covered prefix; inherited frozen prefix remains unchanged and the actual branch-resolution transaction verifies the complete requested prefix, not a window missing earlier messages.
+Input is bounded to 2000 TranscriptMessage records, 16000 aggregate parts and 4MiB total canonical JSON. The published canonical semantic helper retains its own canonicalization bounds; refuse rather than silently truncate.
+SummaryHash is lower-case SHA256 of the exact strict UTF-8 bytes of CompactionRecord.Summary, without Unicode/newline/whitespace normalization. Refuse invalid UTF-16 surrogate input. Summary is bounded by actual generated contract shape plus <=262144 bytes UTF8. Source and summary hashes are distinct from mutable local prefix payload integrity and remote stream chunk/final hashes.
+The shared Core exposes AssistantCompactionIntegrity.ComputeSource(IReadOnlyList<TranscriptMessage>) and ComputeSummary(string). SQL resolves and verifies actual branch prefix/tool pairs in the committing transaction, compares both hashes and exact branch/through bindings, and does not accept an arbitrary well-shaped caller hash.
+Ordinary deterministic cross-language vectors cover UTF8/non-ASCII, known presence, field/order changes, unknown protobuf fields retained/inert, original ordinal>2^53, native uint64 maximum, edited/forked prefix, wrong summary hash, incomplete tool pair and protected overflow. These do not prove real Cloud/provider deployment or inferred model/tokenizer behavior.
+
+
+### Atomic profile activation fence
+
+After candidate recovery and prepared old-view/work drain, activate current session/history and lifecycle DraftStore together under their synchronized gates. Retire old commit permission at that same linearization point; drain/dispose the old physical store afterward. Do not irreversibly Dispose the old authority before a candidate commit that can still fail. Failed/cancelled activation leaves the old current authority unrevoked and preserves unsaved/durable data. Old captured ports keep their old immutable partition/generation and never redirect to the new store. A scoped handoff Commit callback/gate seam may synchronize real activation with lifecycle Dispose; it cannot waive ownership or generation checks. This precise activation ordering governs the earlier retire/lock/drain shorthand.
