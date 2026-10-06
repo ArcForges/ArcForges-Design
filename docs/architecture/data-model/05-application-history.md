@@ -4,7 +4,7 @@ Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-0
 
 ## 1. Partition and ownership
 
-Desktop path is `<OS private app-data>/ArcForges/<product>/<profileKey>/assistant/history.sqlite3`. `profileKey` is a stable opaque hash of realm/account/workspace (or a device-local anonymous profile ID), not an email/path supplied by a server. Files use the OS-user-only permissions and existing secure-storage policy. One application composition root owns its connections, writer queue, history service, Cloud channel and credentials. Different products neither open nor attach each other's databases. Windows of one application share committed history, not editor drafts. Product canonical stores stay separate and are linked by resource IDs/revisions, never cross-database FKs or transactions.
+Desktop path is derived only by `Path.Combine(options.DataRoot.GetProfileDirectory(partition), "assistant", "history.sqlite3")` using the shipped typed AssistantDataRoot. Its layout is `<platformDataRoot>/<product>/<installation N>/profiles/<profile N>/assistant/history.sqlite3`; platformDataRoot is already the trusted OS-private base and may contain ArcForges, so no second fixed ArcForges segment is appended. Profile GUID is identity only; a current owner profile authority explicitly binds DeviceLocal or Authenticated owner/realm/workspace scope. No account authority is inferred from the GUID and no email/path is supplied by a server. Files use the OS-user-only permissions and existing secure-storage policy. One application composition root owns its connections, writer queue, history service, Cloud channel and credentials. Different products neither open nor attach each other's databases. Windows of one application share committed history, not editor drafts. Product canonical stores stay separate and are linked by resource IDs/revisions, never cross-database FKs or transactions.
 
 Desktop defaults to `local`. Android own-chat defaults to `cloud` with a clear first-use explanation and can choose `local`; Web own-chat uses `cloud`, with memory-only temporary sessions and no offline canonical browser database. Cloud conversation scope is `(realm, account/workspace visibility, productId)`; companion-owned chats use productId=`companion`. A mobile view of a desktop Cloud conversation retains that desktop productId. Online presence never grants access to local-only history.
 
@@ -29,6 +29,7 @@ CREATE TABLE assistant_conversation (
  id TEXT PRIMARY KEY, product_id TEXT NOT NULL,
  mode TEXT NOT NULL CHECK(mode IN ('local','cloud')),
  title TEXT NOT NULL, revision INTEGER NOT NULL CHECK(revision>=1),
+ view_proto BLOB NOT NULL, local_revision INTEGER NOT NULL CHECK(local_revision>=1),
  cloud_id TEXT UNIQUE, updated_us INTEGER NOT NULL, deleted_us INTEGER,
  CHECK((mode='local' AND cloud_id IS NULL) OR (mode='cloud' AND cloud_id IS NOT NULL))
 );
@@ -46,15 +47,19 @@ CREATE TABLE assistant_message (
  created_us INTEGER NOT NULL, UNIQUE(branch_id,ordinal)
 );
 CREATE TABLE assistant_draft (
- window_id TEXT NOT NULL, conversation_id TEXT NOT NULL REFERENCES assistant_conversation(id),
- body_proto BLOB NOT NULL, revision INTEGER NOT NULL, updated_us INTEGER NOT NULL,
- PRIMARY KEY(window_id,conversation_id)
+ draft_id TEXT PRIMARY KEY, window_id TEXT NOT NULL,
+ conversation_id TEXT REFERENCES assistant_conversation(id),
+ body_proto BLOB NOT NULL, revision INTEGER NOT NULL CHECK(revision>=1), updated_us INTEGER NOT NULL,
+ UNIQUE(window_id,conversation_id)
 );
+CREATE UNIQUE INDEX assistant_draft_unbound_window
+ ON assistant_draft(window_id) WHERE conversation_id IS NULL;
 CREATE TABLE assistant_turn (
  command_id TEXT PRIMARY KEY, request_hash TEXT NOT NULL,
  conversation_id TEXT NOT NULL REFERENCES assistant_conversation(id),
  expected_revision INTEGER NOT NULL, execution_id TEXT UNIQUE,
  state TEXT NOT NULL, output_cursor TEXT, output_prefix BLOB,
+ turn_proto BLOB, progress_proto BLOB, run_proto BLOB,
  terminal_hash TEXT, committed_message_id TEXT, revision INTEGER NOT NULL
 );
 CREATE TABLE assistant_receipt (
@@ -113,7 +118,18 @@ CREATE TABLE assistant_compaction (
 
 ```
 
-All IDs, role/source/turn state and serialized message parts validate against the existing typed registry. `body_proto` is an explicit versioned generated message, never arbitrary JSON: MessageView/MessageDraft for message/draft, ChatProjectRecord for project, AgentProfile/SkillRecord for profile/skill, TaskSnapshot for task projection, CompactionRecord for summary and ContextRef for target_proto. Context owner_kind/id is checked against the matching conversation/project in the same transaction; no orphan or foreign-product context can commit. Profile/skill version rows are immutable after use; only active-head flags change. Attachments never inline file bytes into messages. The store metadata records the one allowed productId and the open path is validated before any query; products cannot override it. Branch parent/fork must belong to the same conversation; validate this in the transaction. Committed messages are immutable: editing creates a branch and new message. Draft and streaming prefix are mutable, separately typed, and never masquerade as a committed message. Attachments/references, projects/profiles/skills, compaction and task projections use the tables above. Common product journals/resources remain model 02 §1; no cross-database FK is assumed. Assistant-owned FTS5 contains only non-deleted committed normal history in this partition; temporary content is never indexed.
+All IDs, role/source/turn state and serialized message parts validate against the existing typed registry. `body_proto` is an explicit versioned generated message, never arbitrary JSON: MessageView/MessageDraft for message/draft, ChatProjectRecord for project, AgentProfile/SkillRecord for profile/skill, TaskSnapshot for task projection, CompactionRecord for summary and ContextRef for target_proto. Context owner_kind/id is checked against the matching conversation/project in the same transaction; no orphan or foreign-product context can commit. Profile/skill version bodies are immutable from insertion; exact-byte replay is allowed, changed content requires a new version, and only active-head flags change. Attachments never inline file bytes into messages. The store metadata records the one allowed productId and the open path is validated before any query; products cannot override it. Branch parent/fork must belong to the same conversation; validate this in the transaction. Committed messages are immutable: editing creates a branch and new message. Draft and streaming prefix are mutable, separately typed, and never masquerade as a committed message. Attachments/references, projects/profiles/skills, compaction and task projections use the tables above. Common product journals/resources remain model 02 §1; no cross-database FK is assumed. Assistant-owned FTS5 contains only non-deleted committed normal history in this partition; temporary content is never indexed.
+
+
+### 2026-10-06 production payload and draft identity amendment
+
+Stable draft_id is the shipped APP07 AssistantDraftId authority: recovery, compare-and-swap and discard address it independently of conversation. An unattached unsent editor has null conversation_id and one unbound draft per window; never manufacture a hidden canonical conversation. Draft identity survives authorized window remapping. Writes compare the exact expected revision and persist expected+1.
+
+view_proto is the complete versioned generated ConversationView; id/product/mode/title/acknowledged revision and other duplicated scalar facts agree with it. local_revision fences local stale windows/pending work and remains distinct from the acknowledged View.Revision. Cloud pending proposals never overwrite acknowledged canonical rows or view payloads: existing assistant_outbox is their sole authority and pending UI projection is explicit. Local mode uses the authored checked signed64 revision.
+
+turn_proto/progress_proto/run_proto preserve actual generated ChatTurnView, Events.ExecutionProgress and RunView, with null meaning no such fact has been received. Validate duplicated command/conversation/revision/state/execution identities. Never fabricate remote views, attempts, streams, success or completion. output_prefix remains a separately typed mutable MessageDraft; contiguous cursor/hash validation and one immutable terminal message remain required. Existing outbox kinds use closed versioned actual generated named Chat requests or ExecutionServiceStartTransientTurnRequest, retaining exact RequestMeta command/precondition/application/recovery scope; generic Sync/ChangeProposal client writes are not substitutes for these authored owner APIs.
+
+AST01 produces one real reusable Core session factory and the complete physical store, including migrations, actual typed history/turn/draft services, memory-only temporary sessions, and the actual supplied authenticated generated-call-invoker backend. Complete component behavior and contracts advance independently of unavailable remote system acceptance. Numbered initial/pending migrations are allocated by the integration owner, never by rewriting a merged migration.
 
 ## 4. Required queries and atomic operations
 
@@ -153,6 +169,8 @@ Finalization is idempotent by `(scope, importId, manifestHash)`, yields a new Cl
 ## 6. Profile switch, crash and upgrade
 
 Switching account/workspace/realm cancels streams, locks the old store/session, clears previews/clipboard grants and opens the new partition. Pending old-profile work remains sealed; it is never sent under the new account. Logout offers retain OS-private app data or explicitly remove local data after export opportunity; access to a retained signed-in partition requires that account to authenticate again. Anonymous history remains device-local; sign-in does not silently attach/upload it. Android process death restores persisted drafts/pending receipts; temporary sessions show expired/interrupted rather than resurrecting bodies. Web logout clears memory and allowed cached identifiers, not server history.
+
+The shared lifecycle profile handoff is two-phase: authorize/open/recover the candidate, fence new views/work, flush or refuse old dirty/local work, cancel/close/drain old views, lock the old store generation, then promote the new immutable store and recovered drafts. Captured old view/service/draft ports remain bound to their old partition and refuse revoked generation before commit, including abandoned timeout saves; they never redirect to the new store. Failure before promotion preserves old authority and unsaved durable state. Initial immutable HostServices identity remains unchanged.
 
 Schema migration backs up/verifies the existing database, applies numbered transactional steps, checks integrity and publishes the new schema marker only after success. A version unable to read/write the resulting schema refuses downgrade and uses the updater interlock. Tests cover power loss at every local commit/promotion stage, disk full, missing objects, two windows, account switch, same product on two devices and different products on one device. SQLite tests are E2 mechanism evidence; packaged AOT/Room/Cloud consumers supply E3/E4 acceptance.
 

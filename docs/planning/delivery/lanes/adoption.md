@@ -224,7 +224,7 @@ Each slice classifies the tasks of one repository and lane against the frozen ba
 | <a id="task-adopt-02-foundation"></a>ADOPT.02.foundation | DesktopPlatform | [Foundation values](foundation.md) | 7 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-governance"></a>ADOPT.02.governance | DesktopPlatform | [Family governance and policy tests](governance.md) | 11 | [GOV.01](governance.md#task-gov-01), [GOV.02](governance.md#task-gov-02), [GOV.03](governance.md#task-gov-03) | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-native"></a>ADOPT.02.native | DesktopPlatform | [Native producers and probes](native.md) | 14 | none | [ADOPT.02](#task-adopt-02) |
-| <a id="task-adopt-02-platform"></a>ADOPT.02.platform | DesktopPlatform | [Desktop platform mechanisms](platform.md) | 58 | none | [ADOPT.02](#task-adopt-02) |
+| <a id="task-adopt-02-platform"></a>ADOPT.02.platform | DesktopPlatform | [Desktop platform mechanisms](platform.md) | 59 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-policy"></a>ADOPT.02.policy | DesktopPlatform | [Dynamic policy and configuration](policy.md) | 1 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-release"></a>ADOPT.02.release | DesktopPlatform | [Release readiness and family release](release.md) | 2 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-runtime-proofs"></a>ADOPT.02.runtime-proofs | DesktopPlatform | [Runtime proofs](runtime-proofs.md) | 4 | none | [ADOPT.02](#task-adopt-02) |
