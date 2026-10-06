@@ -1,0 +1,29 @@
+# Closed non-wire operation metadata policy repair, 2026-10-06
+
+Status: Accepted minimum producer decision under the latest user authority, subject to independent exact-head paired review before integration.
+
+Actual authoritative base is Design e4ec7c979a1af7135999094672d02a5eb55b2472 and Plan7972e1e84466b67285e6b07702ac2a4d68c257a7. Preserve every existing task baseline, closed ledger, original171 Final selection and immutable producer history. Final remains read-only with SHA256 0F9AA73CDB1A604892CCC6A1B125ECEDA6E7A4679BF7484B326670349E447879.
+
+## Observed failure and exact authority
+
+CON26 Security run37510528428 job112430178460 fails ValidatePolicyResults with three AT12 diagnostics for PublicOperationPolicy, PublicOperationCatalog and EventOperationCatalog. Actual shared Build.Policy94.1 classifies every public Contracts class as a wire type. Other actual source/history/build/naming/dependency and four CodeQL checks passed at the diagnosed head. The [AT12 obligation](../architecture/01-solution-and-project-layout.md#rule-at-12) requires owned generated wire types and serializer/descriptor agreement; immutable authorization metadata is not a transport DTO. This repair implements that distinction in the shared engine instead of decorating metadata as generated wire or disabling a gate.
+
+## Real producer and strict consumer
+
+New GOV24 is a minimum source producer over the actual accepted GOV06 shared engine, not inherited completion. Add an optional closed binding: exact qualified symbol, owning project, owned source path, normalized source SHA256 and kind OperationAuthorizationPolicy or OperationAuthorizationCatalog. SHA normalization is exact UTF8 with LF newline normalization and removal of an optional leading BOM only; preserve all other source content. Resolve and validate the actual semantic symbol and closed immutable scalar-policy/static-read-only-catalog shape. Reject missing/wrong/foreign/duplicate/ambiguous bindings, mutable or arbitrary DTO shapes, serializer/generated-wire or RPC/transport payload use and every unknown kind. No wildcard, namespace-wide exclusion or blanket hash/path exception is allowed. Absence preserves existing behavior; actual wire/generated descriptor/interface checks remain mandatory.
+
+The producer owns only PolicyModels/PolicyEngine, a focused internal NonWireMetadataPolicy helper, real engine positive/negative tests and its README. Append only actual new helper/test source identities to firstParty provenance. No package/project/third-party/framework/native or GOV23 Python closure change is needed; immutable source/admission history is preserved. Publish through normal canonical Build.Policy automation after independent exact-head review and all applicable CI.
+
+CON26 consumes the actual published producer with one exact central package pin, affected private architecture-host lock, real normalized source/kind bindings for exactly its three metadata types, complete focused host and dependency-admission negatives, and immutable owned input/provenance successors. Metadata generation/core work can continue; the completion integration requires GOV24 and full retained CI/publication. No copied schema, fake generated marker, relaxed host gate, unrelated package version or success stub is authorized. Contracts integration serializes this successor with other producers; the already reviewed source is explicitly extended and reviewed again at its final head.
+
+## Delivery distinction
+
+This is an implementation and current release-gate repair. Source/component tests, actual immutable producer consumption, review, CI and publication are required now. It does not prove deployment, browser/OS isolation or whole commercial end-to-end acceptance. Separate semantic-profile and runtime-preparation producer repairs continue independently and are not silently added to this narrow pair.
+
+## Separate early helper repair
+
+PLT60 is a separate minimum producer for two verified implementation defects and a precise Linux syscall policy: pooled Windows AppContainer profiles can retain mutable storage between uses, Windows diagnostic timeout/fault/cancellation can skip resource disposal, and tgkill filtering must bind the helper's complete actual PID, including the high argument word. The historical delivered PLT45 completion follow-up launcher waits for NAT15 full acceptance; that unrelated acceptance gate must not prevent ordinary implementation or actual component tests now. The user's latest instruction explicitly admits the prerequisite. Do not weaken global launcher/acceptance policy or rewrite completed PLT45 records.
+
+Start from actual delivered PLT45 helper and accepted PLT57 audit/lifecycle artifacts. Security owns the exact pool/launcher/native binding, bounded guaranteed resource teardown helper if needed, self-PID BPF enforcement and focused real component tests. Preserve eight profiles/locks, every unrelated native binding, all old BPF rules, helper contracts and production isolation. Only exact DeleteAppContainerProfile/GetAppContainerFolderPath inventory rows and actual new firstParty source/test paths are supporting appends. No package/version/project/lock/signing/loader expansion is authorized. Full PLT45/46/54 OS/native parser/product acceptance stays separately owned. Mocks/fakes cover unavailable dependencies or explicit fault injection only; actual Windows evidence and Linux interpreter evidence must be described precisely, never as proof of unrun OS isolation or six-RID acceptance.
+
+Fresh-profile isolation uses the actual named SID-owned GetAppContainerFolderPath result and fail-closed bounded removal/freshness checks. DeleteAppContainerProfile alone can leave storage when handles remain, so a successful call alone is not isolation evidence. Actual planted-storage reuse tests are required; no recursive deletion outside the exact verified named profile is authorized.
