@@ -50,6 +50,8 @@ GOV24 actual Build.Policy packaging already includes Architecture/*.cs and consu
 
 PLT59 actual Secrets csproj activation changes its normalized source hash to 7b3577f9fc163d52e3c5a433976220c5231f35c97cdadd195cebf932e3ebae89. Admit only three exact observed hash-line patterns for current policy four/six-space and immutable receipt six-space forms, retaining all old exact rule/path AND boundaries; refresh the exact dependency unit expectation with hostile negatives. No hash wildcard, global scanner skip or historical receipt rewrite.
 
+The C7 owned wrangler fragment explicitly includes CAPACITY_PACER plus capacity-pacer-v1 Durable Object class metadata in production/proof, preserving existing class migrations/routes/data, default-disabled capacity and workers.dev=false; no D1 schema or deployment is inferred. PLT60 actual deterministic per-user/profile named Job and atomic JOB_LIST assignment retain truthful lifetime across parent crash. Add only QueryInformationJobObject BasicAccounting ActiveProcesses with exact native inventory; profile delete/reuse requires confirmed zero, otherwise bounded slot quarantine/refusal. A PID sidecar never substitutes for actual kernel lifetime.
+
 ## Review and delivery
 
 Run the full paired generate/check against exact current merged roots, independently review the complete source/generated delta, then let the integration owner fence merges. Preserve current ledgers and Final bytehash. Source owners use the repaired scope only after actual merges. Component testing uses real core/storage components; fakes represent genuinely unavailable external dependencies only. Deployment, release signing, OS isolation and whole-system acceptance remain precise separate evidence.
