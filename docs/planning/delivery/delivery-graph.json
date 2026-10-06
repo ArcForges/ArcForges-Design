@@ -8996,7 +8996,8 @@
     "DesktopPlatform:eng/policy/dependency-reviews/plt-57-*.json (new immutable successors only)",
     "DesktopPlatform:eng/policy/reconciliation/** (changed owned project inputs only)",
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Capabilities/InvocationPipeline.cs (validated binding RestoreResult factory, share current schema/value/budget/version checks; no owner execution or new authority)",
-    "DesktopPlatform:src/BuildingBlocks/ArcForges.Capabilities/Tests/** (focused durable result restoration/validation/tamper negatives)"
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Capabilities/Tests/** (focused durable result restoration/validation/tamper negatives)",
+    "DesktopPlatform:eng/policy/dependency-policy.json (refresh exact changed owned Audit project/lock and architecture-contract-test input hashes with unchanged dependency closure; mirror in new immutable PLT.57 review successor)"
    ],
    "shared": [
     {
@@ -28560,7 +28561,8 @@
     "Cloud:eng/policy/** (exact owned input/admission successors)",
     "Cloud:eng/provenance/** (owned input successors)",
     "Cloud:docs/commerce-egress.md",
-    "Cloud:.dockerignore (append only exact existing task-owned PublicApi/Infrastructure host/provider source-directory and C# inclusion rules; preserve every unrelated rule and bin/obj exclusion)"
+    "Cloud:.dockerignore (append only exact existing task-owned PublicApi/Infrastructure host/provider source-directory and C# inclusion rules; preserve every unrelated rule and bin/obj exclusion)",
+    "Cloud:worker/index.ts (vendor-neutral restricted outbound registration/import/config only; preserve routes, class identities, global Internet disabled and existing bindings)"
    ],
    "start": [
     {
