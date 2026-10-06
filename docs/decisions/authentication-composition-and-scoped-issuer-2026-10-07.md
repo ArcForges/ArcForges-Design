@@ -17,3 +17,16 @@ The already compiled common exception/mapping checkpoint270c718 and its31 precis
 C13 current-session logout replaces only unimplemented candidates with exactly logout-current-empty-native, logout-current-present-native, logout-current-empty-browser and logout-current-present-browser. Identity revokes only current Session; required Device/Workspace current actor and75 privileged recovery remain. Actual Notification reread selects exact current Device+Installation empty/present registration guard; present binds actual registration ID/revision/stored generation. Notification records invalidate pending/sending protected work and advance lease fence, then remove ALL exact target registration rows including old generation. Completed/providerAccepted diagnostics remain. Fixed guard/lock/platform tail/release ordering is unchanged. No Device.SignOut substitute, fabricated rev0 row, FCM send claim or foreign SQL.
 
 Other-session/installations bulk cleanup remains a genuine bounded cohort/atomic producer obligation; these four current-install variants cannot claim it. C78 profiles use their four actual IDs without widening the native/browser expiry columns. C13 supporting Notification project scope adds only exact test IVT; factual lazy protection/rotation/redaction documentation is explicit.
+
+## Actual deletion grace due
+
+C79 cancellation requires persisted grace_ends_at strictly greater than actual final expiry clock; beginning/completing purge requires the opposite due fact. Add only the closed DeletionGraceDue counterpart for account-security begin-deletion-purge and complete-deletion-purge, role deletion-current, physical identity_account_deletion.grace_ends_at. Due is grace_ends_at <= the actual conservative SQLite UTC millisecond-floor microseconds:
+
+```sql
+CAST(strftime('%s','now') AS INTEGER) * 1000000
++ CAST(substr(strftime('%f','now'),4,3) AS INTEGER) * 1000
+```
+
+Malformed/NULL clock or deadline refuses. Captured/caller time is not due proof; never MAX it into the floor or manufacture a LongMax expiry. Due cannot combine with fresh/expiry on the same role and cannot admit generic columns/roles/plans. Existing expiry remains strictly > MAX(captured lower bound, actual SQL ceiling), and old FRESH stays unchanged. Root78 owns real compiler/metadata/guard and actual migrated SQLite delayed-batch, submillisecond boundary and complete rollback tests. C79 prepares genuine own current state/revision/deadline contribution; C17 complete purge still needs actual composed effects/evidence, not provider-success invention.
+
+The bounded Workspace-owned OperatorContext reader supplies current realm, owner, state and revision through its own named plan/registration and immutable typed port. Support resolves case accessibility through these genuine facts; no unbound context interface, foreign SQL, new table or caller-asserted workspace authority is admitted.
