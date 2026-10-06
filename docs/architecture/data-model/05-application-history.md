@@ -116,6 +116,44 @@ CREATE TABLE assistant_compaction (
  created_us INTEGER NOT NULL, UNIQUE(branch_id,through_ordinal,source_hash,policy_version)
 );
 
+-- Derived assistant-owned metadata, semantic journal and committed-history index.
+CREATE TABLE assistant_store_meta (
+ singleton INTEGER PRIMARY KEY CHECK(singleton=1),
+ database_id TEXT NOT NULL UNIQUE CHECK(length(database_id)=32 AND database_id NOT GLOB '*[^0-9a-f]*'),
+ product_id TEXT NOT NULL CHECK(product_id IN ('arcscope','companion')),
+ installation_id TEXT NOT NULL CHECK(length(installation_id)=32 AND installation_id NOT GLOB '*[^0-9a-f]*'),
+ profile_id TEXT NOT NULL CHECK(length(profile_id)=32 AND profile_id NOT GLOB '*[^0-9a-f]*'),
+ profile_kind TEXT NOT NULL CHECK(profile_kind IN ('deviceLocal','authenticated')),
+ principal_binding TEXT NOT NULL CHECK(length(principal_binding)=64 AND principal_binding NOT GLOB '*[^0-9a-f]*'),
+ schema_version INTEGER NOT NULL CHECK(schema_version>=0 AND schema_version<=4294967295),
+ migration_hash TEXT NOT NULL CHECK(length(migration_hash)=64 AND migration_hash NOT GLOB '*[^0-9a-f]*'),
+ manifest_hash TEXT NOT NULL CHECK(length(manifest_hash)=64 AND manifest_hash NOT GLOB '*[^0-9a-f]*')
+);
+
+CREATE TABLE assistant_journal (
+ sequence INTEGER PRIMARY KEY AUTOINCREMENT CHECK(sequence>=1),
+ command_id TEXT NOT NULL UNIQUE REFERENCES assistant_receipt(command_id) DEFERRABLE INITIALLY DEFERRED,
+ operation TEXT NOT NULL CHECK(operation IN (
+  'history.create','history.queue','history.edit','history.trash','history.fork',
+  'draft.save','draft.discard','turn.submit','turn.prefix','history.acknowledge',
+  'turn.complete','turn.facts','outbox.update','outbox.quarantine',
+  'history.import','catalog.put','catalog.remove')),
+ semantic_sha256 TEXT NOT NULL CHECK(length(semantic_sha256)=64 AND semantic_sha256 NOT GLOB '*[^0-9a-f]*'),
+ committed_us INTEGER NOT NULL CHECK(committed_us>=0),
+ profile_generation TEXT NOT NULL CHECK(length(profile_generation) BETWEEN 1 AND 20
+  AND profile_generation NOT GLOB '*[^0-9]*' AND substr(profile_generation,1,1) BETWEEN '1' AND '9'),
+ principal_binding TEXT NOT NULL CHECK(length(principal_binding)=64 AND principal_binding NOT GLOB '*[^0-9a-f]*')
+);
+CREATE INDEX assistant_journal_command ON assistant_journal(command_id,sequence);
+
+CREATE VIRTUAL TABLE assistant_message_fts USING fts5(
+ message_id UNINDEXED,
+ conversation_id UNINDEXED,
+ branch_id UNINDEXED,
+ committed_text,
+ tokenize='unicode61 remove_diacritics 2'
+);
+
 ```
 
 All IDs, role/source/turn state and serialized message parts validate against the existing typed registry. `body_proto` is an explicit versioned generated message, never arbitrary JSON: MessageView/MessageDraft for message/draft, ChatProjectRecord for project, AgentProfile/SkillRecord for profile/skill, TaskSnapshot for task projection, CompactionRecord for summary and ContextRef for target_proto. Context owner_kind/id is checked against the matching conversation/project in the same transaction; no orphan or foreign-product context can commit. Profile/skill version bodies are immutable from insertion; exact-byte replay is allowed, changed content requires a new version, and only active-head flags change. Attachments never inline file bytes into messages. The store metadata records the one allowed productId and the open path is validated before any query; products cannot override it. Branch parent/fork must belong to the same conversation; validate this in the transaction. Committed messages are immutable: editing creates a branch and new message. Draft and streaming prefix are mutable, separately typed, and never masquerade as a committed message. Attachments/references, projects/profiles/skills, compaction and task projections use the tables above. Common product journals/resources remain model 02 §1; no cross-database FK is assumed. Assistant-owned FTS5 contains only non-deleted committed normal history in this partition; temporary content is never indexed.
@@ -130,6 +168,15 @@ view_proto is the complete versioned generated ConversationView; id/product/mode
 turn_proto/progress_proto/run_proto preserve actual generated ChatTurnView, Events.ExecutionProgress and RunView, with null meaning no such fact has been received. Validate duplicated command/conversation/revision/state/execution identities. Never fabricate remote views, attempts, streams, success or completion. output_prefix remains a separately typed mutable MessageDraft; contiguous cursor/hash validation and one immutable terminal message remain required. Existing outbox kinds use closed versioned actual generated named Chat requests or ExecutionServiceStartTransientTurnRequest, retaining exact RequestMeta command/precondition/application/recovery scope; generic Sync/ChangeProposal client writes are not substitutes for these authored owner APIs.
 
 AST01 produces one real reusable Core session factory and the complete physical store, including migrations, actual typed history/turn/draft services, memory-only temporary sessions, and the actual supplied authenticated generated-call-invoker backend. Complete component behavior and contracts advance independently of unavailable remote system acceptance. Numbered initial/pending migrations are allocated by the integration owner, never by rewriting a merged migration.
+
+
+### Derived identity, semantic journal and index support
+
+assistant_store_meta binds the actual product/installation/profile and deviceLocal/authenticated kind plus immutable principal_binding before any domain query on reopen. principal_binding is the lowercase SHA256 of the trusted profile authority's canonical versioned actual principal snapshot; its profile/realm/principal/type fields are defined by the typed owner and complete bytes are compared through that authority. It is a binding digest, never authentication or a permission grant, and a partition GUID alone cannot authorize reopening. DeviceLocal never fabricates a Cloud UserId. Only supported schema/migration/manifest identity and integrity publish a successful service; schema0 is migration-only. Unknown schema/downgrade preserves database/sidecars as evidence and refuses writes.
+
+assistant_journal is derived owner metadata and co-commits with its receipt, canonical/outbox/index effects. The operation set above is closed to the actual Core command union. Same command and complete semantic hash returns the original receipt without another effect or journal row; changed hash refuses. Receipt linkage/hash inconsistency is corruption. Receipt remains the sole immutable replay-result body; no duplicate replay or pending authority is introduced. profile_generation is canonical positive uint64 decimal TEXT, fully checked in the owner rather than truncated to SQLite signed64. history.queue commits an actual generated Cloud create request in existing outbox without inventing an acknowledged conversation/branch. Failed/cancelled/interrupted terminal facts may lack an actual terminal MessageView; successful completion requires one.
+
+assistant_message_fts and SQLite-generated shadows/sqlite_sequence are derived provider support, not another canonical schema. Index only generated committed MessageView text in current nondeleted local or acknowledged Cloud normal history. Never drafts, prefixes, pending proposals/configuration, temporary sessions or resource bytes. Trash/index changes co-commit; rebuild resolves committed canonical rows only. Search always joins current canonical conversation/message/branch identity and deletion state rather than trusting FTS alone. Metadata/journal/index schema and migration hashes remain explicitly sealed with the original model05 tables.
 
 ## 4. Required queries and atomic operations
 
