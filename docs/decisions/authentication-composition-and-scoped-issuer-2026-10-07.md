@@ -20,7 +20,7 @@ Other-session/installations bulk cleanup remains a genuine bounded cohort/atomic
 
 ## Actual deletion grace due
 
-C79 cancellation requires persisted grace_ends_at strictly greater than actual final expiry clock; beginning/completing purge requires the opposite due fact. Add only the closed DeletionGraceDue counterpart for account-security begin-deletion-purge and complete-deletion-purge, role deletion-current, physical identity_account_deletion.grace_ends_at. Due is grace_ends_at <= the actual conservative SQLite UTC millisecond-floor microseconds:
+C79 cancellation requires persisted grace_ends_at strictly greater than actual final expiry clock; beginning/completing purge requires the opposite due fact. Add only the closed DeletionGraceDue counterpart for account-security begin-deletion-purge role deletion-due and complete-deletion-purge role deletion-purging, physical identity_account_deletion.grace_ends_at. Due is grace_ends_at <= the actual conservative SQLite UTC millisecond-floor microseconds:
 
 ```sql
 CAST(strftime('%s','now') AS INTEGER) * 1000000
