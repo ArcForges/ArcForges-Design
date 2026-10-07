@@ -247,6 +247,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [NAT.28](../delivery/lanes/native.md#task-nat-28) | [WP-13.16](13-high-risk-technical-probes.md#rule-wp-13.16) (full) | none |
 | [NAT.30](../delivery/lanes/native.md#task-nat-30) | [WP-13.90](13-high-risk-technical-probes.md#rule-wp-13.90) (full) | [GOV.17](../delivery/lanes/governance.md#task-gov-17) (artifact) |
 | [PLT.54](../delivery/lanes/platform.md#task-plt-54) | [WP-13.13](13-high-risk-technical-probes.md#rule-wp-13.13) (production parser composition and its own containment evidence) | [PLT.45](../delivery/lanes/platform.md#task-plt-45) (artifact) |
+| [PLT.63](../delivery/lanes/platform.md#task-plt-63) | [WP-13.15](13-high-risk-technical-probes.md#rule-wp-13.15) (minimum Mac protected-install/signing-transform integration prerequisite only; actual all-RID signed Runtime publication remains NAT25) | [PLT.45](../delivery/lanes/platform.md#task-plt-45) (artifact), [PLT.09](../delivery/lanes/platform.md#task-plt-09) (artifact), [PLT.10](../delivery/lanes/platform.md#task-plt-10) (artifact), [PLT.15](../delivery/lanes/platform.md#task-plt-15) (artifact) |
 
 **Consumers outside this package:** [APP.03](../delivery/lanes/app-composition.md#task-app-03), [PLT.45](../delivery/lanes/platform.md#task-plt-45), [PLT.46](../delivery/lanes/platform.md#task-plt-46), [SCOPE.04](../delivery/lanes/arcscope.md#task-scope-04), [SCOPE.11](../delivery/lanes/arcscope.md#task-scope-11).
 
