@@ -405,3 +405,7 @@ These are selected design mechanisms, with real AOT/authentication proof in WP06
 ## Operator session rotation and current assertion authority
 
 [Operator session custody and atomic completion](../decisions/operator-session-custody-and-atomic-completion-2026-10-07.md) defines real current sidecar evidence/CSRF/origin bindings, old-session revoke/new-session issue at step-up, independent configured private signing/public trust and exact current directory/context reopening. A short signed internal assertion is request binding, not historical role permission or a customer bearer. Missing genuine policy, incident context or provider assurance returns typed refusal/unavailability; configured component fixtures are not live tenant evidence.
+
+## Atomic anonymous issuance admission (2026-10-07)
+
+[docs/decisions/durable-anonymous-authentication-admission-2026-10-07.md](../decisions/durable-anonymous-authentication-admission-2026-10-07.md) supplies real immutable singleton policy and per-action global/source/account buckets before actual authentication/recovery issuance. Accountless discovery selects an explicit two-axis plan, never a filler subject; malformed hints cannot select it. Prepared opaque contributions require real current owners, final statement clock and atomic issued-flow effects. Unknown writes reconcile original command/flow; no standalone charge, approximate/local limiter or interface success is permission.
