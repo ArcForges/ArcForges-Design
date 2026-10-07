@@ -32,3 +32,7 @@ Malformed/NULL clock or deadline refuses. Captured/caller time is not due proof;
 The bounded Workspace-owned OperatorContext reader supplies current realm, owner, state and revision through its own named plan/registration and immutable typed port. Support resolves case accessibility through these genuine facts; no unbound context interface, foreign SQL, new table or caller-asserted workspace authority is admitted.
 
 The exact closed annotation is securityDue=grace_ends_at with profile DeletionGraceDue. CapturedParamIndex is null only for Due; no captured clock parameter is accepted. SQL requires typeof deadline = integer before the floor comparison. Ordinary by/match persisted state, revision and user guards remain mandatory; no extra deletion-current due role is introduced.
+
+## Pending step-up lifetime
+
+Exact additional PendingChallenge profile binds only registered account-security Identity authorization challenge-pending on identity_step_up_challenge.expires_at, for actual step-up-prove-native/browser and step-up-fail-native/browser variants. Existing by/match binds state1, unconsumed, bounded attempts, actual positive revision/user/session/operation/target/method/epochs and captured server lower bound; final deadline is strictly greater than MAX(captured, actual SQL ceiling). This is lifetime only, never proof or MFA authority; existing action-proof state2 consumption is unchanged. Begin/cancel/expire do not manufacture target freshness from this profile.
