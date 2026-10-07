@@ -10507,7 +10507,7 @@
     "notes": "Observed scaffold, unreviewed: the ArcScope host project (ArcForges.ArcScope) exists only as a hello-world Avalonia bootstrap; no host-port composition yet."
    },
    "earlyRiskProof": true,
-   "notes": "Narrow early-risk proof: first real evidence that the whole Assistant.Abstractions/host-port composition model survives Native AOT package-only consumption for an actual product. Failure here invalidates the composition model assumed by WP15 to WP17.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Owns the actual base Avalonia product shell, shared reusable assistant UI/host/lifecycle integration, menu/focus/state/RTL adapters, real security/audit/lease/observability composition and clean AOT consumer. Product-owned services may be existing own Core/Domain project references; package-only applies to external Platform/Contracts producers, not a nonexistent product-service package. No sibling product RPC/hub, second assistant executable or removal of shared AI capabilities. Native/device/manual assistive/reference-hardware checks remain distinct acceptance; component implementation, tests and feasible local runs continue.\n\n2026-10-06 guarded production follow-up (docs/decisions/guarded-production-followup-2026-10-06.md). Actual product composition consumes published exact Assistant.Abstractions, Desktop.Shell, Observability and Observability.Desktop packages and their approved licences; append only these exact publisher identities, plus Security.Secrets only for actual host use. Preserve all foreign publisher/adjacent name/wrong licence/hash/feed/version negatives and immutable closure receipts; no wildcard publisher or general allowance. Shared assistant remains a separate trusted actor-bound endpoint with real current lease/task/revocation and actor-bound audit, never a human fallback.\n\nGuarded follow-up ordering: GOV.07 is the actual existing ArcScope policy-host/tools-receipt producer; its artifact precedes these exact owned policy successor appends. No unrelated policy inputs or history may be replaced.\n\n2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md). Compose the actual shared AST01 factory/history/turn services with existing AssistantHost and UI, preserving one shared assistant and its real provider/tool capabilities. Use a distinct trusted Agent endpoint with real current lease/approval and actor-bound recorder. Product-private conversations, fake history/model dispatch and local-human fallback do not satisfy this composition. Actual profile/account/call-invoker adapters remain owner-bound; current missing remote authorization refuses explicitly while component implementation continues.\n\n2026-10-06 assistant runtime/UI producer repair (docs/decisions/assistant-runtime-and-ui-producers-2026-10-06.md). Consume actual published Assistant.Avalonia alongside the real shared Core/SQLite factory, preserving Hello/native/build-info opt-in proofs and current actor-bound human/Agent ports. Add only exact verified publisher/licence admission and mandatory locked peer closure; no duplicate private assistant or GUID-derived DeviceLocal authority.",
+   "notes": "Narrow early-risk proof: first real evidence that the whole Assistant.Abstractions/host-port composition model survives Native AOT package-only consumption for an actual product. Failure here invalidates the composition model assumed by WP15 to WP17.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Owns the actual base Avalonia product shell, shared reusable assistant UI/host/lifecycle integration, menu/focus/state/RTL adapters, real security/audit/lease/observability composition and clean AOT consumer. Product-owned services may be existing own Core/Domain project references; package-only applies to external Platform/Contracts producers, not a nonexistent product-service package. No sibling product RPC/hub, second assistant executable or removal of shared AI capabilities. Native/device/manual assistive/reference-hardware checks remain distinct acceptance; component implementation, tests and feasible local runs continue.\n\n2026-10-06 guarded production follow-up (docs/decisions/guarded-production-followup-2026-10-06.md). Actual product composition consumes published exact Assistant.Abstractions, Desktop.Shell, Observability and Observability.Desktop packages and their approved licences; append only these exact publisher identities, plus Security.Secrets only for actual host use. Preserve all foreign publisher/adjacent name/wrong licence/hash/feed/version negatives and immutable closure receipts; no wildcard publisher or general allowance. Shared assistant remains a separate trusted actor-bound endpoint with real current lease/task/revocation and actor-bound audit, never a human fallback.\n\nGuarded follow-up ordering: GOV.07 is the actual existing ArcScope policy-host/tools-receipt producer; its artifact precedes these exact owned policy successor appends. No unrelated policy inputs or history may be replaced.\n\n2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md). Compose the actual shared AST01 factory/history/turn services with existing AssistantHost and UI, preserving one shared assistant and its real provider/tool capabilities. Use a distinct trusted Agent endpoint with real current lease/approval and actor-bound recorder. Product-private conversations, fake history/model dispatch and local-human fallback do not satisfy this composition. Actual profile/account/call-invoker adapters remain owner-bound; current missing remote authorization refuses explicitly while component implementation continues.\n\n2026-10-06 assistant runtime/UI producer repair (docs/decisions/assistant-runtime-and-ui-producers-2026-10-06.md). Consume actual published Assistant.Avalonia alongside the real shared Core/SQLite factory, preserving Hello/native/build-info opt-in proofs and current actor-bound human/Agent ports. Add only exact verified publisher/licence admission and mandatory locked peer closure; no duplicate private assistant or GUID-derived DeviceLocal authority.\n\nApplication-presence producer repair: actual owned Shell ApplicationRegistration/RegisteredApplicationTarget adapters consume generated Application heartbeat and current authenticated connector. Existing APP03 source scopes admit those paths. DEV01 is mandatory live-target completion, not a blanket shell implementation start. DeviceLocal OS profile/human identity never becomes Cloud User/Device/live epoch.",
    "complete": [
     {
      "type": "integration",
@@ -10526,6 +10526,12 @@
      "task": "AST.10",
      "need": "actual published shared Assistant.Avalonia control/controller",
      "why": "Full product composition must consume the shared producer; base shell continues and no private fake UI may substitute."
+    },
+    {
+     "type": "integration",
+     "task": "DEV.01",
+     "need": "actual authenticated application registration and current live target epoch producer",
+     "why": "Desktop host target must use actual assigned registration/device/install epoch, never random identity or DeviceLocal profile as Cloud authority."
     }
    ]
   },
@@ -12547,26 +12553,42 @@
    ],
    "start": [
     {
-     "type": "artifact",
-     "task": "CLOUD.13",
-     "need": "actual D1 device/installation/session durable authority and typed instance-target authorization",
-     "why": "ApplicationPresenceDO owns instanceEpoch and presence in DEV.01; it projects current durable installation/session authority, without a D1 instance-presence table or dependency cycle."
-    },
-    {
-     "type": "artifact",
-     "task": "CLOUD.29",
-     "need": "real Durable-Object-backed connection/authentication substrate",
-     "why": "presence heartbeat/disconnect rides the same authenticated realtime connection"
-    },
-    {
      "type": "contract",
      "task": "CON.11",
      "need": "published ApplicationService.List/Heartbeat/Disconnect wire definitions",
      "why": "the Cloud implementation is generated-contract-first"
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.72",
+     "need": "actual owner-bound module read/plan port and existing Devices/Workspace factories",
+     "why": "Complete presence core, owner readers and DO components can advance before whole authentication/realtime integration."
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.75",
+     "need": "actual configured realm/recovery authority",
+     "why": "Never construct a success generation or use caller-supplied realm authority."
     }
    ],
    "writes": [
-    "Cloud:src/ArcForges.Cloud/Presence/**"
+    "Cloud:src/ArcForges.Cloud.Modules.Devices/Presence/** and DevicesModule.cs (real bounded presence core, current owner adapters and actual registration only)",
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Devices/ApplicationPresencePort.cs (closed neutral owner/read/control ports and typed failures; no duplicated published Application DTO)",
+    "Cloud:src/ArcForges.Cloud.Modules.Workspace/Presence/** and WorkspaceModule.cs and src/ArcForges.Cloud.Modules.Abstractions/Workspace/ApplicationPresenceWorkspacePort.cs (ONLY real single-owner current active personal workspace read authority; reuse existing workspace-load/by-owner plans, no membership table/foreign SQL)",
+    "Cloud:src/ArcForges.Cloud/Composition/ApplicationPresenceModule.cs and HostModules.cs (append only lazy actual presence registration; absent producer typed unavailable and existing health unchanged)",
+    "Cloud:src/ArcForges.Cloud/Infrastructure/WorkerPresenceClient.cs and PublicApi/Application/** (actual bounded generated Application List/Heartbeat/Disconnect ingress/current credential resolution and signed private presence bridge only)",
+    "Cloud:worker/presence/model.ts and durable.ts and handler.ts and environment.ts (actual SQLite ApplicationPresenceCoordinator monotone owner epoch/lease/idempotency and closed HMAC bridge; no D1 device.presence table)",
+    "Cloud:worker/index.ts (exact class export and closed virtual presence.internal private routing/environment registration only)",
+    "Cloud:wrangler.json (append only APPLICATION_PRESENCE SQLite DO binding/migration presence-v1 and exact actual environment entries; preserve existing migrations, routes/workers_dev=false/data)",
+    "Cloud:storage/plans/device/presence-*.sql and storage/plans/workspace/workspace-load.sql and workspace-by-owner.sql (only actual owner read facts if needed, retain current schemas/identity; no foreign Identity/Workspace SQL)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/PlanManifest.g.cs and worker/storage/plans.generated.ts (sole coordinated actual owned read union regeneration only)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Presence/** and tests/worker/application-presence*.test.ts (actual current owner, durable SQLite DO epoch/lease/receipt/recovery/overflow/cancel and generated ingress tests)",
+    "Cloud:package.json (append only owned application-presence offline test command entries, no tools/dependencies/locks changes)",
+    "Cloud:tests/ArchitectureTests/** (only actual owned API/layer/producer bindings, preserve all shape/no-authored-wire guards)",
+    "Cloud:eng/policy/dependency-policy.json and eng/policy/dependency-reviews/dev-01-*.json and eng/provenance/** (only actual evaluated input/firstParty/immutable Worker/legal/source successor, no guessed producer pins)",
+    "Cloud:tests/worker/release-provenance.test.ts (only actual owned sealed Worker SHA/bytes successor, preserve all historical/legal/refusal tests)",
+    "Cloud:.dockerignore (exact actual owned source inclusion only)",
+    "Cloud:docs/application-presence.md (full owner/epoch/lease/replay and actual component/publication evidence)"
    ],
    "shared": [
     {
@@ -12584,8 +12606,33 @@
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: Cloud repo HEAD ce0a32a has only the ArcForges.Cloud hello-world project (BuildIdentity/HealthStatus/HelloEndpoint/Program); no Application/Presence service exists."
    },
-   "notes": "Exact Cloud-side project path for the WP21 to WP26 service split is not yet established in-repo; glob is a reasonable placeholder pending that layout decision (the Cloud lane / WP22 to WP23 territory).\n\n2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). CLOUD.13 supplies actual durable device/installation/session authority plus typed instance-target authorization. ApplicationPresenceDO instanceEpoch/presence stays DEV.01-owned, never a fictitious D1 instance-presence prerequisite or reverse cycle.",
-   "complete": []
+   "notes": "Exact Cloud-side project path for the WP21 to WP26 service split is not yet established in-repo; glob is a reasonable placeholder pending that layout decision (the Cloud lane / WP22 to WP23 territory).\n\n2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). CLOUD.13 supplies actual durable device/installation/session authority plus typed instance-target authorization. ApplicationPresenceDO instanceEpoch/presence stays DEV.01-owned, never a fictitious D1 instance-presence prerequisite or reverse cycle.\n\n2026-10-07 actual application registration producer (docs/decisions/application-presence-epoch-and-progressive-production-2026-10-07.md) supersedes the placeholder path and whole13/29 implementation-start gates only. Platform UI is sole DEV01 producer. Full current13/11/75/21 and29 realtime composition remain mandatory completion; standalone durable SQLite DO/core/owned reader components advance now. No random epoch, D1 presence/membership table, ActorRef/User alias, permissive port or constructor-created authority. Durable uint64 owner counter survives lease expiry/eviction; heartbeat30s/renew10s, current one personal active workspace, nonrevoked session/device/install and actual product authority every public operation.",
+   "complete": [
+    {
+     "type": "integration",
+     "task": "CLOUD.13",
+     "need": "actual D1 device/installation/session durable authority and typed instance-target authorization",
+     "why": "ApplicationPresenceDO owns instanceEpoch and presence in DEV.01; it projects current durable installation/session authority, without a D1 instance-presence table or dependency cycle."
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.29",
+     "need": "real Durable-Object-backed connection/authentication substrate",
+     "why": "presence heartbeat/disconnect rides the same authenticated realtime connection"
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.11",
+     "need": "actual single-owner workspace/Identity source",
+     "why": "There is no workspace membership table; owner equality/current active state is genuine permission."
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.21",
+     "need": "actual signed host/Worker production storage executor",
+     "why": "Current authority adapters use the actual configured owner factory, not a permissive test port."
+    }
+   ]
   },
   {
    "id": "DEV.02",

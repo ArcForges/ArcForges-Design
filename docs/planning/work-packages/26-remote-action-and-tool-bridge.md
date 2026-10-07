@@ -130,7 +130,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 
 | Delivery task | Satisfies | Start prerequisites outside this package |
 |---|---|---|
-| [DEV.01](../delivery/lanes/device-bridge.md#task-dev-01) | [WP-26.00](26-remote-action-and-tool-bridge.md#rule-wp-26.00) (full) | [CLOUD.13](../delivery/lanes/cloud.md#task-cloud-13) (artifact), [CLOUD.29](../delivery/lanes/cloud.md#task-cloud-29) (artifact), [CON.11](../delivery/lanes/contracts.md#task-con-11) (contract) |
+| [DEV.01](../delivery/lanes/device-bridge.md#task-dev-01) | [WP-26.00](26-remote-action-and-tool-bridge.md#rule-wp-26.00) (full) | [CON.11](../delivery/lanes/contracts.md#task-con-11) (contract), [CLOUD.72](../delivery/lanes/cloud.md#task-cloud-72) (artifact), [CLOUD.75](../delivery/lanes/cloud.md#task-cloud-75) (artifact) |
 | [DEV.02](../delivery/lanes/device-bridge.md#task-dev-02) | [WP-26.01](26-remote-action-and-tool-bridge.md#rule-wp-26.01) (full) | [CON.10](../delivery/lanes/contracts.md#task-con-10) (contract) |
 | [DEV.03](../delivery/lanes/device-bridge.md#task-dev-03) | [WP-26.02](26-remote-action-and-tool-bridge.md#rule-wp-26.02) (full) | [AST.11](../delivery/lanes/assistant.md#task-ast-11) (artifact), [APP.05](../delivery/lanes/app-composition.md#task-app-05) (artifact), [PLT.43](../delivery/lanes/platform.md#task-plt-43) (artifact) |
 | [DEV.04](../delivery/lanes/device-bridge.md#task-dev-04) | [WP-26.03](26-remote-action-and-tool-bridge.md#rule-wp-26.03) (Cloud-side D1 attempt-row persistence, hash dedup and cross-application delivery guard) | [CON.10](../delivery/lanes/contracts.md#task-con-10) (contract) |
@@ -141,7 +141,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [DEV.09](../delivery/lanes/device-bridge.md#task-dev-09) | [WP-26.90](26-remote-action-and-tool-bridge.md#rule-wp-26.90) (full) | none |
 | [DEV.12](../delivery/lanes/device-bridge.md#task-dev-12) | [WP-26.03](26-remote-action-and-tool-bridge.md#rule-wp-26.03) (cross-repo agreement proof beyond each side's own unit coverage) | none |
 
-**Consumers outside this package:** [AND.25](../delivery/lanes/android.md#task-and-25), [CLOUD.36](../delivery/lanes/cloud.md#task-cloud-36), [DEV.13](../delivery/lanes/device-bridge.md#task-dev-13), [DEV.14](../delivery/lanes/device-bridge.md#task-dev-14), [HAR.05](../delivery/lanes/harness.md#task-har-05), [WEB.28](../delivery/lanes/web.md#task-web-28).
+**Consumers outside this package:** [AND.25](../delivery/lanes/android.md#task-and-25), [APP.03](../delivery/lanes/app-composition.md#task-app-03), [CLOUD.36](../delivery/lanes/cloud.md#task-cloud-36), [DEV.13](../delivery/lanes/device-bridge.md#task-dev-13), [DEV.14](../delivery/lanes/device-bridge.md#task-dev-14), [HAR.05](../delivery/lanes/harness.md#task-har-05), [WEB.28](../delivery/lanes/web.md#task-web-28).
 
 <!-- delivery-graph:end -->
 
