@@ -24756,7 +24756,11 @@
     "Cloud:src/ArcForges.Cloud.Storage.D1/Receipts/CommandReceipts.cs and storage/plans/platform/command-load.sql (only actual created/result/identity decoding and generated bounded admission result read, historical replay and refused/expired semantics unchanged)",
     "Cloud:storage/plans/families.json and src/ArcForges.Cloud.Storage.D1/SharedFamilies/FamilyDefinitions.cs, FamilyGuards.cs and FamilyPlanVerifier.cs (only finite actual execution family participants/typed profile metadata; no arbitrary owner/scope/grammar or old hash mutation)",
     "Cloud:tests/ArcForges.Cloud.Tests/Execution/AdmissionReceiptTests.cs and tests/worker/execution-admission-receipt.test.ts (actual current actor/original intent/scope/result/expiry/unknown and no-paid-dispatch reads)",
-    "Cloud:src/ArcForges.Cloud.Storage.D1/Receipts/CommitTail.cs and storage/plans/platform/command-record-execution-admission-failure.sql (only bounded generated original admission record co-commit and the closed two-operation failure plan; existing generic receipt/replay/failure semantics unchanged)"
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Receipts/CommitTail.cs and storage/plans/platform/command-record-execution-admission-failure.sql (only bounded generated original admission record co-commit and the closed two-operation failure plan; existing generic receipt/replay/failure semantics unchanged)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Physical/manifest/platform.json and enums.json; src/ArcForges.Cloud.Storage.D1/Migrations/pending/platform__execution-admission-result.sql (only immutable command-FK admission result reference/tuple metadata and closed kind, original PK/ref insertion/update/delete profile; actual integration owner assigns number)",
+    "Cloud:eng/verification/physical-schema.ts (only closed executionAdmissionResultOriginal sidecar table/key/shape profile and exact trigger inventory; no general immutable-row waiver)",
+    "Cloud:storage/plans/platform/execution-admission/** and worker/objects/execution-admission/** (actual bounded private immutable original result object stage/verify/read and same-command-FK metadata plans; no whole result BLOB in D1 or original JSON cap raise)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Execution/AdmissionResultCapacityTests.cs and tests/worker/execution-admission-result.test.ts (actual permitted maximum original result, object tamper/missing/unknown stage, exact small-reference D1 request, FK/order/replace/rollback/expiry and old-tail preservation)"
    ],
    "shared": [
     {
