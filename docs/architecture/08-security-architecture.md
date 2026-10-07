@@ -400,3 +400,8 @@ These are selected design mechanisms, with real AOT/authentication proof in WP06
 ## Native identity bindings
 
 [Client journeys07](contracts/07-client-journeys-and-ports.md#native-browser-authorization-and-pat-completion) is the sole native authorization endpoint/redirect/RP registry. System-browser PKCE creates separate application sessions; no device SSO broker, token copying or cross-product discovery exists. Exact official RP/origins, Android package/certificate associations and per-product custom schemes are tested by WP22. For self-host, use the separately trusted realm descriptor and private callback profile in deployment 22; never reuse official cookies, RP assertions or signing trust. PAT reachability is the closed patEligible allowlist, not every customer API.
+
+
+## Operator session rotation and current assertion authority
+
+[Operator session custody and atomic completion](../decisions/operator-session-custody-and-atomic-completion-2026-10-07.md) defines real current sidecar evidence/CSRF/origin bindings, old-session revoke/new-session issue at step-up, independent configured private signing/public trust and exact current directory/context reopening. A short signed internal assertion is request binding, not historical role permission or a customer bearer. Missing genuine policy, incident context or provider assurance returns typed refusal/unavailability; configured component fixtures are not live tenant evidence.
