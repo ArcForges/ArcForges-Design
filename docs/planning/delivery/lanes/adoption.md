@@ -241,7 +241,7 @@ Each slice classifies the tasks of one repository and lane against the frozen ba
 | <a id="task-adopt-05-simulator"></a>ADOPT.05.simulator | ArcScope | [ArcScope Cloud simulator](simulator.md) | 1 | none | [ADOPT.05](#task-adopt-05) |
 | <a id="task-adopt-07-ai-routing"></a>ADOPT.07.ai-routing | Cloud | [Workers AI routing and metering](ai-routing.md) | 6 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-cloud"></a>ADOPT.07.cloud | Cloud | [Cloud core](cloud.md) | 69 | none | [ADOPT.07](#task-adopt-07) |
-| <a id="task-adopt-07-commerce"></a>ADOPT.07.commerce | Cloud | [Commerce, entitlement and credits](commerce.md) | 17 | none | [ADOPT.07](#task-adopt-07) |
+| <a id="task-adopt-07-commerce"></a>ADOPT.07.commerce | Cloud | [Commerce, entitlement and credits](commerce.md) | 18 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-device-bridge"></a>ADOPT.07.device-bridge | Cloud | [Application presence and tool bridge](device-bridge.md) | 9 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-extensions"></a>ADOPT.07.extensions | Cloud | [Extension platform and integrations](extensions.md) | 1 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-governance"></a>ADOPT.07.governance | Cloud | [Family governance and policy tests](governance.md) | 2 | none | [ADOPT.07](#task-adopt-07) |
