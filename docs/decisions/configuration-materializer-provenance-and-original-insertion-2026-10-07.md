@@ -1,0 +1,36 @@
+# Configuration materializer provenance and original insertion protection
+
+This additive repair governs POL.02's dedicated Config authority only. It preserves the published ConfigurationDocument and signed activation-manifest schemas, original task dependencies, generic Audit ownership, completed evidence, accepted migrations, and every other owner's insertion profile. It creates no Operator, Entitlement or Commerce completion cycle.
+
+## Retained materializer identity
+
+At Stage, capture the independently configured trusted materializer identity as `config.activation_proposal.materializer_ref:text NN`, nonempty valid Unicode with at most256 UTF8 bytes. It is immutable original proposal evidence, including for a configuration with no catalogue offers. Include it in Config's internal validation hash and durable bounded context metadata; that hash is approved by the distinct eligible approver. The field is server-owned, not a caller-supplied identity or a new published manifest field. Application reopening verifies the row, reconstructed evidence, internal validation hash, approval's exact validation hash, and every retained projection's publisher identity against this captured value.
+
+The existing catalogue projection `publisher_ref` bound remains128 UTF8 bytes. Stage rejects an unsupported configured identity before persistence whenever a catalogue projection requires that narrower existing bound; do not silently widen it, truncate it, or allow a valid zero-offer configuration to evade its own retained materializer identity. Empty, malformed or over256-byte configured identities refuse all staging. Approval and activation may reject a pending proposal after deployment authority changes, while exact accepted historical recovery retains its original captured materializer. Fresh current and exact historical full-definition/unit/catalogue associations, stable materialization commands and publication authorization use the corresponding proposal's retained value, not the latest deployment setting. Current realm/environment/recovery authorization remains mandatory. Accepted historical materialization only recovers already accepted exact immutable profiles/prices; it cannot create an unpublished superseded version.
+
+Later independently approved identical full/unit artifact reuse may authorize a different configured materializer. Existing immutable owner rows retain first-approved publisher/proposal provenance; a new request binds the newly approved captured identity and its own actor/hash receipt. Historical original receipts retain their original identity. Do not treat first-publisher audit provenance as current authority or authorize a caller-selected replacement identity.
+
+## Exact persisted insertion invariants
+
+Actual unpublished Config component diagnostics use migrated SQLite with foreign keys enabled and recursive triggers disabled. Existing immutable UPDATE/DELETE triggers cannot alone prevent `INSERT OR REPLACE` from replacing approval, finalized evidence or offer binding originals. Protect the four closed Config authority tables below before insertion, independently of connection settings. Each predicate is the disjunction of existing-row equality on the exact declared primary key and every declared natural unique key:
+
+| Owned table | Exact conflict keys |
+|---|---|
+| `config_activation_approval` | `(approval_id)`; `(proposal_id)`; `(command_id)` |
+| `config_activation_evidence_part` | `(proposal_id,component_key,ordinal)` |
+| `config_catalogue_projection` | `(config_revision_id,catalogue_offer_id)`; `(materialization_command_id)`; `(proposal_id,offer_key)` |
+| `config_offer_binding` | `(realm_id,offer_key)`; `(catalogue_offer_id)` |
+
+The fixed BEFORE INSERT trigger `tr_<table>__original_insert` raises `CHECK constraint failed: af_immutable_<table>` on any such existing conflict, even if the supplied values are identical. Ordinary owner plans perform verified absence insertion or reconcile the durable command receipt, retaining existing identity/provenance and rowid without issuing a duplicate insert. Binding reuse remains the existing exact guarded `INSERT ... WHERE NOT EXISTS`; no side effect or wider authority is inferred from a conflict. Unique constraints continue to protect concurrent fresh insertions. UPDATE/DELETE protection remains unchanged.
+
+Admit only the optional closed `insertionInvariant: "configurationAuthorityOriginal"` marker for these exact Config-owned, fully immutable tables. Resolution validates exact owner/table, column kinds/nullability, canonical primary key and complete unique-index shapes listed above, before any schema validation or exported table/trigger SQL generation can accept the marker. No arbitrary SQL, caller key list, foreign owner/table, mutable table, partial unique index, unsupported additional unique key, or alternative marker is admitted. Existing `preserveExisting` and Identity insertion profiles remain separately closed. Omitting this marker preserves old resolved shapes, normalized bytes, emitted SQL and hash formula. Strict expected-shape comparison must require the generated original-insert trigger, not tolerate undeclared triggers or weaken comparison.
+
+This repair does not add an insertion marker to the mutable proposal, revision or temporary input journal. Their actual constraints and separately reviewed lifecycles remain. Final evidence cannot be purged as staging input, and no undeclared retention/deletion implementation is granted.
+
+## Source ownership and evidence
+
+POL.02 owns only Config's pending expand migration/manifest/physical regeneration, bounded evidence/hash/reopening/source/materialization code and named Config plans. Its narrow supporting generator writes are `eng/verification/physical-schema.ts` for the closed Config marker and `tests/worker/d1-physical-schema.test.ts` for actual generator/shape/refusal cases. Integration assigns the global migration number against the accepted queue; preserve every accepted migration and lock entry. No blanket physical fixture, old record or package closure rewrite is authorized.
+
+Require actual primary-key and every natural-key replacement refusal with recursive triggers both OFF and ON, original row/hash/identity retention, legitimate owner lifecycle/replay and concurrent collision behavior, exact missing/modified trigger refusal, and unknown/foreign/wrong-shape marker negatives at schema and both exported SQL entrypoints. Test approval-hash mismatch during reopening and final atomic activation. Test zero-offer retained identity, bounded Unicode/128-byte projection intersection, deployment publisher rotation, exact historical receipt/materialization recovery and obsolete unpublished refusal, cancellation/unknown outcome, predecessor accepted-profile fences and current-head CAS. Fakes are limited to unavailable external dependencies; they never prove real deployment, directory eligibility, provider MFA or whole-series acceptance.
+
+Independent exact-head review, applicable CI, serialized normal publication/deployment and a factual ledger remain required. Keep captured host authorization/decision-time expiry semantics honest; this repair does not borrow Identity clock profiles or claim a physical database commit-instant cutoff.
