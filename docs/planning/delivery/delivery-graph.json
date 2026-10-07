@@ -32021,7 +32021,10 @@
     "DesktopPlatform:NOTICE.md (only actual owned producer/data/legal/evaluated input immutable successors)",
     "DesktopPlatform:.github/workflows/pr-gate.yml (only actual owned ordinary component/producer registration, preserve all existing triggers/gates/toolchain)",
     "DesktopPlatform:.github/workflows/package-validation.yml (only actual owned ordinary component/producer registration, preserve all existing triggers/gates/toolchain)",
-    "DesktopPlatform:docs/model-input-producer.md (actual artifact/classifier/BPE/render/API/profile/bounds/legal and consumer obligations)"
+    "DesktopPlatform:docs/model-input-producer.md (actual artifact/classifier/BPE/render/API/profile/bounds/legal and consumer obligations)",
+    "DesktopPlatform:eng/check_provenance.py (only exact standalone Unicode-3.0 permissive data licence classification; preserve every copied-source/generator/external-tool and unknown/prohibited refusal)",
+    "DesktopPlatform:tests/tooling/test_provenance.py (only genuine complete Unicode17 source/legal/classifier record acceptance and missing/changed source/legal/generator/output plus classification bypass negatives)",
+    "DesktopPlatform:eng/policy/reuse-policy.json (only mirror exact standalone Unicode-3.0 permissive expression; every existing owner decision and licence category unchanged)"
    ],
    "shared": [
     {
@@ -32051,7 +32054,7 @@
     "state": "not-started",
     "notes": "Actual AI/Cloud/Desktop source audit found no tokenizer/materializer engine; ModelView lacks approved config/artifact/framing identity."
    },
-   "notes": "2026-10-07 approved model context and exact rendering producer repair (docs/decisions/approved-model-context-and-exact-rendering-producer-2026-10-07.md). DesktopPlatform worker w-codex-20261006-image is the sole source owner of the real pure producer. Independent package output allows Config Stage and client/server adapters to join without whole-task completion cycle; all consumer current authority and actual acceptance remain separate."
+   "notes": "2026-10-07 approved model context and exact rendering producer repair (docs/decisions/approved-model-context-and-exact-rendering-producer-2026-10-07.md). DesktopPlatform worker w-codex-20261006-image is the sole source owner of the real pure producer. Independent package output allows Config Stage and client/server adapters to join without whole-task completion cycle; all consumer current authority and actual acceptance remain separate.\n\n2026-10-07 minimum standalone Unicode17 data legal support (docs/decisions/unicode17-model-material-legal-support-2026-10-07.md). Exact Unicode-3.0 classification serves only actual complete pinned UCD/classifier/legal evidence under existing source admission; no aggregate licence substitution, GPL/unknown waiver or algorithm/dependency/package change. Actual new immutable reused-tools r5 preserves original Contracts attribution and accepted r1-r4; coordinate pending NAT22 r4 integration before sealing actual successor. Preserve current descriptor/pin/source/permission and independent publication gates."
   },
   {
    "id": "CON.36",
