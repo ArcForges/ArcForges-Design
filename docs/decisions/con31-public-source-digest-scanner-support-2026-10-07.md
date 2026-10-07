@@ -21,6 +21,12 @@ Append precisely four AND groups to `.gitleaks.toml`: the dependency-policy grou
 
 Only factual total-count maintenance and exact owned tuple coverage are admitted in `tests/tooling/test_dependency_admission.py`. Cover actual positives and changed digest, key and path, adjacent credentials, other rules and whole-file false matches. No wildcard digest, future receipt name, path-only exclusion, historical rewrite, scanner disablement or generic matcher change is admitted. Any genuinely new receipt tuple requires actual source facts and independent review before its exact replacement or append is included in the final decision. Unchanged shipping inputs are not resealed solely for scanner verification.
 
+## Genuine strict-context fixture maintenance
+
+Actual candidate run `37579875270` at the same frozen r3 source passed generation, SDK compilation and private package construction but failed one of 421 ordinary Python cases: `tests/tooling/test_serialization_policy.py:34` still asserts 97 strict JSON contexts. Accepted source `8715f6e2462153fac44bccac2dd9e8b55adafc5f` has 97; the r3 source has 98, with all original contexts preserved and the sole new `OperatorProviderPolicyJsonContext` in `src/internal/dotnet/ArcForges.Contracts.CloudInternal/Generated/Shapes/OperatorProviderPolicy.g.cs`.
+
+Admit only that existing expected-count literal from 97 to 98 in the existing serialization-policy test. Preserve every strict JSON option, declaration check, input/output identity, public/private boundary and negative assertion. This is a factual assertion adjustment for the genuine new producer, with no serializer algorithm, package input, generated output or immutable receipt change. Run the affected ordinary test, require an independent exact-source delta review and fresh applicable CI; do not retry the unchanged failed candidate or reseal unchanged shipping inputs.
+
 ## Ownership and delivery
 
 The existing CON.31 claimant is the sole source writer for this append. Governance alone coordinates Contracts integration and normal publication, preserving all accepted scanner groups when later independently reviewed producers compose. Root coordinates the paired planning fence. Generate and check the explicit Design and Plan worktrees, require independent exact-head planning and source reviews, and pass all applicable ordinary CI including the unchanged full-history scan.
