@@ -20,7 +20,7 @@ Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) 
 | `identity` | Identity | `user`, `auth_identity`, `session` |
 | `workspace` | Workspace | `workspace` — **no membership table** ([WO-01](#rule-wo-01)) |
 | `device` | Devices | `device`, `installation` |
-| `entitlement` | Entitlement | `grant`, `revision`, `snapshot`, `definitions_activation`, `workspace_status_fact`, `feature_release`, `usage_counter`, `service_term`, `capacity_bucket`, `capacity_policy_period`, `capacity_reservation`, `quota_definition_profile`, `quota_definition_key`, `quota_budget`, `quota_budget_basis`, `quota_reservation`, `quota_reservation_basis`, `quota_event` |
+| `entitlement` | Entitlement | `grant`, `revision`, `snapshot`, `resolver_definition_profile`, `definitions_activation`, `workspace_status_fact`, `feature_release`, `usage_counter`, `service_term`, `capacity_bucket`, `capacity_policy_period`, `capacity_reservation`, `quota_definition_profile`, `quota_definition_key`, `quota_budget`, `quota_budget_basis`, `quota_reservation`, `quota_reservation_basis`, `quota_event` |
 | `commerce` | Commerce | `billing_account`, `order`, `subscription`, `credit_lot`, `provider_event`, `logical_ai_request`, `provider_attempt`, `attempt_usage`, `supplier_cost_entry`, `customer_settlement`, `refund`, `compensation_adjustment` |
 | `chat` | Chat | `conversation`, `message` and their committed content; Task owns iteration output, CF DO owns transient stream projection |
 | `task` | Task | `task`, `automation_definition`, `automation_occurrence` |
@@ -499,6 +499,23 @@ The Entitlement module is **independent of Commerce** (`§2.1` of the commerce a
 
 - **Constraint** — a rebuild must equal the stored snapshot for every fixture account ([WP-42.04](../../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.04)). A difference is a defect, not a refresh.
 - **Rule** — `valid_until` exists so the resolver is deterministic without a clock scan: the sweeper recomputes exactly the workspaces whose `valid_until` has passed.
+
+<a id="versioned-full-resolver-definitions"></a>
+### `entitlement.resolver_definition_profile` (COM.20)
+
+The independent complete owner artifact is `entitlement.resolver-definitions.v1`, exactly `{allowances,capabilities,definitionsVersion,quotas,schemaVersion}`. Sorted unique arrays contain at most64 descriptors each; complete canonical UTF8 is at most65536 bytes and version at most128 UTF8 bytes. Capability is `{featureGate:null|string,key,requiresPaidTerm:bool}`, quota is `{combination:Sum|Max|PriorityReplace,key}`, allowance is `{key}`. Existing resolver InputRules/RecordSetValidator apply. This distinct full artifact is validated before the separate quota-unit artifact against the full owner quota output; the unit candidate cannot define its own expectations. The actual signed Configuration document supplies official/selfHosted RealmKind, never a caller flag.
+
+| Field | Type and invariant |
+|---|---|
+| realm_id, definitions_version | PK `(realm_id,definitions_version)`; actual realm id and bounded nonempty exact version |
+| profile_hash, canonical_profile | hash NN and text NN (<=65536 canonical UTF8); complete SHA256/length independently checked |
+| artifact_id, artifact_hash, artifact_length | exact immutable artifact ID<=128UTF8, hash NN, int64 NN in2..65536; artifact_hash equals profile_hash and actual UTF8 byte length equals artifact_length |
+| original_config_revision_id, original_config_document_hash | actual Guid Config revision/id and hash NN; original approved association, no foreign-table FK |
+| realm_kind, publisher_ref, created_at | realm_kind enum(official,selfHosted) NN from signed document; configured trusted publisher text NN<=256UTF8; actual owner publication instant NN |
+
+UPDATE/DELETE are refused. One realm/version retains one exact canonical payload/artifact/realm kind. A later approved configuration may reference the identical artifact; its stable authorized no-change receipt returns the existing row without replacing first-approved provenance. Publication atomically guards profile identity, inserts verified absence and writes the real platform receipt/archive. Complete profiles remain retained while snapshots/rebuild/old reservations/recovery depend on them. No raw tokens or approval Boolean is stored. Config owns signed proposal evidence, dual approval, current head and original/exact approved association; a profile's existence alone does not authorize current work.
+
+Production readers are async exact-version/current-head contracts. Current reads bind actual Config realm/revision/hash/artifact and refuse absent current materialization. Historical rebuild uses the snapshot's retained definitionsVersion and full immutable profile, preserving COM05 combination algorithms and existing snapshot canonical bytes. Current resolver writes use the existing Entitlement single writer prepared contribution joined with actual Config issuer-sealed head/association guard in the closed entitlement-definition-resolution.commit-current family; an async preflight alone is insufficient. Preserve current positive Entitlement revision and actual recovery generation. The production DI never blocks on async storage or silently selects synchronous fixture definitions. See the [full producer decision](../../decisions/versioned-resolver-definition-authority-2026-10-07.md).
 
 ### `entitlement.definitions_activation`, `entitlement.workspace_status_fact`, `entitlement.feature_release` *(new — COM.16)*
 
