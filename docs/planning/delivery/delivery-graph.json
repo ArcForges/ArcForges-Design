@@ -32024,7 +32024,7 @@
     "Contracts:public/http/v1/model-tokenizer-bundle.schema.json (new recursively closed canonical<=1MiB exact bundle/source/legal/artifact profile; no binary bodies)",
     "Contracts:internal/ai-http/v1/schema.json (only actual AiModelIntentRequest optional closed modelInputEvidence +exact bound render pin/object metadata shape; preserve262144 and legacy absence)",
     "Contracts:public/proto/constraints/con-36-model-context.json (new exact caps/current relational binding and regeneration only)",
-    "Contracts:public/proto/constraints/constraints.json (new exact caps/current relational binding and regeneration only)",
+    "Contracts:public/proto/constraints.json (new exact caps/current relational binding and regeneration only)",
     "Contracts:eng/model_context.py (new exact model-bound helper/profile lowering and explicit immutable CON33v1 field closure; no old output/hash drift)",
     "Contracts:eng/assistant_semantic_hash.py (new exact model-bound helper/profile lowering and explicit immutable CON33v1 field closure; no old output/hash drift)",
     "Contracts:eng/execution_admission.py (only exact Events-owned new execution-model-admission-intent.v1 lowering after actual CON37 source; preserve original CON37 profile)",
