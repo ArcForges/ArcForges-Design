@@ -18381,7 +18381,16 @@
     }
    ],
    "writes": [
-    "Cloud:src/Cloud/ArcForges.Cloud.Modules.Resource/**"
+    "Cloud:src/ArcForges.Cloud.Modules.Resource/BlobLifecycle/** and ResourceModule.cs (actual full upload/R2/verification/pin/GC owner, consume COM07 quota accounting participant; coordinate QuotaAccounting support, no quota writer)",
+    "Cloud:storage/plans/resource/blob-lifecycle-*.sql (actual bounded owned full upload/pin/recovery lifecycle; no foreign-table writes)",
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Resource/** (primitive real upload/object/measurement lifecycle ports only)",
+    "Cloud:worker/resource/** (actual task-owned protected private R2 object adapter only; no public route expansion)",
+    "Cloud:src/ArcForges.Cloud/Composition/** (actual task-owned object adapter/owner registration)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Resource/BlobLifecycle/** and tests/worker/blob-lifecycle.test.ts (actual affected lifecycle/contract tests)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/PlanManifest.g.cs and worker/storage/plans.generated.ts (coordinated actual owned regeneration)",
+    "Cloud:package.json and .dockerignore (exact owned offline suite and source inclusion only)",
+    "Cloud:eng/policy/dependency-policy.json and eng/policy/dependency-reviews/cloud-42-*.json and eng/provenance/** (only actual owned changed-input immutable successors)",
+    "Cloud:docs/blob-lifecycle.md (actual lifecycle/delivery and real R2 evidence limits)"
    ],
    "shared": [
     {
@@ -18407,8 +18416,15 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: none exists; only the WP-06 minimal R2 transport probe exists upstream (the native and runtime-proof lanes, not this repo)"
    },
-   "notes": "Must-be-real-early per implementation-sequence §3 ('Object storage adapters' may be mocked only at the schema/protocol layer -- 'Upload interruption, hashing, resumption and quota' must be real). Keep this must-be-real-early placement; do not defer real R2 behind fixture evidence. Planning repair 2026-10-05: Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one.",
-   "complete": []
+   "notes": "Must-be-real-early per implementation-sequence §3 ('Object storage adapters' may be mocked only at the schema/protocol layer -- 'Upload interruption, hashing, resumption and quota' must be real). Keep this must-be-real-early placement; do not defer real R2 behind fixture evidence. Planning repair 2026-10-05: Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one.\n\n2026-10-07 quota semantic/atomic authority repair corrects the nonexistent src/Cloud root. COM07 owns narrow Resource quota accounting support; this task owns the full BlobLifecycle/R2 pipeline and real live acceptance. Coordinate support entry points and family union, preserve routes/data/workers.dev=false and private object permission. No async-only accounting or second quota writer. The existing must-be-real-early R2 acceptance remains required; ordinary complete core/adapters/components may advance while a truly unavailable real binding is recorded precisely.",
+   "complete": [
+    {
+     "type": "integration",
+     "task": "COM.07",
+     "need": "actual single-writer quota accounting and Resource participant contract",
+     "why": "Full committed/GC R2 acceptance must agree with real bounded usage, not an independent Resource quota calculation."
+    }
+   ]
   },
   {
    "id": "CLOUD.43",
@@ -20244,10 +20260,10 @@
    "obligations": [
     {
      "ref": "WP-42.06",
-     "part": "full"
+     "part": "quota usage/storage accounting, current atomic authority and Resource composition; immutable semantic profile and selected-period producer are COM.18"
     }
    ],
-   "outcome": "Quota (limit) and usage (measurement) live in separate stores keyed to the entitlement period, storage accounting matches committed objects exactly, and an exceeded quota produces a typed, explained refusal.",
+   "outcome": "Production quota accounting consumes the persistent single-writer kernel and immutable owner units/modes/selected-period provenance. Current approved Config association, Workspace authority, Entitlement revision/snapshot/term and budget revisions are same-batch guards of publication/admission; Resource promotion/deletion and measured accounting join once through owned participants, with old-period settlement and non-resetting gauges preserved.",
    "provides": [
     "quota-usage-storage-accounting"
    ],
@@ -20263,10 +20279,43 @@
      "task": "COM.05",
      "need": "versioned entitlement grants",
      "why": "quota resolution must apply new versioned grants without resetting gauges or outstanding reservations, which requires the resolver's version field"
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "actual persistent entitlement revision/snapshot/normalized terms and owner-bound plan port",
+     "why": "Period and current-basis authority must reopen real stored facts, not resolver-only summaries."
     }
    ],
    "writes": [
-    "Cloud:src/Cloud/ArcForges.Cloud.Modules.Entitlement/**/Quota/**"
+    "Cloud:src/ArcForges.Cloud.Modules.Entitlement/Quota/Accounting/** (business quota resolution, persistent basis/query/accounting and owner-sealed participant; no second quota writer)",
+    "Cloud:src/ArcForges.Cloud.Modules.Entitlement/Quota/Kernel/** (only actual single-writer owned publish/reserve/effect preparation and same-batch family contribution extension; preserve existing kernel APIs/receipts/lease/used-held semantics)",
+    "Cloud:src/ArcForges.Cloud.Modules.Entitlement/EntitlementModule.cs (append only actual task-owned quota registration)",
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Quota/** (primitive immutable quota-basis/current-authority/scoped contribution and accounting ports only; no wire duplicates or authority booleans)",
+    "Cloud:src/ArcForges.Cloud.Modules.Resource/QuotaAccounting/** and ResourceModule.cs (owned verified measurement/physical cleanup adapter, persistent receipt and exact-state participant only; no Entitlement table SQL, full upload pipeline remains CLOUD42)",
+    "Cloud:src/ArcForges.Cloud.Modules.Workspace/QuotaAuthority/** and WorkspaceModule.cs (only actual owned workspace current-state/ownership/permission read and opaque read-guard participant; no new Workspace business writes)",
+    "Cloud:storage/plans/entitlement/quota-accounting-*.sql and quota-kernel-publish.sql and quota-kernel-reserve.sql (owned exact basis/current guard and existing single-writer extension only)",
+    "Cloud:storage/plans/resource/quota-accounting-*.sql and storage/plans/workspace/quota-authority-*.sql (each owner exact bounded reads/records/guards; no foreign-table SQL)",
+    "Cloud:storage/plans/families/quota-accounting.*.sql and resource-quota-accounting.*.sql, families.json and families.expanded.json (only registered budget publication/new reservation and existing Resource accounting family scoped-plan union; preserve all previous family bytes/roles)",
+    "Cloud:eng/verification/storage-plans.ts (only closed new quota family participant/role/record registration and exact Entitlement-owned start/expiry predicates; no generic Identity securityExpiry/securityDue profile or privilege widening)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Migrations/pending/entitlement__quota-accounting-basis.sql and resource__quota-measurement.sql (new forward-only expand migrations only; integration owner assigns final number; no accepted migration edits)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Physical/manifest/entitlement.json and resource.json (only new quota_budget_basis/quota_reservation_basis and resource.quota_measurement tables/enums/indexes)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Quota/** (actual owned quota components and migrated SQLite/Worker composition only)",
+    "Cloud:tests/ArchitectureTests/** (exact owned layer/API binding only)",
+    "Cloud:eng/policy/dependency-policy.json and eng/policy/dependency-reviews/com-07-*.json (only actual changed-input new immutable successors)",
+    "Cloud:eng/provenance/** (only owned firstParty/input immutable successors and deterministic NOTICE)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/PlanManifest.g.cs and worker/storage/plans.generated.ts (sole coordinated regeneration from actual owned plan union)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Physical/PhysicalSchema.g.cs (regenerate exact admitted tables only)",
+    "Cloud:tests/worker/quota-accounting.test.ts (actual migrated named/family SQL and persistence/race/replay cases)",
+    "Cloud:package.json (append only owned offline quota-accounting test registration; no dependency/lock change)",
+    "Cloud:tests/worker/d1-physical-schema.test.ts and tests/worker/storage-plans-generator.test.ts and tests/worker/storage-plan-ownership.test.ts (exact new owned table/plan/family inventory, metadata/clock positives and all current ownership/bypass negatives preserved)",
+    "Cloud:tests/worker/release-provenance.test.ts (only actual sealed owned Worker SHA/bytes and observed closure-count successor; preserve history/negatives)",
+    "Cloud:.dockerignore (append only exact new owned source inclusion, preserve bin/obj and unrelated rules)",
+    "Cloud:src/ArcForges.Cloud/Composition/** (register exact real quota owner/store/participant adapter; missing producer remains typed unavailable)",
+    "Cloud:docs/quota-accounting.md (actual implementation, boundaries, receipts and deferred real acceptance)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/SharedFamilies/FamilyDefinitions.cs and FamilyGuards.cs and FamilyPlanVerifier.cs (only immutable closed quota-accounting current-basis/validity predicate metadata and exact owner-role verification; preserve all Identity securityExpiry/securityDue profiles and legacy hash-bound behavior)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Families/QuotaAccountingFamilyTests.cs and tests/worker/quota-family-generator.test.ts (actual immutable metadata, wrong owner/scope/role/time/hash negatives and same-batch execution; no fabricated production plan)",
+    "Cloud:tests/worker/d1-physical-columns.test.ts and d1-physical-keys.test.ts (only actual new owner table/enum/key inventory/count successors; retain all existing hostile identifiers and foreign ownership tests)"
    ],
    "shared": [
     {
@@ -20276,14 +20325,58 @@
     {
      "resource": "RES-cloud-policy-inputs",
      "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-storage-plans",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-d1-migrations",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-shared-transaction-families",
+     "mode": "append"
     }
    ],
-   "validation": "Offline tests: race admissions, quota downgrade, repeated cancellation, GC timeout, period rollover with held old-period use, boundary-reset, accounting-vs-committed-storage comparison, refusal-message.",
-   "evidence": "Accounting comparison result against actual committed storage; boundary-reset test result.",
+   "validation": "Actual core and migrated SQLite/Worker tests: closed unit/profile mapping, real period selection/action/grace boundaries, A-B-A no reset, current Config/revision/snapshot/term/budget/recovery races with all-or-none effects, delayed SQL expiry, checked overflow, multi-budget contention, restart/receipt replay/cancel-after-commit, immutable old-period settlement, downgrade and physical staging/committed cleanup/pin/dedup accounting. Only unavailable external authority/object transport may be substituted; no mocked deployment or OS isolation proof.",
+   "evidence": "Independent exact-head source/immutable-input review, applicable CI, actual production publication/deployment and delivered ledger; distinguish working owner components from whole real R2/accounting/series acceptance. Record exact missing composition owner and typed fail-closed boundary.",
    "baseline": {
     "state": "not-started"
    },
-   "complete": []
+   "complete": [
+    {
+     "type": "integration",
+     "task": "COM.18",
+     "need": "immutable validated quota semantic profile, persistence and actual normalized selected-term period source",
+     "why": "A string key and numeric limit cannot invent a unit, mode or service period."
+    },
+    {
+     "type": "integration",
+     "task": "POL.02",
+     "need": "actual signed approved quota-profile association, active Config source and Config-owned current-head opaque guard",
+     "why": "Preflight or a mirrored Entitlement head cannot close a Config activation race."
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.21",
+     "need": "actual signed production executor and same captured configured/current recovery composition",
+     "why": "Production quota stores must not use Foundation/probe executor or adopted generation."
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.82",
+     "need": "actual scope-bound opaque contribution and closed refusal producer",
+     "why": "New quota families bind every participant to the exact workspace/deployment scope."
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.11",
+     "need": "actual Workspace-owned current ownership/state and operation permission contribution",
+     "why": "Caller context IDs and operator profile hashes alone confer no workspace authority."
+    }
+   ],
+   "notes": "2026-10-07 quota semantic and atomic authority repair (docs/decisions/quota-semantic-and-atomic-authority-2026-10-07.md). Correct the nonexistent src/Cloud root to the actual Entitlement module and minimum owned Resource/Workspace support participants. COM18 is the semantic/period producer; POL02 owns signed profile association/current Config head, not quota semantics. Preserve C7 singleKernelWriter: every used/held mutation still executes its owned kernel contribution, no Resource SQL or asynchronous-only admission. Progressive core start remains available while actual source composition is mandatory completion. CLOUD42 owns full real R2 lifecycle acceptance and can consume the accounting contract; it is not a core-start barrier. No guessed unit/calendar/version0, caller authorization flag, success stub or fake physical deletion. Existing inherited implementations and ledgers remain unchanged."
   },
   {
    "id": "COM.08",
@@ -20920,6 +21013,86 @@
    "complete": []
   },
   {
+   "id": "COM.18",
+   "title": "Immutable quota semantics and selected entitlement-period producer",
+   "lane": "commerce",
+   "repo": "Cloud",
+   "kind": "producer",
+   "size": "M",
+   "obligations": [
+    {
+     "ref": "WP-42.06",
+     "part": "minimum immutable owner quota-unit/mode/combination profile and actual normalized selected-term period provenance producer; full accounting remains COM07"
+    }
+   ],
+   "outcome": "Entitlement delivers the complete closed quota semantic validator, immutable persistent profile store and actual period/current-basis source over owned stored revision/snapshot/term/actions. It preserves approved-source association through a required neutral Config boundary; it never grants approval from a hash or infers period/unit metadata.",
+   "provides": [
+    "quota-semantic-profile",
+    "selected-entitlement-period-source"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "COM.05",
+     "need": "actual resolver definition combinations and snapshot definition-version contract",
+     "why": "Metadata must match the retained resolver, not duplicate rules."
+    },
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "actual persisted snapshot/revision/terms/actions and module plan port",
+     "why": "Period provenance must retain physical period_ref and priority omitted by legacy summary reads."
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.72",
+     "need": "actual owner-bound module port composition",
+     "why": "Use the actual Entitlement descriptor/factory, no foreign SQL or invented module."
+    }
+   ],
+   "complete": [],
+   "writes": [
+    "Cloud:src/ArcForges.Cloud.Modules.Entitlement/Quota/Definitions/** and Quota/Periods/** (closed semantic artifact validator/store and actual owned term selection/current provenance; preserve COM05 resolver and snapshot canonical encoding)",
+    "Cloud:src/ArcForges.Cloud.Modules.Entitlement/EntitlementModule.cs (append exact actual profile/period owner registration only)",
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Quota/QuotaDefinitionContracts.cs and QuotaPeriodContracts.cs (immutable primitive validator/query/source contracts only; no caller-approved flag or Config internal reference)",
+    "Cloud:storage/plans/entitlement/quota-definition-*.sql and quota-period-*.sql (owned actual complete facts/keyset/persistent profile reads/writes; preserve existing terms-load and snapshot plans)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Migrations/pending/entitlement__quota-definition-profile.sql (one forward-only owned expand migration, integration-numbered; no accepted migration edits)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Physical/manifest/entitlement.json and PhysicalSchema.g.cs (only new immutable quota_definition_profile plus quota_definition_key shapes/indexes/triggers and generated map)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/PlanManifest.g.cs and worker/storage/plans.generated.ts (sole coordinated actual named-plan union regeneration)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Quota/Definitions/** and Quota/Periods/** and tests/worker/quota-definitions.test.ts (actual closed semantic, period selection and migrated persistence/immutable/replay/cancel/concurrency tests)",
+    "Cloud:tests/ArchitectureTests/** (only exact owner API/layer bindings)",
+    "Cloud:tests/worker/d1-physical-schema.test.ts and tests/worker/storage-plan-ownership.test.ts and tests/worker/entitlement-plans.test.ts (only actual owned table/plan inventory successor, preserve all existing negatives)",
+    "Cloud:package.json (append exact owned offline suite registration only)",
+    "Cloud:eng/policy/dependency-policy.json and eng/policy/dependency-reviews/com-18-*.json and eng/provenance/** (only actual owned input/firstParty new immutable successors, no coordinate upgrades)",
+    "Cloud:.dockerignore (exact new owned source inclusion only)",
+    "Cloud:docs/quota-definitions-and-periods.md (complete contract/source/refusal and component delivery evidence)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-cloud-storage-plans",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-d1-migrations",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-host-composition",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-policy-inputs",
+     "mode": "append"
+    }
+   ],
+   "validation": "Complete real owner components: canonical bounded artifacts/unknown keys/duplicate/unit-mode-combination changes, exact version/hash/replay/immutable store, real normalized term/actions/priority/stable ties/start/end/authorizedAt/grace/no calendar, true positive revision/snapshot association, cancellation/restart/concurrency. Required unavailable approved-source adapter refuses; a fixture cannot prove signed/operator authority. Same-batch indexed key-ledger mismatch/insert-if-absent rejects concurrent differing-version meanings and removed/reintroduced semantic changes without unbounded historical JSON scans.",
+   "evidence": "Actual typed ports/core/store/adapter component receipts and independent review/CI/delivery; actual approved configuration composition is retained under POL02 and COM07 completion, not represented as a producer fake.",
+   "baseline": {
+    "state": "not-started"
+   },
+   "notes": "Minimum recursively admitted prerequisite under docs/decisions/quota-semantic-and-atomic-authority-2026-10-07.md. Entitlement owns unit/mode/combination/selected-term semantics. Config consumes the validator and owns signed immutable approval/association; COM18 does not start or complete on whole POL02, avoiding a cycle while providing full source-bound fail-closed adapter and actual period persistence. Storage gauges never reset; period identity uses actual immutable normalized service_term facts, not subscription/calendar. COM05 definitions/rebuild rules and COM16 historical source plans remain intact. Implement complete production contracts and all feasible real owner tests; no fabricated live Config approval or current version0."
+  },
+  {
    "id": "POL.01",
    "title": "The four boundaries",
    "lane": "policy",
@@ -21046,7 +21219,12 @@
     "Cloud:tests/worker/configuration-objects.test.ts (actual immutable facade auth/hash/size/conflict/cancel negatives)",
     "Cloud:src/ArcForges.Cloud.Storage.D1/Physical/manifest/config.json (owner immutable activation evidence parts and exact manifest/context references only)",
     "Cloud:package.json (append ONLY task-owned configuration-objects.test.ts to existing explicit Worker component test script; preserve dependency/toolchain/version/lock closure)",
-    "Cloud:Directory.Packages.props (exact actual published CON28 CloudInternal and Validation producer pins plus only mandatory same-release first-party transitive peers; preserve unrelated PublicApi/third-party coordinates unless actual producer metadata requires them)"
+    "Cloud:Directory.Packages.props (exact actual published CON28 CloudInternal and Validation producer pins plus only mandatory same-release first-party transitive peers; preserve unrelated PublicApi/third-party coordinates unless actual producer metadata requires them)",
+    "Cloud:src/ArcForges.Cloud.Modules.Configuration/QuotaAuthority/** (actual signed immutable quota-profile association/current-head source and same-issuer scoped opaque Config read guard; no Entitlement SQL or quota writer)",
+    "Cloud:storage/plans/config/quota-authority-*.sql (only Config-owned current-head/exact approved profile association guards and reads)",
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Configuration/QuotaConfigurationSource.cs (neutral immutable approved/current profile association and Config-owned family participant contract only)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Configuration/QuotaAuthority/** (actual signed profile validation/association/current-head race and historical replay tests)",
+    "Cloud:docs/quota-configuration-authority.md (exact approval/head contract and deferred composition)"
    ],
    "shared": [
     {
@@ -21068,6 +21246,10 @@
     {
      "resource": "RES-cloud-d1-migrations",
      "mode": "append"
+    },
+    {
+     "resource": "RES-shared-transaction-families",
+     "mode": "append"
     }
    ],
    "validation": "Offline tests: unknown key/field/version, invalid commercial route, secret-in-body, conflicting rule priority, stale parent, mixed-replica version, rollback; AOT-publish check.",
@@ -21087,9 +21269,15 @@
      "task": "CLOUD.19",
      "need": "actual separate Operator origin/session/CSRF and current verified Entra directory ingress adapter",
      "why": "Config core/store/contracts advance; production operator authority must use actual browser-session producer and cannot alias customer/native/PAT identity."
+    },
+    {
+     "type": "integration",
+     "task": "COM.18",
+     "need": "actual owner quota semantic validator and immutable profile contract",
+     "why": "Config validates and associates exact owner bytes; it cannot invent quota units/periods from legacy keys."
     }
    ],
-   "notes": "\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Owns the missing authoritative approved configuration source consumed by COM.02, including canonical content hash/revision/validity/publisher and distinct dual approval. Core catalogue implementation does not wait on configuration acceptance; its follow-up retains actual source integration.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. Dedicated generated configuration RPCs require a second approval ID but Configuration is absent from the generic OperatorMutation union. Config owns its dedicated proposal/approval records and ports; generic Audit ownership is preserved. Implement signed distinct current eligible subjects, exact realm/environment/parent/hash/revision/CAS/recovery generation and <=15-minute expiry, durable platform receipts and atomic activation/proposal consumption. Keep published ConfigurationDocument exact schema unchanged. Resolve immutable owner-only catalogue.offer-materialization.v1 profiles from signed referenced artifacts, persist globally unique stable offer GUID and exact CatalogueCanonical projection bound to proposal/config hashes; absent/mismatched profiles refuse, never guess defaults. Host uses actual published generated PolicyBody validation, not a copied schema. The host current-directory adapter must verify trusted signed operator identity and fresh enabled app-role ID bindings at approval and execution; JWT roles are values, not configured app-role GUID authority. Missing/unknown directory refuses; customer/app-only principals cannot approve. Store assertion digests and subjects, never JWT/credentials.\n\n2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). Consume closed private config.activation-manifest.v1 with detached configured trusted-key RS256 signature over exact canonical bytes; persist canonical manifest/signature/keyId or an exact immutable verified signed-object reference and signed published call context, not raw JWT/identity blobs. Qualified verified subjects plus assertion digests and fresh directory authority suffice. Bounded owner-only immutable staging chunks preserve the existing 262144-byte ExecutePlan request cap and 1MiB ConfigurationDocument schema; application reconstructs and revalidates actual SHA256/count/realm/context before atomic finalization. SQL guards immutable exact chunk identities/hash/count/realm/expiry; no unverified SQL cryptographic function or trusted user-supplied digest substitutes for complete content verification. Reopen/retry resolves only exact immutable artifact hashes, never mutable latest aliases. Actual cancellation/conflict/expiry/corrupt-chunk/unknown-receipt/concurrency/persistence component tests are required. Root-approved actual projection capacity: <=512 chunks, <=32768 surrogate-pair-safe UTF16 code units/chunk, total canonical UTF8 <=16 MiB, <=15-minute TTL. Measure actual escaped request/reply sizes; bounded read slices <=16384 Unicode scalar points or smaller and small receipt finalization. Keep ConfigurationDocument <=1MiB and ExecutePlan request <=262144 bytes. Manifest contextHash binds exact safe published business context excluding transport correlation; durable canonical_manifest/public signature/keyId/call_context records contain no JWT/identity blobs. Private manifest artifacts <=1024/canonical bytes<=1MiB preserves complete valid256offers/model/profileclosure; contextHash hashes exact canonical {contextId,contextKind,environment,purpose,realmId,reason} with published case/incident semantics and transport correlation excluded. ExecutePlanResponse remains<=262144, so document/manifest reads are sliced and finalization returns a small receipt. VerifiedD1 string/BLOB/row<=2000000bytes, SQLstatement<=100000bytes, queryparams<=100/functionargs<=32. Fixed immutable component_key partitions document/manifest/context/each exact typed Catalogue projection; SQL reconstructs only bounded components and atomically stages all rows, never whole16MiBtemporaryaggregate. Application alone reassembles andSHAvalidatesfullinput; component identities/hash/count/realm/expiry remain guarded.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Dedicated Operator ingress verifies exact configured Entra user signature/issuer/audience/client and current trusted directory before handler; each mutation enforces exact published case/incident, OP/SE and <=5-minute MFA. Single bounded bearer assertion only, no customer cookies/session alias, no raw JWT persistence. Production Config objects use signed private objects.internal fixed route and realm/configuration/artifacts/objectUUID/SHA256 prefix, exact immutable owner id/hash/length, bounded reads and timeout/cancel typed refusal, redirects disabled; existing Foundation diagnostic probe is not a production adapter. Actual referenced bytes are fully verified. Stage/Get oversized documents consume actual CON28 producer after publication, exactly-one inline/ref; no URL/latest/canonicalJson sentinel/transport increase. Existing inline/core code advances independently. Referenced payload is exact complete generated ConfigurationDocument protobuf binary bytes<=2MiB; exact objectSHA/length checked before parsing, decoded documentHash independently binds canonicalJson<=1MiB and existing shape constraints. No canonical-protobuf claim or inline RPC budget increase. Signed fixed Config object facade enforces operator authority, realm prefix and bounded range/stream reads. Root preserves full published purpose/reason Text bounds; no silent128/4096 narrowing. Signed canonical business context and manifest are promoted as bounded immutable durable components with exact proposal identity/hash/length references, not oversized proposal JSON rows. Verified final authority survives staging TTL purge, reopen/cancel/retry; completecontextHash truncates nothing. Immutable activation_evidence_part holds finalized canonical manifest/context bytes in bounded<=32768UTF16 parts with proposal/component/ordinal PK and exact content hash. Proposal stores manifest_ref/context_ref identity/hash/UTF8length/part-range references plus keyID/public signature; no oversized inline JSON. Preserve whole published purpose/reason each<=262144UTF8, partition context metadata/purpose/reason, full six-fieldcontextHashverifiedinapplication. Promote verified parts atomically and protect finalauthorityfromstagingTTLpurge; approvedretentiongovernsdeletion. Unknown/missing/conflicting parts orfullSHA mismatchdeny.\n\n2026-10-06 guarded production follow-up (docs/decisions/guarded-production-followup-2026-10-06.md). Register the actual signed configuration-object Worker component suite in the existing explicit npm test list; a standalone passing suite must not be silently absent from required CI. No dependency/toolchain or lock change. Broader semantic protocol/document-envelope persistence producers remain a separate reviewed repair.\n\nExact CON28 consumer binding requires the actual new generated CloudInternal pin, not only Validation287.1: documentRef cannot compile against old287.1. Consume reviewed published producers and regenerate only affected owned locks/immutable evaluated-input receipts; do not guess metadata or broaden third-party upgrades."
+   "notes": "\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Logical source paths are bound to actual existing projects, preserving namespace/package identities. New production behavior requires full contracts, logic, persistent adapters and feasible composition tests; unavailable provider/OS endpoints may be faked in component tests but never become deployed or commercial evidence. Root dependency/admission/lock changes require the exact published producer and a reviewed successor, not hash-only refresh.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Owns the missing authoritative approved configuration source consumed by COM.02, including canonical content hash/revision/validity/publisher and distinct dual approval. Core catalogue implementation does not wait on configuration acceptance; its follow-up retains actual source integration.\n\n2026-10-06 verified production follow-up (docs/decisions/production-delivery-followup-2026-10-06.md). This scoped amendment governs conflicting older path/model notes; preserve closed records, package identities and immutable history. Dedicated generated configuration RPCs require a second approval ID but Configuration is absent from the generic OperatorMutation union. Config owns its dedicated proposal/approval records and ports; generic Audit ownership is preserved. Implement signed distinct current eligible subjects, exact realm/environment/parent/hash/revision/CAS/recovery generation and <=15-minute expiry, durable platform receipts and atomic activation/proposal consumption. Keep published ConfigurationDocument exact schema unchanged. Resolve immutable owner-only catalogue.offer-materialization.v1 profiles from signed referenced artifacts, persist globally unique stable offer GUID and exact CatalogueCanonical projection bound to proposal/config hashes; absent/mismatched profiles refuse, never guess defaults. Host uses actual published generated PolicyBody validation, not a copied schema. The host current-directory adapter must verify trusted signed operator identity and fresh enabled app-role ID bindings at approval and execution; JWT roles are values, not configured app-role GUID authority. Missing/unknown directory refuses; customer/app-only principals cannot approve. Store assertion digests and subjects, never JWT/credentials.\n\n2026-10-06 narrow production addendum (docs/decisions/production-delivery-addendum-2026-10-06.md). Consume closed private config.activation-manifest.v1 with detached configured trusted-key RS256 signature over exact canonical bytes; persist canonical manifest/signature/keyId or an exact immutable verified signed-object reference and signed published call context, not raw JWT/identity blobs. Qualified verified subjects plus assertion digests and fresh directory authority suffice. Bounded owner-only immutable staging chunks preserve the existing 262144-byte ExecutePlan request cap and 1MiB ConfigurationDocument schema; application reconstructs and revalidates actual SHA256/count/realm/context before atomic finalization. SQL guards immutable exact chunk identities/hash/count/realm/expiry; no unverified SQL cryptographic function or trusted user-supplied digest substitutes for complete content verification. Reopen/retry resolves only exact immutable artifact hashes, never mutable latest aliases. Actual cancellation/conflict/expiry/corrupt-chunk/unknown-receipt/concurrency/persistence component tests are required. Root-approved actual projection capacity: <=512 chunks, <=32768 surrogate-pair-safe UTF16 code units/chunk, total canonical UTF8 <=16 MiB, <=15-minute TTL. Measure actual escaped request/reply sizes; bounded read slices <=16384 Unicode scalar points or smaller and small receipt finalization. Keep ConfigurationDocument <=1MiB and ExecutePlan request <=262144 bytes. Manifest contextHash binds exact safe published business context excluding transport correlation; durable canonical_manifest/public signature/keyId/call_context records contain no JWT/identity blobs. Private manifest artifacts <=1024/canonical bytes<=1MiB preserves complete valid256offers/model/profileclosure; contextHash hashes exact canonical {contextId,contextKind,environment,purpose,realmId,reason} with published case/incident semantics and transport correlation excluded. ExecutePlanResponse remains<=262144, so document/manifest reads are sliced and finalization returns a small receipt. VerifiedD1 string/BLOB/row<=2000000bytes, SQLstatement<=100000bytes, queryparams<=100/functionargs<=32. Fixed immutable component_key partitions document/manifest/context/each exact typed Catalogue projection; SQL reconstructs only bounded components and atomically stages all rows, never whole16MiBtemporaryaggregate. Application alone reassembles andSHAvalidatesfullinput; component identities/hash/count/realm/expiry remain guarded.\n\n2026-10-06 production authority repair (docs/decisions/production-authority-repair-2026-10-06.md). Dedicated Operator ingress verifies exact configured Entra user signature/issuer/audience/client and current trusted directory before handler; each mutation enforces exact published case/incident, OP/SE and <=5-minute MFA. Single bounded bearer assertion only, no customer cookies/session alias, no raw JWT persistence. Production Config objects use signed private objects.internal fixed route and realm/configuration/artifacts/objectUUID/SHA256 prefix, exact immutable owner id/hash/length, bounded reads and timeout/cancel typed refusal, redirects disabled; existing Foundation diagnostic probe is not a production adapter. Actual referenced bytes are fully verified. Stage/Get oversized documents consume actual CON28 producer after publication, exactly-one inline/ref; no URL/latest/canonicalJson sentinel/transport increase. Existing inline/core code advances independently. Referenced payload is exact complete generated ConfigurationDocument protobuf binary bytes<=2MiB; exact objectSHA/length checked before parsing, decoded documentHash independently binds canonicalJson<=1MiB and existing shape constraints. No canonical-protobuf claim or inline RPC budget increase. Signed fixed Config object facade enforces operator authority, realm prefix and bounded range/stream reads. Root preserves full published purpose/reason Text bounds; no silent128/4096 narrowing. Signed canonical business context and manifest are promoted as bounded immutable durable components with exact proposal identity/hash/length references, not oversized proposal JSON rows. Verified final authority survives staging TTL purge, reopen/cancel/retry; completecontextHash truncates nothing. Immutable activation_evidence_part holds finalized canonical manifest/context bytes in bounded<=32768UTF16 parts with proposal/component/ordinal PK and exact content hash. Proposal stores manifest_ref/context_ref identity/hash/UTF8length/part-range references plus keyID/public signature; no oversized inline JSON. Preserve whole published purpose/reason each<=262144UTF8, partition context metadata/purpose/reason, full six-fieldcontextHashverifiedinapplication. Promote verified parts atomically and protect finalauthorityfromstagingTTLpurge; approvedretentiongovernsdeletion. Unknown/missing/conflicting parts orfullSHA mismatchdeny.\n\n2026-10-06 guarded production follow-up (docs/decisions/guarded-production-followup-2026-10-06.md). Register the actual signed configuration-object Worker component suite in the existing explicit npm test list; a standalone passing suite must not be silently absent from required CI. No dependency/toolchain or lock change. Broader semantic protocol/document-envelope persistence producers remain a separate reviewed repair.\n\nExact CON28 consumer binding requires the actual new generated CloudInternal pin, not only Validation287.1: documentRef cannot compile against old287.1. Consume reviewed published producers and regenerate only affected owned locks/immutable evaluated-input receipts; do not guess metadata or broaden third-party upgrades.\n\nQuota semantic and atomic authority repair 2026-10-07: consume COM18 actual closed owner profile; bind exact artifact/version/hash through the retained signed activation manifest and immutable proposal evidence. Expose server-only current/historical approved association and scoped Config head read contribution. COM07 joins the real head guard in the accounting batch; materialization alone never closes an activation/admission race. Config does not author Entitlement periods or write quota rows. Missing profile/head source fails closed. Full Config completion consumes COM18; COM18 does not depend on Config completion."
   },
   {
    "id": "POL.03",
