@@ -1,0 +1,17 @@
+# Actual private authentication deployment forwarding support
+
+This is a supporting source-path repair for the accepted authentication/Operator decisions. It changes no public/private wire, authentication authority, schema, protocol/key algorithm, policy trust or task outcome. Actual worker/env.ts does not exist. The actual C12 producer is worker/identity-provider/environment.ts (IdentityProviderEnvironment/identityProviderEnvironment); actual WorkerEnv is worker/foundation/entry.ts, and actual ContainerEnvironment/envVars composition is worker/index.ts. Foundation proof-only container-env is not production forwarding.
+
+## 1. Preserve the actual C12 producer
+
+Provider worker w-codex-20261006-provider owns the exact helper and coordinated index/type append. Its five current named bindings are ARCFORGES_IDENTITY_EGRESS, ARCFORGES_OPERATOR_ENTRA_CLIENT_SECRET, ARCFORGES_IDENTITY_CUSTODY_KEYRING, ARCFORGES_NOTIFICATION_AUTH_MATERIAL_KEYRING and ARCFORGES_NOTIFICATION_AUTH_RECIPIENT_HASH_KEYRING. Preserve all existing values/closed purpose profiles/private key bounds/egress and enableInternet=false. A configured string is forwarded exactly, including empty/invalid bytes so its lazy actual owner can return typed Unavailable; no trimming, default generation, arbitrary name, caller field or Foundation proof option substitutes for configuration. Missing bindings never become successful authority. Future signed policy/trust profile names require their own concrete reviewed producer, not a generic resolver in this repair.
+
+## 2. Two exact C19 bindings
+
+Policy worker w-codex-20261006-policy owns only the additive AF_OPERATOR_ASSERTION_SIGNING_JSON and AF_OPERATOR_ASSERTION_TRUST_JSON fields/name-list entries in that same actual helper. Provider serializes the shared helper/index handoff; no concurrent replacement of either owner's entries. Actual index import/type/spread consumes the one helper. WorkerEnv may append only its exact typed IdentityProviderEnvironment intersection when actual compilation requires it, retaining CloudBindings/Foundation proof type/default behavior unchanged. No duplicate environment file, second secret resolver, global secret forwarding or proof environment reuse.
+
+The C19 lazy owner performs the already accepted exact closed signing/trust JSON parsing, independent public-key matching, actual RSA/private buffer lifetime and typed unavailable refusal. The forwarder neither derives trust from the candidate nor returns/logs keys/config bytes. Existing normal health and unrelated routes remain constructible. This does not grant Internet, add a deployment key, install tools or claim a configured secret exists.
+
+## 3. Actual ordinary checks and completion
+
+The existing tests/worker/identity-provider-environment.test.ts verifies all five C12 names plus two C19 additions, exact raw preservation, omission of nonstring/missing values, refusal to copy unrelated/default/proof/caller entries and unchanged closed private forwarding. The actual owner C#/Worker tests retain their parsing/independent trust/typed missing-material behavior. No dependency/toolchain/public route/schema/CI budget changes or fake successful ports. Exact source review, ordinary type/format/component gates and actual owner source publication/deployment remain required. This repair appends only writes/notes to C12/C19; every existing graph field, obligation, outcome, start/completion, validation and evidence is preserved.
