@@ -1665,3 +1665,8 @@ These cannot be foreign keys ([AG-01](00-data-model-overview.md#rule-ag-01), [MD
 ## Authentication custody and anonymous mail additive profile (2026-10-07)
 
 The complete fields, nullability, state/expiry/dispatch constraints, indexes and ownership in [authentication-custody-and-provider-transport-2026-10-07.md](../../decisions/authentication-custody-and-provider-transport-2026-10-07.md) govern the additive identity_operator_provider_flow, notification_auth_flow_delivery and notification_auth_flow_delivery_attempt tables, exact browser purpose5 expand and real typed security_flow stepUpProof original snapshot. Existing known-user tables and native/browser/security row semantics remain unchanged. Only integration-numbered new migrations implement these additions; no provider policy/MFA/one-use or current authority is inferred from stored shape alone.
+
+
+## 2026-10-07 compact original authentication guard prerequisite
+
+The [focused compact authentication guard and physical invariant decision](../../decisions/compact-authentication-guards-and-physical-invariants-2026-10-07.md) governs the additive original credential currentness/typed-flow byte CAS, fixed customer-provider parent lifetime and actual StepUp lifecycle triggers. Accepted baseline rows/migrations and existing generic guard/FRESH/Due meanings remain unchanged. Actual scoped issuer, physical discipline and owner evidence precede complete consumer activation; no source or deployment acceptance is inferred.
