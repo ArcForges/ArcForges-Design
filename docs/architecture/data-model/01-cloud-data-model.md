@@ -1643,3 +1643,8 @@ These cannot be foreign keys ([AG-01](00-data-model-overview.md#rule-ag-01), [MD
 | <a id="rule-cv-06"></a>CV-06 | A cross-workspace read fails at the data layer with a forged scope | [WP-21.06](../../planning/work-packages/21-cloud-host-and-persistence.md#rule-wp-21.06) |
 | <a id="rule-cv-07"></a>CV-07 | Every cross-module invariant in `§12` has a detection check that fires on an induced violation | [WP-46.04](../../planning/work-packages/46-backup-recovery-and-data-health.md#rule-wp-46.04) |
 | <a id="rule-cv-08"></a>CV-08 | Entitlement resolves correctly with the entire `commerce` schema absent ([EO-05](../16-billing-and-commerce-architecture.md#rule-eo-05)) | [WP-42.00](../../planning/work-packages/42-commerce-entitlement-and-credits.md#rule-wp-42.00) |
+
+
+## Authentication custody and anonymous mail additive profile (2026-10-07)
+
+The complete fields, nullability, state/expiry/dispatch constraints, indexes and ownership in [authentication-custody-and-provider-transport-2026-10-07.md](../../decisions/authentication-custody-and-provider-transport-2026-10-07.md) govern the additive identity_operator_provider_flow, notification_auth_flow_delivery and notification_auth_flow_delivery_attempt tables, exact browser purpose5 expand and real typed security_flow stepUpProof original snapshot. Existing known-user tables and native/browser/security row semantics remain unchanged. Only integration-numbered new migrations implement these additions; no provider policy/MFA/one-use or current authority is inferred from stored shape alone.
