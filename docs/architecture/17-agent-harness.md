@@ -567,3 +567,6 @@ Web search uses the fixed Brave profile in client journeys and wire WebSearchReq
 ## 2026-10-07 actual execution output implementation
 
 The [reviewed execution output producer decision](../decisions/execution-output-and-logical-body-producer-2026-10-07.md) binds the actual Task/Chat/Resource/RunStream implementations, Chat-owned physical transient receipt mapping, logical decoded-body facade and exact guarded terminal/ack/purge authority. Existing history/stream/retention/accounting/permission limits and real producer acceptance remain required; source composition or projections never invent canonical completion.
+
+
+The focused AIR09 independently published producer supplies actual verified complete rank/Unicode/framing material, bounded real BPE/scalar token IDs and faithful whole-input rendering/count. Existing POL02 Stage/current/historical source, AIR00 Agent/route/current raw provider execution, HAR01 protected context and AST01 current grant adapters consume actual AIR09/CON36 producers. Counts use the exact provider raw=true bytes/hash, preserve full source/tool/context lineage and never estimate characters/quotas, count fragments additively or infer readiness from signed references. Unsupported arm/template refuses before admission/debit. See [the focused decision](../decisions/approved-model-context-and-exact-rendering-producer-2026-10-07.md).
