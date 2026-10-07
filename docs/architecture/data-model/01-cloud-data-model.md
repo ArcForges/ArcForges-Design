@@ -1671,3 +1671,8 @@ The complete fields, nullability, state/expiry/dispatch constraints, indexes and
 ## 2026-10-07 compact original authentication guard prerequisite
 
 The [focused compact authentication guard and physical invariant decision](../../decisions/compact-authentication-guards-and-physical-invariants-2026-10-07.md) governs the additive original credential currentness/typed-flow byte CAS, fixed customer-provider parent lifetime and actual StepUp lifecycle triggers. Accepted baseline rows/migrations and existing generic guard/FRESH/Due meanings remain unchanged. Actual scoped issuer, physical discipline and owner evidence precede complete consumer activation; no source or deployment acceptance is inferred.
+
+
+## Operator origin/session custody successor
+
+The exact original Begin observation fields, Identity-owned operator session binding, base/flow foreign keys, immutable session identity/CSRF/evidence association, replacement-conflict refusal and separately reviewed physical retention in [operator-session-custody-and-atomic-completion-2026-10-07.md](../../decisions/operator-session-custody-and-atomic-completion-2026-10-07.md) govern these additive expand outputs. The existing Operator base has no revision; the new positive sidecar revision is the C12 prior-session witness. Successful step-up atomically revokes the old base and issues fresh session/CSRF/binding without extending its original absolute deadline. No customer identity alias or stored shape grants current authority.
