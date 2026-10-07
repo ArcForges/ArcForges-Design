@@ -11,7 +11,7 @@ Both observations are `generic-api-key` at immutable DEV.01 commit `389039026a5d
 | Immutable file | 1-based line | Exact complete line, excluding line terminator | UTF8 bytes / SHA256 | Entire original Git blob SHA256 |
 |---|---:|---|---|---|
 | `src/ArcForges.Cloud/Composition/ApplicationPresenceModule.cs` | 12 | `    internal const string CredentialKey = "application.presence.v1";` | 68 / `e21b5c465a2e80280395a1157f9baf6989d6f9c669e5f7a99ab8ea7f4e7df49b` | `b903a616e7450c168a55e40faa1b84f274484321383a5e2aebac5b817fdd2251` |
-| `tests/ArcForges.Cloud.Tests/Presence/KeyedPresenceIngressTests.cs` | 13 | `    private const string Key = "application.presence.v1";` | 57 / `6c64ad9767c12a4452be6685253a7e23926c9df85006eb7dac714e92b455da28` | `5d6f7cc9de7bdd2d49af1188412adacd0ee2ab420dac8a25c05545da1dfeaa633` |
+| `tests/ArcForges.Cloud.Tests/Presence/KeyedPresenceIngressTests.cs` | 13 | `    private const string Key = "application.presence.v1";` | 57 / `6c64ad9767c12a4452be6685253a7e23926c9df85006eb7dac714e92b455da28` | `5d6f7c9de7bdd2d49af1188412adacd0ee2ab420dac8a25c05545da1dfeaa633` |
 
 ## 2. Exactly two fingerprint exceptions
 
