@@ -31679,7 +31679,10 @@
     "Contracts:eng/operations/con-37.json, eng/check_operation_scope.py, eng/operation-scope-manifest.json and eng/generate_operation_catalog.py (one exact execution.getAdmissionReceipt Q/R1/AO human-session shard and actual descriptor/authorization/scope owner registration; all prior catalogue rows and hostile reachability checks retained)",
     "Contracts:eng/policy/dependency-policy.json, exact con-37-* reviewed evaluated-input successors, eng/provenance/** and NOTICE (actual immutable generated/schema/helper/descriptor/licence/input successors; no unrelated dependency upgrade)",
     "Contracts:docs/execution-admission-receipt.md and docs/reference/** (actual owned public source/schema/helper reference and existing immutable Dokka successor)",
-    "Contracts:tests/StructureTests/Program.cs (register actual --con37 fixture runner and normal full-suite hook, no stub test)"
+    "Contracts:tests/StructureTests/Program.cs (register actual --con37 fixture runner and normal full-suite hook, no stub test)",
+    "Contracts:eng/assistant_semantic_hash.py (only generator-time reuse of existing typed private writer/validator bodies or explicit closed roots/class/namespace/rule-extension hooks needed by execution-admission-intent.v1; immutable frozen47 and three default APIs/output bytes unchanged, unsupported/conflicting extensions fail closed; no runtime registry, reflection, reverse package edge or new known v1 field)",
+    "Contracts:tests/tooling/test_operation_scope.py (only actual query additive335/342 to336/343 current count maintenance and exact one-row HAR43 supplementary-oracle/source/human/PAT/risk/kind/binding hostile checks; original pinned oracle equality and every old boundary retained)",
+    "Contracts:tests/StructureTests/Con26OperationCatalogCases.cs (only actual generated Events catalogue7 to8 addition for execution.getAdmissionReceipt; PublicApi200 and closed twelve PAT operations remain exact, descriptor/metadata/source/immutability negatives unchanged; no broad expected-count relaxation)"
    ],
    "shared": [
     {
@@ -31700,7 +31703,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "Governing decision docs/decisions/execution-output-and-logical-body-producer-2026-10-07.md section7. Sole source producer w-codex-20261006-governance, serialized with actual CON33/Provider31/34 generators and Governance integration/publication. Closed read only two actual admission kinds; no generic receipt/secret reconstruction, notObserved/expired/unknown is never retransmit permission. Real original result co-commit remains Cloud owner. Distinct remote profile preserves immutable legacy Core queue/command hashes and registry04 secret exclusions."
+   "notes": "Governing decision docs/decisions/execution-output-and-logical-body-producer-2026-10-07.md section7. Sole source producer w-codex-20261006-governance, serialized with actual CON33/Provider31/34 generators and Governance integration/publication. Closed read only two actual admission kinds; no generic receipt/secret reconstruction, notObserved/expired/unknown is never retransmit permission. Real original result co-commit remains Cloud owner. Distinct remote profile preserves immutable legacy Core queue/command hashes and registry04 secret exclusions. Focused generator support is governed by docs/decisions/closed-execution-admission-generator-support-2026-10-07.md. Reuse the actual reviewed CON33 static typed emitter through explicit generator-only hooks; preserve all four default C#/TS/Kotlin helper output bytes, frozen47 field/type/presence/oneof/constraint/enum identities and six immutable golden projections. The only supplementary operation authority is accepted HAR43 section7 for execution.getAdmissionReceipt; old Design11 oracle remains immutable and equal for its original rows. Actual ordinary operation counts336/0/7/343 and actual Events8/PublicApi200 are additive maintenance, not authority from a count."
   }
  ],
  "adoptionSlices": [
