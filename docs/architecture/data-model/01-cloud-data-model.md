@@ -1681,3 +1681,7 @@ The exact original Begin observation fields, Identity-owned operator session bin
 
 
 The focused model-input repair reuses agent_model_descriptor and its exact activated Config identity; descriptor_json remains the existing canonical closed ConfigurationModel projection. Modeled fixed original-insert/immutable binding prevents PK and configuration/model/purpose replacement; lifecycle only advances active-to-retired. Each real task_run/chat_run owns its additive immutable model input sidecar with actual descriptor/config/pin/rendered object hash/ref, never a second descriptor store, invented baseline ConfigVersion or synthesized run. See [the focused decision](../../decisions/approved-model-context-and-exact-rendering-producer-2026-10-07.md).
+
+## Durable anonymous authentication admission original profile (2026-10-07)
+
+Identity owns immutable identity_anonymous_admission_policy (realm singleton) and identity_anonymous_admission_bucket (fixed action/axis/subject/window logical key) exactly as defined in [docs/decisions/durable-anonymous-authentication-admission-2026-10-07.md](../../decisions/durable-anonymous-authentication-admission-2026-10-07.md). Original policy/key/window/capacity cannot reset counters through UPDATE/REPLACE or configuration rotation. Genuine selected two/three-axis initializer/charge/flow/current75 effects co-commit; final database-clock window and due cleanup are mandatory. Preserve accepted migrations, actual original request lineage and unknown command reconciliation.
