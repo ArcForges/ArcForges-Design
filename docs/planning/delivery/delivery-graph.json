@@ -10514,7 +10514,7 @@
     "notes": "Observed scaffold, unreviewed: the ArcScope host project (ArcForges.ArcScope) exists only as a hello-world Avalonia bootstrap; no host-port composition yet."
    },
    "earlyRiskProof": true,
-   "notes": "Narrow early-risk proof: first real evidence that the whole Assistant.Abstractions/host-port composition model survives Native AOT package-only consumption for an actual product. Failure here invalidates the composition model assumed by WP15 to WP17.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Owns the actual base Avalonia product shell, shared reusable assistant UI/host/lifecycle integration, menu/focus/state/RTL adapters, real security/audit/lease/observability composition and clean AOT consumer. Product-owned services may be existing own Core/Domain project references; package-only applies to external Platform/Contracts producers, not a nonexistent product-service package. No sibling product RPC/hub, second assistant executable or removal of shared AI capabilities. Native/device/manual assistive/reference-hardware checks remain distinct acceptance; component implementation, tests and feasible local runs continue.\n\n2026-10-06 guarded production follow-up (docs/decisions/guarded-production-followup-2026-10-06.md). Actual product composition consumes published exact Assistant.Abstractions, Desktop.Shell, Observability and Observability.Desktop packages and their approved licences; append only these exact publisher identities, plus Security.Secrets only for actual host use. Preserve all foreign publisher/adjacent name/wrong licence/hash/feed/version negatives and immutable closure receipts; no wildcard publisher or general allowance. Shared assistant remains a separate trusted actor-bound endpoint with real current lease/task/revocation and actor-bound audit, never a human fallback.\n\nGuarded follow-up ordering: GOV.07 is the actual existing ArcScope policy-host/tools-receipt producer; its artifact precedes these exact owned policy successor appends. No unrelated policy inputs or history may be replaced.\n\n2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md). Compose the actual shared AST01 factory/history/turn services with existing AssistantHost and UI, preserving one shared assistant and its real provider/tool capabilities. Use a distinct trusted Agent endpoint with real current lease/approval and actor-bound recorder. Product-private conversations, fake history/model dispatch and local-human fallback do not satisfy this composition. Actual profile/account/call-invoker adapters remain owner-bound; current missing remote authorization refuses explicitly while component implementation continues.\n\n2026-10-06 assistant runtime/UI producer repair (docs/decisions/assistant-runtime-and-ui-producers-2026-10-06.md). Consume actual published Assistant.Avalonia alongside the real shared Core/SQLite factory, preserving Hello/native/build-info opt-in proofs and current actor-bound human/Agent ports. Add only exact verified publisher/licence admission and mandatory locked peer closure; no duplicate private assistant or GUID-derived DeviceLocal authority.\n\nApplication-presence producer repair: actual owned Shell ApplicationRegistration/RegisteredApplicationTarget adapters consume generated Application heartbeat and current authenticated connector. Existing APP03 source scopes admit those paths. DEV01 is mandatory live-target completion, not a blanket shell implementation start. DeviceLocal OS profile/human identity never becomes Cloud User/Device/live epoch.\n\n2026-10-07 closed ordinary supporting repair (docs/decisions/closed-ordinary-owner-support-2026-10-07.md). The exact affected fixture/captured identifier/inactive helper gate/same-product friend support preserves all existing outcomes, authority, history and acceptance. Real source constraints and published producer closure remain mandatory; no test or package waiver.\n\n2026-10-07 product-owned DeviceLocal host identity repair (docs/decisions/local-product-host-identity-2026-10-07.md, P2-061). APP03 creates real OS-subject/LocalProfile/key-bound stable product-local device/install identity and per-launch instance with durable monotone local host generation. Initialization/crash/replay preserves the actual winner; key custody remains PLT64, no duplicate private key or guessed Cloud target. Local host lifetime is not DEV01 server epoch; explicit local grants and distinct shared assistant actor/current lease/approval/audit remain mandatory. Existing starts/outcome/advanced completion and package-only external consumption are unchanged.",
+   "notes": "Narrow early-risk proof: first real evidence that the whole Assistant.Abstractions/host-port composition model survives Native AOT package-only consumption for an actual product. Failure here invalidates the composition model assumed by WP15 to WP17.\n\n2026-10-06 production-delivery repair (docs/decisions/production-delivery-2026-10-06.md). This amendment governs conflicting historical scope notes; preserve completed evidence, immutable history and package identities. Owns the actual base Avalonia product shell, shared reusable assistant UI/host/lifecycle integration, menu/focus/state/RTL adapters, real security/audit/lease/observability composition and clean AOT consumer. Product-owned services may be existing own Core/Domain project references; package-only applies to external Platform/Contracts producers, not a nonexistent product-service package. No sibling product RPC/hub, second assistant executable or removal of shared AI capabilities. Native/device/manual assistive/reference-hardware checks remain distinct acceptance; component implementation, tests and feasible local runs continue.\n\n2026-10-06 guarded production follow-up (docs/decisions/guarded-production-followup-2026-10-06.md). Actual product composition consumes published exact Assistant.Abstractions, Desktop.Shell, Observability and Observability.Desktop packages and their approved licences; append only these exact publisher identities, plus Security.Secrets only for actual host use. Preserve all foreign publisher/adjacent name/wrong licence/hash/feed/version negatives and immutable closure receipts; no wildcard publisher or general allowance. Shared assistant remains a separate trusted actor-bound endpoint with real current lease/task/revocation and actor-bound audit, never a human fallback.\n\nGuarded follow-up ordering: GOV.07 is the actual existing ArcScope policy-host/tools-receipt producer; its artifact precedes these exact owned policy successor appends. No unrelated policy inputs or history may be replaced.\n\n2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md). Compose the actual shared AST01 factory/history/turn services with existing AssistantHost and UI, preserving one shared assistant and its real provider/tool capabilities. Use a distinct trusted Agent endpoint with real current lease/approval and actor-bound recorder. Product-private conversations, fake history/model dispatch and local-human fallback do not satisfy this composition. Actual profile/account/call-invoker adapters remain owner-bound; current missing remote authorization refuses explicitly while component implementation continues.\n\n2026-10-06 assistant runtime/UI producer repair (docs/decisions/assistant-runtime-and-ui-producers-2026-10-06.md). Consume actual published Assistant.Avalonia alongside the real shared Core/SQLite factory, preserving Hello/native/build-info opt-in proofs and current actor-bound human/Agent ports. Add only exact verified publisher/licence admission and mandatory locked peer closure; no duplicate private assistant or GUID-derived DeviceLocal authority.\n\nApplication-presence producer repair: actual owned Shell ApplicationRegistration/RegisteredApplicationTarget adapters consume generated Application heartbeat and current authenticated connector. Existing APP03 source scopes admit those paths. DEV01 is mandatory live-target completion, not a blanket shell implementation start. DeviceLocal OS profile/human identity never becomes Cloud User/Device/live epoch.\n\n2026-10-07 closed ordinary supporting repair (docs/decisions/closed-ordinary-owner-support-2026-10-07.md). The exact affected fixture/captured identifier/inactive helper gate/same-product friend support preserves all existing outcomes, authority, history and acceptance. Real source constraints and published producer closure remain mandatory; no test or package waiver.\n\n2026-10-07 product-owned DeviceLocal host identity repair (docs/decisions/local-product-host-identity-2026-10-07.md, P2-061). APP03 creates real OS-subject/LocalProfile/key-bound stable product-local device/install identity and per-launch instance with durable monotone local host generation. Initialization/crash/replay preserves the actual winner; key custody remains PLT64, no duplicate private key or guessed Cloud target. Local host lifetime is not DEV01 server epoch; explicit local grants and distinct shared assistant actor/current lease/approval/audit remain mandatory. Existing starts/outcome/advanced completion and package-only external consumption are unchanged.\n\nProgressive custody publication under docs/decisions/progressive-installation-custody-publication-2026-10-07.md: the DeviceLocal host binding consumes actual published PLT65 custody identity/core, with real package-source/currentCI/publication receipts. PLT64 full signer and CON34/CON40 are not a prerequisite for this account-free local custody use; no Cloud/device/remote signing authority follows from a local key.",
    "complete": [
     {
      "type": "integration",
@@ -10542,9 +10542,9 @@
     },
     {
      "type": "integration",
-     "task": "PLT.64",
-     "need": "actual published purpose-separated installation credential identity/custody for DeviceLocal host binding",
-     "why": "The product-owned local ledger reuses the genuine shared protected-key broker and expected SPKI/version. Ledger/shell implementation progresses independently; formal consumption cannot use a copied broker, fake protected key or future package coordinate."
+     "task": "PLT.65",
+     "need": "actual published existing Secrets installation credential identity/custody core",
+     "why": "DeviceLocal host ledger consumes the genuine published stable protected-key identity/custody subset, not the full five-operation native signer. Ledger/shell body progresses independently; no copied broker or future package coordinate."
     }
    ]
   },
@@ -31204,6 +31204,12 @@
      "task": "PLT.59",
      "need": "actual published shared package/source closure",
      "why": "Use actual admitted Secrets/SDK predecessor and immutable input provenance."
+    },
+    {
+     "type": "artifact",
+     "task": "PLT.65",
+     "need": "actual published existing Secrets installation custody core",
+     "why": "Compose the exact independently delivered stable custody subset; whole closed signer remains PLT64 with genuine CON34/CON40 final integration."
     }
    ],
    "complete": [
@@ -31211,7 +31217,7 @@
      "type": "integration",
      "task": "CON.34",
      "need": "actual published typed native transcript helper/fields",
-     "why": "Independent custody core progresses on delivered Secrets; final complete signer/publication requires genuine published typed helper and actual consumer tests."
+     "why": "The independently published custody subset does not require this future helper. Final complete five-operation signer requires genuine published typed CON34 helper and actual consumer tests."
     }
    ],
    "writes": [
@@ -31245,7 +31251,67 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "Observability is sole producer owner after PLT11 ledger/PRF04 readiness. Reuse real PLT40/59 Secrets/ISecretBackingStore; PLT56 and PLT63 are not existing prerequisites. Existing authenticated SecretBroker needs remote account/session and cannot serve first login. New purpose captures actual realm/closed product/platform/installation before remote user, domain-separates opaque target hash and preserves Windows target format/current-user isolation. No default key/version0 success, generic SignRaw or private-key getter. Stable version1 creation reads/reconciles actual protected existing tuple; corrupt or missing expected key never silently regenerates. Current-user cross-process per-installation lock is bounded/cancellation-aware; mutations/readback occur under it and abandoned lock rereads/reconciles. Semaphore-only guard is insufficient. Login never rotates a P256 key; no success-returning guessed rotation authorization. Actual private key buffers are internal and cleared; closed signer uses published CON34 initial/refresh helpers. Actual Mac/Linux store implementations are absent and return Unsupported, not successful interfaces; this task neither claims those adapters nor their OS acceptance. Exact final integration support under docs/decisions/installation-signing-consumer-support-2026-10-07.md: complete generated request/challenge/session shape validation consumes actual Contracts.Validation and its mandatory Events/Sdk.Contracts published same-release closure with PublicApi/Foundation. Do not fork validators or treat PublicApi as validator owner; all versions come from actual normal CON34 publication and independently reviewed evaluated locks/nuspec/admission."
+   "notes": "Observability is sole producer owner after PLT11 ledger/PRF04 readiness. Reuse real PLT40/59 Secrets/ISecretBackingStore; PLT56 and PLT63 are not existing prerequisites. Existing authenticated SecretBroker needs remote account/session and cannot serve first login. New purpose captures actual realm/closed product/platform/installation before remote user, domain-separates opaque target hash and preserves Windows target format/current-user isolation. No default key/version0 success, generic SignRaw or private-key getter. Stable version1 creation reads/reconciles actual protected existing tuple; corrupt or missing expected key never silently regenerates. Current-user cross-process per-installation lock is bounded/cancellation-aware; mutations/readback occur under it and abandoned lock rereads/reconciles. Semaphore-only guard is insufficient. Login never rotates a P256 key; no success-returning guessed rotation authorization. Actual private key buffers are internal and cleared; closed signer uses published CON34 initial/refresh helpers. Actual Mac/Linux store implementations are absent and return Unsupported, not successful interfaces; this task neither claims those adapters nor their OS acceptance. Exact final integration support under docs/decisions/installation-signing-consumer-support-2026-10-07.md: complete generated request/challenge/session shape validation consumes actual Contracts.Validation and its mandatory Events/Sdk.Contracts published same-release closure with PublicApi/Foundation. Do not fork validators or treat PublicApi as validator owner; all versions come from actual normal CON34 publication and independently reviewed evaluated locks/nuspec/admission.\n\nProgressive custody publication under docs/decisions/progressive-installation-custody-publication-2026-10-07.md: PLT65 owns the exact existing seven-member source/currentCI/normal Secrets custody publication subset using the same retained source history. This task remains the full closed signer/current consumer producer and is not marked delivered or complete by subset publication; all CON34/CON40/native/OS obligations remain."
+  },
+  {
+   "id": "PLT.65",
+   "title": "Published installation credential custody core",
+   "repo": "DesktopPlatform",
+   "lane": "platform",
+   "kind": "producer",
+   "size": "S",
+   "obligations": [
+    {
+     "ref": "WP-08.04",
+     "part": "existing implemented purpose-separated installation credential identity/custody core publication only; closed signer and all OS/host isolation acceptance remain PLT64"
+    }
+   ],
+   "outcome": "Publish the real existing Secrets installation custody core with its exact seven ordinary public methods plus immutable identity/scope and broker getters, stable protected P256 identity, actual Windows backing/current-subject lifecycle and explicit unsupported-platform refusals; source/current CI/normal existing package publication and truthful ledger are mandatory. No new API, project, package or dependency input is invented.",
+   "provides": [
+    "published-installation-credential-custody-core"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "PLT.40",
+     "need": "actual complete Secrets backing store/isolation classes",
+     "why": "Reuse existing package/backing store; do not weaken authenticated connector SecretBroker."
+    },
+    {
+     "type": "artifact",
+     "task": "PLT.59",
+     "need": "actual published shared package/source closure",
+     "why": "Use actual admitted Secrets/SDK predecessor and immutable input provenance."
+    }
+   ],
+   "complete": [],
+   "writes": [
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Security.Secrets/** (ONLY existing complete InstallationCredentialBroker custody subset and immutable identity/scope: Broker GetPlatformSupport/CreateForCurrentPlatform/InitializeNewInstallationAsync/OpenExistingAsync/DisposeAsync, Identity GetPublicKey/ToString and actual protected-store lifecycle/getters, owned tests/README; no signing API or new project/package/dependency)",
+    "DesktopPlatform:eng/policy/architecture-contract-tests.json (ONLY exact existing seven ordinary custody API method/test correspondences; the existing ToString test genuinely exercises its public behavior; every unrelated mapping/negative preserved)",
+    "DesktopPlatform:eng/provenance/files.json (ONLY actual existing six custody firstParty source inputs and their immutable exact source facts; no new dependency/tool/package input)",
+    "DesktopPlatform:docs/native-installation-credential-custody.md (ONLY exact progressive core/publication versus final signer and actual Windows/unsupported-platform assurance)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-contract-consumer-pins",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-policy-data",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-desktopplatform-package-inventory",
+     "mode": "append"
+    }
+   ],
+   "validation": "Reuse independently reviewed exact existing custody component evidence where unchanged; verify actual current applicable CI and real evaluated existing Secrets package/lock/licence/AOT gates. Actual initialization/open/restart/concurrency/cancellation/uncertain-write/current-subject/corruption and protected Windows observations remain factual. No signing vectors or absent Mac/Linux adapters are represented as complete.",
+   "evidence": "Independent exact-head source/API review, current applicable CI, actual normal existing Secrets package publication acknowledgements/immutable package-source hashes and truthful PLT65 ledger. Prior local component proof alone is not current CI or publication.",
+   "baseline": {
+    "state": "not-started",
+    "notes": "Existing source-only custody checkpoint 194a516cb0051014a8b1a2ea09515befcfc82aa3 is retained from PLT64 preparation; this new producer has no inferred task delivery/current CI/publication."
+   },
+   "notes": "Observability remains sole custody producer owner. Exact decision docs/decisions/progressive-installation-custody-publication-2026-10-07.md. Reuse the same retained source history/branch and existing Secrets package, with exact seven already implemented ordinary public methods and the immutable identity/scope/getters; no copied broker, new API/project/package/permission or dependency receipt. The actual Windows SameUserShared assurance is not hostile-sibling per-application OS isolation. PLT64 retains all five closed signer and CON34/CON40 final obligations/claim; the new core producer separately requires real source/currentCI/normal publication and ledger."
   },
   {
    "id": "COM.20",
