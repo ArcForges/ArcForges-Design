@@ -139,7 +139,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [PLT.16](../delivery/lanes/platform.md#task-plt-16) | [WP-08.90](08-local-ipc-and-registration.md#rule-wp-08.90) (full) | none |
 | [PLT.64](../delivery/lanes/platform.md#task-plt-64) | [WP-08.04](08-local-ipc-and-registration.md#rule-wp-08.04) (minimum pre-authentication installation credential purpose and actual Windows custody; original OS/host/secret isolation acceptance retained) | [PLT.40](../delivery/lanes/platform.md#task-plt-40) (artifact), [PLT.59](../delivery/lanes/platform.md#task-plt-59) (artifact) |
 
-**Consumers outside this package:** [APP.03](../delivery/lanes/app-composition.md#task-app-03), [CLOUD.12](../delivery/lanes/cloud.md#task-cloud-12), [NAT.01](../delivery/lanes/native.md#task-nat-01), [PLT.24](../delivery/lanes/platform.md#task-plt-24), [PLT.38](../delivery/lanes/platform.md#task-plt-38), [PLT.45](../delivery/lanes/platform.md#task-plt-45), [PRF.02](../delivery/lanes/runtime-proofs.md#task-prf-02), [PRF.04](../delivery/lanes/runtime-proofs.md#task-prf-04).
+**Consumers outside this package:** [APP.03](../delivery/lanes/app-composition.md#task-app-03), [CLOUD.12](../delivery/lanes/cloud.md#task-cloud-12), [NAT.01](../delivery/lanes/native.md#task-nat-01), [PLT.24](../delivery/lanes/platform.md#task-plt-24), [PLT.38](../delivery/lanes/platform.md#task-plt-38), [PLT.45](../delivery/lanes/platform.md#task-plt-45), [PLT.63](../delivery/lanes/platform.md#task-plt-63), [PRF.02](../delivery/lanes/runtime-proofs.md#task-prf-02), [PRF.04](../delivery/lanes/runtime-proofs.md#task-prf-04).
 
 <!-- delivery-graph:end -->
 
