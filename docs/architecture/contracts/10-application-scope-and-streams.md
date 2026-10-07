@@ -131,3 +131,8 @@ Each branch owns contiguous ordinals from0; resolve frozen ancestor prefixes the
 ## 2026-10-07 complete output and bounded recovery producer
 
 The [reviewed assistant output and recovery decision](../../decisions/assistant-output-snapshots-and-semantic-profiles-2026-10-07.md) governs compatible output snapshots, exact configuration pins, closed shared semantic-v1 hashes and explicit initial capacity-overflow recovery with candidate handoff refusal. Actual generated publication and real logical-body/tokenizer/current-target producers remain mandatory; no incomplete recovery or stream state is reported as successful canonical content. Existing durable/ephemeral, transaction, authorization, retention and original task obligations are retained.
+
+
+## 2026-10-07 actual execution output implementation
+
+The [reviewed execution output producer decision](../../decisions/execution-output-and-logical-body-producer-2026-10-07.md) binds the actual Task/Chat/Resource/RunStream implementations, Chat-owned physical transient receipt mapping, logical decoded-body facade and exact guarded terminal/ack/purge authority. Existing history/stream/retention/accounting/permission limits and real producer acceptance remain required; source composition or projections never invent canonical completion.
