@@ -229,7 +229,7 @@ Each slice classifies the tasks of one repository and lane against the frozen ba
 | <a id="task-adopt-02-release"></a>ADOPT.02.release | DesktopPlatform | [Release readiness and family release](release.md) | 2 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-runtime-proofs"></a>ADOPT.02.runtime-proofs | DesktopPlatform | [Runtime proofs](runtime-proofs.md) | 4 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-updater"></a>ADOPT.02.updater | DesktopPlatform | [Desktop distribution and update](updater.md) | 8 | none | [ADOPT.02](#task-adopt-02) |
-| <a id="task-adopt-03-contracts"></a>ADOPT.03.contracts | Contracts | [Contracts schema closures](contracts.md) | 32 | [CON.90](contracts.md#task-con-90), [CON.91](contracts.md#task-con-91), [CON.92](contracts.md#task-con-92) | [ADOPT.03](#task-adopt-03) |
+| <a id="task-adopt-03-contracts"></a>ADOPT.03.contracts | Contracts | [Contracts schema closures](contracts.md) | 33 | [CON.90](contracts.md#task-con-90), [CON.91](contracts.md#task-con-91), [CON.92](contracts.md#task-con-92) | [ADOPT.03](#task-adopt-03) |
 | <a id="task-adopt-03-extensions"></a>ADOPT.03.extensions | Contracts | [Extension platform and integrations](extensions.md) | 3 | none | [ADOPT.03](#task-adopt-03) |
 | <a id="task-adopt-03-governance"></a>ADOPT.03.governance | Contracts | [Family governance and policy tests](governance.md) | 2 | none | [ADOPT.03](#task-adopt-03) |
 | <a id="task-adopt-03-release"></a>ADOPT.03.release | Contracts | [Release readiness and family release](release.md) | 1 | none | [ADOPT.03](#task-adopt-03) |
@@ -252,7 +252,7 @@ Each slice classifies the tasks of one repository and lane against the frozen ba
 | <a id="task-adopt-07-runtime-proofs"></a>ADOPT.07.runtime-proofs | Cloud | [Runtime proofs](runtime-proofs.md) | 1 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-search"></a>ADOPT.07.search | Cloud | [Knowledge search and retrieval](search.md) | 8 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-simulator"></a>ADOPT.07.simulator | Cloud | [ArcScope Cloud simulator](simulator.md) | 9 | none | [ADOPT.07](#task-adopt-07) |
-| <a id="task-adopt-08-ai-routing"></a>ADOPT.08.ai-routing | AI | [Workers AI routing and metering](ai-routing.md) | 4 | none | [ADOPT.08](#task-adopt-08) |
+| <a id="task-adopt-08-ai-routing"></a>ADOPT.08.ai-routing | AI | [Workers AI routing and metering](ai-routing.md) | 5 | none | [ADOPT.08](#task-adopt-08) |
 | <a id="task-adopt-08-extensions"></a>ADOPT.08.extensions | AI | [Extension platform and integrations](extensions.md) | 1 | none | [ADOPT.08](#task-adopt-08) |
 | <a id="task-adopt-08-governance"></a>ADOPT.08.governance | AI | [Family governance and policy tests](governance.md) | 2 | none | [ADOPT.08](#task-adopt-08) |
 | <a id="task-adopt-08-harness"></a>ADOPT.08.harness | AI | [Cloud Harness](harness.md) | 6 | none | [ADOPT.08](#task-adopt-08) |
