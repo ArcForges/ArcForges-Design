@@ -1,0 +1,9 @@
+# Installation signing consumer and compatibility support
+
+This is a narrow supporting-scope successor to the accepted authentication custody decision. It adds no operation, authority, cryptographic profile, dependency version, project, producer or acceptance claim.
+
+CON.34 owns additive maintenance of the existing CON.07 Identity fixture and C#/TypeScript structure tests. The real new InstallationPossessionProof makes the existing message inventory177 rather than176. Append only actual approved Identity tags/types/optional-presence and native HTTP form fields; preserve49 operation keys, original tags/reservations/routes/enums and every existing negative assertion. Normal emitted native session vectors carry the genuine joint installation proof context/key version; token forms carry their exact command/proof adjuncts. This does not waive required native possession or weaken old decoder/validation refusals.
+
+PLT.64 final signing integration requires the actual generated Contracts.Validation owner, whose real closure also includes Events and Sdk.Contracts. Existing Secrets library/tests may consume only the exact actually published CON.34 PublicApi/Foundation/Validation/Events/Sdk.Contracts mandatory cohort and evaluated transitive closure. Regenerate their two owned SDK locks and strict actual nuspec/catalogue/admission/provenance successors under existing scopes. No candidate number is guessed, no sibling source or local validator fork is introduced, and no unrelated selector changes.
+
+The existing independent custody core may continue before CON.34 publication; full signing delivery still waits actual published helpers/shape validators and real affected component checks. Existing stable key/Windows isolation/unsupported OS rules and source owners remain unchanged. Require full independent exact-head planning review, paired generated consistency and root merge fence before newly scoped edits.
