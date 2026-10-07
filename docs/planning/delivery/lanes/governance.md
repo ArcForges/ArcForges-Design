@@ -4,7 +4,7 @@
 
 Accepted freeze, reconciliation and build-governance baselines, and the per-repository architecture and policy test suites.
 
-Tasks: 23 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web · Integration owner(s): AI integration owner, ArcScope integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner, Mobile integration owner, Web integration owner
+Tasks: 24 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web · Integration owner(s): AI integration owner, ArcScope integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner, Mobile integration owner, Web integration owner
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
@@ -31,6 +31,7 @@ Tasks: 23 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | [GOV.22](#task-gov-22) | Cloud devtool sharp security admission successor | producer | S | [GOV.09](#task-gov-09) (artifact) | not-started |
 | [GOV.23](#task-gov-23) | Desktop CI virtualenv security admission successor | producer | S | [GOV.09](#task-gov-09) (artifact) | not-started |
 | [GOV.24](#task-gov-24) | Closed non-wire operation metadata classification in shared Build.Policy | producer | M | [GOV.06](#task-gov-06) (artifact) | not-started |
+| [GOV.25](#task-gov-25) | Bounded owner index for non-wire policy evaluation | producer | S | [GOV.24](#task-gov-24) (artifact) | not-started |
 
 ## Tasks
 
@@ -573,10 +574,34 @@ Tasks: 23 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Start prerequisites | **artifact** [GOV.06](#task-gov-06) — actual published shared policy engine and generated-type recognition producer. *Why:* Repair the real retained engine; no consumer-side schema fiction or parallel scanner. |
 | Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [CON.26](contracts.md#task-con-26) |
+| Unblocks | [CON.26](contracts.md#task-con-26), [GOV.25](#task-gov-25) |
 | Write scope | `DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/PolicyModels.cs (optional exact non-wire metadata binding model only)`<br>`DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/PolicyEngine.cs (actual closed classification/validation integration only; preserve AT12 wire/generated checks)`<br>`DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/NonWireMetadataPolicy.cs (new internal bounded semantic/source/transport validation helper only)`<br>`DesktopPlatform:tests/ArchitectureTests/NonWireMetadataBindingTests.cs (real engine positive and hostile binding/shape/transport negatives)`<br>`DesktopPlatform:tests/ArchitectureTests/GeneratedTypeRecognitionTests.cs (only focused compatibility coverage if necessary)`<br>`DesktopPlatform:src/Build/ArcForges.Build.Policy/README.md (actual closed binding contract and preserved failure behavior)`<br>`DesktopPlatform:eng/provenance/files.json (append only actual owned new helper/test firstParty source identities; preserve histories)`<br>`DesktopPlatform:eng/packaging/packages.json (append only tools/architecture/NonWireMetadataPolicy.cs to actual Build.Policy requiredFiles; preserve all other package identities/inputs)`<br>`DesktopPlatform:eng/packaging/test_packages.py (focused missing owned NonWireMetadataPolicy.cs packaged helper negative only)`<br>`DesktopPlatform:eng/policy/dependency-reviews/gov-24-*.json (new immutable successor for actual owned packaging input change only; preserve predecessor)`<br>`DesktopPlatform:eng/policy/dependency-policy.json (only actual packages.json input hash and immutable review predecessor binding; no coordinate/toolchain/closure changes)` |
 | Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append), [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append), [RES-desktopplatform-package-inventory](../shared-resources.md#res-desktopplatform-package-inventory) (append) |
 | Validation | Actual semantic engine tests accept only the exact immutable non-wire policy/catalog shapes and reject arbitrary or mutable DTO, serializer/RPC payload, wrong/missing symbol/project/path/hash/kind, duplicate/ambiguous binding and generated-wire regression. Existing applicable Windows/Linux/static/AOT/security/package gates remain; no unrun policy result is presented as passing. |
 | Completion evidence | Independent exact-head review, passing actual engine component and applicable hosted CI, normal immutable Build.Policy package publication and exact Contracts consumer handoff. |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | 2026-10-06 non-wire policy producer repair (docs/decisions/non-wire-metadata-policy-repair-2026-10-06.md). Required by actual CON26 Security37510528428 job112430178460 ValidatePolicyResults AT12 failures on only PublicOperationPolicy/PublicOperationCatalog/EventOperationCatalog, with other retained build/history/CodeQL gates passing. AT12 governs wire types; these are immutable operation metadata, not fake wire DTOs. Closed kinds OperationAuthorizationPolicy and OperationAuthorizationCatalog require real semantic/source/transport validation; normalized source SHA binds exact UTF8 content with LF newline normalization and optional leading BOM removal only. No arbitrary allowlist, detector suppression or transport/serializer exemption. No new public package/project/dependency or third-party coordinate change. Pure owned source/README/new-test inventory requires no dependency receipt if no actual admitted input changes; preserve GOV23 Python receipt/closure. Original Final selection171 and all existing baselines/closed history unchanged.  Guarded production follow-up: the actual csproj already packages Architecture/*.cs and consumer props compiles it, but requiredFiles lacks the new helper. Append only that exact packaged helper identity and missing-helper negative. The actual packages.json admission input change requires a new immutable gov-24 receipt/hash successor; preserve all60NuGet/10Python coordinates, including GOV23 current Python inputs, and all unrelated package/gate semantics. No project or dependency upgrade. |
+
+<a id="task-gov-25"></a>
+
+### GOV.25 — Bounded owner index for non-wire policy evaluation
+
+**Outcome.** Replace repeated full owner scans in the real non-wire policy evaluation with an immutable bounded owner index, preserving exact Same comparison, first-owner precedence, every role, traversal ordering, admission limits and fail-closed results. Publish the actual existing Build.Policy package successor through normal delivery.
+
+| Field | Value |
+|---|---|
+| Owning repository | DesktopPlatform (`C:\MyFile\Projects\ArcForges\DesktopPlatform`); integration owner: DesktopPlatform integration owner, the holder of `roles/integration-desktopplatform` |
+| Claim, branch and ledger | `claims/gov-25` and ledger record `ledger/tasks/gov-25.md` in the Plan repository; task branch `task/gov-25` ([DLV-26](../README.md#rule-dlv-26)) |
+| Kind / size | producer / S |
+| Obligations | [WP-03](../../work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03) §7 evidence: operation-by-actor reachability matrix ([AZ-04](../../../architecture/08-security-architecture.md#rule-az-04)) for public/local/operator/CF/exception bindings — minimum actual policy scalability prerequisite preserving the existing non-wire admission semantics |
+| Provides | bounded-non-wire-policy-owner-index |
+| Start prerequisites | **artifact** [GOV.24](#task-gov-24) — actual complete non-wire metadata producer. *Why:* Optimize the independently approved real policy owner; no second evaluator or admission shortcut. |
+| Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Completion prerequisites | none |
+| Unblocks | [CON.26](contracts.md#task-con-26) |
+| Write scope | `DesktopPlatform:src/Build/ArcForges.Build.Policy/Architecture/NonWireMetadataPolicy.cs (only immutable bounded owner index replacing confirmed repeated full scans; exact Same/first-owner/all-role/traversal/limit semantics unchanged)`<br>`DesktopPlatform:tests/ArchitectureTests/NonWireMetadataBindingTests.cs (actual thousands-of-types owner-index/scaling and first-owner/all-role/duplicate/missing/foreign/refusal regressions; no timing-only pass or implementation-mirroring oracle)`<br>`DesktopPlatform:eng/provenance/files.json (only actual owned firstParty/source bindings if required; no reused receipt exemption)`<br>`DesktopPlatform:eng/policy/architecture-contract-tests.json (only exact owned test binding if actual new member requires it)` |
+| Shared resources | [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append), [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append), [RES-desktopplatform-package-inventory](../shared-resources.md#res-desktopplatform-package-inventory) (append) |
+| Validation | Compare complete actual policy outcomes/errors/order against retained semantic cases and independently calculated first-owner/all-role vectors, including thousands of real typed facts, duplicate/ambiguous/missing/foreign owners and every existing bound. Record measured scaling without brittle wall-clock success thresholds; run full real policy tests and normal Build.Policy publication. |
+| Completion evidence | Independent exact-head source review, applicable CI, actual normal package publication and measured retained facts; no timeout waiver or fake component producer. |
+| Baseline (unreviewed unless accepted) | not-started |
+| Notes | Gov is sole implementation owner after complete GOV24. Only the confirmed repeated per-node owner scan hotspot is admitted; no Same comparison, role or first-match semantics, admission limit, source reconstruction, generated-wire classification or public/package identity change. Preserve cancellation/failure and all existing negative cases. CON26 consumes the actual published successor and separately adds safe progress telemetry; full production gate remains required. |
