@@ -290,3 +290,8 @@ Task-only ChatServiceAppendMessageValue.Task is genuine TaskSnapshot authority. 
 Local stale fencing is Submit.ExpectedLocalRevision. A new transient request has no remote Chat row, so Pending.BaseRevision0 and RequestMeta.ExpectedRev absent; do not send local conversation revision as remote authority. Actual received turn/task owner revisions remain mandatory for controls. Complete source selection/hashes, output reset/snapshot and pinned execution configuration require their separate actual Contracts/server producer repair; this lifetime amendment grants none of those missing facts or remote activation.
 
 Core/Sqlite/backend source paths, evaluated immutable admission, public API/test mapping and exact publication remain governed by existing AST01 scopes. Ordinary real RAM/SQL/lifecycle/consumption/race components are mandatory. AST10 consumes the shared factory/services/views, never a product-private duplicate.
+
+
+## 2026-10-07 complete output and bounded recovery producer
+
+The [reviewed assistant output and recovery decision](../../decisions/assistant-output-snapshots-and-semantic-profiles-2026-10-07.md) governs compatible output snapshots, exact configuration pins, closed shared semantic-v1 hashes and explicit initial capacity-overflow recovery with candidate handoff refusal. Actual generated publication and real logical-body/tokenizer/current-target producers remain mandatory; no incomplete recovery or stream state is reported as successful canonical content. Existing durable/ephemeral, transaction, authorization, retention and original task obligations are retained.

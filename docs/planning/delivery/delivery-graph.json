@@ -10891,7 +10891,12 @@
     "DesktopPlatform:tests/AssistantAbstractionsTests/LifecycleTests.cs (only actual captured ephemeral view admission, store/partition/owner/generation/lifetime mismatch and durable default refusal tests)",
     "DesktopPlatform:tests/AssistantAbstractionsTests/LifecycleProfileSwitchTests.cs (only actual ephemeral failed/successful promotion and consumption-save/typing/retirement races)",
     "DesktopPlatform:tests/AssistantAbstractionsTests/LifecycleHardeningTests.cs (only actual new-text preservation, wrong/stale consumption receipt, blocked/abandoned save and disposal fencing)",
-    "DesktopPlatform:tests/AssistantAbstractionsTests/LifecycleShutdownTests.cs (only actual captured ephemeral cleanup/cached shutdown/foreign callback independence)"
+    "DesktopPlatform:tests/AssistantAbstractionsTests/LifecycleShutdownTests.cs (only actual captured ephemeral cleanup/cached shutdown/foreign callback independence)",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Abstractions/HostPorts.cs (required exact IAssistantGenerationDraftStore.GetAsync PK/current-generation seam only; no default successful null or legacy Recover contract weakening)",
+    "DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Abstractions/AssistantLifecycle.cs (only generation exact-PK resume/reconcile and explicit initial capacity-overflow RecoveryFailure; candidate profile overflow refuses before promotion)",
+    "DesktopPlatform:tests/AssistantAbstractionsTests/LifecycleTests.cs (only exact generation PK resume/reconcile versus legacy full recovery and current ID/rev/CID/lifetime/retirement refusal)",
+    "DesktopPlatform:tests/AssistantAbstractionsTests/LifecycleProfileSwitchTests.cs (only capacity-overflow candidate refusal preserving real old generation/drafts/RAM scopes)",
+    "DesktopPlatform:Directory.Packages.props and exact owned Core/Sqlite/component packages.lock.json (only actual published CON33 mandatory Foundation/PublicApi/Events/Validation/Sdk.Contracts same-release consumer closure; no guessed pin or unrelated upgrade)"
    ],
    "shared": [
     {
@@ -10922,7 +10927,7 @@
     "notes": "Observed none, unreviewed: No Assistant.Core or Assistant.Persistence.Sqlite project exists in DesktopPlatform yet."
    },
    "earlyRiskProof": true,
-   "notes": "Foundation for all other WP15 substeps and for WP16/17's reuse of conversation identities; a schema mistake here invalidates branches, attachments, projects, skills, search and export simultaneously, so it should land and stabilize early.\n\n2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md). The artifact includes the real reusable Assistant.Core AssistantSessionFactory/IAssistantSession and typed history/turn/draft services, backed by the complete model05 Assistant.Persistence.Sqlite owner store. Interfaces, a test factory, product-private conversation database or injected success factory are insufficient. OpenAsync validates existing AssistantHostOptions, actual IAssistantProfileStoreProvider, current IAssistantProfileAuthority and IAssistantTurnBackend; captured services remain immutable profile/generation-bound and refuse after revocation. DeviceLocal versus Authenticated profile authority is explicit, never inferred from GUIDs. The physical typed AssistantDataRoot path contains product/installation/profile and history.sqlite3. Temporary sessions are memory-only. Existing APP01/APP07 ports and original model05 obligations are retained. Independent nullable stable draft_id, complete versioned ConversationView and nullable actual turn/progress/run payloads follow the reviewed model05 amendment; no fake conversation or remote completion. Existing typed outbox is sole pending authority, using actual generated named Chat and Execution requests rather than generic Sync/ChangeProposal writes. Implement the real authenticated supplied-CallInvoker GrpcAssistantTurnBackend, durable after-commit retry/outbox, output cursor/hash/terminal verification and acknowledgement/cancellation. Only unavailable remote transport/auth sources may be faked in ordinary component tests; no client model loop. Consume exact published Events324/Validation324 and already admitted Microsoft.Data.Sqlite10.0.12, preserving package identities and third-party closure. One AST01 claim/PR: audit owns Core and factory/backend/profile tests; observability owns Sqlite and AssistantCoreTests/Sqlite. Shared typed store boundary is frozen before support integration. Actual normal package publication is required for product consumption; full provider/tool/OS/system acceptance remains separately owned. The normative history path is Path.Combine(options.DataRoot.GetProfileDirectory(partition), \"assistant\", \"history.sqlite3\") from the shipped typed producer; its layout is <platformDataRoot>/<product>/<installation N>/profiles/<profile N>. platformDataRoot is already the trusted OS-private base and may contain ArcForges; never add a second fixed segment or reconstruct a server/caller path. Actual same-owner metadata and semantic journal co-commit with receipt/outbox are explicitly assistant-owned derived support; the generic product Persistence journal cannot atomically join these tables or fabricate a Cloud UserId for DeviceLocal. Preserve receipt as sole immutable replay-result authority. Closed history.queue permits a real Cloud create request in outbox without a fake acknowledged canonical conversation. Failed/cancelled/interrupted terminal facts need no invented MessageView; successful completion requires an actual immutable terminal. FTS is derived only from committed nondeleted normal history and search joins canonical identity/tombstone state, never draft/prefix/pending/temporary bodies.\n\n2026-10-06 assistant runtime/UI producer repair (docs/decisions/assistant-runtime-and-ui-producers-2026-10-06.md). Complete actual durable turn recovery and genuine tool lineage: nullable actual chatTurn/task owner identity, immutable selected generated AgentProfile/SkillRecord snapshots, terminal seal, exact StreamPosition/global uint64 offset, and actual ToolCallId/ToolResultFor. Message/turn DTOs preserve these complete facts, never infer IDs/offsets from command or displayed text. Closed generated TaskServiceCancel arm and factual AcknowledgeHistoryPending are required; history.queue admits actual closed named controls, outbox.acknowledge co-commits only exact received result and pending command/hash. Branch own ordinals restart at0; resolve frozen ancestor prefixes then child own messages without global renumber/sort. Shared compaction-source.v1 frames exact known TranscriptMessage fields in resolved ancestry order and strict UTF8 summary hash, with bounded actual vectors. Real archive tool lineage consumes CON32 published optional fields; core/plaintext work advances independently. Existing safe lifecycle scope includes exact immutable-generation OpenProfileView admission, with no old-view redirection or mutable initial HostServices identity.\n\n2026-10-07 captured conversation lifetime repair (docs/decisions/assistant-captured-lifetime-2026-10-07.md). Actual RAM conversation kernel composes explicit Ephemeral drafts/views/scopes; profile History/Turns/Drafts remain immutable durable SQL. IAssistantDraftStore/AssistantDraft/view checkpoint preserve explicit actual Durable or Ephemeral lifetime, with default Durable for existing consumers. Ephemeral success means bounded live RAM retention, never crash recovery/Saved-to-disk; no SQLite/FTS/backup/recovered-draft queue fallback. Session OpenScope/OpenView captures actual conversation History/Turns/Drafts/Retirement and validates current owner/partition/generation; no old port redirects after profile switch. Failed synchronized promotion preserves old live RAM scope without copying private content to SQL; successful promotion retires it. Sealed internal AssistantDraftConsumption is minted by trusted Core only after matching actual Submit commit receipt and consumed-draft intent; savegate/viewgate checks exact captured store/generation/ID/rev/text/queue command, rotates freshDraftId/rev0, clears only unchanged submitted text and preserves newly typed full text as dirty. No caller Boolean, second Discard/delete, fake remote acceptance or paid resubmit. Genuine Task-only Chat Append snapshot is applied by UpdateHistoryTurnFacts to existing task_projection and real task owner in one transaction, monotone revisions/equal revision exact facts; HistoryTurn exposes owner reference and separate GetTask current facts, not frozen historical Task DTO, fabricated Progress/Run or extra task_proto column. Local transient pending BaseRevision0/wire ExpectedRev absent is distinct from actual Submit.ExpectedLocalRevision; real control owner revisions remain received facts.",
+   "notes": "Foundation for all other WP15 substeps and for WP16/17's reuse of conversation identities; a schema mistake here invalidates branches, attachments, projects, skills, search and export simultaneously, so it should land and stabilize early.\n\n2026-10-06 shared assistant/executor/approval producer repair (docs/decisions/assistant-executor-approval-producers-2026-10-06.md). The artifact includes the real reusable Assistant.Core AssistantSessionFactory/IAssistantSession and typed history/turn/draft services, backed by the complete model05 Assistant.Persistence.Sqlite owner store. Interfaces, a test factory, product-private conversation database or injected success factory are insufficient. OpenAsync validates existing AssistantHostOptions, actual IAssistantProfileStoreProvider, current IAssistantProfileAuthority and IAssistantTurnBackend; captured services remain immutable profile/generation-bound and refuse after revocation. DeviceLocal versus Authenticated profile authority is explicit, never inferred from GUIDs. The physical typed AssistantDataRoot path contains product/installation/profile and history.sqlite3. Temporary sessions are memory-only. Existing APP01/APP07 ports and original model05 obligations are retained. Independent nullable stable draft_id, complete versioned ConversationView and nullable actual turn/progress/run payloads follow the reviewed model05 amendment; no fake conversation or remote completion. Existing typed outbox is sole pending authority, using actual generated named Chat and Execution requests rather than generic Sync/ChangeProposal writes. Implement the real authenticated supplied-CallInvoker GrpcAssistantTurnBackend, durable after-commit retry/outbox, output cursor/hash/terminal verification and acknowledgement/cancellation. Only unavailable remote transport/auth sources may be faked in ordinary component tests; no client model loop. Consume exact published Events324/Validation324 and already admitted Microsoft.Data.Sqlite10.0.12, preserving package identities and third-party closure. One AST01 claim/PR: audit owns Core and factory/backend/profile tests; observability owns Sqlite and AssistantCoreTests/Sqlite. Shared typed store boundary is frozen before support integration. Actual normal package publication is required for product consumption; full provider/tool/OS/system acceptance remains separately owned. The normative history path is Path.Combine(options.DataRoot.GetProfileDirectory(partition), \"assistant\", \"history.sqlite3\") from the shipped typed producer; its layout is <platformDataRoot>/<product>/<installation N>/profiles/<profile N>. platformDataRoot is already the trusted OS-private base and may contain ArcForges; never add a second fixed segment or reconstruct a server/caller path. Actual same-owner metadata and semantic journal co-commit with receipt/outbox are explicitly assistant-owned derived support; the generic product Persistence journal cannot atomically join these tables or fabricate a Cloud UserId for DeviceLocal. Preserve receipt as sole immutable replay-result authority. Closed history.queue permits a real Cloud create request in outbox without a fake acknowledged canonical conversation. Failed/cancelled/interrupted terminal facts need no invented MessageView; successful completion requires an actual immutable terminal. FTS is derived only from committed nondeleted normal history and search joins canonical identity/tombstone state, never draft/prefix/pending/temporary bodies.\n\n2026-10-06 assistant runtime/UI producer repair (docs/decisions/assistant-runtime-and-ui-producers-2026-10-06.md). Complete actual durable turn recovery and genuine tool lineage: nullable actual chatTurn/task owner identity, immutable selected generated AgentProfile/SkillRecord snapshots, terminal seal, exact StreamPosition/global uint64 offset, and actual ToolCallId/ToolResultFor. Message/turn DTOs preserve these complete facts, never infer IDs/offsets from command or displayed text. Closed generated TaskServiceCancel arm and factual AcknowledgeHistoryPending are required; history.queue admits actual closed named controls, outbox.acknowledge co-commits only exact received result and pending command/hash. Branch own ordinals restart at0; resolve frozen ancestor prefixes then child own messages without global renumber/sort. Shared compaction-source.v1 frames exact known TranscriptMessage fields in resolved ancestry order and strict UTF8 summary hash, with bounded actual vectors. Real archive tool lineage consumes CON32 published optional fields; core/plaintext work advances independently. Existing safe lifecycle scope includes exact immutable-generation OpenProfileView admission, with no old-view redirection or mutable initial HostServices identity.\n\n2026-10-07 captured conversation lifetime repair (docs/decisions/assistant-captured-lifetime-2026-10-07.md). Actual RAM conversation kernel composes explicit Ephemeral drafts/views/scopes; profile History/Turns/Drafts remain immutable durable SQL. IAssistantDraftStore/AssistantDraft/view checkpoint preserve explicit actual Durable or Ephemeral lifetime, with default Durable for existing consumers. Ephemeral success means bounded live RAM retention, never crash recovery/Saved-to-disk; no SQLite/FTS/backup/recovered-draft queue fallback. Session OpenScope/OpenView captures actual conversation History/Turns/Drafts/Retirement and validates current owner/partition/generation; no old port redirects after profile switch. Failed synchronized promotion preserves old live RAM scope without copying private content to SQL; successful promotion retires it. Sealed internal AssistantDraftConsumption is minted by trusted Core only after matching actual Submit commit receipt and consumed-draft intent; savegate/viewgate checks exact captured store/generation/ID/rev/text/queue command, rotates freshDraftId/rev0, clears only unchanged submitted text and preserves newly typed full text as dirty. No caller Boolean, second Discard/delete, fake remote acceptance or paid resubmit. Genuine Task-only Chat Append snapshot is applied by UpdateHistoryTurnFacts to existing task_projection and real task owner in one transaction, monotone revisions/equal revision exact facts; HistoryTurn exposes owner reference and separate GetTask current facts, not frozen historical Task DTO, fabricated Progress/Run or extra task_proto column. Local transient pending BaseRevision0/wire ExpectedRev absent is distinct from actual Submit.ExpectedLocalRevision; real control owner revisions remain received facts.\n\n2026-10-07 complete assistant protocol and bounded recovery repair (docs/decisions/assistant-output-snapshots-and-semantic-profiles-2026-10-07.md). Core consumes actual CON33 semantic-v1 snapshot/pin helpers after normal producer publication; unknown field preservation is inert and legacy immutable command framing is unchanged. Initial factory alone may admit genuine capacity.busy full-recovery overflow after authority/schema validation while exposing exact immutable RecoveryFailure and real full structured keyset pages. Candidate profile handoff overflow refuses before promotion, preserving the old generation. Exact required generation GetAsync avoids scanning1001+ drafts for resume/reconcile; no default/null-success, successful truncation or silent partial recovery. Source worker w-codex-20261006-audit retains Core/factory/backend/lifecycle ownership; observability only assigned SQL/RAM support. Real target/tokenizer/backend producers still require actual composition, not estimates or registration UUIDs.",
    "complete": [
     {
      "type": "integration",
@@ -10935,6 +10940,12 @@
      "task": "CON.32",
      "need": "actual published complete archive tool-lineage fields",
      "why": "Full tool archive roundtrip requires actual generated producer; ordinary Core/SQLite implementation proceeds without pretending missing fields exist."
+    },
+    {
+     "type": "integration",
+     "task": "CON.33",
+     "need": "actual published snapshot/configuration-pin and shared assistant semantic-v1 producer",
+     "why": "Complete actual output reset and verified terminal recovery use the genuine generated producer; ordinary history/store/lifecycle work proceeds independently."
     }
    ]
   },
@@ -11361,7 +11372,7 @@
     "DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Avalonia/**/packages.lock.json and tests/AssistantAvaloniaTests/**/packages.lock.json and samples/AssistantHost/**/packages.lock.json (actual owned locked closure)",
     "DesktopPlatform:eng/packaging/packages.json and eng/packaging/test_packages.py (only actual Assistant.Avalonia producer catalogue and focused missing/extra/closure negatives)",
     "DesktopPlatform:eng/policy/architecture-projects.json and architecture-evidence.json and architecture-contract-tests.json (actual owned project/public API/test bindings only)",
-    "DesktopPlatform:eng/policy/licence-boundary.json and naming-package-policy.json and runtime-ownership.json (only actual owned producer/test closure classifications)",
+    "DesktopPlatform:eng/policy/licence-boundary.json and runtime-ownership.json (only actual owned producer/test closure classifications)",
     "DesktopPlatform:eng/policy/reconciliation/active-projects.json and project-updates.json (actual owned blobs only; frozen history intact)",
     "DesktopPlatform:eng/policy/dependency-policy.json and dependency-reviews/ast-10-*.json (exact verified managed base and actual headless test-native/font closure plus owned evaluated input successors)",
     "DesktopPlatform:eng/provenance/files.json and records/ast-10-*.json and NOTICE.txt (only actual owned first-party/immutable legal/input successors)",
@@ -11395,7 +11406,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: No Assistant.Avalonia or samples/AssistantHost exists yet in DesktopPlatform."
    },
-   "notes": "This is the navigation shell/chrome only; deeper per-surface behavior (security, task centre, automation, history, preview) is separately owned by AST.12-16 and composed into this shell.\n\n2026-10-06 assistant runtime/UI producer repair (docs/decisions/assistant-runtime-and-ui-producers-2026-10-06.md). Platform UI is sole shared Assistant.Avalonia producer author. Use a retained stacked branch on an immutable actual reviewed AST01 producer checkpoint with same-repository project reference; deliver/rechain AST01 first, never copy fake Core interfaces or create a product-private assistant. Preserve all AS01-AS13/advanced obligations and require each original producer at completion/activation. Base Avalonia12.1.3 managed package inherits host theme; Headless12.1.3/Themes.Fluent12.1.3 and their actual Fonts.Inter/HarfBuzz assets are test-only admitted closure, not production native-backend or hosted GUI acceptance. Actual docked/floating/expanded views share one session/history/draft generation and typed13-route extension registry. IME preedit blocks Enter-send through actual TextPresenter state; missing template refuses shortcut, explicit Send remains real action. Local resources use PLT62 resource-bound resolver; no successful-string callback or duplicate formatter.",
+   "notes": "This is the navigation shell/chrome only; deeper per-surface behavior (security, task centre, automation, history, preview) is separately owned by AST.12-16 and composed into this shell.\n\n2026-10-06 assistant runtime/UI producer repair (docs/decisions/assistant-runtime-and-ui-producers-2026-10-06.md). Platform UI is sole shared Assistant.Avalonia producer author. Use a retained stacked branch on an immutable actual reviewed AST01 producer checkpoint with same-repository project reference; deliver/rechain AST01 first, never copy fake Core interfaces or create a product-private assistant. Preserve all AS01-AS13/advanced obligations and require each original producer at completion/activation. Base Avalonia12.1.3 managed package inherits host theme; Headless12.1.3/Themes.Fluent12.1.3 and their actual Fonts.Inter/HarfBuzz assets are test-only admitted closure, not production native-backend or hosted GUI acceptance. Actual docked/floating/expanded views share one session/history/draft generation and typed13-route extension registry. IME preedit blocks Enter-send through actual TextPresenter state; missing template refuses shortcut, explicit Send remains real action. Local resources use PLT62 resource-bound resolver; no successful-string callback or duplicate formatter.\n\ndocs/decisions/assistant-output-snapshots-and-semantic-profiles-2026-10-07.md: remove nonexistent naming-package-policy.json supporting scope. Actual naming-package.json is the historical immutable naming-tool receipt, not a project row registry, and is not changed. Actual classifications remain in already admitted architecture/licence/runtime/reconciliation files.",
    "complete": [
     {
      "type": "integration",
@@ -11696,8 +11707,15 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "See integration_proposals IM.cloud-history-admission for the real WP-25.09 receiver proof.",
-   "complete": []
+   "notes": "See integration_proposals IM.cloud-history-admission for the real WP-25.09 receiver proof.\n\ndocs/decisions/assistant-output-snapshots-and-semantic-profiles-2026-10-07.md: consume actual CON33 snapshot/configuration pin/shared semantic-v1 profiles. Generation/shape/helper publication does not itself implement real output storage, logical-body authorization/decryption, tokenizer materialization, execution or current permissions. Preserve original producer starts and acceptance; no success stub/private DTO or heuristic model budget.",
+   "complete": [
+    {
+     "type": "integration",
+     "task": "CON.33",
+     "need": "actual published complete output snapshot and semantic/configuration pin producer",
+     "why": "Existing local/cloud/temporary output recovery must use the actual generated protocol, not a private DTO or unverified VersionedRef."
+    }
+   ]
   },
   {
    "id": "AST.16",
@@ -24360,6 +24378,12 @@
      "task": "SRCH.00",
      "need": "a retrieval/context source to pull from (fixture-backed lexical-only path is sufficient at start)",
      "why": "context assembly must have something real to page through; SRCH's D1 FTS lexical path (no AIR dependency) can serve here before SRCH.06's real semantic path lands"
+    },
+    {
+     "type": "integration",
+     "task": "CON.33",
+     "need": "actual published execution configuration pin and transcript semantic hash producer",
+     "why": "The existing server context assembly validates exact immutable input versions and real transcript lineage; actual tokenizer/permission producers remain independently required."
     }
    ],
    "writes": [
@@ -24377,7 +24401,8 @@
    "baseline": {
     "state": "not-started",
     "notes": "Observed none, unreviewed: AI repo is Hello-World stage (src/deployment.ts, hello.ts, index.ts, model.ts, model-diagnostics.ts only); no workflows/, providers/, inference/, streams/, or mcp/ trees exist. tests/workflow.test.ts and docs/evidence/workflow-*.json are early probe scaffolding, not the implementation."
-   }
+   },
+   "notes": "\n\ndocs/decisions/assistant-output-snapshots-and-semantic-profiles-2026-10-07.md: consume actual CON33 snapshot/configuration pin/shared semantic-v1 profiles. Generation/shape/helper publication does not itself implement real output storage, logical-body authorization/decryption, tokenizer materialization, execution or current permissions. Preserve original producer starts and acceptance; no success stub/private DTO or heuristic model budget."
   },
   {
    "id": "HAR.02",
@@ -24480,6 +24505,12 @@
      "task": "AST.15",
      "need": "local history recovery of transient output on the client bridge",
      "why": "the completion evidence requires local/temporary output to 'survive reconnect within its declared retention' on the real client, owned by the assistant lanes WP-17"
+    },
+    {
+     "type": "integration",
+     "task": "CON.33",
+     "need": "actual published output snapshot and final semantic hash producer",
+     "why": "Existing real output storage/read/reset/terminal producer must supply the complete generated snapshot and logical MessageDraft; existing client/server acceptance is retained."
     }
    ],
    "writes": [
@@ -24496,7 +24527,8 @@
    "baseline": {
     "state": "not-started",
     "notes": "Observed none, unreviewed: AI repo is Hello-World stage (src/deployment.ts, hello.ts, index.ts, model.ts, model-diagnostics.ts only); no workflows/, providers/, inference/, streams/, or mcp/ trees exist. tests/workflow.test.ts and docs/evidence/workflow-*.json are early probe scaffolding, not the implementation."
-   }
+   },
+   "notes": "\n\ndocs/decisions/assistant-output-snapshots-and-semantic-profiles-2026-10-07.md: consume actual CON33 snapshot/configuration pin/shared semantic-v1 profiles. Generation/shape/helper publication does not itself implement real output storage, logical-body authorization/decryption, tokenizer materialization, execution or current permissions. Preserve original producer starts and acceptance; no success stub/private DTO or heuristic model budget."
   },
   {
    "id": "HAR.04",
@@ -31159,6 +31191,109 @@
     "notes": "Actual published119.1 witness reaches unrelated metadata=false but exhaustion=true with3805 steps for ordinary Wire Parser/Clone cycles; hosted actual architecture reports1827 AT12 failures, all other rules none."
    },
    "notes": "Governance is sole source producer after this reviewed pair and atomic claim. Complete GOV25 remains immutable and its owner index is retained. Use query-local type/symbol traversal context across mutual recursion, reset at existing top-level query boundaries, and deduplicate actually known cyclic states and safely completed semantic subgraphs before charging the unchanged budget. No global memo or shared cross-query semantic cache, generated-marker fiction, wildcard exclusion, budget increase, unresolved-success shortcut, engine check omission or new package identity. Preserve exact Same, first-owner/all-role semantics and scalar projection. Existing packages already include the helper source and requiredFiles, so no packaging/catalogue expansion is necessary. Source changes are production implementation, not merely a diagnostic witness. See docs/decisions/non-wire-cycle-traversal-support-2026-10-07.md. Actual real PublicApi prototype still falsely exhausts929 of1366 types despite fixing the small cycle witness; admit exact query-local completed-state reuse and bounded unique semantic-state traversal, without collapsing branch/source origins or sharing across queries. Production correctness is judged by full actual outcomes, not one tiny witness."
+  },
+  {
+   "id": "CON.33",
+   "title": "Complete assistant output snapshots, execution pins and semantic hash producer",
+   "repo": "Contracts",
+   "lane": "contracts",
+   "kind": "producer",
+   "size": "L",
+   "obligations": [
+    {
+     "ref": "WP-03.05",
+     "part": "minimum compatible complete reset snapshot, execution configuration pin and cross-SDK assistant semantic producer; original package operations and acceptance retained"
+    }
+   ],
+   "outcome": "Publish generated ExecutionOutputSnapshot/ReadOutputValue15 and ExecutionConfigurationPin/TurnOptions10, strict bounded relational validation, and genuine C#/TS/Kotlin shared WindowHash, TransientTurnRequest.RequestHash and ExecutionOutput.FinalHash semantic-v1 helpers with independently authored vectors. Existing RPCs/operation authorization and immutable legacy hash profiles remain unchanged.",
+   "provides": [
+    "assistant-output-snapshot-contract",
+    "assistant-execution-configuration-pins",
+    "assistant-semantic-hash-profiles"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "CON.11",
+     "need": "actual existing published Events stream/output and PublicApi transcript operation records",
+     "why": "Append compatible fields to real generated owners rather than duplicate DTOs or new RPCs."
+    },
+    {
+     "type": "artifact",
+     "task": "CON.10",
+     "need": "actual published profile/skill/revision/tool/content records",
+     "why": "Typed pin and semantic known-field closure uses the genuine existing profile/content owners."
+    }
+   ],
+   "complete": [],
+   "writes": [
+    "Contracts:public/proto/arcforges/events/v1/events.proto (only new ExecutionOutputSnapshot fields1..7 and optional ExecutionServiceReadOutputValue.snapshot15; preserve all existing RPCs/tags/reservations)",
+    "Contracts:public/proto/arcforges/publicapi/v1/inprocess-values.proto (only TurnOptions.configuration_pin10 and new ExecutionConfigurationPin/SkillVersionPin fields; no unrelated operation or enum)",
+    "Contracts:public/proto/arcforges/publicapi/v1/application.proto (only actual WindowHash/TransientTurnRequest profile and verified source/pin normative comments; preserve existing fields/RPCs)",
+    "Contracts:public/proto/constraints/inprocess-values.json (only actual TurnOptions pin owner shape binding if required)",
+    "Contracts:public/proto/constraints/con-11-application-streams.json (only new output snapshot/reset/content/lineage/offset/envelope and owned semantic profile rules)",
+    "Contracts:public/proto/constraints.json (deterministic regeneration from only admitted shards)",
+    "Contracts:eng/assistant_semantic_hash.py (new closed assistant semantic-v1 generator and strict known-field/hash/profile rules; no generic permissive JSON or legacy framing mutation)",
+    "Contracts:eng/generate_shapes.py (exact new pin/snapshot relational validators and bounded framing hooks only, preserve existing shape semantics)",
+    "Contracts:eng/generate_values.py (actual bounded C#/TS/Kotlin typed assistant helper generation hooks only)",
+    "Contracts:eng/contracts.py (only exact owned schema/helper/fixture/package registration; no operation/auth export changes)",
+    "Contracts:eng/generate_fixtures.py (only actual independent CON33 fixture export registration)",
+    "Contracts:eng/kotlin_tools.py (only actual owned helper/vector generation/test hook, no tool or dependency change)",
+    "Contracts:src/public/dotnet/ArcForges.Contracts.PublicApi/Generated/** (only genuine pin DTO and higher-layer closed assistant semantic helpers)",
+    "Contracts:src/public/dotnet/ArcForges.Contracts.Events/Generated/** (only genuine snapshot DTO/generated outputs)",
+    "Contracts:src/public/dotnet/ArcForges.Contracts.Validation/Generated/Shapes/** (only actual new pin/snapshot/profile owner shape validators)",
+    "Contracts:src/public/ts/proto/src/gen/arcforges/publicapi/v1/inprocess-values_pb.ts (actual generated pin DTO)",
+    "Contracts:src/public/ts/proto/src/gen/arcforges/events/v1/events_pb.ts (actual generated output snapshot DTO)",
+    "Contracts:src/public/ts/proto/src/assistant-semantic-hash.ts (new closed typed helper equivalent to public C# profiles)",
+    "Contracts:src/public/ts/proto/src/shapes/gen/** (only actual new pin/snapshot/profile validators)",
+    "Contracts:src/public/ts/proto/src/index.ts (actual owned generated helper/type exports)",
+    "Contracts:src/public/ts/api-client/src/shapes/gen/** (only actual new pin/snapshot validator mirrors)",
+    "Contracts:src/public/ts/contract-fixtures/src/index.ts (only actual independent CON33 fixture export)",
+    "Contracts:src/public/kotlin/contracts-proto/generated/** (only actual new modified public pin/snapshot Java/Kotlin serialization outputs)",
+    "Contracts:src/public/kotlin/contracts-proto/generated/kotlin/io/github/arcforges/contracts/AssistantSemanticHash.kt (new bounded pure typed semantic helper, no copied consumer implementation)",
+    "Contracts:src/public/kotlin/contracts-proto/generated/kotlin/io/github/arcforges/contracts/AssistantExecutionValidation.kt (actual bounded pin/snapshot/semantic validation; no claim of nonexistent generic Kotlin shape emitter)",
+    "Contracts:src/public/kotlin/contracts-proto/build.gradle.kts (only actual owned helper/vector test hook, preserve dependencies/tools)",
+    "Contracts:fixtures/public/con-33-assistant-semantic-hash.json (independently authored exact schema/tag/shape/semantic vectors for all three SDKs)",
+    "Contracts:fixtures/public/con-11-application-streams.json (only actual additive snapshot type/field inventory and genuine reset/envelope/offset vectors; preserve14 methods/all old tags/negative cases)",
+    "Contracts:tests/StructureTests/Con33AssistantSemanticHashCases.cs (new direct independent fixture/typed helper/serializer/shape consumer)",
+    "Contracts:tests/StructureTests/Program.cs (register exact CON33 ordinary cases only)",
+    "Contracts:tests/StructureTests/Con11ApplicationStreamsCases.cs (only exact additive snapshot inventory and genuine reset positive maintenance; preserve old negatives)",
+    "Contracts:tests/public/con-33-assistant-semantic-hash.test.mjs (new actual independent typed helper/shape/serializer vectors)",
+    "Contracts:tests/public/con-11-application-streams.test.mjs (only exact additive snapshot inventory and genuine compatible reset positives; all prior negatives retained)",
+    "Contracts:tests/public/KotlinConnectClient/src/main/kotlin/io/github/arcforges/tests/Con11ApplicationStreamsCases.kt (only exact new snapshot field/type inventory and compatible reset positives; preserve negatives)",
+    "Contracts:package.json (append only actual owned ordinary test hook, preserve dependencies/tools/locks)",
+    "Contracts:eng/contract-packages.json (only actual owned public schema/helper/fixture source routes in existing packages)",
+    "Contracts:eng/check_contract_access.mjs and eng/policy/contract-access.json (only exact new public pin/snapshot/helper/source/descriptor bindings; preserve boundaries)",
+    "Contracts:eng/policy/dependency-policy.json and eng/policy/dependency-reviews/con-33-*.json (actual immutable evaluated owner input successors; no unrelated coordinate upgrade)",
+    "Contracts:eng/provenance/** and NOTICE (only actual owner generated schema/descriptor/source/helper/Dokka/package input successors; preserve immutable history)",
+    "Contracts:docs/assistant-output-protocol.md (exact snapshot/pin/profile/known-field and actual logical body producer obligations)",
+    "Contracts:docs/reference/** (only actual owned public helper/schema reference inputs and existing immutable Dokka successor)",
+    "Contracts:fixtures/internal/con-06-product-ports.json (only actual compatible TurnOptions.configuration_pin10 and new pin/skill type inventory; preserve existing operations/tags/negative vectors)",
+    "Contracts:tests/StructureTests/Con06InprocessCases.cs (only actual additive pin field/type inventory and genuine optional-presence/positive revision/ordered coverage cases; preserve all prior negatives)",
+    "Contracts:tests/tooling/test_con06_inprocess.py (only actual additive pin/type compatibility oracle maintenance; preserve existing package/access/field/negative assertions)",
+    "Contracts:tests/kotlin/con-33/AssistantSemanticHashCases.kt (new self-running real independent goldens/typed snapshot/pin/hash negatives through actual JavaExec; no new test dependency)",
+    "Contracts:src/public/dotnet/ArcForges.Contracts.PublicApi/Generated/Values/AssistantSemanticHash.g.cs (actual generated closed typed semantic-v1 helper; no legacy helper byte changes)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-contracts-schema-sources",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-contracts-generated-baseline",
+     "mode": "regenerate"
+    },
+    {
+     "resource": "RES-contracts-publication",
+     "mode": "append"
+    }
+   ],
+   "validation": "Three genuine SDKs directly consume independently authored snapshot/pin/semantic fixtures. Verify exact generated tags/optional presence/oneofs/UUID/revisions/ordered skills, actual256KiB envelope and1MiB logical body, same-lineage reset/global offset/generation bounds, UTF8/control/U2028/astral/depth/size, binary64 signed zero/subnormal/extremes/nonfinite refusal, all known-field/hash mutation and inert nested unknown cases. Existing descriptor/access/licence/provenance/locks/ordinary CI remain strict; no runtime execution or account inference.",
+   "evidence": "Independent exact-head review, applicable ordinary CI and actual immutable public producer publication, three-SDK byte/hash vectors and recorded consumer handoff. Protocol/helper success does not establish deployed logical-body adapter, real tokenizer or completed inference.",
+   "baseline": {
+    "state": "not-started"
+   },
+   "notes": "Governing decision docs/decisions/assistant-output-snapshots-and-semantic-profiles-2026-10-07.md. Sole source producer worker w-codex-20261006-governance; Provider31/34 shared generator appends are serialized. Snapshot actualowner/attempt/stream/position/globaloffset is required for true reset and content is full MessageDraft or descriptor-bound logical body. New semantic-v1 includes exact configuration pin and finite binary64 fixed16 lowercase IEEE754 bits only in the new projection, preserving immutable old Core command framing. Legacy absent pin is genuinely unbound; new builder pins actual profile/ordered skill revisions. No Foundation import cycle, new RPC/auth export, copied AGPL consumer source, private DTO, inferred model revision/tokenizer or guessed package pin."
   }
  ],
  "adoptionSlices": [
