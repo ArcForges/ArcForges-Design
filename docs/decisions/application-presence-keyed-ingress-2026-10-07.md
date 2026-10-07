@@ -1,0 +1,17 @@
+# Application presence keyed current-credential ingress
+
+<a id="rule-p2-049"></a>
+
+P2-049 narrowly supports DEV.01's three published ApplicationService operations. The generic ingress currently resolves only global bearer/browser verifiers, while those existing Foundation proof verifiers must remain unchanged for their original routes. The actual C13 raw credential resolver has no complete production host adapter yet. A production Application route must never substitute a proof session, derive an actor from RequestMeta, or replace global credentials for unrelated methods.
+
+## Immutable server policy selector
+
+The existing `Cloud:src/ArcForges.Cloud/Ingress/RpcPolicy.cs` may add a nullable immutable `CredentialProviderKey` to the trusted method policy. Only Session policies may declare a nonempty bounded fixed key. It is server-owned construction data, never taken from a URL/header/body/caller, and cannot change the operation's scope/authentication or grant permission.
+
+`Cloud:src/ArcForges.Cloud/Ingress/IngressPipeline.cs` may pass that already-selected policy to authentication and resolve keyed actual `IBearerTokenVerifier`/`IBrowserSessionVerifier` ports when its key is declared. A missing declared provider is typed Unavailable, without fallback to the global proof verifier. A null key retains the existing global Foundation behavior, Origin/CSRF checks, framing/byte bounds/current owner/correlation and denial rules unchanged. No new rich shared authority DTO or credential persistence is introduced.
+
+The already-owned `ApplicationPresenceModule.cs` declares one fixed Application key for exactly `ApplicationService.List`, `Heartbeat` and `Disconnect`. It registers lazy route-specific adapters only under that key, without replacing a global verifier. Their real request context supplies the exact raw native bearer or browser cookie, Origin and CSRF. Browser C13 resolution must independently enforce the configured allowed Origin, the session's exact Origin and real CSRF; a request-context Origin alone never establishes authority. Each call re-resolves actual configured current realm, C13 normal-purpose/current account/device/install facts and the Workspace-owned Active personal workspace. C13's genuine current policy and the published human-owner/R1/no-PAT operation rules remain mandatory. The handler independently re-resolves its raw credential and untrusted metadata claims around every owner operation; an ingress CallerContext is not a later permission witness.
+
+Missing actual identity/storage/configuration is typed Unavailable and leaves health constructible. Invalid/expired/revoked/foreign/current-policy refusal cannot enter a presence mutation. Adapter operations are physically bounded, cancellation/timeout stops disclosure, and a late uncooperative read retains its slot until it settles. No success-returning authority default or fabricated IDs/epoch is allowed.
+
+Exact supporting tests remain DEV.01's owned Presence tests and existing ArchitectureTests under its current scope: default Foundation route preservation, fixed key isolation, missing provider refusal, raw credential/current Origin/CSRF and workspace positives/negatives, cancellation, errors and bounded physical lifecycle. All original source-review/CI/publication/deployment/C13/C11/C21/C29 and APP.03 completion obligations remain. This amendment neither activates HAR routes with the Application key nor changes P2-047's separate stable-owner/published287 validation decision.
