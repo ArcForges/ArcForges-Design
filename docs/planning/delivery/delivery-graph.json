@@ -20749,9 +20749,15 @@
      "task": "CLOUD.13",
      "need": "actual raw-credential current Session/Device/Installation scoped participants and reused Workspace current guard for the four closed quota-accounting native/browser plans",
      "why": "Caller context IDs, ActorRef aliases or asynchronous principal observations cannot authorize a quota mutation; current owner predicates must join its fixed atomic batch."
+    },
+    {
+     "type": "integration",
+     "task": "COM.21",
+     "need": "genuine bounded original service-Term creation for both full published reference fields, retained immutable custody and atomic original Term/snapshot writer",
+     "why": "P68 copy/reopen of retained data is not proof that the actual production producer can create the longest valid originals."
     }
    ],
-   "notes": "2026-10-07 quota semantic and atomic authority repair (docs/decisions/quota-semantic-and-atomic-authority-2026-10-07.md). Correct the nonexistent src/Cloud root to the actual Entitlement module and minimum owned Resource/Workspace support participants. COM18 is the semantic/period producer; POL02 owns signed profile association/current Config head, not quota semantics. Preserve C7 singleKernelWriter: every used/held mutation still executes its owned kernel contribution, no Resource SQL or asynchronous-only admission. Progressive core start remains available while actual source composition is mandatory completion. CLOUD42 owns full real R2 lifecycle acceptance and can consume the accounting contract; it is not a core-start barrier. No guessed unit/calendar/version0, caller authorization flag, success stub or fake physical deletion. Existing inherited implementations and ledgers remain unchanged.\n\n2026-10-07 narrowly scoped ordinary physical support (docs/decisions/physical-security-fixtures-and-quota-basis-support-2026-10-07.md). Ordinary managed inventory follows only the actual owned manifest at its accepted prefix; no future count or weakened physical attestation.\n\n2026-10-07 narrowly scoped ordinary physical support (docs/decisions/physical-security-fixtures-and-quota-basis-support-2026-10-07.md). Two real SQLite replacement regressions currently change valid_until/accepted_bound despite immutability. Reuse the exact existing preserveExisting producer for these two basis tables; do not add arbitrary insert SQL or an unmodeled trigger.\n\n2026-10-07 closed quota principal repair (docs/decisions/quota-current-principal-and-scoped-participants-2026-10-07.md): actual raw Session/Device/Installation and reused Workspace scoped guards for four quota-accounting plans. Existing internal receipt operations are not public RPC permissions; genuine domain authorization, Config/Entitlement/recovery guards and the single writer remain mandatory. No start cycle, caller authority or second Workspace producer.\n\n2026-10-07 original-term and complete basis copy repair (docs/decisions/quota-original-term-and-complete-basis-copy-2026-10-07.md). Preserve published262144 UTF16 references and actual ExecutePlanRequest262144/archive65536 bounds. A closed original service-term PK/natural-UQ insert guard prevents replacement; the real single-writer family copies full period_ref from that exact retained source and stores an immutable owning basis_hash. Bounded owner reads compare the complete original canonical hash/key. Current raw Session/Device/Workspace/Config/Entitlement/75/final-clock permissions remain mandatory; finite archive refs never substitute for basis custody. Root frozen C83/shared physical owner handoff and every accepted migration/profile/ledger are preserved. No new task, start/completion edge, generic staging or foreign writer."
+   "notes": "2026-10-07 quota semantic and atomic authority repair (docs/decisions/quota-semantic-and-atomic-authority-2026-10-07.md). Correct the nonexistent src/Cloud root to the actual Entitlement module and minimum owned Resource/Workspace support participants. COM18 is the semantic/period producer; POL02 owns signed profile association/current Config head, not quota semantics. Preserve C7 singleKernelWriter: every used/held mutation still executes its owned kernel contribution, no Resource SQL or asynchronous-only admission. Progressive core start remains available while actual source composition is mandatory completion. CLOUD42 owns full real R2 lifecycle acceptance and can consume the accounting contract; it is not a core-start barrier. No guessed unit/calendar/version0, caller authorization flag, success stub or fake physical deletion. Existing inherited implementations and ledgers remain unchanged.\n\n2026-10-07 narrowly scoped ordinary physical support (docs/decisions/physical-security-fixtures-and-quota-basis-support-2026-10-07.md). Ordinary managed inventory follows only the actual owned manifest at its accepted prefix; no future count or weakened physical attestation.\n\n2026-10-07 narrowly scoped ordinary physical support (docs/decisions/physical-security-fixtures-and-quota-basis-support-2026-10-07.md). Two real SQLite replacement regressions currently change valid_until/accepted_bound despite immutability. Reuse the exact existing preserveExisting producer for these two basis tables; do not add arbitrary insert SQL or an unmodeled trigger.\n\n2026-10-07 closed quota principal repair (docs/decisions/quota-current-principal-and-scoped-participants-2026-10-07.md): actual raw Session/Device/Installation and reused Workspace scoped guards for four quota-accounting plans. Existing internal receipt operations are not public RPC permissions; genuine domain authorization, Config/Entitlement/recovery guards and the single writer remain mandatory. No start cycle, caller authority or second Workspace producer.\n\n2026-10-07 original-term and complete basis copy repair (docs/decisions/quota-original-term-and-complete-basis-copy-2026-10-07.md). Preserve published262144 UTF16 references and actual ExecutePlanRequest262144/archive65536 bounds. A closed original service-term PK/natural-UQ insert guard prevents replacement; the real single-writer family copies full period_ref from that exact retained source and stores an immutable owning basis_hash. Bounded owner reads compare the complete original canonical hash/key. Current raw Session/Device/Workspace/Config/Entitlement/75/final-clock permissions remain mandatory; finite archive refs never substitute for basis custody. Root frozen C83/shared physical owner handoff and every accepted migration/profile/ledger are preserved. No new task, start/completion edge, generic staging or foreign writer.\n\n2026-10-07 original-Term producer minimum (docs/decisions/original-service-term-bounded-production-framing-2026-10-07.md): COM21 separately implements bounded real creation and retained original custody. P68 basis copy/reopen and all public bounds remain intact; integration is completion-only, no core-start cycle or historical COM16 ledger rewrite."
   },
   {
    "id": "COM.08",
@@ -32370,6 +32376,110 @@
     "notes": "Existing source-only custody checkpoint 194a516cb0051014a8b1a2ea09515befcfc82aa3 is retained from PLT64 preparation; this new producer has no inferred task delivery/current CI/publication."
    },
    "notes": "Observability remains sole custody producer owner. Exact decision docs/decisions/progressive-installation-custody-publication-2026-10-07.md. Reuse the same retained source history/branch and existing Secrets package, with exact seven already implemented ordinary public methods and the immutable identity/scope/getters; no copied broker, new API/project/package/permission or dependency receipt. The actual Windows SameUserShared assurance is not hostile-sibling per-application OS isolation. PLT64 retains all five closed signer and CON34/CON40 final obligations/claim; the new core producer separately requires real source/currentCI/normal publication and ledger."
+  },
+  {
+   "id": "COM.21",
+   "title": "Bounded authenticated original service-Term production framing",
+   "lane": "commerce",
+   "repo": "Cloud",
+   "kind": "producer",
+   "size": "L",
+   "obligations": [
+    {
+     "ref": "WP-42.04",
+     "part": "minimum genuine production creation of the complete original service-Term period_ref and nullable subscription_ref under the published bounds; preserve the completed COM16 durable store and all domain rules"
+    }
+   ],
+   "outcome": "Entitlement creates every valid original service-Term reference through an actual bounded asynchronous owner producer and immutable custody, then copies both complete fields into the original fifteen-column Term in the same current-authorized atomic writer as its snapshot, revision and original command receipt. Maximum UTF16 references never travel as a giant private scalar. No staging receipt grants permission; replay, cancellation, concurrency and seven-day custody are real persisted behavior.",
+   "provides": [
+    "bounded-original-service-term-producer"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "COM.16",
+     "need": "actual owned durable Term/append/snapshot store, complete original command identity/hash and existing prepared writer",
+     "why": "Extend the genuine delivered producer without rewriting its completion ledger or duplicating the resolver."
+    },
+    {
+     "type": "artifact",
+     "task": "CLOUD.72",
+     "need": "actual owner-bound named plan factories and receipt protocol",
+     "why": "Original custody is bounded Entitlement persistence, not a generic staging or SQL wildcard."
+    }
+   ],
+   "complete": [
+    {
+     "type": "integration",
+     "task": "CLOUD.21",
+     "need": "real signed production private executor and immutable configured generation capture",
+     "why": "No Foundation/probe staging or default generation."
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.75",
+     "need": "real current configured realm/recovery authority",
+     "why": "Original capture and final writer retain the exact actual authority."
+    },
+    {
+     "type": "integration",
+     "task": "CLOUD.82",
+     "need": "actual scoped owner contribution factories and same-batch composition",
+     "why": "A prepared custody snapshot never grants foreign/current permission."
+    },
+    {
+     "type": "integration",
+     "task": "COM.20",
+     "need": "actual async current-definition Entitlement single writer and exact approved association",
+     "why": "Join final complete-Term append under the real current definition/config/revision fence, not an async observation alone."
+    }
+   ],
+   "writes": [
+    "Cloud:src/ArcForges.Cloud.Modules.Entitlement/Resolver/TermInputs/** (complete strict UTF16/UTF8 capture, immutable canonical manifest, bounded asynchronous staging/reopen/hash/ready/expiry/reconciliation and final sealed mutation; ONLY original fifteen-column service Terms and both period_ref/subscription_ref fields, no generic arbitrary input artifact)",
+    "Cloud:src/ArcForges.Cloud.Modules.Entitlement/Persistence/D1EntitlementStore.cs, Resolver/Application/Ports.cs, EntitlementService.cs and EntitlementGrantPortAdapter.cs plus Resolver/Definitions/Application/CurrentDefinitionEntitlementStore.cs (ONLY genuine awaited prepared-store producer integration preserving complete original command hash/result/receipt, current-definition single writer and every existing grant/domain/snapshot rule; no sync blocking or available fallback)",
+    "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Entitlement/ServiceTermInputContracts.cs (ONLY cycle-free immutable original Term preparation request/result and opaque prepared mutation; primitive original IDs/hash/context/lifetimes and typed failure, no public caller authority or business wire)",
+    "Cloud:storage/plans/entitlement/term-input-*.sql and entitlement-append-terms.sql plus entitlement-commit-guard.sql (ONLY closed original begin/part/read/ready/expire/retention plans, exact Ready identity/current guard and same-batch fixed complete two-reference Term INSERT SELECT/consume; preserve all existing grants/actions/snapshot/receipt/outbox and same-owner tables)",
+    "Cloud:storage/plans/families/entitlement-definition-resolution.commit-current.sql, families.json and families.expanded.json (ONLY original Term input-current Entitlement guard/record extension to the existing real single-writer definition family; no new participant owner, actor permission or foreign table SQL)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Physical/manifest/entitlement.json and Migrations/pending/entitlement__term-input.sql (ONLY exact term_input/term_input_part columns, PK/natural-UQ/index/FK/closed enums/checks/immutable original and state/retention protection defined in docs/decisions/original-service-term-bounded-production-framing-2026-10-07.md; forward-only numbered by sole integration owner, never accepted migration edits)",
+    "Cloud:eng/verification/physical-schema.ts (ONLY closed serviceTermInputOriginal exact two-table owner/schema/PK/UQ/FK/original/state validator and fixed triggers at all three builders; preserve exact frozen C83/P68/C79/COM20/18/basis profiles via serialized owner handoff, no supplied SQL or foreign marker widening)",
+    "Cloud:eng/verification/storage-plans.ts and src/ArcForges.Cloud.Storage.D1/SharedFamilies/FamilyDefinitions.cs, FamilyGuards.cs and FamilyPlanVerifier.cs (ONLY finite existing entitlement-definition-resolution Term-input original/Ready/revision/deadline guard registration and fixed same-owner record bindings; preserve security clock/Identity and every old family/template/default)",
+    "Cloud:src/ArcForges.Cloud.Modules.Entitlement/EntitlementModule.cs and src/ArcForges.Cloud/Composition/HostModules.cs (ONLY actual lazy task-owned producer registration with existing real named factories/configured authority; no new env/key/egress/default or fake implementation)",
+    "Cloud:tests/ArcForges.Cloud.Tests/Entitlement/TermInputs/** and tests/ArcForges.Cloud.Tests/Entitlement/EntitlementStoreTests.cs plus Definitions/CurrentDefinitionStoreTests.cs (ONLY actual bounded complete-reference producer, original hash equivalence, persisted custody/final composition/cancel/unknown/replay/concurrency and unchanged small append/domain behavior)",
+    "Cloud:tests/worker/term-input.test.ts and entitlement-plans.test.ts, d1-physical-schema.test.ts, d1-physical-columns.test.ts and d1-physical-keys.test.ts plus tests/ArcForges.Cloud.Tests/Physical/PhysicalSchemaTests.cs (ONLY actual owned table/enum/plan/count inventory, real OFF/ON original replacement/direct-builder and complete max-field/100-Term/framing/hash/current atomic effects; actual accepted prefix only, preserve all negatives)",
+    "Cloud:tests/ArchitectureTests/ClockAndStructureTests.cs and architecture-contract-tests.json plus docs/api-bindings.md, docs/non-wire-apis.md (ONLY owning new neutral/internal producer behavioral API and layer/source bindings, no unregistered capability success)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/PlanManifest.g.cs, worker/storage/plans.generated.ts and Physical/PhysicalSchema.g.cs (ONLY sole coordinated generation of actual owned plan/table/family union and actual numbered migration identity)",
+    "Cloud:package.json (ONLY exact own offline term-input test entry; no package coordinate/lock change), .dockerignore (ONLY actual owning new source inclusion) and docs/entitlement-term-input.md plus docs/entitlement-resolver.md/storage-plans.md/d1-physical-schema.md (factual owning producer/limits/evidence and real remaining acceptance)",
+    "Cloud:eng/provenance/**, eng/policy/dependency-policy.json and eng/policy/dependency-reviews/com-21-*.json (ONLY actual changed-input immutable successors/first-party/API inventory/NOTICE; preserve every accepted profile/review/source history and unchanged package closure)",
+    "Cloud:tests/worker/release-provenance.test.ts (ONLY actual measured sealed owning Worker bytes/SHA/count successor, preserve every history/refusal)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-cloud-host-composition",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-storage-plans",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-d1-migrations",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-cloud-policy-inputs",
+     "mode": "append"
+    },
+    {
+     "resource": "RES-shared-transaction-families",
+     "mode": "append"
+    }
+   ],
+   "validation": "Affected actual production-owner/Worker SQLite tests in docs/decisions/original-service-term-bounded-production-framing-2026-10-07.md: maximum both reference fields and original 100-Term normalized hash/manifest/request/archive budgets, strict UTF16/UTF8/NUL/null-empty, original PK/UQ OFF-ON, parts/counts/hash/context/state corruption and real final scoped revision/recovery/definition/clock races, restart/replay/cancellation/unknown receipts/cleanup/concurrency. Use actual generated 262144-byte request and response serialization, not scalar-only assumptions. No repeated passing broad suites or direct-fixture production-creation claim.",
+   "evidence": "Independent exact source and additive immutable seal review, actual affected producer/persistence/framing receipts, current applicable CI and normal same-source publication/deployment with factual independently reviewed ledger; preserve COM16 historical completion and distinguish core delivery from whole current production composition.",
+   "baseline": {
+    "state": "not-started"
+   },
+   "notes": "Added by P73 as the minimum genuine original-Term creation prerequisite exposed by P68. Completed COM16 remains unchanged. Both published262144-UTF16 reference fields retain complete bytes under private request/response262144 and archive65536, through exact new owner custody and existing atomic writer. Standalone core starts independently; no COM07 start cycle, generic staging/SQL, invented input permission or shortened reference. Follow docs/decisions/original-service-term-bounded-production-framing-2026-10-07.md."
   }
  ],
  "adoptionSlices": [
