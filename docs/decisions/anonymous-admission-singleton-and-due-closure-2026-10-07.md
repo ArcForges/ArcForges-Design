@@ -1,0 +1,32 @@
+# Closed anonymous admission singleton and due profiles
+
+Date: 2026-10-07. This supporting CLOUD.78 repair completes the minimum compiler authority already required by CLOUD.84 and the accepted durable anonymous authentication admission decision. It creates no task, outcome, route, permission, physical table, publication or delivery claim. All original task starts, completions, validation, evidence and ledger records remain unchanged.
+
+## 1. Two exact scoped singleton families
+
+The actual family grammar normally requires at least two business participants. These two private owner operations have only Identity; adding a fictitious Device, Workspace, User or ordinary Platform participant would invent business authority. Add only the following closed exceptions in both the TypeScript family/plan compiler and the managed immutable catalogue/verifier:
+
+| Family | Sole admitted leaf | Exact compiled plan ID |
+| --- | --- | --- |
+| `anonymous-admission-policy` | `install-current` | `families.anonymous-admission-policy.install-current` |
+| `anonymous-admission-bucket` | `expire-current` | `families.anonymous-admission-bucket.expire-current` |
+
+Each family has exactly one business participant: module `identity`, requirement `required`, with no condition. Both exact leaves MUST be scoped contributions (`scoped: true`). Reject any unscoped form, additional or foreign business member, conditional or non-required Identity, unknown leaf, family wildcard, ordinary Platform singleton or other newly proposed singleton. Preserve every existing scoped admission, including the exact eighteen quota/transient/output/Operator leaves and the closed Operator singleton from the accepted Operator/session decision. No existing generic refusal becomes permissive.
+
+Platform remains the existing special privileged current75 recovery issuer and protected command-tail participant; it is not a second business participant. Preserve the original same-issuer capability, exact family/plan/OwnerScope binding, independently current configured realm/recovery authority, guard-before-effects rules, mutation ordering, locks, receipts and command tail. Policy installation still requires the existing exact policy absence and deployment-owner/current75 authority. Cleanup still requires actual same-realm current75 and an original owned bucket. A scoped constructor, due observation or family registration does not establish permission or prove a commit. C13 remains the sole shared-family union writer; CLOUD.84 owns its actual flat `storage/plans/families/anonymous-admission-policy.install-current.sql` and `anonymous-admission-bucket.expire-current.sql` sources.
+
+## 2. Fixed original-bucket due profile
+
+Append only `AnonymousAdmissionBucketDue`, selected for Identity authorization key `admission-expired` on `anonymous-admission-bucket/expire-current`. Its fixed owning table is `identity_anonymous_admission_bucket`; declaration is `by=bucket_id,scope:realm_id`, `match=rev`, `securityDue=expires_at`. The ordinary scalar arguments, in order, are exactly `bucketId:text`, `realm:scope`, `originalRevision:int64`. The bucket UUID and realm are the actual originally read canonical identities, and revision is positive. There is NO captured-server-clock argument, caller deadline, nullable predicate, parent relationship or generic table/key/time grammar.
+
+The predicate binds the original exact bucket ID, realm and revision and proves `expires_at` is at or before the existing actual SQLite UTC millisecond floor at the final guarded statement. It must refuse a live bucket even if a caller supplies a future clock or the operation waited behind a write lock. It must refuse foreign realm, changed revision, absent row, malformed/null metadata and any other family/leaf/key/table/by/scope/match/deadline combination. Do not combine this due role with FRESH or securityExpiry, append a captured clock, or reuse a current-window profile as expiration proof. Preserve the original timestamp unit, integer-floor semantics and all prior expiry/due/FRESH expansions and hashes.
+
+The physical producer is the real frozen CLOUD.84 checkpoint `b81a21dc2ffa90fd028ffc831643f10f04b95f5a`: the bucket has fourteen columns, including primary key `bucket_id`, `realm_id`, positive `rev` and immutable original `expires_at`; its original policy/window/capacity/count invariants remain the CLOUD.84 writer's authority. The policy has its existing twelve-column immutable singleton shape. This decision neither changes those physical models nor assigns a pending migration ordinal.
+
+The only expiry record is `delete-expired-admission-bucket` with exactly `bucketId:text`, an unconditional exact-primary-key DELETE. The preceding exact owned due guard and same atomic transaction establish which row may be removed. No conditional no-op DELETE, caller-authored SQL, optional guard, extra realm/time argument or arbitrary bucket cleanup target is admitted. Existing bounded selection of at most one hundred expired originals remains CLOUD.84 owner work; selection alone never substitutes for the final guard. Failed final due/current75/issuer checks roll back the entire batch and protected command tail.
+
+## 3. Producer boundaries and affected verification
+
+Root CLOUD.78 owns only the closed central compiler, typed immutable metadata, managed verifier/factory capture and actual catalogue regeneration needed for these two exceptions and this one due profile. Pat CLOUD.84 owns the existing policy/bucket core, physical manifest/pending migration, named reads, real cleanup and policy statements. C13 owns the eventual finite family union. No source is activated by this planning pair.
+
+Affected components use the real TypeScript compiler, managed verifier/contribution factory and migrated SQLite. Cover both exact scoped required-Identity positives; unknown/unscoped/conditional/foreign/ordinary-Platform singleton negatives; forged profile/table/key/argument count and captured-clock rejection; immutable metadata/defensive-copy checks; genuine original due/live/boundary/stale revision/foreign realm cases; delayed batch/write lock and full-batch rollback. Preserve every prior passing case and the exact eighteen accepted scoped leaves. Do not repeat unchanged passing suites, introduce hosted runtime requirements, loosen global singleton grammar or claim whole authentication/deployment acceptance. Implementation still requires independent exact-head source review, current applicable gates and factual normal delivery evidence.
