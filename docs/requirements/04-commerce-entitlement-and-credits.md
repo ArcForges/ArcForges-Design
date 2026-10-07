@@ -280,6 +280,7 @@ Worked example — Remote Agent: feature flag GA, entitlement yes, workspace pol
 | <a id="rule-qu-04"></a>QU-04 | Quota presentation is explainable, showing the base grant, each add-on, and the resulting total, plus a per-product usage breakdown including versions and trash. |
 | <a id="rule-qu-05"></a>QU-05 | Resource admission reserves bounded storage, staging and simulator budgets atomically across devices and replicas. Committed usage, pending reservations and operator physical exposure are distinguishable; upload/cancel/expiry cannot bypass a limit or release bytes before verified cleanup. |
 | <a id="rule-qu-06"></a>QU-06 | Supplier monetary exposure is reserved per provider attempt across all workspaces and platform-funded calls. Each Run separately enforces its authorised customer total. Unknown upstream liability survives a customer-hold timeout; retry, restart and period rollover cannot erase it. |
+| <a id="rule-qu-07"></a>QU-07 | Every quota has an immutable owner-approved unit and gauge or entitlement-period mode. New budget publication and reservation guard the current approved configuration association, entitlement revision, snapshot, definitions profile and actual selected service period in the same atomic batch as accounting. A stale preflight approval cannot grant use. Gauges never reset; an accepted reservation settles against its original period and unit even after selection or policy changes. |
 
 ---
 
