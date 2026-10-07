@@ -21057,7 +21057,7 @@
     "Cloud:src/ArcForges.Cloud.Modules.Abstractions/Quota/QuotaDefinitionContracts.cs and QuotaPeriodContracts.cs (immutable primitive validator/query/source contracts only; no caller-approved flag or Config internal reference)",
     "Cloud:storage/plans/entitlement/quota-definition-*.sql and quota-period-*.sql (owned actual complete facts/keyset/persistent profile reads/writes; preserve existing terms-load and snapshot plans)",
     "Cloud:src/ArcForges.Cloud.Storage.D1/Migrations/pending/entitlement__quota-definition-profile.sql (one forward-only owned expand migration, integration-numbered; no accepted migration edits)",
-    "Cloud:src/ArcForges.Cloud.Storage.D1/Physical/manifest/entitlement.json and PhysicalSchema.g.cs (only new immutable quota_definition_profile shape/index/trigger and generated map)",
+    "Cloud:src/ArcForges.Cloud.Storage.D1/Physical/manifest/entitlement.json and PhysicalSchema.g.cs (only new immutable quota_definition_profile plus quota_definition_key shapes/indexes/triggers and generated map)",
     "Cloud:src/ArcForges.Cloud.Storage.D1/PlanManifest.g.cs and worker/storage/plans.generated.ts (sole coordinated actual named-plan union regeneration)",
     "Cloud:tests/ArcForges.Cloud.Tests/Quota/Definitions/** and Quota/Periods/** and tests/worker/quota-definitions.test.ts (actual closed semantic, period selection and migrated persistence/immutable/replay/cancel/concurrency tests)",
     "Cloud:tests/ArchitectureTests/** (only exact owner API/layer bindings)",
@@ -21085,7 +21085,7 @@
      "mode": "append"
     }
    ],
-   "validation": "Complete real owner components: canonical bounded artifacts/unknown keys/duplicate/unit-mode-combination changes, exact version/hash/replay/immutable store, real normalized term/actions/priority/stable ties/start/end/authorizedAt/grace/no calendar, true positive revision/snapshot association, cancellation/restart/concurrency. Required unavailable approved-source adapter refuses; a fixture cannot prove signed/operator authority.",
+   "validation": "Complete real owner components: canonical bounded artifacts/unknown keys/duplicate/unit-mode-combination changes, exact version/hash/replay/immutable store, real normalized term/actions/priority/stable ties/start/end/authorizedAt/grace/no calendar, true positive revision/snapshot association, cancellation/restart/concurrency. Required unavailable approved-source adapter refuses; a fixture cannot prove signed/operator authority. Same-batch indexed key-ledger mismatch/insert-if-absent rejects concurrent differing-version meanings and removed/reintroduced semantic changes without unbounded historical JSON scans.",
    "evidence": "Actual typed ports/core/store/adapter component receipts and independent review/CI/delivery; actual approved configuration composition is retained under POL02 and COM07 completion, not represented as a producer fake.",
    "baseline": {
     "state": "not-started"
