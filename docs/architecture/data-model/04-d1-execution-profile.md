@@ -219,3 +219,8 @@ Native/browser issue/enroll, device-revocation, session-lifecycle and push-regis
 ## 2026-10-07 compact original authentication guard prerequisite
 
 The [focused compact authentication guard and physical invariant decision](../../decisions/compact-authentication-guards-and-physical-invariants-2026-10-07.md) governs the additive original credential currentness/typed-flow byte CAS, fixed customer-provider parent lifetime and actual StepUp lifecycle triggers. Accepted baseline rows/migrations and existing generic guard/FRESH/Due meanings remain unchanged. Actual scoped issuer, physical discipline and owner evidence precede complete consumer activation; no source or deployment acceptance is inferred.
+
+
+## Fixed Operator lifetime and atomic completion profiles
+
+The finite intrinsic Operator profiles and exact scoped family/current75 composition in [operator-session-custody-and-atomic-completion-2026-10-07.md](../../decisions/operator-session-custody-and-atomic-completion-2026-10-07.md) govern actual same-statement integer clock checks. Operator completion lifetime is min(original expires_at,completed_at+60000000), not a fabricated column. Sidecar idle/base absolute/nonrevocation and exact old association remain mandatory. Due cleanup is operational only; provider Unknown never authorizes redispatch or a session.
