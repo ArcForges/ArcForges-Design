@@ -73,7 +73,7 @@ Shared components live in a Razor Class Library used by the profiles and the Sit
 | `arcforges.com` | Static public pages | Versioned content; no login requirement |
 | `www.arcforges.com` | Permanent redirect | Canonical public origin |
 | `account.arcforges.com` | Account static assets; /api and /session to Cloud; /objects to authorized Worker handlers; AI control/output through /api | Canonical account surface |
-| `chat.arcforges.com` | Chat static JS/HTML assets; /api and /session to Cloud; /objects to authorized Worker handlers; AI control/output through /api | Independent browser session, same Cloud business services |
+| `chat.arcforges.com` | Chat Blazor WebAssembly static assets; /api and /session to Cloud; /objects to authorized Worker handlers; AI control/output through /api | Independent browser session, same Cloud business services |
 | `docs.arcforges.com` | Static versioned documentation | Independent of Cloud availability |
 | `status.arcforges.com` | Independently hosted status | Separate failure domain and emergency alternate URL |
 | `downloads.arcforges.com` / `updates.arcforges.com` | Signed artifacts/manifests | Existing distribution authority |
@@ -119,7 +119,7 @@ Concurrent browser tabs share only their own origin's cookie session. No periodi
 | <a id="rule-cs-03"></a>CS-03 | **Cross-origin permissions are explicit allowlists.** Cookie-authenticated business traffic is same-origin; native bearer endpoints retain separate policy. |
 | <a id="rule-cs-04"></a>CS-04 | **Uploads use the existing size/type/quarantine/resource authorization flow.** Neither a client-side preview nor a generated validator establishes file safety. |
 | <a id="rule-cs-05"></a>CS-05 | **Logs redact cookies, Authorization, antiforgery material, prompts and chat/tool contents.** Browser error telemetry uses sanitized identifiers and user consent rules. |
-| <a id="rule-cs-06"></a>CS-06 | **User Markdown/content is rendered from a safe structured subset.** Raw user HTML is never rendered through Blazor raw-markup APIs (such as `MarkupString`). Active documents/HTML/SVG previews use an isolated authorized surface or a download flow, never script execution in Account/Chat origin. |
+| <a id="rule-cs-06"></a>CS-06 | **User Markdown/content is rendered from a safe structured subset.** Raw user HTML is never rendered through Blazor raw-markup APIs (such as `MarkupString`). Active documents/HTML/SVG previews use an isolated authorized surface or a download flow, never script execution in Account/Chat origin. **PDF:** the Web profiles have no native in-app PDF preview, parser or renderer ([P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)). An exported report PDF (`arcscope.report.pdf.v1`) opens only in the browser's built-in PDF viewer, in a new tab or a sandboxed frame; any other PDF attachment is an opaque download. |
 | <a id="rule-cs-07"></a>CS-07 | **No public share links in V1.** Private links and resource fetches authenticate and authorize at access. |
 | <a id="rule-cs-08"></a>CS-08 | **Resource denials do not disclose forbidden existence.** Signed/object URLs remain short-lived, scoped and outside application logs. |
 

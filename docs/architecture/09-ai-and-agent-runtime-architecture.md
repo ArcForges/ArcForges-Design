@@ -17,7 +17,8 @@ One Cloud Harness, one Task model, one metering path. Tool locality varies; the 
 Desktop / Blazor WebAssembly / MAUI Android: intent, Task/approval UI, draft/ack state
     -> C# Native AOT Cloud host: Task/Chat/Agent/Commerce/Entitlement authority
         -> C# Harness: admission, budget reservation, turn loop, routing, metering
-            -> C# executor on D1 (epoch lease, fenced writes); DO alarm per run for wake
+            -> D1 transactional dispatch outbox (row committed with the reservation and epoch lease)
+                -> C# executor on D1 (epoch lease, fenced writes); DO alarm per run for wake
                 -> authorized context + typed tool proposals + Workers AI
                    (thin ai.internal adapter over the env.AI binding)
                 -> C# intent/outcome/settlement/finalization ports
@@ -185,11 +186,12 @@ The Harness is C# policy in the Cloud Native AOT host ([P2-021](../decisions/pha
 |---|---|
 | Reservation | Reserve before dispatch (MB-01); the reservation is settled or released, never left open. |
 | Pinned route | Pinned model and tariff snapshot at Run start (PR-02, MB-05). |
+| Dispatch outbox | Harness dispatch is a D1 transactional outbox row committed in the same business transaction as the budget reservation and the epoch lease ([PS-04](05-cloud-architecture.md#rule-ps-04)). No model or tool dispatch occurs without the committed row, and the executor claims it under the epoch lease. |
 | Model-step retries | 0 after a possible dispatch; at most 2 pre-dispatch retries, each with a fresh attempt id. |
-| Model deadline | 120 s ceiling. The current TypeScript code uses 90 s; [HAR.40](../planning/delivery/lanes/harness.md#task-har-40) sets the final C# value in its proof and records the reconciliation. Any value above 90 s is a relaxation and needs a reviewed record. |
+| Model deadline | 120 s model deadline (Design value, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) item 5). [HAR.40](../planning/delivery/lanes/harness.md#task-har-40) reconciles it with the current code's 90 s and records the result. Any change to the 120 s value needs a reviewed record; no silent relaxation. |
 | Output and context caps | Output 4096 tokens, text input 24,000 tokens and total context 256 KiB by default (see the P2-009 caps below). |
 | Parallel tools | 4/8 (the Design baseline pair); C# enforces both limits. |
-| Step and subrequest guards | Step and subrequest counts are bounded by C# policy; exceeding them is a durable failure, never a silent continuation. |
+| Step and subrequest guards | **Steps:** the C# executor counts every durable step, including waits and wake cycles, against a guard of 24,000 steps. 1,000 steps are reserved for final receipts and reconciliation, with a hard cap of 25,000 total steps (the Workflow ceiling carried over as a C# cap). The counter is never silently reset. **Outbound network actions** (model, tool, storage, reconciliation requests, including retries and range/auth requests) stop new model and tool dispatch at 900,000 and keep 100,000 for reconciliation, outcome and finalization, carried over from the retired RunWorkflow subrequest allowance ([integration contract](contracts/05-cloudflare-integration.md)). At a guard, new effects pause and the run finalizes with an execution-limit reason only if no effect is unresolved; otherwise `unknownEffect` is retained for C# reconciliation. A guard hit is a durable limit, wait or failure recorded by C#, never a silent continuation. [HAR.40](../planning/delivery/lanes/harness.md#task-har-40) proves these values against the seven-day run lifespan. |
 | Lease | 60 s lease with 20 s renewal; every write is epoch-fenced. |
 | Checkpoint | 128 KiB checkpoint limit. |
 | Unknown effects | Never auto-retried; reconcile before any retry (FL-07; ExternalEffectUnknown in section 15). |
