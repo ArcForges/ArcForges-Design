@@ -1,7 +1,6 @@
 # Cloudflare and Application Assistants — Final Design Review
 
-> **Superseded in part 2026-10-08** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first stack: React/TypeScript, Node/npm, Kotlin/Maven/Gradle, Blazor and MAUI toolchain statements), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (`wsl.exe` prohibition). The recorded result is retained as dated history and is not rewritten.
-
+> **SUPERSEDED IN PART (2026-10-08)** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021): the React/TypeScript, Node/npm, Kotlin/Maven/Gradle and Blazor/MAUI toolchain statements. The recorded result is retained as dated history and is not rewritten.
 
 Date: 2026-09-16. Baseline: `e974df5d0724247f4556d038b1e80c4603edd033`, after PR9. Decision: [P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012). This review covers the current documentation change, not implementation readiness.
 

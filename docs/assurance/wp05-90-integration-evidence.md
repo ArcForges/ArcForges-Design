@@ -1,7 +1,6 @@
 # WP-05.90 cross-repository integration evidence
 
-> **Superseded in part 2026-10-08** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first stack: React/TypeScript, Node/npm, Kotlin/Maven/Gradle, Blazor and MAUI toolchain statements), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (`wsl.exe` prohibition). The recorded result is retained as dated history and is not rewritten.
-
+> **SUPERSEDED IN PART (2026-10-08)** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021): the React/TypeScript, Node/npm, Kotlin/Maven/Gradle and Blazor/MAUI toolchain statements. The recorded result is retained as dated history and is not rewritten.
 
 Authority: [WP-05.90](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.90), [staged producer integration](../planning/README.md#staged-artifact-integration) and [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017). Task: [GOV.15](../planning/delivery/lanes/governance.md#task-gov-15). The [stage acceptance](wp05-stage-acceptance.md) joins this record with the ten preceding GOV.04-GOV.14 results.
 

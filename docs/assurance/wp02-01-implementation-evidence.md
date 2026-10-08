@@ -1,7 +1,6 @@
 # WP02.01 diagnostic posture implementation evidence
 
-> **Superseded in part 2026-10-08** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first stack: React/TypeScript, Node/npm, Kotlin/Maven/Gradle, Blazor and MAUI toolchain statements), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (`wsl.exe` prohibition). The recorded result is retained as dated history and is not rewritten.
-
+> **SUPERSEDED IN PART (2026-10-08)** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021): the React/TypeScript, Node/npm, Kotlin/Maven/Gradle and Blazor/MAUI toolchain statements. The recorded result is retained as dated history and is not rewritten.
 
 Scope: [WP02.01](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.01), under the [reviewed diagnostic profile and ordered plan](wp02-01-diagnostic-profile.md). [Design PR47](https://github.com/ArcForges/ArcForges-Design/pull/47) merged before dependent implementation. This receipt closes diagnostic posture only; the AOT declaration sweep and the remaining WP02 obligations retain their separate gates.
 
