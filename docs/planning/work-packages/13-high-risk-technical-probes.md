@@ -16,7 +16,7 @@
 
 ## 1. Scope and purpose
 
-**In scope.** Two isolated technical probes followed by the three functional native libraries, four managed native packages, three runtime package families across the six declared desktop RIDs, and integration with the WP11 restricted helper. The functional ABI, algorithms, formats and limits are fixed by [native annex 06](../../architecture/contracts/06-native-functional-abi.md); no missing function is deferred to product coding.
+**In scope.** Two isolated technical probes followed by the two functional native libraries that remain after the PDF retirement ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)), the instruments and still-image libraries; three managed native packages; two runtime package families across the three desktop RIDs of [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023) (`win-x64`, `win-arm64` and `linux-x64`); and integration with the WP11 restricted helper. The functional ABI, algorithms, formats and limits are fixed by [native annex 06](../../architecture/contracts/06-native-functional-abi.md); no missing function is deferred to product coding.
 
 **Out of scope.** Product UI, editing commands, Cloud business handlers and the AI model loop. Probe scaffolds are cleaned up or kept as isolated regression fixtures. Production ABI/wrapper/runtime code from 13.05–13.16 is retained and published; [ND-05](../implementation-sequence.md#rule-nd-05) does not discard those deliverables.
 
@@ -62,15 +62,15 @@
 | `benchmarks/probes/agent-aot/` | Probe A workspace and evidence |
 | `benchmarks/probes/acquisition/` | Probe C workspace and evidence |
 | `native/arcimage-abi/` (the still-image shim, moved here by [GOV.17](../delivery/lanes/governance.md#task-gov-17) as `ArcImageNative`; the media/colour/OTIO shims are retired) | Extend the existing owned shim without renaming its published `arc_image_*` symbols |
-| `native/arcinstruments-abi/`, `arcpdf-abi/` | New functional libraries with the fixed annex 06 declarations |
-| `src/Native/ArcForges.Native.Abstractions/` and `ArcForges.Native.Image/Instruments/Pdf` | Four managed status/handle/wrapper packages; slash-separated names here expand to separate projects |
-| `src/Native/ArcForges.Native.<Capability>.Runtime.<rid>/` | Three families × six RID package definitions, each carrying its admitted native dependency closure |
-| `src/DesktopHelpers/` | Consume WP11 helper/Broker/Contracts; add only the approved native parser composition, not a second helper owner |
+| `native/arcinstruments-abi/` | New functional library with the fixed annex 06 declarations; this work package does not create an arcpdf-abi library, and the PDF engine that NAT.14 merged is removed by [NAT.32](../delivery/lanes/native.md#task-nat-32) under [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022) |
+| `src/Native/ArcForges.Native.Abstractions/` and `ArcForges.Native.Image/Instruments` | Three managed status/handle/wrapper packages (no Pdf wrapper, per [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)); slash-separated names here expand to separate projects |
+| `src/Native/ArcForges.Native.<Capability>.Runtime.<rid>/` | Two families (Image, Instruments) × three RIDs (win-x64, win-arm64, linux-x64) = six package definitions; linux-arm64 is not added and is not claimed ([P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)), each carrying its admitted native dependency closure ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022), [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)) |
+| `src/DesktopHelpers/` | Consume WP11 helper/Broker/Contracts; add only the containment of the approved still-image parser composition that [NAT.31](../delivery/lanes/native.md#task-nat-31) owns ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)), not a second helper owner |
 | `eng/packaging/`, `tests/NativeConsumers/` | Exact package allowlist, headers/import libraries, SBOMs and independent C17/C# AOT package-only consumers |
 | `eng/verification/probe-evidence/` | The recorded environments, procedures and results |
 | `tests/HardwareLab/` | Created: the device inventory the later hardware families depend on |
 
-**Major types introduced:** the fixed annex 06 status, safe handle, reader/writer, image, instrument and PDF wrappers. No native pointer becomes a managed domain identifier or a wire field.
+**Major types introduced:** the fixed annex 06 status, safe handle, image and instrument wrappers; there is no native PDF reader, renderer, parser or wrapper; the report-export PDF writer is owned by SCOPE.18 under dependency admission, and PDFium is not a writer ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)). No native pointer becomes a managed domain identifier or a wire field.
 
 ---
 
@@ -80,7 +80,7 @@
 
 ### WP-13.00 — Probe A: device tool execution under Native AOT
 
-**What must be fully done.** The **device side** of the Harness runs inside a published Native AOT desktop binary: it pulls a stub `ToolRequest`, re-authorises it locally, resolves a `CapabilityKey` through the **generated allowlist**, decodes structured arguments into a **typed** product request (`§3.1` of the local RPC contract), invokes it, and returns an idempotent result. **The model loop is not probed here — it is the CF Workflow** ([LS-02](../../architecture/17-agent-harness.md#rule-ls-02), **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**). What is at risk under AOT is the generated decode and static registration path, not the loop. No reflection, no dynamic assembly, no runtime code generation is involved. Static registration and out-of-process extensibility are both exercised.
+**What must be fully done.** The **device side** of the Harness runs inside a published Native AOT desktop binary: it pulls a stub `ToolRequest`, re-authorises it locally, resolves a `CapabilityKey` through the **generated allowlist**, decodes structured arguments into a **typed** product request (`§3.1` of the local RPC contract), invokes it, and returns an idempotent result. **The model loop is not probed here — it runs in the C# Cloud Harness, not a Cloudflare Workflow** ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021); this supersedes the Workflow placement of [LS-02](../../architecture/17-agent-harness.md#rule-ls-02)). What is at risk under AOT is the generated decode and static registration path, not the loop. No reflection, no dynamic assembly, no runtime code generation is involved. Static registration and out-of-process extensibility are both exercised.
 
 **Testing requirements.** An AOT publish log with zero diagnostics; an end-to-end `ToolRequest` → decode → typed invocation → result run inside the published binary; a negative test confirming a reflection-based registration or decode path fails to compile or is absent; a containment test confirming the structured value type appears only in the boundary dispatch assembly ([DP-02](../../architecture/contracts/02-local-rpc-operations.md#rule-dp-02)).
 
@@ -140,19 +140,19 @@
 
 <a id="rule-wp-13.13"></a>
 
-### WP-13.13 — PDF and production parser containment
+### WP-13.13 — Production still-image parser containment (PDF retired, P2-022)
 
-**What must be fully done.** Compose actual PDFium and all approved parser wrappers into the WP11 helper using generated local gRPC controls. WP11 remains the helper host/protocol/launcher authority. This step implements the production parser composition in that same DesktopPlatform helper and publishes the next immutable ContentSandbox.Runtime.<rid> version with its exact native closure. Broker/Contracts and launcher mechanics are consumed from 11; no second helper design or duplicate DTO owner is created. Remove test-parser production registration, retain hostile regression fixtures.
+**What must be fully done.** PDFium and PDF parsing are retired ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)). Composition of the approved still-image parser wrappers (the NAT.11 family) into the WP11 helper, and publication of the next immutable ContentSandbox.Runtime.<rid> version with its exact native closure, are owned by [NAT.31](../delivery/lanes/native.md#task-nat-31) (P2-022 item 4); this step verifies containment of that composition with generated local gRPC controls. The merged PDF engine (arcpdf-abi, ArcForges.Native.Pdf, the helper PDF parser path and the PDF tests) is removed by [NAT.32](../delivery/lanes/native.md#task-nat-32), not by this step. WP11 remains the helper host/protocol/launcher authority; Broker/Contracts and launcher mechanics are consumed from 11, and no second helper design or duplicate DTO owner is created. Remove test-parser production registration, retain hostile regression fixtures.
 
-**Testing requirements.** Packaged PDF page/text/tile fixtures, malformed/native-crash/hang and parent-death cleanup on every admitted RID; rerun actual image parser containment.
+**Testing requirements.** Packaged image decode/tile fixtures, malformed/native-crash/hang and parent-death cleanup on every admitted RID; rerun actual image parser containment.
 
-**Completion gate.** Actual PDF dependency and containment evidence contributes to PG12. No mock parser closes native producer acceptance.
+**Completion gate.** Actual image-parser dependency and containment evidence contributes to PG-22 (PG-12 is retired under [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)). No mock parser closes native producer acceptance.
 
 <a id="rule-wp-13.15"></a>
 
 ### WP-13.15 — Immutable native package production
 
-**What must be fully done.** Publish ArcForges.Native.Abstractions plus Image/Instruments/Pdf and their Runtime.<rid> families: win-x64,win-arm64,osx-arm64,osx-x64,linux-x64,linux-arm64. Expand the allowlist explicitly; record any Tier 2 waiver and omit unusable capability claims. These four managed and 18 runtime definitions are additional to other Platform mechanisms. Build native dependencies before pack; pack once; use the WP11 host/broker and the newly signed production helper version composed in 13.13. Never alter already released WP11 package bytes.
+**What must be fully done.** Publish ArcForges.Native.Abstractions plus Image and Instruments and their Runtime.<rid> families: win-x64, win-arm64 and linux-x64 (no osx RIDs and no linux-arm64, per [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)). Expand the allowlist explicitly; record any Tier 2 waiver and omit unusable capability claims. These three managed and six runtime definitions are additional to other Platform mechanisms. Build native dependencies before pack; pack once; use the WP11 host/broker and the newly signed production helper version composed in 13.13. Never alter already released WP11 package bytes.
 
 **Testing requirements.** Isolated clean-cache C17 and C# AOT consumers on each admitted RID; missing/transitive/wrong-RID library, hash collision, absent export, revoked artifact and source-unavailable negatives.
 
@@ -162,7 +162,7 @@
 
 ### WP-13.16 — Dependency adoption and hardware receipts
 
-**What must be fully done.** Record AD01–AD08 for OIIO, OpenEXR, Imath, libusb and PDFium plus every shipped transitive dependency. Inventory serial hardware and an actual USB device with vendor/product identity, explicit interface/endpoint, firmware and driver versions.
+**What must be fully done.** Record AD01–AD08 for OIIO, OpenEXR, Imath and libusb plus every shipped transitive dependency; PDFium is not admitted (retired under [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)). Inventory serial hardware and an actual USB device with vendor/product identity, explicit interface/endpoint, firmware and driver versions.
 
 **Testing requirements.** Match SBOM/license/source and enabled-feature lists to actual packaged files. Bind every physical result and each simulated absence to its evidence class.
 
@@ -173,7 +173,7 @@
 
 **What must be fully done.** Verify the production outputs of 13.05–13.16 as one immutable candidate using actual 07–12 mechanisms. This step accepts completed implementations; it does not first design or implement the native families.
 
-**Testing requirements.** Image tiles, PDF, instruments, cancel/lifetime/hostile-helper vectors and missing-DLL/wrong-RID negative consumers.
+**Testing requirements.** Image tiles, instruments, cancel/lifetime/hostile-helper vectors and missing-DLL/wrong-RID negative consumers.
 
 **Completion gate.** Probe-only exports never pass; complete portable functional producers and required per-RID closure verified before product WPs.
 
@@ -184,7 +184,7 @@
 | Database | None |
 | Protocol | Probe A validates capability invocation under AOT |
 | UI | Probe C validates that the shell can host a responsive live acquisition plot |
-| Security | The retained native libraries (image, instruments, PDF) exercise the native safety obligations before any product depends on them |
+| Security | The retained native libraries (image and instruments; PDF retired per P2-022) exercise the native safety obligations before any product depends on them |
 | Platform | Probe C establishes the hardware-lab requirement |
 | Migration | None |
 | Compatibility | Probe conclusions constrain the design of `33` |
@@ -193,17 +193,17 @@
 
 ## 7. Tests and verification evidence
 
-[Local gRPC closure](../../architecture/contracts/09-local-grpc-and-sandbox.md): Invoke each real packaged image/PDF helper method through generated gRPC over the restricted OS stream; verify slot races, generation/ack/cancel cleanup and throughput. No private XPC control or fake parser receipt.
+[Local gRPC closure](../../architecture/contracts/09-local-grpc-and-sandbox.md): Invoke each real packaged image helper method through generated gRPC over the restricted OS stream; verify slot races, generation/ack/cancel cleanup and throughput. No private control channel or fake parser receipt.
 
 | Evidence | Produced by |
 |---|---|
-| AOT publish log and an in-binary **device tool request** decoded and executed through generated, statically registered code — **no model loop is probed here**, it is the CF Workflow | [WP-13.00](#rule-wp-13.00) |
+| AOT publish log and an in-binary **device tool request** decoded and executed through generated, statically registered code — **no model loop is probed here**, it is the C# Cloud Harness ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)) | [WP-13.00](#rule-wp-13.00) |
 | Sustained-throughput record with overrun, gap and pause results | [WP-13.02](#rule-wp-13.02) |
 | Two written probe conclusions | [WP-13.04](#rule-wp-13.04) |
 | Common ABI and deterministic failure surface: behavioral, failure and package evidence | [WP-13.05](#rule-wp-13.05) |
 | Still-image codecs: behavioral, failure and package evidence | [WP-13.10](#rule-wp-13.10) |
 | Serial and USB instruments: behavioral, failure and package evidence | [WP-13.12](#rule-wp-13.12) |
-| PDF and production parser containment: behavioral, failure and package evidence | [WP-13.13](#rule-wp-13.13) |
+| Production still-image parser containment (PDF retired, P2-022): behavioral, failure and package evidence | [WP-13.13](#rule-wp-13.13) |
 | Immutable native package production: behavioral, failure and package evidence | [WP-13.15](#rule-wp-13.15) |
 | Dependency adoption and hardware receipts: behavioral, failure and package evidence | [WP-13.16](#rule-wp-13.16) |
 | Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-13.90](#rule-wp-13.90) |
@@ -218,12 +218,12 @@
 
 **All of the following, with recorded evidence:**
 
-1. A device tool request is decoded and executed through generated, typed, statically registered code inside a published Native AOT binary, with no reflection path present. **The model loop is not probed here** — it is the CF Workflow ([LS-02](../../architecture/17-agent-harness.md#rule-ls-02), **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**).
+1. A device tool request is decoded and executed through generated, typed, statically registered code inside a published Native AOT binary, with no reflection path present. **The model loop is not probed here** — it runs in the C# Cloud Harness ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)).
 2. Sustained acquisition above the product target runs with bounded memory, and every overrun, gap and disconnect is explicitly reported.
 3. Each probe has a written conclusion stating what it proved, what it did not, and what constraint it imposes downstream.
 4. Every shipped dependency has a recorded licence position and the 13.16 hardware inventory exists, contributing to [PG-08](../../assurance/open-gates-register.md#rule-pg-08).
 
-5. All 14 functional exports, four managed native packages and every admitted runtime family are verified through clean package-only consumers; actual helper containment and all 13.05–13.16 gates pass. No probe-only export set passes production closure.
+5. All nine functional exports that remain after the retirement of the five `arc_pdf_*` exports ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)), three managed native packages and every admitted runtime family are verified through clean package-only consumers; actual helper containment and all 13.05–13.16 gates pass. No probe-only export set passes production closure.
 
 ## 9. Dependencies
 

@@ -1,22 +1,22 @@
 <a id="rule-wp-52"></a>
 
-# WP-52 — Sole Cloudflare Workflow Harness
+# WP-52 — Sole C# Cloud Harness
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Planning · Work package
 > Phase: J — Platform completion *(sequenced after `43`; numbered `52` because `00`–`51` are allocated and a retired identifier is never reused)*
 > Scheduling: this package is an obligation set; its delivery tasks and their typed prerequisites are listed in section 9, generated from the [delivery graph](../delivery/delivery-graph.json) under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018).
 
-> **Goal.** Build the **single Cloud Harness** of [`../../architecture/17-agent-harness.md`](../../architecture/17-agent-harness.md): the turn loop, tool batching, context assembly, compaction, approval interleaving, streaming, cancellation and recovery — running in the ArcForges-AI CF Workflow, against real admission and real metering.
+> **Goal.** Build the **single Cloud Harness** of [`../../architecture/17-agent-harness.md`](../../architecture/17-agent-harness.md): the turn loop, tool batching, context assembly, compaction, approval interleaving, streaming, cancellation and recovery — running as the C# Harness executor in the Cloud Native AOT host (D1 epoch lease and Durable Object alarm wake; no Cloudflare Workflow holds run state, per [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)), against real admission and real metering.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: AI sole loop; Cloud business ports; clients/tools. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud (sole C# Harness executor and thin Cloudflare adapters, [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)); Cloud business ports; clients/tools. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
 > After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
 
 ## 1. Scope and purpose
 
-**Why this package exists.** WP52 produces the sole real CF model/tool loop after production Cloud/admission/metering and product capabilities. WP17 supplies named UI/transport fixtures only. Current acceptance uses independent same-application workflows; no earlier local cross-product milestone supplies a prerequisite.
+**Why this package exists.** WP52 produces the sole real model/tool loop on the C# Harness after production Cloud/admission/metering and product capabilities. WP17 supplies named UI/transport fixtures only. Current acceptance uses independent same-application workflows; no earlier local cross-product milestone supplies a prerequisite.
 
 Rather than leave a package whose steps cannot run in their stated order, the Harness is one package at its real dependency position.
 
@@ -54,7 +54,7 @@ Explicit inputs: WP17 assistant client, WP26 one-application bridge, WP35 ArcSco
 | # | Rule |
 |---|---|
 | <a id="rule-br-01"></a>BR-01 | **One Harness, Cloud-only** ([LS-02](../../architecture/17-agent-harness.md#rule-ls-02)). No desktop, mobile or browser assembly contains a turn loop, a planner or a provider adapter. |
-| <a id="rule-br-02"></a>BR-02 | **The Cloud business host is Native AOT; Harness TypeScript runs on CF** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[V-03](../../assurance/phase-1-official-verification.md#rule-v-03)**). CF Worker deployment tests apply to the loop; all C# integration ports retain the AOT artifact gate. |
+| <a id="rule-br-02"></a>BR-02 | **The Cloud business host is Native AOT; the Harness is C# in that host, and only its thin Cloudflare adapters are TypeScript** (**[D-008](../../decisions/phase-1-foundation-decisions.md#rule-d-008)**, **[P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)**). Worker deployment tests apply to the adapters and the executor's D1 and alarm integration; all C# integration ports retain the AOT artifact gate. |
 | <a id="rule-br-03"></a>BR-03 | **A Cloud Agent Task is not a native Product Job** ([CM-04](../../architecture/09-ai-and-agent-runtime-architecture.md#rule-cm-04), [I-121](../../requirements/01-normative-glossary-and-invariants.md#rule-i-121)). This package owns the former; [WP-16](16-unified-execution-engine.md#rule-wp-16) owns the latter. |
 | <a id="rule-br-04"></a>BR-04 | **Admission commits before dispatch** (`§6.1.2` of the data-model overview). Nothing crosses the dispatch barrier inside a transaction. |
 | <a id="rule-br-05"></a>BR-05 | **Recovery is decided by dispatch intent, never by outcome absence** (`§6.3` of the harness). Retry safety is a declared capability property ([FL-08](../../requirements/05-ai-and-agent-execution.md#rule-fl-08)). |
@@ -69,14 +69,14 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 | Location | Change |
 |---|---|
-| `ArcForges-AI/src/workflows/RunWorkflow.ts` | The turn loop, batching, context assembly, compaction, recovery |
+| `ArcForges-AI/src/workflows/RunWorkflow.ts` (retired; the turn loop moves to the C# Harness executor, [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)) | The turn loop, batching, context assembly, compaction, recovery |
 | `src/Cloud/ArcForges.Cloud.Modules.Task/` | Task/run/step/iteration, automation occurrence and approval persistence; owns the `task` schema and exposes its module API |
 | `src/Cloud/ArcForges.Cloud.Modules.Agent/` | Reuses provider/model/routing policy APIs from the routing package; it does not write Task tables |
 | `src/Cloud/ArcForges.Cloud.Modules.Chat/` | The canonical committed message write path ([CW-02](../../architecture/data-model/00-data-model-overview.md#rule-cw-02)) |
 | `src/Cloud/ArcForges.Cloud.PublicApi/` | Canonical Task/Chat operations and authenticated internal business ports |
-| `ArcForges-AI/src/streams/RunStream.ts` | Disposable bounded presentation tail, authenticated live/catch-up and terminal markers |
+| `ArcForges-AI/src/streams/RunStream.ts` (not a business component; any live tail is a non-authoritative thin projection or is streamed directly from C#, [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)) | Disposable bounded presentation tail, authenticated live/catch-up and terminal markers |
 | `src/Cloud/ArcForges.Cloud.BackgroundJobs/` | C# dispatch/control/reconciliation jobs; CF alone owns the loop |
-| `tests/Cloud.Tests.Integration/` | Loop, recovery, streaming, compaction and workflow suites |
+| `tests/Cloud.Tests.Integration/` | Loop, recovery, streaming, compaction and executor suites |
 
 **Major types introduced.** `TurnLoop`, `TurnIteration`, `ToolCallBatch`, `ConflictSet`, `ContextPack`, `CompactionRecord`, `StreamBuffer`, `DispatchIntent`, `EffectCertainty`, `ResolutionLadder`.
 
@@ -89,9 +89,9 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 ### WP-52.00 — The turn loop, batching and bounds
 
 
-**What must be fully done.** Implement the sole RunWorkflow with deterministic Workflow identity, C# claim/epoch/generation and actual deployed Worker version. Persist iteration/context references and model/tool dispatch intent before effects; record immutable outcome receipts before continuation. Apply selected model/tool/parallel/progress/time/step budgets and declared conflict sets, including 60-second execution lease renewed every 20 seconds during long awaits.
+**What must be fully done.** Implement the sole C# Harness executor (replacing RunWorkflow) with deterministic run identity, D1 claim/epoch/generation fencing, Durable Object alarm wake and actual deployed Worker version. Persist iteration/context references and model/tool dispatch intent before effects; record immutable outcome receipts before continuation. Apply selected model/tool/parallel/progress/time/step budgets and declared conflict sets, including 60-second execution lease renewed every 20 seconds during long awaits. The executor design is gated on the crash-injection, lost-wake and duplicate-delivery proof in [HAR.40](../delivery/lanes/harness.md#task-har-40); alarm and Queue delivery semantics are unverified until that proof records them, and no Cloudflare Workflow holds run state.
 
-**Testing requirements.** Real Workflow with forced duplicate start, replay, 120-second model await, lease loss/stale outcome, no-progress and every bound; no automatic effect retry after intent.
+**Testing requirements.** Real executor with forced duplicate start, replay, 120-second model await, lease loss/stale outcome, no-progress and every bound; no automatic effect retry after intent.
 
 **Completion gate.** Exactly one fenced loop advances a Task under its frozen config with bounded checkpoints and a visible reason for every stop/wait.
 
@@ -102,7 +102,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **What must be fully done.** Assemble context through authorized C# ports in the fixed order, page under one snapshot hash and retain immutable source pins/content origins. Filter invocable capabilities before model declaration, disclose budget truncation and store derived compaction refs. Before mutation, revalidate the source/revision and active grant.
 
-**Testing requirements.** Large context paging, permission loss, stale source, prior compaction version and unsupported capability; no raw prompts in Workflow checkpoints. Run model 05 context vectors (under budget, compaction, protected overflow, changed branch) through typed TranscriptWindow/CompactionRecord inputs, plus wrong role/tool-pair, hash and origin-installation negatives. Assert [HC-09](../../architecture/17-agent-harness.md#rule-hc-09) refusal and no customer debit for compaction; exercise both inline and transient-object input.
+**Testing requirements.** Large context paging, permission loss, stale source, prior compaction version and unsupported capability; no raw prompts in executor checkpoints. Run model 05 context vectors (under budget, compaction, protected overflow, changed branch) through typed TranscriptWindow/CompactionRecord inputs, plus wrong role/tool-pair, hash and origin-installation negatives. Assert [HC-09](../../architecture/17-agent-harness.md#rule-hc-09) refusal and no customer debit for compaction; exercise both inline and transient-object input.
 
 **Completion gate.** All effect decisions refer to authorized immutable context and the loop never writes stale source implicitly. All four context vectors and typed role/pairing/large-input cases pass against the real Harness.
 
@@ -113,7 +113,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **What must be fully done.** Implement approval waiting with at most the selected wait/reconcile steps and seven-day bound, reauthorization on resume, explicit cancel/pause/steer controls and C# reconciliation. Use intent→owner/provider evidence→deadline→user-decision ladder; request lifetime and UI session closure do not cancel a durable Task.
 
-**Testing requirements.** Restart Workflow/Cloud during wait/model/tool, missed wake event, expired/stale proposal, cancel race, generation rotation and late evidence.
+**Testing requirements.** Restart executor/Cloud during wait/model/tool, missed wake event, expired/stale proposal, cancel race, generation rotation and late evidence.
 
 **Completion gate.** Wait/cancel/recovery retains one canonical outcome or explicit unknownEffect; no presumed safe replay or missing hold resolution.
 
@@ -155,7 +155,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 ### WP-52.06 — Durable Cloud automation and authorised scheduling
 
 
-**What must be fully done.** Implement automation definition/version, trigger schedule/event cursor, occurrence dedup and grant/budget snapshot in C# Task-owned tables. Bounded leased jobs dispatch the same RunWorkflow identity through the existing outbox; disabled/revoked automation stops future occurrences and uses defined controls for active work. Remove only the labelled WP17 automation fixture.
+**What must be fully done.** Implement automation definition/version, trigger schedule/event cursor, occurrence dedup and grant/budget snapshot in C# Task-owned tables. Bounded leased jobs dispatch the same run identity through the existing outbox; disabled/revoked automation stops future occurrences and uses defined controls for active work. Remove only the labelled WP17 automation fixture.
 
 **Testing requirements.** Duplicate schedule/event, catch-up/coalescing, service/grant expiry, disable during wait and actual CF occurrence/usage with one linked Task.
 
@@ -166,7 +166,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 <a id="rule-wp-52.90"></a>
 ### WP-52.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Implement the specified Worker/Workflow/DO roles. Implement context, model/tool loop, approval, retries, cancel, streams and schedule execution against real C# transactions/ports and selected Workers AI. Remove the named [WP-17](17-arcchat-independent-core.md#rule-wp-17)/[WP-17](17-arcchat-independent-core.md#rule-wp-17) fixtures and own the first complete AI same-application workflow.
+**What must be fully done.** Assemble the owned deliverables from the preceding substeps under the selected repository, package, runtime and protocol authorities. Implement the specified Worker/executor/DO roles (no Workflow holds state). Implement context, model/tool loop, approval, retries, cancel, streams and schedule execution against real C# transactions/ports and selected Workers AI. Remove the named [WP-17](17-arcchat-independent-core.md#rule-wp-17)/[WP-17](17-arcchat-independent-core.md#rule-wp-17) fixtures and own the first complete AI same-application workflow.
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
@@ -184,7 +184,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 | Protocol | `task.readStream`; `task.outputAppended` payload; the turn operations |
 | UI | Streaming display, approval prompts, admission reasons — all client-side rendering of Cloud state |
 | Security | Every tool invocation passes the pipeline; MCP content stays untrusted data |
-| Platform | C# ports require Native AOT proof; TypeScript Workflow requires actual CF deployment proof |
+| Platform | C# ports require Native AOT proof; the thin TypeScript Cloudflare adapters require actual CF deployment proof |
 | Migration | `CompactionRecord` is derived and rebuildable; losing it costs compute, never content |
 | Compatibility | The turn and stream contracts are consumed by Desktop, Web and Mobile alike |
 
@@ -221,7 +221,7 @@ Acceptance includes every amended §5 producer/consumer and [WP-52.90](#rule-wp-
 
 **All of the following, with recorded evidence:**
 
-1. Multi-step turns execute in the sole CF RunWorkflow against the selected Workers AI binding, with C# owning canonical admission/state/settlement, and **no desktop, mobile or browser assembly contains a turn loop, a planner or a provider adapter**.
+1. Multi-step turns execute in the sole C# Harness executor against the selected Workers AI binding adapter, with C# owning canonical admission/state/settlement, and **no desktop, mobile or browser assembly contains a turn loop, a planner or a provider adapter**.
 2. No unbounded loop is reachable; every bound ends the turn with a stated reason.
 3. Parallel batching never violates a declared conflict, and a failure returns its siblings' real results.
 4. Only acknowledged Cloud revisions enter the context pack; a pending client edit never reaches the model.
@@ -263,4 +263,4 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 
 ## [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) required behavior and closure
 
-Execute ordinary persistent/temporary ChatTurn and AgentTask through the same real RunWorkflow, pure-read vs promoted effectful mode, transient source expiry/cleanup and platform-funded protected compaction. Every prior client/bridge fixture is replaced by actual C#/CF/model/R2 owner integration. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.
+Execute ordinary persistent/temporary ChatTurn and AgentTask through the same real C# Harness executor, pure-read vs promoted effectful mode, transient source expiry/cleanup and platform-funded protected compaction. Every prior client/bridge fixture is replaced by actual C#/CF/model/R2 owner integration. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

@@ -1,5 +1,7 @@
 # WP02.02 AOT and trim declaration sweep
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI. The recorded result is retained as dated history and is not rewritten.
+
 Scope: [WP02.02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.02), [BR-04/05](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-br-04), [PJ-02](../architecture/01-solution-and-project-layout.md#rule-pj-02), [BM-04](../architecture/14-build-packaging-and-release.md#rule-bm-04) and the [AOT contract](../requirements/12-quality-and-compatibility-contract.md#rule-ao-01). The [prior diagnostic-posture receipt](wp02-01-implementation-evidence.md) supplies the exact unchanged published baseline. This step closes the declaration and diagnostic sweep, not the later functional AOT proof or complete product acceptance.
 
 ## Research, decision and ordered execution

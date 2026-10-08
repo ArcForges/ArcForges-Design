@@ -1,5 +1,7 @@
 # WP03.02 serialization posture implementation evidence
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI; by [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023): the macOS artifact, gate and browser statements. The recorded result is retained as dated history and is not rewritten.
+
 Status: **WP03.02 complete**. This receipt closes the selected serialization, decode-limit, explicit-registration and Native AOT posture under the [approved profile](wp03-02-serialization-posture-profile.md) and the [P2-017 validation policy](../decisions/phase-2-specification-decisions.md#rule-p2-017). The [machine-readable receipt](wp03-02-implementation-evidence.json) records reviewed source, successful required checks and complete normal publication. Substep 03.03 is next and has not started; Plan advancement is a separate completion change. This is [WP03.02](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.02) acceptance, not completion of WP03, closure of [F-026](open-gates-register.md#rule-f-026) or commercial product acceptance.
 
 ## Authority and accepted source

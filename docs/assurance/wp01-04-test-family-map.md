@@ -1,5 +1,7 @@
 # WP01.04 test-family mapping
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI; by [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023): the macOS artifact, gate and browser statements. The recorded result is retained as dated history and is not rewritten.
+
 Authority: [WP01.04](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.04), [the eighteen families](testing-and-verification-strategy.md#2-the-eighteen-test-families), [quality contract section 25](../requirements/12-quality-and-compatibility-contract.md#25-the-test-pyramid), and [current repository inventory](wp01-00-implementation-evidence.md).
 
 This closes the mapping obligation, not the eighteen implementation or release gates. There are 87 mapping rows over 83 distinct paths (65 test sources, 21 verification entrypoints, 1 named case): the browser accessibility case is deliberately classified separately from its containing UI suite. All seven owner heads were clean and matched their remote main branches when inspected. Each has a green CI run at that exact commit. Existing results retain their dates; this document is not a new global provider/device/product execution.

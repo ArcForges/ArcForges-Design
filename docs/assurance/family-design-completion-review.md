@@ -1,5 +1,7 @@
 # Family Design Completion Review
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI; by [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022): the native PDF preview and local PDF parsing statements, including the `pdf` family in the family-design listing. The recorded result is retained as dated history and is not rewritten.
+
 > Review date: 2026-09-13. Scope: current accepted product family, Android-only amendment, producer completeness and implementation-plan closure. This is documentation evidence, not a product implementation or release approval.
 > Governing amendment: [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010). Current producer sequence: [artifact and integration matrix](../planning/producer-artifacts-and-integration.md). Actual implementation obligations remain in the [gate register](open-gates-register.md).
 

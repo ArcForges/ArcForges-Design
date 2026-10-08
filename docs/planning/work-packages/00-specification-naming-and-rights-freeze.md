@@ -6,6 +6,8 @@
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
 > Scheduling: this package is an obligation set; its delivery tasks and their typed prerequisites are listed in section 9, generated from the [delivery graph](../delivery/delivery-graph.json) under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018).
+>
+> **Planning repair 2026-10-08 (DLV-34; [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)).** This package's tasks are accepted, so the historical wording below is kept as written and recorded evidence is not edited. Where P2-021 supersedes a stack or scope statement here, the supersession applies to the successor scope only, and the successor is named: Web, Android, SDK and Harness statements by [WEB.40](../delivery/lanes/web.md#task-web-40), [AND.40](../delivery/lanes/android.md#task-and-40), [CON.40](../delivery/lanes/contracts.md#task-con-40), [CLOUD.84](../delivery/lanes/cloud.md#task-cloud-84) and [HAR.40](../delivery/lanes/harness.md#task-har-40); macOS statements by [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023), and PDF statements by [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022).
 
 > **Goal.** Make the vocabulary, the product set, the licence position and the reuse process *settled facts* before any code is written against them. This is the first hard gate: if naming, terminology, licence boundaries or product scope move later, editors, data formats, capabilities and cloud sync all rework.
 

@@ -1,5 +1,7 @@
 # WP01.05 bounded repository reconciliation
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI. The recorded result is retained as dated history and is not rewritten.
+
 Authority: [WP01.05](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.05), [current inventory profile](wp01-00-inventory-policy.md), [repository composition](../architecture/27-platform-projects-and-application-assistants.md) and [staged integration](../planning/producer-artifacts-and-integration.md). The [machine-readable receipt](wp01-05-bounded-reconciliation.json) binds this observation to the exact seven clean source commits and their successful main CI runs.
 
 ## Current disposition and decisions

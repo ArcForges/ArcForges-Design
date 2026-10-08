@@ -1,5 +1,7 @@
 # [P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012) Term Replacement Review
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023), [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024))**: the baseline quotations and dispositions that name the superseded stack, PDF, macOS or `wsl.exe` terms (for example the C#/TS/Kotlin fixture wording in row 19) describe the 2026-09-17 baseline. They are retained as dated history and are not rewritten.
+
 Baseline: `8b60426`, reviewed 2026-09-17 by the executing Codex reviewer. This is the occurrence classification required by IRF-03; it is not runtime evidence. Every baseline match is listed, including multiple occurrences on one line. The final closure review verifies each disposition and classifies any retained occurrence.
 
 | # | Baseline location | Context | Disposition |

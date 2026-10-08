@@ -181,7 +181,7 @@ Chat cache mirrors Cloud part origins. ArcScope native stores own local origins;
 
 ## 2. ArcChat local store
 
-The historical feature name identifies no standalone application or database. All assistant tables, messages, attachments, projects, profiles, skills, context, compaction and pending execution are defined exclusively in [model 05](05-application-history.md). Each owning desktop has its own store; Android mirrors the logical schema in Room. Model 02 §1 still owns common product journal/resource mechanisms. Do not generate a second conversation/message schema from this section.
+The historical feature name identifies no standalone application or database. All assistant tables, messages, attachments, projects, profiles, skills, context, compaction and pending execution are defined exclusively in [model 05](05-application-history.md). Each owning desktop has its own store; the MAUI Android build mirrors the logical schema in SQLite through its C# data layer ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021); the Kotlin Room mirror is retired). Model 02 §1 still owns common product journal/resource mechanisms. Do not generate a second conversation/message schema from this section.
 
 ## 3. ArcScope local store
 

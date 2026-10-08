@@ -45,7 +45,7 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 <a id="rule-wp-15.02"></a>
 ### WP-15.02 — Attachments and provenance
 
-**What must be fully done.** Implement typed local refs, authorized file staging/preview, resource ownership and explicit egress. Never assume attachment selection is upload consent.
+**What must be fully done.** Implement typed local refs, authorized file staging/preview, resource ownership and explicit egress. Never assume attachment selection is upload consent. Planning repair 2026-10-08 (DLV-34; P2-021): generic PDF attachments remain opaque attachments (stored, transferred and downloaded without parsing) and still-image attachments keep their chat preview path; PDF preview and parsing are retired ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022) item 2).
 
 **Testing requirements.** Missing/hostile file, lost URI/path grant, source labels, quota and temporary exclusion.
 

@@ -1,5 +1,7 @@
 # GOV.04 shared architecture policy evidence
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023))**: the macOS artifact, gate and browser statements. The recorded result is retained as dated history and is not rewritten.
+
 Status: the reviewed shared policy producer and its observed scanner correction are merged and published as immutable candidates. The corrected `1.0.0-ci.31.1` candidate is the final producer recorded here; this record supports final assurance and separately reviewed Plan ledger acceptance.
 
 Claim: GOV.04 epoch 1 (w-20260927-dgov). Source: [DesktopPlatform PR67](https://github.com/ArcForges/DesktopPlatform/pull/67), reviewed head `2e180f7826ef9cae0b679db7d10459e51027d4b2`; independent full/delta review [5860461159](https://github.com/ArcForges/DesktopPlatform/pull/67#issuecomment-5860461159). Final whitespace-only delta approved [5860492140](https://github.com/ArcForges/DesktopPlatform/pull/67#issuecomment-5860492140). Packaging-delta approval [5860560182](https://github.com/ArcForges/DesktopPlatform/pull/67#issuecomment-5860560182) binds the final source. Producer scope was accepted by Design PR85 and Plan PR48.

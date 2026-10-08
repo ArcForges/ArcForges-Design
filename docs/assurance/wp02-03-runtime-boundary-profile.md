@@ -1,5 +1,7 @@
 # WP02.03 runtime boundaries and execution plan
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI. The recorded result is retained as dated history and is not rewritten.
+
 > Historical execution plan. Its execution order and validation instructions are superseded by [P2-017 and the current CI/local validation policy](../decisions/phase-2-specification-decisions.md#rule-p2-017). Retain the decisions and recorded observations as historical context; do not repeat the former runtime matrices, public-download checks or post-merge tests. Current post-merge verification is limited to the expected merge commit, required job results and a clean primary fast-forward. On a network failure, stop and report the exact operation without retries or network changes.
 
 Authority: [WP02.03](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.03), [build/runtime matrix](../architecture/14-build-packaging-and-release.md#211-web-entry-points-and-release-artifacts), [Web command and IDE contract](../architecture/25-web-toolchain-and-sdk.md#2-independent-web-repository) and [staged producers](../planning/producer-artifacts-and-integration.md). This records the complete bounded plan before source implementation. The [WP02.02 receipt](wp02-02-aot-sweep-evidence.md) establishes the unchanged managed postures.

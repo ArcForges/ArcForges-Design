@@ -1,5 +1,7 @@
 # WP03.01 foundation contract implementation evidence
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI; by [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023): the macOS artifact, gate and browser statements. The recorded result is retained as dated history and is not rewritten.
+
 Status: **WP03.01 complete**. This receipt closes the selected foundation schema, safe-value and profile-validation boundary under the [approved profile](wp03-01-foundation-contract-profile.md) and [P2-017 validation policy](../decisions/phase-2-specification-decisions.md#rule-p2-017). The [machine-readable receipt](wp03-01-implementation-evidence.json) records reviewed source, successful required checks and complete normal publication. Substep 03.02 is next and has not started; Plan advancement is a separate completion change. This is [WP03.01](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.01) acceptance, not completion of WP03 or commercial product acceptance.
 
 ## Authority and accepted source

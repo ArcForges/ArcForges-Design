@@ -96,7 +96,7 @@ The ArcForges execution vocabulary is a strict hierarchy. No level may be collap
 | **Step** | domain, wire | One planned unit inside a Run. |
 | **Attempt** / `AttemptId` | domain, wire | One execution try of a Step. Distinct from `CommandId`. |
 | **Task Owner** | domain | The Cloud agent module holding authoritative Task/Run/Step/Attempt state. A desktop tool owner is not a Task Owner. |
-| **Orchestrator** | domain | The single Cloud harness sequencing agent work and authorized tools. Each application's assistant presents its tasks and bridges only its own local tools; it does not run another orchestrator. |
+| **Orchestrator** | domain | The Cloud harness sequencing agent work and authorized tools. Each application's assistant presents its tasks and bridges only its own local tools; it does not run another orchestrator. |
 | **Execution Location** | domain | Cloud for the AI runtime. Desktop/Cloud/Hybrid labels on a task describe tool locality only; they never select another model loop. |
 | **TaskHandle** | wire | A stable Cloud Agent Task reference for query/correlation, never an RPC connection or product job identity. |
 | **TaskSnapshot** | wire | An authoritative point-in-time projection of Task state, retrievable over HTTP. |
@@ -242,7 +242,7 @@ Every active entry is binding where its concepts are in current product scope. A
 | <a id="rule-i-026"></a>I-026 | Semantic Contract ≠ Wire Contract |
 | <a id="rule-i-027"></a>I-027 | Mobile/Web Companion ≠ Professional-app Mobile/Web port |
 | <a id="rule-i-028"></a>I-028 | Native working cache ≠ WebView shell; acknowledged Cloud revision ≠ pending local edit |
-| <a id="rule-i-030"></a>I-030 | Product AI surface ≠ agent runtime; all products use the single Cloud harness |
+| <a id="rule-i-030"></a>I-030 | Product AI surface ≠ agent runtime; all products use the Cloud harness |
 | <a id="rule-i-031"></a>I-031 | Own-application assistant search ≠ a central ArcForges database |
 
 ### 7.3 Capability, context and resource
@@ -693,7 +693,8 @@ Every active entry is binding where its concepts are in current product scope. A
 | "ArcForges Suite 2.0" as a version | No mandatory suite release train | Per-product versions plus an optional release campaign name |
 | "Central desktop service", `ArcForgesService.exe` | Prohibited architecture | application-owned assistant |
 | Unqualified "Unlimited AI" / "unlimited storage" | Prohibited unbounded commercial claims | Disclosed AI capacity recovery/rate/concurrency/model limits and storage tier |
-| ".NET AOT" applied to Kotlin Android | Kotlin/Jetpack Compose is its own runtime under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) | "Kotlin/Jetpack Compose release build" |
+| "NativeAOT" applied to Android mobile | Android is .NET MAUI on the Mono runtime with AOT for release under [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021); NativeAOT and CoreCLR on Android are experimental and unused | "MAUI Mono release build with AOT, trimming and R8" |
+| "CF Workflow owns the model/tool loop" | Superseded by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021): the C# Harness owns the sole loop; no Cloudflare Workflow holds run state | "C# Harness owns the model/tool loop" |
 | "Cloud may remain JIT" | Superseded by [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) | "C# Cloud publishes Native AOT" |
 | "A realtime connection is durable authority" | Hints are projections | "Reconcile using the typed authoritative read" |
 | Waffo Pancake and every Waffo-specific mechanic | `SUPERSEDED` provider (**[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)**) | Paddle (MoR) and Payoneer (payout destination) |
@@ -745,4 +746,4 @@ The glossary is enforced, not merely published. The [policy export profile](../a
 
 ## [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) technology invariants
 
-Proto is authored wire authority; the sole model loop is CF Workflow; canonical business state is C#/D1; object bytes are R2; product repositories consume immutable packages; Mobile is Kotlin/Jetpack Compose. These replace superseded technology examples without renumbering inherited invariant IDs. Content-origin and Scope measurement meaning remain unchanged.
+Proto is authored wire authority; the sole model/tool loop is the C# Harness ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021); the earlier CF Workflow loop is superseded); canonical business state is C#/D1; object bytes are R2; product repositories consume immutable packages; Mobile is .NET MAUI for Android (superseded Kotlin/Jetpack Compose path). These replace superseded technology examples without renumbering inherited invariant IDs. Content-origin and Scope measurement meaning remain unchanged.

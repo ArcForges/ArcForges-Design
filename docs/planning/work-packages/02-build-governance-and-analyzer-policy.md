@@ -6,6 +6,8 @@
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
 > Scheduling: this package is an obligation set; its delivery tasks and their typed prerequisites are listed in section 9, generated from the [delivery graph](../delivery/delivery-graph.json) under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018).
+>
+> **Planning repair 2026-10-08 (DLV-34; [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)).** This package's tasks are accepted, so the historical wording below is kept as written and recorded evidence is not edited. Where P2-021 supersedes a stack or scope statement here, the supersession applies to the successor scope only, and the successor is named: the Web toolchain by [WEB.40](../delivery/lanes/web.md#task-web-40); the Kotlin, Gradle and JDK Android build by [AND.40](../delivery/lanes/android.md#task-and-40); the Cloud TypeScript adapter pins by [CLOUD.84](../delivery/lanes/cloud.md#task-cloud-84); the AI Worker build by [HAR.40](../delivery/lanes/harness.md#task-har-40); the desktop RID set by [GOV.30](../delivery/lanes/governance.md#task-gov-30) ([P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)).
 
 > **Goal.** Make the build tell the truth. Until diagnostics are real, warnings are errors, versions are locked and the runtime split is expressed in the build itself, every later AOT proof and every later quality claim rests on unverified ground.
 

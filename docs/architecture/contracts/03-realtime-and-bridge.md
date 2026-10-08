@@ -187,7 +187,7 @@ Use registry 04 `ToolRequest` exactly: toolRequestId, optional taskId, runId, st
 
 ### 6.1 Browser adapter
 
-Desktop, React and Kotlin Android use generated EventService.Watch with Poll recovery and ExecutionService.WatchOutput/ReadOutput under [annex 10](10-application-scope-and-streams.md). All 17 hints retain generated payloads and durable reread. Scope, product/installation/instance epoch and current authorization bind every remote request/result. The C# gRPC-Web service exposes DO projections; there is no public AI WebSocket or local product peer. A live connection never grants effect authority.
+Desktop, Blazor Web and MAUI Android use generated EventService.Watch with Poll recovery and ExecutionService.WatchOutput/ReadOutput under [annex 10](10-application-scope-and-streams.md). All 17 hints retain generated payloads and durable reread. Scope, product/installation/instance epoch and current authorization bind every remote request/result. The C# gRPC-Web service exposes DO projections; there is no public AI WebSocket or local product peer. A live connection never grants effect authority.
 
 ---
 

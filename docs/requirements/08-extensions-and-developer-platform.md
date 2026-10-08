@@ -87,7 +87,7 @@ Automation is specified in [`05-ai-and-agent-execution.md`](05-ai-and-agent-exec
 | <a id="rule-mc-09"></a>MC-09 | **The exact MCP C# SDK version is pinned at first consumption**, and an explicit mapping between MCP extension concepts (its own `Task`, `Skill`) and the ArcForges execution vocabulary is recorded (see glossary §9). *Owner: Architecture Owner. Trigger: start of the MCP/extension work package.* |
 | <a id="rule-mc-10"></a>MC-10 | An MCP server changing its tool set **re-enters permission review** ([TR-10](07-security-privacy-and-trust.md#rule-tr-10) in the security requirements). |
 
-MCP placement is explicit: stdio servers run only in an owned desktop connector child; streamableHttp connections run either in that local child or in the AI Worker tool adapter for a Cloud connection. Cloud calls use the exact admitted HTTPS origin and Cloud SecretRef. Local calls pass through the device bridge; neither transport grants tool permission.
+MCP placement is explicit: stdio servers run only in an owned desktop connector child; streamableHttp connections run either in that local child or in the C# Cloud Harness tool adapter for a Cloud connection, with the TypeScript Cloudflare Worker limited to transport ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) item 5). Cloud calls use the exact admitted HTTPS origin and Cloud SecretRef. Local calls pass through the device bridge; neither transport grants tool permission.
 
 ## 6. Connector
 
@@ -118,7 +118,7 @@ MCP placement is explicit: stdio servers run only in an owned desktop connector 
 | <a id="rule-ea-07"></a>EA-07 | Hidden reasoning is never an extension result or audit requirement. |
 | <a id="rule-ea-08"></a>EA-08 | A package/connector/MCP tool cannot bypass this exclusion by starting an autonomous delegated agent. No agent-team or external-agent contribution kind. |
 
-The single Cloud Harness may call authorised tools concurrently within one budget. A tool has declared input/output, effect and timeout semantics; it does not own a model loop or a delegated work goal.
+The Cloud Harness may call authorised tools concurrently within one budget. A tool has declared input/output, effect and timeout semantics; it does not own a model loop or a delegated work goal.
 
 ---
 
