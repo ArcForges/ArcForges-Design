@@ -11,8 +11,8 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | [OPS.01](#task-ops-01) | Service levels and alerting | service | M | none | not-started |
 | [OPS.02](#task-ops-02) | Incident process | service | M | [OPS.01](#task-ops-01) (artifact) | not-started |
 | [OPS.03](#task-ops-03) | Runbooks and rehearsal | service | M | [OPS.02](#task-ops-02) (artifact) | not-started |
-| [OPS.04](#task-ops-04) | Status page | service | M | [OPS.01](#task-ops-01) (artifact) | not-started |
-| [OPS.05](#task-ops-05) | Operator console and support access | service | XL | [CON.14](contracts.md#task-con-14) (contract), [POL.05](policy.md#task-pol-05) (artifact) | not-started |
+| [OPS.04](#task-ops-04) | Status page | service | M | [OPS.01](#task-ops-01) (artifact), [WEB.01](web.md#task-web-01) (artifact) | not-started |
+| [OPS.05](#task-ops-05) | Operator console and support access | service | XL | [CON.14](contracts.md#task-con-14) (contract), [POL.05](policy.md#task-pol-05) (artifact), [WEB.40](web.md#task-web-40) (artifact) | not-started |
 | [OPS.06](#task-ops-06) | Break-glass | service | M | [OPS.05](#task-ops-05) (artifact) | not-started |
 | [OPS.07](#task-ops-07) | Support cases and in-product reporting | service | M | [OPS.05](#task-ops-05) (artifact), [CON.22](contracts.md#task-con-22) (contract) | not-started |
 | [OPS.08](#task-ops-08) | Trust and safety | service | L | [OPS.07](#task-ops-07) (artifact), [OPS.05](#task-ops-05) (artifact) | not-started |
@@ -106,15 +106,16 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Kind / size | service / M |
 | Obligations | [WP-45.03](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45.03) — full<br>[WP-45](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45) browser matrix acceptance; status page supported/degraded/blocked browser behavior, static no-JS readability — browser matrix acceptance; status page supported/degraded/blocked browser behavior, static no-JS readability<br>[WP-45](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45) Browser matrix acceptance (browser-support.v1 supported/degraded/blocked) — package-level obligation contribution |
 | Provides | status-page; capability-health-mapping |
-| Start prerequisites | **artifact** [OPS.01](#task-ops-01) — capability health signals to map from. *Why:* the published component state is a reviewed mapping from internal capability health, which OPS.01 is the source of |
+| Start prerequisites | **artifact** [OPS.01](#task-ops-01) — capability health signals to map from. *Why:* the published component state is a reviewed mapping from internal capability health, which OPS.01 is the source of<br>**artifact** [WEB.01](web.md#task-web-01) — the C# static generator and locale/URL inventory that the status route is generated through. *Why:* the status output lives in src/ArcForges.Web.Site/**/status/**, which WEB.01 generalises from WEB.40's generator; this edge makes the hold a real dependency |
 | Entry condition | [ADOPT.09.operations](adoption.md#task-adopt-09-operations) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [OPS.12](#task-ops-12) |
-| Write scope | `Web:apps/site/**/status/**` |
+| Write scope | `Web:src/ArcForges.Web.Site/**/status/**` |
 | Shared resources | [RES-cloud-runbooks-and-fixtures](../shared-resources.md#res-cloud-runbooks-and-fixtures) (append) |
 | Validation | Offline/staged tests: full-cloud-outage availability, per-capability mapping, vendor-name-absence scan; static no-JS readability check per browser-support.v1. |
 | Completion evidence | Full-cloud-outage availability test; vendor-name-absence scan (zero hits). |
-| Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Web repo HEAD 120f2097 has apps/site and apps/app present but essentially empty (bootstrap only). |
+| Baseline (unreviewed unless accepted) | not-started Observed 2026-10-08 (Web a469064): apps/site is the React Router generator with the bootstrap routes (/, /hello, /cloud-hello) and no status route; the status page does not exist yet. No ledger record. |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): The output path moves from the React apps/site tree (which WEB.01 and WEB.40 replace) to the C# static generator (ArcForges.Web.Site). Its full-cloud-outage, per-capability mapping, vendor-name-absence and no-JS readability criteria are unchanged. OPS.04 stays held until WEB.01 delivers. |
 
 <a id="task-ops-05"></a>
 
@@ -129,16 +130,16 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Kind / size | service / XL · early risk proof |
 | Obligations | [WP-45.04](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45.04) — all work except the parts mapped to OPS.13<br>[WP-45](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45) Operator contract closure — the real console join — operator contract closure; the real console join — wiring every generated role/method pair into the console UI<br>[WP-45](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45) browser matrix acceptance; supported/degraded/blocked browser behavior for the operator console's own flows — browser matrix acceptance; supported/degraded/blocked browser behavior for the operator console's own flows<br>[WP-45](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45) Browser matrix acceptance (browser-support.v1 supported/degraded/blocked) — package-level obligation contribution |
 | Provides | operator-console; support-access-grant-model |
-| Start prerequisites | **contract** [CON.14](contracts.md#task-con-14) — the OperatorService full RPC surface. *Why:* same gap noted at COM.13/POL.05 — the console has nothing to call until the operator RPCs are generated<br>**artifact** [POL.05](policy.md#task-pol-05) — the kill-switch RPC implementation. *Why:* the console must exercise kill-switch activation per the same generated role/method matrix |
+| Start prerequisites | **contract** [CON.14](contracts.md#task-con-14) — the OperatorService full RPC surface. *Why:* same gap noted at COM.13/POL.05 — the console has nothing to call until the operator RPCs are generated<br>**artifact** [POL.05](policy.md#task-pol-05) — the kill-switch RPC implementation. *Why:* the console must exercise kill-switch activation per the same generated role/method matrix<br>**artifact** [WEB.40](web.md#task-web-40) — the Operations profile skeleton (ArcForges.Web.Operations, separate origin and identity configuration) and the C# policy suite. *Why:* the operator console is a Blazor interactive profile ([P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 2); WEB.40 creates its project and the exact CSP policy |
 | Entry condition | [ADOPT.09.operations](adoption.md#task-adopt-09-operations) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [COM.13](commerce.md#task-com-13) — the financial-owner RPC implementations. *Why:* the console must exercise grant/revoke/issueCredit/adjustCredit/refund end to end per [WP-45.04](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45.04)'s testing requirement |
 | Unblocks | [CLOUD.64](cloud.md#task-cloud-64), [OPS.06](#task-ops-06), [OPS.07](#task-ops-07), [OPS.08](#task-ops-08), [OPS.11](#task-ops-11), [OPS.13](#task-ops-13), [WEB.31](web.md#task-web-31) |
-| Write scope | `Web:apps/app/**` |
+| Write scope | `Web:src/ArcForges.Web.Operations/**`<br>`Web:tests/ArcForges.Web.Operations.Tests/**` |
 | Shared resources | [RES-cloud-runbooks-and-fixtures](../shared-resources.md#res-cloud-runbooks-and-fixtures) (append), [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append), [RES-web-app-routing](../shared-resources.md#res-web-app-routing) (append) |
 | Validation | Offline/staged tests: silent-impersonation negative, scope/expiry, two-operator requirement, audit-completeness, parallel-admin-API-absence assertion, every generated role/method pair (allowed and refused), double-execution-of-one-approval negative; browser-support.v1 supported/degraded/blocked behavior per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) (no live E2E browser matrix in routine CI). |
 | Completion evidence | Silent-impersonation negative result; two-operator requirement result; full role/method matrix exercised (allowed and refused). |
-| Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Web apps/app has essentially one file at HEAD 120f2097 — no operator/admin/console code observed. |
-| Notes | [BR-06](../../../architecture/14-build-packaging-and-release.md#rule-br-06) ('an operator never silently becomes a user') is a headline security invariant for the whole package; the silent-impersonation negative test is worth proving early against a minimal console skeleton before building every case-type UI on top. |
+| Baseline (unreviewed unless accepted) | not-started Observed 2026-10-08 (Web a469064): no operator, admin or console code exists in the Web repo. apps/app holds only the PRF.08 React probe profiles (routes/account.tsx, routes/chat.tsx, probe/*), which are not an operator console. No ledger record. |
+| Notes | [BR-06](../../../architecture/14-build-packaging-and-release.md#rule-br-06) ('an operator never silently becomes a user') is a headline security invariant for the whole package; the silent-impersonation negative test is worth proving early against a minimal console skeleton before building every case-type UI on top. Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): The operator console is the standalone Blazor WebAssembly Operations profile ([P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 2) on its own origin and identity, not part of the Account or Chat bundles. Its writes move from the React apps/app tree to ArcForges.Web.Operations, whose skeleton WEB.40 creates. The silent-impersonation, two-operator, audit, scope/expiry and role/method criteria are unchanged. Tests are xUnit and bUnit; browser-support.v1 checks stay local opt-in per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
 
 <a id="task-ops-06"></a>
 
@@ -272,11 +273,12 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Entry condition | [ADOPT.09.operations](adoption.md#task-adopt-09-operations) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [OPS.12](#task-ops-12), [OPS.13](#task-ops-13) |
-| Write scope | `Web:apps/app/**` |
+| Write scope | `Web:src/ArcForges.Web.Operations/Features/PackageReview/**`<br>`Web:tests/ArcForges.Web.Operations.Tests/PackageReview/**` |
 | Shared resources | [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append), [RES-web-app-routing](../shared-resources.md#res-web-app-routing) (append) |
 | Validation | Offline tests: customer/PAT denial, changed-proposal-hash, replay, revoked-package, failed-index-publication/retry. |
 | Completion evidence | Revocation affecting a real signed catalog consumer, with recorded operator evidence. |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): The package review and revocation console is a feature folder of the Blazor Operations profile (ArcForges.Web.Operations) instead of the React apps/app tree. The catalogReview/catalogRevoke integration and the customer/PAT denial, changed-proposal-hash, replay, revoked-package and retry criteria are unchanged; tests are xUnit and bUnit. |
 
 <a id="task-ops-12"></a>
 
@@ -321,4 +323,4 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
 | Completion evidence | an authorised operator can actually grant/revoke/issueCredit/adjustCredit/refund and activate a kill switch through the console UI, not just via direct RPC test calls |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Merged duplicate integration or closure task formerly proposed as CON.98. |
+| Notes | Merged duplicate integration or closure task formerly proposed as CON.98. Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): The console this task exercises is the Blazor Operations profile (OPS.05, WEB.40). The end-to-end RPC and kill-switch criteria are stack-neutral and unchanged; OPS.13 has no writes of its own. |

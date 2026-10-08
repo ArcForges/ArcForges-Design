@@ -4,15 +4,15 @@
 
 Kotlin/Compose foundation, the Android ArcScope companion (workspace, assistant, approvals) and Android release gates.
 
-Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integration owner
+Tasks: 28 · Owning repositories: Mobile · Integration owner(s): Mobile integration owner
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
-| [AND.01](#task-and-01) | Android production identity and stable toolchain reconciliation | producer | M | [PRF.10](runtime-proofs.md#task-prf-10) (artifact) | not-started |
-| [AND.02](#task-and-02) | Real Android module graph and AN01-AN28 route/state contracts | producer | L | [AND.01](#task-and-01) (artifact) | not-started |
-| [AND.03](#task-and-03) | Android runtime and OS adapters (Compose, Credential Manager, Keystore wrapper, WorkManager, FCM registration, SAF/MediaStore) | feature | L | [AND.02](#task-and-02) (artifact) | not-started |
-| [AND.04](#task-and-04) | Published gRPC-Web contract consumption (Connect Kotlin client, binary framing, session/stream/retry adapters) | feature | M | [AND.02](#task-and-02) (artifact), [CON.07](contracts.md#task-con-07) (contract), [CON.11](contracts.md#task-con-11) (contract), [AND.01](#task-and-01) (artifact) | not-started |
-| [AND.05](#task-and-05) | Room history, drafts, outbox and receipts | feature | L | [AND.02](#task-and-02) (artifact), [CON.11](contracts.md#task-con-11) (contract) | not-started |
+| [AND.01](#task-and-01) | Android production identity and .NET MAUI toolchain pins | producer | M | none | not-started |
+| [AND.02](#task-and-02) | Real MAUI module graph and AN01-AN28 route/state contracts | producer | L | [AND.01](#task-and-01) (artifact), [AND.40](#task-and-40) (artifact), [PRF.12](runtime-proofs.md#task-prf-12) (artifact) | not-started |
+| [AND.03](#task-and-03) | Android runtime and OS adapters (MAUI, Credential Manager, Keystore wrapper, WorkManager, FCM registration, SAF/MediaStore) | feature | L | [AND.02](#task-and-02) (artifact) | not-started |
+| [AND.04](#task-and-04) | Published gRPC-Web contract consumption (Grpc.Net.Client.Web C# client from the NuGet Contracts packages, binary framing, session/stream/retry adapters) | feature | M | [AND.02](#task-and-02) (artifact), [CON.07](contracts.md#task-con-07) (contract), [CON.11](contracts.md#task-con-11) (contract), [AND.01](#task-and-01) (artifact), [AND.40](#task-and-40) (artifact) | not-started |
+| [AND.05](#task-and-05) | SQLite history, drafts, outbox and receipts (versioned migrations through an admitted Apache-2.0 SQLite binding) | feature | L | [AND.02](#task-and-02) (artifact), [CON.11](contracts.md#task-con-11) (contract) | not-started |
 | [AND.06](#task-and-06) | Secure per-account lifecycle: Keystore encryption, no-backup policy, purge/quarantine, deep-link validation | feature | M | [AND.03](#task-and-03) (artifact) | not-started |
 | [AND.07](#task-and-07) | Foundation integration evidence: real candidate against deployed 22/23/24/25 | integration | M | [AND.03](#task-and-03) (artifact), [AND.04](#task-and-04) (artifact), [AND.05](#task-and-05) (artifact), [AND.06](#task-and-06) (artifact), [CLOUD.13](cloud.md#task-cloud-13) (artifact), [CLOUD.42](cloud.md#task-cloud-42) (artifact), [CLOUD.39](cloud.md#task-cloud-39) (artifact), [CLOUD.18](cloud.md#task-cloud-18) (artifact), [CLOUD.19](cloud.md#task-cloud-19) (artifact), [CLOUD.26](cloud.md#task-cloud-26) (artifact), [CLOUD.29](cloud.md#task-cloud-29) (artifact) | not-started |
 | [AND.08](#task-and-08) | Authentication, Home and workspace (AN01-AN06) | feature | L | [AND.03](#task-and-03) (artifact), [AND.04](#task-and-04) (artifact), [AND.05](#task-and-05) (artifact), [AND.06](#task-and-06) (artifact) | not-started |
@@ -35,14 +35,15 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | [AND.25](#task-and-25) | Real desktop tool dispatch and unknown-effect reconciliation from Android | integration | M | [AND.10](#task-and-10) (artifact), [AND.13](#task-and-13) (artifact), [DEV.02](device-bridge.md#task-dev-02) (artifact), [DEV.03](device-bridge.md#task-dev-03) (artifact), [DEV.06](device-bridge.md#task-dev-06) (artifact), [DEV.07](device-bridge.md#task-dev-07) (artifact), [DEV.12](device-bridge.md#task-dev-12) (artifact) | not-started |
 | [AND.26](#task-and-26) | Real FCM sending and physical Android receipt | integration | M | [AND.12](#task-and-12) (artifact), [AND.23](#task-and-23) (artifact), [OPS.10](operations.md#task-ops-10) (artifact), [AND.21](#task-and-21) (artifact) | not-started |
 | [AND.27](#task-and-27) | ArcScope library, reports and simulation runs on Android | feature | L | [AND.11](#task-and-11) (artifact), [CON.24](contracts.md#task-con-24) (contract), [CON.21](contracts.md#task-con-21) (contract) | not-started |
+| [AND.40](#task-and-40) | MAUI migration of the existing Mobile app: Hello client, streaming consumer rules, Keystore probe, CI, signing and C# policy (Kotlin, KMP and Gradle retired) | producer | L | [AND.01](#task-and-01) (artifact) | not-started |
 
 ## Tasks
 
 <a id="task-and-01"></a>
 
-### AND.01 — Android production identity and stable toolchain reconciliation
+### AND.01 — Android production identity and .NET MAUI toolchain pins
 
-**Outcome.** com.arcforges.mobile applicationId/namespace/source packages adopted, and a mutually compatible stable JDK21/AGP/Kotlin/Compose/Gradle tuple is pinned with wrapper checksums, version-catalog locks and generated-client compatibility evidence.
+**Outcome.** com.arcforges.mobile applicationId, namespace and source packages adopted, with reinstall guidance from the development prerelease io.github.arcforges.mobile recorded in docs/releasing.md (reinstall with no data migration; the prerelease holds no production user data); the persistent android-release signing identity is kept (cert SHA256 7a8b3b14...); and a mutually compatible .NET 10 LTS SDK, Android workload, MAUI and NuGet tuple is pinned as candidate pins with global.json, central package versions (Directory.Packages.props), packages.lock.json locks, SDK and workload integrity pins and dependency-admission records, plus generated-client compatibility evidence (the NuGet Contracts client restores and builds against the candidate tuple). Every Mobile project targets net10.0-android only (P2-021.3), with UseMonoRuntime=true set explicitly; platform-neutral domain and feature projects (AND.02) contain no Android or platform API references but use the same single target. The exact tuple is not proven by this task: the first release-build proof is AND.40's CI gate, and PRF.12 proves the tuple on the device before this task completes.
 
 | Field | Value |
 |---|---|
@@ -51,22 +52,22 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Kind / size | producer / M · early risk proof |
 | Obligations | [WP-30.00](../../work-packages/30-mobile-shared-architecture.md#rule-wp-30.00) — all work except the parts mapped to AND.04<br>[WP-30](../../work-packages/30-mobile-shared-architecture.md#rule-wp-30) §3 binding rules: Apache-2.0 boundary, no GPL-family implementation, immutable producer artifacts — package-level obligation contribution |
 | Provides | android-app-identity; android-stable-toolchain |
-| Start prerequisites | **artifact** [PRF.10](runtime-proofs.md#task-prf-10) — immutable toolchain compatibility manifest (exact AGP/Kotlin/Compose/Gradle versions proven together on a real release build). *Why:* WP30.00 Follow-up F-1 must commit exact producer pins against a proven-compatible stack; the transport probe already runs in this repo's own CI (CloudHelloClient, F-023-evidenced candidates), so this is a recorded-manifest join, not a functional blocker |
+| Start prerequisites | none |
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | none |
-| Unblocks | [AND.02](#task-and-02), [AND.04](#task-and-04) |
-| Write scope | `Mobile:app/build.gradle.kts`<br>`Mobile:app/src/main/AndroidManifest.xml`<br>`Mobile:app/src/main/kotlin/**`<br>`Mobile:gradle/libs.versions.toml`<br>`Mobile:gradle/locks/**`<br>`Mobile:gradle/verification-metadata.xml`<br>`Mobile:gradle/wrapper/gradle-wrapper.properties`<br>`Mobile:eng/policy/**`<br>`Mobile:eng/provenance/**` |
+| Completion prerequisites | **integration** [PRF.12](runtime-proofs.md#task-prf-12) — the MAUI Android release proof recording the exact compatible .NET 10 / Android workload / NuGet tuple. *Why:* AND.01 is delivered on candidate pins, so AND.40 starts on that candidate tuple. The completion edge keeps AND.01 open until the MAUI Android release proof of the exact tuple exists. A start gate on PRF.12 would be a cycle, because PRF.12 starts on AND.40, which starts on this task; so the first release-build proof is AND.40's own CI gate (net10.0-android Release build with Mono AOT and R8). A failed proof or any later pin change reopens AND.01, AND.40 and PRF.12. The former start edge on PRF.10 is removed because PRF.10 is superseded (retargeting it to PRF.12 would be a cycle). |
+| Unblocks | [AND.02](#task-and-02), [AND.04](#task-and-04), [AND.40](#task-and-40) |
+| Write scope | `Mobile:global.json`<br>`Mobile:Directory.Build.props`<br>`Mobile:Directory.Packages.props`<br>`Mobile:NuGet.config`<br>`Mobile:src/ArcForges.Mobile/ArcForges.Mobile.csproj`<br>`Mobile:eng/policy/**`<br>`Mobile:eng/provenance/**`<br>`Mobile:eng/build_identity.py`<br>`Mobile:eng/version-sources.json` |
 | Shared resources | [RES-mobile-build-config](../shared-resources.md#res-mobile-build-config) (append) |
-| Validation | Windows/Linux full build, dependency-verification metadata check, package/certificate inspection under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017); device install and App Link fixture-key tests are local opt-in, not CI gates |
-| Completion evidence | Exact pinned tuple + wrapper checksums + regenerated locks; [F-023](../../../assurance/open-gates-register.md#rule-f-023) re-run showing closure holds after the identity change |
+| Validation | Windows and Linux full build of the identity-only project with locked restore (packages.lock.json content hashes), NuGet audit and dependency-verification check; F-023-class licence and provenance closure re-run for the pinned MAUI closure; package-identity and certificate inspection of the built manifest under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). The MAUI app release build and its Mono AOT, trimming, R8 and 16 KB checks are an explicit transfer to AND.40 (CI) and PRF.12 (candidate proof), so the Windows and Linux build acceptance is not narrowed here; device install and App Link fixture-key tests are local opt-in, not CI gates. |
+| Completion evidence | Exact pinned tuple in global.json, Directory.Packages.props and packages.lock.json; SDK and workload integrity pins (exact SDK version with rollForward pinned, exact workload manifest versions, packages.lock.json content hashes in place of the former Gradle wrapper checksum); admission records for each new NuGet or workload dependency; built manifest showing applicationId com.arcforges.mobile; reinstall guidance recorded in docs/releasing.md; [F-023](../../../assurance/open-gates-register.md#rule-f-023) re-run showing the closure holds for the MAUI dependency set (the android-0.1.0-ci.14.1 closure does not carry over and reopens on this dependency change); no AGPL DesktopPlatform package in the closure. |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: app/ is a Hello World module with applicationId io.github.arcforges.mobile (dev-prerelease id); shared/ is a Kotlin-Multiplatform module (android+desktop jvm targets) used only for a Compose Hot Reload preview per AGENTS.md, not a production target; CI already builds/signs/publishes real signed candidates (android-0.1.0-ci.14.1, [F-023](../../../assurance/open-gates-register.md#rule-f-023) closed for that candidate) which is de facto WP06 evidence |
-| Notes | Must also decide the KMP shared/ preview module's fate: arch-27's module map (core/*, feature/*) has no KMP target, so shared/ stays a dev-only convenience outside the shipped app graph, never a second production plan (per WP30 §4). |
+| Notes | Must also decide the KMP shared/ preview module's fate: arch-27's module map (core/*, feature/*) has no KMP target, so shared/ stays a dev-only convenience outside the shipped app graph, never a second production plan (per WP30 §4). Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Kotlin/AGP/Compose/Gradle tuple replaced by the .NET 10 LTS SDK, Android workload and NuGet candidate pins (P2-021.3); applicationId decision taken from P2-021.3 and [IRD-23](../../../decisions/phase-2-specification-decisions.md#rule-ird-23) (com.arcforges.mobile, reinstall from io.github.arcforges.mobile documented in docs/releasing.md with no data migration). Source packages are adopted as well as applicationId and namespace. Identity-only Windows and Linux build acceptance restored; the MAUI release-build proof transfers explicitly to AND.40 (CI) and PRF.12 (device proof). Start edge on the superseded PRF.10 removed; the exact-tuple proof is a completion edge on PRF.12, not a start gate. Dropped on purpose: the optional development preview in the KMP shared/ module (desktopMain, labelled development-only; AGENTS.md:3) retires with the Kotlin/KMP modules under AND.40, with no replacement preview; the development-only status is restated in AND.22. No acceptance removed. |
 
 <a id="task-and-02"></a>
 
-### AND.02 — Real Android module graph and AN01-AN28 route/state contracts
+### AND.02 — Real MAUI module graph and AN01-AN28 route/state contracts
 
-**Outcome.** The arch-27 module set (app, core/domain, core/data, core/network, core/security, core/designsystem, feature/home, feature/chat, feature/tasks, feature/library, feature/scope, feature/settings) exists as enforced Gradle modules with typed AN01-AN28 navigation/state contracts; features depend only on typed core ports.
+**Outcome.** The arch-27 module set (app, core/domain, core/data, core/network, core/security, core/designsystem, feature/home, feature/chat, feature/tasks, feature/library, feature/scope, feature/settings) exists as enforced .NET projects, every one targeting net10.0-android only (P2-021.3): the app is the MAUI project; the domain and feature projects are platform-neutral in code (no Android or platform API reference, enforced by architecture tests) and carry the same single target. Typed AN01-AN28 Shell/navigation and state contracts exist, and features depend only on typed core ports. No iOS, Mac Catalyst, macOS or other platform target exists.
 
 | Field | Value |
 |---|---|
@@ -75,21 +76,22 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Kind / size | producer / L |
 | Obligations | [WP-30.01](../../work-packages/30-mobile-shared-architecture.md#rule-wp-30.01) — full |
 | Provides | android-module-boundaries; android-nav-contracts |
-| Start prerequisites | **artifact** [AND.01](#task-and-01) — renamed applicationId/namespace and pinned toolchain. *Why:* new modules must be created under the production package identity, not the Hello dev id |
+| Start prerequisites | **artifact** [AND.01](#task-and-01) — renamed applicationId/namespace and pinned toolchain. *Why:* new modules must be created under the production package identity, not the Hello dev id<br>**artifact** [AND.40](#task-and-40) — the MAUI app project, Hello transport and CI created by AND.40. *Why:* the module projects are created inside the MAUI app solution and the Kotlin module graph retires in AND.40<br>**artifact** [PRF.12](runtime-proofs.md#task-prf-12) — the MAUI Android release proof of the candidate app, Hello transport and release pipeline on the device or emulator. *Why:* the MAUI proof is an early risk proof that precedes the bulk Android module and feature work; PRF.12 starts only on AND.40 and PRF.07, neither of which starts on AND.02, so the edge is acyclic |
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [AND.03](#task-and-03), [AND.04](#task-and-04), [AND.05](#task-and-05), [AND.20](#task-and-20) |
-| Write scope | `Mobile:settings.gradle.kts`<br>`Mobile:build.gradle.kts`<br>`Mobile:core/domain/**`<br>`Mobile:core/data/**`<br>`Mobile:core/network/**`<br>`Mobile:core/security/**`<br>`Mobile:core/designsystem/**`<br>`Mobile:feature/home/**`<br>`Mobile:feature/chat/**`<br>`Mobile:feature/tasks/**`<br>`Mobile:feature/library/**`<br>`Mobile:feature/settings/**` |
+| Write scope | `Mobile:src/ArcForges.Mobile/**`<br>`Mobile:src/core/ArcForges.Mobile.Domain/**`<br>`Mobile:src/core/ArcForges.Mobile.Data/**`<br>`Mobile:src/core/ArcForges.Mobile.Network/**`<br>`Mobile:src/core/ArcForges.Mobile.Security/**`<br>`Mobile:src/core/ArcForges.Mobile.DesignSystem/**`<br>`Mobile:src/features/ArcForges.Mobile.Home/**`<br>`Mobile:src/features/ArcForges.Mobile.Chat/**`<br>`Mobile:src/features/ArcForges.Mobile.Tasks/**`<br>`Mobile:src/features/ArcForges.Mobile.Library/**`<br>`Mobile:src/features/ArcForges.Mobile.Scope/**`<br>`Mobile:src/features/ArcForges.Mobile.Settings/**`<br>`Mobile:ArcForges.Mobile.slnx`<br>`Mobile:tests/ArcForges.Mobile.Tests/**` |
 | Shared resources | [RES-mobile-build-config](../shared-resources.md#res-mobile-build-config) (exclusive) |
-| Validation | Architecture/import boundary tests (no React Native/iOS/AGPL imports, no cross-module leakage) as offline static checks; targeted offline unit tests per module |
-| Completion evidence | Module dependency graph report showing one-way core<-feature<-app dependencies; route ID inventory matching AN01-AN28 |
+| Validation | Architecture and import-boundary tests (no React Native, iOS, macOS or AGPL package references, no cross-module leakage, one-way core<-feature<-app) as offline xUnit architecture tests run in CI; targeted offline unit tests per project. |
+| Completion evidence | Project reference graph report showing one-way core<-feature<-app dependencies; route ID inventory matching AN01-AN28; zero iOS or macOS target frameworks. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Only app/ and the KMP shared/ preview module exist today; none of the arch-27 core/* or feature/* modules exist |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): arch-27 Gradle module set becomes .NET project set with the same one-way rule; KMP shared/ dev module retires with AND.40. Acceptance unchanged. |
 
 <a id="task-and-03"></a>
 
-### AND.03 — Android runtime and OS adapters (Compose, Credential Manager, Keystore wrapper, WorkManager, FCM registration, SAF/MediaStore)
+### AND.03 — Android runtime and OS adapters (MAUI, Credential Manager, Keystore wrapper, WorkManager, FCM registration, SAF/MediaStore)
 
-**Outcome.** arm64 release / x64 emulator adapters for Compose, Credential Manager/passkey fallback, Keystore, WorkManager, FCM with non-GMS fallback, and SAF/MediaStore/FileProvider exist in core/security, core/data and core/network, with no unsafe fallback path.
+**Outcome.** arm64 release and x64 emulator adapters for Credential Manager/passkey fallback, Keystore, WorkManager, FCM with non-GMS fallback, and SAF/MediaStore/FileProvider exist in ArcForges.Mobile.Security, ArcForges.Mobile.Data and ArcForges.Mobile.Network, bound through admitted .NET for Android (AndroidX and Google/OS) bindings, with no unsafe fallback path.
 
 | Field | Value |
 |---|---|
@@ -102,42 +104,42 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [AND.06](#task-and-06), [AND.07](#task-and-07), [AND.08](#task-and-08), [AND.12](#task-and-12) |
-| Write scope | `Mobile:core/security/**`<br>`Mobile:core/data/**`<br>`Mobile:core/network/**` |
+| Write scope | `Mobile:src/core/ArcForges.Mobile.Security/**`<br>`Mobile:src/core/ArcForges.Mobile.Data/**`<br>`Mobile:src/core/ArcForges.Mobile.Network/**`<br>`Mobile:tests/ArcForges.Mobile.Tests/**` |
 | Shared resources | [RES-mobile-build-config](../shared-resources.md#res-mobile-build-config) (append) |
-| Validation | Targeted offline unit tests for adapter contracts; install-on-real-device, permission-refusal, process-death and missing-Play-services scenarios are local opt-in under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017), not CI |
+| Validation | Targeted offline xUnit tests for adapter contracts in CI; install-on-real-device, permission-refusal, process-death and missing-Play-services scenarios are local opt-in under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017), not CI. |
 | Completion evidence | Adapter test matrix (permission refusal, process death, missing Play services, callback after account switch) with device identity recorded for local runs |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: No Credential Manager/Keystore/WorkManager/FCM/SAF integration exists yet; only plain OkHttp networking in the Hello probe |
-| Notes | Can proceed in parallel with AND.04 (core/network gRPC client) and AND.05 (Room, core/data) once AND.02's skeleton lands; they touch different files within shared modules so should be sequenced as short-lived parallel PRs, not serialized. |
+| Notes | Can proceed in parallel with AND.04 (core/network gRPC client) and AND.05 (Room, core/data) once AND.02's skeleton lands; they touch different files within shared modules so should be sequenced as short-lived parallel PRs, not serialized. Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Compose and Kotlin references replaced by MAUI and .NET Android bindings (admitted per binding); paths moved to the C# projects; the xUnit adapter tests land in tests/ArcForges.Mobile.Tests, which is added to writes. Acceptance unchanged. |
 
 <a id="task-and-04"></a>
 
-### AND.04 — Published gRPC-Web contract consumption (Connect Kotlin client, binary framing, session/stream/retry adapters)
+### AND.04 — Published gRPC-Web contract consumption (Grpc.Net.Client.Web C# client from the NuGet Contracts packages, binary framing, session/stream/retry adapters)
 
-**Outcome.** core/network wraps the pinned contracts-proto/contracts-connect-client Maven artifacts behind typed session/stream/retry/exact-value adapters, explicitly selecting binary gRPC-Web.
+**Outcome.** ArcForges.Mobile.Network wraps the NuGet Contracts client surface behind typed session/stream/retry/exact-value adapters, explicitly selecting binary gRPC-Web through Grpc.Net.Client.Web; the observed GrpcWebMode and server-stream media type are recorded by PRF.12 together with the fallback decision. Exact values stay exact: int64 and uint64 use C# long and ulong, decimal values use decimal, and no value passes through floating point.
 
 | Field | Value |
 |---|---|
 | Owning repository | Mobile (`C:\MyFile\Projects\ArcForges\Mobile`); integration owner: Mobile integration owner, the holder of `roles/integration-mobile` |
 | Claim, branch and ledger | `claims/and-04` and ledger record `ledger/tasks/and-04.md` in the Plan repository; task branch `task/and-04` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | feature / M |
-| Obligations | [WP-30.03](../../work-packages/30-mobile-shared-architecture.md#rule-wp-30.03) — full<br>[WP-30.00](../../work-packages/30-mobile-shared-architecture.md#rule-wp-30.00) — Kotlin Android foundation real package consumption |
+| Obligations | [WP-30.03](../../work-packages/30-mobile-shared-architecture.md#rule-wp-30.03) — full contract consumption through the NuGet Grpc.Net.Client.Web client (Connect-Kotlin client retired)<br>[WP-30.00](../../work-packages/30-mobile-shared-architecture.md#rule-wp-30.00) — MAUI real package consumption of the NuGet Contracts clients |
 | Provides | android-grpc-web-client |
-| Start prerequisites | **artifact** [AND.02](#task-and-02) — core/network module shell. *Why:* client wiring lives in this module<br>**contract** [CON.07](contracts.md#task-con-07) — io.github.arcforges:contracts-proto / contracts-connect-client Maven coordinates. *Why:* the generated client is the only legal way to speak the wire protocol; this is already published and pinned in gradle/libs.versions.toml (contracts=1.0.0-ci.60.1) so this is a real, already-available start input<br>**contract** [CON.11](contracts.md#task-con-11) — published ApplicationService/HistoryService/EventService Kotlin Connect clients. *Why:* the Android gRPC-Web contract layer consumes the application, history and event operations<br>**artifact** [AND.01](#task-and-01) — real, delivered outcome of AND.01 (Android production identity and stable toolchain reconciliation). *Why:* this integration exercises the real android production identity and stable toolchain reconciliation instead of a substitute, so it cannot start before that outcome exists |
+| Start prerequisites | **artifact** [AND.02](#task-and-02) — core/network module shell. *Why:* client wiring lives in this module<br>**contract** [CON.07](contracts.md#task-con-07) — the NuGet Contracts packages (ArcForges.Contracts.PublicApi and the Contracts generated C# client surface) for identity, session and native-auth types. *Why:* the Maven coordinates are retired under P2-021.4; the consumed C# client surface is the NuGet package<br>**contract** [CON.11](contracts.md#task-con-11) — the generated C# ApplicationService, HistoryService and EventService clients in the NuGet Contracts packages. *Why:* the Android contract layer consumes these operations through the NuGet client, not the retired Kotlin Connect clients<br>**artifact** [AND.01](#task-and-01) — delivered AND.01 identity and candidate .NET MAUI toolchain pins (the exact tuple is proven by PRF.12 before AND.01 completes). *Why:* this integration exercises the real identity and pinned MAUI toolchain instead of a substitute<br>**artifact** [AND.40](#task-and-40) — the MAUI Hello transport and streaming consumer rules built by AND.40. *Why:* the generalised session/stream/retry adapters extend the transport that AND.40 proves first |
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [CLOUD.21](cloud.md#task-cloud-21) — publicly deployed Cloud host serving the generated business RPC surface. *Why:* the completion gate requires real packaged-Maven-consumer-and-service/device evidence, i.e. a live endpoint; the client code itself only needs the published Maven package to be written and unit-tested |
 | Unblocks | [AND.07](#task-and-07), [AND.08](#task-and-08), [AND.09](#task-and-09), [AND.10](#task-and-10), [AND.11](#task-and-11), [AND.12](#task-and-12) |
-| Write scope | `Mobile:core/network/**` |
+| Write scope | `Mobile:src/core/ArcForges.Mobile.Network/**`<br>`Mobile:tests/ArcForges.Mobile.Tests/**` |
 | Shared resources | [RES-mobile-build-config](../shared-resources.md#res-mobile-build-config) (append) |
-| Validation | Targeted offline codec/adapter unit tests; real device/service calls against a deployed Cloud host are local opt-in evidence, not a CI gate (matches CloudHelloClient's existing pattern) |
-| Completion evidence | Real packaged Maven consumer + service/device call evidence with exact hashes/versions/device identity |
+| Validation | Targeted offline xUnit codec and adapter tests in CI (binary framing, exact int64/uint64/decimal values, grpc-timeout header format, no cookies, no redirects, no connection retry); real device or service calls against a deployed Cloud host are local opt-in evidence, not a CI gate (same pattern as the MAUI Hello client built by AND.40). |
+| Completion evidence | Real NuGet-package consumer and service/device call evidence with exact package versions, hashes and device identity. |
 | Baseline (unreviewed unless accepted) | not-started Observed partial, unreviewed: CloudHelloClient.kt already demonstrates this exact pattern (ProtocolClient, GRPC_WEB, OkHttp transport, error-code mapping) for the single Hello RPC; needs generalizing to the full session/stream/retry surface |
-| Notes | Merged duplicate integration or closure task formerly proposed as CON.97. |
+| Notes | Merged duplicate integration or closure task formerly proposed as CON.97. Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Connect-Kotlin client replaced by Grpc.Net.Client.Web (C#, binary gRPC-Web selected explicitly). Maven edges replaced by NuGet Contracts edges. Open items on the NuGet streaming methods are recorded in PRF.12. Acceptance unchanged; exact-value rule stated explicitly. |
 
 <a id="task-and-05"></a>
 
-### AND.05 — Room history, drafts, outbox and receipts
+### AND.05 — SQLite history, drafts, outbox and receipts (versioned migrations through an admitted Apache-2.0 SQLite binding)
 
-**Outcome.** Room schemas (local_schema, scope_partition, projection, draft, outbox, transfer, cursor, preferences) implement per-profile partitions with a durable, bounded, never-silently-evicted outbox; local canonical history is not evictable cache.
+**Outcome.** SQLite schemas (local_schema, scope_partition, projection, draft, outbox, transfer, cursor, preferences), versioned with forward-only SQLite migrations through an admitted Apache-2.0 .NET SQLite binding, implement per-profile partitions with a durable, bounded, never-silently-evicted outbox; local canonical history is not evictable cache.
 
 | Field | Value |
 |---|---|
@@ -150,18 +152,18 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [AND.07](#task-and-07), [AND.08](#task-and-08), [AND.09](#task-and-09), [AND.10](#task-and-10), [AND.11](#task-and-11) |
-| Write scope | `Mobile:core/data/**` |
+| Write scope | `Mobile:src/core/ArcForges.Mobile.Data/**`<br>`Mobile:tests/ArcForges.Mobile.Tests/**` |
 | Shared resources | [RES-mobile-build-config](../shared-resources.md#res-mobile-build-config) (append) |
-| Validation | Offline Room migration/instrumented-on-emulator-or-device tests for crash recovery, capacity refusal and atomic outbox writes; local opt-in for real-device runs under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |
-| Completion evidence | Migration test results; outbox capacity-refusal and awaitingReconciliation replay tests; no silent eviction of draft/outbox rows |
+| Validation | Offline SQLite migration tests in CI: every schema version migrates forward; crash-recovery, capacity-refusal and atomic outbox writes run against a file-backed database; the SQLite binding is admitted under dependency admission with its licence and native-library provenance closure (Apache-2.0 required by P2-021.3). Instrumented runs on the emulator or a device are local opt-in under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
+| Completion evidence | Migration test results for every schema version; outbox capacity-refusal and awaitingReconciliation replay tests; no silent eviction of draft or outbox rows. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: No Room dependency or schema exists in the repo yet |
-| Notes | Fully local; remote Task/AI content reconciled through this store may use named fixtures until WP31/52 per the producer matrix ("Task/AI fixture allowed only until 31+52"), but the store/journal/outbox mechanics themselves must be real now. |
+| Notes | Fully local; remote Task/AI content reconciled through this store may use named fixtures until WP31/52 per the producer matrix ("Task/AI fixture allowed only until 31+52"), but the store/journal/outbox mechanics themselves must be real now. Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Room is replaced by SQLite with versioned migrations (the coordinator translation for the MAUI stack). The binding must be Apache-2.0 under P2-021.3 and is admitted by dependency admission; if no Apache-2.0 SQLite binding is admitted, the AndroidX Room binding is the fallback and needs a coordinator decision (openQuestions). Durability, bounds and no-eviction rules unchanged. |
 
 <a id="task-and-06"></a>
 
 ### AND.06 — Secure per-account lifecycle: Keystore encryption, no-backup policy, purge/quarantine, deep-link validation
 
-**Outcome.** Per-account Keystore-encrypted secret/pending-store policy, session/logout/revoke purge vs unsent-work quarantine/export, same-generation deep-link validation and current-foreground consent are implemented in core/security.
+**Outcome.** Per-account Keystore-encrypted secret and pending-store policy (Android Keystore through the .NET binding), session, logout and revoke purge vs unsent-work quarantine or export, same-generation deep-link validation and current-foreground consent are implemented in ArcForges.Mobile.Security. Reinstall path: the io.github.arcforges.mobile development prerelease (Kotlin-era Keystore data) has no MAUI migration helper and holds no production user data, so the path to com.arcforges.mobile is reinstall guidance in docs/releasing.md with no data migration. Upgrades within com.arcforges.mobile keep the migration, quarantine and retention rules of AND.21, including no pending user work lost.
 
 | Field | Value |
 |---|---|
@@ -174,10 +176,11 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [AND.07](#task-and-07), [AND.08](#task-and-08), [AND.12](#task-and-12) |
-| Write scope | `Mobile:core/security/**` |
-| Validation | Offline unit tests for encryption/purge/quarantine logic; device-restore-without-key, logout-while-requests-run, deep-link-spoof and secret-scan-of-release-logs are local opt-in under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |
-| Completion evidence | Secret scan of release logs/backup showing no credential leakage; device restore and logout-while-in-flight scenario results |
+| Write scope | `Mobile:src/core/ArcForges.Mobile.Security/**` |
+| Validation | Offline unit tests for encryption/purge/quarantine logic; device-restore-without-key, logout-while-requests-run, deep-link-spoof and secret-scan-of-release-logs are local opt-in under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). The io.github reinstall guidance in docs/releasing.md (no data migration) is checked offline in CI by the AND.40 policy suite. |
+| Completion evidence | Secret scan of release logs/backup showing no credential leakage; device restore and logout-while-in-flight scenario results; the docs/releasing.md reinstall-guidance check result for io.github.arcforges.mobile (no data migration). |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Paths moved to ArcForges.Mobile.Security. The io.github reinstall guidance (no data migration; development prerelease, no production user data) is recorded by AND.40 in docs/releasing.md; see the outcome, validation and evidence. Acceptance otherwise unchanged. |
 
 <a id="task-and-07"></a>
 
@@ -193,15 +196,15 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Package acceptance | Records the [WP-30](../../work-packages/30-mobile-shared-architecture.md#rule-wp-30) acceptance receipt after every task mapped to the package; tasks outside the package never start from it ([DLV-35](../README.md#rule-dlv-35)) |
 | Obligations | [WP-30.90](../../work-packages/30-mobile-shared-architecture.md#rule-wp-30.90) — full<br>[WP-23.05](../../work-packages/23-public-api-and-generated-clients.md#rule-wp-23.05) — Android real-consumer integration beyond the [WP-06](../../work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06) probe |
 | Provides | android-foundation-candidate |
-| Start prerequisites | **artifact** [AND.03](#task-and-03) — OS adapters complete. *Why:* candidate needs full local capability set<br>**artifact** [AND.04](#task-and-04) — gRPC-Web client complete. *Why:* candidate needs real network layer<br>**artifact** [AND.05](#task-and-05) — Room store complete. *Why:* candidate needs real local persistence<br>**artifact** [AND.06](#task-and-06) — secure lifecycle complete. *Why:* candidate needs real session/secret handling<br>**artifact** [CLOUD.13](cloud.md#task-cloud-13) — deployed identity/session service. *Why:* sign-in must be real<br>**artifact** [CLOUD.42](cloud.md#task-cloud-42) — deployed R2/sync/hydration. *Why:* upload/reconnect must be real<br>**artifact** [CLOUD.39](cloud.md#task-cloud-39) — deployed guarded publication and convergent bootstrap. *Why:* the Android foundation integration evidence exercises real hydration and sync against deployed Cloud authority<br>**artifact** [CLOUD.18](cloud.md#task-cloud-18) — real, delivered outcome of CLOUD.18 (Independent native session integration (Platform client primitives)). *Why:* this integration exercises the real independent native session integration (Platform client primitives) instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [CLOUD.19](cloud.md#task-cloud-19) — real, delivered outcome of CLOUD.19 (Browser cookie-session adapter and full account-surface closure). *Why:* this integration exercises the real browser cookie-session adapter and full account-surface closure instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [CLOUD.26](cloud.md#task-cloud-26) — real, delivered outcome of CLOUD.26 (Generated C#/TypeScript/Kotlin clients against Identity/Workspace/Device). *Why:* this integration exercises the real generated C#/TypeScript/Kotlin clients against Identity/Workspace/Device instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [CLOUD.29](cloud.md#task-cloud-29) — real, delivered outcome of CLOUD.29 (Stream connection and authentication (EventService.Watch/ExecutionService.WatchOutput shells)). *Why:* this integration exercises the real stream connection and authentication (EventService.Watch/ExecutionService.WatchOutput shells) instead of a substitute, so it cannot start before that outcome exists |
+| Start prerequisites | **artifact** [AND.03](#task-and-03) — OS adapters complete. *Why:* candidate needs full local capability set<br>**artifact** [AND.04](#task-and-04) — gRPC-Web client complete. *Why:* candidate needs real network layer<br>**artifact** [AND.05](#task-and-05) — Room store complete. *Why:* candidate needs real local persistence<br>**artifact** [AND.06](#task-and-06) — secure lifecycle complete. *Why:* candidate needs real session/secret handling<br>**artifact** [CLOUD.13](cloud.md#task-cloud-13) — deployed identity/session service. *Why:* sign-in must be real<br>**artifact** [CLOUD.42](cloud.md#task-cloud-42) — deployed R2/sync/hydration. *Why:* upload/reconnect must be real<br>**artifact** [CLOUD.39](cloud.md#task-cloud-39) — deployed guarded publication and convergent bootstrap. *Why:* the Android foundation integration evidence exercises real hydration and sync against deployed Cloud authority<br>**artifact** [CLOUD.18](cloud.md#task-cloud-18) — real, delivered outcome of CLOUD.18 (Independent native session integration (Platform client primitives)). *Why:* this integration exercises the real independent native session integration (Platform client primitives) instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [CLOUD.19](cloud.md#task-cloud-19) — real, delivered outcome of CLOUD.19 (Browser cookie-session adapter and full account-surface closure). *Why:* this integration exercises the real browser cookie-session adapter and full account-surface closure instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [CLOUD.26](cloud.md#task-cloud-26) — real, delivered outcome of CLOUD.26 (generated NuGet C# clients against Identity/Workspace/Device). *Why:* this integration exercises the real generated client as a NuGet package, not a substitute; the Kotlin client wording is retired under P2-021.4<br>**artifact** [CLOUD.29](cloud.md#task-cloud-29) — real, delivered outcome of CLOUD.29 (Stream connection and authentication (EventService.Watch/ExecutionService.WatchOutput shells)). *Why:* this integration exercises the real stream connection and authentication (EventService.Watch/ExecutionService.WatchOutput shells) instead of a substitute, so it cannot start before that outcome exists |
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [AND.08](#task-and-08), [AND.09](#task-and-09), [AND.10](#task-and-10), [AND.11](#task-and-11), [AND.12](#task-and-12), [CLOUD.28](cloud.md#task-cloud-28) |
-| Write scope | `Mobile:app/**` |
+| Write scope | `Mobile:src/ArcForges.Mobile/**` |
 | Validation | Clean-cache restore/build/install on a real device is local opt-in evidence per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017); CI only runs the offline/static portion |
 | Completion evidence | Owned-artifact-and-real-integration receipt: source commit, producer versions, candidate hashes, actual device identity, scenario, result, real-vs-fixture status per field |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Merged duplicate integration or closure task formerly proposed as CLOUD.60. |
+| Notes | Merged duplicate integration or closure task formerly proposed as CLOUD.60. Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Writes moved to the MAUI app project; the Kotlin candidate becomes a MAUI candidate under AND.40. Real-device and fixture-retirement acceptance unchanged. |
 
 <a id="task-and-08"></a>
 
@@ -218,13 +221,13 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Provides | android-auth-home |
 | Start prerequisites | **artifact** [AND.03](#task-and-03) — the real Android foundation module AND.03 this feature is built on. *Why:* the feature uses the real foundation modules, not a fresh bootstrap<br>**artifact** [AND.04](#task-and-04) — the real Android foundation module AND.04 this feature is built on. *Why:* the feature uses the real foundation modules, not a fresh bootstrap<br>**artifact** [AND.05](#task-and-05) — the real Android foundation module AND.05 this feature is built on. *Why:* the feature uses the real foundation modules, not a fresh bootstrap<br>**artifact** [AND.06](#task-and-06) — the real Android foundation module AND.06 this feature is built on. *Why:* the feature uses the real foundation modules, not a fresh bootstrap |
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | **integration** [AND.07](#task-and-07) — foundation candidate proven against the deployed Cloud services. *Why:* the feature can be built on the foundation modules, but its acceptance runs against the deployed services AND.07 proves and requires any remaining Task/AI fixtures compiled out |
+| Completion prerequisites | **integration** [AND.07](#task-and-07) — foundation candidate proven against the deployed Cloud services. *Why:* the feature can be built on the foundation modules, but its acceptance runs against the deployed services AND.07 proves and requires any remaining Task/AI fixtures compiled out<br>**integration** [AND.13](#task-and-13) — the UI-level suite (five-destination Shell navigation, back and state restore, UI assertions) in the net10.0-android device test project. *Why:* the suite AND.08 validation relies on is owned by AND.13; completing on it means the UI-level coverage cannot be claimed without the suite existing and running (local opt-in) |
 | Unblocks | [AND.13](#task-and-13), [AND.14](#task-and-14), [AND.15](#task-and-15), [AND.19](#task-and-19) |
-| Write scope | `Mobile:feature/home/**`<br>`Mobile:app/**` |
-| Validation | Instrumented UI tests offline where feasible; scope/permission, wrong/stale target, loss/retry and expiry scenarios against real WP22/23 are local opt-in |
+| Write scope | `Mobile:src/features/ArcForges.Mobile.Home/**`<br>`Mobile:src/ArcForges.Mobile/**`<br>`Mobile:tests/ArcForges.Mobile.Tests/**` |
+| Validation | Offline xUnit view-model and Shell navigation tests in CI where feasible; the UI-level suite the instrumented tests covered (five-destination Shell navigation, back and state restore, UI assertions) runs in the net10.0-android device test project owned by AND.13 as local opt-in under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017); scope/permission, wrong or stale target, loss/retry and expiry scenarios against real WP22/23 are local opt-in. |
 | Completion evidence | Full account/attention path walkthrough against real Cloud endpoints |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Does not need WP26 (remote bridge), WP45 (push sender) or WP52 (Harness) to start or complete — only WP30's own foundation and the already-deployed WP22/23. Demonstrates that not all Android features wait on the complete Harness. |
+| Notes | Does not need WP26 (remote bridge), WP45 (push sender) or WP52 (Harness) to start or complete — only WP30's own foundation and the already-deployed WP22/23. Demonstrates that not all Android features wait on the complete Harness. Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Five-destination navigation is MAUI Shell instead of Compose navigation. Instrumented UI tests become offline view-model and Shell navigation tests in tests/ArcForges.Mobile.Tests (added to writes) where feasible, and the UI-level suite moves to the AND.13 net10.0-android device test project. AND.08 completes on AND.13 (typed edge), so no UI-level coverage is removed. Acceptance unchanged. |
 
 <a id="task-and-09"></a>
 
@@ -244,10 +247,11 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Completion prerequisites | **integration** [AND.24](#task-and-24) — real CF Harness admission/generation/tool loop. *Why:* the completion gate requires every conversation/project/retrieval row to work with actual WP52 outputs; the streaming/cursor/reconnect UI itself can be fully built and tested against the server-side contract-bound fixture turn endpoint (introduced WP17.01, deleted WP52.05) that already runs in the real deployed Cloud host<br>**integration** [AND.07](#task-and-07) — foundation candidate proven against the deployed Cloud services. *Why:* the feature can be built on the foundation modules, but its acceptance runs against the deployed services AND.07 proves and requires any remaining Task/AI fixtures compiled out |
 | Unblocks | [AND.13](#task-and-13), [AND.14](#task-and-14), [AND.15](#task-and-15), [AND.19](#task-and-19), [AND.24](#task-and-24) |
 | Permitted substitutes | [SUB-fixture-turn-endpoint](../substitutes.md#sub-fixture-turn-endpoint) |
-| Write scope | `Mobile:feature/chat/**` |
+| Write scope | `Mobile:src/features/ArcForges.Mobile.Chat/**` |
 | Validation | Offline stream-codec/cursor unit tests; real-device streaming/reconnect scenarios against the deployed (fixture-backed until WP52.05) endpoint are local opt-in |
 | Completion evidence | History/pending-input/stream/final-message consistency under every declared recovery outcome |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Composer, IME and stream surfaces become MAUI controls on the same stream and cursor semantics; writes moved to the C# feature project. Acceptance unchanged. |
 
 <a id="task-and-10"></a>
 
@@ -267,10 +271,11 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Completion prerequisites | **integration** [AND.25](#task-and-25) — real device bridge with lease/current-grant/unknown-effect reconciliation. *Why:* dispatching an actual tool call to a desktop and observing durable reconciliation needs the real bridge; the task/approval card UI itself only needs the contract shape and can be tested against fixtures<br>**integration** [AND.24](#task-and-24) — real Harness planning/tool-proposal loop. *Why:* approval content must reflect real proposed effects, not scripted ones, to close the gate<br>**integration** [AND.07](#task-and-07) — foundation candidate proven against the deployed Cloud services. *Why:* the feature can be built on the foundation modules, but its acceptance runs against the deployed services AND.07 proves and requires any remaining Task/AI fixtures compiled out |
 | Unblocks | [AND.13](#task-and-13), [AND.14](#task-and-14), [AND.15](#task-and-15), [AND.19](#task-and-19), [AND.24](#task-and-24), [AND.25](#task-and-25) |
 | Permitted substitutes | [SUB-automation-fixture](../substitutes.md#sub-automation-fixture) |
-| Write scope | `Mobile:feature/tasks/**` |
+| Write scope | `Mobile:src/features/ArcForges.Mobile.Tasks/**` |
 | Validation | Offline idempotency/state-machine unit tests; real bridge/Harness/commerce scenarios are local opt-in against deployed services |
 | Completion evidence | One real owner outcome/settlement per command; no broad implicit grant or hidden background write |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Task, approval and automation UI port to MAUI; idempotency state machine unchanged. Writes moved to the C# feature project. Acceptance unchanged. |
 
 <a id="task-and-11"></a>
 
@@ -289,11 +294,11 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [AND.07](#task-and-07) — foundation candidate proven against the deployed Cloud services. *Why:* the feature can be built on the foundation modules, but its acceptance runs against the deployed services AND.07 proves and requires any remaining Task/AI fixtures compiled out |
 | Unblocks | [AND.13](#task-and-13), [AND.15](#task-and-15), [AND.19](#task-and-19), [AND.27](#task-and-27) |
-| Write scope | `Mobile:feature/library/**` |
+| Write scope | `Mobile:src/features/ArcForges.Mobile.Library/**` |
 | Validation | Offline transfer-journal unit tests; resumable-upload/hash-mismatch/process-death-during-transfer scenarios are local opt-in on real devices |
 | Completion evidence | No unavailable bytes represented as empty success; resumable journal survives process death |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Independent of WP26/WP45/WP52 — can complete in parallel with AND.09/AND.10 once the foundation (AND.07) lands. |
+| Notes | Independent of WP26/WP45/WP52 — can complete in parallel with AND.09/AND.10 once the foundation (AND.07) lands. Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Library preview, import, export and transfer flows port to MAUI with SAF/MediaStore equivalents. Writes moved to the C# feature project. Acceptance unchanged. |
 
 <a id="task-and-12"></a>
 
@@ -312,11 +317,12 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [AND.26](#task-and-26) — live FCM sender adapter with a project-bound credential. *Why:* [PG-24](../../../assurance/open-gates-register.md#rule-pg-24) requires physical arm64 receipt of an actually-sent push; Android only owns registration/receipt, not the sending path, which is WP45's named scaffolding replacement (recorded FCM sender responses -> WP45.09 proves live sending, this task and WP32 prove real device receipt)<br>**integration** [AND.07](#task-and-07) — foundation candidate proven against the deployed Cloud services. *Why:* the feature can be built on the foundation modules, but its acceptance runs against the deployed services AND.07 proves and requires any remaining Task/AI fixtures compiled out |
 | Unblocks | [AND.13](#task-and-13), [AND.15](#task-and-15), [AND.19](#task-and-19), [AND.26](#task-and-26) |
-| Write scope | `Mobile:feature/settings/**`<br>`Mobile:core/network/**` |
+| Write scope | `Mobile:src/features/ArcForges.Mobile.Settings/**`<br>`Mobile:src/core/ArcForges.Mobile.Network/**` |
 | Shared resources | [RES-mobile-build-config](../shared-resources.md#res-mobile-build-config) (append) |
 | Validation | Offline notification-dedup/registration unit tests; physical-device push receipt, Doze/background behavior and no-GMS fallback are local opt-in per [PG-24](../../../assurance/open-gates-register.md#rule-pg-24) |
 | Completion evidence | Physical device receipt of a real push; denied-permission and no-GMS durable-polling fallback observed |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Push registration uses the .NET Firebase binding and the no-GMS polling fallback is retained; writes moved to the C# projects. Acceptance unchanged. |
 
 <a id="task-and-13"></a>
 
@@ -334,17 +340,18 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Start prerequisites | **artifact** [AND.08](#task-and-08) — auth/home built. *Why:* matrix exercises the real surfaces<br>**artifact** [AND.09](#task-and-09) — chat built. *Why:* matrix exercises the real surfaces<br>**artifact** [AND.10](#task-and-10) — tasks built. *Why:* matrix exercises the real surfaces<br>**artifact** [AND.11](#task-and-11) — library built. *Why:* matrix exercises the real surfaces<br>**artifact** [AND.12](#task-and-12) — settings/push built. *Why:* matrix exercises the real surfaces |
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [AND.24](#task-and-24) — real Harness evidence. *Why:* WP31.05's own completion gate names "real 52/26/25 evidence passes on release APK; mocks do not close any required journey"<br>**integration** [AND.25](#task-and-25) — real bridge evidence. *Why:* same gate text |
-| Unblocks | [AND.15](#task-and-15), [AND.25](#task-and-25) |
-| Write scope | `Mobile:app/src/androidTest/**` |
+| Unblocks | [AND.08](#task-and-08), [AND.15](#task-and-15), [AND.19](#task-and-19), [AND.25](#task-and-25) |
+| Write scope | `Mobile:tests/ArcForges.Mobile.DeviceTests/**` |
 | Validation | Physical low/mid-tier arm64 device matrix (1000 messages, 4 MiB answer, rotation, process kill during send/refresh/upload, denied push, airplane/reconnect, account switch, expired approval, revoked source) is local opt-in under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |
 | Completion evidence | Per-scenario pass/fail with device identity and TalkBack/IME/large-text results |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): The androidTest Kotlin matrix moves to a net10.0-android device test project (local opt-in). The matrix itself and TalkBack, IME and large-text criteria are unchanged. |
 
 <a id="task-and-14"></a>
 
 ### AND.14 — Scope and licence enforcement audit
 
-**Outcome.** Full companion requirements, consumption-only restrictions, public-Maven-only imports, and absence of desktop secrets/device-local paths/excluded professional-editing surfaces are verified with complete provenance.
+**Outcome.** Full companion requirements, consumption-only restrictions, public-NuGet-only imports, and absence of desktop secrets, device-local paths and excluded professional-editing surfaces are verified with complete provenance.
 
 | Field | Value |
 |---|---|
@@ -362,6 +369,7 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Validation | Package content/dependency/privacy static checks plus full surface-action inventory cross-check, offline |
 | Completion evidence | Complete surface/action inventory cross-check with no unaccepted third-party provenance |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: eng/policy and eng/provenance machinery already exists and is exercised for the Hello candidate ([F-023](../../../assurance/open-gates-register.md#rule-f-023) closed 2026-09-19); this task extends it to the full companion surface |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Gradle-based inventory becomes NuGet/MSBuild inventory; the public-Maven-only import criterion becomes public-NuGet-only. Acceptance unchanged. |
 
 <a id="task-and-15"></a>
 
@@ -381,16 +389,17 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [AND.16](#task-and-16) |
-| Write scope | `Mobile:app/**` |
+| Write scope | `Mobile:src/ArcForges.Mobile/**` |
 | Validation | Full physical-device release scenarios and injected failure matrix, local opt-in under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |
 | Completion evidence | Owned-artifact-and-real-integration receipt joining all producer manifests; distribution/store activation explicitly deferred to WP32 |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Final join of the MAUI companion; writes moved to the MAUI app project. Acceptance unchanged. |
 
 <a id="task-and-16"></a>
 
 ### AND.16 — Signed Android release artifacts (AAB + direct APK)
 
-**Outcome.** AAB (Play) and a separately signed direct APK build automatically from reviewed main with monotonic versionCode, immutable provenance and tested WP03 update-schema compatibility.
+**Outcome.** AAB (Play) and a separately signed direct APK build automatically from reviewed main as MAUI outputs, with monotonic versionCode within applicationId com.arcforges.mobile, immutable provenance and tested WP03 update-schema compatibility.
 
 | Field | Value |
 |---|---|
@@ -403,17 +412,18 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [AND.17](#task-and-17), [AND.18](#task-and-18), [AND.21](#task-and-21) |
-| Write scope | `Mobile:.github/workflows/ci.yml`<br>`Mobile:eng/mobile.py` |
+| Write scope | `Mobile:.github/workflows/ci.yml`<br>`Mobile:eng/mobile.py`<br>`Mobile:eng/published.py` |
 | Shared resources | [RES-android-signing-and-store](../shared-resources.md#res-android-signing-and-store) (append) |
 | Validation | Actual signature/package/R8/runtime and version-monotonicity checks; clean device install/upgrade is local opt-in |
-| Completion evidence | Signed AAB/APK with recorded provenance and monotonic versionCode |
+| Completion evidence | Signed AAB and APK with recorded provenance; monotonic versionCode for com.arcforges.mobile; reinstall guidance from io.github.arcforges.mobile recorded in docs/releasing.md with no data migration. |
 | Baseline (unreviewed unless accepted) | not-started Observed partial, unreviewed: The full candidate-build-sign-publish pipeline already exists and runs on every merge to main (see.github/workflows/ci.yml build/publish jobs, eng/mobile.py sign/stage); this task extends it to the real companion and confirms WP03 update-schema compatibility, it does not build the pipeline from scratch |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): The signing pipeline and persistent certificate are kept. The upgrade check in eng/published.py is re-based on the com.arcforges.mobile identity; the io.github line stays immutable history. Acceptance unchanged. |
 
 <a id="task-and-17"></a>
 
 ### AND.17 — Release runtime inspection
 
-**Outcome.** Kotlin/ART, Compose/public grpc-lite closure, min/target API, arm64 assets, R8 rules and required permissions are verified on the actual signed APK/AAB, not source inspection.
+**Outcome.** Mono and ART runtime, the .NET for Android closure (no Kotlin, Compose or Connect-Kotlin residue), min and target API (26 and 37), arm64 assets with 16 KB alignment, trimming and R8 rules (AndroidLinkTool=r8), and required permissions are verified on the actual signed APK/AAB, not source inspection.
 
 | Field | Value |
 |---|---|
@@ -428,14 +438,15 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Unblocks | [AND.23](#task-and-23) |
 | Write scope | `Mobile:eng/mobile.py` |
 | Validation | Install without development server/toolchain; startup/identity/RPC/notifications/lifecycle release tests are local opt-in |
-| Completion evidence | [VG-07](../../../assurance/open-gates-register.md#rule-vg-07) evidence: real Kotlin/ART release artifact inspection, not debug-only or source-only proof |
+| Completion evidence | [VG-07](../../../assurance/open-gates-register.md#rule-vg-07) evidence: real Mono and ART release artifact inspection, not debug-only or source-only proof. |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Kotlin/ART and Compose/grpc-lite inspection rewritten to the Mono/AOT and .NET closure with the same release checks (min/target API, arm64, R8, permissions, no debug-only proof). Rewording, not weakening. |
 
 <a id="task-and-18"></a>
 
 ### AND.18 — Dependency and source rights closure (final artifact)
 
-**Outcome.** Direct/transitive Gradle/plugin/runtime/asset closure, licences, provenance and reproducible SBOM/NOTICE are audited against the final companion candidate; public schema/tooling Apache origin and independently original app implementation are verified.
+**Outcome.** Direct and transitive NuGet, MSBuild, workload, runtime and asset closure, licences, provenance and reproducible SBOM and NOTICE are audited against the final companion candidate, including F-023-class re-closure of the MAUI closure (the android-0.1.0-ci.14.1 closure does not carry over); public schema and tooling Apache origin and independently original app implementation are verified.
 
 | Field | Value |
 |---|---|
@@ -450,9 +461,10 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Unblocks | [AND.23](#task-and-23) |
 | Write scope | `Mobile:eng/policy/**`<br>`Mobile:eng/provenance/**`<br>`Mobile:third-party/**` |
 | Shared resources | [RES-mobile-build-config](../shared-resources.md#res-mobile-build-config) (append) |
-| Validation | Forbidden-licence fixture, unpinned/dynamic dependency and changed-checksum rejection tests, offline |
-| Completion evidence | [F-023](../../../assurance/open-gates-register.md#rule-f-023) re-closure for the final companion candidate (binary inventory matches candidate) |
+| Validation | Forbidden-licence fixture, unpinned or dynamic dependency and changed-checksum rejection tests, plus a fixture that rejects any AGPL DesktopPlatform package in the app closure and any PDF parser or renderer package (PDFium or a PDF rendering binding) under [P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022); offline. |
+| Completion evidence | [F-023](../../../assurance/open-gates-register.md#rule-f-023) re-closure for the final MAUI companion candidate (NuGet and MSBuild binary inventory matches the candidate; the closure reopened by the dependency change and is re-proven). |
 | Baseline (unreviewed unless accepted) | not-started Observed partial, unreviewed: eng/licences.py, eng/check_provenance.py and the provenance-record set already implement this machinery and have closed [F-023](../../../assurance/open-gates-register.md#rule-f-023) twice for Hello-stage candidates; this task re-runs it against the real companion's larger dependency closure |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Gradle and plugin closure becomes NuGet/MSBuild closure; the AGPL exclusion (P2-021.3) is an explicit fixture, and the PDF parser and renderer exclusion ([P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022)) is added to the same fixture. Acceptance unchanged. |
 
 <a id="task-and-19"></a>
 
@@ -469,12 +481,13 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Provides | android-consumption-only-verified |
 | Start prerequisites | **artifact** [AND.08](#task-and-08) — every authentication and Home state to audit. *Why:* the consumer builds on these delivered producers; the package acceptance receipt is a roll-up, never a start barrier<br>**artifact** [AND.09](#task-and-09) — every conversation state to audit. *Why:* the consumer builds on these delivered producers; the package acceptance receipt is a roll-up, never a start barrier<br>**artifact** [AND.10](#task-and-10) — every task, approval and automation state to audit. *Why:* the consumer builds on these delivered producers; the package acceptance receipt is a roll-up, never a start barrier<br>**artifact** [AND.11](#task-and-11) — every library and resource state to audit. *Why:* the consumer builds on these delivered producers; the package acceptance receipt is a roll-up, never a start barrier<br>**artifact** [AND.12](#task-and-12) — every presence, push, link and settings state to audit. *Why:* the consumer builds on these delivered producers; the package acceptance receipt is a roll-up, never a start barrier |
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | none |
+| Completion prerequisites | **integration** [AND.13](#task-and-13) — the rendered-state UX tests run in the net10.0-android device test project. *Why:* UX states that need a rendered MAUI page are executed there (local opt-in); completing on that project means the all-state coverage is not claimed before the suite exists |
 | Unblocks | [AND.23](#task-and-23) |
-| Write scope | `Mobile:eng/policy/**` |
-| Validation | Static route/dependency checks ([MC-01](../../../architecture/09-ai-and-agent-runtime-architecture.md#rule-mc-01)..[MC-06](../../../architecture/09-ai-and-agent-runtime-architecture.md#rule-mc-06) build-time/CI assertions) plus all-state UX tests, offline where feasible |
+| Write scope | `Mobile:eng/policy/**`<br>`Mobile:tests/ArcForges.Mobile.Tests/**` |
+| Validation | Static route and dependency checks ([MC-01](../../../architecture/09-ai-and-agent-runtime-architecture.md#rule-mc-01)..[MC-06](../../../architecture/09-ai-and-agent-runtime-architecture.md#rule-mc-06) build-time and CI assertions, as C# analyzers or xUnit architecture tests) plus all-state UX tests, offline where feasible; UX states that need a rendered MAUI page run in the AND.13 device test project as local opt-in. |
 | Completion evidence | [VG-13](../../../assurance/open-gates-register.md#rule-vg-13) evidence: no build path can display a purchase CTA or accept a licence key |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Static checks move from Gradle to C# analyzers or architecture tests in tests/ArcForges.Mobile.Tests (added to writes); rendered-state UX tests run in the AND.13 device test project, and AND.19 completes on AND.13 (typed edge). Acceptance unchanged. |
 
 <a id="task-and-20"></a>
 
@@ -493,12 +506,12 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [AND.23](#task-and-23) |
-| Write scope | `Mobile:core/network/**`<br>`Mobile:feature/settings/**` |
+| Write scope | `Mobile:src/core/ArcForges.Mobile.Network/**`<br>`Mobile:src/features/ArcForges.Mobile.Settings/**` |
 | Shared resources | [RES-mobile-build-config](../shared-resources.md#res-mobile-build-config) (append) |
 | Validation | Expired/rollback/wrong-certificate/URL/hash and offline-stale-feed tests, offline where feasible |
 | Completion evidence | Play primary + direct APK flow complete with no silent install |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Explicitly does NOT wait on WP53 (production feed/signing) — [WP-32.04](../../work-packages/32-mobile-release-and-store-gates.md#rule-wp-32.04)'s own text states WP53's replacement is verified at WP50, not a backward input to this task. |
+| Notes | Explicitly does NOT wait on WP53 (production feed/signing) — [WP-32.04](../../work-packages/32-mobile-release-and-store-gates.md#rule-wp-32.04)'s own text states WP53's replacement is verified at WP50, not a backward input to this task. Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Notify-only update client ported to C# on the same android-update.v1 feed rules. Writes moved to the C# projects. Acceptance unchanged. |
 
 <a id="task-and-21"></a>
 
@@ -521,6 +534,7 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Validation | Actual local/server unknown-effect replay, encrypted draft/outbox retention through upgrade, signing-key recovery rehearsal — all local opt-in under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) |
 | Completion evidence | All mandatory scenarios pass; material device limits disclosed; no pending user work lost |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Device and recovery gates unchanged; they run against the MAUI signed candidate instead of the Kotlin candidate. |
 
 <a id="task-and-22"></a>
 
@@ -543,7 +557,7 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Validation | Store/release/readme/platform matrix cross-check against the signed Android artifact, offline |
 | Completion evidence | No false retained-iOS deliverable or unsupported platform claim |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Small and independent; can land in the same PR series as AND.18 or AND.19 for convenience without being merged into them as one task. |
+| Notes | Small and independent; can land in the same PR series as AND.18 or AND.19 for convenience without being merged into them as one task. Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Successor AND.40 retires the Kotlin wording in README.md and docs (README KMP row, docs/development.md, docs/releasing.md). The development-only desktop preview in shared/ (desktopMain; AGENTS.md:3 forbids any desktop product) retires with the KMP module. The AND.40 README and AGENTS.md restate the Android-only scope, the no-desktop, no-iOS and no-macOS product statement, and the development-only qualifier for any local tooling; none of these is dropped. |
 
 <a id="task-and-23"></a>
 
@@ -568,6 +582,7 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Validation | Download public candidate in a clean device path, verify signature/hash, exercise actual services — local opt-in |
 | Completion evidence | Distribution complete only with real receipts; [VG-13](../../../assurance/open-gates-register.md#rule-vg-13) store-submission confirmation |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Distribution receipts bind to the MAUI signed APK and AAB (com.arcforges.mobile). Acceptance unchanged. |
 
 <a id="task-and-24"></a>
 
@@ -589,6 +604,7 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
 | Completion evidence | real admitted generation, tool proposal and automation execution replace the contract-bound fixture turn endpoint on a physical device |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Real Harness integration unchanged; the Android client is the MAUI app. Start edges to AI-lane tasks are re-homed to Cloud under P2-021.5, not renumbered here. |
 
 <a id="task-and-25"></a>
 
@@ -610,6 +626,7 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
 | Completion evidence | an Android-initiated remote task actually reaches a desktop through the durable bridge with correct lease/grant/reconciliation semantics |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Real desktop dispatch unchanged; stack-neutral. Acceptance unchanged. |
 
 <a id="task-and-26"></a>
 
@@ -631,13 +648,13 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
 | Completion evidence | [PG-24](../../../assurance/open-gates-register.md#rule-pg-24): a project-bound FCM credential actually sends and a physical arm64 device actually receives, including duplicate/rotation/revocation and denied-permission/no-GMS recovery |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Merged duplicate integration or closure task formerly proposed as COM.17. |
+| Notes | Merged duplicate integration or closure task formerly proposed as COM.17. Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Physical FCM receipt unchanged; the receipt side uses the .NET Firebase binding. Acceptance unchanged. |
 
 <a id="task-and-27"></a>
 
 ### AND.27 — ArcScope library, reports and simulation runs on Android
 
-**Outcome.** AN14 and AN26-AN28: the read-only ArcScope library, session and report views with provenance and stored chart snapshots, report sharing through the system share sheet, simulation run status with cancel, and the ArcScope notification kinds opening their objects. A fresh installation discovers runs with simulation.listRuns before reading details or cancelling.
+**Outcome.** AN14 and AN26-AN28: the read-only ArcScope library, session and report views with provenance and stored chart snapshots, report sharing through the system share sheet, simulation run status with cancel, and the ArcScope notification kinds opening their objects. A fresh installation discovers runs with simulation.listRuns before reading details or cancelling. The AN27 static PDF preview is retired under [P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022) and replaced by download or share of the exported bundle and an Android ACTION_VIEW intent to the system PDF viewer for arcscope.report.pdf.v1. The app embeds no PDF parser or renderer, and generic PDF attachments remain opaque files.
 
 | Field | Value |
 |---|---|
@@ -650,7 +667,32 @@ Tasks: 27 · Owning repositories: Mobile · Integration owner(s): Mobile integra
 | Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [CLOUD.68](cloud.md#task-cloud-68) — the deployed library read model. *Why:* acceptance reads a real synced workspace<br>**integration** [SIM.05](simulator.md#task-sim-05) — the deployed simulation operations. *Why:* acceptance follows a real run to its terminal state<br>**integration** [SCOPE.22](arcscope.md#task-scope-22) — the delivered desktop project/session and report publication adapter. *Why:* acceptance must consume desktop-produced synced metadata and readable reports rather than a fixture; UI development remains parallel |
 | Unblocks | [AND.15](#task-and-15) |
-| Write scope | `Mobile:feature/scope/**` |
-| Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
-| Completion evidence | A report synced from ArcScope desktop found, read and shared on Android; a Cloud simulation run followed to its terminal state; revocation, unavailable-artifact and raw-data-local cases. Run discovery after reinstall or on another authorized device; no remembered run ID required. |
+| Write scope | `Mobile:src/features/ArcForges.Mobile.Scope/**` |
+| Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). PDF disposition check ([P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022)): the ACTION_VIEW hand-off of arcscope.report.pdf.v1 to the system viewer is exercised in the local run, and the AND.18 closure fixture and AND.19 architecture tests reject any PDF parser or renderer package in the app closure. |
+| Completion evidence | A report synced from ArcScope desktop found, read and shared on Android; a Cloud simulation run followed to its terminal state; revocation, unavailable-artifact and raw-data-local cases. Run discovery after reinstall or on another authorized device; no remembered run ID required. PDF disposition evidence: the exported report opened through ACTION_VIEW in a system viewer on the device, and the closure listing shows no PDF renderer. |
 | Baseline (unreviewed unless accepted) | not-started Observed none. |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): ArcScope library, report and simulation views port to MAUI; system share sheet and notification behaviours use MAUI platform equivalents. Writes moved to the C# feature project. The AN27 static PDF preview is retired under P2-022.2 (download or share of the bundle, and an Android ACTION_VIEW hand-off to the system viewer); the other acceptance is unchanged. |
+
+<a id="task-and-40"></a>
+
+### AND.40 — MAUI migration of the existing Mobile app: Hello client, streaming consumer rules, Keystore probe, CI, signing and C# policy (Kotlin, KMP and Gradle retired)
+
+**Outcome.** Mobile is a .NET MAUI Android app (net10.0-android only, Mono runtime with AOT for release, UseMonoRuntime=true explicit, applicationId com.arcforges.mobile, persistent android-release signing identity cert SHA256 7a8b3b14...). Its Hello client uses Grpc.Net.Client.Web selecting binary gRPC-Web, with the transport rules carried over from the retired Kotlin client (the GrpcWebMode and server-stream media type are not settled here: they are observed and recorded by PRF.12 together with the fallback decision): no cookies, no redirects, no connection retry, deadline no more than 5 s, 10 s call timeout, the grpc-timeout header in the same format, and the 1..256 name rule. Its streaming consumer keeps frames in order, requires exactly one OK trailer (a missing trailer is DATA_LOSS), stays bounded, and closes the stream on cancellation even when the caller is cancelled (NonCancellable close). A Keystore probe reports the platform security level without claiming hardware backing. CI on Windows and Linux compiles and executes the offline unit tests; the signed candidate and prerelease pipeline use the persistent identity in the protected android-release environment only. GOV.12's Gradle policy is replaced by a C# policy suite that keeps its layering, licence, naming and banned-API categories: the seven canonical BAN-* categories are enforced by Mobile-owned Apache-2.0 rules with negative fixtures, authored from the Design requirement text. Under P2-021.3 Mobile never consumes an AGPL-3.0-only DesktopPlatform package: no copy, port or consumption of the DesktopPlatform banned-symbol catalog and no ArcForges.Build.Policy package is part of the MAUI closure. Mobile's build-only consumption of ArcForges.Build.Policy 1.0.0-ci.40.1 recorded under GOV.12 (PR17, merged 34c64e0) ends in this task, which reverses, for Mobile, the GOV.12 single-canonical-producer receipt (history retained). The Kotlin app, KMP shared module and Gradle build retire in the same change that makes the MAUI candidate pass the offline checks.
+
+| Field | Value |
+|---|---|
+| Owning repository | Mobile (`C:\MyFile\Projects\ArcForges\Mobile`); integration owner: Mobile integration owner, the holder of `roles/integration-mobile` |
+| Claim, branch and ledger | `claims/and-40` and ledger record `ledger/tasks/and-40.md` in the Plan repository; task branch `task/and-40` ([DLV-26](../README.md#rule-dlv-26)) |
+| Kind / size | producer / L |
+| Obligations | [WP-30.03](../../work-packages/30-mobile-shared-architecture.md#rule-wp-30.03) — Hello client transport and streaming consumer rules only (binary gRPC-Web, deadlines, no cookies, no redirects, no retry, exactly one OK trailer); full contract consumption stays in AND.04<br>[WP-05.00](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.00) — GOV.12 successor: Mobile policy suite in C#<br>[WP-05.01](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.01) — GOV.12 successor: licence boundary and dependency allowlist over NuGet<br>[WP-05.02](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.02) — GOV.12 successor: forbidden-term scanner in the Mobile PR build<br>[WP-05.04](../../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.04) — GOV.12 successor: Mobile banned-API fixtures |
+| Provides | android-maui-app-project; android-hello-transport; android-streaming-consumer; android-keystore-probe; android-maui-release-pipeline; android-csharp-policy-suite |
+| Start prerequisites | **artifact** [AND.01](#task-and-01) — the com.arcforges.mobile identity and the pinned .NET 10 / Android workload / NuGet tuple. *Why:* the MAUI app project, its package identity and its toolchain pins must exist before the migration code lands |
+| Entry condition | [ADOPT.10.android](adoption.md#task-adopt-10-android) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Completion prerequisites | **integration** [CON.11](contracts.md#task-con-11) — the generated C# EventService Watch and Poll operations and the ApplicationService operations that CON.11 publishes in the NuGet Contracts packages (events.proto and application.proto). *Why:* the streaming consumer rules (one OK trailer, DATA_LOSS on a missing trailer, bounded, NonCancellable close) are defined against the EventService stream shape; the CI loopback fixtures are test-only characterisation of that shape, not a substitute, so AND.40 may be delivered first and completes only when the published generated client confirms the shape<br>**integration** [CLOUD.29](cloud.md#task-cloud-29) — the deployed stream connection and authentication (EventService.Watch shell) that the streaming consumer rules are checked against. *Why:* the streaming consumer rules (one OK trailer, DATA_LOSS on a missing trailer, bounded, NonCancellable close) are characterised by test-only loopback fixtures; the real stream producer confirms them before AND.40 completes. CLOUD.29 starts on CON.11, CLOUD.19 and CLOUD.21 only, so the edge is acyclic |
+| Unblocks | [AND.02](#task-and-02), [AND.04](#task-and-04), [CLOUD.84](cloud.md#task-cloud-84), [CON.40](contracts.md#task-con-40), [PRF.12](runtime-proofs.md#task-prf-12) |
+| Write scope | `Mobile:src/ArcForges.Mobile/**`<br>`Mobile:src/core/ArcForges.Mobile.Network/**`<br>`Mobile:src/core/ArcForges.Mobile.Security/**`<br>`Mobile:tests/ArcForges.Mobile.Tests/**`<br>`Mobile:tests/ArcForges.Mobile.Policy/**`<br>`Mobile:ArcForges.Mobile.slnx`<br>`Mobile:global.json`<br>`Mobile:Directory.Build.props`<br>`Mobile:Directory.Packages.props`<br>`Mobile:NuGet.config`<br>`Mobile:.github/workflows/ci.yml`<br>`Mobile:.github/workflows/security.yml`<br>`Mobile:.gitleaks.toml`<br>`Mobile:eng/mobile.py`<br>`Mobile:eng/published.py`<br>`Mobile:eng/policy/**`<br>`Mobile:README.md`<br>`Mobile:AGENTS.md`<br>`Mobile:docs/**`<br>`Mobile:app/**`<br>`Mobile:shared/**`<br>`Mobile:gradle/**`<br>`Mobile:build.gradle.kts`<br>`Mobile:settings.gradle.kts`<br>`Mobile:settings-gradle.lockfile`<br>`Mobile:gradle.properties`<br>`Mobile:gradlew`<br>`Mobile:gradlew.bat`<br>`Mobile:.java-version`<br>`Mobile:eng/licences.gradle.kts` |
+| Shared resources | [RES-mobile-build-config](../shared-resources.md#res-mobile-build-config) (exclusive), [RES-android-signing-and-store](../shared-resources.md#res-android-signing-and-store) (append) |
+| Validation | Offline on Windows and Linux CI only (compile, offline xUnit and policy tests, actionlint, gitleaks, existing eng/*.py tests): restore with locked packages (packages.lock.json), NuGet audit and dependency-admission and provenance records for every package in the closure (Apache-2.0 only; no AGPL DesktopPlatform package and no ArcForges.Build.Policy reference); net10.0-android Release build with Mono AOT, trimming and R8 (AndroidLinkTool=r8), which is the first proof of the AND.01 candidate tuple (a failure reopens AND.01); the Hello transport suite (no cookies, no redirects, no retry, deadline cap 5 s, call timeout 10 s, grpc-timeout format, binary gRPC-Web selected through the configured GrpcWebMode with the configured media type asserted, the observed unary and server-stream mode left to PRF.12, 1..256 name rule) and the streaming suite (ordered frames then one OK trailer; an error trailer after frames keeps the frames and status; a missing trailer is DATA_LOSS; deadline mid-stream keeps frames and gives DEADLINE_EXCEEDED; cancel releases the stream) against loopback fixtures; C# policy tests (layering, licence boundary, forbidden terms, the seven BAN-* categories as Mobile-owned rules) with negative fixtures; F-023-class closure re-proof (licence, provenance, SBOM and NOTICE) for the MAUI closure on the candidate; a NuGet closure check that rejects an unadmitted or unpinned package. Signing and prerelease publication run only in the protected android-release environment on main. Emulator and device runs are local opt-in under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017), not CI. The Gradle, Kotlin and KMP retirement lands only with a candidate that passes these offline checks. |
+| Completion evidence | Offline CI run identifiers for the Windows and Linux builds with executed test counts; transport and streaming test matrix results (including the configured media-type assertion; observed unary and server-stream values are PRF.12 evidence); Keystore probe output recording the reported security level (software level is not hardware evidence); policy suite results with negative fixtures; NuGet admission and provenance records for the closure; a closure listing showing no ArcForges.Build.Policy and no AGPL DesktopPlatform package; F-023-class closure re-proof for the MAUI candidate (licence, provenance, SBOM and NOTICE); a retirement receipt listing every removed Kotlin, KMP, Gradle and ArcForges.Build.Policy consumer path; signed candidate hash and applicationId and certificate SHA256 verification (7a8b3b14...); reinstall guidance from io.github.arcforges.mobile recorded in docs/releasing.md with no data migration. |
+| Baseline (unreviewed unless accepted) | not-started Observed (2026-10-08): the Kotlin pipeline in .github/workflows/ci.yml already signs and publishes prereleases on main through eng/mobile.py sign_candidate and eng/published.py; this task re-hosts those steps on .NET outputs. The MAUI signing properties were taken from Microsoft Learn search snippets and must be verified by a local non-publishing build before use. The Kotlin CloudHelloClient defines the transport rules this task keeps. |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): new C#-first successor of the Kotlin Android foundation, of GOV.12 (Gradle policy) and of the Android CI and signing surfaces. Published Kotlin prereleases stay immutable history; nothing here unpublishes, deletes or re-signs them. No start edge on CON.07: the Hello.V1 surface the transport uses is already published in the ArcForges.Contracts.PublicApi NuGet package (Contracts repo evidence), and the transport, streaming consumer and Keystore probe use none of CON.07's identity, session or native-auth types; AND.04 keeps its CON.07 edge for those. CON.11 and CLOUD.29 are completion edges, not start edges: the loopback fixtures are test-only characterisation of the EventService stream shape, not a substitute, and the published client and the real stream producer confirm it before AND.40 completes. |
