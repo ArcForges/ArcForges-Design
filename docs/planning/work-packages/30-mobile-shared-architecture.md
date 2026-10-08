@@ -58,14 +58,14 @@ Mobile adopts the exact module map in architecture 27 (app, core and feature mod
 
 **What must be fully done.** Consume pinned NuGet generated C# messages, gRPC-Web clients and fixtures (the Maven and Connect Kotlin packages retire under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)). Select binary gRPC-Web explicitly; implement session/stream/retry/exact-value adapters over SocketsHttpHandler and actual deployed foundation calls.
 
-**Testing requirements.** Licence-boundary check: the MAUI closure must contain no AGPL DesktopPlatform package, including `Communication/ArcForges.Cloud.Client`. Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** In-force licence-boundary rule ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3): no MAUI build references `Communication/ArcForges.Cloud.Client`, and the MAUI closure contains no AGPL package. The time-limited build-only `ArcForges.Build.Policy` exception is not a closure package. Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** Real packaged NuGet consumer and service/device evidence passes; missing TLS/transport support blocks.
 
 <a id="rule-wp-30.04"></a>
-### WP-30.04 — Room history, drafts and receipts
+### WP-30.04 — Local history, drafts and receipts
 
-**What must be fully done.** Implement model 05 equivalent Room schemas (the store binding is owned by [AND.40](../delivery/lanes/android.md#task-and-40) under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3, with AndroidX bindings admitted when that task needs them) and per-profile partitions, own local/cloud/temporary behavior, bounded outbox/transfers/cursors. Local canonical history is not evictable cache; temporary content never persists.
+**What must be fully done.** Implement model 05 equivalent local stores for the .NET MAUI companion (the store binding is owned by [AND.40](../delivery/lanes/android.md#task-and-40) under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3; the store technology is admitted under the [WP02.05](02-build-governance-and-analyzer-policy.md#rule-wp-02.05) dependency admission profile when that task needs it; P2-021 item 3 does not admit Room) and per-profile partitions, own local/cloud/temporary behavior, bounded outbox/transfers/cursors. Local canonical history is not evictable cache; temporary content never persists.
 
 **Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 

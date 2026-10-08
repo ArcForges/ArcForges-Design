@@ -51,7 +51,7 @@
 
 ## 3. Binding rules and decisions
 >
-> **Planning repair 2026-10-08 (DLV-34; [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)).** The rows below that name the TypeScript codec, the npm and Maven channels and the Kotlin client are edited for the not-started successor scope (WP-03.03 onward and the retirement under [CON.40](../delivery/lanes/contracts.md#task-con-40) and [AND.40](../delivery/lanes/android.md#task-and-40)). They do not change the evidence of the accepted WP-03.00 to WP-03.02 records, which names the channels as they were at acceptance.
+> **Planning repair 2026-10-08 (DLV-34; [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)).** The rows below that name the TypeScript codec, the npm and Maven channels and the Kotlin client are edited for the not-started successor scope (WP-03.03 onward and the retirement under [CON.40](../delivery/lanes/contracts.md#task-con-40) and [AND.40](../delivery/lanes/android.md#task-and-40)). The accepted WP-03.00 and WP-03.02 section text is not rewritten: WP-03.00 is unchanged, and WP-03.01 and WP-03.02 keep their accepted text with an appended planning-repair note only, so the accepted completion receipts still name the channels as they were at acceptance. The not-started WP-03.05 text is re-specified in place under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 9; its previous three-language wording is not an active requirement.
 
 | # | Rule |
 |---|---|
