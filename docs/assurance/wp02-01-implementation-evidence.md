@@ -1,5 +1,7 @@
 # WP02.01 diagnostic posture implementation evidence
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI. The recorded result is retained as dated history and is not rewritten.
+
 Scope: [WP02.01](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.01), under the [reviewed diagnostic profile and ordered plan](wp02-01-diagnostic-profile.md). [Design PR47](https://github.com/ArcForges/ArcForges-Design/pull/47) merged before dependent implementation. This receipt closes diagnostic posture only; the AOT declaration sweep and the remaining WP02 obligations retain their separate gates.
 
 ## Accepted result

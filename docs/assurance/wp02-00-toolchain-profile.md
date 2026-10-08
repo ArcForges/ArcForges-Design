@@ -1,5 +1,7 @@
 # WP02.00 toolchain pin and restore profile
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI. The recorded result is retained as dated history and is not rewritten.
+
 Authority: [WP02.00](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.00), [build model](../architecture/14-build-packaging-and-release.md#2-repository-build-model), [current roots](wp01-stage-acceptance.md) and the explicit local dependency reuse instruction of 2026-09-20.
 
 ## Current inputs and bounded repairs

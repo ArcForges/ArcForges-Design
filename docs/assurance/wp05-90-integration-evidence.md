@@ -1,5 +1,7 @@
 # WP-05.90 cross-repository integration evidence
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI. The recorded result is retained as dated history and is not rewritten.
+
 Authority: [WP-05.90](../planning/work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05.90), [staged producer integration](../planning/README.md#staged-artifact-integration) and [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017). Task: [GOV.15](../planning/delivery/lanes/governance.md#task-gov-15). The [stage acceptance](wp05-stage-acceptance.md) joins this record with the ten preceding GOV.04-GOV.14 results.
 
 Labels: **observed** means read by the claimant from a provider response or file at the recorded identity during this task; **claimant-reported** means produced by the claimant's own local run and not yet independently reproduced; **ledger** means taken from a Plan ledger record without re-observation.

@@ -1,5 +1,7 @@
 # WP02.01 diagnostic posture and execution plan
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI. The recorded result is retained as dated history and is not rewritten.
+
 > Historical execution plan. Its execution order and validation instructions are superseded by [P2-017 and the current CI/local validation policy](../decisions/phase-2-specification-decisions.md#rule-p2-017). Retain the decisions and recorded observations as historical context; do not repeat the former runtime matrices, public-download checks or post-merge tests. Current post-merge verification is limited to the expected merge commit, required job results and a clean primary fast-forward. On a network failure, stop and report the exact operation without retries or network changes.
 
 Authority: [WP02.01](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.01), [per-language build policy](../architecture/14-build-packaging-and-release.md#rule-bm-03), [project rules](../architecture/01-solution-and-project-layout.md#rule-pj-07) and [quality waivers](../requirements/12-quality-and-compatibility-contract.md#rule-wv-01). The preceding [WP02.00 receipt](wp02-00-implementation-evidence.md) fixes the source/toolchain inputs. This document records decisions and the complete ordered plan before implementation, not completion evidence.

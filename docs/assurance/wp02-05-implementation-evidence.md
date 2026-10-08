@@ -1,5 +1,7 @@
 # WP02.05 dependency policy implementation evidence
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI; by [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023): the macOS artifact, gate and browser statements; by [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024): the `wsl.exe` prohibition. The recorded result is retained as dated history and is not rewritten.
+
 Scope: [WP02.05](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.05), executed under [the researched ordered profile](wp02-05-dependency-policy-profile.md) and [P2-017 validation policy](../decisions/phase-2-specification-decisions.md#rule-p2-017). This is foundation dependency and publication governance, not product or commercial acceptance.
 
 ## Implemented behavior

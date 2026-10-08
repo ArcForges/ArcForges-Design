@@ -1,5 +1,7 @@
 # WP02.03 runtime and directory boundaries
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI. The recorded result is retained as dated history and is not rewritten.
+
 Scope: [WP02.03](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.03), the [ordered execution plan](wp02-03-runtime-boundary-profile.md), and the owner-local build/runtime contracts. This closes the foundation runtime/entry-point boundary step only. Functional WP03/06 proof and complete commercial application acceptance remain separate obligations.
 
 ## Reviewed change and identities

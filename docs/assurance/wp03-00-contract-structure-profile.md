@@ -1,5 +1,7 @@
 # WP03.00 contract structure implementation profile
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI; by [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023): the macOS artifact, gate and browser statements; by [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024): the `wsl.exe` prohibition. The recorded result is retained as dated history and is not rewritten.
+
 Authority: [WP03.00](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.00), [package registry](../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [producer matrix](../planning/producer-artifacts-and-integration.md), [wire registry](../architecture/contracts/04-protobuf-wire-registry.md) and [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017). This preserves the complete ordered plan established before implementation. The [completion receipt](wp03-00-implementation-evidence.md) records reviewed source, required checks and successful publication. WP03.00 is complete. Its ordered plan and stopping boundary below are historical; current execution continues under the separate [WP03.01 profile](wp03-01-foundation-contract-profile.md).
 
 ## Decisions and verified gaps
@@ -69,7 +71,7 @@ Generation uses pinned existing tools after locked restore, runs without network
 7. Confirm the expected merge commit, required main build/publication results and clean fast-forward of primary Contracts. Do not start post-merge artifact downloads, hash audits, installation or runtime testing. Record exact source, checks, publication coordinates, selected slice coverage and material untested coverage in the completion receipt.
 8. Review and merge the completion/Current-task updates only after that evidence exists. Design and Plan are documentation repositories without configured CI and merge after review. Documentation-only PRs in Contracts still require its configured applicable CI; do not suppress or bypass those checks. Record WP03.01 as the next pending substep and stop at WP03.00 under the user's explicit execution boundary. A later instruction to continue requires WP03.01's own bounded research and plan; do not claim full initial business contracts or commercial product acceptance from .00.
 
-Each source PR is independently reviewed. Documentation repairs remain proportionate to the affected authority; no unrelated architecture expansion is authorized by this profile. A network failure stops the exact operation for reporting, without network configuration changes, retries or WSL wrappers.
+Each source PR is independently reviewed. Documentation repairs remain proportionate to the affected authority; no unrelated architecture expansion is authorized by this profile. A network failure stops the exact operation for reporting, without network configuration changes, retries or WSL wrappers (superseded 2026-10-08 by [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024): the local WSL2 Debian venue is permitted under that record; the wrapper prohibition no longer applies).
 
 ## Publisher prerequisites and historical setup observations
 

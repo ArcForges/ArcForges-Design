@@ -1,5 +1,7 @@
 # React/TypeScript Web Redesign — Stage 2 Review
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)).** The React/TypeScript Web stack, the Node/npm, Vite, Vitest/React Testing Library, MSW and Playwright-as-release-runner statements, and the esproj/Windows-Visual-Studio integration recorded in this review are superseded. The current Web stack is Blazor WebAssembly with a C#/.NET static Site generator (first-party Razor `HtmlRenderer`), bUnit/xUnit tests and local opt-in Playwright only ([PRF.11](../planning/delivery/lanes/runtime-proofs.md#task-prf-11), [WEB.40](../planning/delivery/lanes/web.md#task-web-40)). The review is retained as history; its findings are not reopened as Web-stack findings; the findings that still apply to Blazor (visual, accessibility and performance budgets) are re-tracked under [PG-23](open-gates-register.md#rule-pg-23) and [WEB.40](../planning/delivery/lanes/web.md#task-web-40), and its gate statements are historical.
+
 > Historical evidence at the source/design revision recorded below. [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) and [family completion review](family-design-completion-review.md) define the current Android, producer, contract and evidence amendments. Earlier runtime/contract/count conclusions are not current implementation proof; no deprecated input is reopened.
 
 

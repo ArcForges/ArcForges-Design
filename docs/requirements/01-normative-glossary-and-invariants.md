@@ -96,7 +96,7 @@ The ArcForges execution vocabulary is a strict hierarchy. No level may be collap
 | **Step** | domain, wire | One planned unit inside a Run. |
 | **Attempt** / `AttemptId` | domain, wire | One execution try of a Step. Distinct from `CommandId`. |
 | **Task Owner** | domain | The Cloud agent module holding authoritative Task/Run/Step/Attempt state. A desktop tool owner is not a Task Owner. |
-| **Orchestrator** | domain | The single Cloud harness sequencing agent work and authorized tools. Each application's assistant presents its tasks and bridges only its own local tools; it does not run another orchestrator. |
+| **Orchestrator** | domain | The Cloud harness sequencing agent work and authorized tools. Each application's assistant presents its tasks and bridges only its own local tools; it does not run another orchestrator. |
 | **Execution Location** | domain | Cloud for the AI runtime. Desktop/Cloud/Hybrid labels on a task describe tool locality only; they never select another model loop. |
 | **TaskHandle** | wire | A stable Cloud Agent Task reference for query/correlation, never an RPC connection or product job identity. |
 | **TaskSnapshot** | wire | An authoritative point-in-time projection of Task state, retrievable over HTTP. |
@@ -242,7 +242,7 @@ Every active entry is binding where its concepts are in current product scope. A
 | <a id="rule-i-026"></a>I-026 | Semantic Contract ≠ Wire Contract |
 | <a id="rule-i-027"></a>I-027 | Mobile/Web Companion ≠ Professional-app Mobile/Web port |
 | <a id="rule-i-028"></a>I-028 | Native working cache ≠ WebView shell; acknowledged Cloud revision ≠ pending local edit |
-| <a id="rule-i-030"></a>I-030 | Product AI surface ≠ agent runtime; all products use the single Cloud harness |
+| <a id="rule-i-030"></a>I-030 | Product AI surface ≠ agent runtime; all products use the Cloud harness |
 | <a id="rule-i-031"></a>I-031 | Own-application assistant search ≠ a central ArcForges database |
 
 ### 7.3 Capability, context and resource

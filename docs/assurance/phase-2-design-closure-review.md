@@ -1,5 +1,7 @@
 # Phase 2 Design Closure Review
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023))**: the macOS artifact, gate and browser statements. The recorded result is retained as dated history and is not rewritten.
+
 > Historical evidence at the source/design revision recorded below. [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) and [family completion review](family-design-completion-review.md) define the current Android, producer, contract and evidence amendments. Earlier runtime/contract/count conclusions are not current implementation proof; no deprecated input is reopened.
 
 

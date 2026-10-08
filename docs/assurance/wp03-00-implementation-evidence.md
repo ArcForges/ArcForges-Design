@@ -1,5 +1,7 @@
 # WP03.00 contract structure implementation evidence
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI; by [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023): the macOS artifact, gate and browser statements. The recorded result is retained as dated history and is not rewritten.
+
 Scope: [WP03.00](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.00), executed under the [reviewed implementation profile](wp03-00-contract-structure-profile.md) and [P2-017 validation policy](../decisions/phase-2-specification-decisions.md#rule-p2-017). Result: the selected project, package and generator boundaries are complete and published. This closes substep 03.00 only; the remaining WP03 schemas, semantic inventories and integration gates remain open.
 
 ## Accepted source and dependency boundary

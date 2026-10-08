@@ -1,5 +1,7 @@
 # WP01.03 native reconciliation evidence
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023))**: the macOS artifact, gate and browser statements (P2-023), and the PDF production statements (P2-022: native in-app PDF preview, local PDF parsing and the PDFium/arcpdf production path are retired, so the Pdf functional production and parser-composition statements that name WP13 are historical). Still-image parser composition, which the Graphics statements name, continues under [NAT.31](../planning/delivery/lanes/native.md#task-nat-31) and [PLT.54](../planning/delivery/lanes/platform.md#task-plt-54) and is not historical. The recorded result is retained as dated history and is not rewritten.
+
 Authority: [WP01.03](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.03) and the merged [native reconciliation policy](wp01-03-native-reconciliation-policy.md). This receipt covers current native ownership and the independent test-oracle relocation; functional native capability admission remains separately scheduled.
 
 ## Source disposition

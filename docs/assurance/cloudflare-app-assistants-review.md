@@ -1,5 +1,7 @@
 # Cloudflare and Application Assistants — Final Design Review
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI. The recorded result is retained as dated history and is not rewritten.
+
 Date: 2026-09-16. Baseline: `e974df5d0724247f4556d038b1e80c4603edd033`, after PR9. Decision: [P2-012](../decisions/phase-2-specification-decisions.md#rule-p2-012). This review covers the current documentation change, not implementation readiness.
 
 ## 1. Method and scope

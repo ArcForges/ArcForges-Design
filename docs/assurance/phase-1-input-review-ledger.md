@@ -1,5 +1,7 @@
 # Phase 1 Input Review and Coverage Ledger
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI. The recorded result is retained as dated history and is not rewritten.
+
 > Status: **Foundation Freeze requested** — Phase 1 (Input Review and Foundation Decision Freeze)
 > Branch: `design/phase-1-foundation`
 > Purpose: Record complete-reading coverage of the closed Phase 1 input corpus, the topic inventory derived from it, and the classification of material content. This ledger is evidence of review; it is not a specification and confers no authority on the material it describes.

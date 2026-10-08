@@ -1,5 +1,7 @@
 # WP01.00 implementation evidence
 
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI. The recorded result is retained as dated history and is not rewritten.
+
 Scope: [verify seven independent current repositories](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.00), under the [inventory profile](wp01-00-inventory-policy.md). This receipt records inventory and policy acceptance, not completed product behavior.
 
 ## Authority and change
