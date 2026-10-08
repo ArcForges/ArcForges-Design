@@ -2,7 +2,7 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
-> Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (agent framework only on AOT-validated surfaces), **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** (remote execution), **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** (economic model), **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** (MCP)
+> Governing authority: **[P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)** (C# Harness in the Cloud Native AOT host; amends [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) in part, 2026-10-08), **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (agent framework only on AOT-validated surfaces), **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** (remote execution), **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** (economic model), **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** (MCP)
 > Companions: [`../requirements/05-ai-and-agent-execution.md`](../requirements/05-ai-and-agent-execution.md), [`02-contracts-and-protocols.md`](02-contracts-and-protocols.md), [`16-billing-and-commerce-architecture.md`](16-billing-and-commerce-architecture.md)
 
 One Cloud Harness, one Task model, one metering path. Tool locality varies; the model loop never leaves Cloud (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**, [I-491](../requirements/01-normative-glossary-and-invariants.md#rule-i-491)).
@@ -11,18 +11,22 @@ One Cloud Harness, one Task model, one metering path. Tool locality varies; the 
 
 ## 1. Component map
 
-**Every model call, the single Harness and all durable agent orchestration are Cloud** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**). The desktop contributes UI, authorised local tool execution and product-local jobs. There is no second agent runtime anywhere.
+**Every model call, the single Harness and all durable agent orchestration are Cloud** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**). The Harness is C# in the Cloud Native AOT host (**[P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)**, item 5). The desktop contributes UI, authorised local tool execution and product-local jobs. There is no second agent runtime anywhere, and no client or Cloudflare adapter runs a business loop.
 
 ```
-Desktop / React / Kotlin Android: intent, Task/approval UI, draft/ack state
-    -> C# Native AOT: Task/Chat/Agent/Commerce/Entitlement authority
-        -> transactional dispatch outbox -> CF RunWorkflow
-            -> authorized context + typed tool proposals + Workers AI
-            -> C# intent/outcome/settlement/finalization ports
+Desktop / Blazor WebAssembly / MAUI Android: intent, Task/approval UI, draft/ack state
+    -> C# Native AOT Cloud host: Task/Chat/Agent/Commerce/Entitlement authority
+        -> C# Harness: admission, budget reservation, turn loop, routing, metering
+            -> D1 transactional dispatch outbox (row committed in the business transaction with the budget reservation, PS-04)
+                -> C# executor on D1 (epoch lease, fenced writes); DO alarm per run holds only a wake handle
+                   (alarm retry and Queue delivery unverified until HAR.40 proves them)
+                -> authorized context + typed tool proposals + Workers AI
+                   (thin ai.internal adapter over the env.AI binding)
+                -> C# intent/outcome/settlement/finalization ports
 Desktop tool executor pulls durable ToolRequests from C#,
 re-authorizes through the owner, commits, and reports actual effect.
 Native ProductJobs own capture/render/analysis; no model loop.
-CF RunStream DO carries live presentation only; C# owns final facts.
+Live presentation (the RunStream or EventFeed Durable Object as a non-authoritative projection, or a direct C# stream) is non-authoritative; C# owns final facts.
 ```
 
 | # | Rule |
@@ -38,7 +42,7 @@ CF RunStream DO carries live presentation only; C# owns final facts.
 
 ## 2. Agent runtime under AOT
 
-[P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) places the only model/tool loop in CF Workflow. Both the C# business ports and desktop typed tool path are Native AOT; framework constraints below apply to the C# boundary, while CF execution follows [the integration contract](contracts/05-cloudflare-integration.md).
+[P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) placed the only model/tool loop in a CF Workflow. That placement is superseded in part (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021), item 5): the loop, its decisions and its run state are the C# Harness in the Cloud Native AOT host. No Cloudflare Workflow holds run state; a Workflow may be added later only as a stateless wake or lifecycle adapter if a proof shows it is cheaper, and C# still decides every step. The C# business ports, the Harness and the desktop typed tool path are Native AOT, and the framework constraints below apply to them. Cloudflare platform adapters follow [the integration contract](contracts/05-cloudflare-integration.md) and keep no business logic.
 
 | # | Rule |
 |---|---|
@@ -48,6 +52,8 @@ CF RunStream DO carries live presentation only; C# owns final facts.
 | <a id="rule-ao-04"></a>AO-04 | **An agent framework feature is enabled only on surfaces validated by AOT analysis and a real publish** — never assumed from a debug build. |
 | <a id="rule-ao-05"></a>AO-05 | **A capability is exposed to the model through an explicitly generated binding**, not through runtime reflection over method signatures. |
 | <a id="rule-ao-06"></a>AO-06 | **Where a framework feature cannot be made AOT-safe, the surface is narrowed or the feature is replaced** — the desktop is not silently downgraded to JIT while still being described as AOT. |
+
+**AI repository placement (P2-021, item 5).** The runtime role of ArcForges-AI ends. Its Hello Workflow is replaced by the C# Harness slice in Cloud ([HAR.40](../planning/delivery/lanes/harness.md#task-har-40)), and the Workers AI adapter moves into the Cloud Worker, so one thin TypeScript adapter surface and one deploy head remain. The ArcForges-AI repository is kept as read-only history once its last deployment is retired. AI-lane task IDs (AIR.*, HAR.*, EXT.10) are re-homed to Cloud by re-specification, not renumbered. Deleting the deployed `arcforges-ai` Worker needs explicit user confirmation at that time.
 
 ---
 
@@ -155,7 +161,7 @@ Logical AI Request  (Cloud, authorised, service term verified)
    -> resolve supplier price version applicable at dispatch
    -> resolve customer retail tariff snapshot and pin it to the Run/request
    -> admission: capacity + credits + concurrency + provider budget, reserved atomically
-   -> resolve the pinned Workers AI binding/model in the sole CF RunWorkflow
+   -> resolve the pinned Workers AI model in the C# Harness; the thin ai.internal adapter invokes env.AI with that model ID
    -> Provider Attempt 1 ... N
    -> usage normalisation -> supplier cost record + customer settlement + ledger entries
 ```
@@ -172,6 +178,32 @@ Logical AI Request  (Cloud, authorised, service term verified)
 | <a id="rule-pr-08"></a>PR-08 | **Model availability is policy, not health** ([I-361](../requirements/01-normative-glossary-and-invariants.md#rule-i-361)), and a task snapshots its model policy decision ([PA-07](../requirements/11-policy-and-configuration.md#rule-pa-07) in the policy requirements). |
 | <a id="rule-pr-09"></a>PR-09 | **An emergency model suspension may interrupt future invocations inside a running run** — the single documented exception to snapshot immutability ([PA-08](../requirements/11-policy-and-configuration.md#rule-pa-08) there). |
 | <a id="rule-pr-10"></a>PR-10 | **A route with no configured price for a billable category cannot be dispatched** ([DC-05](../requirements/11-policy-and-configuration.md#rule-dc-05), [MT-15](../requirements/04-commerce-entitlement-and-credits.md#rule-mt-15)). There is no assumed zero rate and no silent default. |
+
+### 6.1 Harness cost controls and the Workers AI adapter
+
+The Harness is C# policy in the Cloud Native AOT host ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021), item 5). The values below are the effective values now, unless a row names a pending target; a change needs a reviewed record and is never applied silently. Where [contracts/05](contracts/05-cloudflare-integration.md) also states a value, that document is its single source and this table must match it.
+
+| Control | Policy |
+|---|---|
+| Reservation | Reserve before dispatch (MB-01); the reservation is settled or released, never left open. |
+| Pinned route | Pinned model and tariff snapshot at Run start (PR-02, MB-05). Dispatch occurs only against that pinned model and tariff snapshot; a changed or missing snapshot is refused before dispatch, and [HAR.40](../planning/delivery/lanes/harness.md#task-har-40) tests this. The run identity keeps the Cloudflare Worker version identifier alongside the Cloud build identity. |
+| Dispatch outbox | Harness dispatch is a D1 transactional outbox row committed in the same business transaction as the budget reservation ([PS-04](05-cloud-architecture.md#rule-ps-04)). No model or tool dispatch occurs without the committed row. Claiming that row under an epoch lease is a [HAR.40](../planning/delivery/lanes/harness.md#task-har-40)-gated target: the executor design, including the epoch-lease claim, is gated on the crash-injection, lost-wake and duplicate-delivery proofs of HAR.40, and lost-wake and Queue duplicate delivery are unverified until those proofs pass. The DO alarm holds only a wake handle, never business state. |
+| Dispatch identity | Every model and tool dispatch carries a stable identity: a `CommandId` for a logical write, reused on every retry of that write, and a fresh attempt identity for each execution try (see model-step retries). The owner, or the C# executor for model dispatch, deduplicates on it ([ID-01](../requirements/05-ai-and-agent-execution.md#rule-id-01), [FL-06](../requirements/05-ai-and-agent-execution.md#rule-fl-06)). |
+| Model-step retries | 0 after a possible dispatch ([contracts/05](contracts/05-cloudflare-integration.md) line 88; [PF-07](17-agent-harness.md#rule-pf-07)). At most 2 pre-dispatch retries, each with a fresh supplier-attempt identity, and only for a refusal that C# admission classifies as before dispatch. The Workers AI 429 semantics are measured by [HAR.40](../planning/delivery/lanes/harness.md#task-har-40); a 429 is not retried until that proof classifies it. |
+| Model deadline | The Design value is 120 s, the model external-step deadline of [contracts/05](contracts/05-cloudflare-integration.md) line 88; this record does not relax it. The deployed code enforces 90 s (`AI/src/index.ts` lines 19 to 23) and keeps enforcing it until [HAR.40](../planning/delivery/lanes/harness.md#task-har-40) records the reviewed C# policy value, which may not exceed 120 s ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) item 5). [HAR.40](../planning/delivery/lanes/harness.md#task-har-40) records the measured deadline. No silent relaxation. |
+| Output and context caps | Output 4096 tokens, text input 24,000 tokens and 32 tools per request: the Design caps of the supplier-binding paragraph of the P2-009 execution placement section at the end of this document (origin/main line 360; [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) item 5). The deployed `max_tokens` 1024 (`AI/src/model.ts` lines 45 and 83) stays enforced until HAR.40 records the reviewed C# value, which may not exceed 4096. C# admission checks these caps before any model dispatch. Total context 256 KiB by default and 1 MiB as the hard cap, with 200 and 500 item limits ([contracts/05](contracts/05-cloudflare-integration.md) line 86). Model calls 16 by default and 64 hard; tool invocations 64 by default and 256 hard; no-progress limit 3 ([contracts/05](contracts/05-cloudflare-integration.md) line 86; [contracts/08](contracts/08-extension-and-policy-profiles.md) line 71). Policy can narrow these values and never enlarge them. |
+| Parallel tools | 4 by default and 8 hard ([contracts/05](contracts/05-cloudflare-integration.md) line 86); C# enforces both limits. |
+| Step and subrequest guards | **Steps:** the C# executor counts every durable step, including waits and wake cycles, against a guard of 24,000 steps; the counted classes are a reviewed C# budget definition that HAR.40 records. 1,000 steps are reserved for final receipts and reconciliation, with a hard cap of 25,000 total steps (the Workflow ceiling carried over as a C# cap). The counter is never silently reset. **Outbound network actions** (model, tool, storage, reconciliation requests, including retries and range/auth requests) stop new model and tool dispatch at 900,000 and keep 100,000 for reconciliation, outcome and finalization, carried over from the retired RunWorkflow subrequest allowance ([integration contract](contracts/05-cloudflare-integration.md)). At a guard, new effects pause and the run finalizes with an execution-limit reason only if no effect is unresolved; otherwise `unknownEffect` is retained for C# reconciliation. A guard hit is a durable limit, wait or failure recorded by C#, never a silent continuation. [HAR.40](../planning/delivery/lanes/harness.md#task-har-40) proves these values against the seven-day run lifespan. |
+| Lease | 60 s lease with 20 s renewal; every write is epoch-fenced. |
+| Checkpoint | 128 KiB checkpoint limit. |
+| Unknown effects | Never auto-retried; reconcile before any retry ([FL-06](../requirements/05-ai-and-agent-execution.md#rule-fl-06); effect certainty under [FL-07](../requirements/05-ai-and-agent-execution.md#rule-fl-07); ExternalEffectUnknown in section 15). |
+| Rate admission | Per-model token bucket sized to the Workers AI tier that [HAR.40](../planning/delivery/lanes/harness.md#task-har-40) records for that model, admitted in C# before dispatch. Until HAR.40 records a tier for `@cf/openai/gpt-oss-120b`, dispatch to that model is not admitted (P2-021 item 5); the deployed Hello Workflow keeps its current behaviour until HAR.40 retires it. |
+| Concurrency and scaling | Deployed state, not a Design value: the Cloud container runs `instance_type` lite, `max_instances` 1 and a 60-second sleep today. This document does not inherit that configuration. The launch targets are `instance_type` standard-2 (1 vCPU, 6 GiB memory), four globally capped fixed realm slots, `max_instances=4` as a global ceiling and a ten-minute idle sleep (`sleepAfter=10m`) ([launch-capacity profile](data-model/04-d1-execution-profile.md#launch-capacity-profile-v1--proposed-acceptance-target), subject to [PG-26](../assurance/open-gates-register.md#rule-pg-26)). They are not effective until the [HAR.40](../planning/delivery/lanes/harness.md#task-har-40) proofs (per-instance concurrency, sleep with an open stream, cold start), the CLOUD.07 instance-type migration and the L-16 and PG-26 approval are recorded ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) item 5). CLOUD.71 observed `max_instances` 2 serving one of two named instances at a time, and Cloudflare does not document `max_instances` semantics, so HAR.40 tests them. The pending correction of [data-model/04](data-model/04-d1-execution-profile.md) line 146 and [architecture 05](05-cloud-architecture.md) line 74 is tracked in the P2-021 pending table. |
+| Admission at the adapter | The admitted-model set and size caps come from C#; the adapter enforces them fail-closed. |
+
+**Workers AI adapter.** Workers AI is invoked only through the Worker `env.AI` binding by a thin TypeScript outbound handler (`ai.internal`, container outbound). It forwards the C#-frozen request unchanged, enforces only the C#-supplied admitted-model set and size caps, and fails closed. Its streaming pass-through and binding-latency results are a gate: the `ai.internal` path is not frozen until [HAR.40](../planning/delivery/lanes/harness.md#task-har-40) passes that gate. If pass-through fails, the `ai.internal` path stays unfrozen, and any degraded delivery mode (for example, buffered output without live deltas) needs a reviewed record before use; none is in force. No REST path or gateway is added as a fallback. No Workers AI token is present in the container, and no AI Gateway is used (PR-06). The adapter makes no routing, retry or budget decision and holds no business constant except values generated from the C# source of truth.
+
+**Proofs before bulk feature work.** [HAR.40](../planning/delivery/lanes/harness.md#task-har-40) proves Workers AI through the binding (latency, streaming pass-through, the gpt-oss tier and 429 semantics), executor crash injection (lost-wake and duplicate-delivery behaviour of the DO alarm and Queue delivery, both unverified until proven), and container capacity (max_instances semantics, sleep with an open stream, cold start on standard-2). Live-service runs are the local opt-in validation under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017); their results are recorded as evidence.
 
 ---
 
@@ -219,7 +251,7 @@ Placement no longer describes where the model loop runs — it always runs in Cl
 
 | Tool locality | Executed by | Reached how |
 |---|---|---|
-| **Cloud tool** | The owning C# module | CF invokes the typed tool/admission port; C# executes its owner handler and commits an outcome |
+| **Cloud tool** | The owning C# module | The C# Harness calls the typed tool or admission port in-process; C# executes its owner handler and commits an outcome |
 | **Device tool** | The explicitly targeted application's own authorized in-process tool executor | Durable `ToolRequest` pulled by the device (**[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)**) |
 
 | # | Rule |
@@ -350,12 +382,14 @@ Automation Definition (versioned)
 | [AI, Agent Execution, Tasks and Automation Requirements](../requirements/05-ai-and-agent-execution.md) | Owns execution states, placement, approvals, automation and recovery |
 | [Commerce, Entitlement and AI Credits Requirements](../requirements/04-commerce-entitlement-and-credits.md) | Owns admission, metering, tariffs and reconciliation |
 | [Agent Harness](17-agent-harness.md) | Defines the concrete Cloud turn loop and tool dispatch |
+| **[P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)** | C# Harness in the Cloud Native AOT host; Workers AI through the thin `ai.internal` adapter; no Workflow run state |
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Agent framework enabled only on AOT-validated surfaces; desktop stays a Native AOT deliverable |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Durable `ToolRequest` / `ToolResult` remote execution |
 | **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Reserve-then-settle, fixed precision, per-run tariff snapshot, hard stop, three ledgers |
 | **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | MCP stability, statelessness and vocabulary disambiguation |
 
 ## [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) execution placement and supplier binding
+(Superseded in part 2026-10-08 by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021): the only model/tool loop is the C# Harness in the Cloud Native AOT host, not a CF Workflow. The supplier binding below is unchanged.)
 
 Selected Workers AI routes: @cf/openai/gpt-oss-120b for default text/tool work; @cf/openai/gpt-oss-20b as explicit lower-latency text profile; @cf/google/gemma-4-26b-a4b-it only for accepted authorized image-context understanding; @cf/baai/bge-m3 for multilingual 1024-dimensional embeddings; @cf/baai/bge-reranker-base for bounded reranking. No text-to-image/voice product feature added. Direct bindings, no mandatory AI Gateway/Agents SDK/Vercel SDK/external provider. Text input cap 24,000 tokens, output 4096, tools 32, total context<=256 KiB default; vision max 4 approved images <=1024px longest side/1 MiB each, no raw media/capture egress. Embedding chunk512tokens/overlap 64, batch 16,1024 finite float components; query/doc use same version, max 200rerank candidates. Model max limits may be higher; product limits stay these bounded values.
 
@@ -365,8 +399,8 @@ Supplier request ID is nullable until CF returns one; ArcForges attempt identity
 
 Search keeps D1 FTS5 and Vectorize projections and query-time authorization; D1 FTS5 and Vectorize projections under the current D1 profile. Projection key(sourceId,sourceRev,embeddingModelId,embeddingProfileVersion,chunkHash), tombstone/source-denial before counts/citations. Model dimension/profile change builds separate index from authorized acknowledged sources, catches up journal, switches reader atomically and retains rollback window; no mixing vectors or changing canonical Scope measurement order. C# config activation creates immutable snapshot, Worker acknowledges supported schema/model/limits and version hash, then C# atomically moves active head; stale Worker cannot admit a new call. Emergency denial applies immediately even to a frozen Run; existing tariff snapshot remains for already admitted work.
 
-The [sole Workflow and transactional ports](contracts/05-cloudflare-integration.md) supply the concrete placement, transitions, retry/approval/cancellation and restore rules. C# schedules deterministic occurrences and owns their Task record; CF advances the model/tool loop. ProductJob remains product-owned.
+The [transactional ports](contracts/05-cloudflare-integration.md) carry the Cloudflare-side invocation and wake contract only. C# supplies the placement, transitions, retry/approval/cancellation and restore rules and advances the model/tool loop through its own executor ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021), item 5). C# schedules deterministic occurrences and owns their Task record. ProductJob remains product-owned.
 
 ## Ordinary and temporary execution authority
 
-The Task engine sections govern AgentTask. Ordinary ChatTurn uses the same sole CF Harness and owner-discriminated C# ports, with pure-read capabilities only and explicit promotion before any effectful tool. [Harness owner/context lifecycle](17-agent-harness.md#execution-owners-protected-context-and-temporary-cleanup) and [client journeys](contracts/07-client-journeys-and-ports.md) fix persistent/temporary storage, mode transitions, platform-funded compaction, transient consent and Brave search. Every financial attempt references its actual execution owner. Temporary mode does not imply an on-device model, zero cost or provider non-processing.
+The Task engine sections govern AgentTask. Ordinary ChatTurn uses the same C# Harness and owner-discriminated C# ports, with pure-read capabilities only and explicit promotion before any effectful tool. [Harness owner/context lifecycle](17-agent-harness.md#execution-owners-protected-context-and-temporary-cleanup) and [client journeys](contracts/07-client-journeys-and-ports.md) fix persistent/temporary storage, mode transitions, platform-funded compaction, transient consent and Brave search. Every financial attempt references its actual execution owner. Temporary mode does not imply an on-device model, zero cost or provider non-processing.
