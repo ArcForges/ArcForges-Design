@@ -208,7 +208,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [PLT.52](../delivery/lanes/platform.md#task-plt-52) | [WP-12.05](12-observability-foundation.md#rule-wp-12.05) (full) | [PLT.31](../delivery/lanes/platform.md#task-plt-31) (artifact) |
 | [PLT.53](../delivery/lanes/platform.md#task-plt-53) | [WP-12.90](12-observability-foundation.md#rule-wp-12.90) (full) | none |
 
-**Consumers outside this package:** [AIR.04](../delivery/lanes/ai-routing.md#task-air-04), [CLOUD.05](../delivery/lanes/cloud.md#task-cloud-05), [CLOUD.33](../delivery/lanes/cloud.md#task-cloud-33), [UPD.06](../delivery/lanes/updater.md#task-upd-06).
+**Consumers outside this package:** [AIR.04](../delivery/lanes/ai-routing.md#task-air-04), [CLOUD.05](../delivery/lanes/cloud.md#task-cloud-05), [CLOUD.33](../delivery/lanes/cloud.md#task-cloud-33), [CLOUD.84](../delivery/lanes/cloud.md#task-cloud-84), [UPD.06](../delivery/lanes/updater.md#task-upd-06).
 
 <!-- delivery-graph:end -->
 
