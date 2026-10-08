@@ -4,7 +4,7 @@
 
 Extension host, protocol, capability boundary, package runtime, catalog, SDK and CLI, MCP connectors.
 
-Tasks: 12 · Owning repositories: AI, Cloud, Contracts, DesktopPlatform · Integration owner(s): AI integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner
+Tasks: 12 · Owning repositories: Cloud, Contracts, DesktopPlatform · Integration owner(s): Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
@@ -18,7 +18,7 @@ Tasks: 12 · Owning repositories: AI, Cloud, Contracts, DesktopPlatform · Integ
 | [EXT.07](#task-ext-07) | Desktop and CLI catalog consumers | producer | M | [EXT.06](#task-ext-06) (artifact) | not-started |
 | [EXT.08](#task-ext-08) | Public SDK and CLI | producer | M | [EXT.02](#task-ext-02) (artifact), [CLOUD.16](cloud.md#task-cloud-16) (artifact) | not-started |
 | [EXT.09](#task-ext-09) | Local MCP stdio behind the owned connector child | producer | M | [EXT.00](#task-ext-00) (artifact) | not-started |
-| [EXT.10](#task-ext-10) | Cloud MCP HTTP through the AI Worker adapter | producer | M | [CON.15](contracts.md#task-con-15) (contract) | not-started |
+| [EXT.10](#task-ext-10) | Cloud MCP HTTP placement in the C# Agent module (thin Worker egress route) | producer | M | [CON.15](contracts.md#task-con-15) (contract) | not-started |
 | [EXT.90](#task-ext-90) | Verify owned artifact and real integration (extension platform) | producer | M | [EXT.00](#task-ext-00) (artifact), [EXT.01](#task-ext-01) (artifact), [EXT.02](#task-ext-02) (artifact), [EXT.03](#task-ext-03) (artifact), [EXT.04](#task-ext-04) (artifact), [EXT.05](#task-ext-05) (artifact), [EXT.06](#task-ext-06) (artifact), [EXT.07](#task-ext-07) (artifact), [EXT.08](#task-ext-08) (artifact), [EXT.09](#task-ext-09) (artifact), [EXT.10](#task-ext-10) (artifact) | not-started |
 
 ## Tasks
@@ -41,7 +41,7 @@ Tasks: 12 · Owning repositories: AI, Cloud, Contracts, DesktopPlatform · Integ
 | Completion prerequisites | none |
 | Unblocks | [EXT.01](#task-ext-01), [EXT.09](#task-ext-09), [EXT.90](#task-ext-90) |
 | Write scope | `DesktopPlatform:src/Extensions/ArcForges.Extensions.Runtime/Host/**` |
-| Validation | Hostile-package tests against product DB/token paths, network, sibling-package and process APIs on the real target OS per platform (Windows primary; no macOS CI per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)); crash/hang/memory-exhaustion/unbounded-output tests; quarantine behaviour; credential-absence assertion. No device/emulator CI -- these run as local/affected-scope checks per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
+| Validation | Hostile-package tests against product DB/token paths, network, sibling-package and process APIs on the real target OS per platform (Windows primary; macOS is outside the delivery scope per [P2-023](../../../decisions/phase-2-specification-decisions.md#rule-p2-023)); crash/hang/memory-exhaustion/unbounded-output tests; quarantine behaviour; credential-absence assertion. No device/emulator CI -- these run as local/affected-scope checks per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
 | Completion evidence | Hostile-process behaviour and credential-absence results ([PG-22](../../../assurance/open-gates-register.md#rule-pg-22)). |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: DesktopPlatform repo has no src/Extensions or src/Communication tree; only src/Build, src/BuildingBlocks, src/DesktopHelpers, src/Native exist. |
 | Notes | Narrow early risk proof: if real OS-level sandboxing cannot reach [PG-22](../../../assurance/open-gates-register.md#rule-pg-22)'s bar on the target platforms, the whole out-of-process extension model needs redesign. |
@@ -253,25 +253,26 @@ Tasks: 12 · Owning repositories: AI, Cloud, Contracts, DesktopPlatform · Integ
 
 <a id="task-ext-10"></a>
 
-### EXT.10 — Cloud MCP HTTP through the AI Worker adapter
+### EXT.10 — Cloud MCP HTTP placement in the C# Agent module (thin Worker egress route)
 
-**Outcome.** Cloud-placed MCP connections route HTTP through the AI Worker adapter only; standard MCP protocol is preserved; each connection has one placement/secret owner and exact failure/egress behavior; MCP content is treated as untrusted data.
+**Outcome.** Cloud-placed MCP connections are owned in C#: the MCP client, connection registry, placement and secret-reference owner live in the Cloud Agent module; standard MCP protocol is preserved; each connection has one placement and one secret owner with exact failure and egress behavior; MCP content is treated as untrusted data ([HV-19](../../../architecture/17-agent-harness.md#rule-hv-19)). Cloud-placed MCP HTTP placement ([WP-41.07](../../work-packages/41-extension-platform-and-integrations.md#rule-wp-41.07)) is delivered through a separate MCP egress route: C# decides each connection, destination, secret reference and failure mapping, and the Cloud Worker outbound handler is thin transport that enforces only the C#-supplied host allowlist and the transport guards (443 only, no private addresses, no redirects). The route is not the ai.internal adapter, which [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 5 limits to Workers AI on the env.AI binding.
 
 | Field | Value |
 |---|---|
-| Owning repository | AI (`C:\MyFile\Projects\ArcForges\AI`); integration owner: AI integration owner, the holder of `roles/integration-ai` |
+| Owning repository | Cloud (`C:\MyFile\Projects\ArcForges\Cloud`); integration owner: Cloud integration owner, the holder of `roles/integration-cloud` |
 | Claim, branch and ledger | `claims/ext-10` and ledger record `ledger/tasks/ext-10.md` in the Plan repository; task branch `task/ext-10` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | producer / M |
-| Obligations | [WP-41.07](../../work-packages/41-extension-platform-and-integrations.md#rule-wp-41.07) — Cloud MCP HTTP placement through the AI Worker adapter<br>[WP-41](../../work-packages/41-extension-platform-and-integrations.md#rule-wp-41) Sec.8 gate item 8: MCP vocabulary mapping + SDK version pin -- [VG-02](../../../assurance/open-gates-register.md#rule-vg-02) — package-level obligation contribution |
+| Obligations | [WP-41.07](../../work-packages/41-extension-platform-and-integrations.md#rule-wp-41.07) — Cloud MCP HTTP placement (functional acceptance kept as written; satisfied by a working placement through the C#-decided MCP egress route, never by a refusal)<br>[WP-41](../../work-packages/41-extension-platform-and-integrations.md#rule-wp-41) Sec.8 gate item 8: MCP vocabulary mapping + SDK version pin -- [VG-02](../../../assurance/open-gates-register.md#rule-vg-02) — package-level obligation contribution |
 | Provides | mcp-cloud-placement |
-| Start prerequisites | **contract** [CON.15](contracts.md#task-con-15) — the internal AI HTTP port surface to attach an MCP adapter route to. *Why:* the AI Worker's internal port registry (the Cloud lane public API generation) must exist before a new adapter route can be added without breaking the fixed registry |
-| Entry condition | [ADOPT.08.extensions](adoption.md#task-adopt-08-extensions) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Start prerequisites | **contract** [CON.15](contracts.md#task-con-15) — the generated internal HTTP registry, to attach the MCP egress route (C#-supplied allowlist) to. *Why:* the MCP egress route is declared in the fixed generated registry, not registered ad hoc |
+| Entry condition | [ADOPT.07.extensions](adoption.md#task-adopt-07-extensions) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [EXT.90](#task-ext-90) |
-| Write scope | `AI:src/mcp/**` |
-| Validation | Standard-MCP-transport preservation test; secret-as-reference test; egress-control test -- offline against a local MCP fixture server, no live external MCP endpoint in CI. |
-| Completion evidence | MCP mapping record, connector secret and no-delegation structural results (Cloud half). |
-| Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: AI repo is Hello-World stage (src/deployment.ts, hello.ts, index.ts, model.ts, model-diagnostics.ts only); no workflows/, providers/, inference/, streams/, or mcp/ trees exist. tests/workflow.test.ts and docs/evidence/workflow-*.json are early probe scaffolding, not the implementation. |
+| Unblocks | [CLOUD.84](cloud.md#task-cloud-84), [EXT.90](#task-ext-90) |
+| Write scope | `Cloud:src/ArcForges.Cloud.Modules.Agent/Mcp/**`<br>`Cloud:tests/ArcForges.Cloud.Tests/Mcp/**`<br>`Cloud:worker/mcp/** (thin outbound transport adapter for the MCP egress route; enforces only the C#-supplied allowlist and transport guards)` |
+| Validation | Standard-MCP-transport preservation test over a loopback MCP fixture server reached from the test process only (a test transport, not the production egress path); secret-as-reference test; HTTP placement test that runs a Cloud-placed MCP HTTP connection through the MCP egress route to the same loopback fixture; egress-control tests: a destination outside the C#-supplied allowlist, a non-443 port, a private address and a redirect are each refused fail-closed with the egress-denied failure, and an architecture test shows that the ai.internal adapter carries no MCP traffic; MCP content untrusted-data test. In ArcForges.Cloud.Tests, offline; no live external MCP endpoint and no hosted CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
+| Completion evidence | MCP mapping record, connector secret and no-delegation structural results (Cloud half); HTTP placement result through the MCP egress route against the loopback fixture (test transport); egress-control and no-ai.internal-MCP architecture results; coordinator adjudication 6 (2026-10-08, brief section 6, MCP and connector egress) as the decision reference. |
+| Baseline (unreviewed unless accepted) | not-started Observed 2026-10-08. No MCP code in either repository. AI main b2b3aa2 has no src/mcp tree (runtime is src/index.ts, hello.ts, model.ts, deployment.ts, model-diagnostics.ts). Cloud b05361e has the module shell src/ArcForges.Cloud.Modules.Agent (AgentModule.cs and project only), no extension module, and no MCP or AI route in worker/. |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021); coordinator adjudication 6): the MCP client moves from the AI repository (src/mcp, not on main) to the C# Cloud Agent module. MCP HTTP egress is decided: C# decides, and the Worker outbound handler is thin transport enforcing only the C#-supplied host allowlist and the transport guards (443 only, no private addresses, no redirects). The route cannot reuse the ai.internal adapter ([P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 5). The connection-registry, secret-reference and untrusted-data rules stay C#-owned. [WP-41.07](../../work-packages/41-extension-platform-and-integrations.md#rule-wp-41.07) functional acceptance is kept as written, and no obligation is removed. |
 
 <a id="task-ext-90"></a>
 
