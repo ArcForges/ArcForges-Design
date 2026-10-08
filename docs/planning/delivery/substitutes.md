@@ -19,7 +19,7 @@ A **value** substitute supplies contract-shaped data (vectors, documents, record
 | [SUB-guarded-batch-capacity-fixtures](#sub-guarded-batch-capacity-fixtures) | behavior | real per-module business plans not yet built when capacity is first measured | [CLOUD.47](lanes/cloud.md#task-cloud-47), [COM.15](lanes/commerce.md#task-com-15) | [REL.06](lanes/release.md#task-rel-06) | [CLOUD.07](lanes/cloud.md#task-cloud-07) |
 | [SUB-history-admission-fixture](#sub-history-admission-fixture) | behavior | [WP-25.09](../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.09) real Cloud application-history restartable import receiver | [CLOUD.46](lanes/cloud.md#task-cloud-46) | [AST.22](lanes/assistant.md#task-ast-22) | [AST.15](lanes/assistant.md#task-ast-15) |
 | [SUB-hosted-checkout-sandbox](#sub-hosted-checkout-sandbox) | behavior | real Paddle hosted checkout page and redirect | [COM.14](lanes/commerce.md#task-com-14) | [REL.08](lanes/release.md#task-rel-08) | [COM.03](lanes/commerce.md#task-com-03) |
-| [SUB-hostile-test-parser](#sub-hostile-test-parser) | behavior | [WP-13.13](../work-packages/13-high-risk-technical-probes.md#rule-wp-13.13) production native parser composition (PDF/image) | [NAT.15](lanes/native.md#task-nat-15) | [PLT.54](lanes/platform.md#task-plt-54) | [PLT.45](lanes/platform.md#task-plt-45), [NAT.14](lanes/native.md#task-nat-14), [NAT.15](lanes/native.md#task-nat-15) |
+| [SUB-hostile-test-parser](#sub-hostile-test-parser) | behavior | [WP-13.13](../work-packages/13-high-risk-technical-probes.md#rule-wp-13.13) production native parser composition (still-image family; PDF retired by [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)) | [NAT.31](lanes/native.md#task-nat-31) | [PLT.54](lanes/platform.md#task-plt-54) | [PLT.45](lanes/platform.md#task-plt-45), [NAT.14](lanes/native.md#task-nat-14) |
 | [SUB-lkg-compiled-defaults-seed](#sub-lkg-compiled-defaults-seed) | value | a real prior published bundle to fall back to | [POL.08](lanes/policy.md#task-pol-08) | [POL.11](lanes/policy.md#task-pol-11) | [POL.09](lanes/policy.md#task-pol-09) |
 | [SUB-postmark-ses-test-recordings](#sub-postmark-ses-test-recordings) | value | live Postmark primary / SES secondary email delivery | [CLOUD.12](lanes/cloud.md#task-cloud-12) | [CLOUD.12](lanes/cloud.md#task-cloud-12) | [CLOUD.12](lanes/cloud.md#task-cloud-12) |
 | [SUB-provider-adapter-fixture](#sub-provider-adapter-fixture) | behavior | real Paddle/Payoneer API calls behind the adapter | [COM.14](lanes/commerce.md#task-com-14) | [COM.14](lanes/commerce.md#task-com-14) | [COM.01](lanes/commerce.md#task-com-01) |
@@ -33,7 +33,7 @@ A **value** substitute supplies contract-shaped data (vectors, documents, record
 | [SUB-stubbed-provider-path](#sub-stubbed-provider-path) | behavior | [WP-43](../work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43) real provider routing and metering (already-named [WP-17.05](../work-packages/17-arcchat-independent-core.md#rule-wp-17.05) scaffolding) | [AIR.00](lanes/ai-routing.md#task-air-00) | [AIR.08](lanes/ai-routing.md#task-air-08) | [AST.15](lanes/assistant.md#task-ast-15), [AIR.08](lanes/ai-routing.md#task-air-08) |
 | [SUB-test-signed-update-feed](#sub-test-signed-update-feed) | value | the production feed and real product signing key custody | [UPD.07](lanes/updater.md#task-upd-07) | [REL.10](lanes/release.md#task-rel-10) | [UPD.01](lanes/updater.md#task-upd-01) |
 | [SUB-updater-policy-fixture](#sub-updater-policy-fixture) | value | [WP-44](../work-packages/44-dynamic-policy-and-configuration.md#rule-wp-44) real activated policy distribution and [WP-45](../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45) real security-advisory process | [POL.09](lanes/policy.md#task-pol-09) | [UPD.08](lanes/updater.md#task-upd-08) | [UPD.05](lanes/updater.md#task-upd-05) |
-| [SUB-web-msw-fixtures](#sub-web-msw-fixtures) | value | real API/session conformance | [CLOUD.19](lanes/cloud.md#task-cloud-19), [CLOUD.21](lanes/cloud.md#task-cloud-21) | [WEB.30](lanes/web.md#task-web-30) | [PRF.08](lanes/runtime-proofs.md#task-prf-08) |
+| [SUB-web-msw-fixtures](#sub-web-msw-fixtures) | value | real API/session conformance | [CLOUD.19](lanes/cloud.md#task-cloud-19), [CLOUD.21](lanes/cloud.md#task-cloud-21) | [WEB.30](lanes/web.md#task-web-30) |  |
 | [SUB-web-search-fixture](#sub-web-search-fixture) | value | [WP-43.05](../work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.05) real Brave web-search dispatch | [AIR.06](lanes/ai-routing.md#task-air-06) | [SRCH.06](lanes/search.md#task-srch-06) | [SRCH.00](lanes/search.md#task-srch-00) |
 
 ### SUB-assistant-history-fixture
@@ -187,14 +187,14 @@ A **value** substitute supplies contract-shaped data (vectors, documents, record
 | Field | Value |
 |---|---|
 | Class | behavior |
-| Stands in for | [WP-13.13](../work-packages/13-high-risk-technical-probes.md#rule-wp-13.13) production native parser composition (PDF/image) |
+| Stands in for | [WP-13.13](../work-packages/13-high-risk-technical-probes.md#rule-wp-13.13) production native parser composition (still-image family; PDF retired by [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)) |
 | Authoritative contract | ArcForges.Contracts.LocalRpc.Sandbox ContentSandboxService |
-| What its checks prove | OS-level containment mechanics only (AppContainer/Job Object, Landlock/seccomp, App-Sandbox/XPC denial, resource bounds, crash/hang/parent-death cleanup) against a deliberately hostile FIRST-PARTY test parser, not real format-parsing correctness |
+| What its checks prove | OS-level containment mechanics only (AppContainer/Job Object, Landlock/seccomp, resource bounds, crash/hang/parent-death cleanup) against a deliberately hostile FIRST-PARTY test parser, not real format-parsing correctness; macOS App-Sandbox/XPC denial is out of scope ([P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)) |
 | What it does not prove | Any real runtime, provider, device, integration or commercial behavior. |
-| Real producer | [NAT.15](lanes/native.md#task-nat-15) |
+| Real producer | [NAT.31](lanes/native.md#task-nat-31) |
 | Removes runtime substitution | [PLT.54](lanes/platform.md#task-plt-54) |
-| Real evidence still required | packaged RID containment matrix re-run against the real PDFium and still-image parser libraries, including malformed-input, crash and hang cases |
-| Origin | Named scaffolding introduced by [WP-11.09](../work-packages/11-security-foundation.md#rule-wp-11.09); [WP-13.13](../work-packages/13-high-risk-technical-probes.md#rule-wp-13.13) replaces production fixture registration; the malicious regression fixture stays test-only. NAT.14 adds a test-only fake PDF backend for fake-backend containment tests; the real producer is NAT.15. |
+| Real evidence still required | packaged RID containment matrix re-run against the real still-image parser libraries (PLT.54), including malformed-input, crash and hang cases; PDF has no containment leg (retired, [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)) |
+| Origin | Named scaffolding introduced by [WP-11.09](../work-packages/11-security-foundation.md#rule-wp-11.09); [WP-13.13](../work-packages/13-high-risk-technical-probes.md#rule-wp-13.13) replaces production fixture registration; the malicious regression fixture stays test-only. NAT.14 adds a test-only fake PDF backend for fake-backend containment tests; at the time the real producer was NAT.15, which is superseded (2026-10-08, [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)): the real producer is now NAT.31 for the still-image family, and PDF has no producer. |
 
 ### SUB-lkg-compiled-defaults-seed
 
@@ -373,12 +373,12 @@ A **value** substitute supplies contract-shaped data (vectors, documents, record
 |---|---|
 | Class | value |
 | Stands in for | real API/session conformance |
-| Authoritative contract | generated TS client types |
-| What its checks prove | Generated-contract request and response shapes in the browser only; MSW handlers stay test-only and are excluded from release bundles. |
+| Authoritative contract | generated C# gRPC-Web client types (Contracts NuGet; identity precondition verified at start from the CON.07 publication record) |
+| What its checks prove | Generated-contract request and response shapes in the browser only; test doubles (formerly MSW handlers) stay test-only and are excluded from release output |
 | What it does not prove | Any real runtime, provider, device, integration or commercial behavior. |
 | Real producer | [CLOUD.19](lanes/cloud.md#task-cloud-19), [CLOUD.21](lanes/cloud.md#task-cloud-21) |
 | Removes runtime substitution | [WEB.30](lanes/web.md#task-web-30) |
-| Real evidence still required | [WP-23](../work-packages/23-public-api-and-generated-clients.md#rule-wp-23) real API/session conformance; MSW handlers remain test-only forever, never a release-gate substitute |
+| Real evidence still required | [WP-23](../work-packages/23-public-api-and-generated-clients.md#rule-wp-23) real API/session conformance; test doubles remain test-only forever, never a release-gate substitute |
 
 ### SUB-web-search-fixture
 
