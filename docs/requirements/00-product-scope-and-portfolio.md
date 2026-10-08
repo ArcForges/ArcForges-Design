@@ -8,7 +8,7 @@
 
 This document defines what ArcForges is, what it contains, what it deliberately does not contain, and the product-level boundaries that every other requirement, architecture and work-package document must respect.
 
-[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) and [P2-019](../decisions/phase-2-specification-decisions.md#rule-p2-019) are the dated user-directed amendments. Earlier decisions apply only where consistent with those amendments. The [deprecated inputs](../deprecated-inputs/README.md) are historical provenance only and do not add current requirements.
+[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) and [P2-019](../decisions/phase-2-specification-decisions.md#rule-p2-019) are the dated user-directed amendments. The 2026-10-08 decisions [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first implementation), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing retirement), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS out of scope) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (WSL2 Linux validation) amend the stack, scope and validation clauses named in each document. [P2-025](../decisions/phase-2-specification-decisions.md#rule-p2-025) (blocked-external inputs) records how unavailable external inputs are recorded and supersedes no clause. Earlier decisions apply only where consistent with those amendments. The [deprecated inputs](../deprecated-inputs/README.md) are historical provenance only and do not add current requirements.
 
 ---
 
@@ -61,8 +61,8 @@ The classification above is *product classification only*. It must not become a 
 | Surface | Identity | Positioning | Notes |
 |---|---|---|---|
 | **ArcForges Cloud** | `cloud` | One logical managed platform | ASP.NET Core Native AOT modular monolith (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Not split into per-product backends. |
-| **ArcForges Web** | Companion uses `productId=companion`, `platform=web`; hostnames are surfaces | React/TypeScript site/account/chat/operations outputs | Consumer and operator credentials/bundles remain separate |
-| **Android companion** | `productId=companion`, `platform=android` | Chat, tasks, approval, artifact preview and explicit application targeting | Apache-2.0 Kotlin/Compose; consumption-only; iOS outside current scope |
+| **ArcForges Web** | Companion uses `productId=companion`, `platform=web`; hostnames are surfaces | C#-generated static site and Blazor WebAssembly account/chat/operations outputs ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)) | Consumer and operator credentials/bundles remain separate |
+| **Android companion** | `productId=companion`, `platform=android` | Chat, tasks, approval, artifact preview and explicit application targeting | Apache-2.0 .NET MAUI (Android only); consumption-only; iOS and macOS outside current scope ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023)) |
 
 Mobile and Web are **ArcChat companion surfaces**, not a mobile or web edition of the ArcScope desktop product. There is no ArcScope Mobile editor in this baseline. Its absence is a baseline statement, not a permanent prohibition; adding one is an Architecture Baseline Change.
 
@@ -212,7 +212,7 @@ ArcScope + own assistant/store ─┐
 Android / Web companions ───────┴─ HTTPS binary gRPC-Web → Cloud Worker → C# Container
                                                                  ↓
                                                                  D1 / coordination DOs / R2
-                                                                 AI Workflow / Workers AI
+                                                                 C# Harness (D1 executor, DO alarm wake) / Workers AI via thin binding adapter
 Private parser/extension child: its parent ↔ generated gRPC Named Pipe/UDS
 ```
 
@@ -260,18 +260,18 @@ The following apply with the explicit user amendment [P2-006](../decisions/phase
 
 | Area | Baseline | Current definition / decision |
 |---|---|---|
-| Language and runtime | Desktop/Cloud: C# / .NET10 LTS; Mobile: Kotlin/JVM/Compose Android; Web/AI: TypeScript with Node.js build tooling | [Runtime matrix](../architecture/00-architecture-overview.md), [Web amendment](../decisions/phase-2-specification-decisions.md#rule-p2-008) |
-| Desktop UI | Pure-native Avalonia/Skia, Windows / macOS / Linux, Native AOT; no WebView, Chromium, DOM, JavaScript engine, HTML-as-UI or loopback UI | [D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008), [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
-| Cloud | One ASP.NET Core Native AOT modular-monolith deployment host, including bounded business background services and canonical Task/Agent ports; replicas use the same host. CF Workflow owns the sole model/tool loop | [D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008), [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
-| Mobile | Kotlin/Jetpack Compose; **Android on the supported Kotlin/Jetpack Compose release path**; iOS outside the current scope | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** |
-| Web | Static React-generated public HTML/CSS plus one React/TypeScript Account/Chat application; Node.js/npm tooling; proto → C#/TypeScript SDKs | **[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)** |
-| Public request/response | Handwritten proto; generated C#/Kotlin/TS gRPC-Web unary and server-streaming; same owner errors/revisions | [Wire registry](../architecture/contracts/04-protobuf-wire-registry.md) |
+| Language and runtime | C# / .NET 10 LTS for all product and business logic: desktop, Cloud, Web (Blazor WebAssembly and the C# static Site generator), Android (.NET MAUI, Mono runtime with AOT release) and AI orchestration; TypeScript only as a thin Cloudflare platform adapter; Node.js only to invoke wrangler ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) items 1 and 6; the D1 migration runner's lease, fence and gating move to C# under CLOUD.84) | [Runtime matrix](../architecture/00-architecture-overview.md), [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021), [Web amendment](../decisions/phase-2-specification-decisions.md#rule-p2-008) (amended by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)) |
+| Desktop UI | Pure-native Avalonia/Skia, Windows / Linux (macOS is out of scope under [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023)), Native AOT; no WebView, Chromium, DOM, JavaScript engine, HTML-as-UI or loopback UI | [D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008), [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006) |
+| Cloud | One ASP.NET Core Native AOT modular-monolith deployment host, including bounded business background services and canonical Task/Agent ports; replicas use the same host. The C# Harness owns the sole model/tool loop on a C# executor over D1 with an epoch lease; no Cloudflare Workflow holds run state; the executor design is gated on the [HAR.40](../planning/delivery/lanes/harness.md#task-har-40) crash-injection, lost-wake and duplicate-delivery proof (alarm and Queue delivery semantics are unverified until it passes); Cloudflare supplies thin platform adapters only | [D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008), [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006), [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) |
+| Mobile | .NET MAUI (`net10.0-android` only, Mono runtime with AOT and trimming plus R8 for release); **Android on the supported .NET MAUI release path**; iOS and macOS outside the current scope | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (Kotlin/Jetpack Compose path superseded by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)) |
+| Web | Static public HTML/CSS generated at build time by a C#/.NET generator (Razor `HtmlRenderer`, subject to the [PRF.11](../planning/delivery/lanes/runtime-proofs.md#task-prf-11) proof of static generation and deterministic output under [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) item 2; no WebAssembly or JavaScript needed to read); one Blazor WebAssembly standalone application for the interactive profiles (Account, Chat, ArcScope console, Operations); .NET tooling; proto → C# NuGet SDKs; Node tooling only for wrangler | **[P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)** (React/TypeScript clauses superseded by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)) |
+| Public request/response | Handwritten proto; generated C# gRPC-Web unary and server-streaming clients (Blazor and .NET MAUI consumers); same owner errors/revisions | [Wire registry](../architecture/contracts/04-protobuf-wire-registry.md) |
 | Public realtime | EventService.Watch and ExecutionService.WatchOutput bounded binary gRPC-Web streams; Poll/ReadOutput for recovery | [Streams](../architecture/contracts/10-application-scope-and-streams.md) |
 | Local IPC | Handwritten proto + generated native gRPC over Named Pipe / Unix domain socket, including helper control | [Transport definition](../architecture/03-local-ipc-and-process-model.md#2-authenticated-local-transport) |
 | Local wire format | Authored proto with generated language messages and services | [Wire format definition](../architecture/03-local-ipc-and-process-model.md#3-wire-and-flow-control-profile) |
 | Declared HTTP exceptions | Standard session/callback/webhook/object/descriptor payloads only; System.Text.Json source generation where JSON is specified | [Wire registry](../architecture/contracts/04-protobuf-wire-registry.md) |
 | Native interop | `[LibraryImport]` across a narrow C ABI, in its owning product or the approved C# content helper according to the isolation profile | [Native ABI contract](../architecture/12-native-interop-and-media.md#3-managed-to-native-calling-discipline), [isolation](../architecture/24-content-and-extension-isolation.md) |
-| Prohibited | C++ workers, a central service owning all state, MagicOnion/Aeron as the main RPC, Electron, Qt product bodies, Java/Kotlin desktop, reflection-based dynamic plug-ins on the AOT main path | [Architecture constraints](../architecture/00-architecture-overview.md), [permitted exceptions](#81-permitted-technical-exceptions) |
+| Prohibited | C++ workers, a central service owning all state, MagicOnion/Aeron as the main RPC, Electron, Qt product bodies, Java/Kotlin desktop, reflection-based dynamic plug-ins on the AOT main path, TypeScript or Kotlin product and business logic (TypeScript is a thin Cloudflare platform adapter only; [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)) | [Architecture constraints](../architecture/00-architecture-overview.md), [permitted exceptions](#81-permitted-technical-exceptions) |
 
 ### 8.1 Permitted technical exceptions
 
@@ -279,7 +279,7 @@ The exception list is closed. Adding to it requires a formal decision.
 
 | Exception | Boundary |
 |---|---|
-| **A — Android runtime** | Kotlin/Jetpack Compose is the selected Android runtime under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009). Server Native AOT imposes no .NET runtime requirement on Mobile. iOS is outside the current scope. |
+| **A — Android runtime** | .NET MAUI for Android only (`net10.0-android`, Mono runtime with AOT for release) is the selected Android runtime under [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021), which amends [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009). NativeAOT and CoreCLR on Android stay experimental and unused until a later decision. iOS and macOS are outside the current scope. |
 | **B — EF Core** | A strict Native AOT production host does not treat the EF Core runtime as irreplaceable infrastructure. Under **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** Cloud is Native AOT, so this constrains only AOT deliverables. Migration and build tooling may be isolated. |
 | **C — Native libraries** | Codecs, GPU, device SDKs, system APIs and high-performance primitives may enter the owning product process via `[LibraryImport]`/P/Invoke and a thin C ABI where required. **A native library must never own an ArcForges domain**: a native decoder is permitted, a native ArcScope session manager is not. Product domain, business rules, tasks and state ownership are C#. |
 | **D — Build/migration tooling** | Build tools, SDK tools and migration helpers need not themselves be Native AOT production processes. The production main path still follows the constitution. |
@@ -299,9 +299,9 @@ Two boundaries, per **[D-004](../decisions/phase-1-foundation-decisions.md#rule-
 Binding rules:
 
 - AGPL components may consume the Apache-2.0 interoperability packages without changing their own licence.
-- **Android companion must not contain, link to, copy from, port from or reference any GPL-family or AGPL-only implementation**, directly or transitively.
+- **Android companion must not contain, link to, copy from, port from or reference any GPL-family or AGPL-only implementation**, directly or transitively. One time-limited exception: the ArcForges.Build.Policy (AGPL) build-only consumption by the Apache-2.0 Mobile repository (GOV.12) continues until AND.40 lands, and AND.40's C# policy consumes no AGPL package ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3).
 - No App Store exception, dual licensing, proprietary grant or CLA. DCO continues with inbound-equals-outbound per scope.
-- **Base ViewModel patterns are not shared between Avalonia desktop and Kotlin Android mobile.** Each UI stack owns its implementation (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**).
+- **Base ViewModel patterns are not shared between Avalonia desktop and .NET MAUI Android mobile.** Each UI stack owns its implementation (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**).
 - Protocol communication across an explicit process or network boundary does not change the mobile client's licence.
 
 Reuse of reference-repository material is licence-gated and provenance-gated under **[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**; see [`../assurance/reference-coverage-and-provenance.md`](../assurance/reference-coverage-and-provenance.md).
@@ -377,4 +377,4 @@ A specification that cannot answer all seven is not complete.
 
 ## Technology ownership amendment — [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009)
 
-The seven-repository ([P2-019](../decisions/phase-2-specification-decisions.md#rule-p2-019)), Native AOT/proto/Android/CF/R2 boundary is fixed in [solution ownership](../architecture/01-solution-and-project-layout.md) and [CF integration](../architecture/contracts/05-cloudflare-integration.md). C# keeps canonical business rules; CF executes the sole model loop. Scope, permissions, data meanings, independent professional products and commercial recovery remain the accepted requirements above.
+The seven-repository ([P2-019](../decisions/phase-2-specification-decisions.md#rule-p2-019)), Native AOT/proto/Android/CF/R2 boundary is fixed in [solution ownership](../architecture/01-solution-and-project-layout.md) and [CF integration](../architecture/contracts/05-cloudflare-integration.md). C# keeps canonical business rules and executes the sole model/tool loop (the C# Harness, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)); Cloudflare supplies thin platform adapters only. Scope, permissions, data meanings, independent professional products and commercial recovery remain the accepted requirements above.

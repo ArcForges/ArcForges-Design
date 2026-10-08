@@ -90,7 +90,7 @@ Two ownership statements govern everything below:
 | <a id="rule-ip-06"></a>IP-06 | Indexing is a bounded product/platform Job with progress, cancellation and recovery, not an Agent Task by default. Model-based embedding/reranking runs in Cloud; native lexical index maintenance requires no model. |
 | <a id="rule-ip-07"></a>IP-07 | Index build is **bounded**: a background resource budget, plus power and device policy (for example not on battery, not on a metered connection where cloud work is involved). |
 | <a id="rule-ip-08"></a>IP-08 | Cloud indexing carries a **cost policy**, visible and controllable, because embedding and reranking are real cost of goods. |
-| <a id="rule-ip-09"></a>IP-09 | Attachment text extraction and OCR are **derived pipeline** outputs, never canonical assets. OCR output anchors back to page and region so a citation can point at the original. |
+| <a id="rule-ip-09"></a>IP-09 | Attachment text extraction and OCR are **derived pipeline** outputs, never canonical assets. Image OCR output anchors back to the image region so a citation can point at the original. PDF text extraction is retired: no PDF text is extracted and PDFs carry no page or region anchor ([P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)). |
 | <a id="rule-ip-10"></a>IP-10 | **Knowledge Source Health** is exposed: healthy, partially indexed, failing, stale — with counts and last-attempt information. |
 
 ### 3.2 Retrieval units and chunking
@@ -99,7 +99,7 @@ Two ownership statements govern everything below:
 |---|---|
 | <a id="rule-ru-01"></a>RU-01 | **Retrieval Unit ≠ Domain Resource** ([I-154](01-normative-glossary-and-invariants.md#rule-i-154)). A retrieval unit is a derived index representation. |
 | <a id="rule-ru-02"></a>RU-02 | **A retrieval-unit identifier is never citation authority** ([I-153](01-normative-glossary-and-invariants.md#rule-i-153)). A citation must never be a vector-database chunk id. |
-| <a id="rule-ru-03"></a>RU-03 | **Every retrieval unit carries a Source Anchor** locating it in the owner's own addressing scheme: page and region, session and time range, message. |
+| <a id="rule-ru-03"></a>RU-03 | **Every retrieval unit carries a Source Anchor** locating it in the owner's own addressing scheme: page and region (for non-PDF sources only; PDF page and region anchors are retired under [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)), session and time range, message. |
 | <a id="rule-ru-04"></a>RU-04 | **Chunking is content-aware** and must not destroy semantic boundaries. Chunk size is an implementation parameter, not a permanent contract — changing it triggers a rebuild. |
 | <a id="rule-ru-05"></a>RU-05 | **Changing an embedding does not change the source revision** ([I-165](01-normative-glossary-and-invariants.md#rule-i-165)). The source did not change; its derived representation did. Index entries track their processing version separately. |
 | <a id="rule-ru-06"></a>RU-06 | Different content types may use different embedding strategies. Text-first is the V1 baseline; forcing one embedding across all content types is prohibited. |
@@ -217,7 +217,7 @@ Search visibility, Cloud indexing, AI retrieval and provider processing have dis
 | <a id="rule-ec-02"></a>EC-02 | Evidence binds: source resource, source revision, anchor, the permission decision that admitted it, and its freshness at the time. |
 | <a id="rule-ec-03"></a>EC-03 | **Citations are produced by the system's evidence mapping**, never by the model. A model must not be able to author a citation identity. |
 | <a id="rule-ec-04"></a>EC-04 | **A citation can never point to a vector chunk id** ([I-153](01-normative-glossary-and-invariants.md#rule-i-153)). It points at the owner's addressable anchor. |
-| <a id="rule-ec-05"></a>EC-05 | Per-product citation anchors: a PDF opens the page and region; ArcScope opens the session at the cited measurement, range or finding; ArcChat opens the message. |
+| <a id="rule-ec-05"></a>EC-05 | Per-product citation anchors: a PDF attachment is cited as a text citation with a source reference (identity and source revision), with no page, region or navigation anchor and no claim that its content was read (page and region navigation is retired and AI does not claim PDF reading, [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)); ArcScope opens the session at the cited measurement, range or finding; ArcChat opens the message. |
 | <a id="rule-ec-06"></a>EC-06 | **Citations carry the source revision.** Where the historical revision is still retrievable, the citation resolves to it; where it is not, the citation states that the content has changed since it was cited. |
 | <a id="rule-ec-07"></a>EC-07 | A small **Evidence Digest** excerpt may be retained for display. **Copying an entire source into ArcChat is prohibited.** |
 | <a id="rule-ec-08"></a>EC-08 | **A citation points at the original source first.** A derived summary may be used as evidence, but must be **marked derived** and must carry the source revision of what it derived from. |

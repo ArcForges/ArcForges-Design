@@ -274,7 +274,7 @@ The [naming policy](../architecture/28-product-naming-policy.md#file-association
 | # | Requirement |
 |---|---|
 | <a id="rule-mn-01"></a>MN-01 | A **shared menu architecture** gives the professional desktop application a consistent top-level organisation for shared concerns (application, file/project, edit, view, window, help), with feature-specific menus in between. |
-| <a id="rule-mn-02"></a>MN-02 | **Platform desktop conventions are respected**, notably on macOS. The goal is **semantic consistency, not pixel-identical interfaces**. |
+| <a id="rule-mn-02"></a>MN-02 | **Platform desktop conventions are respected**, notably on Windows and Linux (macOS is out of scope under [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023)). The goal is **semantic consistency, not pixel-identical interfaces**. |
 | <a id="rule-mn-03"></a>MN-03 | **Context menus are built from the current selection** and the command system, never from a static list. |
 | <a id="rule-mn-04"></a>MN-04 | **A toolbar is not a command dump.** It carries the highest-frequency, most important commands for the current context. |
 | <a id="rule-mn-05"></a>MN-05 | **Selection has a unified visual and behavioural model** across products: single, range, multiple, and its relationship to keyboard navigation. |

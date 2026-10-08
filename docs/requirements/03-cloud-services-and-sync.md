@@ -63,7 +63,7 @@ Every byte in the ecosystem belongs to exactly one class. A new data type must b
 | Class | Examples | User asset? | Default cloud treatment |
 |---|---|---|---|
 | **Canonical User Data** | ArcScope Project, session metadata, annotations, findings and reports, explicitly Cloud-history assistant conversation | Yes | Syncable |
-| **Managed Asset** | Assistant attachments such as images and PDFs, uploaded raw capture and telemetry | Yes | By policy |
+| **Managed Asset** | Assistant attachments such as images and PDFs (PDFs are generic attachments: stored and transferred as opaque files, never parsed or previewed in-app, [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)), uploaded raw capture and telemetry | Yes | By policy |
 | **External Reference** | A replay or import source file on the user's own disk | Yes, but ArcForges does not own it | **Never uploaded by default** |
 | **Derived Data** | Thumbnail, signal overview/decimation cache, embedding, search index, preview | No | Rebuildable; not synced as user data |
 | **Device-local State** | Window position, GPU configuration, device paths, local caches, recent folders | No | Never synced |
