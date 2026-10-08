@@ -1,6 +1,6 @@
 # Producer and Local gRPC Closure Review
 
-> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI; by [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023): the macOS artifact, gate and browser statements. The recorded result is retained as dated history and is not rewritten.
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI; by [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022): the native PDF preview and local PDF parsing statements, including the `OpenPdf` and related helper names; by [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023): the macOS artifact, gate and browser statements. The recorded result is retained as dated history and is not rewritten.
 
 Review date:2026-09-14. Baseline: merged Design f85c5b76313e3fb7c337d1e4a8792e083d093bd5. Scope: independently adopt/correct AF01–AF18 and close the specifically requested local RPC migration, under [P2-011](../decisions/phase-2-specification-decisions.md#rule-p2-011). Work was serial; no subagents. Formal edits were made only after the collection/adoption checkpoint in Plan. The reference/archive reading exclusions were retained.
 

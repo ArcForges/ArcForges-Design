@@ -1,6 +1,6 @@
 # Reference Coverage Matrix — ArcChat / AionUi
 
-> **SUPERSEDED IN PART (2026-10-08, [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the ArcForges Android statement in row AC-23 is .NET MAUI, not Kotlin/Jetpack Compose Android (P2-021 item 3). The reference-side descriptions are unchanged; the ArcForges statement is retained as dated history.
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021))**: row AC-23 is rewritten in place under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3 (the ArcForges Android companion is .NET MAUI); the Kotlin/Jetpack Compose statement of [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) is history. The reference-side descriptions are unchanged.
 
 > Status: **Authoritative** — Phase 2 design-stage evidence · **Complete**
 > Governing authority: **[D-012](../../decisions/phase-1-foundation-decisions.md#rule-d-012)** (matrix required before ArcChat implementation planning is finalized), **[D-013](../../decisions/phase-1-foundation-decisions.md#rule-d-013)** (reuse and provenance)
