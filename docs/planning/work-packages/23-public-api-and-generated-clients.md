@@ -53,7 +53,7 @@
 |---|---|
 | <a id="rule-br-01"></a>BR-01 | **Endpoints are mapped from the contract set**, not hand-written in divergence from it (**[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
 | <a id="rule-br-02"></a>BR-02 | **The generated document is produced by the build and diffed against a baseline** ([WP-03.05](03-contract-foundation-and-licence-split.md#rule-wp-03.05)). |
-| <a id="rule-br-03"></a>BR-03 | **C# clients (desktop, MAUI and Blazor WebAssembly) use the generated-only gRPC-Web client with no reflection package; only the retained Cloud adapter uses the TypeScript codec.** All obey one public operation contract; their authentication adapters are language/surface-specific. |
+| <a id="rule-br-03"></a>BR-03 | **C# clients (desktop, MAUI and Blazor WebAssembly) use the generated-only gRPC-Web client with no reflection package; the Android Kotlin client does the same until AND.40 retires it; only the retained Cloud adapter uses the TypeScript codec.** All obey one public operation contract; their authentication adapters are language/surface-specific. |
 | <a id="rule-br-04"></a>BR-04 | **Every error is a problem detail with a registered reason code.** No raw exception text is ever returned. |
 | <a id="rule-br-05"></a>BR-05 | **The supported client window is declared and tested**, in both directions: an older client against the current server, and the current client against the minimum supported server. |
 | <a id="rule-br-06"></a>BR-06 | **Requests are idempotent where they change state**, keyed by command identity. |
@@ -154,7 +154,7 @@
 
 ---
 
-**Required implementation and closure from the final review.** Implement and independently verify [04-protobuf-wire-registry](../../architecture/contracts/04-protobuf-wire-registry.md). Maintain complete operation→real producer/fixture→closing WP coverage. Prove real implemented Identity/session/transport behavior and descriptor compatibility for all future owners; do not claim all business handlers complete. Test encodedBody outcomes and recoveryGeneration in actual C# framing (and in the retained TypeScript codec framing), including revision/hash/auth failures. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+**Required implementation and closure from the final review.** Implement and independently verify [04-protobuf-wire-registry](../../architecture/contracts/04-protobuf-wire-registry.md). Maintain complete operation→real producer/fixture→closing WP coverage. Prove real implemented Identity/session/transport behavior and descriptor compatibility for all future owners; do not claim all business handlers complete. Test encodedBody outcomes and recoveryGeneration in actual C# framing (and in the retained TypeScript codec framing and, until [AND.40](../delivery/lanes/android.md#task-and-40) retires the Kotlin client, its Kotlin framing), including revision/hash/auth failures. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
 
 <a id="rule-wp-23.90"></a>
 ### WP-23.90 — Verify the owned artifact and real integration

@@ -14,7 +14,7 @@ Implement this stage of the complete Android ArcChat companion. [Mobile architec
 [Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
 
 
-Use the exact released Contracts NuGet package/descriptor/fixture set (Maven only until its channel retires under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)), compatible Cloud/AI manifest and completed upstream owner outputs. Android toolchain and OS decisions come from Mobile architecture and WP06 proof; a blocking local toolchain/Android environment problem is reported before dependent execution. No producer source checkout or browser TS runtime is an input.
+Use the exact released Contracts NuGet package/descriptor/fixture set (the Maven set remains consumable until [AND.40](../delivery/lanes/android.md#task-and-40) retires it under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)), compatible Cloud/AI manifest and completed upstream owner outputs. Android toolchain and OS decisions come from Mobile architecture and WP06 proof; a blocking local toolchain/Android environment problem is reported before dependent execution. No producer source checkout or browser TS runtime is an input.
 
 ## 3. Binding rules and decisions
 
@@ -29,7 +29,7 @@ Mobile adopts the exact module map in architecture 27 (app, core and feature mod
 <a id="rule-wp-30.00"></a>
 ### WP-30.00 — Android repository identity and toolchain
 
-**What must be fully done.** Adopt com.arcforges.mobile applicationId/namespace/source packages before production, and document the reinstall from the development prerelease io.github.arcforges.mobile. Follow-up F-1 is superseded by [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) and AND.40: the Kotlin, JDK 21, AGP, Compose and Gradle reconciliation is replaced by pinned .NET SDK and MAUI workload versions; commit exact producer pins, SDK and workload versions, central NuGet lock files and generated-client compatibility evidence before any production upload. The Apache boundary includes no GPL-family or AGPL closure; MAUI consumes only Apache-licensed packages (Contracts NuGet, Microsoft and AndroidX bindings).
+**What must be fully done.** Adopt com.arcforges.mobile applicationId/namespace/source packages before production, and document the reinstall from the development prerelease io.github.arcforges.mobile. Follow-up F-1 is superseded by [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) and AND.40: the Kotlin, JDK 21, AGP, Compose and Gradle reconciliation is replaced by pinned .NET SDK and MAUI workload versions; commit exact producer pins, SDK and workload versions, central NuGet lock files and generated-client compatibility evidence before any production upload. The Apache boundary includes no GPL-family or AGPL closure; MAUI consumes only permissively licensed, admitted packages (Apache-2.0 for Contracts and AndroidX bindings, MIT for Microsoft packages).
 
 **Testing requirements.** Release build, dependency verification, package/certificate inspection, device install and fixture-key App Link tests.
 
@@ -63,9 +63,9 @@ Mobile adopts the exact module map in architecture 27 (app, core and feature mod
 **Completion gate.** Real packaged NuGet consumer and service/device evidence passes; missing TLS/transport support blocks.
 
 <a id="rule-wp-30.04"></a>
-### WP-30.04 — SQLite history, drafts and receipts
+### WP-30.04 — Room history, drafts and receipts
 
-**What must be fully done.** Implement model 05 equivalent SQLite schemas (through the admitted SQLite adapter) and per-profile partitions, own local/cloud/temporary behavior, bounded outbox/transfers/cursors. Local canonical history is not evictable cache; temporary content never persists.
+**What must be fully done.** Implement model 05 equivalent Room schemas (AndroidX Room, consumed through its admitted .NET binding under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3) and per-profile partitions, own local/cloud/temporary behavior, bounded outbox/transfers/cursors. Local canonical history is not evictable cache; temporary content never persists.
 
 **Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 

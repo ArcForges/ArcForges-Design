@@ -144,7 +144,7 @@
 
 ### Exact primitive projection (C# authority)
 
-Implement the generated C# exact-value adapters for [registry 04 exact-value rules](../../architecture/contracts/04-protobuf-wire-registry.md#2-exact-values-canonical-identity-and-evolution), and the same rules in the retained ai-internal TypeScript codec ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)). UUID uses canonical 16-byte ordering on protobuf, 64-bit integers use exact C# int64/uint64 and, in the TypeScript codec, BigInt (never a JavaScript number), Decimal uses its canonical exact string and C# decimal display, and int32 remains bounded. Standard JSON exceptions use the declared canonical string representation. Consume WP03's independent vectors; generation metadata cannot substitute for actual round-trip values. No OpenAPI business generation stage is involved.
+Implement the generated C# exact-value adapters for [registry 04 exact-value rules](../../architecture/contracts/04-protobuf-wire-registry.md#2-exact-values-canonical-identity-and-evolution), the same rules in the retained ai-internal TypeScript codec ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)), and the checked Kotlin adapters until [AND.40](../delivery/lanes/android.md#task-and-40) retires the Kotlin client. UUID uses canonical 16-byte ordering on protobuf, 64-bit integers use exact C# int64/uint64, BigInt in the TypeScript codec (never a JavaScript number) and checked Kotlin Long/ULong values until AND.40, Decimal uses its canonical exact string, and int32 remains bounded. Standard JSON exceptions use the declared canonical string representation. Consume WP03's independent vectors; generation metadata cannot substitute for actual round-trip values. No OpenAPI business generation stage is involved.
 
 ---
 
@@ -155,9 +155,9 @@ Implement the generated C# exact-value adapters for [registry 04 exact-value rul
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
-**Testing requirements.** C# round trips include exact int64/uint64 and decimal values beyond the 2^53 boundary, and the retained ai-internal codec round-trips the same values as BigInt, absence/unknown values, duplicate commands and unknown effects; existing error identifiers remain registered.
+**Testing requirements.** C# round trips include exact int64/uint64 and decimal values beyond the 2^53 boundary, and the retained ai-internal codec round-trips the same values as BigInt; until [AND.40](../delivery/lanes/android.md#task-and-40) retires the Kotlin client, its Kotlin Long/ULong 64-bit boundary round-trip vectors also pass; absence/unknown values, duplicate commands and unknown effects; existing error identifiers remain registered.
 
-**Completion gate.** C# round trips include exact int64/uint64 and decimal values beyond the 2^53 boundary, and the retained ai-internal codec round-trips the same values as BigInt, absence/unknown values, duplicate commands and unknown effects; existing error identifiers remain registered. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+**Completion gate.** C# round trips include exact int64/uint64 and decimal values beyond the 2^53 boundary, and the retained ai-internal codec round-trips the same values as BigInt; until [AND.40](../delivery/lanes/android.md#task-and-40) retires the Kotlin client, its Kotlin Long/ULong 64-bit boundary round-trip vectors also pass; absence/unknown values, duplicate commands and unknown effects; existing error identifiers remain registered. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
@@ -192,7 +192,7 @@ Implement the generated C# exact-value adapters for [registry 04 exact-value rul
 
 ## 8. Completion gate
 
-**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-04.90](#rule-wp-04.90) and all inherited domain-specific gates must pass on the same candidate closure. C# round trips include exact int64/uint64 and decimal values beyond the 2^53 boundary, and the retained ai-internal codec round-trips the same values as BigInt, absence/unknown values, duplicate commands and unknown effects; existing error identifiers remain registered.
+**[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-04.90](#rule-wp-04.90) and all inherited domain-specific gates must pass on the same candidate closure. C# round trips include exact int64/uint64 and decimal values beyond the 2^53 boundary, and the retained ai-internal codec round-trips the same values as BigInt; until [AND.40](../delivery/lanes/android.md#task-and-40) retires the Kotlin client, its Kotlin Long/ULong 64-bit boundary round-trip vectors also pass; absence/unknown values, duplicate commands and unknown effects; existing error identifiers remain registered.
 
 **Additional completion requirement.** Generated reason vocabulary agrees with all operation declarations while clients tolerate additive unknown responses safely.
 

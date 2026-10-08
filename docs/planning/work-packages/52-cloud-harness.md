@@ -76,7 +76,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 | `src/Cloud/ArcForges.Cloud.PublicApi/` | Canonical Task/Chat operations and authenticated internal business ports |
 | `ArcForges-AI/src/streams/RunStream.ts` (not a business component; any live tail is a non-authoritative thin projection or is streamed directly from C#, [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)) | Disposable bounded presentation tail, authenticated live/catch-up and terminal markers |
 | `src/Cloud/ArcForges.Cloud.BackgroundJobs/` | C# dispatch/control/reconciliation jobs; CF alone owns the loop |
-| `tests/Cloud.Tests.Integration/` | Loop, recovery, streaming, compaction and workflow suites |
+| `tests/Cloud.Tests.Integration/` | Loop, recovery, streaming, compaction and executor suites |
 
 **Major types introduced.** `TurnLoop`, `TurnIteration`, `ToolCallBatch`, `ConflictSet`, `ContextPack`, `CompactionRecord`, `StreamBuffer`, `DispatchIntent`, `EffectCertainty`, `ResolutionLadder`.
 

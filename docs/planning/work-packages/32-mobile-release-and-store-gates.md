@@ -14,7 +14,7 @@ Implement this stage of the complete Android ArcChat companion. [Mobile architec
 [Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
 
 
-Use the exact released Contracts NuGet package/descriptor/fixture set (Maven only until its channel retires under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)), compatible Cloud/AI manifest and completed upstream owner outputs. Android toolchain and OS decisions come from Mobile architecture and WP06 proof; a blocking local toolchain/Android environment problem is reported before dependent execution. No producer source checkout or browser TS runtime is an input.
+Use the exact released Contracts NuGet package/descriptor/fixture set (the Maven set remains consumable until [AND.40](../delivery/lanes/android.md#task-and-40) retires it under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)), compatible Cloud/AI manifest and completed upstream owner outputs. Android toolchain and OS decisions come from Mobile architecture and WP06 proof; a blocking local toolchain/Android environment problem is reported before dependent execution. No producer source checkout or browser TS runtime is an input.
 
 <a id="rule-br-03"></a>
 ## 3. Binding rules and decisions

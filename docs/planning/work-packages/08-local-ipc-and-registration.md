@@ -33,7 +33,7 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 
 **What must be fully done.** Implement generated gRPC HTTP/2 over Windows Named Pipe/Unix domain socket for parent-owned helper/extension children; no product listener or global discovery. Use explicit registration and AOT-safe serialization.
 
-**Testing requirements.** Actual OS streams, malformed frames, wrong-user denial and no local TCP listener.
+**Testing requirements.** Actual OS streams, malformed frames, wrong-user denial (the second-Windows-account check is blocked external under [P2-025](../../decisions/phase-2-specification-decisions.md#rule-p2-025): acceptance preserved; the delivered task is not completion evidence for this check) and no local TCP listener.
 
 **Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
@@ -108,7 +108,7 @@ Changed application scope, storage, transport, UI and deployment behavior are go
 
 | Evidence | Produced by |
 |---|---|
-| Transport and framing: Actual OS streams, malformed frames, wrong-user denial and no local TCP listener. | [WP-08.00](#rule-wp-08.00) |
+| Transport and framing: Actual OS streams, malformed frames, wrong-user denial (the second-Windows-account check is blocked external under [P2-025](../../decisions/phase-2-specification-decisions.md#rule-p2-025): acceptance preserved; the delivered task is not completion evidence for this check) and no local TCP listener. | [WP-08.00](#rule-wp-08.00) |
 | Parent-owned endpoint identity: Concurrent launch, stale descriptor, forged nonce/build and parent-death cleanup. | [WP-08.01](#rule-wp-08.01) |
 | Child registration lifecycle: Expired/stale child cannot call; parent restart requires fresh grants. | [WP-08.02](#rule-wp-08.02) |
 | Static routing and version refusal: Version mismatch and unregistered service refusal. | [WP-08.03](#rule-wp-08.03) |

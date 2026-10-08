@@ -22,7 +22,7 @@
 
 **Out of scope.** The account portal (`48`) and the web companion (`49`) — both are the Blazor WebAssembly application, not the static site. Any interactive application feature.
 
-**Why this package exists.** [the current dependency model](../implementation-sequence.md#2-phase-structure) permits early delivery of static public content. [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) adds the shared .NET build and static-generator toolchain dependency; public content remains usable before JavaScript runs.
+**Why this package exists.** [the current dependency model](../implementation-sequence.md#2-phase-structure) permits early delivery of static public content. [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) adds the shared .NET build and static-generator toolchain dependency; public content remains usable before JavaScript runs.
 
 ---
 

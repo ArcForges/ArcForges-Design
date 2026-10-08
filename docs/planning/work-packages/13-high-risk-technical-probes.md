@@ -62,15 +62,15 @@
 | `benchmarks/probes/agent-aot/` | Probe A workspace and evidence |
 | `benchmarks/probes/acquisition/` | Probe C workspace and evidence |
 | `native/arcimage-abi/` (the still-image shim, moved here by [GOV.17](../delivery/lanes/governance.md#task-gov-17) as `ArcImageNative`; the media/colour/OTIO shims are retired) | Extend the existing owned shim without renaming its published `arc_image_*` symbols |
-| `native/arcinstruments-abi/` | New functional library with the fixed annex 06 declarations; the arcpdf-abi library is retired and not created ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)) |
+| `native/arcinstruments-abi/` | New functional library with the fixed annex 06 declarations; no arcpdf-abi library is created, and the PDF engine that NAT.14 merged is removed by [NAT.32](../delivery/lanes/native.md#task-nat-32) under [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022) |
 | `src/Native/ArcForges.Native.Abstractions/` and `ArcForges.Native.Image/Instruments` | Three managed status/handle/wrapper packages (no Pdf wrapper, per [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)); slash-separated names here expand to separate projects |
 | `src/Native/ArcForges.Native.<Capability>.Runtime.<rid>/` | Three families × six RID package definitions, each carrying its admitted native dependency closure |
-| `src/DesktopHelpers/` | Consume WP11 helper/Broker/Contracts; add only the approved native parser composition, not a second helper owner |
+| `src/DesktopHelpers/` | Consume WP11 helper/Broker/Contracts; add only the containment of the approved still-image parser composition that [NAT.31](../delivery/lanes/native.md#task-nat-31) owns ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)), not a second helper owner |
 | `eng/packaging/`, `tests/NativeConsumers/` | Exact package allowlist, headers/import libraries, SBOMs and independent C17/C# AOT package-only consumers |
 | `eng/verification/probe-evidence/` | The recorded environments, procedures and results |
 | `tests/HardwareLab/` | Created: the device inventory the later hardware families depend on |
 
-**Major types introduced:** the fixed annex 06 status, safe handle, image and instrument wrappers; there is no PDF reader, writer or wrapper ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)). No native pointer becomes a managed domain identifier or a wire field.
+**Major types introduced:** the fixed annex 06 status, safe handle, image and instrument wrappers; there is no native PDF reader, renderer, parser or wrapper; the report-export PDF writer is owned by SCOPE.18 under dependency admission, and PDFium is not a writer ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)). No native pointer becomes a managed domain identifier or a wire field.
 
 ---
 
@@ -142,7 +142,7 @@
 
 ### WP-13.13 — Production still-image parser containment (PDF retired, P2-022)
 
-**What must be fully done.** Compose the approved still-image parser wrappers (the NAT.11 family) into the WP11 helper using generated local gRPC controls; PDFium and PDF parsing are retired ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)), and image composition is owned by NAT.31. WP11 remains the helper host/protocol/launcher authority. This step implements the production still-image parser composition in that same DesktopPlatform helper and publishes the next immutable ContentSandbox.Runtime.<rid> version with its exact native closure. Broker/Contracts and launcher mechanics are consumed from 11; no second helper design or duplicate DTO owner is created. Remove test-parser production registration, retain hostile regression fixtures.
+**What must be fully done.** PDFium and PDF parsing are retired ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)). Composition of the approved still-image parser wrappers (the NAT.11 family) into the WP11 helper, and publication of the next immutable ContentSandbox.Runtime.<rid> version with its exact native closure, are owned by [NAT.31](../delivery/lanes/native.md#task-nat-31) (P2-022 item 4); this step verifies containment of that composition with generated local gRPC controls. The merged PDF engine (arcpdf-abi, ArcForges.Native.Pdf, the helper PDF parser path and the PDF tests) is removed by [NAT.32](../delivery/lanes/native.md#task-nat-32), not by this step. WP11 remains the helper host/protocol/launcher authority; Broker/Contracts and launcher mechanics are consumed from 11, and no second helper design or duplicate DTO owner is created. Remove test-parser production registration, retain hostile regression fixtures.
 
 **Testing requirements.** Packaged image decode/tile fixtures, malformed/native-crash/hang and parent-death cleanup on every admitted RID; rerun actual image parser containment.
 
