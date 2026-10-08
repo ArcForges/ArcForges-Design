@@ -22564,11 +22564,18 @@
     "Mobile:Directory.Build.props",
     "Mobile:Directory.Packages.props",
     "Mobile:NuGet.config",
-    "Mobile:src/ArcForges.Mobile/ArcForges.Mobile.csproj",
     "Mobile:eng/policy/**",
     "Mobile:eng/provenance/**",
     "Mobile:eng/build_identity.py",
-    "Mobile:eng/version-sources.json"
+    "Mobile:eng/version-sources.json",
+    "Mobile:src/ArcForges.Mobile/** (the identity-only project: its csproj, packages.lock.json, the Android manifest with no permission and no launchable activity, and only the compile-only sources the identity build and the generated-client compatibility evidence need; no runtime behaviour, because AND.40 owns the app)",
+    "Mobile:docs/releasing.md (the reinstall guidance from io.github.arcforges.mobile only)",
+    "Mobile:docs/maui-toolchain.md (new: the pinned tuple, the integrity pins and the identity-build evidence)",
+    "Mobile:docs/licence-boundary.md (the Contracts NuGet admission entry and the MAUI-closure licence notes only)",
+    "Mobile:eng/maui_identity.py (new identity, tuple and admission gate) and Mobile:eng/tests/test_maui_identity.py (its offline tests)",
+    "Mobile:eng/mobile.py (wire the identity gate, and the exact-path final-newline exemption of the identity project lock, only)",
+    "Mobile:eng/licences.py (extend the existing licence audit to the identity project csproj only)",
+    "Mobile:.gitignore (bin/ and obj/ of the identity project only)"
    ],
    "shared": [
     {
@@ -22583,7 +22590,7 @@
     "notes": "Observed scaffold, unreviewed: app/ is a Hello World module with applicationId io.github.arcforges.mobile (dev-prerelease id); shared/ is a Kotlin-Multiplatform module (android+desktop jvm targets) used only for a Compose Hot Reload preview per AGENTS.md, not a production target; CI already builds/signs/publishes real signed candidates (android-0.1.0-ci.14.1, F-023 closed for that candidate) which is de facto WP06 evidence"
    },
    "earlyRiskProof": true,
-   "notes": "Must also decide the KMP shared/ preview module's fate: arch-27's module map (core/*, feature/*) has no KMP target, so shared/ stays a dev-only convenience outside the shipped app graph, never a second production plan (per WP30 §4). Planning repair 2026-10-08 (DLV-34; P2-021): Kotlin/AGP/Compose/Gradle tuple replaced by the .NET 10 LTS SDK, Android workload and NuGet candidate pins (P2-021.3); applicationId decision taken from P2-021.3 and IRD-23 (com.arcforges.mobile, reinstall from io.github.arcforges.mobile documented in docs/releasing.md with no data migration). Source packages are adopted as well as applicationId and namespace. Identity-only Windows and Linux build acceptance restored; the MAUI release-build proof transfers explicitly to AND.40 (CI) and PRF.12 (device proof). Start edge on the superseded PRF.10 removed; the exact-tuple proof is a completion edge on PRF.12, not a start gate. Dropped on purpose: the optional development preview in the KMP shared/ module (desktopMain, labelled development-only; AGENTS.md:3) retires with the Kotlin/KMP modules under AND.40, with no replacement preview; the development-only status is restated in AND.22. No acceptance removed.",
+   "notes": "Must also decide the KMP shared/ preview module's fate: arch-27's module map (core/*, feature/*) has no KMP target, so shared/ stays a dev-only convenience outside the shipped app graph, never a second production plan (per WP30 §4). Planning repair 2026-10-08 (DLV-34; P2-021): Kotlin/AGP/Compose/Gradle tuple replaced by the .NET 10 LTS SDK, Android workload and NuGet candidate pins (P2-021.3); applicationId decision taken from P2-021.3 and IRD-23 (com.arcforges.mobile, reinstall from io.github.arcforges.mobile documented in docs/releasing.md with no data migration). Source packages are adopted as well as applicationId and namespace. Identity-only Windows and Linux build acceptance restored; the MAUI release-build proof transfers explicitly to AND.40 (CI) and PRF.12 (device proof). Start edge on the superseded PRF.10 removed; the exact-tuple proof is a completion edge on PRF.12, not a start gate. Dropped on purpose: the optional development preview in the KMP shared/ module (desktopMain, labelled development-only; AGENTS.md:3) retires with the Kotlin/KMP modules under AND.40, with no replacement preview; the development-only status is restated in AND.22. No acceptance removed. Planning repair 2026-10-08 (DLV-34; coordinator adjudication, brief section 10): the write scope is completed with the paths the outcome already requires (docs/releasing.md for the reinstall guidance; the identity-only project sources, manifest and lock; the identity gate and its tests; the toolchain and licence documentation; the bin/obj ignore). The identity project carries no runtime behaviour: no permission, no launchable activity, only compile-only sources. First-party Contracts packages are admitted only from a candidate published from a commit on the current Contracts main (after the 2026-10-07 baseline rollback, Contracts main 330e46bd published 1.0.0-ci.324.1); 1.0.0-ci.350.1 was published from rolled-back commit 74c298c9 and is not admitted. No obligation or acceptance changes.",
    "complete": [
     {
      "type": "integration",
