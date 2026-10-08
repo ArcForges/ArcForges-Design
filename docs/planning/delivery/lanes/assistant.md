@@ -84,7 +84,7 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 
 ### AST.03 — Attachments and provenance
 
-**Outcome.** Typed local refs, authorized file staging/preview, resource ownership and explicit egress; attachment selection is never treated as upload consent. Missing/hostile file, lost URI/path grant, source labels, quota and temporary exclusion covered.
+**Outcome.** Typed local refs, authorized file staging and still-image preview (PDF attachments are stored, transferred and downloaded as opaque attachments with no parsing or preview, [P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022)), resource ownership and explicit egress; attachment selection is never treated as upload consent. Missing/hostile file, lost URI/path grant, source labels, quota and temporary exclusion covered.
 
 | Field | Value |
 |---|---|
@@ -102,6 +102,7 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Validation | Offline unit tests: missing/hostile file, lost URI/path grant, quota, temporary exclusion. |
 | Completion evidence | Attachment provenance and egress-consent test results. |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022)): PDF attachments are opaque attachments; image preview is kept. APP.06 owns the shared freeze and preview port and is unchanged. |
 
 <a id="task-ast-04"></a>
 
@@ -387,7 +388,7 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 
 ### AST.16 — Preview and host context
 
-**Outcome.** AS03/08 own-app selection/preview/navigation implemented using the frozen [WP-14.05](../../work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.05) host ports, with safe fallback for unsupported native preview; no live-selection mutation, no another-product destination, citations/resources keep ownership.
+**Outcome.** AS03/08 own-app selection/preview/navigation implemented using the frozen [WP-14.05](../../work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.05) host ports, with safe fallback for unsupported native preview (a PDF attachment gets an opaque attachment card offering Save As (download) only, with no in-app parsing, rendering or open action, [P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022)); still images keep the thin preview; no live-selection mutation, no another-product destination, citations/resources keep ownership.
 
 | Field | Value |
 |---|---|
@@ -401,9 +402,10 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Completion prerequisites | none |
 | Unblocks | [AST.17](#task-ast-17) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Avalonia/**` |
-| Validation | Offline tests: no live-selection mutation, no cross-product destination, citation/resource ownership preserved. |
+| Validation | Offline tests: no live-selection mutation, no cross-product destination, citation/resource ownership preserved; PDF attachments expose Save As only (no preview, parse, render or open action). |
 | Completion evidence | Selection-mutation and ownership test results. |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022)): the native PDF preview fallback is retired. A PDF attachment shows an opaque attachment card with Save As (download) only. No open-externally action is added: handing an untrusted PDF to the operating-system default handler is outside the opaque-download rule and is not admitted without a separate security decision. |
 
 <a id="task-ast-17"></a>
 
@@ -448,7 +450,7 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Unblocks | none |
 | Write scope | `DesktopPlatform:artifacts/evidence/**` |
 | Shared resources | [RES-desktopplatform-policy-data](../shared-resources.md#res-desktopplatform-policy-data) (append) |
-| Validation | [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) scope only; no macOS/E2E/live-service CI. |
+| Validation | [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) scope only; no hosted E2E or live-service CI (macOS is outside the delivery scope per [P2-023](../../../decisions/phase-2-specification-decisions.md#rule-p2-023)). |
 | Completion evidence | Source commit, artifact versions/hashes, environment, UX ledger rows, named-fixture list for [WP-26](../../work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26)/41/52. |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | Two orphaned substep anchors (rule-wp-17.08, rule-wp-17.09) exist in the WP17 doc with no substep content and no entry in substeps.json --; not modeled as tasks. |

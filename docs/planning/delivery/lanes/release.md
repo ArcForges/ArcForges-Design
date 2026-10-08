@@ -24,14 +24,14 @@ Tasks: 9 · Owning repositories: ArcScope, Cloud, Contracts, DesktopPlatform, Mo
 
 ### REL.02 — ArcScope desktop release readiness
 
-**Outcome.** ArcScope's desktop release candidate passes the complete update matrix on all three platforms against a candidate/staging feed, and carries a complete licence/SBOM/provenance/NOTICE record for REL.07 to roll up.
+**Outcome.** ArcScope's desktop release candidate passes the complete update matrix on both supported platforms (Windows and Linux) against a candidate/staging feed, and carries a complete licence/SBOM/provenance/NOTICE record for REL.07 to roll up.
 
 | Field | Value |
 |---|---|
 | Owning repository | ArcScope (`C:\MyFile\Projects\ArcForges\ArcScope`); integration owner: ArcScope integration owner, the holder of `roles/integration-arcscope` |
 | Claim, branch and ledger | `claims/rel-02` and ledger record `ledger/tasks/rel-02.md` in the Plan repository; task branch `task/rel-02` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | release / L |
-| Obligations | [WP-50.02](../../work-packages/50-full-platform-production-release.md#rule-wp-50.02) — ArcScope's own complete update matrix on Windows/macOS/Linux<br>[WP-50.01](../../work-packages/50-full-platform-production-release.md#rule-wp-50.01) — ArcScope's own licence inventory, SBOM, provenance attestation and verified NOTICE |
+| Obligations | [WP-50.02](../../work-packages/50-full-platform-production-release.md#rule-wp-50.02) — ArcScope's own complete update matrix on Windows/Linux (macOS is out of scope per [P2-023](../../../decisions/phase-2-specification-decisions.md#rule-p2-023))<br>[WP-50.01](../../work-packages/50-full-platform-production-release.md#rule-wp-50.01) — ArcScope's own licence inventory, SBOM, provenance attestation and verified NOTICE |
 | Provides | arcscope-release-candidate-proven |
 | Start prerequisites | **release** [SCOPE.26](arcscope.md#task-scope-26) — ArcScope feature-complete release candidate. *Why:* no release candidate exists to run an update matrix against until ArcScope's own product work is accepted<br>**artifact** [UPD.08](updater.md#task-upd-08) — the published ArcForges.Update package/client (the platform lane UPD area). *Why:* WP50.02 explicitly consumes the actual Update package rather than first implementing an updater<br>**release** [SCOPE.11](arcscope.md#task-scope-11) — ArcScope acquisition package accepted. *Why:* release readiness requires every ArcScope obligation package accepted<br>**release** [SCOPE.19](arcscope.md#task-scope-19) — ArcScope analysis package accepted. *Why:* release readiness requires every ArcScope obligation package accepted |
 | Entry condition | [ADOPT.05.release](adoption.md#task-adopt-05-release) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
@@ -40,15 +40,16 @@ Tasks: 9 · Owning repositories: ArcScope, Cloud, Contracts, DesktopPlatform, Mo
 | Permitted substitutes | [SUB-desktop-candidate-feed](../substitutes.md#sub-desktop-candidate-feed) |
 | Write scope | `ArcScope:eng/release/**`<br>`Design:docs/assurance/wp50-02-arcscope-*.md` |
 | Shared resources | [RES-production-release-trust](../shared-resources.md#res-production-release-trust) (append) |
-| Validation | Local opt-in runtime observation per platform under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017); no macOS CI. |
+| Validation | Local opt-in runtime observation per supported platform under [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) (the Linux leg runs in local WSL2 per [P2-024](../../../decisions/phase-2-specification-decisions.md#rule-p2-024)); no macOS CI or macOS matrix row per [P2-023](../../../decisions/phase-2-specification-decisions.md#rule-p2-023). |
 | Completion evidence | Full update-matrix results table per platform; licence/SBOM/provenance/NOTICE closure report for the ArcScope artifact. |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-023](../../../decisions/phase-2-specification-decisions.md#rule-p2-023)): the macOS platform leg of the ArcScope update matrix is removed; Windows and Linux are the matrix. No other acceptance changes. |
 
 <a id="task-rel-04"></a>
 
 ### REL.04 — Android release readiness
 
-**Outcome.** The Android artifact is submitted and live with every mobile gate closed and the store listing consistent with the consumption-only posture; post-release install and update are verified from the store channel.
+**Outcome.** The signed MAUI Android artifact (applicationId com.arcforges.mobile) is submitted and live with every mobile gate closed and the store listing consistent with the consumption-only posture; post-release install and update are verified from the store channel.
 
 | Field | Value |
 |---|---|
@@ -65,13 +66,13 @@ Tasks: 9 · Owning repositories: ArcScope, Cloud, Contracts, DesktopPlatform, Mo
 | Validation | Post-release store-channel install/update verification, listing-consistency check; no emulator/device CI per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) (real device evidence is WP06.07/WP30/WP32). |
 | Completion evidence | Store install/update verification results; listing-consistency check. |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | [F-023](../../../assurance/open-gates-register.md#rule-f-023) final closure and [VG-13](../../../assurance/open-gates-register.md#rule-vg-13) (store category fit) are WP32's own gates, consumed here rather than produced. |
+| Notes | [F-023](../../../assurance/open-gates-register.md#rule-f-023) final closure and [VG-13](../../../assurance/open-gates-register.md#rule-vg-13) (store category fit) are WP32's own gates, consumed here rather than produced. Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Artifact name and identity change to the MAUI build; store, consumption-only and install/update criteria unchanged. Store activation remains gated by the existing README and releasing.md no-listing statement until a reviewed decision. |
 
 <a id="task-rel-05"></a>
 
 ### REL.05 — Web outputs release readiness
 
-**Outcome.** Site/Account/Chat build once through the pinned Node/npm pipeline after current released proto-descriptor/C#/TS compatibility checks, promote the same artifacts with manifest and safe runtime-config schema, deploy atomically with per-origin edge routing/opaque cookie/CSRF policy/CSP, preserve old hashed chunks for the compatibility window, and roll back headers/assets/config coherently, while keeping production Node servers and esproj/npm installs out of Cloud runtime; the full browser-support.v1 matrix passes for supported/degraded/blocked behavior.
+**Outcome.** Site, Account and Chat build once through the pinned .NET 10 SDK and central package management (offline after an approved restore), after current released proto-descriptor and C# compatibility checks. The same static artifacts are promoted with a manifest and safe runtime-config schema, deployed atomically with per-origin edge routing, opaque cookie, CSRF policy and per-profile exact CSP token sets, old hashed assets are preserved for the compatibility window, and headers, assets and config roll back coherently. Production Node servers stay out of the Cloud runtime; Node remains wrangler build and deploy tooling and Playwright remains test-only. The full browser-support.v1 matrix passes for supported, degraded and blocked behaviour in the rows that remain after [P2-023](../../../decisions/phase-2-specification-decisions.md#rule-p2-023) (no macOS or Safari row).
 
 | Field | Value |
 |---|---|
@@ -85,10 +86,10 @@ Tasks: 9 · Owning repositories: ArcScope, Cloud, Contracts, DesktopPlatform, Mo
 | Completion prerequisites | none |
 | Unblocks | [REL.07](#task-rel-07), [REL.11](#task-rel-11) |
 | Write scope | `Web:eng/release/**`<br>`Design:docs/assurance/wp50-06-web-*.md` |
-| Validation | Production asset/real C# integration in the supported browser matrix; public no-script content, auth/CSRF/expiry/replica revocation, paid-checkout return, Task recovery; visual/accessibility/performance budgets; atomic switch/rollback, cached-client/chunk failure, route-fallback/API-error separation; npm SBOM/provenance and Windows/CLI evidence; no fixture-only substitution; real-browser evidence per browser-support.v1, not Playwright-WebKit-only for Safari/OS-authenticator claims. |
-| Completion evidence | [PG-23](../../../assurance/open-gates-register.md#rule-pg-23) combined production release/rollback evidence; browser-matrix acceptance results. |
+| Validation | Local opt-in only ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)) for the browser and integration rows: production static-asset and real C# integration in the supported browser matrix, covering public no-script content, auth/CSRF/expiry/replica revocation, paid-checkout return and Task recovery; visual, accessibility and performance budgets; atomic switch and rollback, cached-client and chunk failure, route-fallback and API-error separation; real-browser evidence per browser-support.v1 for the browser rows that remain (Chromium and Firefox as configured in playwright.config.ts; no Playwright-WebKit-only evidence for Safari or OS-authenticator claims, and no Safari row, [P2-023](../../../decisions/phase-2-specification-decisions.md#rule-p2-023)). Static or offline checks, not part of the opt-in: NuGet closure SBOM and provenance with licence receipts, and a byte-for-byte publish reproducibility comparison (CI-eligible; ci.yml already runs the licence-evaluated and test:provenance checks). Windows and WSL2 Debian evidence for affected Linux checks ([P2-024](../../../decisions/phase-2-specification-decisions.md#rule-p2-024)). No fixture-only substitution in the integration rows. |
+| Completion evidence | [PG-23](../../../assurance/open-gates-register.md#rule-pg-23) combined production release and rollback evidence (local opt-in run receipt); browser-matrix acceptance results for the remaining rows; NuGet closure SBOM and provenance receipts; publish reproducibility comparison. |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Owns the unlabeled 'Browser matrix acceptance' package obligation appended after [WP-50.90](../../work-packages/50-full-platform-production-release.md#rule-wp-50.90); see package_obligations. Joins WP23/45/47/48/49 production hashes with real browser evidence per that paragraph. |
+| Notes | Owns the unlabeled 'Browser matrix acceptance' package obligation appended after [WP-50.90](../../work-packages/50-full-platform-production-release.md#rule-wp-50.90); see package_obligations. Joins WP23/45/47/48/49 production hashes with real browser evidence per that paragraph. Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021), [P2-023](../../../decisions/phase-2-specification-decisions.md#rule-p2-023)): The pinned Node/npm pipeline becomes the pinned .NET 10 build with central package management; esproj/npm installs and the npm SBOM become the NuGet closure SBOM and provenance; C#/TS compatibility becomes C# compatibility; Playwright-WebKit and Safari evidence is removed because macOS and Safari are outside delivery scope. Production Node servers stay out of the Cloud runtime, and Node remains wrangler tooling only. The release gate and its evidence intent are unchanged. |
 
 <a id="task-rel-06"></a>
 
@@ -186,7 +187,7 @@ Tasks: 9 · Owning repositories: ArcScope, Cloud, Contracts, DesktopPlatform, Mo
 
 ### REL.10 — Production update feed and signing switch
 
-**Outcome.** The production update feed is populated with hashes/compatibility ranges/minimum versions for the ArcScope desktop application across Windows/macOS/Linux, store and package-manager listings point at the corresponding signed installer, and a blocked bad version is refused by both the feed and compatibility policy.
+**Outcome.** The production update feed is populated with hashes/compatibility ranges/minimum versions for the ArcScope desktop application across Windows and Linux (macOS is out of scope per [P2-023](../../../decisions/phase-2-specification-decisions.md#rule-p2-023)), store and package-manager listings point at the corresponding signed installer, and a blocked bad version is refused by both the feed and compatibility policy.
 
 | Field | Value |
 |---|---|
@@ -204,7 +205,7 @@ Tasks: 9 · Owning repositories: ArcScope, Cloud, Contracts, DesktopPlatform, Mo
 | Validation | Blocked-bad-version refusal test against both feed and compatibility policy; no rebuild - promotes the exact already-proven candidate per [BR-01](../../../architecture/14-build-packaging-and-release.md#rule-br-01); per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) local/opt-in observation only. |
 | Completion evidence | Feed population record; signed-installer listing consistency; blocked-bad-version refusal evidence. |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Production feed hosting and signing-key invocation follow the updater lane design; key custody is the Release Engineering Owner. |
+| Notes | Production feed hosting and signing-key invocation follow the updater lane design; key custody is the Release Engineering Owner. Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-023](../../../decisions/phase-2-specification-decisions.md#rule-p2-023)): the macOS feed, listing and signing leg is removed; Windows and Linux installers are the populated feed. No other acceptance changes. |
 
 <a id="task-rel-11"></a>
 

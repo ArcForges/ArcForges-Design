@@ -246,12 +246,12 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | Delivery task | Satisfies | Start prerequisites outside this package |
 |---|---|---|
 | [WEB.19](../delivery/lanes/web.md#task-web-19) | [WP-49.00](49-arcchat-web-companion.md#rule-wp-49.00) (full) | [WEB.08](../delivery/lanes/web.md#task-web-08) (artifact), [WEB.10](../delivery/lanes/web.md#task-web-10) (artifact) |
-| [WEB.20](../delivery/lanes/web.md#task-web-20) | [WP-49.01](49-arcchat-web-companion.md#rule-wp-49.01) (all work except the parts mapped to WEB.27) | none |
+| [WEB.20](../delivery/lanes/web.md#task-web-20) | [WP-49.01](49-arcchat-web-companion.md#rule-wp-49.01) (all work except the parts mapped to WEB.27) | [PRF.11](../delivery/lanes/runtime-proofs.md#task-prf-11) (artifact) |
 | [WEB.21](../delivery/lanes/web.md#task-web-21) | [WP-49.02](49-arcchat-web-companion.md#rule-wp-49.02) (all work except the parts mapped to WEB.27, WEB.28) | none |
 | [WEB.22](../delivery/lanes/web.md#task-web-22) | [WP-49.03](49-arcchat-web-companion.md#rule-wp-49.03) (full) | none |
 | [WEB.23](../delivery/lanes/web.md#task-web-23) | [WP-49.04](49-arcchat-web-companion.md#rule-wp-49.04) (all work except the parts mapped to WEB.28) | none |
 | [WEB.24](../delivery/lanes/web.md#task-web-24) | [WP-49.05](49-arcchat-web-companion.md#rule-wp-49.05) (full) | none |
-| [WEB.25](../delivery/lanes/web.md#task-web-25) | [WP-49.06](49-arcchat-web-companion.md#rule-wp-49.06) (full) | none |
+| [WEB.25](../delivery/lanes/web.md#task-web-25) | [WP-49.06](49-arcchat-web-companion.md#rule-wp-49.06) (full) | [PRF.11](../delivery/lanes/runtime-proofs.md#task-prf-11) (artifact) |
 | [WEB.26](../delivery/lanes/web.md#task-web-26) | [WP-49.90](49-arcchat-web-companion.md#rule-wp-49.90) (full)<br>[WP-49](49-arcchat-web-companion.md#rule-wp-49) Browser matrix acceptance paragraph (browser-support.v1 for the chat output) (package-level obligation contribution) | none |
 | [WEB.27](../delivery/lanes/web.md#task-web-27) | [WP-49.01](49-arcchat-web-companion.md#rule-wp-49.01) (real-integration closure)<br>[WP-49.02](49-arcchat-web-companion.md#rule-wp-49.02) (real-integration closure) | [HAR.00](../delivery/lanes/harness.md#task-har-00) (artifact), [HAR.03](../delivery/lanes/harness.md#task-har-03) (artifact) |
 | [WEB.28](../delivery/lanes/web.md#task-web-28) | [WP-49.02](49-arcchat-web-companion.md#rule-wp-49.02) (device-dispatch closure)<br>[WP-49.04](49-arcchat-web-companion.md#rule-wp-49.04) (real-integration closure) | [DEV.02](../delivery/lanes/device-bridge.md#task-dev-02) (artifact), [DEV.03](../delivery/lanes/device-bridge.md#task-dev-03) (artifact), [DEV.06](../delivery/lanes/device-bridge.md#task-dev-06) (artifact), [DEV.07](../delivery/lanes/device-bridge.md#task-dev-07) (artifact), [DEV.12](../delivery/lanes/device-bridge.md#task-dev-12) (artifact) |

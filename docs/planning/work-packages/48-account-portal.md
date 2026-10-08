@@ -243,7 +243,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 
 | Delivery task | Satisfies | Start prerequisites outside this package |
 |---|---|---|
-| [WEB.10](../delivery/lanes/web.md#task-web-10) | [WP-48.00](48-account-portal.md#rule-wp-48.00) (full) | [WEB.08](../delivery/lanes/web.md#task-web-08) (artifact), [CON.07](../delivery/lanes/contracts.md#task-con-07) (contract) |
+| [WEB.10](../delivery/lanes/web.md#task-web-10) | [WP-48.00](48-account-portal.md#rule-wp-48.00) (full) | [WEB.08](../delivery/lanes/web.md#task-web-08) (artifact), [CON.07](../delivery/lanes/contracts.md#task-con-07) (contract), [WEB.40](../delivery/lanes/web.md#task-web-40) (artifact), [PRF.11](../delivery/lanes/runtime-proofs.md#task-prf-11) (artifact) |
 | [WEB.11](../delivery/lanes/web.md#task-web-11) | [WP-48.01](48-account-portal.md#rule-wp-48.01) (full) | [CLOUD.19](../delivery/lanes/cloud.md#task-cloud-19) (artifact) |
 | [WEB.12](../delivery/lanes/web.md#task-web-12) | [WP-48.02](48-account-portal.md#rule-wp-48.02) (full) | none |
 | [WEB.13](../delivery/lanes/web.md#task-web-13) | [WP-48.03](48-account-portal.md#rule-wp-48.03) (full) | none |
