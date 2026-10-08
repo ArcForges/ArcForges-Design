@@ -7,7 +7,7 @@
 > Phase: A — Freeze and foundation
 > Scheduling: this package is an obligation set; its delivery tasks and their typed prerequisites are listed in section 9, generated from the [delivery graph](../delivery/delivery-graph.json) under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018).
 
-> **Goal.** Publish the handwritten proto authority and generated C#/TS public/internal package closure, exact-value fixtures and compatibility baselines before product/persistence consumers.
+> **Goal.** Publish the handwritten proto authority and generated C# public/internal NuGet package closure and the retained ai-internal TypeScript codec, exact-value fixtures and compatibility baselines before product/persistence consumers.
 
 > **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Contracts. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
 > After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
@@ -16,7 +16,7 @@
 
 ## 1. Scope and purpose
 
-**In scope.** The contract project structure and its licence split; the source-generated serialization posture; the pipeline that generates protobuf descriptors, C#/TS DTOs/clients/validators and declared HTTP-exception schemas; the contract versioning mechanism; the baseline-diff gate; and the contract-authoring obligations that make the local RPC path AOT-correct.
+**In scope.** The contract project structure and its licence split; the source-generated serialization posture; the pipeline that generates protobuf descriptors, C# DTOs/clients/validators (and the ai-internal TypeScript codec) and declared HTTP-exception schemas; the contract versioning mechanism; the baseline-diff gate; and the contract-authoring obligations that make the local RPC path AOT-correct.
 
 **Out of scope.** Product behavior implementations; the complete selected initial wire records and operation signatures are already specified and generated here. The local IPC transport itself (`08`). The cloud endpoint implementations (`23`).
 
@@ -53,11 +53,11 @@
 
 | # | Rule |
 |---|---|
-| <a id="rule-br-01"></a>BR-01 | **Handwritten proto is the business wire authority; C#/TS DTOs, validators and descriptors are generated** (**[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)**). Hand-edited generated DTOs or undeclared proto changes are defects. |
+| <a id="rule-br-01"></a>BR-01 | **Handwritten proto is the business wire authority; C# DTOs, validators and descriptors are generated, and so is the ai-internal TypeScript codec** (**[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)**). Hand-edited generated DTOs or undeclared proto changes are defects. |
 | <a id="rule-br-02"></a>BR-02 | **Contracts split by communication boundary, product/domain ownership, release cadence and licence boundary** (**[D-009](../../decisions/phase-1-foundation-decisions.md#rule-d-009)**). |
 | <a id="rule-br-03"></a>BR-03 | **The Apache-2.0 set is exactly**: public protocol specifications, wire schemas, DTOs, public clients, contract-level validators, and the public SDK (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**). |
 | <a id="rule-br-04"></a>BR-04 | **No Apache-boundary project references an AGPL project**, directly or transitively (**[D-004](../../decisions/phase-1-foundation-decisions.md#rule-d-004)**). |
-| <a id="rule-br-05"></a>BR-05 | C#/TS wire types derive from handwritten proto descriptors. Native code uses generated protobuf serializers; HTTP exceptions use explicit source-generated JSON metadata. No parallel handwritten business DTO or C#-exported wire authority. |
+| <a id="rule-br-05"></a>BR-05 | C# wire types, and the ai-internal TypeScript codec, derive from handwritten proto descriptors. Native code uses generated protobuf serializers; HTTP exceptions use explicit source-generated JSON metadata. No parallel handwritten business DTO or C#-exported wire authority. |
 | <a id="rule-br-06"></a>BR-06 | **Every local RPC contract interface carries the generated service/descriptor identity with public instance methods included** (**[V-05b](../../assurance/phase-1-official-verification.md#rule-v-05b)**), asserted by a policy test. |
 | <a id="rule-br-07"></a>BR-07 | **Base ViewModel patterns are never shared between desktop and mobile** (**[D-021](../../decisions/phase-1-foundation-decisions.md#rule-d-021)**) — the shared boundary is contracts and semantics, not UI patterns. |
 | <a id="rule-br-08"></a>BR-08 | **Contract version and application version are separate axes** ([QI-04](../../requirements/12-quality-and-compatibility-contract.md#rule-qi-04)), and a contract change without a version change fails the build. |
@@ -75,10 +75,10 @@ All paths are in ArcForges-Contracts under the [selected package registry](../..
 | public/proto/, internal/proto/ | Handwritten initial schema/service/field/enum profiles from the wire registry; public versus internal Apache-2.0 import closure |
 | public/http/, internal/ai-http/, fixtures/public/, fixtures/internal/ | Selected CF/auth/provider HTTP exceptions, independent canonical positive/negative vectors |
 | ArcForges.Contracts.slnx; src/public/dotnet/, src/internal/dotnet/ | Retain the existing solution identity; actual source-bearing public/internal C# projects with generated outputs under their owned Generated directories |
-| src/public/ts/{proto,api-client,contract-fixtures}/; src/internal/ts/{ai-internal,operator-client}/; src/public/kotlin/ | Preserve existing generated paths and package identities; generated DTOs, descriptors/clients and validators stay with their owning package and are never hand edited |
-| src/transport/ | Apache Connect Kotlin binary gRPC-Web adapter and selected public C# transport composition only |
+| src/public/ts/{proto,api-client,contract-fixtures}/ and src/internal/ts/operator-client/ (retiring under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) after consumer migration); src/internal/ts/ai-internal/ (kept); src/public/kotlin/ (retiring with AND.40) | Preserve existing generated paths and package identities until retirement; generated DTOs, descriptors/clients and validators stay with their owning package and are never hand edited |
+| src/transport/ | Apache Connect Kotlin binary gRPC-Web adapter (retiring with AND.40) and selected public C# transport composition only |
 | eng/, artifacts/contracts/ | Pinned generation, descriptor/breaking-change baselines, signed versioned package manifests and candidate publication |
-| tests/ | Schema closure, exact-value/unknown-field/conformance vectors and C#/TS compatibility |
+| tests/ | Schema closure, exact-value/unknown-field/conformance vectors and C# compatibility, plus ai-internal TypeScript codec vectors |
 
 The complete initial Resource/owner/query/measurement/simulator, public operation and local operation types are selected in the wire registry. Product evaluators, database mappings, authorization and UI are not shared.
 
@@ -109,7 +109,7 @@ The [WP03.00 implementation profile](../../assurance/wp03-00-contract-structure-
 
 **Testing requirements.** Independent positive/negative vectors cover exact integer/decimal, optional/oneof, invalid enum/ID, typed error and all three original audit profiles.
 
-**Completion gate.** All selected records and their semantic constraints round-trip consistently in C# and TS.
+**Completion gate.** All selected records and their semantic constraints round-trip consistently in C# and in the ai-internal TypeScript codec ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)); the C# side is the authoritative conformance source.
 
 The [WP03.01 implementation profile](../../assurance/wp03-01-foundation-contract-profile.md) fixes the complete selected seed/dependency closure, safe value boundaries, profile fixtures and ordered implementation/publication plan. Its owner-body dependency generation does not close WP03.03's descriptor/resource/Sync semantic gate or WP03.05's complete operation, scope, stream/history and language-client gate. Query, measurement and transaction engines remain with their product owners.
 
@@ -120,7 +120,7 @@ The [WP03.01 completion receipt](../../assurance/wp03-01-implementation-evidence
 ### WP-03.02 — Serialization posture
 
 
-**What must be fully done.** Use Google.Protobuf generated C# and protobuf-es generated TS with explicit service registration. Implement only the declared source-generated JSON metadata for HTTP exceptions; unknown fields, scalar presence and enum behavior follow the registry.
+**What must be fully done.** Use Google.Protobuf generated C# and, for the retained ai-internal codec only, protobuf-es generated TypeScript, with explicit service registration. Implement only the declared source-generated JSON metadata for HTTP exceptions; unknown fields, scalar presence and enum behavior follow the registry.
 
 **Testing requirements.** AOT publish, forbidden reflection serializer/dependency checks, binary/JSON-exception conformance and decode limits.
 
@@ -145,7 +145,7 @@ The [WP03.02 completion receipt](../../assurance/wp03-02-implementation-evidence
 
 ### WP-03.04 — Private helper and in-process contract split
 
-**What must be fully done.** Author the closed ContentSandbox/Extension/Connector and bootstrap/resource/event proto closure from annex 09. ContentSandboxService exposes its 15 methods: OpenSession, RenewSession, GrantSlot, AckBuffer, OpenImage, GetImageInfo, ReadImageTile, CloseImage, OpenPdf, GetPdfPage, ExtractPdfText, RenderPdfTile, ClosePdf, CancelSession and CloseSession. Product interfaces use generated records and static in-process adapters — IScopeOperations and IChatOperations are the two product in-process ports; reserve removed Hub/SSO/transfer names without registering services.
+**What must be fully done.** Author the closed ContentSandbox/Extension/Connector and bootstrap/resource/event proto closure from annex 09. ContentSandboxService exposes its 15 methods: OpenSession, RenewSession, GrantSlot, AckBuffer, OpenImage, GetImageInfo, ReadImageTile, CloseImage, OpenPdf, GetPdfPage, ExtractPdfText, RenderPdfTile, ClosePdf, CancelSession and CloseSession. The five PDF methods (OpenPdf, GetPdfPage, ExtractPdfText, RenderPdfTile, ClosePdf) and their messages stay in the published schema unchanged as retired wire: servers answer them with the closed UNIMPLEMENTED refusal and no new consumer may call them ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)). Product interfaces use generated records and static in-process adapters — IScopeOperations and IChatOperations are the two product in-process ports; reserve removed Hub/SSO/transfer names without registering services.
 
 **Testing requirements.** Wrong child direction/role, removed methods, parent death and cross-product server registration fail; verify no public package imports internal schemas.
 
@@ -155,9 +155,9 @@ The [WP03.02 completion receipt](../../assurance/wp03-02-implementation-evidence
 
 ### WP-03.05 — Complete generated package and schema gate
 
-**What must be fully done.** Generate C#/TS/Kotlin-lite plus Connect Kotlin gRPC-Web packages from registry 04/annex 10, including native-auth HTTP exceptions, catalog operations, the ArcScope library read operations (`scope.listProjects`, `scope.listSessions`, `scope.getSession`) with their summary records consuming the typed `ScopeProjectMetadata` sync body from WP03.03/CON.03, plus `simulation.listRuns` and its pagination/filter vectors, and all transcript/output fields. Retire native-grpc-only contracts-client before the first business schema release. Export every method's eight authorization fields, scope, tags, risks, compatibility and exact source rule. Commit generated source and descriptor manifests.
+**What must be fully done.** Generate C# NuGet packages, plus the retained ai-internal TypeScript codec and the Connect Kotlin gRPC-Web packages until AND.40 retires them, from registry 04/annex 10, including native-auth HTTP exceptions, catalog operations, the ArcScope library read operations (`scope.listProjects`, `scope.listSessions`, `scope.getSession`) with their summary records consuming the typed `ScopeProjectMetadata` sync body from WP03.03/CON.03, plus `simulation.listRuns` and its pagination/filter vectors, and all transcript/output fields. Retire native-grpc-only contracts-client before the first business schema release. Export every method's eight authorization fields, scope, tags, risks, compatibility and exact source rule. Commit generated source and descriptor manifests.
 
-**Testing requirements.** Independent exact-value/state/target/context/archive vectors in three languages; descriptor-tag collision/removal and operation-count checks; regeneration clean; consumers restore NuGet/npm/Maven from immutable candidate feeds.
+**Testing requirements.** Independent exact-value/state/target/context/archive vectors in C# and in the TypeScript ai-internal codec; descriptor-tag collision/removal and operation-count checks; regeneration clean; consumers restore NuGet packages and the retained npm package from immutable candidate feeds.
 
 **Completion gate.** Every active operation is classified and decodable; future names are reserved; all packages pass the applicable offline conformance, isolated restore/compilation and candidate packaging checks under [P2-017](../../decisions/phase-2-specification-decisions.md#rule-p2-017). Publication completion uses original candidate identity and successful provider receipts; no installed-package consumer execution or routine public artifact download is required.
 
@@ -187,7 +187,7 @@ The [WP03.02 completion receipt](../../assurance/wp03-02-implementation-evidence
 <a id="rule-wp-03.90"></a>
 ### WP-03.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Create handwritten proto from the frozen first-version schema registry, public/internal package split, private CF binding/event definitions and generated C#/TS/Kotlin artifacts. Publish profiles, independent fixtures and version metadata before consumers. Remove C# → OpenAPI as business wire authority.
+**What must be fully done.** Create handwritten proto from the frozen first-version schema registry, public/internal package split, private CF binding/event definitions and generated C# artifacts (plus the retained ai-internal TypeScript codec). Publish profiles, independent fixtures and version metadata before consumers. Remove C# → OpenAPI as business wire authority.
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
@@ -302,4 +302,4 @@ Include source KnowledgePolicy/Patch/View, typed one-use overrides and all compl
 
 ## Current application and stream contract completeness
 
-WP03.05 implements [annex 10](../../architecture/contracts/10-application-scope-and-streams.md) and the exhaustive [scope manifest11](../../architecture/contracts/11-operation-scope-manifest.md) together with the existing registry. Generate all appended fields, history-import archive records,13 new operations, EventService.Poll and operator bindings. Verify every operation has one current scope/transport class; reserved future Hub/DeviceSso methods are absent from active service registration and tool allowlists. Public connector management remains an application-scoped Cloud API, not helper IPC. C#/TS/Kotlin fixtures include binary unary/stream frames and scope/presence/unknown fields; clean consumers must use current published contracts-connect-client rather than the older native-grpc-only Android client. This is required before 03 completion, not a .90 design task.
+WP03.05 implements [annex 10](../../architecture/contracts/10-application-scope-and-streams.md) and the exhaustive [scope manifest11](../../architecture/contracts/11-operation-scope-manifest.md) together with the existing registry. Generate all appended fields, history-import archive records,13 new operations, EventService.Poll and operator bindings. Verify every operation has one current scope/transport class; reserved future Hub/DeviceSso methods are absent from active service registration and tool allowlists. Public connector management remains an application-scoped Cloud API, not helper IPC. C# fixtures, plus the TypeScript and Kotlin fixtures until their channels retire under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021), include binary unary/stream frames and scope/presence/unknown fields; clean consumers must use the current published contract clients (the C# NuGet clients for MAUI; the Connect Kotlin client only until AND.40 retires it) rather than the older native-grpc-only Android client. This is required before 03 completion, not a .90 design task.

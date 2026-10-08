@@ -16,7 +16,7 @@
 
 ## 1. Scope and purpose
 
-**In scope.** The coordinated production release: official site entry points, downloads and documentation; account portal and checkout in production; Windows, macOS and Linux desktop releases; the Android release; cloud production with migration rehearsal, backup and restore, upgrade and rollback; the licence, SBOM and copied-content release audit; observability, alerting, runbook and incident closure; and the final production gates for the whole family.
+**In scope.** The coordinated production release: official site entry points, downloads and documentation; account portal and checkout in production; Windows and Linux desktop releases (macOS is outside the delivery scope under [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)); the Android release; cloud production with migration rehearsal, backup and restore, upgrade and rollback; the licence, SBOM and copied-content release audit; observability, alerting, runbook and incident closure; and the final production gates for the whole family.
 
 **Out of scope.** iOS under [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) and the already accepted excluded features. Any unfinished required feature blocks release; only explicitly conditional facilities may remain disabled under their named gates.
 
@@ -101,7 +101,7 @@
 
 ### WP-50.02 — Desktop release across three platforms
 
-**What must be fully done.** Consume the actual ArcForges.Update package from WP53; verify its existing behavior against production feed/signing and the real desktop product. This step does not first implement an updater. Windows and Linux installers promote their original CI-produced candidates; any independently produced macOS installer has its own local build/signing evidence under [P2-017](../../decisions/phase-2-specification-decisions.md#rule-p2-017), with no macOS CI. Populate the update feed with hashes, compatibility ranges and minimum versions; record applicable local update observations per platform under the [CI/local policy](../../assurance/ci-and-local-validation-policy.md); store and package-manager listings point at the corresponding original signed installer. Missing macOS artifacts or observations are not claimed as produced or passed.
+**What must be fully done.** Consume the actual ArcForges.Update package from WP53; verify its existing behavior against production feed/signing and the real desktop product. This step does not first implement an updater. Windows and Linux installers promote their original CI-produced candidates; macOS is outside the delivery scope under [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023), so no macOS installer, feed entry or observation is produced or claimed. Populate the update feed with hashes, compatibility ranges and minimum versions; record applicable local update observations per platform under the [CI/local policy](../../assurance/ci-and-local-validation-policy.md); store and package-manager listings point at the corresponding original signed installer.
 
 **Testing requirements.** The complete update matrix per platform — fresh install, upgrade, two-version upgrade, downgrade protection, rollback, interrupted download, interrupted install, corrupted artifact rejection, update during a long task, update with documents open, uninstall preserving user data, channel switch both ways, blocked bad version.
 
@@ -139,11 +139,11 @@
 
 <a id="rule-wp-50.06"></a>
 
-### WP-50.06 — Node-built Web release set and real-browser verification
+### WP-50.06 — Static Site and Blazor Web release set and real-browser verification
 
-**What must be fully done.** Build Site/Account/Chat once through the pinned Node/npm pipeline after current released proto descriptor/C#/TS compatibility checks; promote the same artifacts with their manifest and safe runtime-config schema. Deploy per-origin edge routing, opaque cookie/CSRF policy, CSP and shared Cloud session prerequisites. Preserve old hashed chunks for the compatibility window; rollback headers/assets/config coherently. Keep production Node servers and esproj/npm installs out of Cloud runtime.
+**What must be fully done.** Build Site/Account/Chat once through the pinned .NET pipeline (the C# static generator and Blazor WebAssembly) after current released proto descriptor/C# compatibility checks; promote the same artifacts with their manifest and safe runtime-config schema. Deploy per-origin edge routing, opaque cookie/CSRF policy, CSP and shared Cloud session prerequisites. Preserve old hashed chunks for the compatibility window; rollback headers/assets/config coherently. Keep production Node servers and npm installs out of Cloud runtime (Node remains wrangler deployment tooling only).
 
-**Testing requirements.** Production asset/real C# integration in the supported browser matrix; public no-script content, auth/CSRF/expiry/replica revocation, paid checkout return and Task recovery; visual/accessibility/performance budgets; atomic switch/rollback, cached client/chunk failure, route fallback/API error separation; npm SBOM/provenance and Windows/CLI evidence. No fixture-only substitution.
+**Testing requirements.** Production asset/real C# integration in the supported browser matrix; public no-script content, auth/CSRF/expiry/replica revocation, paid checkout return and Task recovery; visual/accessibility/performance budgets; atomic switch/rollback, cached client/chunk failure, route fallback/API error separation; NuGet closure SBOM/provenance and Windows/CLI evidence. No fixture-only substitution.
 
 **Completion gate.** All declared Web surfaces pass commercial/browser/session/contract/visual/deployment gates including [PG-23](../../assurance/open-gates-register.md#rule-pg-23), using promoted production artifacts with an auditable rollback and client-compatibility path.
 
@@ -180,7 +180,7 @@
 
 ---
 
-**Browser matrix acceptance.** Use [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) and the exact release artifact/OS/browser patches. For each output’s existing flows, verify supported/degraded/blocked browser behavior: delayed-stream polling where streaming exists, refusal of unavailable required authentication/step-up, safe-preview refusal and preserved pending work. Static site acceptance includes no-JavaScript readability; it does not invent interactive account/stream APIs. Operator step-up retains its separate Entra/MFA authority. WP23 proves generated transports; WP45/47/48/49 prove their respective operations/site/account/chat output; WP50 joins all four production hashes and real browser evidence. A Playwright WebKit run alone does not claim Safari/OS authenticator proof.
+**Browser matrix acceptance.** Use [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) for the in-scope Windows and Linux browser rows (macOS and Safari are outside the delivery scope under [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)) and the exact release artifact/OS/browser patches. For each output’s existing flows, verify supported/degraded/blocked browser behavior: delayed-stream polling where streaming exists, refusal of unavailable required authentication/step-up, safe-preview refusal and preserved pending work. Static site acceptance includes no-JavaScript readability; it does not invent interactive account/stream APIs. Operator step-up retains its separate Entra/MFA authority. WP23 proves generated transports; WP45/47/48/49 prove their respective operations/site/account/chat output; WP50 joins all four production hashes and real browser evidence. Local Playwright runs are opt-in test tooling and do not claim OS authenticator proof.
 
 ## 6. Impacts
 
@@ -227,7 +227,7 @@
 
 1. **Every gate in the release-gate set is evaluated with a named, resolvable evidence artifact**, and every still-open gate's blocking consequence is stated.
 2. Every shipped artifact has a licence inventory, SBOM, provenance attestation and verified NOTICE; every reused item has a completed provenance record.
-3. **The full update matrix passes on Windows, macOS and Linux**, and a blocked bad version is refused by both the feed and compatibility policy.
+3. **The full update matrix passes on Windows and Linux**, and a blocked bad version is refused by both the feed and compatibility policy.
 4. The Android release is live with every mobile gate closed and a listing consistent with the consumption-only posture.
 5. **The cloud go-live threshold is met** — a completed game day across the severity ladder, proven restore, rehearsed rollback and fresh Cloudflare realm restore, and evidence for every gate from [L-01](../../assurance/release-gates.md#rule-l-01) to [L-16](../../assurance/release-gates.md#rule-l-16).
 6. **Pricing and checkout are public only after a payout has actually been received**; the regional route remains disabled unless its own gates are met.

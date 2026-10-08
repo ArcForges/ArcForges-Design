@@ -170,7 +170,7 @@
 
 ### Web repository and architecture assertions
 
-Add Node/TS import and dependency checks to the existing policy suite: one Web workspace/lock; exact Node/npm/generator pins; SDK-to-UI licence separation; generated wire types; no private/server/local-RPC imports; desktop JS/DOM prohibition scoped to desktop graphs; no obsolete Blazor target in the active Web graph; no esproj in portable managed references; no implicit npm install or production dev/HMR server. TS fixtures and test helpers cannot enter a release route graph. Exercise negative examples and verify the policy fails for each prohibited dependency/route.
+Add Node/TypeScript import and dependency checks to the existing policy suite, for the retained Cloudflare adapters only: one Cloud adapter workspace/lock and the ai-internal package; exact Node/npm/wrangler pins; no TypeScript business logic, business-decision import or hand-mirrored business table outside the adapter boundary; SDK-to-UI licence separation; generated wire types; no private/server/local-RPC imports; desktop JS/DOM prohibition scoped to desktop graphs; the Blazor WebAssembly target as the only Web UI graph with `RunAOTCompilation=false` by default and no esproj or Vite target; no implicit npm install or production dev/HMR server. Test fixtures and bUnit/xUnit test doubles cannot enter a release route graph. Exercise negative examples and verify the policy fails for each prohibited dependency/route.
 
 ---
 

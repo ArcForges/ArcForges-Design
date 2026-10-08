@@ -9,7 +9,7 @@
 
 > **Goal.** Deliver the ArcScope Web companion as the second deployment profile of the same application: the ArcScope workspace (library, reports and the Cloud simulator console) with the ArcScope assistant, tasks, approvals, steering, artifacts and remote control — a cloud surface, distinct from the account portal, sharing no state with it.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Web + Cloud + AI. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: production React build and real C#/CF endpoints with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Web + Cloud (the AI runtime moves into Cloud under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)). Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: production Blazor WebAssembly build and real C#/CF endpoints with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
 > After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
@@ -81,9 +81,9 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 <a id="rule-wp-49.00"></a>
 
-### WP-49.00 — React Chat profile and design-system integration
+### WP-49.00 — Blazor Chat profile and design-system integration
 
-**What must be fully done.** Compose Chat routes in the same React/TypeScript application using the owned UI tokens/components and generated TS SDK. Account/Chat assets, cookies, query scopes and public config are independently selected and validated. Implement responsive conversation navigation/composer/task panel and native-product handoff with keyboard/reduced-motion support; no Node/browser agent loop.
+**What must be fully done.** Compose Chat routes in the same Blazor WebAssembly application using the owned UI tokens/components and the generated C# SDK. Account/Chat assets, cookies, query scopes and public config are independently selected and validated. Implement responsive conversation navigation/composer/task panel and native-product handoff with keyboard/reduced-motion support; no browser-side agent loop.
 
 **Testing requirements.** Production route/profile inspection; approved light/dark/narrow-screen Chat visual baselines; keyboard, touch and long-text states; source/dependency assertion that no provider or Harness implementation enters the browser.
 
@@ -143,7 +143,7 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 ### WP-49.06 — Performance budgets
 
-**What must be fully done.** Bundle size, first-interactive and interaction responsiveness measured against budget with a regression gate applied at release.
+**What must be fully done.** Bundle size, first-interactive and interaction responsiveness measured against budget with a regression gate applied at release. The React-measured baselines are re-baseline pending under AL-06 by PRF.11 and are not silently reset; the public static-Site p75 targets (LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1) stay binding.
 
 **Testing requirements.** Budget measurements per release candidate; a regression-gate negative test.
 
@@ -152,9 +152,9 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 <a id="rule-wp-49.07"></a>
 ### WP-49.07 — ArcScope workspace: library and reports
 
-**What must be fully done.** Implement the Web ArcScope library ([SW-01](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-01)–[SW-03](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-03), [P2-020](../../decisions/phase-2-specification-decisions.md#rule-p2-020)): projects, sessions, findings and annotations over the library operations, report reading with provenance and stored chart snapshots, bounded static-PDF preview of the verified `arcscope.report.pdf.v1` bundle and complete-ZIP download, including the origin sidecar, through resource tickets, attaching sessions and reports to assistant conversations, and the ArcScope notification kinds.
+**What must be fully done.** Implement the Web ArcScope library ([SW-01](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-01)–[SW-03](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-03), [P2-020](../../decisions/phase-2-specification-decisions.md#rule-p2-020)): projects, sessions, findings and annotations over the library operations, report reading with provenance and stored chart snapshots, download of the verified `arcscope.report.pdf.v1` bundle as a complete ZIP including the origin sidecar, through resource tickets, and presentation of the exported report PDF only in the browser's built-in PDF viewer in a new tab (no app-side PDF parsing or rendering, per [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)), attaching sessions and reports to assistant conversations, and the ArcScope notification kinds.
 
-**Testing requirements.** Generated TypeScript client against the deployed library: paging, revision and commit time, revoked access and wrong scope, unavailable artifacts, download ticket expiry and resume, keyboard and screen-reader paths.
+**Testing requirements.** Generated C# client against the deployed library: paging, revision and commit time, revoked access and wrong scope, unavailable artifacts, download ticket expiry and resume, keyboard and screen-reader paths.
 
 **Completion gate.** A report synced from ArcScope desktop is found, read and downloaded on Web with its provenance, and access revocation removes it at the next request.
 
@@ -182,7 +182,7 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 ---
 
-**Browser matrix acceptance.** Use [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) and the exact release artifact/OS/browser patches. For each output’s existing flows, verify supported/degraded/blocked browser behavior: delayed-stream polling where streaming exists, refusal of unavailable required authentication/step-up, safe-preview refusal and preserved pending work. Static site acceptance includes no-JavaScript readability; it does not invent interactive account/stream APIs. Operator step-up retains its separate Entra/MFA authority. WP23 proves generated transports; WP45/47/48/49 prove their respective operations/site/account/chat output; WP50 joins all four production hashes and real browser evidence. A Playwright WebKit run alone does not claim Safari/OS authenticator proof.
+**Browser matrix acceptance.** Use [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) for the in-scope Windows and Linux browser rows (macOS and Safari are outside the delivery scope under [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)) and the exact release artifact/OS/browser patches. For each output’s existing flows, verify supported/degraded/blocked browser behavior: delayed-stream polling where streaming exists, refusal of unavailable required authentication/step-up, safe-preview refusal and preserved pending work. Static site acceptance includes no-JavaScript readability; it does not invent interactive account/stream APIs. Operator step-up retains its separate Entra/MFA authority. WP23 proves generated transports; WP45/47/48/49 prove their respective operations/site/account/chat output; WP50 joins all four production hashes and real browser evidence. Local Playwright runs are opt-in test tooling and do not claim OS authenticator proof.
 
 ## 6. Impacts
 
@@ -213,7 +213,7 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 ---
 
-**React/Cloud evidence.** All Chat gates use the generated TS SDK and real Cloud/Harness test deployment. Fixture UI mode remains development-only and is excluded from release routes. Record schema fingerprint, browser/realtime conformance, scope-clearing and visual/accessibility evidence; [PG-23](../../assurance/open-gates-register.md#rule-pg-23) must close before release.
+**Blazor/Cloud evidence.** All Chat gates use the generated C# SDK and real Cloud/Harness test deployment. Fixture UI mode remains development-only and is excluded from release routes. Record schema fingerprint, browser/realtime conformance, scope-clearing and visual/accessibility evidence; [PG-23](../../assurance/open-gates-register.md#rule-pg-23) must close before release.
 
 ---
 

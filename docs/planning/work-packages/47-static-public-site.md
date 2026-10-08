@@ -9,9 +9,9 @@
 
 > **Goal.** Ship the public face early and keep it independent: marketing, documentation, downloads and legal pages as static HTML and CSS generated from one source of truth, requiring no runtime, no account and no cloud.
 
-> **Dependency note.** This package consumes [WP-00](00-specification-naming-and-rights-freeze.md#rule-wp-00)'s names/content authority and [WP-02](02-build-governance-and-analyzer-policy.md#rule-wp-02)'s Node workspace/toolchain. Its first static slice can be implemented after those gates in the one serial context; final public commercial content still depends on the release gates. It is not parallel implementation authorization.
+> **Dependency note.** This package consumes [WP-00](00-specification-naming-and-rights-freeze.md#rule-wp-00)'s names/content authority and [WP-02](02-build-governance-and-analyzer-policy.md#rule-wp-02)'s .NET build and static-generator toolchain (Node remains wrangler deployment tooling only). Its first static slice can be implemented after those gates in the one serial context; final public commercial content still depends on the release gates. It is not parallel implementation authorization.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Web. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: production React build and real C#/CF endpoints with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Web. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: production static Site build from the C# static generator and real C#/CF endpoints with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
 > After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
@@ -20,9 +20,9 @@
 
 **In scope.** The static generator; content sourcing from one source of truth for product catalogue, release metadata, pricing and legal document versions; per-locale output; the documentation surface; the download and update surfaces; legal pages; performance and internationalisation obligations; and privacy-preserving analytics.
 
-**Out of scope.** The account portal (`48`) and the web companion (`49`) — both are the React application, not the static site. Any interactive application feature.
+**Out of scope.** The account portal (`48`) and the web companion (`49`) — both are the Blazor WebAssembly application, not the static site. Any interactive application feature.
 
-**Why this package exists.** [the current dependency model](../implementation-sequence.md#2-phase-structure) permits early delivery of static public content. [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) adds the shared Node/toolchain dependency; public content remains usable before JavaScript runs.
+**Why this package exists.** [the current dependency model](../implementation-sequence.md#2-phase-structure) permits early delivery of static public content. [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) adds the shared .NET build and static-generator toolchain dependency; public content remains usable before JavaScript runs.
 
 ---
 
@@ -51,7 +51,7 @@
 | # | Rule |
 |---|---|
 | <a id="rule-br-01"></a>BR-01 | **Public pages render as static HTML and CSS before JavaScript runs**, with working ordinary navigation when scripting is disabled ([D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007), as amended). |
-| <a id="rule-br-02"></a>BR-02 | **Node.js/npm, React/TypeScript, Vite and React Router generate the static site.** Runtime Node SSR, Blazor and a second business backend are outside [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008). |
+| <a id="rule-br-02"></a>BR-02 | **The C# static Site generator, using the first-party Razor `HtmlRenderer` at build time, generates the static site.** The output is static HTML that needs no WebAssembly or JavaScript to read, keeps a strict CSP without `wasm-unsafe-eval`, and is deterministic; no runtime SSR, Node server or second business backend exists ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021), amending [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008)). |
 | <a id="rule-br-03"></a>BR-03 | **Browser enhancements follow the owned design system and dependency/CSP/performance policy.** Initial content, links and downloads remain usable with JavaScript disabled. |
 | <a id="rule-br-04"></a>BR-04 | **Product catalogue, release metadata and pricing come from one source of truth.** The generator consumes it and never re-states versions or prices. |
 | <a id="rule-br-05"></a>BR-05 | **Above-the-fold content is present in the delivered HTML**; no client script is required to render it. |
@@ -71,7 +71,7 @@
 | `src/Web/ArcForges.Web.Site/` | The build-time generator |
 | `src/Web/ArcForges.Web.Site/content/` | Marketing, documentation, legal and changelog content with locale variants |
 | `src/Web/ArcForges.Web.Site/content/catalogue.json` | The single source of truth for products, releases and pricing references |
-| `src/Web/ArcForges.Web.Site/react-router.config.ts` | Generator build configuration |
+| `src/Web/ArcForges.Web.Site/` (C# static generator project) | Generator build configuration: deterministic route inventory, Razor `HtmlRenderer` output and CSP hash emission |
 | `deploy/edge/` | Edge hosting configuration, cache policy, redirects |
 | `src/Web/tests/site/` | Determinism, locale, link, performance and accessibility suites |
 
@@ -83,9 +83,9 @@
 
 <a id="rule-wp-47.00"></a>
 
-### WP-47.00 — React static generation and determinism
+### WP-47.00 — C# static generation and determinism
 
-**What must be fully done.** Use the shared Node/npm workspace and React Router build-time pre-rendering with runtime SSR disabled. Generate the full public locale/URL inventory, documentation versions, sitemap, metadata and redirects. Public output contains no Account/Chat route bundle or private runtime configuration; builds use pinned local content/pricing/release inputs.
+**What must be fully done.** Use the shared .NET build and the C# static generator (Razor `HtmlRenderer`) at build time, with no runtime SSR. Generate the full public locale/URL inventory, documentation versions, sitemap, metadata and redirects. Public output contains no Account/Chat route bundle or private runtime configuration; builds use pinned local content/pricing/release inputs.
 
 **Testing requirements.** Two full builds with identical toolchain/inputs; no-script navigation/content tests; public route inventory and 404 checks; single-content-change diff; build with network disabled after approved restore.
 
@@ -159,7 +159,7 @@
 
 **What must be fully done.** Create packages/ui with design tokens, responsive typography/spacing/color/themes, owned accessible primitives and optional Motion interactions. Establish a test-only component catalogue and approved visual baselines for home/product/pricing plus reusable account/usage/chat primitives. Implement localization, long labels, mobile-width navigation, focus/keyboard/reduced-motion and loading/error/empty variants. No extra public application or desktop Web UI is introduced.
 
-**Testing requirements.** React Testing Library behavior tests, production-rendered Playwright visual snapshots for representative viewport/theme/locale combinations, automated accessibility and dated human visual/keyboard review; dependency/licence/provenance checks for incorporated components/assets.
+**Testing requirements.** bUnit/xUnit behavior and determinism tests for the generated pages, production-rendered Playwright visual snapshots (local opt-in test tooling) for representative viewport/theme/locale combinations, automated accessibility and dated human visual/keyboard review; dependency/licence/provenance checks for incorporated components/assets.
 
 **Completion gate.** The shared design system has approved consumer layouts and complete accessible states; [WP-48](48-account-portal.md#rule-wp-48), [WP-49](49-arcchat-web-companion.md#rule-wp-49) reuse it. Starter-template appearance alone is not acceptance.
 
@@ -168,7 +168,7 @@
 <a id="rule-wp-47.90"></a>
 ### WP-47.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Keep React-generated static Site, localization/SEO and no production Node server. Consume independently published product/version/download metadata through the fixed release contract.
+**What must be fully done.** Keep the C#-generated static Site, localization/SEO and no production Node server. Consume independently published product/version/download metadata through the fixed release contract.
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
@@ -178,7 +178,7 @@
 
 ---
 
-**Browser matrix acceptance.** Use [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) and the exact release artifact/OS/browser patches. For each output’s existing flows, verify supported/degraded/blocked browser behavior: delayed-stream polling where streaming exists, refusal of unavailable required authentication/step-up, safe-preview refusal and preserved pending work. Static site acceptance includes no-JavaScript readability; it does not invent interactive account/stream APIs. Operator step-up retains its separate Entra/MFA authority. WP23 proves generated transports; WP45/47/48/49 prove their respective operations/site/account/chat output; WP50 joins all four production hashes and real browser evidence. A Playwright WebKit run alone does not claim Safari/OS authenticator proof.
+**Browser matrix acceptance.** Use [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) for the in-scope Windows and Linux browser rows (macOS and Safari are outside the delivery scope under [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)) and the exact release artifact/OS/browser patches. For each output’s existing flows, verify supported/degraded/blocked browser behavior: delayed-stream polling where streaming exists, refusal of unavailable required authentication/step-up, safe-preview refusal and preserved pending work. Static site acceptance includes no-JavaScript readability; it does not invent interactive account/stream APIs. Operator step-up retains its separate Entra/MFA authority. WP23 proves generated transports; WP45/47/48/49 prove their respective operations/site/account/chat output; WP50 joins all four production hashes and real browser evidence. Local Playwright runs are opt-in test tooling and do not claim OS authenticator proof.
 
 ## 6. Impacts
 

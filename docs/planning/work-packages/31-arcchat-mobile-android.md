@@ -14,11 +14,11 @@ Implement this stage of the complete Android ArcChat companion. [Mobile architec
 [Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
 
 
-Use the exact released Contracts Maven package/descriptor/fixture set, compatible Cloud/AI manifest and completed upstream owner outputs. Android toolchain and OS decisions come from Mobile architecture and WP06 proof; a blocking local toolchain/Android environment problem is reported before dependent execution. No producer source checkout or browser TS runtime is an input.
+Use the exact released Contracts NuGet package/descriptor/fixture set (Maven only until its channel retires under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)), compatible Cloud/AI manifest and completed upstream owner outputs. Android toolchain and OS decisions come from Mobile architecture and WP06 proof; a blocking local toolchain/Android environment problem is reported before dependent execution. No producer source checkout or browser TS runtime is an input.
 
 ## 3. Binding rules and decisions
 
-Android only, Kotlin/JVM/Jetpack Compose, Apache-2.0; no GPL-family implementation in the app. Command/owner/recovery identity, explicit permissions/consent, exact values, immutable producer artifacts, full accepted companion scope and consumption-only commercial restrictions are mandatory. [Wire registry](../../architecture/contracts/04-protobuf-wire-registry.md) owns the complete field and operation inventory. Equivalent internal classes/layout choices may vary only when observable behavior and acceptance remain identical.
+Android only, .NET MAUI (`net10.0-android`, Mono runtime with AOT), Apache-2.0; no GPL-family or AGPL implementation in the app and no AGPL DesktopPlatform package in its closure ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)). Command/owner/recovery identity, explicit permissions/consent, exact values, immutable producer artifacts, full accepted companion scope and consumption-only commercial restrictions are mandatory. [Wire registry](../../architecture/contracts/04-protobuf-wire-registry.md) owns the complete field and operation inventory. Equivalent internal classes/layout choices may vary only when observable behavior and acceptance remain identical.
 
 ## 4. Projects, directories, files and major types affected
 
@@ -83,7 +83,7 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 <a id="rule-wp-31.06"></a>
 ### WP-31.06 — Scope and licence enforcement
 
-**What must be fully done.** Check all companion requirements, consumption-only restrictions, public Maven-only imports and absence of desktop secrets, device-local paths or excluded professional editing surfaces. Validate all third-party code provenance.
+**What must be fully done.** Check all companion requirements, consumption-only restrictions, public NuGet-only imports and absence of desktop secrets, device-local paths or excluded professional editing surfaces. Validate all third-party code provenance.
 
 **Testing requirements.** Package content/dependency/privacy checks and complete surface action inventory cross-check.
 
@@ -92,9 +92,9 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 <a id="rule-wp-31.07"></a>
 ### WP-31.07 — ArcScope library, reports and simulation runs
 
-**What must be fully done.** Implement AN14 and AN26–AN28 ([SW-01](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-01)–[SW-05](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-05), [P2-020](../../decisions/phase-2-specification-decisions.md#rule-p2-020)): the read-only ArcScope library over the library operations, session and report views with provenance and stored chart snapshots, bounded static-PDF preview of the verified `arcscope.report.pdf.v1` bundle and sharing of its complete ZIP, including the origin sidecar, through the system share sheet, paginated simulation run discovery through `simulation.listRuns`, run status with cancel, and the ArcScope notification kinds opening their objects.
+**What must be fully done.** Implement AN14 and AN26–AN28 ([SW-01](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-01)–[SW-05](../../requirements/products/arcchat-mobile-and-web.md#rule-sw-05), [P2-020](../../decisions/phase-2-specification-decisions.md#rule-p2-020)): the read-only ArcScope library over the library operations, session and report views with provenance and stored chart snapshots, opening of the verified `arcscope.report.pdf.v1` bundle in the Android system viewer through an `ACTION_VIEW` intent (no in-app PDF preview, parser or renderer, per [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)) and sharing of its complete ZIP, including the origin sidecar, through the system share sheet, paginated simulation run discovery through `simulation.listRuns`, run status with cancel, and the ArcScope notification kinds opening their objects.
 
-**Testing requirements.** Real generated Kotlin client against the deployed library and simulation operations: pagination, revision and commit time, revoked access, unavailable report artifact, raw-data-local sessions, discovery of a run started on another surface before any terminal notification, cancellation of a run, notification deep links, offline cache purge on sign-out.
+**Testing requirements.** Real generated C# client against the deployed library and simulation operations: pagination, revision and commit time, revoked access, unavailable report artifact, raw-data-local sessions, discovery of a run started on another surface before any terminal notification, cancellation of a run, notification deep links, offline cache purge on sign-out.
 
 **Completion gate.** A report synced from ArcScope desktop is found, read and shared on Android, and a Cloud simulation run is followed to its terminal state, with no editing path and no raw-capture download.
 
@@ -109,7 +109,7 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 
 ## 6. Impacts
 
-Contracts delivers the complete public Kotlin package; Cloud/AI deliver the same owner behavior as desktop/Web. Mobile maintains its own lifecycle/storage/UI. Changes in package/signing/schema versions require an explicit compatible manifest and tested migration.
+Contracts delivers the complete public C# NuGet package; Cloud/AI deliver the same owner behavior as desktop/Web. Mobile maintains its own lifecycle/storage/UI. Changes in package/signing/schema versions require an explicit compatible manifest and tested migration.
 
 ## 7. Tests and verification evidence
 

@@ -9,7 +9,7 @@
 
 > **Goal.** Replace the stubbed provider path with the real one: provider routing under **operator-funded credentials**, dispatch-time supplier prices and Run-pinned customer tariffs, real usage normalisation, metering that reserves before and settles after, transparency obligations, and honest failure when a provider is unavailable.
 
-> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: AI Workers AI adapter + Cloud metering. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
+> **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Cloud C# routing and metering, with the thin Workers AI binding adapter in the Cloud Worker ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)). Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: owned candidate artifacts and generated contracts with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
 > After WP03, unit mocks consume published Contracts fixtures; earlier stages verify their inventory/policy outputs. Acceptance consumes the actual providers scheduled for that stage. A mock cannot close AOT, native isolation, device, CF/R2 or commercial live-operation gates.
 
 ---
@@ -67,7 +67,7 @@
 
 | Owner / location | Deliverable |
 |---|---|
-| AI: src/providers/workers-ai/, src/inference/ | Selected Workers AI catalogue adapter, model/text/embedding/rerank request/response normalization and service ports |
+| Cloud C# modules (formerly the AI repository's `src/providers/workers-ai/` and `src/inference/`) | Selected Workers AI catalogue and capability profiles, model/text/embedding/rerank request/response normalization and service ports in C#; the thin `ai.internal` binding adapter lives in the Cloud Worker ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)) |
 | Cloud: src/Cloud/ArcForges.Cloud.Modules.Agent/ | Catalogue/policy validation, routing decision, intent/outcome/usage/supplier records |
 | Cloud: Modules.Task, Modules.Commerce, Modules.Entitlement | Their owned run, tariff, reservation, credit/settlement and audit transaction participants |
 | Contracts: public Agent/usage and internal AI HTTP profiles | Generated types and independent fixtures from the fixed registry |
@@ -84,7 +84,7 @@ The provider implementation is confined to ArcForges-AI; C# owns canonical comme
 ### WP-43.00 — Provider adapters and routing
 
 
-**What must be fully done.** Implement only the selected Workers AI catalogue/capability profiles using env.AI.run: default/fast text, accepted image context, bge-m3 embedding and reranker. Validate model availability and frozen config, canonical request limits and supported tool/stream shapes before dispatch. C# records admission/routing and supplier version; CF executes the already admitted intent.
+**What must be fully done.** Implement only the selected Workers AI catalogue/capability profiles through the thin Worker `env.AI` binding adapter (`ai.internal`) with the C#-frozen request: default/fast text, accepted image context, bge-m3 embedding and reranker. Validate model availability and frozen config, canonical request limits and supported tool/stream shapes before dispatch. C# records admission/routing and supplier version; CF executes the already admitted intent.
 
 **Testing requirements.** Actual selected models/capability shapes, withdrawn/unknown/unsupported requests, request-size/output bounds and version mismatch.
 
@@ -166,7 +166,7 @@ The provider implementation is confined to ArcForges-AI; C# owns canonical comme
 
 ---
 
-**Required implementation and closure from the final review.** Implement and independently verify [05-cloudflare-integration](../../architecture/contracts/05-cloudflare-integration.md#9-job-authorized-objects-control-inventory-and-resource-budgets). Verify supplier metering against actual response/manifest with missing usage retained uncertain. Implement inference-late-outcome evidence-only reconciliation, exact observed versions and bounded Workflow limits. Stale results cannot publish or charge the customer. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
+**Required implementation and closure from the final review.** Implement and independently verify [05-cloudflare-integration](../../architecture/contracts/05-cloudflare-integration.md#9-job-authorized-objects-control-inventory-and-resource-budgets). Verify supplier metering against actual response/manifest with missing usage retained uncertain. Implement inference-late-outcome evidence-only reconciliation, exact observed versions and bounded executor and alarm limits. Stale results cannot publish or charge the customer. Record exact artifact identities and real/fixture status with the existing substeps; these cases are part of this package's completion gate.
 
 <a id="rule-wp-43.90"></a>
 ### WP-43.90 — Verify the owned artifact and real integration
@@ -260,4 +260,4 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 
 ## [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010) required behavior and closure
 
-Model intent/outcome/settlement supports real ExecutionOwner task/turn and operator-funded compaction/search. Temporary bodies stay outside durable D1 and SQLite history, backups and Workflow checkpoints; durable receipts keep actual supplier/customer facts. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.
+Model intent/outcome/settlement supports real ExecutionOwner task/turn and operator-funded compaction/search. Temporary bodies stay outside durable D1 and SQLite history, backups and Harness checkpoints; durable receipts keep actual supplier/customer facts. The referenced normative profile and producer stage matrix are binding inputs. Record independent positive/negative vectors and actual owner integration at this WP's assigned stage; a mock cannot close a real-provider/device requirement.

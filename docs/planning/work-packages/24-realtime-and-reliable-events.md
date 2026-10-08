@@ -30,7 +30,7 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 
 **What must be fully done.** Implement EventService.Watch and ExecutionService.WatchOutput public server-streaming shells with generated StreamFrame; current session/scope authorization every 15s.
 
-**Testing requirements.** Real C#/browser/Kotlin binary streams, trailers/cancel/expiry and no WebSocket path.
+**Testing requirements.** Real C#, Blazor and MAUI binary streams, trailers/cancel/expiry and no WebSocket path.
 
 **Completion gate.** The stated behavior and oracle pass using the actual owned implementation. Evidence names source commit, artifact versions/hashes, environment and any later fixture replacement.
 
@@ -82,7 +82,7 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 <a id="rule-wp-24.06"></a>
 ### WP-24.06 — Reusable consumer adapters
 
-**What must be fully done.** Publish Platform Cloud.Client and Contracts TS/Kotlin stream fixtures; expose typed lifecycle states, no UI-specific transport logic.
+**What must be fully done.** Publish Platform Cloud.Client and Contracts C# stream fixtures (and the retained TypeScript codec fixtures); expose typed lifecycle states, no UI-specific transport logic.
 
 **Testing requirements.** Clean generated-client consumers and real deployed C# ownership paths.
 
@@ -107,7 +107,7 @@ Changed application scope, storage, transport, UI and deployment behavior are go
 
 | Evidence | Produced by |
 |---|---|
-| Connection and authentication: Real C#/browser/Kotlin binary streams, trailers/cancel/expiry and no WebSocket path. | [WP-24.00](#rule-wp-24.00) |
+| Connection and authentication: Real C#, Blazor and MAUI binary streams, trailers/cancel/expiry and no WebSocket path. | [WP-24.00](#rule-wp-24.00) |
 | Scoped subscription: Mixed-product/unauthorized feed refused; account-security identifiers separate. | [WP-24.01](#rule-wp-24.01) |
 | Cursor and gap handling: Duplicate/conflicting frames, expired cursor, deleted DO and revision replay. | [WP-24.02](#rule-wp-24.02) |
 | Durable unary fallback: Blocked stream recovers through real unary read without invented completion. | [WP-24.03](#rule-wp-24.03) |

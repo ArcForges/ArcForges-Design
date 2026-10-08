@@ -14,12 +14,12 @@ Implement this stage of the complete Android ArcChat companion. [Mobile architec
 [Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
 
 
-Use the exact released Contracts Maven package/descriptor/fixture set, compatible Cloud/AI manifest and completed upstream owner outputs. Android toolchain and OS decisions come from Mobile architecture and WP06 proof; a blocking local toolchain/Android environment problem is reported before dependent execution. No producer source checkout or browser TS runtime is an input.
+Use the exact released Contracts NuGet package/descriptor/fixture set (Maven only until its channel retires under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)), compatible Cloud/AI manifest and completed upstream owner outputs. Android toolchain and OS decisions come from Mobile architecture and WP06 proof; a blocking local toolchain/Android environment problem is reported before dependent execution. No producer source checkout or browser TS runtime is an input.
 
 <a id="rule-br-03"></a>
 ## 3. Binding rules and decisions
 
-Android only, Kotlin/JVM/Jetpack Compose, Apache-2.0; no GPL-family implementation in the app. Command/owner/recovery identity, explicit permissions/consent, exact values, immutable producer artifacts, full accepted companion scope and consumption-only commercial restrictions are mandatory. [Wire registry](../../architecture/contracts/04-protobuf-wire-registry.md) owns the complete field and operation inventory. Equivalent internal classes/layout choices may vary only when observable behavior and acceptance remain identical.
+Android only, .NET MAUI (`net10.0-android`, Mono runtime with AOT), Apache-2.0; no GPL-family or AGPL implementation in the app and no AGPL DesktopPlatform package in its closure ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)). Command/owner/recovery identity, explicit permissions/consent, exact values, immutable producer artifacts, full accepted companion scope and consumption-only commercial restrictions are mandatory. [Wire registry](../../architecture/contracts/04-protobuf-wire-registry.md) owns the complete field and operation inventory. Equivalent internal classes/layout choices may vary only when observable behavior and acceptance remain identical.
 
 ## 4. Projects, directories, files and major types affected
 
@@ -39,7 +39,7 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 <a id="rule-wp-32.01"></a>
 ### WP-32.01 — Release runtime inspection
 
-**What must be fully done.** Verify Kotlin/ART, Compose/public grpc-lite closure, min/target API, arm64 assets, R8 rules and required permissions on actual APK/AAB.
+**What must be fully done.** Verify the Mono AOT runtime on ART, the MAUI and public NuGet gRPC-Web closure (replacing the Kotlin, Compose and grpc-lite closure), min/target API, arm64 assets, trimming and R8 rules, 16 KB page-size alignment and required permissions on actual APK/AAB.
 
 **Testing requirements.** Install without development server/toolchain; startup/identity/RPC/R2/notifications and lifecycle release tests.
 
@@ -48,7 +48,7 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 <a id="rule-wp-32.02"></a>
 ### WP-32.02 — Dependency and source rights
 
-**What must be fully done.** Audit direct/transitive Gradle/plugin/runtime/asset closure, licences, provenance and reproducible SBOM/NOTICE. Verify public schema/tooling Apache origin; independently original app implementation.
+**What must be fully done.** Audit direct/transitive NuGet/workload/runtime/asset closure, licences, provenance and reproducible SBOM/NOTICE, with the F-023-class closure checks re-proven for the MAUI closure. Verify public schema/tooling Apache origin; independently original app implementation.
 
 **Testing requirements.** Forbidden licence fixture, unpinned/dynamic dependency and changed-checksum rejection; binary inventory matches candidate.
 
@@ -101,7 +101,7 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 
 ## 6. Impacts
 
-Contracts delivers the complete public Kotlin package; Cloud/AI deliver the same owner behavior as desktop/Web. Mobile maintains its own lifecycle/storage/UI. Changes in package/signing/schema versions require an explicit compatible manifest and tested migration.
+Contracts delivers the complete public C# NuGet package; Cloud/AI deliver the same owner behavior as desktop/Web. Mobile maintains its own lifecycle/storage/UI. Changes in package/signing/schema versions require an explicit compatible manifest and tested migration.
 
 ## 7. Tests and verification evidence
 

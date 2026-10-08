@@ -169,7 +169,7 @@
 
 ### WP-11.09 — Content helper and OS-enforced isolation
 
-**What must be fully done.** Build and solely own the first-party C# Native AOT ContentSandbox, generated gRPC broker/control bindings and all restricted RID launch profiles in [isolation 24](../../architecture/24-content-and-extension-isolation.md). Publish ContentSandbox.Contracts, Broker and the foundation Runtime.<rid> before WP13 consumes them. WP13 later adds production parser composition to the same host and publishes a new immutable Runtime version; this stage has no reverse dependency on those parsers. Prove OS containment with a deliberately hostile first-party test parser; production PDF/image libraries are supplied and retested by WP13, never an upstream input here.
+**What must be fully done.** Build and solely own the first-party C# Native AOT ContentSandbox, generated gRPC broker/control bindings and all restricted RID launch profiles in [isolation 24](../../architecture/24-content-and-extension-isolation.md). Publish ContentSandbox.Contracts, Broker and the foundation Runtime.<rid> before WP13 consumes them. WP13 later adds production still-image parser composition to the same host and publishes a new immutable Runtime version; this stage has no reverse dependency on those parsers. Prove OS containment with a deliberately hostile first-party test parser; production image libraries are supplied and retested by WP13, never an upstream input here. PDF parsing is retired under [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022).
 
 **Testing requirements.** Publish and execute the real restricted helper on every supported RID. Attempt product-store/secret reads, loopback/external networking, process escape and descriptor abuse; inject native crash, hang, output overflow and parent death. Verify OS denial, resource bounds and cleanup. Test missing profile without an unsafe fallback.
 
@@ -229,7 +229,7 @@
 
 **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) gate:** [WP-11.90](#rule-wp-11.90) and all inherited domain-specific gates must pass on the same candidate closure. Cross-boundary owner refusal, stale approval/revocation, secrets/redaction and real OS-isolation tests; no hostile parser moved into a product process by package consolidation.
 
-**[PG-12](../../assurance/open-gates-register.md#rule-pg-12) evidence:** [WP-11.09](#rule-wp-11.09) — Packaged RID PDF parser containment, licence/binding and hostile-input proof; combine with the first assistant PDF preview through the ContentSandbox. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
+**[PG-12](../../assurance/open-gates-register.md#rule-pg-12) evidence (retired under [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)):** [WP-11.09](#rule-wp-11.09) — the packaged RID PDF parser containment proof is retired and is not evidence for this gate; packaged image-parser containment, licence/binding and hostile-input proof is routed to [PG-22](../../assurance/open-gates-register.md#rule-pg-22) through NAT.31. A scoped contribution does not close the shared gate until every required producer has recorded passing evidence at its trigger.
 
 **All of the following, with recorded evidence:**
 

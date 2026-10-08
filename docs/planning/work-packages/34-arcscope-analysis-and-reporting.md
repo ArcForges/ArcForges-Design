@@ -162,7 +162,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 <a id="rule-wp-34.90"></a>
 ### WP-34.90 — Verify the owned artifact and real integration
 
-**What must be fully done.** Preserve immutable measurement input, units/sample/time/non-finite handling, numerical algorithms/tolerances and report provenance. Carry the exact profile through proto and TS values.
+**What must be fully done.** Preserve immutable measurement input, units/sample/time/non-finite handling, numerical algorithms/tolerances and report provenance. Carry the exact profile through proto and C# values.
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
