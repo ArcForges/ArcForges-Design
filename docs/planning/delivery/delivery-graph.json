@@ -27640,7 +27640,7 @@
   },
   {
    "id": "NAT.32",
-   "title": "PDF engine retirement: remove native/arcpdf-abi, ArcForges.Native.Pdf and the helper PDF parser path; PDF RPCs answered with a closed retired refusal",
+   "title": "PDF engine retirement: remove native/arcpdf-abi, ArcForges.Native.Pdf and the helper PDF parser path",
    "lane": "native",
    "repo": "DesktopPlatform",
    "kind": "producer",
@@ -27651,7 +27651,7 @@
      "part": "package-level obligation contribution: removal of the retired PDF ABI types, the arc_pdf_* block and the managed PDF page identifiers from the common ABI and bindings (P2-022); no native pointer becomes a managed domain identifier or a wire field. The PDF composition, its fake-backend containment rows and its tests are retired and recorded as retired, not completed; this task does not map to WP-13.13 (coordinator adjudication 14)."
     }
    ],
-   "outcome": "Local PDF parsing is removed from DesktopPlatform by a reviewed deletion change: native/arcpdf-abi, src/Native/ArcForges.Native.Pdf, the ContentSandbox PDF parser path (NativePdfParser, PdfTextPager, the PDF branch of ProductionParserProfile, IPdfParser and PdfPageText, the PDF handlers and PdfState in ContentSandboxServiceImpl, the Broker PDF methods, the hostile PDF side and the PDF tests), the ArcForges.Native.Pdf project reference, the NativePdfPageV1 and InternalsVisibleTo entries, the common-ABI arc_pdf_* block and its signature pins, and their CMake, CTest, slnx, policy and provenance rows. The five PDF RPCs and their PDF messages stay in the published ContentSandboxService schema unchanged; the server answers each of them with the closed UNIMPLEMENTED/retired refusal and no PDF parser is reached. The retirement is a successor receipt chained from dependency-reviews/nat-14-r1.json. Published history and immutable provenance records are not rewritten. The retired PDF capability is recorded as retired, not completed.",
+   "outcome": "Local PDF parsing is removed from DesktopPlatform by a reviewed deletion change: native/arcpdf-abi, src/Native/ArcForges.Native.Pdf, the ContentSandbox PDF parser path (NativePdfParser, PdfTextPager, the PDF branch of ProductionParserProfile, IPdfParser and PdfPageText, the PDF handlers and PdfState in ContentSandboxServiceImpl, the Broker PDF methods, the hostile PDF side and the PDF tests), the ArcForges.Native.Pdf project reference, the NativePdfPageV1 and InternalsVisibleTo entries, the common-ABI arc_pdf_* block and its signature pins, and their CMake, CTest, slnx, policy and provenance rows. The five PDF RPCs and their PDF messages stay in the published ContentSandboxService schema unchanged; their server behaviour is unchanged (P2-022 item 3): OpenPdf keeps its existing closed refusal reason resource.parser_failed, because no PDF backend has ever been linked, and no PDF parser is reached. The retirement is a successor receipt chained from dependency-reviews/nat-14-r1.json. Published history and immutable provenance records are not rewritten. The retired PDF capability is recorded as retired, not completed.",
    "provides": [
     "pdf-engine-retired"
    ],
@@ -27701,7 +27701,7 @@
     "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Host/PdfTextPager.cs (delete)",
     "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Host/ProductionParserProfile.cs (remove the PDF branch, the PDF opener and the native PDF load only; the image branch is NAT.31)",
     "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Host/Parsers.cs (remove IPdfParser, PdfPageText and CreatePdfParser only)",
-    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Host/ContentSandboxServiceImpl.cs (PDF handlers replaced by the closed retired refusal; PdfState and PDF limits removed)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Host/ContentSandboxServiceImpl.cs (the PDF handlers keep the existing closed refusal without any parser; PdfState and PDF limits removed)",
     "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Fixture/HostileTestParser.cs (remove the hostile PDF side only)",
     "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/ArcForges.ContentSandbox.csproj (remove the ProjectReference to ArcForges.Native.Pdf and the PDF clause of the header comment only)",
     "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/packages.lock.json (remove the arcforges.native.pdf entry only)",
@@ -27733,7 +27733,6 @@
     "DesktopPlatform:tests/ArchitectureTests/RepositoryPolicyTests.cs (remove the ArcPdfNative rows and the Pdf owner entries only)",
     "DesktopPlatform:eng/provenance/files.json (PDF rows only)",
     "DesktopPlatform:eng/provenance/NOTICE.txt (PDF notice text only)",
-    "DesktopPlatform:eng/provenance/retired-artifacts.json (append only the exact former arcpdf-abi, Native.Pdf and PDF helper targets with the NAT.32 retirement authority)",
     "DesktopPlatform:eng/policy/dependency-reviews/nat-32-r1.json (new immutable receipt chained from nat-14-r1, or from the receipt active on main at merge)"
    ],
    "shared": [
@@ -27764,7 +27763,7 @@
     "state": "not-started",
     "notes": "Observed, unreviewed: NAT.14 is merged (0a1dca2, PR 146) with ledger status complete. native/arcpdf-abi (backend=none), src/Native/ArcForges.Native.Pdf, the helper NativePdfParser.cs and PdfTextPager.cs, the ProductionParserProfile PDF branch, the PDF handlers in ContentSandboxServiceImpl.cs, the Broker PDF methods and the common-ABI arc_pdf_* block are present."
    },
-   "notes": "Planning repair 2026-10-08 (DLV-34; P2-022): retirement of the merged NAT.14 PDF engine by a new reviewed deletion change; NAT.14 is not reopened. The five RPCs and their 18 PDF messages stay in the published schema unchanged (CON.04, CON.23), so no versioned wire retirement is needed here. Published history is kept: artifact-profiles native-win-x64-r1..r4 and records native-tiff-r1..r4 are not rewritten; nat-32-r1 is the successor receipt. The still-image, ContentSandbox containment, instrument and ABI families are kept."
+   "notes": "Planning repair 2026-10-08 (DLV-34; P2-022): retirement of the merged NAT.14 PDF engine by a new reviewed deletion change; NAT.14 is not reopened. The five RPCs and their 18 PDF messages stay in the published schema unchanged (CON.04, CON.23), so no versioned wire retirement is needed here. Published history is kept: artifact-profiles native-win-x64-r1..r4 and records native-tiff-r1..r4 are not rewritten; nat-32-r1 is the successor receipt. The still-image, ContentSandbox containment, instrument and ABI families are kept. Planning repair 2026-10-08 (DLV-34; P2-022; coordinator adjudication, brief section 10): the RPC behaviour is unchanged (resource.parser_failed), not a new UNIMPLEMENTED refusal; eng/provenance/retired-artifacts.json is not written, because the retired PDF material was first-party and never packaged and that file records retired packaged targets; the retirement is recorded in this task’s ledger evidence."
   },
   {
    "id": "CON.40",
@@ -27968,12 +27967,6 @@
      "task": "HAR.40",
      "need": "the C# Harness budget and admission constants that the generated TypeScript module is generated from",
      "why": "DLV-07: generate --check composes the generated table against constants that HAR.40 publishes in C#; the shared Worker files are covered by the declared RES-cloud-deployment"
-    },
-    {
-     "type": "artifact",
-     "task": "CLOUD.72",
-     "need": "the delivered dependency-policy receipt chain that the successor records of this task are chained from",
-     "why": "DLV-07: the immutable dependency-policy successor is chained from the then-active receipt that CLOUD.72 publishes; the ordering is a receipt artifact, not a shared-file order"
     }
    ],
    "complete": [
@@ -28070,7 +28063,7 @@
     "state": "not-started",
     "notes": "Planning repair 2026-10-08 (DLV-34; P2-021): new task. Research footprint of the Cloud repo: about 126 TypeScript files (worker/ 35, eng/verification 16, eng/migrations 6, tests/worker 58, tooling 11), plus storage/plans and the Kotlin consumer gate in tests/kotlin-consumer. Counts are from the research footprint, not a re-count."
    },
-   "notes": "Planning repair 2026-10-08 (DLV-34; P2-021; brief section 5.7 and coordinator adjudications 5 and 7): new task; no obligation or acceptance is removed. The TypeScript credential, CSRF and Origin edge checks are kept under the P2-021 edge-guard rule (C# authoritative; generated parameters; refuse only, never grant), so no user decision is needed for them. The D1 migration runner's lease, fence, gating and sequence decisions move to C# (src/ArcForges.Cloud.Storage.D1/MigrationRunner); Node only invokes wrangler. Start edges, each a composed artifact (DLV-07) or an ordering on the TypeScript surface this task reduces: CLOUD.01, CLOUD.02, CLOUD.03, CLOUD.04, CLOUD.06, CLOUD.08, CLOUD.11, CLOUD.69 and CLOUD.70 supply the delivered shapes it reduces (the package.json overlaps with these are ordered by these edges); HAR.40 supplies the C# Harness budgets and admission constants that the generated module is generated from; CLOUD.72 supplies the dependency-policy receipt that the successor records chain from. Shared-file overlaps covered by declared resources or start edges: wrangler.json with CLOUD.07 and HAR.40, and worker/index.ts with HAR.03 and HAR.40 (RES-cloud-deployment, append); eng/verification/d1-identity-local.ts is owned by CLOUD.72 and excluded from this task's writes. Completion edges to HAR.03 and EXT.10 (DLV-09): the bundle and static scans of this task run against the final worker/harness and worker/ai adapter code those tasks deliver. CLOUD.05 supplies the budgets through its completion edge. AND.40 must not start on this task; this task completes after AND.40. Cloud package.json has no declared shared resource; the coordinator decides whether to declare one. Coordinator adjudication 2026-10-08 (P2-021 item 1): after this task Node in the Cloud repository only invokes wrangler and runs the TypeScript tests of the thin TypeScript adapters (tests/worker/**); every other TypeScript build checker or generator under tooling/** and eng/verification/** that makes a policy or business decision (provenance, licence, dependency policy, build identity, plan and table generation) is migrated to C# within this task or retired."
+   "notes": "Planning repair 2026-10-08 (DLV-34; P2-021; brief section 5.7 and coordinator adjudications 5 and 7): new task; no obligation or acceptance is removed. The TypeScript credential, CSRF and Origin edge checks are kept under the P2-021 edge-guard rule (C# authoritative; generated parameters; refuse only, never grant), so no user decision is needed for them. The D1 migration runner's lease, fence, gating and sequence decisions move to C# (src/ArcForges.Cloud.Storage.D1/MigrationRunner); Node only invokes wrangler. Start edges, each a composed artifact (DLV-07) or an ordering on the TypeScript surface this task reduces: CLOUD.01, CLOUD.02, CLOUD.03, CLOUD.04, CLOUD.06, CLOUD.08, CLOUD.11, CLOUD.69 and CLOUD.70 supply the delivered shapes it reduces (the package.json overlaps with these are ordered by these edges); HAR.40 supplies the C# Harness budgets and admission constants that the generated module is generated from; CLOUD.72 supplies the dependency-policy receipt that the successor records chain from. Shared-file overlaps covered by declared resources or start edges: wrangler.json with CLOUD.07 and HAR.40, and worker/index.ts with HAR.03 and HAR.40 (RES-cloud-deployment, append); eng/verification/d1-identity-local.ts is owned by CLOUD.72 and excluded from this task's writes. Completion edges to HAR.03 and EXT.10 (DLV-09): the bundle and static scans of this task run against the final worker/harness and worker/ai adapter code those tasks deliver. CLOUD.05 supplies the budgets through its completion edge. AND.40 must not start on this task; this task completes after AND.40. Cloud package.json has no declared shared resource; the coordinator decides whether to declare one. Coordinator adjudication 2026-10-08 (P2-021 item 1): after this task Node in the Cloud repository only invokes wrangler and runs the TypeScript tests of the thin TypeScript adapters (tests/worker/**); every other TypeScript build checker or generator under tooling/** and eng/verification/** that makes a policy or business decision (provenance, licence, dependency policy, build identity, plan and table generation) is migrated to C# within this task or retired. Planning repair 2026-10-08 (DLV-34; coordinator adjudication): the start edge on CLOUD.72 only ordered the dependency-policy receipt chain; it is removed. The successor receipt of this task chains from the receipt active on main at merge, as every successor receipt does."
   },
   {
    "id": "GOV.30",
@@ -28214,6 +28207,56 @@
     "notes": "Observed in the FND.07 acceptance tree: Program.cs, roundtrip.ts, package.json, package-lock.json, run.py and receipt.json exist. The npm operator-client, api-client, contract-fixtures and proto rows remain in the policy files until CON.40 records the stop-publication."
    },
    "notes": "Planning repair 2026-10-08 (DLV-34; P2-021): successor record for the FND.07 TypeScript round-trip retirement and the npm operator-client policy rows. The coverage change is approved by the coordinator (2026-10-08) as a consequence of P2-021: no TypeScript consumer remains once @arcforges/proto retires, and the C# golden-bytes check over pinned fixtures is kept. FND.07 is a completion prerequisite under DLV-35, never a start prerequisite; its record, receipt and evidence remain history. The osx RID removal moved to GOV.30 (no CON.40 dependency). Whether the generated policy JSON files named here are regenerated from a pinned source (the policy-data protocol forbids hand edits) is an open coordinator question; if they are not, the removals split into their own task under a new ID. Coordinator adjudication 2026-10-08: files governed by RES-desktopplatform-policy-data are regenerated through the repository’s pinned policy-data generators (as GOV.18 did), never hand-edited; the claimant names each generator in the claim handoff before editing."
+  },
+  {
+   "id": "GOV.32",
+   "title": "Remove the ContentSandbox macOS launch-profile code and keep the typed fail-closed refusal",
+   "lane": "governance",
+   "repo": "DesktopPlatform",
+   "kind": "governance",
+   "size": "S",
+   "obligations": [
+    {
+     "ref": "P2-023",
+     "part": "the macOS App-Sandbox and XPC launch-profile deliverable is removed from the ContentSandbox code; the typed fail-closed macOS refusal and the wire-stable enum value stay"
+    }
+   ],
+   "outcome": "The ContentSandbox macOS launch-profile code is removed: the declarative entitlements input (src/DesktopHelpers/ArcForges.ContentSandbox/macos/ArcForges.ContentSandbox.entitlements) is deleted, the MacOsAppSandboxXpc profile-family mapping in Host/ProfileEnforcement.cs is removed, Tests/MacProfileTests.cs and the macOS cases of Tests/ContractFacadeTests.cs are rewritten to assert the typed fail-closed refusal only, and the README macOS lines state that macOS is not supported. The launcher keeps its typed fail-closed refusal on macOS (Broker/ContentSandboxLauncher.cs), and the MacOsAppSandboxXpc enum value in the contracts and broker types stays wire-stable and reserved, documented as not supported and never selected. No Windows or Linux containment behaviour changes.",
+   "provides": [
+    "contentsandbox-macos-profile-removed"
+   ],
+   "start": [
+    {
+     "type": "artifact",
+     "task": "PLT.45",
+     "need": "delivered ContentSandbox host, broker and launch profiles",
+     "why": "this task removes the macOS profile code that PLT.45 delivered"
+    }
+   ],
+   "complete": [],
+   "writes": [
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/macos/ArcForges.ContentSandbox.entitlements (delete)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Host/ProfileEnforcement.cs (remove the macOS profile-family mapping only)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Tests/MacProfileTests.cs (refusal-only)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Tests/ContractFacadeTests.cs (macOS cases only, refusal-only)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/README.md (macOS lines only)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox.Broker/README.md (macOS lines only)",
+    "DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox.Broker/ContentSandboxTypes.cs and DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox.Contracts/ContentSandboxLaunchFrame.cs (doc comments of the reserved enum value only; the value is unchanged)",
+    "DesktopPlatform:eng/provenance/files.json (only rows of files this task deletes)"
+   ],
+   "shared": [
+    {
+     "resource": "RES-architecture-tests",
+     "mode": "append"
+    }
+   ],
+   "validation": "ContentSandbox offline tests on Windows (hosted CI) and the Linux test run in local WSL2 per P2-024; the refusal tests prove a macOS profile request is refused fail-closed; a static scan shows no App-Sandbox/XPC profile code remains outside the reserved enum value and the refusal; no macOS CI (P2-017).",
+   "evidence": "Test results, the static scan output and the source commit.",
+   "baseline": {
+    "state": "not-started",
+    "notes": "New task 2026-10-08 (P2-023, coordinator adjudication on GOV.30)."
+   },
+   "notes": "Planning repair 2026-10-08 (DLV-34; P2-023): new task carrying the ContentSandbox macOS launch-profile code removal that GOV.30 (RID removal) does not own. No obligation or acceptance is removed; Windows and Linux containment are unchanged."
   }
  ],
  "adoptionSlices": [

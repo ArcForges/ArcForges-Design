@@ -4,7 +4,7 @@
 
 Accepted freeze, reconciliation and build-governance baselines, and the per-repository architecture and policy test suites.
 
-Tasks: 22 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web · Integration owner(s): AI integration owner, ArcScope integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner, Mobile integration owner, Web integration owner
+Tasks: 23 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatform, Mobile, Web · Integration owner(s): AI integration owner, ArcScope integration owner, Cloud integration owner, Contracts integration owner, DesktopPlatform integration owner, Mobile integration owner, Web integration owner
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
@@ -30,6 +30,7 @@ Tasks: 22 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | [GOV.21](#task-gov-21) | Scheduled and manual policy preview of the Design main branch (post-merge drift watch) | governance | S | [GOV.14](#task-gov-14) (artifact), [GOV.18](#task-gov-18) (artifact) | not-started |
 | [GOV.30](#task-gov-30) | DesktopPlatform osx RID removal from the desktop RID set and owned lock and policy files | governance | M | [GOV.18](#task-gov-18) (artifact) | not-started |
 | [GOV.31](#task-gov-31) | DesktopPlatform TypeScript FND.07 round-trip retirement and npm operator-client policy rows, replaced by C# coverage | governance | M | [CON.40](contracts.md#task-con-40) (artifact), [CON.91](contracts.md#task-con-91) (artifact) | not-started |
+| [GOV.32](#task-gov-32) | Remove the ContentSandbox macOS launch-profile code and keep the typed fail-closed refusal | governance | S | [PLT.45](platform.md#task-plt-45) (artifact) | not-started |
 
 ## Tasks
 
@@ -555,3 +556,27 @@ Tasks: 22 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Completion evidence | Retirement diff; gov-31-r1 successor receipt; C# round-trip record listing every enumerated FND.07 coverage item with its executed result, and the approved coverage change for the cross-language direction; pinned fixture hashes; static scan output showing no retired npm admission or policy row in the owned files; FND.07 record, receipt.json and evidence unchanged as history. |
 | Baseline (unreviewed unless accepted) | not-started Observed in the FND.07 acceptance tree: Program.cs, roundtrip.ts, package.json, package-lock.json, run.py and receipt.json exist. The npm operator-client, api-client, contract-fixtures and proto rows remain in the policy files until CON.40 records the stop-publication. |
 | Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): successor record for the FND.07 TypeScript round-trip retirement and the npm operator-client policy rows. The coverage change is approved by the coordinator (2026-10-08) as a consequence of [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021): no TypeScript consumer remains once @arcforges/proto retires, and the C# golden-bytes check over pinned fixtures is kept. FND.07 is a completion prerequisite under [DLV-35](../README.md#rule-dlv-35), never a start prerequisite; its record, receipt and evidence remain history. The osx RID removal moved to GOV.30 (no CON.40 dependency). Whether the generated policy JSON files named here are regenerated from a pinned source (the policy-data protocol forbids hand edits) is an open coordinator question; if they are not, the removals split into their own task under a new ID. Coordinator adjudication 2026-10-08: files governed by RES-desktopplatform-policy-data are regenerated through the repository’s pinned policy-data generators (as GOV.18 did), never hand-edited; the claimant names each generator in the claim handoff before editing. |
+
+<a id="task-gov-32"></a>
+
+### GOV.32 — Remove the ContentSandbox macOS launch-profile code and keep the typed fail-closed refusal
+
+**Outcome.** The ContentSandbox macOS launch-profile code is removed: the declarative entitlements input (src/DesktopHelpers/ArcForges.ContentSandbox/macos/ArcForges.ContentSandbox.entitlements) is deleted, the MacOsAppSandboxXpc profile-family mapping in Host/ProfileEnforcement.cs is removed, Tests/MacProfileTests.cs and the macOS cases of Tests/ContractFacadeTests.cs are rewritten to assert the typed fail-closed refusal only, and the README macOS lines state that macOS is not supported. The launcher keeps its typed fail-closed refusal on macOS (Broker/ContentSandboxLauncher.cs), and the MacOsAppSandboxXpc enum value in the contracts and broker types stays wire-stable and reserved, documented as not supported and never selected. No Windows or Linux containment behaviour changes.
+
+| Field | Value |
+|---|---|
+| Owning repository | DesktopPlatform (`C:\MyFile\Projects\ArcForges\DesktopPlatform`); integration owner: DesktopPlatform integration owner, the holder of `roles/integration-desktopplatform` |
+| Claim, branch and ledger | `claims/gov-32` and ledger record `ledger/tasks/gov-32.md` in the Plan repository; task branch `task/gov-32` ([DLV-26](../README.md#rule-dlv-26)) |
+| Kind / size | governance / S |
+| Obligations | [P2-023](../../../decisions/phase-2-specification-decisions.md#rule-p2-023) — the macOS App-Sandbox and XPC launch-profile deliverable is removed from the ContentSandbox code; the typed fail-closed macOS refusal and the wire-stable enum value stay |
+| Provides | contentsandbox-macos-profile-removed |
+| Start prerequisites | **artifact** [PLT.45](platform.md#task-plt-45) — delivered ContentSandbox host, broker and launch profiles. *Why:* this task removes the macOS profile code that PLT.45 delivered |
+| Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Completion prerequisites | none |
+| Unblocks | none |
+| Write scope | `DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/macos/ArcForges.ContentSandbox.entitlements (delete)`<br>`DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Host/ProfileEnforcement.cs (remove the macOS profile-family mapping only)`<br>`DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Tests/MacProfileTests.cs (refusal-only)`<br>`DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/Tests/ContractFacadeTests.cs (macOS cases only, refusal-only)`<br>`DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox/README.md (macOS lines only)`<br>`DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox.Broker/README.md (macOS lines only)`<br>`DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox.Broker/ContentSandboxTypes.cs and DesktopPlatform:src/DesktopHelpers/ArcForges.ContentSandbox.Contracts/ContentSandboxLaunchFrame.cs (doc comments of the reserved enum value only; the value is unchanged)`<br>`DesktopPlatform:eng/provenance/files.json (only rows of files this task deletes)` |
+| Shared resources | [RES-architecture-tests](../shared-resources.md#res-architecture-tests) (append) |
+| Validation | ContentSandbox offline tests on Windows (hosted CI) and the Linux test run in local WSL2 per [P2-024](../../../decisions/phase-2-specification-decisions.md#rule-p2-024); the refusal tests prove a macOS profile request is refused fail-closed; a static scan shows no App-Sandbox/XPC profile code remains outside the reserved enum value and the refusal; no macOS CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
+| Completion evidence | Test results, the static scan output and the source commit. |
+| Baseline (unreviewed unless accepted) | not-started New task 2026-10-08 ([P2-023](../../../decisions/phase-2-specification-decisions.md#rule-p2-023), coordinator adjudication on GOV.30). |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-023](../../../decisions/phase-2-specification-decisions.md#rule-p2-023)): new task carrying the ContentSandbox macOS launch-profile code removal that GOV.30 (RID removal) does not own. No obligation or acceptance is removed; Windows and Linux containment are unchanged. |
