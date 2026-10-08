@@ -299,7 +299,7 @@ Two boundaries, per **[D-004](../decisions/phase-1-foundation-decisions.md#rule-
 Binding rules:
 
 - AGPL components may consume the Apache-2.0 interoperability packages without changing their own licence.
-- **Android companion must not contain, link to, copy from, port from or reference any GPL-family or AGPL-only implementation**, directly or transitively.
+- **Android companion must not contain, link to, copy from, port from or reference any GPL-family or AGPL-only implementation**, directly or transitively. One time-limited exception: the ArcForges.Build.Policy (AGPL) build-only consumption by the Apache-2.0 Mobile repository (GOV.12) continues until AND.40 lands, and AND.40's C# policy consumes no AGPL package ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3).
 - No App Store exception, dual licensing, proprietary grant or CLA. DCO continues with inbound-equals-outbound per scope.
 - **Base ViewModel patterns are not shared between Avalonia desktop and .NET MAUI Android mobile.** Each UI stack owns its implementation (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**).
 - Protocol communication across an explicit process or network boundary does not change the mobile client's licence.

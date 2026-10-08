@@ -158,7 +158,7 @@ Tasks carry a limited priority: `Background`, `Normal`, `High`. Automation defau
 
 ## 3. Ownership and execution location
 
-The single Harness executes as C# in the Cloud host ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)). Model calls reach Workers AI through a thin TypeScript binding adapter that forwards the C#-frozen request, enforces only the C#-supplied admitted-model set and size caps (fail-closed) and streams the response back unchanged. The ArcForges-AI Workflow runtime role is retired. C# Cloud owns durable business state, authorization, admission, metering and recovery ports. SDK objects are not wire or persistence authority. One Harness design supports many isolated users/tasks; it does not mean one global active task.
+The single Harness executes as C# in the Cloud host ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)). Model calls reach Workers AI through a thin TypeScript binding adapter that forwards the C#-frozen request, enforces only the C#-supplied admitted-model set and size caps (fail-closed) and streams the response back unchanged. The ArcForges-AI Workflow runtime role ends under HAR.40. C# Cloud owns durable business state, authorization, admission, metering and recovery ports. SDK objects are not wire or persistence authority. One Harness design supports many isolated users/tasks; it does not mean one global active task.
 
 | # | Requirement |
 |---|---|
