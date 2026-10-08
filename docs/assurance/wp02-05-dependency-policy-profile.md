@@ -1,6 +1,6 @@
 # WP02.05 dependency admission and publication profile
 
-> **SUPERSEDED IN PART (2026-10-08)** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021): the React/TypeScript, Node/npm, Kotlin/Maven/Gradle and Blazor/MAUI toolchain statements. The recorded result is retained as dated history and is not rewritten.
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI. The recorded result is retained as dated history and is not rewritten.
 
 Scope: [WP02.05](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.05), including [BR-02](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-br-02)/03/08/11, [SP-08](../architecture/14-build-packaging-and-release.md#rule-sp-08)/10, [D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013) and the recurring [VG-08](open-gates-register.md#rule-vg-08) upgrade obligation. This profile records research and the complete ordered plan before implementation. It does not close WP03 schemas, WP05 architecture-policy coverage, WP06 functional integration or WP50 commercial release.
 

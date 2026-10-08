@@ -1,6 +1,6 @@
 # End-to-End Workflow Verification
 
-> **SUPERSEDED IN PART (2026-10-08)** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021): the React/TypeScript, Node/npm, Kotlin/Maven/Gradle and Blazor/MAUI toolchain statements; by [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022): the native PDF preview and local PDF parsing statements. The recorded result is retained as dated history and is not rewritten.
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI; by [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022): the native PDF preview and local PDF parsing statements. The recorded result is retained as dated history and is not rewritten.
 
 > Status: **Authoritative** — Phase 2; reconciled under [P2-007](../decisions/phase-2-specification-decisions.md#rule-p2-007) against the fourteen repair groups.
 > Scope: executable **design traces**, not claims that product code, packaged sandboxes, databases or provider integration already passed.

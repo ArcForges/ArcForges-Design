@@ -1,6 +1,6 @@
 # WP00.04 implementation evidence
 
-> **SUPERSEDED IN PART (2026-10-08)** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021): the React/TypeScript, Node/npm, Kotlin/Maven/Gradle and Blazor/MAUI toolchain statements. The recorded result is retained as dated history and is not rewritten.
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI. The recorded result is retained as dated history and is not rewritten.
 
 > Status: Completed: source, CI, publication and post-merge acceptance passed.
 > Owning substep: [WP-00.04](../planning/work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.04).

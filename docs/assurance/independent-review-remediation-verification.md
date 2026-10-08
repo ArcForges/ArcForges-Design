@@ -1,6 +1,6 @@
 # Independent Review Remediation Verification
 
-> **SUPERSEDED IN PART (2026-10-08)** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021): the React/TypeScript, Node/npm, Kotlin/Maven/Gradle and Blazor/MAUI toolchain statements; by [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022): the native PDF preview and local PDF parsing statements. The recorded result is retained as dated history and is not rewritten.
+> **SUPERSEDED IN PART (2026-10-08, [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021))**: the React/TypeScript, Node/npm and Kotlin/Maven/Gradle toolchain statements and the statements that rejected Blazor WebAssembly or .NET MAUI; by [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022): the native PDF preview and local PDF parsing statements. The recorded result is retained as dated history and is not rewritten.
 
 Date: 2026-09-17. Design baseline: `8b60426a09e89b9006815206928419a60cec83b6`. Independent review input: local Plan commits `c873199` and `9771885`; execution plan: Plan `572dcba`, with the bounded corrections recorded below. This record belongs to the resulting Design revision, not to an implementation release.
 
