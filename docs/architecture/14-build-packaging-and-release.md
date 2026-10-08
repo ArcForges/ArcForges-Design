@@ -167,7 +167,7 @@ Owned assemblies and runtime artifacts retain source/build/pipeline identity. Th
 | # | Rule |
 |---|---|
 | <a id="rule-sp-01"></a>SP-01 | **All Windows executables and installers are signed and timestamped** ([PL-01](../requirements/10-distribution-update-and-support.md#rule-pl-01) there), so signatures remain valid after certificate expiry. |
-| <a id="rule-sp-02"></a>SP-02 | **Linux artifacts carry published checksums, and repository signing where a repository is used.** no macOS signing or notarisation is in the current release set ([P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023)). |
+| <a id="rule-sp-02"></a>SP-02 | **Linux artifacts carry published checksums, and repository signing where a repository is used.** No macOS signing or notarisation is in the current release set ([P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023)). |
 | <a id="rule-sp-03"></a>SP-03 | **CI-produced artifacts are signed in their release pipeline against a scoped credential.** Release credentials are not copied into ordinary development builds. |
 | <a id="rule-sp-04"></a>SP-04 | **The signing identity and the brand identity are distinct concerns** ([PL-04](../requirements/10-distribution-update-and-support.md#rule-pl-04) there). Where a certificate displays an individual name, the product surfaces and documentation still present the brand consistently, and the discrepancy is anticipated rather than discovered at first release. |
 | <a id="rule-sp-05"></a>SP-05 | **Store developer accounts are established under the intended long-term owning identity** ([PL-05](../requirements/10-distribution-update-and-support.md#rule-pl-05) there). |
