@@ -38,7 +38,7 @@ Serialize Maven publication and prevent delayed CI runs from replacing a newer d
 
 For the Maven channel until its stop record, acceptance also requires real snapshot repository transport and metadata resolution and a post-merge live snapshot receipt with matching bytes. A local repository test is not evidence of Sonatype namespace enablement.
 
-[Implementation and live publication evidence](../assurance/contracts-publication-channels-evidence.md) records the earlier Maven snapshot publication (the successful failed-job retry, all 20 public Maven files matching the tested candidate, and actual isolated registry consumption). That record is historical for the Maven channel, which stops under P2-021; it is not a NuGet receipt.
+[Implementation and live publication evidence](../assurance/contracts-publication-channels-evidence.md) records the earlier Maven snapshot publication (the successful failed-job retry, all 20 public Maven files matching the tested candidate, and actual isolated registry consumption). That record is historical for the Maven channel, which stops under P2-021; it is not a NuGet receipt. The snapshot authorization and consumption gate was closed for that candidate; that status is recorded as historical and applies only to the Maven channel.
 
 ## Publishing usage and commercial operation
 
