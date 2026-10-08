@@ -96,7 +96,7 @@ The ArcForges execution vocabulary is a strict hierarchy. No level may be collap
 | **Step** | domain, wire | One planned unit inside a Run. |
 | **Attempt** / `AttemptId` | domain, wire | One execution try of a Step. Distinct from `CommandId`. |
 | **Task Owner** | domain | The Cloud agent module holding authoritative Task/Run/Step/Attempt state. A desktop tool owner is not a Task Owner. |
-| **Orchestrator** | domain | The single Cloud harness sequencing agent work and authorized tools. Each application's assistant presents its tasks and bridges only its own local tools; it does not run another orchestrator. |
+| **Orchestrator** | domain | The Cloud harness sequencing agent work and authorized tools. Each application's assistant presents its tasks and bridges only its own local tools; it does not run another orchestrator. |
 | **Execution Location** | domain | Cloud for the AI runtime. Desktop/Cloud/Hybrid labels on a task describe tool locality only; they never select another model loop. |
 | **TaskHandle** | wire | A stable Cloud Agent Task reference for query/correlation, never an RPC connection or product job identity. |
 | **TaskSnapshot** | wire | An authoritative point-in-time projection of Task state, retrievable over HTTP. |

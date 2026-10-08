@@ -118,7 +118,7 @@ MCP placement is explicit: stdio servers run only in an owned desktop connector 
 | <a id="rule-ea-07"></a>EA-07 | Hidden reasoning is never an extension result or audit requirement. |
 | <a id="rule-ea-08"></a>EA-08 | A package/connector/MCP tool cannot bypass this exclusion by starting an autonomous delegated agent. No agent-team or external-agent contribution kind. |
 
-The single Cloud Harness may call authorised tools concurrently within one budget. A tool has declared input/output, effect and timeout semantics; it does not own a model loop or a delegated work goal.
+The Cloud Harness may call authorised tools concurrently within one budget. A tool has declared input/output, effect and timeout semantics; it does not own a model loop or a delegated work goal.
 
 ---
 
