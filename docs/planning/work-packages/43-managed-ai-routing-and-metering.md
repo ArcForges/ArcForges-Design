@@ -84,7 +84,7 @@ The provider implementation is confined to the Cloud C# modules and the thin Clo
 ### WP-43.00 — Provider adapters and routing
 
 
-**What must be fully done.** Implement only the selected Workers AI catalogue/capability profiles through the thin Worker `env.AI` binding adapter (`ai.internal`) with the C#-frozen request: default/fast text, accepted image context, bge-m3 embedding and reranker. Validate model availability and frozen config, canonical request limits and supported tool/stream shapes before dispatch. C# records admission/routing and supplier version; CF executes the already admitted intent.
+**What must be fully done.** Implement only the selected Workers AI catalogue/capability profiles through the thin Worker `env.AI` binding adapter (`ai.internal`), which enforces only the C#-supplied admitted-model set and size caps, fail-closed, with no Workers AI token in the container and no AI Gateway ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)), carrying the C#-frozen request: default/fast text, accepted image context, bge-m3 embedding and reranker. Validate model availability and frozen config, canonical request limits and supported tool/stream shapes before dispatch. C# records admission/routing and supplier version; CF executes the already admitted intent.
 
 **Testing requirements.** Actual selected models/capability shapes, withdrawn/unknown/unsupported requests, request-size/output bounds and version mismatch.
 

@@ -39,7 +39,7 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 <a id="rule-wp-32.01"></a>
 ### WP-32.01 — Release runtime inspection
 
-**What must be fully done.** Verify the Mono AOT runtime on ART, the MAUI and public NuGet gRPC-Web closure (replacing the Kotlin, Compose and grpc-lite closure), min/target API, arm64 assets, trimming and R8 rules, 16 KB page-size alignment and required permissions on actual APK/AAB.
+**What must be fully done.** Verify the Mono AOT runtime on ART, the MAUI and public NuGet gRPC-Web closure (replacing the Kotlin, Compose and grpc-lite closure), min/target API, arm64 assets, trimming and R8 rules, 16 KB page-size alignment and required permissions on actual APK/AAB. Planning repair 2026-10-08 (DLV-34; P2-021): the inspection verifies the MAUI Mono AOT release under [PRF.12](../delivery/lanes/runtime-proofs.md#task-prf-12) and [AND.40](../delivery/lanes/android.md#task-and-40).
 
 **Testing requirements.** Install without development server/toolchain; startup/identity/RPC/R2/notifications and lifecycle release tests.
 
@@ -48,7 +48,7 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 <a id="rule-wp-32.02"></a>
 ### WP-32.02 — Dependency and source rights
 
-**What must be fully done.** Audit direct/transitive NuGet/workload/runtime/asset closure, licences, provenance and reproducible SBOM/NOTICE, with the F-023-class closure checks re-proven for the MAUI closure. Verify public schema/tooling Apache origin; independently original app implementation.
+**What must be fully done.** Audit direct/transitive NuGet/workload/runtime/asset closure, licences, provenance and reproducible SBOM/NOTICE, with the F-023-class closure checks re-proven for the MAUI closure. Verify public schema/tooling Apache origin; independently original app implementation. Planning repair 2026-10-08 (DLV-34; P2-021): the MAUI closure consumes only Apache-2.0 packages (Contracts NuGet, Microsoft and AndroidX bindings) and never an AGPL DesktopPlatform package, per [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3.
 
 **Testing requirements.** Forbidden licence fixture, unpinned/dynamic dependency and changed-checksum rejection; binary inventory matches candidate.
 

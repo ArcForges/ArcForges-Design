@@ -65,7 +65,7 @@
 |---|---|
 | Cloud `src/ArcForges.Cloud.Modules.{Support,TrustSafety,Audit,Policy,Configuration,PackageCatalog}` (Domain, Application and Infrastructure as folders and namespaces) | Existing domain owners implement support/access, enforcement, proposals/audit, controls, configuration and catalog; Cloud.Host composes OperatorService. There is no unowned Operations persistence module. |
 | Cloud `src/ArcForges.Cloud.Modules.Notification` (Domain, Application and Infrastructure as folders and namespaces) | Transactional and broadcast email adapters with separated streams and a secondary path |
-| Web `apps/app` (operations profile) | The operator console on its own origin and identity system |
+| Web `src/Web/ArcForges.Web.App` (operations profile, Blazor WebAssembly) | The operator console on its own origin and identity system |
 | `deploy/monitoring/` | Alert definitions, service-level objective definitions, status component mapping |
 | `docs/runbooks/` in the implementation repository | The required runbook set with rehearsal records |
 | `tests/CloudIntegrationTests/Operations/` | Alert-to-runbook, support access, break-glass, enforcement and appeal suites |

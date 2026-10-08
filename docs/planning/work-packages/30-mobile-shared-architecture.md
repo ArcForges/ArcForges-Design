@@ -47,7 +47,7 @@ Mobile adopts the exact module map in architecture 27 (app, core and feature mod
 <a id="rule-wp-30.02"></a>
 ### WP-30.02 — Android runtime and OS adapters
 
-**What must be fully done.** Use the exact API/RID/runtime profile in Mobile architecture: arm64 release, x64 emulator; MAUI UI, Credential Manager/passkey fallback, Keystore, WorkManager, notifications/FCM with non-GMS fallback, SAF/MediaStore/FileProvider, all through .NET for Android bindings and each admitted when its task needs it. OS callbacks use generation and account scope.
+**What must be fully done.** Use the exact API/RID/runtime profile in Mobile architecture: arm64 release, x64 emulator; MAUI UI, Credential Manager/passkey fallback, Keystore, WorkManager, notifications/FCM with non-GMS fallback, SAF/MediaStore/FileProvider, all through .NET for Android bindings and each admitted when its task needs it. OS callbacks use generation and account scope. Planning repair 2026-10-08 (DLV-34; P2-021): the Android runtime and OS adapters are implemented in the .NET MAUI `net10.0-android` project under [AND.40](../delivery/lanes/android.md#task-and-40), with Mono AOT for release; the Kotlin/Compose and Gradle adapters retire.
 
 **Testing requirements.** Install real release build on physical Android, permission refusal, process death, missing Play services and callback after account switch.
 

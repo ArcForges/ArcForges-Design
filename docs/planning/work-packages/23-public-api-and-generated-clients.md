@@ -136,7 +136,7 @@
 
 ### WP-23.05 — Generated C# clients (desktop, Blazor and MAUI)
 
-**What must be fully done.** Consume released generated C# native and gRPC-Web clients (desktop, Blazor browser and MAUI Android) against actual Identity/Workspace/Device endpoints. Supply native single-flight refresh, Web cookie/CSRF/Origin and generation-scoped callbacks outside generated code. Use the WP-06 MAUI Android probe, not the future complete app.
+**What must be fully done.** Consume released generated C# native and gRPC-Web clients (desktop, Blazor browser and MAUI Android) against actual Identity/Workspace/Device endpoints. Supply native single-flight refresh, Web cookie/CSRF/Origin and generation-scoped callbacks outside generated code. Use the WP-06 MAUI Android probe, not the future complete app. Planning repair 2026-10-08 (DLV-34; P2-021): the Blazor and MAUI consumers bind the generated C# NuGet clients under [WEB.40](../delivery/lanes/web.md#task-web-40) and [AND.40](../delivery/lanes/android.md#task-and-40); the TypeScript and Kotlin client consumers retire under [CON.40](../delivery/lanes/contracts.md#task-con-40).
 
 **Testing requirements.** Independent exact-value/current-previous-major vectors, actual 22 session expiry/revoke/refresh, public/internal leak rejection; future domain fixtures labeled and excluded from production.
 
