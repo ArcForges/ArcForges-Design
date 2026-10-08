@@ -18,7 +18,7 @@ Use the exact released Contracts NuGet package/descriptor/fixture set (the Maven
 
 ## 3. Binding rules and decisions
 
-Android only, .NET MAUI (`net10.0-android`, Mono runtime with AOT), Apache-2.0; no GPL-family or AGPL implementation in the app and no AGPL DesktopPlatform package in its closure ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)). Command/owner/recovery identity, explicit permissions/consent, exact values, immutable producer artifacts, full accepted companion scope and consumption-only commercial restrictions are mandatory. [Wire registry](../../architecture/contracts/04-protobuf-wire-registry.md) owns the complete field and operation inventory. Equivalent internal classes/layout choices may vary only when observable behavior and acceptance remain identical.
+Android only, .NET MAUI (`net10.0-android`, Mono runtime with AOT), Apache-2.0; no GPL-family or AGPL implementation in the app and no AGPL DesktopPlatform package in its closure ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)). Two open items of [D-016](../../decisions/phase-1-foundation-decisions.md#rule-d-016) bind this work package and are owned by [AND.40](../delivery/lanes/android.md#task-and-40): the minimum and target API, which stay at the current Kotlin values (26 and 37) until AND.40 records the MAUI minimum-API requirement and the target API measured in the [PRF.12](../delivery/lanes/runtime-proofs.md#task-prf-12) build; and the .NET 11 runtime posture, because the Mono posture is for .NET 10 and a .NET 11 release build with its AOT or CoreCLR posture must be recorded before any .NET 11 Android build. Command/owner/recovery identity, explicit permissions/consent, exact values, immutable producer artifacts, full accepted companion scope and consumption-only commercial restrictions are mandatory. [Wire registry](../../architecture/contracts/04-protobuf-wire-registry.md) owns the complete field and operation inventory. Equivalent internal classes/layout choices may vary only when observable behavior and acceptance remain identical.
 
 ## 4. Projects, directories, files and major types affected
 
@@ -47,7 +47,7 @@ Mobile adopts the exact module map in architecture 27 (app, core and feature mod
 <a id="rule-wp-30.02"></a>
 ### WP-30.02 — Android runtime and OS adapters
 
-**What must be fully done.** Use the exact API/RID/runtime profile in Mobile architecture: arm64 release, x64 emulator; MAUI UI, Credential Manager/passkey fallback, Keystore, WorkManager, notifications/FCM with non-GMS fallback, SAF/MediaStore/FileProvider, all through .NET for Android bindings and each admitted when its task needs it. OS callbacks use generation and account scope. Planning repair 2026-10-08 (DLV-34; P2-021): the Android runtime and OS adapters are implemented in the .NET MAUI `net10.0-android` project under [AND.40](../delivery/lanes/android.md#task-and-40), with Mono AOT for release; the Kotlin/Compose and Gradle adapters retire.
+**What must be fully done.** Use the exact API/RID/runtime profile in Mobile architecture: arm64 release, x64 emulator; MAUI UI, Credential Manager/passkey fallback, Keystore, WorkManager, notifications/FCM with non-GMS fallback, SAF/MediaStore/FileProvider, all through .NET for Android bindings and each admitted when its task needs it. OS callbacks use generation and account scope. Planning repair 2026-10-08 (DLV-34; P2-021): the Android runtime and OS adapters are implemented in the .NET MAUI `net10.0-android` project under [AND.40](../delivery/lanes/android.md#task-and-40), with Mono AOT for release; the Kotlin/Compose and Gradle adapters retire. Passkey-on-MAUI (Credential Manager) is unverified until [PRF.12](../delivery/lanes/runtime-proofs.md#task-prf-12) records it, and that evidence is required before AND.40 relies on it.
 
 **Testing requirements.** Install real release build on physical Android, permission refusal, process death, missing Play services and callback after account switch.
 
@@ -65,7 +65,7 @@ Mobile adopts the exact module map in architecture 27 (app, core and feature mod
 <a id="rule-wp-30.04"></a>
 ### WP-30.04 — Room history, drafts and receipts
 
-**What must be fully done.** Implement model 05 equivalent Room schemas (AndroidX Room, consumed through its admitted .NET binding under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3) and per-profile partitions, own local/cloud/temporary behavior, bounded outbox/transfers/cursors. Local canonical history is not evictable cache; temporary content never persists.
+**What must be fully done.** Implement model 05 equivalent Room schemas (the store binding is owned by [AND.40](../delivery/lanes/android.md#task-and-40) under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3, with AndroidX bindings admitted when that task needs them) and per-profile partitions, own local/cloud/temporary behavior, bounded outbox/transfers/cursors. Local canonical history is not evictable cache; temporary content never persists.
 
 **Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 

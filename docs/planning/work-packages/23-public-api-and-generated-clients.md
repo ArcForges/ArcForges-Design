@@ -88,7 +88,7 @@
 
 **What must be fully done.** Register generated proto service methods with exact request/reply/semantic validation from the registry. Use binary gRPC-Web unary calls and declared server streams through the same owner handlers; register only the listed standard HTTP exceptions separately. Map owner mutations and Sync allowlist exactly.
 
-**Testing requirements.** Exercise each method category through native and browser (gRPC-Web) C# transport, malformed/unknown request values and denied scope before handler.
+**Testing requirements.** Exercise each method category through native and browser (gRPC-Web) C# transport (and the Connect Kotlin client until [AND.40](../delivery/lanes/android.md#task-and-40) retires it), malformed/unknown request values and denied scope before handler.
 
 **Completion gate.** Every selected operation has a concrete typed endpoint and owner; no ad-hoc REST business API is introduced.
 
@@ -100,7 +100,7 @@
 
 **Testing requirements.** HTTP200 with error trailers, partial frame, 64-bit values, deadline/cancel after dispatch and command receipt reconciliation.
 
-**Completion gate.** Every generated C# client distinguishes transport uncertainty from a domain refusal.
+**Completion gate.** Every generated C# client (and the Connect Kotlin client until [AND.40](../delivery/lanes/android.md#task-and-40) retires it) distinguishes transport uncertainty from a domain refusal.
 
 <a id="rule-wp-23.02"></a>
 
@@ -163,15 +163,15 @@
 
 **Execution order.** Follow [staged artifact integration](../README.md#staged-artifact-integration): consume only existing assigned producers, publish an owned capability candidate before its product consumer, and verify the declared stage against exact upstream artifacts. Record pending later owners and their closing gates; local mocks cover only that named test boundary.
 
-**Testing requirements.** Real C#, Blazor and MAUI calls against the AOT image, previous/current compatibility and complete operation mapping, including auth, files and webhooks outside gRPC.
+**Testing requirements.** Real C#, Blazor and MAUI calls (and the Connect Kotlin client until [AND.40](../delivery/lanes/android.md#task-and-40) retires it) against the AOT image, previous/current compatibility and complete operation mapping, including auth, files and webhooks outside gRPC.
 
-**Completion gate.** Real C#, Blazor and MAUI calls against the AOT image, previous/current compatibility and complete operation mapping, including auth, files and webhooks outside gRPC. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
+**Completion gate.** Real C#, Blazor and MAUI calls (and the Connect Kotlin client until [AND.40](../delivery/lanes/android.md#task-and-40) retires it) against the AOT image, previous/current compatibility and complete operation mapping, including auth, files and webhooks outside gRPC. Record exact artifacts and provider reality. The package is incomplete if an important contract/owner/recovery rule still requires design during coding.
 
 ---
 
 **Operator contract closure.** Consume [registry04 §9](../../architecture/contracts/04-protobuf-wire-registry.md#9-operator-control-and-separate-identity-boundary) and [model01 operator state](../../architecture/data-model/01-cloud-data-model.md#operator-proposal-approval-and-financial-owner-closure). Generate/implement every operation exactly once with its eight authorization fields, operator scope and [OC-03](../../requirements/10-distribution-update-and-support.md#rule-oc-03) role binding. Public customer/PAT/agent access refuses. Verify distinct approver, stale hash/revision/configuration, role revocation, expiry, concurrent consumption and lost receipt; no direct SQL or public-SDK operator import. WP03 produces schema/negative vectors, WP23 real identity/dispatch conformance, WP42 the financial owners, WP44 configuration/policy owners, and WP45 the real console join. Earlier packages retain their named fixture boundary until the existing downstream join.
 
-**Browser matrix acceptance.** Use [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) for the in-scope Windows and Linux browser rows (macOS and Safari are outside the delivery scope under [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)) and the exact release artifact/OS/browser patches. For each output’s existing flows, verify supported/degraded/blocked browser behavior: delayed-stream polling where streaming exists, refusal of unavailable required authentication/step-up, safe-preview refusal and preserved pending work. Static site acceptance includes no-JavaScript readability; it does not invent interactive account/stream APIs. Operator step-up retains its separate Entra/MFA authority. WP23 proves generated transports; WP45/47/48/49 prove their respective operations/site/account/chat output; WP50 joins all four production hashes and real browser evidence. Local Playwright runs are opt-in test tooling and do not claim OS authenticator proof.
+**Browser matrix acceptance.** Use [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) for the in-scope Windows and Linux browser rows (macOS and Safari are outside the delivery scope under [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)) and the exact release artifact/OS/browser patches. For each output’s existing flows, verify supported/degraded/blocked browser behavior: delayed-stream polling where streaming exists, refusal of unavailable required authentication/step-up, safe-preview refusal and preserved pending work. Static site acceptance includes no-JavaScript readability; it does not invent interactive account/stream APIs. Operator step-up retains its separate Entra/MFA authority. WP23 proves generated transports; WP45/47/48/49 prove their respective operations/site/account/chat output; WP50 joins all four production hashes and real browser evidence. Local Microsoft.Playwright for .NET runs are opt-in test tooling and do not claim OS authenticator proof.
 
 ## 6. Impacts
 

@@ -50,6 +50,8 @@
 ---
 
 ## 3. Binding rules and decisions
+>
+> **Planning repair 2026-10-08 (DLV-34; [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)).** The rows below that name the TypeScript codec, the npm and Maven channels and the Kotlin client are edited for the not-started successor scope (WP-03.03 onward and the retirement under [CON.40](../delivery/lanes/contracts.md#task-con-40) and [AND.40](../delivery/lanes/android.md#task-and-40)). They do not change the evidence of the accepted WP-03.00 to WP-03.02 records, which names the channels as they were at acceptance.
 
 | # | Rule |
 |---|---|
@@ -67,6 +69,8 @@
 ---
 
 ## 4. Projects, directories, files and major types affected
+>
+> **Planning repair 2026-10-08 (DLV-34; [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)).** Path rows that name the npm, Maven or Kotlin packages are annotated with their retirement successor. The accepted WP-03.00 to WP-03.02 records are not edited.
 
 All paths are in ArcForges-Contracts under the [selected package registry](../../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry).
 
@@ -145,7 +149,7 @@ The [WP03.02 completion receipt](../../assurance/wp03-02-implementation-evidence
 
 ### WP-03.04 — Private helper and in-process contract split
 
-**What must be fully done.** Author the closed ContentSandbox/Extension/Connector and bootstrap/resource/event proto closure from annex 09. ContentSandboxService exposes its 15 methods: OpenSession, RenewSession, GrantSlot, AckBuffer, OpenImage, GetImageInfo, ReadImageTile, CloseImage, OpenPdf, GetPdfPage, ExtractPdfText, RenderPdfTile, ClosePdf, CancelSession and CloseSession. The five PDF methods (OpenPdf, GetPdfPage, ExtractPdfText, RenderPdfTile, ClosePdf) and their messages stay in the published schema unchanged as retired wire: servers answer them with the closed UNIMPLEMENTED refusal and no new consumer may call them ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)). Product interfaces use generated records and static in-process adapters — IScopeOperations and IChatOperations are the two product in-process ports; reserve removed Hub/SSO/transfer names without registering services.
+**What must be fully done.** Author the closed ContentSandbox/Extension/Connector and bootstrap/resource/event proto closure from annex 09. ContentSandboxService exposes its 15 methods: OpenSession, RenewSession, GrantSlot, AckBuffer, OpenImage, GetImageInfo, ReadImageTile, CloseImage, OpenPdf, GetPdfPage, ExtractPdfText, RenderPdfTile, ClosePdf, CancelSession and CloseSession. The five PDF methods (OpenPdf, GetPdfPage, ExtractPdfText, RenderPdfTile, ClosePdf) and their messages stay in the published schema unchanged as retired wire, and no new consumer may call them ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022) item 3). Server behaviour is unchanged and no UNIMPLEMENTED answer is claimed or introduced: no PDF backend is linked, the native `arc_pdf_open` returns `ARC_UNSUPPORTED`, and OpenPdf returns the closed reason `resource.parser_failed`, so the open path already refuses fail-closed. Reservation or deletion of any number waits for a versioned surface retirement that respects the Contracts later-services compatibility window. Product interfaces use generated records and static in-process adapters — IScopeOperations and IChatOperations are the two product in-process ports; reserve removed Hub/SSO/transfer names without registering services.
 
 **Testing requirements.** Wrong child direction/role, removed methods, parent death and cross-product server registration fail; verify no public package imports internal schemas.
 

@@ -16,7 +16,7 @@
 
 ## 1. Scope and purpose
 
-**In scope.** Two isolated technical probes followed by the three functional native libraries, four managed native packages, three runtime package families across the six declared desktop RIDs, and integration with the WP11 restricted helper. The functional ABI, algorithms, formats and limits are fixed by [native annex 06](../../architecture/contracts/06-native-functional-abi.md); no missing function is deferred to product coding.
+**In scope.** Two isolated technical probes followed by the two functional native libraries that remain after the PDF retirement ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)), the instruments and still-image libraries; three managed native packages; two runtime package families across the three desktop RIDs of [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023) (`win-x64`, `win-arm64` and `linux-x64`); and integration with the WP11 restricted helper. The functional ABI, algorithms, formats and limits are fixed by [native annex 06](../../architecture/contracts/06-native-functional-abi.md); no missing function is deferred to product coding.
 
 **Out of scope.** Product UI, editing commands, Cloud business handlers and the AI model loop. Probe scaffolds are cleaned up or kept as isolated regression fixtures. Production ABI/wrapper/runtime code from 13.05–13.16 is retained and published; [ND-05](../implementation-sequence.md#rule-nd-05) does not discard those deliverables.
 
@@ -62,9 +62,9 @@
 | `benchmarks/probes/agent-aot/` | Probe A workspace and evidence |
 | `benchmarks/probes/acquisition/` | Probe C workspace and evidence |
 | `native/arcimage-abi/` (the still-image shim, moved here by [GOV.17](../delivery/lanes/governance.md#task-gov-17) as `ArcImageNative`; the media/colour/OTIO shims are retired) | Extend the existing owned shim without renaming its published `arc_image_*` symbols |
-| `native/arcinstruments-abi/` | New functional library with the fixed annex 06 declarations; no arcpdf-abi library is created, and the PDF engine that NAT.14 merged is removed by [NAT.32](../delivery/lanes/native.md#task-nat-32) under [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022) |
+| `native/arcinstruments-abi/` | New functional library with the fixed annex 06 declarations; this work package does not create an arcpdf-abi library, and the PDF engine that NAT.14 merged is removed by [NAT.32](../delivery/lanes/native.md#task-nat-32) under [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022) |
 | `src/Native/ArcForges.Native.Abstractions/` and `ArcForges.Native.Image/Instruments` | Three managed status/handle/wrapper packages (no Pdf wrapper, per [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)); slash-separated names here expand to separate projects |
-| `src/Native/ArcForges.Native.<Capability>.Runtime.<rid>/` | Two families (Image, Instruments) × four RIDs (win-x64, win-arm64, linux-x64, linux-arm64) = eight package definitions, each carrying its admitted native dependency closure ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022), [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)) |
+| `src/Native/ArcForges.Native.<Capability>.Runtime.<rid>/` | Two families (Image, Instruments) × three RIDs (win-x64, win-arm64, linux-x64) = six package definitions; linux-arm64 is not added and is not claimed ([P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)), each carrying its admitted native dependency closure ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022), [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)) |
 | `src/DesktopHelpers/` | Consume WP11 helper/Broker/Contracts; add only the containment of the approved still-image parser composition that [NAT.31](../delivery/lanes/native.md#task-nat-31) owns ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)), not a second helper owner |
 | `eng/packaging/`, `tests/NativeConsumers/` | Exact package allowlist, headers/import libraries, SBOMs and independent C17/C# AOT package-only consumers |
 | `eng/verification/probe-evidence/` | The recorded environments, procedures and results |
@@ -152,7 +152,7 @@
 
 ### WP-13.15 — Immutable native package production
 
-**What must be fully done.** Publish ArcForges.Native.Abstractions plus Image and Instruments and their Runtime.<rid> families: win-x64, win-arm64, linux-x64 and linux-arm64 (no osx RIDs, per [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)). Expand the allowlist explicitly; record any Tier 2 waiver and omit unusable capability claims. These three managed and eight runtime definitions are additional to other Platform mechanisms. Build native dependencies before pack; pack once; use the WP11 host/broker and the newly signed production helper version composed in 13.13. Never alter already released WP11 package bytes.
+**What must be fully done.** Publish ArcForges.Native.Abstractions plus Image and Instruments and their Runtime.<rid> families: win-x64, win-arm64 and linux-x64 (no osx RIDs and no linux-arm64, per [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)). Expand the allowlist explicitly; record any Tier 2 waiver and omit unusable capability claims. These three managed and six runtime definitions are additional to other Platform mechanisms. Build native dependencies before pack; pack once; use the WP11 host/broker and the newly signed production helper version composed in 13.13. Never alter already released WP11 package bytes.
 
 **Testing requirements.** Isolated clean-cache C17 and C# AOT consumers on each admitted RID; missing/transitive/wrong-RID library, hash collision, absent export, revoked artifact and source-unavailable negatives.
 
@@ -223,7 +223,7 @@
 3. Each probe has a written conclusion stating what it proved, what it did not, and what constraint it imposes downstream.
 4. Every shipped dependency has a recorded licence position and the 13.16 hardware inventory exists, contributing to [PG-08](../../assurance/open-gates-register.md#rule-pg-08).
 
-5. All 14 functional exports, four managed native packages and every admitted runtime family are verified through clean package-only consumers; actual helper containment and all 13.05–13.16 gates pass. No probe-only export set passes production closure.
+5. All nine functional exports that remain after the retirement of the five `arc_pdf_*` exports ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)), three managed native packages and every admitted runtime family are verified through clean package-only consumers; actual helper containment and all 13.05–13.16 gates pass. No probe-only export set passes production closure.
 
 ## 9. Dependencies
 

@@ -84,7 +84,7 @@
 
 ### WP-48.00 — Account profile and native ceremony integration
 
-**What must be fully done.** Build account Web output using WP22 identity/browser/native endpoints and WP42 commerce. Integrate Android callback/assetlinks with actual production signing input and exact route map; minimal auth producer already exists in WP22. Compose the account route graph/shell using WP47 components/tokens, the generated C# SDK and Blazor components with explicit cancellation tokens. Include responsive overview/navigation, safe public runtime config, error boundaries and loading/empty/pending/expired states; clear caches and abort requests on user/workspace changes.
+**What must be fully done.** Build account Web output using WP22 identity/browser/native endpoints and WP42 commerce. Integrate Android callback/assetlinks with actual production signing input and exact route map; minimal auth producer already exists in WP22. Compose the account route graph/shell using WP47 components/tokens, the generated C# SDK and Blazor components with explicit cancellation tokens. Include responsive overview/navigation, safe public runtime config, error boundaries and loading/empty/pending/expired states; clear caches and abort requests on user/workspace changes. Non-virtualised lists are costed against the WA-08 budgets under PRF.11, because `Virtualize` is not used on .NET 10 under the strict `style-src` ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 2).
 
 **Testing requirements.** No cookie leakage, state/PKCE/origin mismatch, Android verified links, purchase/read-only expired-service/export and separate operator denial. Check production route/chunk isolation, both themes, keyboard/narrow layouts, long translations and scope-switch late responses; no private config or Chat-feature leakage.
 
@@ -96,7 +96,7 @@
 
 **What must be fully done.** Use the [P2-003](../../decisions/phase-2-specification-decisions.md#rule-p2-003) adapter implemented in [WP-22.08](22-identity-workspace-and-device.md#rule-wp-22.08), not a new auth choice. Complete passkey/email verification/recovery, live opaque cookie session, server-controlled expiry/revocation and sensitive-action step-up on the real account origin topology. Fetch CSRF state safely and never hold bearer/refresh tokens in the app. Coordinate tabs without rotating credentials per request; require fresh authentication after absolute expiry.
 
-**Testing requirements.** Playwright against production assets/edge/real Cloud and D1: login/logout, two origins and two tabs, sibling-origin CSRF on JSON/multipart, passkey expected origin, replica restart, expiry/revoke races, no token in storage/URL/logs, no cookie leakage, step-up failure, no elevated new-browser trust. Manual passkey/browser matrix evidence supplements automation.
+**Testing requirements.** Local opt-in Microsoft.Playwright for .NET against production assets/edge/real Cloud and D1: login/logout, two origins and two tabs, sibling-origin CSRF on JSON/multipart, passkey expected origin, replica restart, expiry/revoke races, no token in storage/URL/logs, no cookie leakage, step-up failure, no elevated new-browser trust. Manual passkey/browser matrix evidence supplements automation.
 
 **Completion gate.** Browser authentication and sensitive actions work through the adopted server session authority with no credential leaks, session resurrection, CSRF bypass or high-risk trust shortcut.
 
@@ -144,7 +144,7 @@
 
 ### WP-48.06 — Origin security and performance
 
-**What must be fully done.** A strict content security policy with no inline script by default (app profiles: the exact token set is asserted: `script-src 'self' 'wasm-unsafe-eval'` plus a SHA-256 hash or a nonce for each inline script, `style-src 'self'`, never `unsafe-eval` or `unsafe-inline`, per [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)); per-origin cookie, CORS and CSRF posture; no secret in the bundle; sandboxed preview of any user content; bundle size and first-interactive budgets with regression gates; the React-measured baselines remain the regression gate until the accepted AL-06 re-baseline record ([AL-06](../../architecture/10-web-architecture.md#rule-al-06), produced by PRF.11) replaces them and are not silently reset, and the public static-Site p75 targets (LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1) stay binding.
+**What must be fully done.** A strict content security policy with no inline script by default (app profiles: the exact token set, once [PRF.11](../delivery/lanes/runtime-proofs.md#task-prf-11) proves it: `script-src 'self' 'wasm-unsafe-eval'` plus the SHA-256 hash of each required inline script, with no nonce adopted, `style-src 'self'`, never `unsafe-eval` or `unsafe-inline`, per [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)); per-origin cookie, CORS and CSRF posture; no secret in the bundle; sandboxed preview of any user content; bundle size and first-interactive budgets with regression gates; the React-measured baselines remain the regression gate until the accepted AL-06 re-baseline record ([AL-06](../../architecture/10-web-architecture.md#rule-al-06), produced by PRF.11) replaces them and are not silently reset, and the public static-Site p75 targets (LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1) stay binding.
 
 **Testing requirements.** Policy header verification; a bundle secret scan; a sandbox escape test on hostile content; budget measurements with the regression gate applied.
 
@@ -177,7 +177,7 @@
 
 ---
 
-**Browser matrix acceptance.** Use [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) for the in-scope Windows and Linux browser rows (macOS and Safari are outside the delivery scope under [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)) and the exact release artifact/OS/browser patches. For each output’s existing flows, verify supported/degraded/blocked browser behavior: delayed-stream polling where streaming exists, refusal of unavailable required authentication/step-up, safe-preview refusal and preserved pending work. Static site acceptance includes no-JavaScript readability; it does not invent interactive account/stream APIs. Operator step-up retains its separate Entra/MFA authority. WP23 proves generated transports; WP45/47/48/49 prove their respective operations/site/account/chat output; WP50 joins all four production hashes and real browser evidence. Local Playwright runs are opt-in test tooling and do not claim OS authenticator proof.
+**Browser matrix acceptance.** Use [browser-support.v1](../../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1) for the in-scope Windows and Linux browser rows (macOS and Safari are outside the delivery scope under [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)) and the exact release artifact/OS/browser patches. For each output’s existing flows, verify supported/degraded/blocked browser behavior: delayed-stream polling where streaming exists, refusal of unavailable required authentication/step-up, safe-preview refusal and preserved pending work. Static site acceptance includes no-JavaScript readability; it does not invent interactive account/stream APIs. Operator step-up retains its separate Entra/MFA authority. WP23 proves generated transports; WP45/47/48/49 prove their respective operations/site/account/chat output; WP50 joins all four production hashes and real browser evidence. Local Microsoft.Playwright for .NET runs are opt-in test tooling and do not claim OS authenticator proof.
 
 ## 6. Impacts
 
@@ -211,7 +211,7 @@ Acceptance includes every amended §5 producer/consumer and [WP-48.90](#rule-wp-
 
 ---
 
-**Blazor acceptance evidence.** In addition to the workflow results, retain generated-SDK input fingerprint, xUnit/bUnit checks, production Playwright API/session/visual results, private-config/route isolation scan and approved consumer layouts. [PG-23](../../assurance/open-gates-register.md#rule-pg-23) covers the resulting browser deployment proof.
+**Blazor acceptance evidence.** In addition to the workflow results, retain generated-SDK input fingerprint, xUnit/bUnit checks, local opt-in Microsoft.Playwright for .NET API/session/visual results, private-config/route isolation scan and approved consumer layouts. [PG-23](../../assurance/open-gates-register.md#rule-pg-23) covers the resulting browser deployment proof. AX-01 to AX-10 and WCAG 2.2 AA evidence is recorded for each replacement screen before the React screens retire, and the React accessibility evidence is kept until the replacement is proven ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 8).
 
 ---
 

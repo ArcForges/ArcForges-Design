@@ -89,7 +89,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 ### WP-52.00 — The turn loop, batching and bounds
 
 
-**What must be fully done.** Implement the sole C# Harness executor (replacing RunWorkflow) with deterministic run identity, D1 claim/epoch/generation fencing, Durable Object alarm wake and actual deployed Worker version. Persist iteration/context references and model/tool dispatch intent before effects; record immutable outcome receipts before continuation. Apply selected model/tool/parallel/progress/time/step budgets and declared conflict sets, including 60-second execution lease renewed every 20 seconds during long awaits.
+**What must be fully done.** Implement the sole C# Harness executor (replacing RunWorkflow) with deterministic run identity, D1 claim/epoch/generation fencing, Durable Object alarm wake and actual deployed Worker version. Persist iteration/context references and model/tool dispatch intent before effects; record immutable outcome receipts before continuation. Apply selected model/tool/parallel/progress/time/step budgets and declared conflict sets, including 60-second execution lease renewed every 20 seconds during long awaits. The executor design is gated on the crash-injection, lost-wake and duplicate-delivery proof in [HAR.40](../delivery/lanes/harness.md#task-har-40); alarm and Queue delivery semantics are unverified until that proof records them, and no Cloudflare Workflow holds run state.
 
 **Testing requirements.** Real executor with forced duplicate start, replay, 120-second model await, lease loss/stale outcome, no-progress and every bound; no automatic effect retry after intent.
 

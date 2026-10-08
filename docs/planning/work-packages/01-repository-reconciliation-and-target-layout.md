@@ -6,6 +6,8 @@
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
 > Scheduling: this package is an obligation set; its delivery tasks and their typed prerequisites are listed in section 9, generated from the [delivery graph](../delivery/delivery-graph.json) under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018).
+>
+> **Planning repair 2026-10-08 (DLV-34; [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)).** This package's tasks are accepted, so the historical wording below is kept as written and recorded evidence is not edited. Where P2-021 supersedes a stack or scope statement here, the supersession applies to the successor scope only, and the successor is named: the Cloud Harness placement by [HAR.40](../delivery/lanes/harness.md#task-har-40) (the AI Workflow scaffold moves into Cloud as a C# executor); the still-image parser composition by [NAT.31](../delivery/lanes/native.md#task-nat-31) and the PDF engine retirement by [NAT.32](../delivery/lanes/native.md#task-nat-32) ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)); the Kotlin native-grpc client by [AND.40](../delivery/lanes/android.md#task-and-40).
 
 > **Goal.** Reconcile the seven current repositories against the accepted ownership and licence boundaries. The historical ede43db inventory recorded **55 incorrectly licensed files**; verify current source before assigning a correction, move or retirement.
 
@@ -71,7 +73,7 @@
 | `src/Contracts/` | **Split** into a public Apache-2.0 set and an internal Apache-2.0 set with restricted imports (executed in `03`; the split decision is made here) |
 | `src/DesktopHelpers/` | Disposition assigned against the shared-foundation boundary |
 | `src/BuildingBlocks/ArcForges.Desktop.*` | Reviewed against the shared-foundation boundary; mechanism-only projects Kept, product-aware projects Split or Moved |
-| `src/Cloud/Modules.*` | Map the 17 historical scaffold names to the 21 declared domain owners in `21`; Cloud owns the Native AOT Container host, the thin Worker bindings and the sole C# Harness, which [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) moves from the retired AI Workflow scaffold into Cloud. Retired AppHost/AgentRuntime scaffolds are not requirements |
+| `src/Cloud/Modules.*` | Map the 17 historical scaffold names to the 21 declared domain owners in `21`; Cloud owns the Native AOT Container host and Worker bindings, while AI owns the sole Workflow Harness. Retired AppHost/AgentRuntime scaffolds are not requirements |
 | `native/` | Apply the current WP01.03 admission: retain admitted native mechanisms in DesktopPlatform, use the pinned official OTIO adapter, exclude MDF; old skeletons are not product implementation evidence |
 | `tests/` | Each suite mapped to a required test family; gaps recorded |
 | `fixtures/` | Owned by each producing repository; create with substantive golden fixtures when its producing step requires them, never as an empty placeholder |
@@ -124,7 +126,7 @@
 ### WP-01.03 — Execute the native surface dispositions
 
 
-**What must be fully done.** Retain the approved native foundations in DesktopPlatform; apply the selected vcpkg/official OTIO admission and MDF exclusion from the native registry. Migrate capability-specific managed wrappers into their DesktopPlatform packages; consume risky parsers only through the ContentSandbox/Broker isolation required by [architecture 24](../../architecture/24-content-and-extension-isolation.md). WP11 supplies the restricted helper and WP13 composes production parsers; WP01 must not introduce an uncontained parser or claim that the current Hello helper is a signed sandbox. Remove product copies only after exact source/NOTICE and package tests prove the transfer. Planning repair 2026-10-08 (DLV-34; P2-021): successor for the still-image parser composition named here is [NAT.31](../delivery/lanes/native.md#task-nat-31), and PDF parsing is retired with the PDF engine removal owned by [NAT.32](../delivery/lanes/native.md#task-nat-32) under [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022).
+**What must be fully done.** Retain the approved native foundations in DesktopPlatform; apply the selected vcpkg/official OTIO admission and MDF exclusion from the native registry. Migrate capability-specific managed wrappers into their DesktopPlatform packages; consume risky parsers only through the ContentSandbox/Broker isolation required by [architecture 24](../../architecture/24-content-and-extension-isolation.md). WP11 supplies the restricted helper and WP13 composes production parsers; WP01 must not introduce an uncontained parser or claim that the current Hello helper is a signed sandbox. Remove product copies only after exact source/NOTICE and package tests prove the transfer.
 
 **Testing requirements.** Compare native source/import manifests and reference dispositions; reject direct MDF use, duplicate wrappers, cross-product source links and unadmitted native binaries.
 
@@ -214,7 +216,7 @@
 3. No product knowledge remains in the shared foundation.
 4. Current native admissions are applied: official OTIO is the selected interchange boundary, MDF is excluded, and unmigrated conflicting skeletons are unreferenceable; no pending substitute choice overrides WP01.03.
 5. Every required test family maps to an existing suite or a named future package.
-6. All remaining conflicting code whose disposition is due at this stage is fenced and unreferenceable. Explicit bootstrap compatibility is retained until a named later producer, including the Kotlin native-grpc client until the first business release in WP03, and is not prematurely removed. Planning repair 2026-10-08 (DLV-34; P2-021): for the Kotlin native-grpc client the successor is [AND.40](../delivery/lanes/android.md#task-and-40), which retires it with the MAUI migration under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021).
+6. All remaining conflicting code whose disposition is due at this stage is fenced and unreferenceable. Explicit bootstrap compatibility is retained until a named later producer, including the Kotlin native-grpc client until the first business release in WP03, and is not prematurely removed.
 
 ---
 
