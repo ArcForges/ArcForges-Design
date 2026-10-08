@@ -2,21 +2,21 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture
-> Governing authority: [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) amends [D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007); [D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014) defines the surfaces and [D-015](../decisions/phase-1-foundation-decisions.md#rule-d-015) the canonical account origin
+> Governing authority: **[P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)** (C#-first Web: Blazor WebAssembly and a C# static Site generator; amends [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) in part, 2026-10-08); [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) amends [D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007); [D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014) defines the surfaces and [D-015](../decisions/phase-1-foundation-decisions.md#rule-d-015) the canonical account origin
 > Companions: [Web requirements](../requirements/products/arcforges-web.md), [Web toolchain and SDK](25-web-toolchain-and-sdk.md), [security](08-security-architecture.md), [Cloud](05-cloud-architecture.md)
 
-React/TypeScript implements the browser experiences. Node.js provides the shared build/development toolchain. One Native AOT C# Cloud host owns business RPC, browser sessions, billing and canonical persistence. The single agent Harness runs in the separate CF Workflow deployment.
+Blazor WebAssembly implements the interactive browser profiles: Account, Chat (assistant), the ArcScope library, reports and simulator console, and Operations. A C# static Site generator, built on the first-party Razor `HtmlRenderer`, produces the public pages at build time. Node.js is build and deploy tooling for wrangler only. One Native AOT C# Cloud host owns business RPC, browser sessions, billing and canonical persistence, and the single agent Harness runs in that host ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)). No React, TypeScript or Node business service exists.
 
 ## 1. Build outputs
 
 ```text
-Web repository — one npm workspace and one Windows esproj
-apps/site → site (static public pages)
-apps/app  → account (account.arcforges.com)
+Web repository — one win.slnx (C# solution); no npm workspace in production
+site generator (C#, Razor HtmlRenderer; replaces apps/site) → site (static public pages)
+ArcForges.Web.App (Blazor WebAssembly, one source tree) → account (account.arcforges.com)
           → chat (chat.arcforges.com)
           → operations (separate operator origin and authorization)
-packages/ui → shared browser UI
-Released Contracts clients → same-origin Worker ingress → C# Container
+Razor Class Library → shared browser UI
+Released Contracts NuGet clients → same-origin Worker ingress → C# Container
 ```
 
 | # | Rule |
@@ -24,17 +24,17 @@ Released Contracts clients → same-origin Worker ingress → C# Container
 | <a id="rule-bo-01"></a>BO-01 | **Public content is present in static HTML/CSS before JavaScript runs.** Marketing, pricing information, legal, docs and downloads are usable with scripting disabled; enhancements do not hide initial content. |
 | <a id="rule-bo-02"></a>BO-02 | **Static pages are deployment artifacts, not a second account/chat application.** |
 | <a id="rule-bo-03"></a>BO-03 | ArcForges.Web.App is one interactive source tree built into account, chat and operations profiles, each with a disjoint route graph and authorization boundary. |
-| <a id="rule-bo-04"></a>BO-04 | React DOM runs browser JavaScript emitted from strict TypeScript. Web has no .NET/WASM host; desktop uses C# Native AOT and Android uses Kotlin/Compose as separately specified. |
-| <a id="rule-bo-05"></a>BO-05 | **Use Node.js/npm, React Router and Vite as specified in the toolchain companion.** Build-time static rendering is allowed; runtime Node SSR, Blazor modes, React Native and an additional Node business service are outside this baseline. |
-| <a id="rule-bo-06"></a>BO-06 | **Browser code may use the selected JS/TS ecosystem under dependency and bundle policy.** Browser capabilities do not authorize WebView, DOM or JavaScript UI inside native desktop applications. |
+| <a id="rule-bo-04"></a>BO-04 | The interactive profiles are C# compiled to WebAssembly by Blazor WebAssembly (standalone host). The public Site is C# generated static HTML that needs no WebAssembly. No React, TypeScript or JavaScript UI framework is used. Desktop uses C# Native AOT and Android uses .NET MAUI as separately specified ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)). |
+| <a id="rule-bo-05"></a>BO-05 | **Use the .NET 10 SDK, Blazor WebAssembly and the Razor `HtmlRenderer` as specified in the toolchain companion.** Build-time static rendering is allowed; runtime Node SSR, Blazor Server and Blazor Web App render modes, React Native and any additional Node business service are outside this baseline. Node.js is build and deploy tooling for wrangler only. |
+| <a id="rule-bo-06"></a>BO-06 | **Browser code is C# under NuGet dependency and bundle policy, with minimal JavaScript interop only where no managed API exists** (listed and audited in section 3). Browser capabilities do not authorize WebView, DOM or JavaScript UI inside native desktop applications. |
 
 Public host/path dispatch follows [arch 05 routing](05-cloud-architecture.md#edge-routes-and-binding-graph). Account/chat cookies never cross origins; operations uses a disjoint identity.
 
-**Browser compatibility authority.** All four outputs and generated clients consume [browser-support.v1](../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1). Web pins exact resolved browser/test versions at release freeze and explicitly sets Chrome/Edge 134, Firefox 136 and Safari 18.4 build floors. Real current/previous-stable suites, capability-denial UI and Watch→Poll/ReadOutput recovery are required; no moving bundler default, security polyfill or unchecked in-app WebView is a supported fallback.
+**Browser compatibility authority.** All four outputs and generated clients consume [browser-support.v1](../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1). Web pins exact resolved browser/test versions at release freeze and explicitly sets Chrome/Edge 134 and Firefox 136 build floors. The Safari floor is removed with macOS ([P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023)). Real current/previous-stable suites, capability-denial UI and Watch→Poll/ReadOutput recovery are required; no moving framework default, security polyfill or unchecked in-app WebView is a supported fallback. Browser suites run as local opt-in tests under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017).
 
 ## 2. Static generation
 
-Content, catalogue, release manifests, legal versions, locales and an approved public pricing snapshot feed the Node build. React Router pre-renders the complete public URL inventory. No build reads a live pricing endpoint, customer database or arbitrary provider API. Private pricing policy is reduced to an approved public offer projection before it becomes a build input.
+Content, catalogue, release manifests, legal versions, locales and an approved public pricing snapshot feed the C# static Site generator. The generator pre-renders the complete public URL inventory with the Razor `HtmlRenderer`. No build reads a live pricing endpoint, customer database or arbitrary provider API. Private pricing policy is reduced to an approved public offer projection before it becomes a build input.
 
 | # | Rule |
 |---|---|
@@ -46,23 +46,25 @@ Content, catalogue, release manifests, legal versions, locales and an approved p
 | <a id="rule-sg-06"></a>SG-06 | **Assets are content-hashed; HTML has a short cache lifetime.** Old assets remain available for the supported client window. |
 | <a id="rule-sg-07"></a>SG-07 | **Same inputs/toolchain yield the same output**, including deterministic timestamps/order and locale handling; record any toolchain nondeterminism explicitly. |
 
-## 3. React application and design system
+## 3. Blazor application and design system
 
 | # | Rule |
 |---|---|
-| <a id="rule-wa-01"></a>WA-01 | One React/TypeScript codebase builds four explicit outputs: site, account, chat and operations. Compile-time route/import boundaries prevent accidental feature inclusion; server authorization remains independent. status is independently hosted and not a fifth application profile. |
+| <a id="rule-wa-01"></a>WA-01 | One C# solution builds four explicit outputs: site (the static Site generator) and the account, chat and operations profiles (one Blazor WebAssembly source tree). Compile-time route and project-reference boundaries (project and analyzer policy) prevent accidental feature inclusion; server authorization remains independent. status is independently hosted and not a fifth application profile. |
 | <a id="rule-wa-02"></a>WA-02 | **Origins have independent sessions, storage and in-memory state.** A workspace/user switch aborts old requests and clears scoped queries; late replies cannot contaminate the new context. |
-| <a id="rule-wa-03"></a>WA-03 | Contracts handwritten proto generates protobuf-es types/descriptors and the gRPC-Web SDK. No C# DTO → OpenAPI → TypeScript pipeline or copied business types. |
-| <a id="rule-wa-04"></a>WA-04 | React uses the generated SDK through createGrpcWebTransport in binary mode. C# uses GrpcWebHandler; Android uses Connect Kotlin gRPC-Web. All three share semantic vectors, not runtime code. |
-| <a id="rule-wa-05"></a>WA-05 | EventService.Watch/Poll and ExecutionService.WatchOutput/ReadOutput use the generated annex 10 schema, trailers and cursor recovery. No JS SignalR client, public WebSocket or JSON hint protocol. |
+| <a id="rule-wa-03"></a>WA-03 | Contracts handwritten proto generates the C# message types, descriptors and gRPC-Web SDK, published as the first-party NuGet SDK ([CON.40](../planning/delivery/lanes/contracts.md#task-con-40) retires the TypeScript SDK). No DTO → OpenAPI → client pipeline and no copied business types. Signed and unsigned 64-bit values and decimals are bound to C# `long`, `ulong` and `decimal` (or their canonical strings) and never pass through a JavaScript number; [PRF.11](../planning/delivery/lanes/runtime-proofs.md#task-prf-11) proves the exact boundary. |
+| <a id="rule-wa-04"></a>WA-04 | The Blazor profiles use the generated C# SDK through `Grpc.Net.Client.Web` (`GrpcWebHandler`) in binary mode (`application/grpc-web+proto`) for unary calls. MAUI Android uses the same generated SDK and `Grpc.Net.Client.Web` over a `SocketsHttpHandler` (see [11](11-mobile-architecture.md)). All clients share semantic vectors, not runtime code. |
+| <a id="rule-wa-05"></a>WA-05 | EventService.Watch/Poll and ExecutionService.WatchOutput/ReadOutput use the generated annex 10 schema, trailers and cursor recovery. Server streaming uses the .NET 10 browser streaming HttpClient over binary gRPC-Web. Only if binary server streaming is not observed to work in the Blazor proof ([PRF.11](../planning/delivery/lanes/runtime-proofs.md#task-prf-11)), the ingress also accepts `application/grpc-web-text` on server-stream routes: the same messages, a framing variant recorded in the wire registry. No client or bidi streaming is introduced. No JS SignalR client, public WebSocket or JSON hint protocol. |
 | <a id="rule-wa-06"></a>WA-06 | **Browser authentication is an opaque server-side cookie session**, resolved in §5. Browser JavaScript holds no bearer/refresh credential and performs no refresh-token loop. |
-| <a id="rule-wa-07"></a>WA-07 | **TanStack Query caches projections and invalidates them on authoritative changes.** Entitlement events and optimistic presentation never approve a paid action or settle a charge. |
-| <a id="rule-wa-08"></a>WA-08 | **Route chunks, initial transfer, first usable interaction and sustained chat memory have recorded budgets.** [WP-06](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06) establishes the production baseline; later releases enforce regressions. |
+| <a id="rule-wa-07"></a>WA-07 | **The Blazor profiles cache projections in C# client services and invalidate them on authoritative changes.** Entitlement events and optimistic presentation never approve a paid action or settle a charge. |
+| <a id="rule-wa-08"></a>WA-08 | **Route chunks, initial transfer, first usable interaction and sustained chat memory have recorded budgets.** The React-measured budgets are kept as the historical baseline, marked re-baseline pending under AL-06 by [PRF.11](../planning/delivery/lanes/runtime-proofs.md#task-prf-11) for the .NET WebAssembly build. [WP-06](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06) remains the publish-proof anchor; later releases enforce regressions against the re-baselined values. |
 | <a id="rule-wa-09"></a>WA-09 | **Own a coherent ToC design system:** type scale, spacing, colors, contrast, icons, responsive layout, light/dark theme and restrained motion. Site, subscription and chat are designed together; a default component-library theme is not design acceptance. |
 | <a id="rule-wa-10"></a>WA-10 | **Every major component specifies normal, loading, empty, error, disabled, pending and recovery states.** Account views distinguish active term, included capacity, purchased credits and rate limitation using server-provided reasons; skeletons never suggest a successful purchase. |
-| <a id="rule-wa-11"></a>WA-11 | **A test-only UI catalogue and representative visual baselines precede page completion.** Cover pricing/checkout return, account overview, quota/capacity, conversation/streaming, task approval and mobile-width layouts, with human visual acceptance plus automated interaction checks. |
+| <a id="rule-wa-11"></a>WA-11 | **A test-only UI catalogue and representative visual baselines precede page completion.** Cover pricing/checkout return, account overview, quota/capacity, conversation/streaming, task approval and mobile-width layouts, with human visual acceptance plus automated component tests (bUnit) and interaction checks. Browser-level visual baselines run as local opt-in Playwright tooling under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017). |
 
-Shared components live in `packages/ui`. React state models navigation and presentation; the generated SDK and small language-specific clients own transport/recovery. No React component embeds supplier rates, provider keys, agent execution or payment authority.
+Shared components live in a Razor Class Library used by the profiles and the Site generator's templates. Blazor component state models navigation and presentation; the generated C# SDK and small transport clients own transport and recovery. No component embeds supplier rates, provider keys, agent execution or payment authority.
+
+**JavaScript interop audit list.** Interop is allowed only where no managed API exists. Each point is a named wrapper with fixed argument types and is audited in the Web review. The permitted points are: WebAuthn `navigator.credentials` for passkey ceremonies (AU-07); the clipboard; file download and share; and the sandboxed preview iframe for authorized active content (CS-06). No other JavaScript interop exists, no string-evaluated code runs, and no credential, session or token value crosses into JavaScript. A new interop point needs a reviewed record and a CSP check.
 
 ## 4. Surface and routing matrix
 
@@ -85,7 +87,7 @@ Shared components live in `packages/ui`. React state models navigation and prese
 | <a id="rule-sm-02"></a>SM-02 | **Each origin has explicit CSP, cookie, CORS, CSRF and edge route rules.** The edge forwards only declared routes to the configured Cloud service and preserves a validated external-origin identity. Untrusted forwarded headers cannot select a session realm. |
 | <a id="rule-sm-03"></a>SM-03 | **No parent-domain auth cookie or cross-origin credential sharing.** Browser requests use same-origin allowlisted routes with fixed Cloud targets. The browser edge never exposes native bearer issuance/refresh routes; browser login/recovery returns the safe cookie-session projection. The native public API does not accept browser cookies as bearer credentials. |
 | <a id="rule-sm-04"></a>SM-04 | **Static public and status surfaces survive Cloud failure.** Their already published content remains available; current checkout and live account state truthfully report unavailability. |
-| <a id="rule-sm-05"></a>SM-05 | **SPA fallback applies only to declared UI navigation.** RPC errors keep their gRPC framing/trailers; session/AI/object errors keep their declared HTTP status/body, missing assets remain 404, protected responses are never cached as HTML, and direct account/chat deep links load the correct profile. |
+| <a id="rule-sm-05"></a>SM-05 | **Client-side route fallback (Blazor WebAssembly) applies only to declared UI navigation.** RPC errors keep their gRPC framing/trailers; session/AI/object errors keep their declared HTTP status/body, missing assets remain 404, protected responses are never cached as HTML, and direct account/chat deep links load the correct profile. |
 
 ## 5. Browser session architecture — [P2-003](../decisions/phase-2-specification-decisions.md#rule-p2-003) resolved
 
@@ -112,12 +114,12 @@ Concurrent browser tabs share only their own origin's cookie session. No periodi
 
 | # | Rule |
 |---|---|
-| <a id="rule-cs-01"></a>CS-01 | **Production CSP permits only the required hashed/self-hosted scripts and explicitly approved providers**, without unsafe-eval or a default unsafe-inline allowance. Vite HMR/development exceptions never reach production. Any build-injected inline bootstrap is externalized or has a build-generated exact hash. |
+| <a id="rule-cs-01"></a>CS-01 | **Production CSP permits only the required hashed/self-hosted scripts and explicitly approved providers**, without unsafe-eval or a default unsafe-inline allowance. The Blazor app profiles (account, chat, operations) carry exactly `script-src 'self' 'wasm-unsafe-eval'` plus required hashes, and never `unsafe-eval` or `unsafe-inline` ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021), item 2); `style-src 'self'` stays, so components that need inline styles (such as Virtualize on .NET 10) are not used. The public Site ships no WebAssembly and its CSP never includes `wasm-unsafe-eval`. Development hot-reload exceptions never reach production. Any build-injected inline bootstrap is externalized or has a build-generated exact hash. The Web tests assert this exact token set. |
 | <a id="rule-cs-02"></a>CS-02 | **Everything shipped to a browser is public.** Bundle, source maps, runtime config, static props and errors carry no private policy, supplier pricing or secrets. |
 | <a id="rule-cs-03"></a>CS-03 | **Cross-origin permissions are explicit allowlists.** Cookie-authenticated business traffic is same-origin; native bearer endpoints retain separate policy. |
-| <a id="rule-cs-04"></a>CS-04 | **Uploads use the existing size/type/quarantine/resource authorization flow.** Neither a React preview nor a generated validator establishes file safety. |
+| <a id="rule-cs-04"></a>CS-04 | **Uploads use the existing size/type/quarantine/resource authorization flow.** Neither a client-side preview nor a generated validator establishes file safety. |
 | <a id="rule-cs-05"></a>CS-05 | **Logs redact cookies, Authorization, antiforgery material, prompts and chat/tool contents.** Browser error telemetry uses sanitized identifiers and user consent rules. |
-| <a id="rule-cs-06"></a>CS-06 | **User Markdown/content is rendered from a safe structured subset.** Raw user HTML is never passed to React unsafe HTML APIs. Active documents/HTML/SVG previews use an isolated authorized surface or a download flow, never script execution in Account/Chat origin. |
+| <a id="rule-cs-06"></a>CS-06 | **User Markdown/content is rendered from a safe structured subset.** Raw user HTML is never rendered through Blazor raw-markup APIs (such as `MarkupString`). Active documents/HTML/SVG previews use an isolated authorized surface or a download flow, never script execution in Account/Chat origin. |
 | <a id="rule-cs-07"></a>CS-07 | **No public share links in V1.** Private links and resource fetches authenticate and authorize at access. |
 | <a id="rule-cs-08"></a>CS-08 | **Resource denials do not disclose forbidden existence.** Signed/object URLs remain short-lived, scoped and outside application logs. |
 
@@ -129,7 +131,7 @@ Concurrent browser tabs share only their own origin's cookie session. No periodi
 | <a id="rule-or-02"></a>OR-02 | **Cloud failure leaves the loaded shell usable with honest unavailable states.** Successful server acknowledgement is distinguished from pending work; a retry preserves the command identity. |
 | <a id="rule-or-03"></a>OR-03 | **Realtime failure falls back to bounded HTTP polling and sequence backfill.** Never resubmit an AI turn because its stream disconnected. |
 | <a id="rule-or-04"></a>OR-04 | **Public static pages remain available during a Cloud outage.** |
-| <a id="rule-or-05"></a>OR-05 | **Logout, revocation and user/workspace changes clear sensitive UI caches and abort requests.** No default persistent query cache or service worker stores authenticated data; background tabs cannot repopulate a cleared scope. |
+| <a id="rule-or-05"></a>OR-05 | **Logout, revocation and user/workspace changes clear sensitive UI caches and abort requests.** Web is online-only: no default service worker and no persistent account or chat cache stores authenticated data (WCI-05). Background tabs cannot repopulate a cleared scope. |
 
 ## 8. Accessibility, localisation and visual performance
 
@@ -140,7 +142,7 @@ Concurrent browser tabs share only their own origin's cookie session. No periodi
 | <a id="rule-al-03"></a>AL-03 | **All visible strings are localisable**, including server reason-code presentation, validation, streaming/status messages and generated pages. |
 | <a id="rule-al-04"></a>AL-04 | **Canonical data, localised display.** No locale parsing of IDs, exact amounts or timestamps on the wire. |
 | <a id="rule-al-05"></a>AL-05 | **Public pages meet the existing p75 LCP ≤2.5 s, INP ≤200 ms and CLS ≤0.1 requirement**, with a declared device/network profile for lab checks and production field verification. |
-| <a id="rule-al-06"></a>AL-06 | **Application route/bundle/startup/memory budgets are committed and enforced**, measured on production assets and the supported browser/device matrix. A development server result is not evidence. |
+| <a id="rule-al-06"></a>AL-06 | **Application route/bundle/startup/memory budgets are committed and enforced**, measured on production assets (the `dotnet publish` output of the Blazor profiles, IL build unless a measured AOT benchmark is adopted) and the supported browser/device matrix. A development server result is not evidence. The budgets measured on React are kept as the historical baseline and are re-baselined by [PRF.11](../planning/delivery/lanes/runtime-proofs.md#task-prf-11) under this rule; the re-baseline is recorded, never silent. The public static Site targets in AL-05 stay binding. |
 | <a id="rule-al-07"></a>AL-07 | **Visual acceptance includes narrow screens, touch targets, long translated text, dark/light themes and reduced motion.** Do not trade readability, focus order or error clarity for animation. |
 
 ## 9. Analytics
@@ -156,25 +158,25 @@ Concurrent browser tabs share only their own origin's cookie session. No periodi
 
 | # | Rule |
 |---|---|
-| <a id="rule-bd-01"></a>BD-01 | **Build once, promote the same release set.** Node builds are deterministic jobs, not production request handlers. |
+| <a id="rule-bd-01"></a>BD-01 | **Build once, promote the same release set.** The Blazor publish output and the static Site generator output are deterministic jobs, not production request handlers. |
 | <a id="rule-bd-02"></a>BD-02 | **Atomic deployment per surface with retained previous assets, manifests and compatible security headers.** |
-| <a id="rule-bd-03"></a>BD-03 | **Proto → descriptor compatibility → released C#/TS SDKs → consumer build** is the enforced producer/consumer order. Old clients remain supported for the declared window; simultaneous frontend/backend deployment is not a compatibility strategy. |
-| <a id="rule-bd-04"></a>BD-04 | **Cached old clients receive a supported upgrade path.** Chunk failure, API incompatibility and draft preservation have explicit UI behavior; no infinite reload loop. |
-| <a id="rule-bd-05"></a>BD-05 | **Production Node-built assets and browser behavior are Web release evidence.** A .NET/WASM publish is neither required nor an alternative proof. |
-| <a id="rule-bd-06"></a>BD-06 | ArcForges-Web owns win.slnx and one esproj delegating to the same portable root npm commands. No Cloud/desktop solution requires Web sources, and ordinary consumer builds restore released Contracts packages. |
+| <a id="rule-bd-03"></a>BD-03 | **Proto → descriptor compatibility → released C# SDK → consumer build** is the enforced producer/consumer order. Old clients remain supported for the declared window; simultaneous frontend/backend deployment is not a compatibility strategy. |
+| <a id="rule-bd-04"></a>BD-04 | **Cached old clients receive a supported upgrade path.** Lazy-loaded assembly or static-asset failure, API incompatibility and draft preservation have explicit UI behavior; no infinite reload loop. |
+| <a id="rule-bd-05"></a>BD-05 | **The production `dotnet publish` output of the Blazor profiles and the generated Site artifacts, with their browser behavior, are Web release evidence.** Node is not part of the production build, and browser checks ([PRF.11](../planning/delivery/lanes/runtime-proofs.md#task-prf-11)) are local opt-in evidence under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017). |
+| <a id="rule-bd-06"></a>BD-06 | ArcForges-Web owns one `win.slnx` (the Blazor profiles, Razor Class Library, static Site generator and test projects) and the thin Cloudflare Worker adapter that serves the static assets. No Cloud/desktop solution requires Web sources, and ordinary consumer builds restore released Contracts NuGet packages. |
 
 ## 11. Non-goals
 
-No ArcScope browser editor, public sharing, desktop WebView, browser agent authority, supplier key handling, private policy bundle, or separate Node business backend is introduced. Private operator functions remain outside consumer deployment profiles.
+No ArcScope browser editor, public sharing, desktop WebView, browser agent authority, supplier key handling, private policy bundle, or separate Node business backend is introduced. Blazor Server and Blazor Web App render modes are not introduced. Private operator functions remain outside consumer deployment profiles.
 
 ## 12. Traceability
 
 | Source | Consumed as |
 |---|---|
-| [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) and the dated [D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007) amendment | React/TS, Node/npm, C# generated SDK, esproj/CLI split and supersession of Blazor-only Web requirements |
+| [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (amends [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) and the dated [D-007](../decisions/phase-1-foundation-decisions.md#rule-d-007) amendment) | Blazor WebAssembly profiles, C# static Site generator, generated C# SDK and the exact CSP token rule for app profiles |
 | [D-014](../decisions/phase-1-foundation-decisions.md#rule-d-014) / [D-015](../decisions/phase-1-foundation-decisions.md#rule-d-015) | Existing surface inventory, one account/chat codebase, canonical account origin and isolated browser sessions |
 | [D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009) / [D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021) | Authored public proto contracts; generated Apache SDK and wire validation separated from AGPL product UI |
 | [P2-003](../decisions/phase-2-specification-decisions.md#rule-p2-003) resolution | Same-origin C# browser-session adapter, live server sessions, CSRF and revocation |
 | Current product requirements | Account, paid subscription/capacity and Cloud ArcChat scope; static public content and quality requirements |
 
-The preserved input descriptions of Blazor are historical input. They are superseded for Web by the user's [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) decision, not implementation requirements.
+(Superseded 2026-10-08 by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021): the React/TypeScript, Vite and React Router description that P2-008 adopted is historical. The Blazor WebAssembly and C# static Site description in this document is the implementation requirement.)
