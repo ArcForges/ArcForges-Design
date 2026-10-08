@@ -373,7 +373,7 @@ Data-health states detected/repairing/repaired/irrecoverable/acknowledged preser
 | `device_id` | `id` | **PK** |
 | `user_id` | `id NN` | `FK →`; restrict |
 | `display_name` | `text NN` | User-editable |
-| `platform` | `enum(windows, macos, linux, android, ios, web) NN` | |
+| `platform` | `enum(windows, macos, linux, android, ios, web) NN` (macos and ios are reserved, never used; [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)) | |
 | `trust_level` | `enum(untrusted, trusted) NN` | Default `untrusted` |
 | `trust_raised_at` | `instant?` | Requires step-up ([WP-22.03](../../planning/work-packages/22-identity-workspace-and-device.md#rule-wp-22.03)) |
 | `remote_enabled` | `bool NN` | Default **false** |
@@ -397,7 +397,7 @@ Data-health states detected/repairing/repaired/irrecoverable/acknowledged preser
 | `contract_set_version` | `text NN` | Drives the compatibility window |
 | `installed_at` | `instant NN` | |
 | `last_active_at` | `instant NN` | |
-| `platform` | `text NN` | windows/linux/macos/android/web |
+| `platform` | `text NN` | windows/linux/android/web; macos is reserved, never used ([P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)) |
 | `public_key`, `key_version` | `text NN`, `bigint NN` | Installation proof and rotation |
 | `revoked_at` | `instant?` | Revokes sessions, presence and delivery eligibility |
 | `rev` | `rev NN` | Installation authorization guard |
@@ -912,8 +912,8 @@ Cloud-history terminal states require exactly one final/interrupted message refe
 
 | Table | Complete fields and constraints |
 |---|---|
-| task.run | run_id:id PK; task_id:id FK NN; ordinal:int NN; state:TaskState NN; workflow_id/worker_version:text NN; recovery_generation:bigint NN; last_iteration_receipt:hash?; created_at/updated_at:instant NN; rev:rev NN; UQ(task_id,ordinal); IX(state,updated_at). |
-| task.execution_lease | run_id:id PK/FK; holder/workflow_id/worker_version:text NN; epoch:bigint NN; expires_at:instant NN; recovery_generation:bigint NN; IX(expires_at). |
+| task.run | run_id:id PK; task_id:id FK NN; ordinal:int NN; state:TaskState NN; workflow_id (executor invocation identity, [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021))/worker_version (Cloud Worker version):text NN; recovery_generation:bigint NN; last_iteration_receipt:hash?; created_at/updated_at:instant NN; rev:rev NN; UQ(task_id,ordinal); IX(state,updated_at). |
+| task.execution_lease | run_id:id PK/FK; holder/workflow_id (invocation identity)/worker_version:text NN; epoch:bigint NN; expires_at:instant NN; recovery_generation:bigint NN; IX(expires_at). |
 | task.execution_command | command_id:id PK; run_id:id FK NN; epoch:bigint NN; operation/request_sha256/state:text NN; result_ref:typed JSON TEXT?; created_at:instant NN; UQ(run_id,operation,command_id). |
 
 No external call occurs inside a registered guarded commit. A device step requires a full frozen target; retargeting requires a new approved command, never automatic fallback to another application.
@@ -1439,13 +1439,13 @@ Search owns search.inference_job as the canonical business control/receipt recor
 | model_descriptor_id; config_revision_id; profile | Pinned activated catalogue/config and selected inference profile; no dynamic provider fallback |
 | state; reason; rev; created_at; updated_at; deadline | queued/running/unknown/succeeded/failed/cancelled; named reason, monotonic revision and UTC instants. Admission-to-result deadline 120 seconds; before-dispatch expiry refuses, possible-dispatch expiry is unknown |
 | logical_request_id; provider_attempt_id; intent_receipt | Existing Commerce identities, one bounded invocation per admitted job; beneficiary=platformIndexing, funding_class=platformJob, operator_job_ref=job_id. No customer capacity reservation/tariff/settlement |
-| workflow_id; worker_version; recovery_generation; lease_holder; lease_epoch; lease_expires_at | Same deterministic CF ID and observed version as the private contract; conditional 60-second claim, renewal 20 seconds; old epoch cannot act after takeover/expiry |
+| workflow_id (invocation identity); worker_version; recovery_generation; lease_holder; lease_epoch; lease_expires_at | Same deterministic CF ID and observed version as the private contract; conditional 60-second claim, renewal 20 seconds; old epoch cannot act after takeover/expiry |
 | result_ref?; outcome_receipt?; outcome_hash?; source_publication_ref? | Immutable validated result and canonical outcome digest/receipt. succeeded requires complete result; unknown has no claim of completion. Projection delivery receipt records publish/discard under current source/policy; never provider content in Commerce |
 | cancellation_requested_at?; completed_at? | Cancellation blocks new dispatch/publication; an already-sent invocation still records supplier facts under the existing uncertainty policy |
 
 Stable job_id comes from the committed Search source/query command, reused on outbox/redelivery. Reusing it with a different input hash is conflict. Unique logical request/attempt references and the outcome hash make receipts idempotent. Model calls never retry merely because a job/lease expired; a proven pre-dispatch refusal may be rescheduled by a new authorized job, and unknown attempts stay in supplier reconciliation. New source/model/config revisions produce new input identities, not edits to old outcomes.
 
-The two enumerated Search families in the [transaction authority](00-data-model-overview.md#611-shared-units-of-work) use each module's own SQL port in one D1 batch; no external CF/R2 call occurs inside the commit. Search is after Task and before Notification in statement order. The dispatch outbox creates/gets the exact Workflow; CF input fetch rechecks current source permissions, active service term and AI-exclusion policy. Source deletion/revocation cancels queued jobs and invalidates derived publication even when a late output is complete.
+The two enumerated Search families in the [transaction authority](00-data-model-overview.md#611-shared-units-of-work) use each module's own SQL port in one D1 batch; no external CF/R2 call occurs inside the commit. Search is after Task and before Notification in statement order. The dispatch outbox creates/gets the exact executor invocation ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)); CF input fetch rechecks current source permissions, active service term and AI-exclusion policy. Source deletion/revocation cancels queued jobs and invalidates derived publication even when a late output is complete.
 
 Record every supplier attempt and keep unresolved exposure through expiry/period closure. A complete result may coexist with costUnconfirmed; it cannot create a customer debit or release conservative liability. Retain accounting identity/receipt under existing commerce retention; source text/result pins use Resource content/deletion policy, never extend user-content retention merely to retain cost evidence. A completed projection consumer releases ephemeral pins; interrupted consumers retry idempotently and rebuild readiness from current authoritative source, never from CF checkpoint data.
 

@@ -17,16 +17,27 @@
 
 ## 2. Deployment host and internal services
 
-**One deployable host** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**; `§8` of the product scope). `ArcForges.Cloud.Host` is the single ASP.NET Core Native AOT executable. Business request handlers, bounded hint reads, canonical Task/Agent ports and ordinary leased background jobs run inside it as libraries. The sole model loop runs in CF Workflow, outside this process. Horizontal scale is **replicas of that one host**, never a second deployable with a different job.
+**One deployable host** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**; `§8` of the product scope). `ArcForges.Cloud.Host` is the single ASP.NET Core Native AOT executable. Business request handlers, bounded hint reads, canonical Task/Agent ports and ordinary leased background jobs run inside it as libraries. Horizontal scale is **replicas of that one host**, never a second deployable with a different job.
+
+The model/tool loop (the Harness) is C# code in this host ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)): a C# durable executor on D1 with an epoch lease and fenced writes, a Durable Object alarm per run for timers and wake, and a Queue for wake fan-out where needed. No Cloudflare Workflow holds run state. A Workflow may be used later only as a stateless wake or lifecycle adapter if the executor crash-injection proof shows it is cheaper, and C# still decides every step. The TypeScript Cloud Worker performs only the external invocations that the C# loop instructs.
+
+**AI execution cost controls are C# policy** ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021); values unchanged unless a reviewed record changes them):
+
+- reserve before dispatch; pinned model and tariff snapshot;
+- model-step retries 0 after possible dispatch, at most 2 pre-dispatch retries with a fresh attempt id;
+- 120 s model deadline (reconciled with the 90 s value in the current code during the HAR.40 proof; never relaxed silently);
+- output and context caps as in [architecture 09](09-ai-and-agent-runtime-architecture.md); parallel tools 4/8; step and subrequest guards;
+- 60 s lease with 20 s renewal; 128 KiB checkpoint limit; unknown effects never auto-retried;
+- per-model token bucket sized to the proven Workers AI tier; container `max_instances` and realm slots from the capacity proof.
 
 ```
-Desktop gRPC-Web / Web gRPC-Web / Kotlin Android gRPC-Web
+Desktop gRPC-Web / Blazor Web gRPC-Web / MAUI Android gRPC-Web
                    -> TLS ingress -> C# Native AOT Cloud (identical replicas)
                       explicit auth/tenancy/authorization/validation
                       business owners + leased bounded jobs
                       D1 + transactional outbox
                    -> generated RPC / object-byte exceptions -> Cloud Worker router
-                      RunWorkflow: only model/tool loop -> Workers AI
+                      C# Harness loop; ai.internal thin adapter -> Workers AI
                       RunStream DO: bounded disposable stream tail
                       R2: private immutable objects and staged transfers
 C# <-> CF: authenticated typed HTTP ports, leases and idempotent receipts.
@@ -67,7 +78,7 @@ This is the authoritative routing table; arch 10 references it. All `/internal/*
 
 Container port 8080 has no public ingress. Cloud Worker selects the Container; C# is the only business authority. Set `enableInternet=false`; configure the closed outbound host list and exported outbound proxy handler. `storage.internal` executes Cloud-owned named D1 plans, `objects.internal` accesses authorized R2 grants, `ai.internal` invokes the AI Worker service binding, and `feeds.internal` opens private DO projections. These virtual names have no public DNS fallback. AI Worker calls C# only through the Cloud Worker's private service binding. Per-direction HMAC/nonce/epoch checks in contracts 05 remain defense in depth. The handler routes exact host/path/method, strips client-forwarded private headers and rejects redirects to non-admitted destinations. No generic fetch proxy or arbitrary SQL endpoint exists.
 
-Container external egress through the handler is restricted to configured Postmark/SES, FCM, Paddle, independent S3 backup and activated self-host/operator OIDC token/metadata origins. Provider paths and ports are 443 only; private/link-local addresses and unexpected redirects are refused. AI Worker uses the Workers AI binding, Brave Search and exact admitted Cloud connector/MCP HTTPS origins through its one tool adapter; there is no unrestricted model-driven URL fetch. Cloud bindings/secrets are never passed into extension code. Host/path allowlists and instance limits are versioned deployment config with validation and negative integration vectors.
+Container external egress through the handler is restricted to configured Postmark/SES, FCM, Paddle, independent S3 backup and activated self-host/operator OIDC token/metadata origins. Provider paths and ports are 443 only; private/link-local addresses and unexpected redirects are refused. The Cloud Worker's thin `ai.internal` adapter invokes the Workers AI binding; Brave Search and the exact admitted Cloud connector/MCP HTTPS origins are reached through one tool adapter whose allowlist, consent and egress policy are C# decisions ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)); there is no unrestricted model-driven URL fetch. Cloud bindings/secrets are never passed into extension code. Host/path allowlists and instance limits are versioned deployment config with validation and negative integration vectors.
 
 Selected mechanism: [Containers outbound handlers](https://developers.cloudflare.com/containers/guides/outbound-traffic/) and [Worker connections](https://developers.cloudflare.com/containers/configuration/workers-connections/), checked 2026-09-17. Use the provider's outbound proxy export and certificate configuration only when HTTPS interception is actually configured. WP06/21 must prove the selected SDK/runtime wiring, blocked egress and public denial on a real deployment.
 
@@ -160,11 +171,11 @@ Nineteen domain modules, following the [Cloud schema ownership map](data-model/0
 |---|---|
 | <a id="rule-ap-01"></a>AP-01 | Public business services implement handwritten proto through binary gRPC-Web unary methods and bounded server streams for all client platforms. Only the enumerated browser-auth/provider/object/AI/platform protocol exceptions use HTTP/JSON or their standard wire format. |
 | <a id="rule-ap-02"></a>AP-02 | Business commands/queries use binary gRPC-Web with generated ArcResult and trailers. HTTP status/cache/ETag semantics apply only to the explicitly declared browser/object/provider/static exceptions; never expose a parallel REST CRUD surface. |
-| <a id="rule-ap-03"></a>AP-03 | Handwritten proto is the business RPC authority. Descriptor sets generate C#/TS/Connect Kotlin records/clients and fixtures. JSON schemas document only the declared HTTP exceptions; OpenAPI is not a business generation stage. |
+| <a id="rule-ap-03"></a>AP-03 | Handwritten proto is the business RPC authority. Descriptor sets generate C# records, clients and fixtures; TS and Connect Kotlin generation is retired after consumer checks ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)). JSON schemas document only the declared HTTP exceptions; OpenAPI is not a business generation stage. |
 | <a id="rule-ap-04"></a>AP-04 | Descriptor compatibility, generated metadata/validation and real three-language package-consumer tests control drift. Published immutable artifacts are the integration boundary. |
 | <a id="rule-ap-05"></a>AP-05 | **File upload and download use standard HTTP content and streams.** Large objects are never base64-encoded into JSON. |
 | <a id="rule-ap-06"></a>AP-06 | **Timeout, cancellation and retry are explicit client policies**; a write retry requires `CommandId` idempotency. |
-| <a id="rule-ap-07"></a>AP-07 | Public protobuf types use generated C#/TS serializers; declared HTTP exceptions use explicit source-generated JSON metadata. The same semantic validators apply before owner dispatch. |
+| <a id="rule-ap-07"></a>AP-07 | Public protobuf types use generated C# serializers; declared HTTP exceptions use explicit source-generated JSON metadata. The same semantic validators apply before owner dispatch. |
 | <a id="rule-ap-08"></a>AP-08 | **Route versioning is explicit**, and the supported client set is declared by compatibility policy (`§7` of the policy requirements). |
 
 ---
@@ -299,4 +310,4 @@ Capabilities degrade independently. The full dependency-degradation matrix is in
 
 ## Selected host dependencies and integration
 
-[Platform runtime closure](21-platform-and-dependency-matrix.md#8-selected-p2-009-runtime-and-dependency-closure) owns the AOT/auth/SQL/HTTP adapter selection. [CF integration](contracts/05-cloudflare-integration.md) owns external execution/object ports and commit boundaries. This host implements those ports and canonical module operations; it runs no model loop.
+[Platform runtime closure](21-platform-and-dependency-matrix.md#8-selected-p2-009-runtime-and-dependency-closure) owns the AOT/auth/SQL/HTTP adapter selection. [CF integration](contracts/05-cloudflare-integration.md) owns external execution/object ports and commit boundaries. This host implements those ports and canonical module operations. Under [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) it also hosts the C# Harness loop; the TypeScript Cloud Worker performs only the external invocations that the C# loop instructs, and holds no business state.

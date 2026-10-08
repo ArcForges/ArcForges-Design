@@ -258,11 +258,11 @@ Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-0
 | `IContentSandbox.GetImageInfo` | private-helper |
 | `IContentSandbox.ReadImageTile` | private-helper |
 | `IContentSandbox.CloseImage` | private-helper |
-| `IContentSandbox.OpenPdf` | private-helper |
-| `IContentSandbox.GetPdfPage` | private-helper |
-| `IContentSandbox.ExtractPdfText` | private-helper |
-| `IContentSandbox.RenderPdfTile` | private-helper |
-| `IContentSandbox.ClosePdf` | private-helper |
+| `IContentSandbox.OpenPdf` | private-helper; retired ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)) |
+| `IContentSandbox.GetPdfPage` | private-helper; retired ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)) |
+| `IContentSandbox.ExtractPdfText` | private-helper; retired ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)) |
+| `IContentSandbox.RenderPdfTile` | private-helper; retired ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)) |
+| `IContentSandbox.ClosePdf` | private-helper; retired ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)) |
 | `IContentSandbox.CancelSession` | private-helper |
 | `IContentSandbox.CloseSession` | private-helper |
 | `application.list` | application-target |
