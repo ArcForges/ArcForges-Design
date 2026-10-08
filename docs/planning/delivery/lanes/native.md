@@ -46,9 +46,9 @@ Tasks: 16 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Unblocks | [APP.03](app-composition.md#task-app-03), [NAT.05](#task-nat-05), [NAT.30](#task-nat-30) |
 | Write scope | `DesktopPlatform:benchmarks/probes/agent-aot/**` |
 | Validation | AOT publish log zero diagnostics; end-to-end ToolRequest->decode->typed invocation->result run inside the published binary; containment test confirming the structured value type appears only in the boundary dispatch assembly |
-| Completion evidence | AOT publish log and in-binary device tool request decode/execute trace; explicit note that the model loop itself is NOT probed here (it is the CF Workflow, [LS-02](../../../architecture/17-agent-harness.md#rule-ls-02)/[V-03](../../../assurance/phase-1-official-verification.md#rule-v-03)) |
+| Completion evidence | AOT publish log and in-binary device tool request decode/execute trace; explicit note that the model loop itself is NOT probed here (it is the C# Harness of [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 5, with Workers AI reached through the thin ai.internal adapter) |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: benchmarks/ directory does not exist yet in DesktopPlatform; this substep has zero scaffolding. |
-| Notes | One of WP13's two canonical early risk proofs (package goal: 'retire the early technical risks'). Parallel with NAT.03 (disjoint write scopes). |
+| Notes | One of WP13's two canonical early risk proofs (package goal: 'retire the early technical risks'). Parallel with NAT.03 (disjoint write scopes). Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): the evidence note names the C# Harness instead of the Cloudflare Workflow as the model loop that this probe does not cover. The probe itself is unchanged. |
 
 <a id="task-nat-03"></a>
 
@@ -318,7 +318,7 @@ Tasks: 16 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 
 ### NAT.29 — Verify the owned WP06 artifact set and real cross-runtime integration
 
-**Outcome.** Actual candidate NuGet restore/native loading and desktop AOT; C# AOT gRPC/gRPC-Web plus selected auth/storage/SQL adapters; Kotlin/Jetpack Compose generated-client calls; React client calls; a minimal deployed CF<->reachable C#<->R2 chain -- a bounded foundation probe, explicitly not the full [WP-52](../../work-packages/52-cloud-harness.md#rule-wp-52) Cloud Harness
+**Outcome.** Actual candidate NuGet restore/native loading and desktop AOT; C# AOT gRPC/gRPC-Web plus selected auth/storage/SQL adapters; .NET MAUI Android calls through the generated C# Contracts client; Blazor WebAssembly calls through the generated C# Contracts client; a minimal deployed CF<->reachable C#<->R2 chain -- a bounded foundation probe, explicitly not the full [WP-52](../../work-packages/52-cloud-harness.md#rule-wp-52) Cloud Harness
 
 | Field | Value |
 |---|---|
@@ -333,8 +333,9 @@ Tasks: 16 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Unblocks | none |
 | Write scope |  |
 | Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
-| Completion evidence | Actual candidate NuGet restore/native loading and desktop AOT; C# AOT gRPC/gRPC-Web plus selected auth/storage/SQL adapters; Kotlin/Jetpack Compose generated-client calls; React client calls; a minimal deployed CF<->reachable C#<->R2 chain -- a bounded foundation probe, explicitly not the full [WP-52](../../work-packages/52-cloud-harness.md#rule-wp-52) Cloud Harness |
+| Completion evidence | Actual candidate NuGet restore/native loading and desktop AOT; C# AOT gRPC/gRPC-Web plus selected auth/storage/SQL adapters; .NET MAUI Android calls through the generated C# Contracts client; Blazor WebAssembly calls through the generated C# Contracts client; a minimal deployed CF<->reachable C#<->R2 chain -- a bounded foundation probe, explicitly not the full [WP-52](../../work-packages/52-cloud-harness.md#rule-wp-52) Cloud Harness |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): the Kotlin/Jetpack Compose and React client calls of this probe become .NET MAUI Android and Blazor WebAssembly calls through the generated C# Contracts client; the start edges move to PRF.11 and PRF.12. No acceptance is removed. |
 
 <a id="task-nat-30"></a>
 
