@@ -6,6 +6,8 @@
 > Layer: Planning · Work package
 > Phase: A — Freeze and foundation
 > Scheduling: this package is an obligation set; its delivery tasks and their typed prerequisites are listed in section 9, generated from the [delivery graph](../delivery/delivery-graph.json) under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018).
+>
+> **Planning repair 2026-10-08 (DLV-34; [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)).** This package's tasks are accepted, so the historical wording below is kept as written and recorded evidence is not edited. Where P2-021 supersedes a stack or scope statement here, the supersession applies to the successor scope only, and the successor is named: the Cloud Harness placement by [HAR.40](../delivery/lanes/harness.md#task-har-40) (the AI Workflow scaffold moves into Cloud as a C# executor); the still-image parser composition by [NAT.31](../delivery/lanes/native.md#task-nat-31) and the PDF engine retirement by [NAT.32](../delivery/lanes/native.md#task-nat-32) ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)); the Kotlin native-grpc client by [AND.40](../delivery/lanes/android.md#task-and-40).
 
 > **Goal.** Reconcile the seven current repositories against the accepted ownership and licence boundaries. The historical ede43db inventory recorded **55 incorrectly licensed files**; verify current source before assigning a correction, move or retirement.
 

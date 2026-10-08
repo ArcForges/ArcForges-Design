@@ -1,8 +1,8 @@
 <a id="rule-wp-30"></a>
-# WP-30 — Kotlin Android Foundation
+# WP-30 — .NET MAUI Android Foundation
 
 > Status: Authoritative implementation plan under [P2-010](../../decisions/phase-2-specification-decisions.md#rule-p2-010)
-> Phase: G — Kotlin Android foundation
+> Phase: G — .NET MAUI Android foundation
 > Scheduling: this package is an obligation set; its delivery tasks and their typed prerequisites are listed in section 9, generated from the [delivery graph](../delivery/delivery-graph.json) under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018).
 
 ## 1. Scope and purpose
@@ -14,11 +14,11 @@ Implement this stage of the complete Android ArcChat companion. [Mobile architec
 [Producer artifacts and real integration](../producer-artifacts-and-integration.md) is a required input. Use this WP's row to identify exact released artifacts, permitted fixtures and the owner that must replace each fixture; completion requires the stated evidence class.
 
 
-Use the exact released Contracts Maven package/descriptor/fixture set, compatible Cloud/AI manifest and completed upstream owner outputs. Android toolchain and OS decisions come from Mobile architecture and WP06 proof; a blocking local toolchain/Android environment problem is reported before dependent execution. No producer source checkout or browser TS runtime is an input.
+Use the exact released Contracts NuGet package/descriptor/fixture set (the Maven set remains consumable until [AND.40](../delivery/lanes/android.md#task-and-40) retires it under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)), compatible Cloud/AI manifest and completed upstream owner outputs. Android toolchain and OS decisions come from Mobile architecture and WP06 proof; a blocking local toolchain/Android environment problem is reported before dependent execution. No producer source checkout or browser TS runtime is an input.
 
 ## 3. Binding rules and decisions
 
-Android only, Kotlin/JVM/Jetpack Compose, Apache-2.0; no GPL-family implementation in the app. Command/owner/recovery identity, explicit permissions/consent, exact values, immutable producer artifacts, full accepted companion scope and consumption-only commercial restrictions are mandatory. [Wire registry](../../architecture/contracts/04-protobuf-wire-registry.md) owns the complete field and operation inventory. Equivalent internal classes/layout choices may vary only when observable behavior and acceptance remain identical.
+Android only, .NET MAUI (`net10.0-android`, Mono runtime with AOT), Apache-2.0; no GPL-family or AGPL implementation in the app and no AGPL DesktopPlatform package in its closure ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)). Two open items of [D-016](../../decisions/phase-1-foundation-decisions.md#rule-d-016) bind this work package and are owned by [AND.40](../delivery/lanes/android.md#task-and-40): the minimum and target API, which stay at the current Kotlin values (26 and 37) until AND.40 records the MAUI minimum-API requirement and the target API measured in the [PRF.12](../delivery/lanes/runtime-proofs.md#task-prf-12) build; and the .NET 11 runtime posture, because the Mono posture is for .NET 10 and a .NET 11 release build with its AOT or CoreCLR posture must be recorded before any .NET 11 Android build. Command/owner/recovery identity, explicit permissions/consent, exact values, immutable producer artifacts, full accepted companion scope and consumption-only commercial restrictions are mandatory. [Wire registry](../../architecture/contracts/04-protobuf-wire-registry.md) owns the complete field and operation inventory. Equivalent internal classes/layout choices may vary only when observable behavior and acceptance remain identical.
 
 ## 4. Projects, directories, files and major types affected
 
@@ -29,16 +29,16 @@ Mobile adopts the exact module map in architecture 27 (app, core and feature mod
 <a id="rule-wp-30.00"></a>
 ### WP-30.00 — Android repository identity and toolchain
 
-**What must be fully done.** Adopt com.arcforges.mobile applicationId/namespace/source packages before production. Follow-up F-1: on JDK 21 reconcile the Hello World compiler/AGP/Compose/Gradle stack to mutually compatible stable releases; commit exact producer pins, wrapper checksums, locks and generated-client compatibility evidence before any production upload. Document development prerelease reinstall; Apache boundary includes no GPL-family closure.
+**What must be fully done.** Adopt com.arcforges.mobile applicationId/namespace/source packages before production, and document the reinstall from the development prerelease io.github.arcforges.mobile. Follow-up F-1 is superseded by [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) and AND.40: the Kotlin, JDK 21, AGP, Compose and Gradle reconciliation is replaced by pinned .NET SDK and MAUI workload versions; commit exact producer pins, SDK and workload versions, central NuGet lock files and generated-client compatibility evidence before any production upload. The Apache boundary includes no GPL-family or AGPL closure; MAUI consumes only Apache-licensed packages (Contracts NuGet, Microsoft and AndroidX bindings) under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3; any other admission needs a reviewed decision record or dependency-admission entry before use.
 
 **Testing requirements.** Release build, dependency verification, package/certificate inspection, device install and fixture-key App Link tests.
 
-**Completion gate.** Production identity and own Android module map match arch 11/27; no RN/TS or iOS obligation.
+**Completion gate.** Production identity and own Android module map match arch 11/27; no React Native, TypeScript or iOS obligation. Client-layer boundary: `Communication/ArcForges.Cloud.Client` sits in the AGPL DesktopPlatform tree, so no MAUI build references it ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3).
 
 <a id="rule-wp-30.01"></a>
 ### WP-30.01 — Native module and route boundaries
 
-**What must be fully done.** Implement architecture 27 concrete Kotlin app/core/feature modules and AN01–AN28 navigation/state contracts; features depend typed core ports, app composes them, no React Native/iOS or AGPL imports.
+**What must be fully done.** Implement architecture 27 concrete C# app/core/feature projects and AN01–AN28 navigation/state contracts; features depend typed core ports, app composes them, no React Native, iOS or AGPL imports.
 
 **Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
@@ -47,25 +47,25 @@ Mobile adopts the exact module map in architecture 27 (app, core and feature mod
 <a id="rule-wp-30.02"></a>
 ### WP-30.02 — Android runtime and OS adapters
 
-**What must be fully done.** Use the exact API/RID/runtime profile in Mobile architecture: arm64 release, x64 emulator; Compose, Credential Manager/passkey fallback, Keystore, WorkManager, notifications/FCM with non-GMS fallback, SAF/MediaStore/FileProvider. OS callbacks use generation and account scope.
+**What must be fully done.** Use the exact API/RID/runtime profile in Mobile architecture: arm64 release, x64 emulator; MAUI UI, Credential Manager/passkey fallback, Keystore, WorkManager, notifications/FCM with non-GMS fallback, SAF/MediaStore/FileProvider, all through .NET for Android bindings and each admitted when its task needs it. OS callbacks use generation and account scope. Planning repair 2026-10-08 (DLV-34; P2-021): the Android runtime and OS adapters are implemented in the .NET MAUI `net10.0-android` project under [AND.40](../delivery/lanes/android.md#task-and-40), with Mono AOT for release; the Kotlin/Compose and Gradle adapters retire. Passkey-on-MAUI (Credential Manager) is unverified until [PRF.12](../delivery/lanes/runtime-proofs.md#task-prf-12) records it, and that evidence is required before AND.40 relies on it.
 
 **Testing requirements.** Install real release build on physical Android, permission refusal, process death, missing Play services and callback after account switch.
 
-**Completion gate.** Produced APK uses Kotlin/ART with complete supported adapters and no unsafe fallback.
+**Completion gate.** Produced APK or AAB runs the Mono runtime with AOT on ART with complete supported adapters and no unsafe fallback.
 
 <a id="rule-wp-30.03"></a>
 ### WP-30.03 — Published gRPC-Web contracts
 
-**What must be fully done.** Consume pinned Maven messages/Connect Kotlin clients and fixtures. Select binary gRPC-Web explicitly; implement session/stream/retry/exact-value adapters and actual deployed foundation calls.
+**What must be fully done.** Consume pinned NuGet generated C# messages, gRPC-Web clients and fixtures (the Maven and Connect Kotlin packages retire under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)). Select binary gRPC-Web explicitly; implement session/stream/retry/exact-value adapters over SocketsHttpHandler and actual deployed foundation calls.
 
-**Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** In-force licence-boundary rule ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3): no MAUI build references `Communication/ArcForges.Cloud.Client`, and the MAUI closure contains no AGPL package. The time-limited build-only `ArcForges.Build.Policy` exception is not a closure package. Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
-**Completion gate.** Real packaged Maven consumer and service/device evidence passes; missing TLS/transport support blocks.
+**Completion gate.** Real packaged NuGet consumer and service/device evidence passes; missing TLS/transport support blocks.
 
 <a id="rule-wp-30.04"></a>
-### WP-30.04 — Room history, drafts and receipts
+### WP-30.04 — Local history, drafts and receipts
 
-**What must be fully done.** Implement model 05 equivalent Room schemas and per-profile partitions, own local/cloud/temporary behavior, bounded outbox/transfers/cursors. Local canonical history is not evictable cache; temporary content never persists.
+**What must be fully done.** Implement model 05 equivalent local stores for the .NET MAUI companion (the store binding is owned by [AND.40](../delivery/lanes/android.md#task-and-40) under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3; the store technology is admitted under the [WP02.05](02-build-governance-and-analyzer-policy.md#rule-wp-02.05) dependency admission profile when that task needs it; P2-021 item 3 does not admit Room) and per-profile partitions, own local/cloud/temporary behavior, bounded outbox/transfers/cursors. Local canonical history is not evictable cache; temporary content never persists.
 
 **Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
@@ -83,7 +83,7 @@ Mobile adopts the exact module map in architecture 27 (app, core and feature mod
 <a id="rule-wp-30.90"></a>
 ### WP-30.90 — Foundation integration evidence
 
-**What must be fully done.** Publish/test the exact candidate APK against real 22/23/24/25 and released Maven packages. Future Task/AI fixtures must be named in evidence and compiled out of production at 31.
+**What must be fully done.** Publish/test the exact candidate APK against real 22/23/24/25 and released NuGet packages. Future Task/AI fixtures must be named in evidence and compiled out of production at 31.
 
 **Testing requirements.** Clean-cache restore/build/install and actual sign-in/hydration/upload/reconnect on device.
 
@@ -91,7 +91,7 @@ Mobile adopts the exact module map in architecture 27 (app, core and feature mod
 
 ## 6. Impacts
 
-Contracts delivers the complete public Kotlin package; Cloud/AI deliver the same owner behavior as desktop/Web. Mobile maintains its own lifecycle/storage/UI. Changes in package/signing/schema versions require an explicit compatible manifest and tested migration.
+Contracts delivers the complete public C# NuGet package; Cloud/AI deliver the same owner behavior as desktop/Web. Mobile maintains its own lifecycle/storage/UI. Changes in package/signing/schema versions require an explicit compatible manifest and tested migration.
 
 ## 7. Tests and verification evidence
 

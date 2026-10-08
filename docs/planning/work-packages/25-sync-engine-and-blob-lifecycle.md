@@ -172,7 +172,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Testing requirements.** Actual archive/manifest hashes, staged object authorization, parent/branch mapping, lost finalization acknowledgement, duplicate import, source edit during promotion, quota/permission loss and expiry; Cloud copy remains distinct when the local snapshot revision changed.
 
-**Completion gate.** Clean published desktop/Kotlin/TS consumers recover a real interrupted import, see no partial visible conversation, and keep local/Cloud/temporary retention distinct.
+**Completion gate.** Clean published desktop, MAUI and Blazor consumers (and the Connect Kotlin client until [AND.40](../delivery/lanes/android.md#task-and-40) retires it) recover a real interrupted import, see no partial visible conversation, and keep local/Cloud/temporary retention distinct.
 
 <a id="rule-wp-25.10"></a>
 ### WP-25.10 — ArcScope library read model for the companions
@@ -181,7 +181,7 @@ Content payloads use typed ContentOrigin and content-unit bindings under their e
 
 **Testing requirements.** Real D1 projections against committed and tombstoned aggregates, pagination across concurrent commits, `minRevision`, revoked membership and wrong product scope, a large session through the large read projection profile, and exactly-once notification emission on commit and replay.
 
-**Completion gate.** Generated Kotlin and TypeScript clients read the library of a real synced ArcScope workspace with correct revisions, authorization and notifications; no unsynced or raw data is exposed.
+**Completion gate.** Generated C# clients (MAUI and Blazor) (and the Connect Kotlin client until [AND.40](../delivery/lanes/android.md#task-and-40) retires it) read the library of a real synced ArcScope workspace with correct revisions, authorization and notifications; no unsynced or raw data is exposed.
 
 <a id="rule-wp-25.90"></a>
 ### WP-25.90 — Verify the owned artifact and real integration

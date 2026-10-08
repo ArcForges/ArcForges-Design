@@ -66,7 +66,7 @@ Phases group packages for reading only.
 
 | # | Work package |
 |---|---|
-| 30 | [Kotlin Android Foundation](30-mobile-shared-architecture.md) |
+| 30 | [.NET MAUI Android Foundation](30-mobile-shared-architecture.md) |
 
 ### Phase H — ArcScope desktop
 
@@ -89,7 +89,7 @@ Phases group packages for reading only.
 | 53 | [Desktop Distribution, Update Client and Channels](53-desktop-distribution-and-update.md) |
 | 46 | [D1, R2 and Independent Disaster Recovery](46-backup-recovery-and-data-health.md) |
 | 51 | [ArcScope Deterministic Cloud Simulator](51-arcscope-cloud-simulator.md) |
-| 52 | [Sole Cloudflare Workflow Harness](52-cloud-harness.md) |
+| 52 | [Sole C# Cloud Harness](52-cloud-harness.md) |
 | 31 | [Complete ArcChat Android Companion](31-arcchat-mobile-android.md) |
 | 32 | [Android Signing, Distribution and Store Gates](32-mobile-release-and-store-gates.md) |
 
@@ -142,7 +142,7 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 | **[PG-08](../../assurance/open-gates-register.md#rule-pg-08)** — hardware lab inventory | 13 establishes inventory; 33, 34 bind each hardware result to it |
 | **[PG-09](../../assurance/open-gates-register.md#rule-pg-09)** — extension protocol conformance | 41 |
 | **[PG-10](../../assurance/open-gates-register.md#rule-pg-10)** — provider test-environment coverage | 42, 43 |
-| **[PG-12](../../assurance/open-gates-register.md#rule-pg-12)** — PDF dependency and containment | 11.09, 13.13 |
+| **[PG-12](../../assurance/open-gates-register.md#rule-pg-12)** — retired by [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF dependency and containment; image-parser containment is evidenced through PG-22 and NAT.31) | 11.09, 13.13 (PDF parts retired) |
 | **[PG-13](../../assurance/open-gates-register.md#rule-pg-13)** — real-provider metering | 43.07, 42.11 |
 | **[PG-14b](../../assurance/open-gates-register.md#rule-pg-14b)** — real Cloud simulator | 51 |
 | **[PG-16](../../assurance/open-gates-register.md#rule-pg-16)** — configuration activation | 44.01, 42.11 |

@@ -44,7 +44,7 @@
 
 ---
 
-**Real mail prerequisites (owned by Operations before WP22 completion).** An isolated Postmark account/server and verified sending subdomain, SPF/DKIM/DMARC records, protected CI SecretRefs, controlled recipient inbox and prepared SES secondary identity/configuration must exist. Provider credentials never enter source or fixtures. Recorded provider responses are permitted only in regression tests; the real delivery/recovery gate cannot close on a fake sender. Missing external access keeps the gate open, not the adapter design undecided.
+**Real mail prerequisites (owned by Operations before WP22 completion).** An isolated Postmark account/server and verified sending subdomain, SPF/DKIM/DMARC records, protected CI SecretRefs, controlled recipient inbox and prepared SES secondary identity/configuration must exist. Provider credentials never enter source or fixtures. Recorded provider responses are permitted only in regression tests; the real delivery/recovery gate cannot close on a fake sender. The Postmark/SES accounts and notify-subdomain DNS are blocked external under [P2-025](../../decisions/phase-2-specification-decisions.md#rule-p2-025). Missing external access keeps the gate open, not the adapter design undecided.
 
 ## 3. Binding rules and decisions
 
@@ -96,7 +96,7 @@
 
 ### WP-22.01 — Native and browser authentication with real mail
 
-**What must be fully done.** Implement contracts 07 native authorize/token PKCE ceremony and minimal browser login UI, passkey/email and configured self-host OIDC/password. Produce Postmark/SES delivery/outcome adapters and provider/DNS setup checklist now; WP45 later adds operational drills. Account full UI in WP48 is not a prerequisite.
+**What must be fully done.** Implement contracts 07 native authorize/token PKCE ceremony and minimal browser login UI, passkey/email and configured self-host OIDC/password. Produce Postmark/SES delivery/outcome adapters and provider/DNS setup checklist now (provider accounts and DNS are blocked external under [P2-025](../../decisions/phase-2-specification-decisions.md#rule-p2-025): the adapters may be delivered with test doubles used only in tests, and completion stays blocked until a live send and recovery); WP45 later adds operational drills. Account full UI in WP48 is not a prerequisite.
 
 **Testing requirements.** Actual email delivery/recovery and prepared secondary; timeout remains unknown; PKCE/state/redirect/code replay, Credential Manager/RP origin fixtures, refresh contention and revocation.
 
