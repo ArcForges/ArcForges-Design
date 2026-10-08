@@ -33,7 +33,7 @@ Mobile adopts the exact module map in architecture 27 (app, core and feature mod
 
 **Testing requirements.** Release build, dependency verification, package/certificate inspection, device install and fixture-key App Link tests.
 
-**Completion gate.** Production identity and own Android module map match arch 11/27; no React Native, TypeScript or iOS obligation. Blocking [AND.40](../delivery/lanes/android.md#task-and-40) client-layer gate: `Communication/ArcForges.Cloud.Client` sits in the AGPL DesktopPlatform tree, so no MAUI build may reference it until an Apache-2.0 replacement or re-home plus a licence-boundary test passes ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3).
+**Completion gate.** Production identity and own Android module map match arch 11/27; no React Native, TypeScript or iOS obligation. Client-layer boundary: `Communication/ArcForges.Cloud.Client` sits in the AGPL DesktopPlatform tree, so no MAUI build references it ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3).
 
 <a id="rule-wp-30.01"></a>
 ### WP-30.01 — Native module and route boundaries
@@ -58,7 +58,7 @@ Mobile adopts the exact module map in architecture 27 (app, core and feature mod
 
 **What must be fully done.** Consume pinned NuGet generated C# messages, gRPC-Web clients and fixtures (the Maven and Connect Kotlin packages retire under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)). Select binary gRPC-Web explicitly; implement session/stream/retry/exact-value adapters over SocketsHttpHandler and actual deployed foundation calls.
 
-**Testing requirements.** Blocking [AND.40](../delivery/lanes/android.md#task-and-40) licence-boundary test: the MAUI closure must contain no AGPL DesktopPlatform package, including `Communication/ArcForges.Cloud.Client`, before that client layer is replaced or re-homed. Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
+**Testing requirements.** Licence-boundary check: the MAUI closure must contain no AGPL DesktopPlatform package, including `Communication/ArcForges.Cloud.Client`. Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
 **Completion gate.** Real packaged NuGet consumer and service/device evidence passes; missing TLS/transport support blocks.
 
