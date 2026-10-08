@@ -145,6 +145,7 @@ Tasks: 9 · Owning repositories: AI, ArcScope, Cloud, Contracts, Design, Desktop
 | Validation | Review of merged source, retained CI results and receipts only; no new builds, downloads or runtime checks ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
 | Completion evidence | Repository adoption record with the repository-wide facts, links to every slice record, the combined classification table and any conflicts raised under [D-001](../../../decisions/phase-1-foundation-decisions.md#rule-d-001). |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): completed record kept as history; no rewrite. The AI repository runtime role ends under HAR.40, and the repository stays read-only history after its last deployment is retired. Re-homed harness, ai-routing and extensions work is adopted through ADOPT.07.harness, ADOPT.07.ai-routing and ADOPT.07.extensions (Cloud, complete); the AI adoption slices stay as history. |
 
 <a id="task-adopt-09"></a>
 
@@ -166,6 +167,7 @@ Tasks: 9 · Owning repositories: AI, ArcScope, Cloud, Contracts, Design, Desktop
 | Validation | Review of merged source, retained CI results and receipts only; no new builds, downloads or runtime checks ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
 | Completion evidence | Repository adoption record with the repository-wide facts, links to every slice record, the combined classification table and any conflicts raised under [D-001](../../../decisions/phase-1-foundation-decisions.md#rule-d-001). |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): The adopted React/TypeScript Web facts (apps/site, apps/app, packages/ui, Node/TS policy) are migrated by WEB.40 to C#/Blazor. The complete adoption record is not edited. |
 
 <a id="task-adopt-10"></a>
 
@@ -187,6 +189,7 @@ Tasks: 9 · Owning repositories: AI, ArcScope, Cloud, Contracts, Design, Desktop
 | Validation | Review of merged source, retained CI results and receipts only; no new builds, downloads or runtime checks ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
 | Completion evidence | Repository adoption record with the repository-wide facts, links to every slice record, the combined classification table and any conflicts raised under [D-001](../../../decisions/phase-1-foundation-decisions.md#rule-d-001). |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): Successor AND.40 retires the Gradle/AGP/Kotlin/Compose tuple recorded here; AND.01 pins the .NET 10 candidate tuple, proven by PRF.12. Adoption facts remain history. |
 
 <a id="task-adopt-11"></a>
 
@@ -222,14 +225,14 @@ Each slice classifies the tasks of one repository and lane against the frozen ba
 | <a id="task-adopt-02-execution"></a>ADOPT.02.execution | DesktopPlatform | [Execution engine](execution.md) | 9 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-extensions"></a>ADOPT.02.extensions | DesktopPlatform | [Extension platform and integrations](extensions.md) | 7 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-foundation"></a>ADOPT.02.foundation | DesktopPlatform | [Foundation values](foundation.md) | 7 | none | [ADOPT.02](#task-adopt-02) |
-| <a id="task-adopt-02-governance"></a>ADOPT.02.governance | DesktopPlatform | [Family governance and policy tests](governance.md) | 9 | [GOV.01](governance.md#task-gov-01), [GOV.02](governance.md#task-gov-02), [GOV.03](governance.md#task-gov-03) | [ADOPT.02](#task-adopt-02) |
-| <a id="task-adopt-02-native"></a>ADOPT.02.native | DesktopPlatform | [Native producers and probes](native.md) | 14 | none | [ADOPT.02](#task-adopt-02) |
+| <a id="task-adopt-02-governance"></a>ADOPT.02.governance | DesktopPlatform | [Family governance and policy tests](governance.md) | 11 | [GOV.01](governance.md#task-gov-01), [GOV.02](governance.md#task-gov-02), [GOV.03](governance.md#task-gov-03) | [ADOPT.02](#task-adopt-02) |
+| <a id="task-adopt-02-native"></a>ADOPT.02.native | DesktopPlatform | [Native producers and probes](native.md) | 16 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-platform"></a>ADOPT.02.platform | DesktopPlatform | [Desktop platform mechanisms](platform.md) | 55 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-policy"></a>ADOPT.02.policy | DesktopPlatform | [Dynamic policy and configuration](policy.md) | 1 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-release"></a>ADOPT.02.release | DesktopPlatform | [Release readiness and family release](release.md) | 2 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-runtime-proofs"></a>ADOPT.02.runtime-proofs | DesktopPlatform | [Runtime proofs](runtime-proofs.md) | 4 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-updater"></a>ADOPT.02.updater | DesktopPlatform | [Desktop distribution and update](updater.md) | 8 | none | [ADOPT.02](#task-adopt-02) |
-| <a id="task-adopt-03-contracts"></a>ADOPT.03.contracts | Contracts | [Contracts schema closures](contracts.md) | 24 | [CON.90](contracts.md#task-con-90), [CON.91](contracts.md#task-con-91), [CON.92](contracts.md#task-con-92) | [ADOPT.03](#task-adopt-03) |
+| <a id="task-adopt-03-contracts"></a>ADOPT.03.contracts | Contracts | [Contracts schema closures](contracts.md) | 25 | [CON.90](contracts.md#task-con-90), [CON.91](contracts.md#task-con-91), [CON.92](contracts.md#task-con-92) | [ADOPT.03](#task-adopt-03) |
 | <a id="task-adopt-03-extensions"></a>ADOPT.03.extensions | Contracts | [Extension platform and integrations](extensions.md) | 3 | none | [ADOPT.03](#task-adopt-03) |
 | <a id="task-adopt-03-governance"></a>ADOPT.03.governance | Contracts | [Family governance and policy tests](governance.md) | 2 | none | [ADOPT.03](#task-adopt-03) |
 | <a id="task-adopt-03-release"></a>ADOPT.03.release | Contracts | [Release readiness and family release](release.md) | 1 | none | [ADOPT.03](#task-adopt-03) |
@@ -239,29 +242,29 @@ Each slice classifies the tasks of one repository and lane against the frozen ba
 | <a id="task-adopt-05-release"></a>ADOPT.05.release | ArcScope | [Release readiness and family release](release.md) | 1 | none | [ADOPT.05](#task-adopt-05) |
 | <a id="task-adopt-05-runtime-proofs"></a>ADOPT.05.runtime-proofs | ArcScope | [Runtime proofs](runtime-proofs.md) | 1 | none | [ADOPT.05](#task-adopt-05) |
 | <a id="task-adopt-05-simulator"></a>ADOPT.05.simulator | ArcScope | [ArcScope Cloud simulator](simulator.md) | 1 | none | [ADOPT.05](#task-adopt-05) |
-| <a id="task-adopt-07-ai-routing"></a>ADOPT.07.ai-routing | Cloud | [Workers AI routing and metering](ai-routing.md) | 6 | none | [ADOPT.07](#task-adopt-07) |
-| <a id="task-adopt-07-cloud"></a>ADOPT.07.cloud | Cloud | [Cloud core](cloud.md) | 62 | none | [ADOPT.07](#task-adopt-07) |
+| <a id="task-adopt-07-ai-routing"></a>ADOPT.07.ai-routing | Cloud | [Workers AI routing and metering](ai-routing.md) | 10 | none | [ADOPT.07](#task-adopt-07) |
+| <a id="task-adopt-07-cloud"></a>ADOPT.07.cloud | Cloud | [Cloud core](cloud.md) | 64 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-commerce"></a>ADOPT.07.commerce | Cloud | [Commerce, entitlement and credits](commerce.md) | 16 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-device-bridge"></a>ADOPT.07.device-bridge | Cloud | [Application presence and tool bridge](device-bridge.md) | 9 | none | [ADOPT.07](#task-adopt-07) |
-| <a id="task-adopt-07-extensions"></a>ADOPT.07.extensions | Cloud | [Extension platform and integrations](extensions.md) | 1 | none | [ADOPT.07](#task-adopt-07) |
+| <a id="task-adopt-07-extensions"></a>ADOPT.07.extensions | Cloud | [Extension platform and integrations](extensions.md) | 2 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-governance"></a>ADOPT.07.governance | Cloud | [Family governance and policy tests](governance.md) | 1 | none | [ADOPT.07](#task-adopt-07) |
-| <a id="task-adopt-07-harness"></a>ADOPT.07.harness | Cloud | [Cloud Harness](harness.md) | 2 | none | [ADOPT.07](#task-adopt-07) |
+| <a id="task-adopt-07-harness"></a>ADOPT.07.harness | Cloud | [Cloud Harness](harness.md) | 9 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-operations"></a>ADOPT.07.operations | Cloud | [Operations, support and trust and safety](operations.md) | 9 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-policy"></a>ADOPT.07.policy | Cloud | [Dynamic policy and configuration](policy.md) | 10 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-release"></a>ADOPT.07.release | Cloud | [Release readiness and family release](release.md) | 3 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-runtime-proofs"></a>ADOPT.07.runtime-proofs | Cloud | [Runtime proofs](runtime-proofs.md) | 1 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-search"></a>ADOPT.07.search | Cloud | [Knowledge search and retrieval](search.md) | 8 | none | [ADOPT.07](#task-adopt-07) |
 | <a id="task-adopt-07-simulator"></a>ADOPT.07.simulator | Cloud | [ArcScope Cloud simulator](simulator.md) | 9 | none | [ADOPT.07](#task-adopt-07) |
-| <a id="task-adopt-08-ai-routing"></a>ADOPT.08.ai-routing | AI | [Workers AI routing and metering](ai-routing.md) | 4 | none | [ADOPT.08](#task-adopt-08) |
-| <a id="task-adopt-08-extensions"></a>ADOPT.08.extensions | AI | [Extension platform and integrations](extensions.md) | 1 | none | [ADOPT.08](#task-adopt-08) |
+| <a id="task-adopt-08-ai-routing"></a>ADOPT.08.ai-routing | AI | [Workers AI routing and metering](ai-routing.md) | none (retired by P2-021) | none | [ADOPT.08](#task-adopt-08) |
+| <a id="task-adopt-08-extensions"></a>ADOPT.08.extensions | AI | [Extension platform and integrations](extensions.md) | none (retired by P2-021) | none | [ADOPT.08](#task-adopt-08) |
 | <a id="task-adopt-08-governance"></a>ADOPT.08.governance | AI | [Family governance and policy tests](governance.md) | 2 | none | [ADOPT.08](#task-adopt-08) |
-| <a id="task-adopt-08-harness"></a>ADOPT.08.harness | AI | [Cloud Harness](harness.md) | 6 | none | [ADOPT.08](#task-adopt-08) |
+| <a id="task-adopt-08-harness"></a>ADOPT.08.harness | AI | [Cloud Harness](harness.md) | none (retired by P2-021) | none | [ADOPT.08](#task-adopt-08) |
 | <a id="task-adopt-09-governance"></a>ADOPT.09.governance | Web | [Family governance and policy tests](governance.md) | 1 | none | [ADOPT.09](#task-adopt-09) |
 | <a id="task-adopt-09-operations"></a>ADOPT.09.operations | Web | [Operations, support and trust and safety](operations.md) | 4 | none | [ADOPT.09](#task-adopt-09) |
 | <a id="task-adopt-09-release"></a>ADOPT.09.release | Web | [Release readiness and family release](release.md) | 1 | none | [ADOPT.09](#task-adopt-09) |
-| <a id="task-adopt-09-runtime-proofs"></a>ADOPT.09.runtime-proofs | Web | [Runtime proofs](runtime-proofs.md) | 1 | none | [ADOPT.09](#task-adopt-09) |
-| <a id="task-adopt-09-web"></a>ADOPT.09.web | Web | [Web](web.md) | 33 | none | [ADOPT.09](#task-adopt-09) |
-| <a id="task-adopt-10-android"></a>ADOPT.10.android | Mobile | [Android companion](android.md) | 27 | none | [ADOPT.10](#task-adopt-10) |
+| <a id="task-adopt-09-runtime-proofs"></a>ADOPT.09.runtime-proofs | Web | [Runtime proofs](runtime-proofs.md) | 2 | none | [ADOPT.09](#task-adopt-09) |
+| <a id="task-adopt-09-web"></a>ADOPT.09.web | Web | [Web](web.md) | 34 | none | [ADOPT.09](#task-adopt-09) |
+| <a id="task-adopt-10-android"></a>ADOPT.10.android | Mobile | [Android companion](android.md) | 28 | none | [ADOPT.10](#task-adopt-10) |
 | <a id="task-adopt-10-governance"></a>ADOPT.10.governance | Mobile | [Family governance and policy tests](governance.md) | 1 | none | [ADOPT.10](#task-adopt-10) |
 | <a id="task-adopt-10-release"></a>ADOPT.10.release | Mobile | [Release readiness and family release](release.md) | 1 | none | [ADOPT.10](#task-adopt-10) |
-| <a id="task-adopt-10-runtime-proofs"></a>ADOPT.10.runtime-proofs | Mobile | [Runtime proofs](runtime-proofs.md) | 1 | none | [ADOPT.10](#task-adopt-10) |
+| <a id="task-adopt-10-runtime-proofs"></a>ADOPT.10.runtime-proofs | Mobile | [Runtime proofs](runtime-proofs.md) | 2 | none | [ADOPT.10](#task-adopt-10) |
