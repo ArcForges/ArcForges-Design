@@ -1,5 +1,8 @@
 # WP01 repository reconciliation stage acceptance
 
+> **Superseded in part 2026-10-08** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first stack: React/TypeScript, Node/npm, Kotlin/Maven/Gradle, Blazor and MAUI toolchain statements), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (`wsl.exe` prohibition). The recorded result is retained as dated history and is not rewritten.
+
+
 Authority: [WP01.90](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.90), the parent WP01 completion gate and [staged producer integration](../planning/README.md#staged-artifact-integration). Result: the bounded reconciliation stage passes. The [machine-readable receipt](wp01-stage-acceptance.json) joins the exact sources, candidates, evidence hashes and retained limitations; it is not a commercial release manifest.
 
 ## Completed obligations

@@ -1,5 +1,8 @@
 # WP00.03 implementation evidence
 
+> **Superseded in part 2026-10-08** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first stack: React/TypeScript, Node/npm, Kotlin/Maven/Gradle, Blazor and MAUI toolchain statements), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (`wsl.exe` prohibition). The recorded result is retained as dated history and is not rewritten.
+
+
 > Status: Execution evidence for the inspected revisions, verified 2026-09-19 UTC.
 > Owning substep: [WP-00.03 — Reuse and provenance process](../planning/work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00.03).
 

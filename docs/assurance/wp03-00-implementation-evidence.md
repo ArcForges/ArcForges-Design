@@ -1,5 +1,8 @@
 # WP03.00 contract structure implementation evidence
 
+> **Superseded in part 2026-10-08** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first stack: React/TypeScript, Node/npm, Kotlin/Maven/Gradle, Blazor and MAUI toolchain statements), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (`wsl.exe` prohibition). The recorded result is retained as dated history and is not rewritten.
+
+
 Scope: [WP03.00](../planning/work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.00), executed under the [reviewed implementation profile](wp03-00-contract-structure-profile.md) and [P2-017 validation policy](../decisions/phase-2-specification-decisions.md#rule-p2-017). Result: the selected project, package and generator boundaries are complete and published. This closes substep 03.00 only; the remaining WP03 schemas, semantic inventories and integration gates remain open.
 
 ## Accepted source and dependency boundary

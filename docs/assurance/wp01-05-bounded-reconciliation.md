@@ -1,5 +1,8 @@
 # WP01.05 bounded repository reconciliation
 
+> **Superseded in part 2026-10-08** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first stack: React/TypeScript, Node/npm, Kotlin/Maven/Gradle, Blazor and MAUI toolchain statements), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (`wsl.exe` prohibition). The recorded result is retained as dated history and is not rewritten.
+
+
 Authority: [WP01.05](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.05), [current inventory profile](wp01-00-inventory-policy.md), [repository composition](../architecture/27-platform-projects-and-application-assistants.md) and [staged integration](../planning/producer-artifacts-and-integration.md). The [machine-readable receipt](wp01-05-bounded-reconciliation.json) binds this observation to the exact seven clean source commits and their successful main CI runs.
 
 ## Current disposition and decisions

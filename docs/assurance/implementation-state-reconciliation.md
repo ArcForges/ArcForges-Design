@@ -16,6 +16,8 @@ This is the **item-level reconciliation evidence** required before implementatio
 
 ### Current Web disposition — [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)
 
+> **Superseded 2026-10-08 by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021).** The React/TS disposition in the table below is historical. The current Web disposition is Blazor WebAssembly for the interactive profiles and a C#/.NET static Site generator for the public Site, with the existing C# Web projects moving into that target under [WEB.40](../planning/delivery/lanes/web.md#task-web-40) rather than being replaced by a TS package. Inventory rows that describe the C# Web projects remain evidence of the inspected baseline.
+
 The item-level inventory below remains evidence of the inspected C# baseline. Its Blazor/WebAssembly conformance labels are historical and do not describe the new target. [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) changes the current disposition:
 
 | Observed implementation entry | Current action | Owner |

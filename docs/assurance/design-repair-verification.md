@@ -1,5 +1,8 @@
 # Design Repair Verification
 
+> **Superseded in part 2026-10-08** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first stack: React/TypeScript, Node/npm, Kotlin/Maven/Gradle, Blazor and MAUI toolchain statements), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (`wsl.exe` prohibition). The recorded result is retained as dated history and is not rewritten.
+
+
 > Historical evidence at the source/design revision recorded below. [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) and [family completion review](family-design-completion-review.md) define the current Android, producer, contract and evidence amendments. Earlier runtime/contract/count conclusions are not current implementation proof; no deprecated input is reopened.
 
 

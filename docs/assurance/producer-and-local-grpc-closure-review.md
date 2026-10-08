@@ -1,5 +1,8 @@
 # Producer and Local gRPC Closure Review
 
+> **Superseded in part 2026-10-08** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first stack: React/TypeScript, Node/npm, Kotlin/Maven/Gradle, Blazor and MAUI toolchain statements), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (`wsl.exe` prohibition). The recorded result is retained as dated history and is not rewritten.
+
+
 Review date:2026-09-14. Baseline: merged Design f85c5b76313e3fb7c337d1e4a8792e083d093bd5. Scope: independently adopt/correct AF01–AF18 and close the specifically requested local RPC migration, under [P2-011](../decisions/phase-2-specification-decisions.md#rule-p2-011). Work was serial; no subagents. Formal edits were made only after the collection/adoption checkpoint in Plan. The reference/archive reading exclusions were retained.
 
 ## 1. Correct source interpretation

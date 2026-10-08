@@ -1,5 +1,8 @@
 # WP01.03 native reconciliation profile
 
+> **Superseded in part 2026-10-08** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first stack: React/TypeScript, Node/npm, Kotlin/Maven/Gradle, Blazor and MAUI toolchain statements), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (`wsl.exe` prohibition). The recorded result is retained as dated history and is not rewritten.
+
+
 Authority: [WP01.03](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.03), [native package registry](../architecture/01-solution-and-project-layout.md#12-package-and-native-distribution-registry), [isolation](../architecture/24-content-and-extension-isolation.md), and [functional ABI](../architecture/contracts/06-native-functional-abi.md).
 
 ## Current source and bounded correction

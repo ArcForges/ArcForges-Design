@@ -1,5 +1,8 @@
 # Phase 1 Official Verification Record
 
+> **Superseded in part 2026-10-08** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first stack: React/TypeScript, Node/npm, Kotlin/Maven/Gradle, Blazor and MAUI toolchain statements), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (`wsl.exe` prohibition). The recorded result is retained as dated history and is not rewritten.
+
+
 > Historical evidence at the source/design revision recorded below. [P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010) and [family completion review](family-design-completion-review.md) define the current Android, producer, contract and evidence amendments. Earlier runtime/contract/count conclusions are not current implementation proof; no deprecated input is reopened.
 
 
@@ -141,6 +144,8 @@ Verbatim: "**In .NET 10, CoreCLR on Android is an experimental feature and isn't
 `UseMonoRuntime` defaults to `true` for Android in .NET 10 and to `false` for Android in .NET 11. NativeAOT is "iOS and Mac Catalyst stable in .NET 9+, **Android experimental**". The platform/architecture table for .NET 9+ still marks Android Native AOT "**Experimental, no built-in Java interop**". iOS and Mac Catalyst ARM64 cannot use JIT at all, due to Apple's restrictions on dynamically generated code; Full AOT is the default for Mono release builds there.
 
 **Architectural consequence.** Confirms **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** exactly: ArcChat Mobile Android uses the supported **.NET 10 Mono AOT** release path; Android CoreCLR and Android NativeAOT are excluded as production baselines. The .NET 11 default flip is a scheduled, known migration rather than a surprise — but it is a runtime change under the mobile app, so it must be treated as a deliberate upgrade with its own verification, not absorbed silently.
+
+**Note (2026-10-08, superseded in part by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)).** The Android runtime finding above is the basis of the selected Android runtime: the .NET MAUI app (which replaces the Kotlin/Compose Android app) uses Mono AOT for release with `UseMonoRuntime=true` explicit in the project. Android CoreCLR and Android NativeAOT remain experimental and unused until a later decision. The earlier Kotlin/ART Android posture that P2-009 selected is retired; Kotlin/ART is not a runtime for the current Android scope. The iOS and Mac Catalyst rows are not in the delivery scope (iOS by P2-010; macOS by [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023)), so the iOS item (c) below is retained only as historical verification.
 
 **Required gate.** (a) Before the first Android production build: confirm the runtime is Mono AOT and that `UseMonoRuntime` is explicit in the project file rather than relying on a default that changes in .NET 11. (b) Before any move to .NET 11: re-verify the Android runtime posture and re-run the mobile AOT/trim proof. (c) **iOS is architecture-present, build-deferred ([D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008))**; its eventual release runtime must be re-verified against the then-current supported MAUI/iOS baseline. **Owner:** Release Engineering Owner with Architecture Owner. **Trigger:** first Android production build; any framework major-version upgrade; iOS build activation.
 

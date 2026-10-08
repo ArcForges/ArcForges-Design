@@ -1,5 +1,8 @@
 # Contracts publication channels: implementation and live registry gate
 
+> **Superseded in part 2026-10-08** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first stack: React/TypeScript, Node/npm, Kotlin/Maven/Gradle, Blazor and MAUI toolchain statements), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (`wsl.exe` prohibition). The recorded result is retained as dated history and is not rewritten.
+
+
 ## Verified implementation
 
 [Design PR 36](https://github.com/ArcForges/ArcForges-Design/pull/36) defines the [publication channel profile](../architecture/contracts-publication-channels.md). [Contracts PR 26](https://github.com/ArcForges/Contracts/pull/26) implements it; [PR 27](https://github.com/ArcForges/Contracts/pull/27) corrects remote snapshot metadata transport. Both implementation PRs received full diff review and passed all applicable CI/security checks before merging. Final implementation commit: `24c05b7fc215896eeec91437ffe8846f2d4467a1`.

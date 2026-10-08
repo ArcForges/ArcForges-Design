@@ -1,5 +1,8 @@
 # Independent Review Remediation Verification
 
+> **Superseded in part 2026-10-08** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first stack: React/TypeScript, Node/npm, Kotlin/Maven/Gradle, Blazor and MAUI toolchain statements), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (`wsl.exe` prohibition). The recorded result is retained as dated history and is not rewritten.
+
+
 Date: 2026-09-17. Design baseline: `8b60426a09e89b9006815206928419a60cec83b6`. Independent review input: local Plan commits `c873199` and `9771885`; execution plan: Plan `572dcba`, with the bounded corrections recorded below. This record belongs to the resulting Design revision, not to an implementation release.
 
 The executing reviewer read the findings, consolidated decisions and closure criteria before changing formal Design. Repairs were applied in one isolated worktree, followed by checks against the same 37 findings and eight global conditions. Verification failures were corrected in their affected owners; they did not start another scope expansion. Deprecated input bodies and dated historical reviews were not rewritten.

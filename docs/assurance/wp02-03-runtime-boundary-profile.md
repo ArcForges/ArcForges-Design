@@ -1,5 +1,8 @@
 # WP02.03 runtime boundaries and execution plan
 
+> **Superseded in part 2026-10-08** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first stack: React/TypeScript, Node/npm, Kotlin/Maven/Gradle, Blazor and MAUI toolchain statements), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (`wsl.exe` prohibition). The recorded result is retained as dated history and is not rewritten.
+
+
 > Historical execution plan. Its execution order and validation instructions are superseded by [P2-017 and the current CI/local validation policy](../decisions/phase-2-specification-decisions.md#rule-p2-017). Retain the decisions and recorded observations as historical context; do not repeat the former runtime matrices, public-download checks or post-merge tests. Current post-merge verification is limited to the expected merge commit, required job results and a clean primary fast-forward. On a network failure, stop and report the exact operation without retries or network changes.
 
 Authority: [WP02.03](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.03), [build/runtime matrix](../architecture/14-build-packaging-and-release.md#211-web-entry-points-and-release-artifacts), [Web command and IDE contract](../architecture/25-web-toolchain-and-sdk.md#2-independent-web-repository) and [staged producers](../planning/producer-artifacts-and-integration.md). This records the complete bounded plan before source implementation. The [WP02.02 receipt](wp02-02-aot-sweep-evidence.md) establishes the unchanged managed postures.

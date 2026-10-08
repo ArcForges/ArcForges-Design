@@ -1,5 +1,8 @@
 # GOV.04 shared architecture policy evidence
 
+> **Superseded in part 2026-10-08** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first stack: React/TypeScript, Node/npm, Kotlin/Maven/Gradle, Blazor and MAUI toolchain statements), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (`wsl.exe` prohibition). The recorded result is retained as dated history and is not rewritten.
+
+
 Status: the reviewed shared policy producer and its observed scanner correction are merged and published as immutable candidates. The corrected `1.0.0-ci.31.1` candidate is the final producer recorded here; this record supports final assurance and separately reviewed Plan ledger acceptance.
 
 Claim: GOV.04 epoch 1 (w-20260927-dgov). Source: [DesktopPlatform PR67](https://github.com/ArcForges/DesktopPlatform/pull/67), reviewed head `2e180f7826ef9cae0b679db7d10459e51027d4b2`; independent full/delta review [5860461159](https://github.com/ArcForges/DesktopPlatform/pull/67#issuecomment-5860461159). Final whitespace-only delta approved [5860492140](https://github.com/ArcForges/DesktopPlatform/pull/67#issuecomment-5860492140). Packaging-delta approval [5860560182](https://github.com/ArcForges/DesktopPlatform/pull/67#issuecomment-5860560182) binds the final source. Producer scope was accepted by Design PR85 and Plan PR48.

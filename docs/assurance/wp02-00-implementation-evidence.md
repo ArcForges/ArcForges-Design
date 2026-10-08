@@ -1,5 +1,8 @@
 # WP02.00 toolchain pins and locked restore evidence
 
+> **Superseded in part 2026-10-08** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first stack: React/TypeScript, Node/npm, Kotlin/Maven/Gradle, Blazor and MAUI toolchain statements), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (`wsl.exe` prohibition). The recorded result is retained as dated history and is not rewritten.
+
+
 Scope: [WP02.00](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.00), under the reviewed [toolchain profile and ordered plan](wp02-00-toolchain-profile.md). The plan was merged in [Design PR45](https://github.com/ArcForges/ArcForges-Design/pull/45) before implementation. This receipt closes toolchain pin/restore work only; the remaining WP02 substeps and commercial product acceptance remain separate.
 
 ## Changes and review

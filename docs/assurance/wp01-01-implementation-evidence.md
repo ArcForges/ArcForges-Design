@@ -1,5 +1,8 @@
 # WP01.01 implementation evidence
 
+> **Superseded in part 2026-10-08** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first stack: React/TypeScript, Node/npm, Kotlin/Maven/Gradle, Blazor and MAUI toolchain statements), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (`wsl.exe` prohibition). The recorded result is retained as dated history and is not rewritten.
+
+
 Scope: [current contract split assignment](../planning/work-packages/01-repository-reconciliation-and-target-layout.md#rule-wp-01.01), under the [contract access profile](wp01-01-contract-access-policy.md). This receipt closes current type assignment and dependency consistency. It does not assert completed production schemas or product behavior.
 
 ## Authority and implementation

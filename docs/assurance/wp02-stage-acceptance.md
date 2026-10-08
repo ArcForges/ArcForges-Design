@@ -1,5 +1,8 @@
 # WP02 build and publication governance stage acceptance
 
+> **Superseded in part 2026-10-08** by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (C#-first stack: React/TypeScript, Node/npm, Kotlin/Maven/Gradle, Blazor and MAUI toolchain statements), [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF preview and parsing), [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023) (macOS) and [P2-024](../decisions/phase-2-specification-decisions.md#rule-p2-024) (`wsl.exe` prohibition). The recorded result is retained as dated history and is not rewritten.
+
+
 Authority: [WP02.90 and the parent completion gate](../planning/work-packages/02-build-governance-and-analyzer-policy.md#rule-wp-02.90), [staged producer integration](../planning/README.md#staged-artifact-integration), [producer responsibilities](../planning/producer-artifacts-and-integration.md) and [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017). Result: the bounded WP02 stage passes. The [source and evidence index](wp02-stage-acceptance.json) identifies its exact owner sources, producer candidates, retained consumer pins and later closing gates. It is not the WP06 integration manifest or a commercial release manifest.
 
 ## Research, decisions and complete ordered plan
