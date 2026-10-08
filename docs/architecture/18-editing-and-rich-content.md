@@ -145,7 +145,7 @@ This is where "preview" most often conceals missing capability, so each surface 
 | Level | What it is | Where it is used |
 |---|---|---|
 | **Metadata card** | Name, kind, size, availability, provenance. No content decoded. | Any unavailable or unsupported content; ArcChat's artifact list at rest |
-| **Thin preview** | A bounded rendering sufficient to recognise and decide — first page, first frames, a thumbnail, an excerpt. **Read-only, no navigation into the content's own model.** | ArcChat artifacts ([AR-04](../requirements/products/arcchat.md#rule-ar-04), [PB-05](../requirements/products/arcchat.md#rule-pb-05) of the ArcChat requirements); still-image attachments through the ContentSandbox. **SUPERSEDED IN PART (2026-10-08, P2-022):** PDF is no longer previewed at any level: PDF attachments are opaque downloads, and the thin-preview level does not apply to them ([P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) item 2).
+| **Thin preview** | A bounded rendering sufficient to recognise and decide — first page, first frames, a thumbnail, an excerpt. **Read-only, no navigation into the content's own model.** | ArcChat artifacts ([AR-04](../requirements/products/arcchat.md#rule-ar-04), [PB-05](../requirements/products/arcchat.md#rule-pb-05) of the ArcChat requirements); image and PDF attachments through the ContentSandbox |
 
 | # | Rule |
 |---|---|
@@ -156,20 +156,18 @@ This is where "preview" most often conceals missing capability, so each surface 
 | <a id="rule-pv-05"></a>PV-05 | **Preview generation is bounded in time, memory and output size**, runs off the UI thread, and a timeout degrades to the level below with a reason. |
 | <a id="rule-pv-06"></a>PV-06 | **Preview output is a derived store** ([DS-01](data-model/03-derived-stores.md#rule-ds-01)–[DS-07](data-model/03-derived-stores.md#rule-ds-07) of the derived-store architecture), cached by content hash and evictable. |
 
-### 8.2 PDF — retired by P2-022
+### 8.2 PDF — and the dependency it really carries
 
-**SUPERSEDED IN PART (2026-10-08, P2-022):** native in-app PDF preview and local PDF parsing are retired, recorded as retired and never as completed. PDFium, the arcpdf ABI, `ArcForges.Native.Pdf`, the ContentSandbox PDF parser path, PDF citation page or region navigation and AI PDF reading are not part of the design, and no PDF preview, text extraction or AI PDF reading is claimed ([P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) item 1). PDF files remain generic attachments: stored, transferred and downloaded as opaque attachments without parsing (item 2). ArcScope report export (`arcscope.report.pdf.v1`) is unchanged; companions present an exported report only through the platform viewer. The rules below are retained as history and each is marked.
-
-Historical text: the assistant's PDF preview was a thin preview — bounded, read-only rendering sufficient to recognise and decide, never full in-product navigation — delivered through the ContentSandbox. It cannot be met by a metadata card alone once required.
+The assistant's PDF preview is a thin preview — bounded, read-only rendering sufficient to recognise and decide, never full in-product navigation — delivered through the ContentSandbox. It cannot be met by a metadata card alone once required.
 
 | # | Rule |
 |---|---|
-| <a id="rule-pd-01"></a>PD-01 | **SUPERSEDED IN PART (2026-10-08, P2-022):** retired. PDFium through ArcForges.Native.Pdf is no longer selected; no PDF renderer or parser is selected. for bounded PDF render/text extraction. Platform owns build/licence inventory and ContentSandbox containment for the assistant's thin PDF preview. No implementation-time parser selection remains. |
-| <a id="rule-pd-02"></a>PD-02 | **SUPERSEDED IN PART (2026-10-08, P2-022):** retired; the native surface is not extended to PDF. Historical text: **The permitted native surface is extended to PDF rendering and text extraction for the assistant's thin preview** (`§2` of the native interop architecture, amended), and to nothing else. Every other model remains fully managed. |
-| <a id="rule-pd-03"></a>PD-03 | **SUPERSEDED IN PART (2026-10-08, P2-022):** retired (no renderer). Historical text: **The renderer is isolated behind a managed wrapper with the full C ABI discipline** ([AB-01](12-native-interop-and-media.md#rule-ab-01)–[AB-12](12-native-interop-and-media.md#rule-ab-12)), because a PDF renderer parses hostile input by definition. |
-| <a id="rule-pd-04"></a>PD-04 | **SUPERSEDED IN PART (2026-10-08, P2-022):** retired; a PDF is handled as a generic attachment and its metadata card is shown without any parse. Historical text: **A malformed or hostile PDF degrades to a metadata card** and never affects process stability or the surface that references it. |
-| <a id="rule-pd-05"></a>PD-05 | **SUPERSEDED IN PART (2026-10-08, P2-022):** restated as generic derived text: any text extracted by a retained parser (still images, NAT.31) is derived data, rebuildable and never canonical. Historical text: **Extracted text is derived data** ([IP-09](../requirements/06-knowledge-search-and-retrieval.md#rule-ip-09) of the knowledge requirements), rebuildable and never canonical. |
-| <a id="rule-pd-07"></a>PD-07 | **SUPERSEDED IN PART (2026-10-08, P2-022):** PG-12 is retired, not completed, and the assistant's PDF preview is not enabled. Historical text: PDFium selection is fixed. Its real build, licence inventory and hostile-input containment evidence must close [PG-12](../assurance/open-gates-register.md#rule-pg-12) before the assistant's thin PDF preview is enabled. A metadata-card fallback does not close that delivery gate. |
+| <a id="rule-pd-01"></a>PD-01 | PDFium through ArcForges.Native.Pdf is selected for bounded PDF render/text extraction. Platform owns build/licence inventory and ContentSandbox containment for the assistant's thin PDF preview. No implementation-time parser selection remains. |
+| <a id="rule-pd-02"></a>PD-02 | **The permitted native surface is extended to PDF rendering and text extraction for the assistant's thin preview** (`§2` of the native interop architecture, amended), and to nothing else. Every other model remains fully managed. |
+| <a id="rule-pd-03"></a>PD-03 | **The renderer is isolated behind a managed wrapper with the full C ABI discipline** ([AB-01](12-native-interop-and-media.md#rule-ab-01)–[AB-12](12-native-interop-and-media.md#rule-ab-12)), because a PDF renderer parses hostile input by definition. |
+| <a id="rule-pd-04"></a>PD-04 | **A malformed or hostile PDF degrades to a metadata card** and never affects process stability or the surface that references it. |
+| <a id="rule-pd-05"></a>PD-05 | **Extracted text is derived data** ([IP-09](../requirements/06-knowledge-search-and-retrieval.md#rule-ip-09) of the knowledge requirements), rebuildable and never canonical. |
+| <a id="rule-pd-07"></a>PD-07 | PDFium selection is fixed. Its real build, licence inventory and hostile-input containment evidence must close [PG-12](../assurance/open-gates-register.md#rule-pg-12) before the assistant's thin PDF preview is enabled. A metadata-card fallback does not close that delivery gate. |
 
 ### 8.4 Audio and video
 
@@ -183,7 +181,7 @@ Historical text: the assistant's PDF preview was a thin preview — bounded, rea
 |---|---|
 | <a id="rule-ut-01"></a>UT-01 | **Every parser reached from user content is treated as an attack surface**: bounded input size, bounded recursion, bounded time, and failure to a placeholder. |
 | <a id="rule-ut-02"></a>UT-02 | Hostile complex-format and compressed-image parsing uses the mandatory [C# ContentSandbox](24-content-and-extension-isolation.md), independently of whether extensions are enabled. An unavailable enforced profile refuses that parsing operation; it never falls back to parsing in the main process. |
-| <a id="rule-ut-03"></a>UT-03 | **Content instructions are never instructions** ([I-262](../requirements/01-normative-glossary-and-invariants.md#rule-i-262), [I-263](../requirements/01-normative-glossary-and-invariants.md#rule-i-263)). Text extracted from an image is data with untrusted provenance (PDF text extraction is retired, [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)), marked as such before it can reach the agent ([WP-11.06](../planning/work-packages/11-security-foundation.md#rule-wp-11.06)). |
+| <a id="rule-ut-03"></a>UT-03 | **Content instructions are never instructions** ([I-262](../requirements/01-normative-glossary-and-invariants.md#rule-i-262), [I-263](../requirements/01-normative-glossary-and-invariants.md#rule-i-263)). Text extracted from a PDF or an image is data with untrusted provenance, marked as such before it can reach the agent ([WP-11.06](../planning/work-packages/11-security-foundation.md#rule-wp-11.06)). |
 | <a id="rule-ut-04"></a>UT-04 | **No preview path evaluates script, macro, formula or embedded program content** in any format ([EC-06](#rule-ec-06)). |
 
 ---
@@ -224,9 +222,9 @@ Naming these prevents a "rich editor" from silently becoming an unbounded commit
 | # | Obligation | Where |
 |---|---|---|
 | <a id="rule-vf-09"></a>VF-09 | Content never round-trips through a markup string on any internal path | Repository policy test |
-| <a id="rule-vf-12"></a>VF-12 | A malformed image degrades to a placeholder (PDF is not parsed, [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)) with a reason and no crash | [WP-11.09](../planning/work-packages/11-security-foundation.md#rule-wp-11.09), [WP-13.13](../planning/work-packages/13-high-risk-technical-probes.md#rule-wp-13.13) |
+| <a id="rule-vf-12"></a>VF-12 | A malformed image or PDF degrades to a placeholder with a reason and no crash | [WP-11.09](../planning/work-packages/11-security-foundation.md#rule-wp-11.09), [WP-13.13](../planning/work-packages/13-high-risk-technical-probes.md#rule-wp-13.13) |
 | <a id="rule-vf-13"></a>VF-13 | No preview path fetches a remote resource or evaluates embedded program content | [WP-11.05](../planning/work-packages/11-security-foundation.md#rule-wp-11.05) |
-| <a id="rule-vf-14"></a>VF-14 | Extracted image text carries untrusted provenance (PDF text extraction is retired, [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)) before it can reach the agent | [WP-11.06](../planning/work-packages/11-security-foundation.md#rule-wp-11.06) |
+| <a id="rule-vf-14"></a>VF-14 | Extracted PDF and image text carries untrusted provenance before it can reach the agent | [WP-11.06](../planning/work-packages/11-security-foundation.md#rule-wp-11.06) |
 | <a id="rule-vf-15"></a>VF-15 | Copy from a code block reproduces the source exactly; copy of a table region produces a table | Repository policy test |
 | <a id="rule-vf-17"></a>VF-17 | An unsupported math construct renders as source with an explicit marker, never silently wrong | [WP-17](../planning/work-packages/17-arcchat-independent-core.md#rule-wp-17) |
 | <a id="rule-vf-18"></a>VF-18 | An unknown mark survives a read-modify-write cycle unchanged | Repository policy test |
