@@ -16,9 +16,9 @@ Product capability requirements are specified in [`../03-cloud-services-and-sync
 
 | # | Requirement |
 |---|---|
-| <a id="rule-pp-01"></a>PP-01 | ArcForges Cloud is one C# Native AOT modular monolith per Container instance under [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009)/[P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012). The 19 module owners are enumerated in architecture 05, including PackageCatalog. D1, Durable Objects, Queues, Workflow/Workers AI and R2 are bound managed resources; no Node sidecar or second business host. |
+| <a id="rule-pp-01"></a>PP-01 | ArcForges Cloud is one C# Native AOT modular monolith per Container instance under [P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009)/[P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-012). The 19 module owners are enumerated in architecture 05, including PackageCatalog. D1, Durable Objects, Queues, Workers AI (through a thin TypeScript binding adapter) and R2 are bound managed resources; no Node sidecar, no Cloudflare Workflow holding run state and no second business host ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)). |
 | <a id="rule-pp-02"></a>PP-02 | **It is one logical platform**, internally partitioned by module — never split into per-product backends. |
-| <a id="rule-pp-03"></a>PP-03 | One deployable C# Native AOT host contains business APIs, admission, canonical Task/Agent stores, simulator and bounded leased jobs. The sole model/tool loop runs in the separate CF Worker deployment; identical C# replicas are allowed, no role-selected Worker/TaskRunner. |
+| <a id="rule-pp-03"></a>PP-03 | One deployable C# Native AOT host contains business APIs, admission, canonical Task/Agent stores, simulator and bounded leased jobs. The sole model/tool loop is the C# Harness running in this host ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)); the Cloudflare Worker supplies only thin platform adapters at the edge. Identical C# replicas are allowed, no role-selected Worker/TaskRunner. |
 | <a id="rule-pp-04"></a>PP-04 | The first deployment uses Cloudflare Workers and Containers. Kubernetes and an independently operated container platform are outside this profile. |
 | <a id="rule-pp-05"></a>PP-05 | **Cloud never connects to localhost, a named pipe, a Unix socket or local stdio** (**[D-010](../../decisions/phase-1-foundation-decisions.md#rule-d-010)**). Local action is a durable `ToolRequest` that the owning desktop application pulls, re-authorises locally, executes, and answers with an idempotent `ToolResult`. |
 | <a id="rule-pp-06"></a>PP-06 | **Cloud never scans a LAN** and never addresses a desktop directly. |
@@ -50,7 +50,7 @@ The current baseline selections. **Every provider fact — availability, region 
 | Relational store | Managed D1 | One D1 database per realm, module-owned prefixes and fixed atomic plans |
 | Event hints | D1 outbox and DO feed via gRPC-Web Watch/Poll | Bounded hints; durable owners recover state |
 | Asynchronous effects | D1 transactional outbox/inbox plus Cloudflare Queues/Cron wakes | Bounded retries/dead-letter; consumers deduplicate |
-| Live AI presentation | Cloudflare Durable Object | Presentation only; Workflow and C# retain their existing authorities |
+| Live AI presentation | Cloudflare Durable Object | Presentation only; the C# Harness and C# retain their existing authorities ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)) |
 | Mobile push | FCM HTTP v1 behind Notification adapter | Android data-only wake; durable attention survives provider loss |
 | Object storage | R2 plus an independent encrypted second-provider disaster copy | Exact object-version inventory and restore manifest under model 04 and architecture 22 |
 | Secrets | Cloudflare deployment secret bindings and operator secret references | Separate environment identities, audited rotation, no customer key submission |
@@ -72,7 +72,7 @@ The current baseline selections. **Every provider fact — availability, region 
 | # | Requirement |
 |---|---|
 | <a id="rule-rg-01"></a>RG-01 | A deployment declares its Cloudflare jurisdiction/location settings and any legally supported residency promises. D1 is a single primary authority per realm; Worker placement is not a region-pinned business assumption. |
-| <a id="rule-rg-02"></a>RG-02 | Provisioning preflight verifies the actual account plan and availability of Workers, Containers, D1, Durable Objects, Queues, R2, Workflows, Workers AI and Vectorize; record current quotas, retention, jurisdiction and outbound restrictions. Missing required capabilities block provisioning rather than silently choosing another topology. |
+| <a id="rule-rg-02"></a>RG-02 | Provisioning preflight verifies the actual account plan and availability of Workers, Containers, D1, Durable Objects, Queues, R2, Workers AI and Vectorize; record current quotas, retention, jurisdiction and outbound restrictions. Missing required capabilities block provisioning rather than silently choosing another topology. |
 | <a id="rule-rg-03"></a>RG-03 | Resilience uses the managed service guarantees and explicit application retry/fence/recovery design. Do not claim operator-configured availability zones or customer-controlled D1 failover. |
 | <a id="rule-rg-04"></a>RG-04 | Jurisdiction and supported location hints are versioned IaC inputs. Disaster recovery provisions a fresh fenced realm/resource set from the independent manifest; it never assumes a SQL region switch or unchanged resource IDs. |
 | <a id="rule-rg-05"></a>RG-05 | **Workspace `DataRegion` exists from day one** ([WS-09](../02-identity-account-and-workspace.md#rule-ws-09)), and **no public residency claim is made** unless infrastructure legally guaranteeing it is in use ([RG-02](../07-security-privacy-and-trust.md#rule-rg-02) in the security requirements). |

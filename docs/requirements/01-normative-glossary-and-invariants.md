@@ -693,7 +693,8 @@ Every active entry is binding where its concepts are in current product scope. A
 | "ArcForges Suite 2.0" as a version | No mandatory suite release train | Per-product versions plus an optional release campaign name |
 | "Central desktop service", `ArcForgesService.exe` | Prohibited architecture | application-owned assistant |
 | Unqualified "Unlimited AI" / "unlimited storage" | Prohibited unbounded commercial claims | Disclosed AI capacity recovery/rate/concurrency/model limits and storage tier |
-| ".NET AOT" applied to Kotlin Android | Kotlin/Jetpack Compose is its own runtime under [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) | "Kotlin/Jetpack Compose release build" |
+| "NativeAOT" applied to Android mobile | Android is .NET MAUI on the Mono runtime with AOT for release under [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021); NativeAOT and CoreCLR on Android are experimental and unused | "MAUI Mono release build with AOT, trimming and R8" |
+| "CF Workflow owns the model/tool loop" | Superseded by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021): the C# Harness owns the sole loop; no Cloudflare Workflow holds run state | "C# Harness owns the model/tool loop" |
 | "Cloud may remain JIT" | Superseded by [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) | "C# Cloud publishes Native AOT" |
 | "A realtime connection is durable authority" | Hints are projections | "Reconcile using the typed authoritative read" |
 | Waffo Pancake and every Waffo-specific mechanic | `SUPERSEDED` provider (**[D-005](../decisions/phase-1-foundation-decisions.md#rule-d-005)**) | Paddle (MoR) and Payoneer (payout destination) |
@@ -745,4 +746,4 @@ The glossary is enforced, not merely published. The [policy export profile](../a
 
 ## [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) technology invariants
 
-Proto is authored wire authority; the sole model loop is CF Workflow; canonical business state is C#/D1; object bytes are R2; product repositories consume immutable packages; Mobile is Kotlin/Jetpack Compose. These replace superseded technology examples without renumbering inherited invariant IDs. Content-origin and Scope measurement meaning remain unchanged.
+Proto is authored wire authority; the sole model/tool loop is the C# Harness ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021); the earlier CF Workflow loop is superseded); canonical business state is C#/D1; object bytes are R2; product repositories consume immutable packages; Mobile is .NET MAUI for Android (superseded Kotlin/Jetpack Compose path). These replace superseded technology examples without renumbering inherited invariant IDs. Content-origin and Scope measurement meaning remain unchanged.

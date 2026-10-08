@@ -8,7 +8,7 @@
 
 This document defines the Cloud Agent Task model and Cloud AI economics. Native product activities and jobs retain their own lifecycles.
 
-**One Cloud Harness.** The sole model/tool loop runs in CF Workflow. C# Native AOT owns canonical Task state, deterministic scheduling, admission and business transactions. Native acquisition, analysis, export and background maintenance are ordinary product jobs; an agent may invoke and observe them without converting them into a second agent runtime.
+**One Cloud Harness.** The sole model/tool loop is the C# Harness in the Cloud host ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)), run by a C# executor over D1 with an epoch lease and fenced writes, with a Durable Object alarm for wake-up. No Cloudflare Workflow holds run state. C# Native AOT owns canonical Task state, deterministic scheduling, admission and business transactions. Native acquisition, analysis, export and background maintenance are ordinary product jobs; an agent may invoke and observe them without converting them into a second agent runtime.
 
 ---
 
@@ -158,7 +158,7 @@ Tasks carry a limited priority: `Background`, `Normal`, `High`. Automation defau
 
 ## 3. Ownership and execution location
 
-The single Harness executes in the ArcForges-AI Cloudflare Workflow through Workers AI bindings. C# Cloud owns durable business state, authorization, admission, metering and recovery ports. SDK objects are not wire or persistence authority. One Harness design supports many isolated users/tasks; it does not mean one global active task.
+The single Harness executes as C# in the Cloud host ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)). Model calls reach Workers AI through a thin TypeScript binding adapter that forwards the C#-frozen request, enforces only the C#-supplied admitted-model set and size caps (fail-closed) and streams the response back unchanged. The ArcForges-AI Workflow runtime role is retired. C# Cloud owns durable business state, authorization, admission, metering and recovery ports. SDK objects are not wire or persistence authority. One Harness design supports many isolated users/tasks; it does not mean one global active task.
 
 | # | Requirement |
 |---|---|
@@ -171,7 +171,7 @@ The single Harness executes in the ArcForges-AI Cloudflare Workflow through Work
 | <a id="rule-ow-07"></a>OW-07 | Automatic tool placement is bounded by data availability, capability, consent, resource authorisation, paid-service eligibility and budget. |
 | <a id="rule-ow-08"></a>OW-08 | **`Auto` must never upload local-only data to enable cloud execution.** An 80 GB local capture selects an authorized desktop analysis tool; it does not become an 80 GB upload. |
 | <a id="rule-ow-09"></a>OW-09 | Provider fallback remains within approved Cloud routes and the frozen customer budget. A Cloud outage never starts a desktop agent or changes the payer. |
-| <a id="rule-ow-10"></a>OW-10 | Actor, origin, AI executor and capability owner are distinct: for example user → Android companion → Cloud Workflow → ArcScope installation. The target application's own bridge executes its authorized local capability. |
+| <a id="rule-ow-10"></a>OW-10 | Actor, origin, AI executor and capability owner are distinct: for example user → Android companion → Cloud Harness → ArcScope installation. The target application's own bridge executes its authorized local capability. |
 | <a id="rule-ow-11"></a>OW-11 | Task origin records desktop, Mobile, Web or a Cloud automation occurrence. The initiating actor is the workspace owner or an authorised Cloud service acting for that owner; no AgentDelegation origin exists. |
 
 ---
@@ -476,13 +476,13 @@ An enabled model route prices every applicable billable category/tier. The follo
 ### 11.5 Routing
 
 ```text
-C# admission → CF Workflow Harness → Workers AI binding
+C# admission → C# Harness → thin Workers AI binding adapter
 ```
 
 | # | Requirement |
 |---|---|
 | <a id="rule-rt-01"></a>RT-01 | Supplier infrastructure is not the domain model. Private usage/billing dashboards never replace the ArcForges commercial ledger. |
-| <a id="rule-rt-02"></a>RT-02 | V1 model dispatch is C# admission → sole Cloudflare Workflow Harness → Workers AI binding. No second supplier route is activated. |
+| <a id="rule-rt-02"></a>RT-02 | V1 model dispatch is C# admission → sole C# Harness → Workers AI binding through the thin TypeScript adapter ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)). No second supplier route is activated. |
 | <a id="rule-rt-03"></a>RT-03 | Additional supplier and fallback topologies require a later explicit decision; they are not current implementation or release obligations. |
 | <a id="rule-rt-04"></a>RT-04 | Provider spend controls supplement admission but never authorize spending or replace the customer ledger. |
 | <a id="rule-rt-05"></a>RT-05 | Auto resolves a configured cost class once: initial fast maps to @cf/openai/gpt-oss-20b and balanced to @cf/openai/gpt-oss-120b. Exact availability/prices remain validated configuration. |

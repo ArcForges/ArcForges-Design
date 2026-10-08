@@ -50,11 +50,11 @@ Fixed by **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)**
 | # | Requirement |
 |---|---|
 | <a id="rule-tb-01"></a>TB-01 | **Public marketing, legal, download and information pages render as static HTML and CSS before JavaScript runs.** Their content and ordinary navigation work with scripting disabled; they do not boot a client application merely to display initial content. |
-| <a id="rule-tb-02"></a>TB-02 | **`ArcForges.Web.App` is the only interactive browser application**, implemented in React and strict TypeScript as separate Account/Chat/Operations build profiles under [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008). |
-| <a id="rule-tb-03"></a>TB-03 | **Public pages are generated at build time using React/TypeScript and Node.js**, as static deployment artifacts. Their initial content and navigation work without JavaScript. |
-| <a id="rule-tb-04"></a>TB-04 | **The selected Web toolchain is Node.js/npm, Vite and React Router.** No Blazor browser host, React Native migration, runtime Node SSR or separate Node business backend is required. |
-| <a id="rule-tb-05"></a>TB-05 | **Web is checked against production browser assets, not .NET AOT properties.** Pin the Node/compiler/dependency toolchain, enforce browser compatibility and track initial and per-route transfer budgets. |
-| <a id="rule-tb-06"></a>TB-06 | **Browser JS/TS libraries are permitted under dependency, CSP, accessibility and performance policy.** This permission is confined to Web and does not relax pure-native Avalonia desktop requirements. |
+| <a id="rule-tb-02"></a>TB-02 | **`ArcForges.Web.App` is the only interactive browser application**, implemented as one Blazor WebAssembly standalone application with separate Account/Chat/Operations profiles under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) (amending [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008)). |
+| <a id="rule-tb-03"></a>TB-03 | **Public pages are generated at build time by the C# static Site generator** (the first-party Razor `HtmlRenderer`, [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)), as static deployment artifacts with deterministic output. Their initial content and navigation work without JavaScript or WebAssembly. |
+| <a id="rule-tb-04"></a>TB-04 | **The selected Web toolchain is .NET 10 with Blazor WebAssembly and the C# static Site generator** ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021), amending [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008)). Node.js is used only as wrangler deployment tooling. No React, Vite, React Router, npm application toolchain, React Native migration, runtime Node SSR or separate Node business backend is required. |
+| <a id="rule-tb-05"></a>TB-05 | **Web is checked against production browser assets, not desktop Native AOT properties.** Pin the .NET SDK, compiler and NuGet dependency closure, enforce browser compatibility and track initial and per-route transfer budgets. The React-measured budgets are re-baselined under AL-06 by [PRF.11](../../planning/delivery/lanes/runtime-proofs.md#task-prf-11); the public static Site p75 LCP ≤ 2.5 s, INP ≤ 200 ms and CLS ≤ 0.1 stay binding. |
+| <a id="rule-tb-06"></a>TB-06 | **Browser JavaScript interop is permitted only where no managed API exists** (WebAuthn `navigator.credentials`, clipboard, download/share, the sandboxed preview iframe). Each interop point is listed and audited under dependency, CSP, accessibility and performance policy, and no JavaScript or TypeScript business logic is added ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)). This permission is confined to Web and does not relax pure-native Avalonia desktop requirements. |
 
 ---
 
@@ -168,9 +168,9 @@ Specified in [`arcchat-mobile-and-web.md`](arcchat-mobile-and-web.md), including
 
 | # | Requirement |
 |---|---|
-| <a id="rule-web-01"></a>WEB-01 | Handwritten proto in Contracts generates C#/TS business SDKs and tool/validation projections. Browser uses gRPC-Web and same-origin session/AI/object exceptions; no independent handwritten TS DTO or business backend. |
-| <a id="rule-web-02"></a>WEB-02 | **Exact values survive C# and JavaScript.** Int64 revisions/token counts/microcredits and decimal prices use the specified canonical string wire encoding; UI display never rounds accounting values through JS Number. |
-| <a id="rule-web-03"></a>WEB-03 | **One Web npm workspace can be developed independently.** Windows win.slnx includes its esproj; non-Windows developers run Node/npm in the Web directory without loading the managed/native solution. |
+| <a id="rule-web-01"></a>WEB-01 | Handwritten proto in Contracts generates C# NuGet business SDKs and tool/validation projections. Browser uses binary gRPC-Web (`Grpc.Net.Client.Web`) and same-origin session/AI/object exceptions; no independent handwritten DTO, TypeScript business DTO or business backend. |
+| <a id="rule-web-02"></a>WEB-02 | **Exact values survive the C# client and browser interop.** Int64 revisions/token counts/microcredits and decimal prices use the specified canonical string wire encoding; UI display never rounds accounting values through floating-point or JS Number; the C# client keeps int64, uint64 and decimal exact. |
+| <a id="rule-web-03"></a>WEB-03 | **The Web projects can be developed independently.** The Blazor WebAssembly and static Site projects are included in the managed solution; a developer builds them with the .NET SDK without loading the desktop native solution. |
 | <a id="rule-web-04"></a>WEB-04 | **Fixture development and real integration are separate modes.** Tests of the generated SDK against real C# APIs, browser sessions, D1 state and approved provider test flows are release evidence; fixture success alone is not. |
 | <a id="rule-web-05"></a>WEB-05 | **Realtime and streaming have generated event contracts and recovery tests**, including byte offsets, reconnect/gaps, duplicate delivery and loss of authorization. |
 | <a id="rule-web-06"></a>WEB-06 | **The browser handles API uncertainty explicitly.** Idempotency keys, revision conflicts, rate limits, pending checkout confirmation and expired sessions cannot be replaced with unconditional optimistic success. |
@@ -179,7 +179,7 @@ Specified in [`arcchat-mobile-and-web.md`](arcchat-mobile-and-web.md), including
 
 | # | Requirement |
 |---|---|
-| <a id="rule-uxw-01"></a>UXW-01 | **A shared owned design system governs Site, Account and Chat**: typography, spacing, color, iconography, light/dark themes, responsive layout and motion. React/shadcn components are adapted to this system; shipping an unreviewed starter theme is insufficient. |
+| <a id="rule-uxw-01"></a>UXW-01 | **A shared owned design system governs Site, Account and Chat**: typography, spacing, color, iconography, light/dark themes, responsive layout and motion. Blazor and Razor components are adapted to this system; shipping an unreviewed starter theme is insufficient. |
 | <a id="rule-uxw-02"></a>UXW-02 | **Core screens have approved visual baselines**: home/product/pricing, subscription/checkout return, account overview, usage/capacity, conversation and task approval. Validate desktop and narrow browser layouts and long translated text. |
 | <a id="rule-uxw-03"></a>UXW-03 | **Loading, empty, error, pending, disabled, expired and recovery states are designed and tested.** Server truth controls subscription/credit/task status; animations and placeholders do not imply authority. |
 | <a id="rule-uxw-04"></a>UXW-04 | **Motion supports comprehension**, honors reduced-motion preferences and never hides focus, delays primary actions or blocks initial content. Keyboard, screen reader and touch behavior are acceptance conditions. |
@@ -263,9 +263,9 @@ The web presence is **not**: an ArcScope web editor; a second account applicatio
 
 ---
 
-**Generated-client interoperability** — Contracts publishes the authored proto contract, TS regenerates without handwritten DTOs, exact large integers/decimals round-trip, and stale clients follow the compatibility window.
+**Generated-client interoperability** — Contracts publishes the authored proto contract, the C# SDK regenerates without handwritten DTOs, exact large integers/decimals round-trip, and stale clients follow the compatibility window.
 
-**Independent developer workflow** — Windows opens/builds the Web esproj in win.slnx; Linux/macOS run the same npm commands directly. Real-browser API and fixture modes are distinguishable.
+**Independent developer workflow** — Windows builds the Web projects in the managed solution; Linux runs the same .NET commands directly (macOS is out of scope, [P2-023](../../decisions/phase-2-specification-decisions.md#rule-p2-023)). Real-browser API and fixture modes are distinguishable.
 
 **Visual acceptance** — approved Site, subscription and Chat layouts pass theme, narrow-screen, locale, asynchronous-state, keyboard and reduced-motion checks.
 
@@ -275,8 +275,8 @@ The web presence is **not**: an ArcScope web editor; a second account applicatio
 
 | Current document | Relationship |
 |---|---|
-| [Web Architecture](../../architecture/10-web-architecture.md) | Defines the current React/TypeScript public, account and Chat surfaces |
-| [Web Toolchain, Generated SDK and Developer Workflow](../../architecture/25-web-toolchain-and-sdk.md) | Defines Node tooling, generated proto C#/TS clients and browser contract behavior |
+| [Web Architecture](../../architecture/10-web-architecture.md) | Defines the public, account and Chat surfaces (the React/TypeScript description is superseded by [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)) |
+| [Web Toolchain, Generated SDK and Developer Workflow](../../architecture/25-web-toolchain-and-sdk.md) | Defines .NET/Blazor tooling, generated proto C# clients and browser contract behavior (Node tooling is limited to wrangler, [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)) |
 | [Distribution, Update, Support and Trust & Safety Requirements](../10-distribution-update-and-support.md) | Owns release and download metadata obligations |
 | **[D-007](../../decisions/phase-1-foundation-decisions.md#rule-d-007)** | Static public pages and one application; technology amended by [P2-008](../../decisions/phase-2-specification-decisions.md#rule-p2-008) |
 | **[D-014](../../decisions/phase-1-foundation-decisions.md#rule-d-014)** | The twelve-entry surface inventory and "a hostname is not an application" |
