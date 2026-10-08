@@ -38,21 +38,23 @@ This inventory states capability and degradation obligations. The package regist
 
 ### 2.2 The matrix
 
-Embedded assistant packages are verified inside each host below; they are not a second desktop deliverable. The table records source-support design intent, not an assertion that every RID is produced or tested. Under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017), CI/publication inventories include only actually produced Windows/Linux artifacts. macOS remains source support with local-only, unverified coverage unless specific local evidence exists; no macOS CI, automatic release artifact or passing result is implied.
+Embedded assistant packages are verified inside each host below; they are not a second desktop deliverable. The table records source-support design intent, not an assertion that every RID is produced or tested. Under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017), CI/publication inventories include only actually produced Windows/Linux artifacts. **SUPERSEDED IN PART (2026-10-08, P2-023):** macOS is out of scope and is not a source-support or release target; no macOS CI, automatic release artifact, local coverage or passing result is claimed ([P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023)).
 
-| Target | Windows x64 | Windows arm64 | macOS arm64 | macOS x64 | Linux x64 | Linux arm64 |
-|---|---|---|---|---|---|---|
-| **ArcScope** | Tier 1 | Tier 2 | Source only | Source only | Tier 1 | Tier 2 |
+| Target | Windows x64 | Windows arm64 | Linux x64 | Linux arm64 |
+|---|---|---|---|---|
+| **ArcScope** | Tier 1 | Tier 2 | Tier 1 | Tier 2 |
+
+The macOS columns are removed by P2-023; macOS RIDs (osx-*) are not a target.
 
 | Target | Runtime | Architecture posture |
 |---|---|---|
 | **ArcForges Cloud** | ASP.NET Core Native AOT container | Linux x64 Native AOT container; identical replicas, one process per instance |
-| **ArcForges.Web.App** | React/TypeScript browser assets; Node.js/npm build tooling | [browser-support.v1](../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1); no .NET WASM host. win.slnx/esproj on Windows; npm directory workflow elsewhere ([P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008)) |
-| **ArcChat Mobile — Android** | Kotlin/Jetpack Compose | arm64 Tier 1; x64 for emulator use only, never a release claim |
+| **ArcForges.Web.App** | Blazor WebAssembly (C#/.NET 10) browser assets; Node is build and deploy tooling only ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) items 1 and 2; supersedes [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) items 1, 2 and 4) | [browser-support.v1](../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1); the Web uses the C# Blazor project and the static Site generator. The React/TypeScript and esproj rows are superseded and their rewrite is pending |
+| **ArcChat Mobile — Android** | .NET MAUI, `net10.0-android` only, Mono AOT for release ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3; the Kotlin/Compose row is superseded) | arm64 Tier 1 once AND.40 proves it; x64 for emulator use only, never a release claim |
 
 | # | Rule |
 |---|---|
-| <a id="rule-pt-01"></a>PT-01 | Every professional desktop retains the accepted Windows/Linux/macOS source-support design; a release ships only its actually produced RID set under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017) and records missing or untested coverage explicitly. Shared native/UI mechanisms require per-product integration evidence; platform parity does not imply cross-product execution. |
+| <a id="rule-pt-01"></a>PT-01 | Every professional desktop retains the accepted Windows/Linux source-support design (**SUPERSEDED IN PART (2026-10-08, P2-023):** macOS is out of scope); a release ships only its actually produced RID set under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017) and records missing or untested coverage explicitly. Shared native/UI mechanisms require per-product integration evidence; platform parity does not imply cross-product execution. |
 | <a id="rule-pt-02"></a>PT-02 | **A claimed Tier-2 release platform is a real build, not a promise.** Produced Windows/Linux RIDs publish AOT in permitted CI; source-only targets are not counted as released Tier-2 artifacts. Tier 2 does not carry release-blocking authority. |
 | <a id="rule-pt-03"></a>PT-03 | **Tier promotion is a decision with evidence** — full matrix participation demonstrated — not a marketing choice. |
 | <a id="rule-pt-04"></a>PT-04 | **The mobile emulator architecture is never a release claim** ([PM-03](../requirements/12-quality-and-compatibility-contract.md#rule-pm-03) there). |
@@ -78,7 +80,7 @@ Embedded assistant packages are verified inside each host below; they are not a 
 |---|---|---|---|---|
 | **Serial and device transports** | `ArcForges.Native.Instruments` / DesktopPlatform | arc_instruments_* over OS serial and libusb; no vendor SDK in V1 | ArcScope generic serial and explicit-interface USB acquisition | [PG-03](../assurance/open-gates-register.md#rule-pg-03), [PG-08](../assurance/open-gates-register.md#rule-pg-08) |
 | **High-rate acquisition and signal primitives** | `ArcForges.Native.Instruments` / DesktopPlatform | ArcForges-owned shim where a managed path cannot meet the rate | ArcScope hot path | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
-| **Document rendering and text extraction** | `ArcForges.Native.Pdf` inside WP11 ContentSandbox, brokered by the assistant's ContentSandbox integration | Owned arc_pdf_* over PDFium; only bounded text and raster output | Assistant PDF thin previews | [PG-03](../assurance/open-gates-register.md#rule-pg-03), [PG-12](../assurance/open-gates-register.md#rule-pg-12) |
+| **Document rendering and text extraction** | **SUPERSEDED IN PART (2026-10-08, P2-022):** retired. `ArcForges.Native.Pdf` and the arc_pdf ABI are removed by NAT.32; no PDF renderer or parser is selected. Still-image decoding only (NAT.31, inside the ContentSandbox) | Image-only parsers (NAT.11 family); no PDF | Image thin previews only; PDF attachments are opaque downloads | PG-12 retired, not completed; PG-03 loses its PDF member; PG-22 image evidence through NAT.31/PLT.54 |
 | **Still-image codecs** | `ArcForges.Native.Image` (logical library `ArcImageNative`) | arc_image_* over OIIO/OpenEXR/Imath | Assistant image thin previews | [PG-03](../assurance/open-gates-register.md#rule-pg-03) |
 | **Secure storage** | Per-product `*.Infrastructure` | Platform APIs | Secret broker backing (`§6` of the security architecture) | — |
 | **Shell integration, global hotkey, notification** | Per-product `*.Infrastructure` | Platform APIs | Desktop shell behaviours | — |
@@ -141,7 +143,7 @@ What the user sees when a slot is unavailable — absent library, unsupported pl
 |---|---|---|
 | Serial or device transport | That transport is listed unavailable with its reason; others remain usable ([PM-06](../requirements/12-quality-and-compatibility-contract.md#rule-pm-06) of the quality contract) | The device list is silently short |
 | High-rate acquisition | Rate ceiling reduced and **stated before capture starts**, not discovered afterwards | A capture that silently drops samples |
-| Document rendering | The assistant's thin PDF preview through the ContentSandbox is unavailable and falls back to the **metadata card** (`§8.1`–`§8.2` of the rich content architecture); [PG-12](../assurance/open-gates-register.md#rule-pg-12) stays open | A blank preview, or the gap concealed by calling it complete |
+| Document rendering | **SUPERSEDED IN PART (2026-10-08, P2-022):** PDF preview is retired: PDF attachments are opaque downloads, shown as a **metadata card**; exported ArcScope reports are presented only through the platform viewer or downloaded (`§8.1`–`§8.2` of the rich content architecture); [PG-12](../assurance/open-gates-register.md#rule-pg-12) is retired, not completed | A blank preview, or the gap concealed by calling it complete |
 | Still-image codecs | Affected formats are named unavailable; the assistant's thin image preview falls back to the **metadata card** | A silently missing image presented as available |
 | USB instrument transport | Device remains listed with driver/permission/interface-busy reason; other transports remain usable | Silently short enumeration or automatic kernel-driver detach |
 | Text shaping, font fallback, glyph rasterisation | Use verified bundled fallback fonts, mark unsupported glyphs explicitly; broken rendering backend blocks that platform release | Silent text omission or corrupted layout |
@@ -187,7 +189,7 @@ dependency adopted (§3.3)
 | # | Obligation | Where |
 |---|---|---|
 | <a id="rule-pv-01"></a>PV-01 | Claimed Tier-1 coverage records build/AOT and relevant local install, UI, recovery, compatibility and performance evidence under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017); unavailable environments are reported, never fabricated or provisioned solely for validation | [WP-06.00](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.00), [WP-50.02](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.02) |
-| <a id="rule-pv-02"></a>PV-02 | Every produced Windows/Linux Tier-2 release RID completes build and AOT publish in permitted CI; macOS source-only targets remain outside that inventory | [WP-06.00](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.00) |
+| <a id="rule-pv-02"></a>PV-02 | Every produced Windows/Linux Tier-2 release RID completes build and AOT publish in permitted CI; macOS is out of scope ([P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023)) and has no inventory entry | [WP-06.00](../planning/work-packages/06-aot-jit-and-wasm-publish-proof.md#rule-wp-06.00) |
 | <a id="rule-pv-03"></a>PV-03 | The supported OS range is published as release metadata and matches what was tested | [WP-50.02](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.02), [WP-50.08](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.08) |
 | <a id="rule-pv-04"></a>PV-04 | Every native slot in use has its [AD-01](#rule-ad-01)–[AD-08](#rule-ad-08) obligations recorded before the dependent work completes | [PG-03](../assurance/open-gates-register.md#rule-pg-03), [PG-12](../assurance/open-gates-register.md#rule-pg-12), [WP-50.01](../planning/work-packages/50-full-platform-production-release.md#rule-wp-50.01) |
 | <a id="rule-pv-05"></a>PV-05 | Every degradation row is exercised: absent library, failed verification, missing hardware, unsupported format | [WP-13.05](../planning/work-packages/13-high-risk-technical-probes.md#rule-wp-13.05), [WP-33](../planning/work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) |

@@ -36,7 +36,7 @@ POST `/session/v1/native/token` is a standard form-urlencoded exception (≤16 K
 | Client IDs | Exact redirects |
 |---|---|
 | arcscope.desktop | `com.arcforges.arcscope:/auth/callback` |
-| companion.android | `https://account.arcforges.com/native/android/callback` for official realm; verified Android App Link for package `com.arcforges.mobile`, production signing certificate fingerprints in account-origin assetlinks.json |
+| companion.android | `https://account.arcforges.com/native/android/callback` for official realm; verified Android App Link for package `com.arcforges.mobile` (target value; no release claims it until AND.01 changes the identifier, [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3), production signing certificate fingerprints in account-origin assetlinks.json |
 | companion.android.selfhost | `com.arcforges.mobile:/auth/callback`; manually trusted realm profile and exact PKCE flow; no official App Link claim for another origin |
 
 Official passkey RP ID is `arcforges.com`; web origins are exactly https://account.arcforges.com and https://chat.arcforges.com. Android Credential Manager uses the RP's assetlinks.json at https://arcforges.com/.well-known/assetlinks.json with the same package/certificate. Server verifies challenge, RP hash, allowed browser/Android origin, credential ownership and user verification. Native desktop passkeys run in the system-browser ceremony. Self-host advertises its own HTTPS RP/origins; clients never send official credentials/cookies to it. Development fingerprints/redirects exist only in development realms. WP22 produces minimal authorization UI/handlers plus native fixtures; WP47/48 integrate public/account static assets; WP53 registers desktop URI handlers.

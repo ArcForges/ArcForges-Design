@@ -14,9 +14,9 @@ One Cloud Harness, one Task model, one metering path. Tool locality varies; the 
 **Every model call, the single Harness and all durable agent orchestration are Cloud** (**[P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006)**). The desktop contributes UI, authorised local tool execution and product-local jobs. There is no second agent runtime anywhere.
 
 ```
-Desktop / React / Kotlin Android: intent, Task/approval UI, draft/ack state
+Desktop / Blazor Web / MAUI Android: intent, Task/approval UI, draft/ack state
     -> C# Native AOT: Task/Chat/Agent/Commerce/Entitlement authority
-        -> transactional dispatch outbox -> CF RunWorkflow
+        -> transactional dispatch outbox -> C# executor (P2-021; formerly CF RunWorkflow)
             -> authorized context + typed tool proposals + Workers AI
             -> C# intent/outcome/settlement/finalization ports
 Desktop tool executor pulls durable ToolRequests from C#,
@@ -38,7 +38,7 @@ CF RunStream DO carries live presentation only; C# owns final facts.
 
 ## 2. Agent runtime under AOT
 
-[P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) places the only model/tool loop in CF Workflow. Both the C# business ports and desktop typed tool path are Native AOT; framework constraints below apply to the C# boundary, while CF execution follows [the integration contract](contracts/05-cloudflare-integration.md).
+**SUPERSEDED IN PART (2026-10-08, P2-021):** the only model/tool loop is the C# executor on D1, not a CF Workflow ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) item 5). [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) placed the loop in a CF Workflow; that placement is superseded in part. Both the C# business ports and desktop typed tool path are Native AOT; framework constraints below apply to the C# boundary, while CF execution follows [the integration contract](contracts/05-cloudflare-integration.md).
 
 | # | Rule |
 |---|---|
@@ -155,7 +155,7 @@ Logical AI Request  (Cloud, authorised, service term verified)
    -> resolve supplier price version applicable at dispatch
    -> resolve customer retail tariff snapshot and pin it to the Run/request
    -> admission: capacity + credits + concurrency + provider budget, reserved atomically
-   -> resolve the pinned Workers AI binding/model in the sole CF RunWorkflow
+   -> resolve the pinned Workers AI binding/model in the sole C# executor (P2-021; formerly CF RunWorkflow)
    -> Provider Attempt 1 ... N
    -> usage normalisation -> supplier cost record + customer settlement + ledger entries
 ```
@@ -365,7 +365,7 @@ Supplier request ID is nullable until CF returns one; ArcForges attempt identity
 
 Search keeps D1 FTS5 and Vectorize projections and query-time authorization; D1 FTS5 and Vectorize projections under the current D1 profile. Projection key(sourceId,sourceRev,embeddingModelId,embeddingProfileVersion,chunkHash), tombstone/source-denial before counts/citations. Model dimension/profile change builds separate index from authorized acknowledged sources, catches up journal, switches reader atomically and retains rollback window; no mixing vectors or changing canonical Scope measurement order. C# config activation creates immutable snapshot, Worker acknowledges supported schema/model/limits and version hash, then C# atomically moves active head; stale Worker cannot admit a new call. Emergency denial applies immediately even to a frozen Run; existing tariff snapshot remains for already admitted work.
 
-The [sole Workflow and transactional ports](contracts/05-cloudflare-integration.md) supply the concrete placement, transitions, retry/approval/cancellation and restore rules. C# schedules deterministic occurrences and owns their Task record; CF advances the model/tool loop. ProductJob remains product-owned.
+**SUPERSEDED IN PART (2026-10-08, P2-021):** the sole Workflow is replaced by the C# executor and its transactional ports. The [executor and transactional ports](contracts/05-cloudflare-integration.md) supply the concrete placement, transitions, retry/approval/cancellation and restore rules. C# schedules deterministic occurrences and owns their Task record; CF advances the model/tool loop. ProductJob remains product-owned.
 
 ## Ordinary and temporary execution authority
 
