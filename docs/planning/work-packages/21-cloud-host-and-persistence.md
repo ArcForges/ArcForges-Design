@@ -36,7 +36,7 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 <a id="rule-wp-21.01"></a>
 ### WP-21.01 — Finite durable jobs
 
-**What must be fully done.** Replace perpetual hosted loops with Cron/Queue/Durable Object-alarm-woken C# endpoints (a Workflow may wake an endpoint but never holds state, [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)); ≤100 items/20s per job, checkpoint/receipt/lease then yield.
+**What must be fully done.** Replace perpetual hosted loops with Cron/Queue/Durable Object-alarm-woken C# endpoints (no Cloudflare Workflow holds state; a Workflow may be used later only as a stateless wake/lifecycle adapter if the [HAR.40](../delivery/lanes/harness.md#task-har-40) proof shows it is cheaper, and C# still decides every step, [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)); ≤100 items/20s per job, checkpoint/receipt/lease then yield.
 
 **Testing requirements.** Sleep/restart, duplicate wake, delayed delivery, stale lease and paused simulator continuation.
 

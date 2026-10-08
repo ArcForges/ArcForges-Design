@@ -143,7 +143,7 @@ The Web companion verifies real generation, tool approval, stream fallback and r
 
 ### WP-49.06 — Performance budgets
 
-**What must be fully done.** Bundle size, first-interactive and interaction responsiveness measured against budget with a regression gate applied at release. The React-measured baselines are re-baseline pending under AL-06 by PRF.11 and are not silently reset; the public static-Site p75 targets (LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1) stay binding.
+**What must be fully done.** Bundle size, first-interactive and interaction responsiveness measured against budget with a regression gate applied at release. The React-measured baselines remain the regression gate until the accepted AL-06 re-baseline record ([AL-06](../../architecture/10-web-architecture.md#rule-al-06), produced by PRF.11) replaces them and are not silently reset; the public static-Site p75 targets (LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1) stay binding.
 
 **Testing requirements.** Budget measurements per release candidate; a regression-gate negative test.
 

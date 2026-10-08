@@ -109,7 +109,7 @@ The [WP03.00 implementation profile](../../assurance/wp03-00-contract-structure-
 
 **Testing requirements.** Independent positive/negative vectors cover exact integer/decimal, optional/oneof, invalid enum/ID, typed error and all three original audit profiles.
 
-**Completion gate.** All selected records and their semantic constraints round-trip consistently in C# and in the ai-internal TypeScript codec ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)); the C# side is the authoritative conformance source.
+**Completion gate.** All selected records and their semantic constraints round-trip consistently in C# and TS. Planning repair 2026-10-08 (DLV-34; P2-021): the C# codec is the conformance authority; the TypeScript round trip is retained only for the ai-internal package, and the other TypeScript and Kotlin codecs retire under [CON.40](../delivery/lanes/contracts.md#task-con-40) after consumer migration.
 
 The [WP03.01 implementation profile](../../assurance/wp03-01-foundation-contract-profile.md) fixes the complete selected seed/dependency closure, safe value boundaries, profile fixtures and ordered implementation/publication plan. Its owner-body dependency generation does not close WP03.03's descriptor/resource/Sync semantic gate or WP03.05's complete operation, scope, stream/history and language-client gate. Query, measurement and transaction engines remain with their product owners.
 
@@ -120,7 +120,7 @@ The [WP03.01 completion receipt](../../assurance/wp03-01-implementation-evidence
 ### WP-03.02 — Serialization posture
 
 
-**What must be fully done.** Use Google.Protobuf generated C# and, for the retained ai-internal codec only, protobuf-es generated TypeScript, with explicit service registration. Implement only the declared source-generated JSON metadata for HTTP exceptions; unknown fields, scalar presence and enum behavior follow the registry.
+**What must be fully done.** Use Google.Protobuf generated C# and protobuf-es generated TS with explicit service registration. Implement only the declared source-generated JSON metadata for HTTP exceptions; unknown fields, scalar presence and enum behavior follow the registry. Planning repair 2026-10-08 (DLV-34; P2-021): protobuf-es is retained only for the ai-internal codec; the other TypeScript and the Kotlin generators retire under [CON.40](../delivery/lanes/contracts.md#task-con-40).
 
 **Testing requirements.** AOT publish, forbidden reflection serializer/dependency checks, binary/JSON-exception conformance and decode limits.
 
@@ -168,7 +168,7 @@ The [WP03.02 completion receipt](../../assurance/wp03-02-implementation-evidence
 
 **What must be fully done.** Implement the registry compatibility and semantic hash profiles: wire bigint, decimal coefficient/scale, canonical semantic hash distinct from wire byte hash, oneof presence, unknown fields and additive response evolution. Version descriptors independently of applications and enforce the supported window.
 
-**Testing requirements.** Previous-client/current-server and current-client/minimum-server matrices; deletion/tag-reuse/type-change failures; shared canonical hash vectors.
+**Testing requirements.** Previous-client/current-server and current-client/minimum-server matrices; deletion/tag-reuse/type-change failures; shared canonical hash vectors (C# is the hash authority; the TypeScript hash export retires with `@arcforges/proto` under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 4).
 
 **Completion gate.** Breaking schema changes fail before publication and all selected values retain meaning across clients.
 

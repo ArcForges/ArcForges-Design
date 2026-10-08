@@ -73,7 +73,7 @@
 | Contracts: public Agent/usage and internal AI HTTP profiles | Generated types and independent fixtures from the fixed registry |
 | Cloud/AI integration tests | Real provider capability, usage, unknown outcome, tariff, funding and recovery evidence |
 
-The provider implementation is confined to ArcForges-AI; C# owns canonical commerce/authority and typed integration ports. No desktop/mobile model SDK or second loop is introduced.
+The provider implementation is confined to the Cloud C# modules and the thin Cloud Worker `ai.internal` adapter ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)); C# owns canonical commerce/authority and typed integration ports. No desktop/mobile model SDK or second loop is introduced.
 
 ---
 

@@ -50,7 +50,7 @@
 | # | Rule |
 |---|---|
 | <a id="rule-br-01"></a>BR-01 | **The SDK version is pinned and upgrading it is a reviewed change** ([BM-01](../../architecture/14-build-packaging-and-release.md#rule-bm-01) in the build architecture). |
-| <a id="rule-br-02"></a>BR-02 | **Central package management governs NuGet, including the Blazor WebAssembly and static Site generator projects.** Node is limited to wrangler deployment tooling and the retained `@arcforges/ai-internal` adapter package; both have reviewed exact pins and one root lock. |
+| <a id="rule-br-02"></a>BR-02 | **Central package management governs NuGet, including the Blazor WebAssembly and static Site generator projects.** Node is limited to build and deploy tooling: wrangler, the D1 migration runner and generators that make no business decision, and the retained `@arcforges/ai-internal` package ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) items 1, 4 and 6); each has reviewed exact pins and one root lock. |
 | <a id="rule-br-03"></a>BR-03 | **The lock file is committed and CI restores in locked mode** ([PJ-05](../../architecture/01-solution-and-project-layout.md#rule-pj-05)). |
 | <a id="rule-br-04"></a>BR-04 | **Warnings are errors on the main path**; trim and AOT diagnostics are always errors on AOT deliverables ([PJ-08](../../architecture/01-solution-and-project-layout.md#rule-pj-08)). |
 | <a id="rule-br-05"></a>BR-05 | **Every reusable library consumed by an AOT deliverable declares AOT compatibility; every AOT host declares AOT publish** ([PJ-02](../../architecture/01-solution-and-project-layout.md#rule-pj-02)). |
@@ -90,7 +90,7 @@
 ### WP-02.00 — Pin and lock each toolchain
 
 
-**What must be fully done.** Pin the exact toolchain/package versions in the platform matrix: each .NET owner has SDK/central NuGet/locked restore; each TypeScript Cloudflare adapter owner has Node/npm and one root package-lock; DesktopPlatform keeps committed vcpkg producer baseline/overlays for CI and candidate provenance; local development reuses already installed compatible dependencies without a mandatory reinstall, under the [toolchain profile](../../assurance/wp02-00-toolchain-profile.md). Contracts owns protoc/generator pins and generated package metadata. The Web Blazor project restores only through its locked .NET restore, and wrangler commands never restore implicitly.
+**What must be fully done.** Pin the exact toolchain/package versions in the platform matrix: each .NET owner has SDK/central NuGet/locked restore; each TS owner has Node/npm and one root package-lock; DesktopPlatform keeps committed vcpkg producer baseline/overlays for CI and candidate provenance; local development reuses already installed compatible dependencies without a mandatory reinstall, under the [toolchain profile](../../assurance/wp02-00-toolchain-profile.md). Contracts owns protoc/generator pins and generated package metadata. Web esproj delegates to its own npm commands without implicit restore. Planning repair 2026-10-08 (DLV-34; P2-021): the Web esproj and npm workspace are superseded by the Blazor WebAssembly and C# static Site projects ([WEB.40](../delivery/lanes/web.md#task-web-40)); the Cloud TypeScript adapter pins are owned by [CLOUD.84](../delivery/lanes/cloud.md#task-cloud-84); the Kotlin/Gradle pins retire with [AND.40](../delivery/lanes/android.md#task-and-40).
 
 **Testing requirements.** Clean isolated restores and offline repeat from fetched caches; altered lock/baseline or floating dependency fails.
 
@@ -127,7 +127,7 @@
 ### WP-02.03 — Runtime and directory boundaries
 
 
-**What must be fully done.** Apply Native AOT/analyzer settings to desktop and the Cloud host. Build Web as Blazor WebAssembly and the static Site generator through the .NET SDK, the Cloud TypeScript adapter with its selected Node commands, and Mobile as the .NET MAUI Android project; mobile runtime settings (Mono, AOT and R8 trimming) stay in the Mobile project and never enter desktop or Cloud MSBuild. Use owner-local solution/IDE entry points and typed portable tooling; local orchestration consumes exact producer artifacts in the integration manifest.
+**What must be fully done.** Apply Native AOT/analyzer settings to desktop and the Cloud host. Build Web and AI with their selected TS commands and Mobile through its Kotlin/Gradle Android project; mobile runtime settings never enter MSBuild. Use owner-local solution/IDE entry points and typed portable tooling; local orchestration consumes exact producer artifacts in the integration manifest. Planning repair 2026-10-08 (DLV-34; P2-021): the Web TypeScript build is replaced by the Blazor WebAssembly build under [WEB.40](../delivery/lanes/web.md#task-web-40), the Kotlin/Gradle Mobile build by the MAUI project under [AND.40](../delivery/lanes/android.md#task-and-40), and the AI TypeScript commands move with the Cloud Worker adapter under [HAR.40](../delivery/lanes/harness.md#task-har-40).
 
 **Testing requirements.** Run Windows IDE delegation and supported non-Windows CLI commands; verify Cloud never builds Web/Mobile/native targets and each product builds without another product source.
 

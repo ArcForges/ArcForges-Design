@@ -124,7 +124,7 @@
 ### WP-01.03 — Execute the native surface dispositions
 
 
-**What must be fully done.** Retain the approved native foundations in DesktopPlatform; apply the selected vcpkg/official OTIO admission and MDF exclusion from the native registry. Migrate capability-specific managed wrappers into their DesktopPlatform packages; consume risky parsers only through the ContentSandbox/Broker isolation required by [architecture 24](../../architecture/24-content-and-extension-isolation.md). WP11 supplies the restricted helper and NAT.31 composes production still-image parsers (no PDF parser, per [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)); WP01 must not introduce an uncontained parser or claim that the current Hello helper is a signed sandbox. Remove product copies only after exact source/NOTICE and package tests prove the transfer.
+**What must be fully done.** Retain the approved native foundations in DesktopPlatform; apply the selected vcpkg/official OTIO admission and MDF exclusion from the native registry. Migrate capability-specific managed wrappers into their DesktopPlatform packages; consume risky parsers only through the ContentSandbox/Broker isolation required by [architecture 24](../../architecture/24-content-and-extension-isolation.md). WP11 supplies the restricted helper and WP13 composes production parsers; WP01 must not introduce an uncontained parser or claim that the current Hello helper is a signed sandbox. Remove product copies only after exact source/NOTICE and package tests prove the transfer. Planning repair 2026-10-08 (DLV-34; P2-021): successor for the still-image parser composition named here is [NAT.31](../delivery/lanes/native.md#task-nat-31), and PDF parsing is retired with the PDF engine removal owned by [NAT.32](../delivery/lanes/native.md#task-nat-32) under [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022).
 
 **Testing requirements.** Compare native source/import manifests and reference dispositions; reject direct MDF use, duplicate wrappers, cross-product source links and unadmitted native binaries.
 
@@ -214,7 +214,7 @@
 3. No product knowledge remains in the shared foundation.
 4. Current native admissions are applied: official OTIO is the selected interchange boundary, MDF is excluded, and unmigrated conflicting skeletons are unreferenceable; no pending substitute choice overrides WP01.03.
 5. Every required test family maps to an existing suite or a named future package.
-6. All remaining conflicting code whose disposition is due at this stage is fenced and unreferenceable. Explicit bootstrap compatibility is retained until a named later producer, including the Kotlin native-grpc client until the first business release in WP03 or, for the Kotlin client, until the MAUI migration (AND.40) retires it under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021), and is not prematurely removed.
+6. All remaining conflicting code whose disposition is due at this stage is fenced and unreferenceable. Explicit bootstrap compatibility is retained until a named later producer, including the Kotlin native-grpc client until the first business release in WP03, and is not prematurely removed. Planning repair 2026-10-08 (DLV-34; P2-021): for the Kotlin native-grpc client the successor is [AND.40](../delivery/lanes/android.md#task-and-40), which retires it with the MAUI migration under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021).
 
 ---
 

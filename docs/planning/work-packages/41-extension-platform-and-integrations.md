@@ -151,7 +151,7 @@
 
 ### WP-41.07 — MCP placement and connectors
 
-**What must be fully done.** Implement local MCP stdio behind the owned connector child and Cloud MCP HTTP through the AI Worker adapter. Preserve MCP standard protocol; only the owned child boundary speaks ArcForges gRPC.
+**What must be fully done.** Implement local MCP stdio behind the owned connector child and Cloud MCP HTTP through the Cloud Worker adapter. Preserve MCP standard protocol; only the owned child boundary speaks ArcForges gRPC.
 
 **Testing requirements.** Origin/scope changes invalidate consent, no browser/Android local subprocess, no unrestricted AI fetch, child crash/lease recovery.
 

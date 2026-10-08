@@ -138,7 +138,7 @@
 ### WP-06.05 — Blazor WebAssembly production build and generated C# SDK proof (PRF.11)
 
 
-**What must be fully done.** Build minimal Account/Chat production Blazor WebAssembly profiles (standalone, static assets on Cloudflare Workers Static Assets, same-origin with the Cloud API) from the Web .NET locks and the exact released generated C# gRPC-Web client. Call the actual AOT probe through same-origin routing/cookie/CSRF and exercise exact int64/uint64/decimal values, typed failures, cancellation and CF authenticated presentation. Prove the CSP token set (`script-src 'self' 'wasm-unsafe-eval'` plus required hashes, never `unsafe-eval` or `unsafe-inline`), the binary gRPC-Web unary and server-streaming decision (`application/grpc-web+proto`, with `application/grpc-web-text` on server-stream routes only if binary streaming is not observed to work), IL-build size and startup, and the AOT benchmark decision. The React-measured asset and interaction budgets are re-baseline pending under AL-06 by PRF.11; the public static Site p75 LCP ≤ 2.5 s, INP ≤ 200 ms and CLS ≤ 0.1 stay binding. Prove the static Site generator's deterministic output, which needs no WebAssembly or JavaScript to read. PRF.11 supersedes PRF.08 (React).
+**What must be fully done.** Build minimal Account/Chat production Blazor WebAssembly profiles (standalone, static assets on Cloudflare Workers Static Assets, same-origin with the Cloud API) from the Web .NET locks and the exact released generated C# gRPC-Web client. Call the actual AOT probe through same-origin routing/cookie/CSRF and exercise exact int64/uint64/decimal values, typed failures, cancellation and CF authenticated presentation. Assert the exact CSP token set, token for token: `script-src 'self' 'wasm-unsafe-eval'` plus required hashes, `style-src 'self'`, never `unsafe-eval` or `unsafe-inline`, the binary gRPC-Web unary and server-streaming decision (`application/grpc-web+proto`, with `application/grpc-web-text` on server-stream routes only if binary streaming is not observed to work), IL-build size and startup, and the AOT benchmark decision. The React-measured asset and interaction budgets remain the regression gate until the accepted AL-06 re-baseline record ([AL-06](../../architecture/10-web-architecture.md#rule-al-06), produced by PRF.11) replaces them; they are not silently reset. The public static Site p75 LCP ≤ 2.5 s, INP ≤ 200 ms and CLS ≤ 0.1 stay binding. Prove the static Site generator's deterministic output, which needs no WebAssembly or JavaScript to read. PRF.11 supersedes PRF.08 (React).
 
 **Testing requirements.** Production browser round trips with real AOT host and deployed CF, no frontend dev server or handwritten DTO; malformed frame/status, session expiry and asset/CSP checks.
 
@@ -159,11 +159,11 @@
 <a id="rule-wp-06.07"></a>
 ### WP-06.07 — .NET MAUI Android gRPC-Web and CF proof (PRF.12)
 
-**What must be fully done.** Build and install the .NET MAUI Android release (`net10.0-android`, Mono runtime with AOT, .NET trimming plus `AndroidLinkTool=r8`, 16 KB alignment, signed with the persistent android-release identity) consuming the actual generated C# gRPC-Web clients through `SocketsHttpHandler`; exercise unary, server-stream, trailers, cancel and Keystore against the real Worker/Container/D1/DO/R2 foundation. Local emulator runs are opt-in. PRF.12 supersedes PRF.10 (Kotlin). Pin the compatible actual toolchain after proof.
+**What must be fully done.** Build and install the .NET MAUI Android release (`net10.0-android`, Mono runtime with AOT, .NET trimming plus `AndroidLinkTool=r8`, 16 KB alignment, signed with the persistent android-release identity) consuming the actual generated C# gRPC-Web clients through `SocketsHttpHandler`; exercise unary, server-stream, trailers, cancel and Keystore against the real Worker/Container/D1/DO/R2 foundation. Local emulator runs are opt-in. PRF.12 supersedes PRF.10 (Kotlin). Re-prove the Apache-2.0 licence and provenance closure for the MAUI closure ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3): no AGPL DesktopPlatform package, and no MAUI build may reference Communication/ArcForges.Cloud.Client until the blocking [AND.40](../delivery/lanes/android.md#task-and-40) client-layer gate (an Apache-2.0 replacement or re-home plus a licence-boundary test) passes. Pin the compatible actual toolchain after proof.
 
 **Testing requirements.** Verify the stated behavior against the exact real artifact/owner boundary. Include scope/permission, wrong or stale target, loss/retry, expiry and applicable native UI cases from experience 03; named later-provider fixtures cannot close real integration.
 
-**Completion gate.** Selected runtime and transport are proven; this minimal probe requires no future full Harness, product native package or WP30 app.
+**Completion gate.** Selected runtime and transport are proven; this minimal probe requires no future full Harness, product native package or WP30 app. The Apache-boundary licence and provenance closure of the MAUI closure is recorded with the probe evidence.
 
 <a id="rule-wp-06.90"></a>
 ### WP-06.90 — Verify the owned artifact and real integration
@@ -207,7 +207,7 @@ Acceptance includes every amended §5 producer/consumer and [WP-06.90](#rule-wp-
 | Cloud image build, pipeline order and integration results | [WP-06.04](#rule-wp-06.04) |
 | production Blazor WebAssembly build, load and bundle baseline, and static Site determinism | [WP-06.05](#rule-wp-06.05) |
 | Third-party control probe log | [WP-06.06](#rule-wp-06.06) |
-| Pre-artifact MAUI Android closure (Mono AOT, trimming, R8, signing) and device/native/CF proof | [WP-06.07](#rule-wp-06.07) |
+| Pre-artifact Apache closure, re-proven for the MAUI Android closure (licence and provenance; Mono AOT, trimming, R8, signing; [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3) and device/native/CF proof | [WP-06.07](#rule-wp-06.07) |
 | Owned artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations and real-versus-fixture status; inapplicable fields explicitly marked | [WP-06.90](#rule-wp-06.90) |
 
 ---
@@ -227,7 +227,7 @@ Acceptance includes every amended §5 producer/consumer and [WP-06.90](#rule-wp-
 3. A published AOT binary makes a generated gRPC call with the selected explicit AOT-compatible adapters — satisfying [F-026](../../assurance/open-gates-register.md#rule-f-026).
 4. Realtime connects, receives, disconnects and reconnects with sequence backfill from a published AOT binary.
 5. The cloud host publishes and runs Native AOT with explicit adapters and zero trim/AOT diagnostics.
-6. Production Blazor WebAssembly assets load and call the real C# probe through the generated C# SDK with exact-value vectors, Windows/CLI workflow evidence and recorded budgets, with the React-measured budgets re-baselined under AL-06 (PRF.11).
+6. Production Blazor WebAssembly assets load and call the real C# probe through the generated C# SDK with exact-value vectors, Windows/CLI workflow evidence and recorded budgets, with the React-measured budgets remaining the regression gate until the accepted AL-06 record (PRF.11) replaces them.
 7. The third-party control admission process exists and has been exercised once.
 8. The selected .NET MAUI Android release probe (Mono AOT, trimming with R8, 16 KB alignment, persistent signing identity) passes first-artifact closure and actual device/service/native-adapter tests (PRF.12).
 9. All of the above run on every main-branch build, not once.
