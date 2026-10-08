@@ -32,6 +32,9 @@ The bar for entry is deliberately high. A conclusion already established by a cu
 
 ## P2-001 — Install and update infrastructure baseline · `ADOPTED`
 
+**SUPERSEDED IN PART (2026-10-08 by [P2-023](#rule-p2-023)):** macOS is removed from the Velopack platform scope; Windows and Linux remain. See [P2-023](#rule-p2-023).
+
+
 **Decision.** **Velopack** is the cross-platform install and update framework baseline for ArcScope, the desktop application, on Windows, macOS and Linux, as specified in the [current packaging architecture](../architecture/14-build-packaging-and-release.md#5-packaging). The baseline has three qualifications:
 
 1. **It sits behind a thin build-script and integration boundary.** Product code never references the framework's types outside one update-integration component, so the framework can be replaced without touching product code.
@@ -186,6 +189,9 @@ Custom local encrypted stores, encrypted portable exports and E2EE remain exclud
 
 ## P2-008 — React/TypeScript Web and C# generated API clients · ADOPTED
 
+**SUPERSEDED IN PART (2026-10-08 by [P2-021](#rule-p2-021)):** the React and TypeScript Web toolchain, the TypeScript Fetch SDK and the npm and esproj Web root are superseded by one Blazor WebAssembly application and a static C#-generated Site; Node is wrangler build tooling only. The same-origin cookie-session and browser-isolation rules remain. See [P2-021](#rule-p2-021).
+
+
 **SUPERSEDED IN PART (2026-09-17):** The C#-generated OpenAPI/JSON business authority, JIT Harness host, shared src/Web/esproj layout and two-profile limit are superseded by [P2-009](#rule-p2-009)/[P2-012](#rule-p2-012)/[P2-013](#rule-p2-013). React/TypeScript and browser cookie isolation remain binding. See [P2-013](#rule-p2-013).
 
 **Authority and date.** Explicit user direction, 2026-09-06: redesign the Web frontend in TypeScript using Node.js and C# → OpenAPI → TS SDK; include an esproj in Windows win.slnx, while non-Windows platforms use their own toolchain directories, analogous to CMake. The user-supplied ReactApp2 template is an IDE-integration reference.
@@ -248,6 +254,9 @@ Should implementation surface a further material conflict, **[D-001](phase-1-fou
 <a id="rule-p2-009"></a>
 ## P2-009 — Independent repositories, proto, Native AOT and Cloudflare execution · ADOPTED
 
+**SUPERSEDED IN PART (2026-10-08 by [P2-021](#rule-p2-021)):** the Mobile React Native clause, the sole Cloudflare Workflow AI loop and the React Web profile clause are superseded; C# owns the Harness and TypeScript remains thin Cloudflare adapters. See [P2-021](#rule-p2-021).
+
+
 **SUPERSEDED IN PART (2026-09-17):** Repository count and Mobile runtime are amended by [P2-010](#rule-p2-010)/[P2-012](#rule-p2-012)/[P2-019](#rule-p2-019); current count is seven. Public native gRPC and self-managed database placement are superseded by [P2-012](#rule-p2-012). Historical RN selection is retired. See [P2-013](#rule-p2-013).
 
 **Authority/date.** Explicit user architecture direction and authorization to apply it, 2026-09-11. This is the coordinated amendment prepared in Plan/architecture-change-plan; the formal definitions linked here are the current implementation authority.
@@ -267,6 +276,9 @@ The sole AI loop is a Cloudflare Workflow in ArcForges-AI, using selected Worker
 <a id="rule-p2-010"></a>
 ## P2-010 — Android and Complete Producer Contracts
 
+**SUPERSEDED IN PART (2026-10-08 by [P2-021](#rule-p2-021)):** the Kotlin/Jetpack Compose Android clause and the generated Java and Kotlin-lite Maven SDK clause are superseded by the .NET MAUI Android companion and the C# NuGet SDKs. The Apache-2.0 and Android-only scope remains. See [P2-021](#rule-p2-021).
+
+
 **SUPERSEDED IN PART (2026-09-17):** The public C#/Kotlin native-gRPC clause is superseded by [P2-012](#rule-p2-012): all public clients use binary gRPC-Web. Repository and product counts are further reduced under [P2-019](#rule-p2-019). The Android/native ABI/product scope remains binding. See [P2-013](#rule-p2-013).
 
 Accepted 2026-09-13 by the product owner's current direction. Mobile uses Kotlin/JVM and Jetpack Compose for Android only, replacing the Mobile runtime/retained-iOS portions of [P2-009](#rule-p2-009) and [D-008](phase-1-foundation-decisions.md#rule-d-008). Its complete ArcChat companion scope and Apache-2.0 boundary remain. iOS/KMP is outside this delivery, not a required dormant implementation.
@@ -283,6 +295,9 @@ The complete initial native ABI, generated wire/journey profiles, product behavi
 <a id="rule-p2-011"></a>
 ## P2-011 — Producer closure and uniform local gRPC · ADOPTED
 
+**SUPERSEDED IN PART (2026-10-08 by [P2-023](#rule-p2-023)):** macOS Unix streams are removed; Windows Named Pipes and Linux Unix domain sockets remain. See [P2-023](#rule-p2-023).
+
+
 **SUPERSEDED IN PART (2026-09-17):** Independent peer discovery, leases, reverse endpoints and Device SSO are superseded by [P2-012](#rule-p2-012). Only parent-owned helper/extension controls use private generated gRPC; typed product ports are in-process. See [P2-013](#rule-p2-013).
 
 **Authority/date.** User authorization on2026-09-14 to validate the independent findings, apply justified repairs and use port-free proto/gRPC for all local first-party control. Collection and unified adoption were committed in the local Plan repository before formal edits. This is a documentation amendment, not implemented-product evidence.
@@ -297,6 +312,9 @@ All first-party same-machine application/control RPC, including ContentSandbox, 
 
 <a id="rule-p2-012"></a>
 ## P2-012 — Cloudflare Runtime and Independent Application Assistants · ADOPTED
+
+**SUPERSEDED IN PART (2026-10-08 by [P2-021](#rule-p2-021)):** the sole Harness is C# in the Cloud Native AOT host, with the Cloudflare Workflow reduced to a thin adapter, and the Android companion is .NET MAUI rather than Kotlin. See [P2-021](#rule-p2-021).
+
 
 Date: 2026-09-16. Source: current user direction. Supersedes the remaining application runtime/standalone ArcChat, PostgreSQL, native-public-gRPC/AI-WebSocket and current cross-product collaboration portions of [P2-009](#rule-p2-009)/[P2-011](#rule-p2-011). Native functional ABI, Kotlin Android, exact contracts, product correctness, permissions and commercial rules remain binding.
 
@@ -314,6 +332,11 @@ Authorities: [projects/packages](../architecture/27-platform-projects-and-applic
 <a id="rule-p2-013"></a>
 
 ## P2-013 — Independent review remediation · ADOPTED
+
+**SUPERSEDED IN PART (2026-10-08 by [P2-021](#rule-p2-021)):** IRD-12 (AI Worker service-binding egress), the Workers AI invocation point in IRD-19, and the JDK, KMP and Kotlin-layout clauses of IRD-23 are superseded; the applicationId is kept. See [P2-021](#rule-p2-021).
+
+**SUPERSEDED IN PART (2026-10-08 by [P2-022](#rule-p2-022)):** IRF-34 PDF adoption is retired. See [P2-022](#rule-p2-022).
+
 
 **Authority/date.** 2026-09-17, the user's instruction to carry out the complete review repair, with bounded design discretion already delegated for accepted scope. Baseline: Design `8b60426`; reviewed findings: Plan `9771885`. This records design dispositions, not additional user signatures, approved numeric prices or runtime evidence.
 
@@ -410,6 +433,9 @@ Verification requires complete citation/definition and dependency reports, exact
 <a id="rule-p2-017"></a>
 ## P2-017 — Bounded CI and local verification
 
+**SUPERSEDED IN PART (2026-10-08 by [P2-023](#rule-p2-023)):** the clause that macOS product intent is unchanged (line 417) is superseded; no macOS product, artifact or claim is in scope. See [P2-023](#rule-p2-023).
+
+
 **AMENDED IN PART (2026-09-23):** [P2-018](#rule-p2-018) replaces this record's coordinator and numbered-substep wording with task-level coordination: independent delivery tasks run concurrently, each repository's integration owner merges and publishes, and CPU-heavy local work stays serialized per workstation. The validation substance below is unchanged.
 
 **Status: accepted explicit user change, 2026-09-21.** All seven owners, Design and Plan follow the [CI and local validation policy](../assurance/ci-and-local-validation-policy.md). It prohibits all macOS CI and hosted device/emulator, GUI/browser E2E, live service/inference, installed-consumer and public-release upgrade tests. Runtime checks are affected-scope local opt-in using the existing environment, not repeated pipeline or post-merge gates. Necessary Windows/Linux compile/AOT/package, offline unit/static/security and signing/licence/lock integrity remain. Publication uses the original candidate and provider status, without routine public downloads or repeated hashes.
@@ -441,6 +467,9 @@ The coordinator may delegate independent repositories while serializing CPU-heav
 <a id="rule-p2-019"></a>
 ## P2-019 — Reduced product family with ArcScope as the sole professional desktop
 
+**SUPERSEDED IN PART (2026-10-08 by [P2-022](#rule-p2-022)):** item 2's image and PDF thin previews and the PDF family in the native (13) row are superseded for PDF; the still-image preview path is kept. See [P2-022](#rule-p2-022).
+
+
 **Status: accepted explicit user change, 2026-09-27.** The user directed that this Design repository and its Plan repository be rebuilt from the merged ArcForges-Design-B (`06f3513dd86ffdab6f417d5fa4f2bce99037c338`) and Plan-B (`0ee8a46c2b5d12379169752456979c2c268aa1a8`) baselines with ArcNotes and ArcSlate removed completely as products, while ArcScope, the remaining repositories and services, and every shared capability the retained family consumes are preserved. This record amends [D-011](phase-1-foundation-decisions.md#rule-d-011), [P2-009](#rule-p2-009), [P2-010](#rule-p2-010) and [P2-018](#rule-p2-018) under [D-001](phase-1-foundation-decisions.md#rule-d-001).
 
 **Decisions.**
@@ -457,6 +486,9 @@ The coordinator may delegate independent repositories while serializing CPU-heav
 
 <a id="rule-p2-020"></a>
 ## P2-020 — One ArcScope system, companion workspaces and the alignment sequence
+
+**SUPERSEDED IN PART (2026-10-08 by [P2-022](#rule-p2-022)):** the companion static-PDF preview clause is replaced by platform-viewer or download presentation of the exported report PDF. See [P2-022](#rule-p2-022).
+
 
 **Status: accepted explicit user change, 2026-09-27.** The user directed that the reduced design describe ArcScope as one commercially operable system across desktop, Android, Web, Cloud and the Cloud simulator; that the companions become ArcScope surfaces while keeping the ArcScope assistant; that reusable mechanisms stay without speculative work for future products; and that removal of obsolete bindings become explicit in the initial alignment sequence without global serialization. This record amends [P2-018](#rule-p2-018) and [P2-019](#rule-p2-019) under [D-001](phase-1-foundation-decisions.md#rule-d-001).
 
@@ -486,3 +518,167 @@ The coordinator may delegate independent repositories while serializing CPU-heav
 - `GOV.18` migrates the retired graph validator and its export of active invariant owners before repinning Design, in the same reviewed cleanup change. `GOV.14` then performs the broader integrity audit using that export. Cleanup scopes include the existing aggregate constraint files, generated TypeScript targets and retained packaging guards; published history and wire reservations remain intact.
 
 **Preserved scope.** The [P2-018](#rule-p2-018) delivery model, atomic claims, handoff records, ledger evidence and review and merge workflow are unchanged; the standalone ArcNotes and ArcSlate repositories remain untouched and outside the family.
+
+---
+
+<a id="rule-p2-021"></a>
+## P2-021 — C#-first implementation architecture
+
+**Status: accepted explicit user change, 2026-10-08.** This record amends [P2-008](#rule-p2-008), [P2-009](#rule-p2-009), [P2-010](#rule-p2-010), [P2-012](#rule-p2-012) and [P2-013](#rule-p2-013) (IRD-12, IRD-19 and IRD-23 as they bind TypeScript, Kotlin, React and the Cloudflare Workflow), the phase-1 decisions [D-007](phase-1-foundation-decisions.md#rule-d-007), [D-008](phase-1-foundation-decisions.md#rule-d-008) and [D-009](phase-1-foundation-decisions.md#rule-d-009), and the disposition rows 22, 25, 27, 44 and 49 of the phase-1 table, under [D-001](phase-1-foundation-decisions.md#rule-d-001).
+
+**Decisions.**
+
+1. **Languages.** C# (.NET 10 LTS) is the implementation language of all product and business logic on every surface: ArcScope desktop, the Cloud host, the Web, the Android companion and AI orchestration.
+   - TypeScript is permitted only as a thin Cloudflare platform adapter: Worker fetch entry and routing; ingress transport framing and size/time guards whose limits come from C#; Container, Durable Object, Queue and alarm classes for lifecycle and wake; binding facades for D1 batch execution, R2, Workers AI, Vectorize and Static Assets; and operator HMAC transport.
+   - A TypeScript adapter makes no business decision, owns no authoritative state and holds no business constant except values generated from the C# source of truth.
+   - Node remains build and deploy tooling for wrangler only.
+   - Python build tooling (provenance, licence, packaging and policy scripts) remains build tooling; it is not product logic.
+2. **Web.** The Web is a Blazor WebAssembly application (standalone, static assets on Cloudflare Workers Static Assets, same-origin with the Cloud API) with interactive profiles for Account, Chat (assistant), ArcScope library, reports and simulator console, and Operations.
+   - **Public Site.** The public Site is static HTML generated at build time by a C#/.NET generator using the first-party Razor `HtmlRenderer`. It needs no WebAssembly or JavaScript to be read, keeps a strict CSP without `wasm-unsafe-eval`, and has deterministic output.
+   - **App-profile CSP.** The app profiles use exactly `script-src 'self' 'wasm-unsafe-eval'` plus required hashes; never `unsafe-eval` or `unsafe-inline`. `style-src 'self'` stays, so components that need inline styles (Virtualize on .NET 10) are not used. The CSP rule and the Web tests assert the exact token set.
+   - **AOT.** `RunAOTCompilation=false` is the default (the D-007 rule is kept). WASM AOT is adopted only on a measured benchmark recorded in the Blazor proof.
+   - **Budgets.** The React-measured budgets are re-baselined by a reviewed record under [AL-06](../architecture/10-web-architecture.md#rule-al-06), never silently. The public p75 targets (LCP at most 2.5 s, INP at most 200 ms, CLS at most 0.1) apply to the static Site and stay.
+   - **Online-only.** No default service worker and no persistent account or chat caches ([WCI-05](../architecture/25-web-toolchain-and-sdk.md#rule-wci-05)).
+   - **Browser transport.** `Grpc.Net.Client.Web` carries binary gRPC-Web (`application/grpc-web+proto`) for unary calls. Server streaming uses the .NET 10 browser streaming HttpClient. If binary server streaming is not observed to work, the ingress additionally accepts `application/grpc-web-text` on server-stream routes only: the same messages, a framing variant recorded in the wire registry and proven in the Blazor proof. No client or bidirectional streaming is introduced; current contracts use unary and server streaming only.
+   - **JS interop.** JavaScript interop is allowed only where no managed API exists (WebAuthn `navigator.credentials`, clipboard, download and share, the sandboxed preview iframe). Each interop point is listed and audited.
+   - **Session and security.** The cookie session, antiforgery, Origin, CSRF and no-credential-in-JavaScript rules ([SE-02](../architecture/08-security-architecture.md#rule-se-02), [SE-03](../architecture/08-security-architecture.md#rule-se-03), [SE-04](../architecture/08-security-architecture.md#rule-se-04) and [SI-03](../architecture/17-agent-harness.md#rule-si-03)) are unchanged.
+3. **Android.** The Android companion is .NET MAUI for `net10.0-android` only, using the Mono runtime with AOT for release. `UseMonoRuntime=true` is explicit. Android NativeAOT and CoreCLR stay experimental and unused until a later decision. The companion scope is unchanged: library, reports, simulator console, assistant, tasks and approvals.
+   - **Identity.** The applicationId is `com.arcforges.mobile` ([IRD-23](#rule-ird-23) and the AND.01 target). The reinstall from the development prerelease `io.github.arcforges.mobile` is documented.
+   - **Signing.** The persistent android-release signing identity (certificate SHA-256 `7a8b3b14…`) is kept. Existing published prereleases stay as immutable history.
+   - **Licence.** The Mobile repository stays Apache-2.0. MAUI consumes only Apache-licensed packages (Contracts NuGet packages, Microsoft and AndroidX bindings) and never AGPL DesktopPlatform packages.
+   - **Platform APIs.** Keystore, Credential Manager, WorkManager, Storage Access Framework and FCM are used through .NET for Android and AndroidX bindings. Each is admitted as a dependency when its task needs it.
+   - **Release shrinking.** .NET trimming plus R8 (`AndroidLinkTool=r8`) apply. The release checks that applied to the Kotlin app (minified release, 16 KB alignment, signed APK or AAB, licence and provenance closure, F-023-class closure checks) are re-proven for the MAUI closure.
+4. **SDKs.** Contracts remains the wire authority (handwritten proto and HTTP-exception schemas). First-party business SDKs are generated C# NuGet packages.
+   - **Stopped channels.** New publication of the npm packages `@arcforges/proto`, `@arcforges/api-client`, `@arcforges/contract-fixtures` and `@arcforges/operator-client`, and of the Maven packages `contracts-proto`, `contracts-connect-client` and `contract-fixtures`, stops only after its consumers are migrated. Published versions stay immutable and resolvable. Nothing is unpublished, deleted or deprecated without explicit user approval.
+   - **The npm package kept.** `@arcforges/ai-internal` is an internal, generated, thin-adapter transport codec used by the Cloud Worker D1 and R2 binding adapters. Its pipeline is restricted to that package.
+   - **Compatibility.** Compatibility windows, binpb pins, reserved numbers and the CON.17 canonical semantic hash stay. C# is the hash authority; the TypeScript hash export retires with `@arcforges/proto`.
+5. **AI orchestration.** The Harness (task, run, step and attempt state; admission; budget reservation; turn loop; context assembly; prompt and tool schema; model-output classification; tool-proposal validation; retry, idempotency and unknown-effect policy; routing; metering; usage normalisation; per-model rate admission) is C# in the Cloud Native AOT host, as Cloud modules for Task, Agent and AI routing.
+   - **Durable execution.** A C# executor on D1 uses an epoch lease and fenced writes. A Durable Object alarm per run provides timers and wake, and a Queue is used for wake fan-out where needed. No Cloudflare Workflow holds run state. The executor's crash-injection proof is an early task. A Workflow may be used later only as a stateless wake or lifecycle adapter if the proof shows it is cheaper, and C# still decides every step.
+   - **Workers AI.** Workers AI is invoked only through the Worker `env.AI` binding, by a thin TypeScript outbound handler (`ai.internal`, container outbound) that forwards the C#-frozen request and streams the response back unchanged. It enforces only the C#-supplied admitted-model set and size caps, fail-closed. No Workers AI token is held in the container, and no AI Gateway is used ([PR-06](../architecture/09-ai-and-agent-runtime-architecture.md#rule-pr-06) unchanged).
+   - **Cost controls.** These stay as C# policy, with values unchanged from Design unless a reviewed record changes them:
+     - reserve before dispatch;
+     - pinned model and tariff snapshot;
+     - model-step retries 0 after possible dispatch, and at most 2 pre-dispatch retries with a fresh attempt id;
+     - 120 s model deadline, reconciled with the current code's 90 s in the proof and never relaxed silently;
+     - output and context caps as in architecture 09;
+     - parallel tools 4/8;
+     - step and subrequest guards;
+     - 60 s lease with 20 s renewal;
+     - 128 KiB checkpoint limit;
+     - unknown effects never auto-retried;
+     - per-model token bucket sized to the proven Workers AI tier;
+     - container `max_instances` and realm slots from the capacity proof.
+   - **Streaming.** Model deltas are committed and projected by C#. Live tails use the EventFeed or RunStream Durable Object only as a non-authoritative projection (a thin adapter), or are streamed directly from C#. Neither owns business state.
+   - **AI repository.** The ArcForges-AI runtime role ends. Its Hello Workflow is replaced by the C# Harness slice in Cloud, and the Workers AI adapter moves into the Cloud Worker, so one TypeScript adapter surface and one deploy head remain. The repository is kept as read-only history once its last deployment is retired. Deleting the deployed `arcforges-ai` Worker needs explicit user confirmation at that time. AI-lane task IDs (AIR.*, HAR.*, EXT.10) are re-homed to Cloud by re-specification, not renumbered.
+6. **Cloud TypeScript reduction.**
+   - Generated from C#: the method and route table, admission constants, budgets (slice items and time, body caps, readiness wait, stream lifetime, leases) and the readiness vocabulary. Hand-mirrored TypeScript tables and regex parsing of C# are removed.
+   - Business or policy decisions in TypeScript (queue and coordination policy, readiness evaluation beyond transport) move to C#.
+   - Proof-only code leaves the production bundle path.
+   - The Kotlin consumer CI gate is removed with the Maven retirement.
+   - The D1 migration runner and generators may stay as Node build tooling only while they make no business decision. Plan generation is driven from the C# single source.
+7. **DesktopPlatform and ArcScope** remain C#. The DesktopPlatform TypeScript FND.07 round-trip acceptance is replaced by C# coverage once `@arcforges/proto` retires. Operator-client policy rows follow the npm retirement.
+8. **Validation unchanged in substance ([P2-017](#rule-p2-017)).** There is no macOS CI and no hosted device, emulator, GUI, browser end-to-end, live-service or inference CI. Windows and Linux compilation, Native AOT (Cloud host and desktop) and packaging, and static and offline unit checks stay. New C# test suites replace the TypeScript and Kotlin suites one-for-one, plus bUnit for Blazor components and xUnit for MAUI view-models and clients. Playwright browser checks and emulator or device checks remain local opt-in only. Playwright stays as test-only tooling, because no C# replacement is required for local browser automation.
+9. **Graph and ledger rule.**
+   - Task IDs are never reused. Not-started tasks on the old stack are re-specified in place: outcome, writes, validation and evidence are rewritten for C#, Blazor and MAUI with equal or stronger acceptance, with a planning-repair note.
+   - Complete, delivered and inherited tasks keep their recorded evidence, which is never edited. Each either receives a successor migration task with a note on the old task, or, where its remaining acceptance is unreachable on the old stack, is superseded in the ledger by a reviewed Plan change naming the successor.
+   - [PRF.08](../planning/delivery/lanes/runtime-proofs.md#task-prf-08) (React proof) and [PRF.10](../planning/delivery/lanes/runtime-proofs.md#task-prf-10) (Kotlin proof) are superseded by PRF.11 (Blazor proof) and PRF.12 (MAUI proof).
+   - The following migration tasks are added by the planning repair under the delivery model ([DLV-33](../planning/delivery/README.md#rule-dlv-33)); this record does not itself change the graph:
+     - CON.40: C#-only SDK standardisation, stopping the listed npm and Maven identities after consumers migrate and keeping `@arcforges/ai-internal`;
+     - WEB.40: Blazor migration of the existing Web, with the C# Site generator;
+     - AND.40: MAUI migration of the existing Mobile, with its CI, signing and provenance;
+     - CLOUD.84: Cloud TypeScript reduction under item 6;
+     - HAR.40: the C# Harness foundation, executor, `ai.internal` adapter and proofs;
+     - NAT.31: image composition into ContentSandbox under [P2-022](#rule-p2-022);
+     - NAT.32: PDF engine retirement under [P2-022](#rule-p2-022);
+     - GOV.30: DesktopPlatform TypeScript round-trip acceptance to C#, operator-client rows, and removal of osx RIDs under [P2-023](#rule-p2-023).
+
+**Specific supersession.** The following are superseded for the named scope. [P2-008](#rule-p2-008) items 1, 2 and 4 (the React and TypeScript profiles, the TypeScript Fetch SDK, and the npm and esproj Web root) are superseded, and its item 3 is narrowed to wrangler tooling; items 5 and 6 remain. [P2-009](#rule-p2-009) is superseded for the Mobile React Native clause, the sole Cloudflare Workflow AI loop and the React Web profile clause. [P2-010](#rule-p2-010) is superseded for the Kotlin/Jetpack Compose Android clause and the Maven Java and Kotlin-lite SDK clause. [P2-012](#rule-p2-012) is superseded for the sole Harness as a Workflow with Workers AI, and for the Kotlin Android clause. [P2-013](#rule-p2-013) IRD-12 (the AI Worker service-binding egress) is superseded; IRD-19 keeps its Workers AI supplier rule and fallback prohibition, with the invocation point moved to the thin `env.AI` adapter; IRD-23 (JDK 21, the KMP preview host and the arch27 Kotlin layout) is superseded, and the applicationId is kept. In phase 1, [D-007](phase-1-foundation-decisions.md#rule-d-007) (the React, TypeScript and Node prohibition) is superseded for Web. Its Blazor WebAssembly, `RunAOTCompilation=false` and static-page substance is reinstated for Web by this record only, not by quotation. [D-008](phase-1-foundation-decisions.md#rule-d-008) is superseded for the Kotlin/Compose Android runtime; its .NET 10 Mono AOT Android posture is kept for MAUI. [D-009](phase-1-foundation-decisions.md#rule-d-009) is superseded for TypeScript and Kotlin generation from OpenAPI or JSON Schema, and generated C# clients are the first-party business SDK. Disposition rows 22, 25, 27, 44 and 49 are marked in place. The requirement and architecture bodies that bind TypeScript, Kotlin or React are corrected in place with this record as authority: [TB-02](../requirements/products/arcforges-web.md#rule-tb-02), [TB-03](../requirements/products/arcforges-web.md#rule-tb-03), [TB-04](../requirements/products/arcforges-web.md#rule-tb-04), [UXW-01](../requirements/products/arcforges-web.md#rule-uxw-01), [WEB-01](../requirements/products/arcforges-web.md#rule-web-01) and [WEB-03](../requirements/products/arcforges-web.md#rule-web-03) in the Web requirements; [ID-08](../requirements/products/arcchat-mobile-and-web.md#rule-id-08), [ID-09](../requirements/products/arcchat-mobile-and-web.md#rule-id-09), [PF-01](../requirements/products/arcchat-mobile-and-web.md#rule-pf-01) and [PF-06](../requirements/products/arcchat-mobile-and-web.md#rule-pf-06) in the companion requirements; [RT-02](../requirements/05-ai-and-agent-execution.md#rule-rt-02) and the Harness placement at lines 11 and 161 of requirements/05; [PP-03](../requirements/products/arcforges-cloud.md#rule-pp-03) for loop placement; [RH-01](../requirements/12-quality-and-compatibility-contract.md#rule-rh-01), [AO-07](../requirements/12-quality-and-compatibility-contract.md#rule-ao-07) and [AO-08](../requirements/12-quality-and-compatibility-contract.md#rule-ao-08) in the quality contract; the runtime matrix at lines 263 to 268 and 282 of [requirements/00](../requirements/00-product-scope-and-portfolio.md) (the macOS row is handled by P2-023); [BO-04](../architecture/10-web-architecture.md#rule-bo-04), [BO-05](../architecture/10-web-architecture.md#rule-bo-05), [CS-01](../architecture/10-web-architecture.md#rule-cs-01) (the exact token set) and [WA-08](../architecture/10-web-architecture.md#rule-wa-08) (budgets re-baselined under AL-06) in the Web architecture; [WTS-01](../architecture/25-web-toolchain-and-sdk.md#rule-wts-01) and [WTS-02](../architecture/25-web-toolchain-and-sdk.md#rule-wts-02) in the Web toolchain; [LS-02](../architecture/17-agent-harness.md#rule-ls-02) and [LS-03](../architecture/17-agent-harness.md#rule-ls-03) for the Workflow as the owner of the loop; [PJ-04](../architecture/01-solution-and-project-layout.md#rule-pj-04) (the npm half), [CT-02](../architecture/01-solution-and-project-layout.md#rule-ct-02) (TypeScript and Kotlin client generation), [CA-11](../architecture/02-contracts-and-protocols.md#rule-ca-11) (the TypeScript vector leg) and [MR-02](../architecture/22-deployment-and-release-execution.md#rule-mr-02) (the Kotlin release artifact). The Node and TypeScript clauses of [PJ-02](../architecture/01-solution-and-project-layout.md#rule-pj-02) are restated for the Blazor project and the Worker adapters, and the AI Workflow placement in architecture/09 sections 2 and 6 is reassigned to C#.
+
+**Preserved scope.** Every functional, security, privacy, commercial, accessibility (AX-01 to AX-10, WCAG 2.2 AA), localisation, reliability and cost requirement remains. All wire schemas, compatibility windows, binpb pins, reserved numbers, published artifacts and immutable published versions remain. Provenance and licence boundaries remain: Contracts and Mobile are Apache-2.0, and the others are AGPL. Task IDs are never reused. The seven repositories, the [P2-003](#rule-p2-003) same-origin cookie session, the [P2-017](#rule-p2-017) validation restrictions, the [P2-018](#rule-p2-018) delivery model and the [P2-019](#rule-p2-019) and [P2-020](#rule-p2-020) product scope are unchanged.
+
+---
+
+<a id="rule-p2-022"></a>
+## P2-022 — Retirement of native in-app PDF preview and local PDF parsing
+
+**Status: accepted explicit user change, 2026-10-08.** This record amends [P2-019](#rule-p2-019) item 2 and its native (13) row, [P2-020](#rule-p2-020) (the companion PDF preview clause in the review closure), and the PDF adoption in the [P2-013](#rule-p2-013) bounded repairs (IRF-34), under [D-001](phase-1-foundation-decisions.md#rule-d-001).
+
+**Decisions.**
+
+1. **Retired.**
+   - Native in-app PDF preview on desktop, Android and Web.
+   - Local PDF parsing, text extraction and tile rendering: PDFium, the arcpdf ABI, `ArcForges.Native.Pdf`, and the ContentSandbox PDF parser path.
+   - PDF citation page and region navigation. [EC-05](../requirements/06-knowledge-search-and-retrieval.md#rule-ec-05) becomes a text citation with a source reference.
+   - AI PDF reading. No claim is made, because no working path exists.
+   - Task dispositions: [NAT.15](../planning/delivery/lanes/native.md#task-nat-15) is superseded (retired). The PDF parts of [NAT.14](../planning/delivery/lanes/native.md#task-nat-14) (complete) are superseded in part by NAT.32, which removes the merged PDF engine code. NAT.25, NAT.28 and NAT.30 lose their PDF parts. [PG-12](../assurance/open-gates-register.md#rule-pg-12) is retired.
+2. **Kept.**
+   - Generic attachments: PDF files are stored, transferred and downloaded as opaque attachments, with no parsing.
+   - Image support, including the still-image read path for assistant previews.
+   - ArcScope report export: `arcscope.report.pdf.v1` is produced by the desktop report producer ([RP-06](../requirements/products/arcscope.md#rule-rp-06)). Companions present the exported report PDF only through the platform's own viewer: the browser's built-in PDF viewer on Web (new tab or sandboxed frame, with no app-side parsing or rendering), and the Android system viewer through an `ACTION_VIEW` intent. They download or share the full bundle and never embed a PDF parser or renderer. The PDF writer for report export is chosen by SCOPE.18 under dependency admission. PDFium is not a writer.
+   - ContentSandbox containment and every unrelated security requirement.
+3. **Wire.** The five ContentSandbox PDF RPCs and their 18 PDF-named messages in `arcforges.local.sandbox.v1` stay in the published schema unchanged. Docs and the contract-access record mark them retired. Servers answer them with the closed `UNIMPLEMENTED` or retired refusal, and no new consumer may call them. Reservation or deletion waits for a versioned surface retirement after the `earliestRetirement` of 2026-12-31 and the 90-day read window.
+4. **Image composition owner.** New task NAT.31 composes the production still-image parsers (the NAT.11 family) into the ContentSandbox helper, with real containment re-run.
+   - The completion edge of [PLT.45](../planning/delivery/lanes/platform.md#task-plt-45) moves from NAT.15 to NAT.31.
+   - [PLT.54](../planning/delivery/lanes/platform.md#task-plt-54) becomes image-only real-parser containment, starting after NAT.31 and PLT.45.
+   - PG-22 real-parser evidence routes through NAT.31 and PLT.54.
+   - The real producer of the hostile test-parser substitute becomes NAT.31, for images only.
+
+**Specific supersession.** [P2-019](#rule-p2-019) item 2 (the image and PDF thin previews, and the PDF family in the native (13) row), [P2-020](#rule-p2-020) (the companion static-PDF preview clause) and [P2-013](#rule-p2-013) IRF-34 (PDF adoption) are superseded for PDF only. In the architecture, the PDF parts are retired or corrected in place: [PD-01](../architecture/18-editing-and-rich-content.md#rule-pd-01) to [PD-04](../architecture/18-editing-and-rich-content.md#rule-pd-04) and [PD-07](../architecture/18-editing-and-rich-content.md#rule-pd-07) retire, and PD-05 is restated as a generic derived-text rule; the PDF rows of the §8.1 table and of [UT-03](../architecture/18-editing-and-rich-content.md#rule-ut-03), [VF-12](../architecture/18-editing-and-rich-content.md#rule-vf-12) and [VF-14](../architecture/18-editing-and-rich-content.md#rule-vf-14) are removed; [DR-04](../architecture/12-native-interop-and-media.md#rule-dr-04), [DR-05](../architecture/12-native-interop-and-media.md#rule-dr-05) and [DR-06](../architecture/12-native-interop-and-media.md#rule-dr-06) retire, and [SB-04](../architecture/12-native-interop-and-media.md#rule-sb-04) is image-only; [IS-02](../architecture/24-content-and-extension-isolation.md#rule-is-02) drops the hostile PDF clause. The PDFium and `Native.Pdf` rows and their dependent lines are removed from architecture/01, architecture/21, architecture/00 and architecture/11. The PDF rows of the wire registry and of the native ABI and operation manifest are retired with their numbers reserved. The attachment and report-preview lines of experience/01 and experience/02 are changed to images only, with reports through the platform viewer or download. [EC-05](../architecture/contracts/01-public-api-operations.md#rule-ec-05) is restated as the text citation. In the gates, [PG-03](../assurance/open-gates-register.md#rule-pg-03) loses its PDF member, [PG-12](../assurance/open-gates-register.md#rule-pg-12) is retired (not closed) and [PG-22](../assurance/open-gates-register.md#rule-pg-22) loses PDF from its trigger. [RP-06](../requirements/products/arcscope.md#rule-rp-06) (report export) is kept. The retired-claim scan (SV-08) runs after these edits.
+
+**Preserved scope.** Generic attachments and their metadata-card fallback, image support, ArcScope report export and its origin sidecar, ContentSandbox containment, [UT-03](../architecture/18-editing-and-rich-content.md#rule-ut-03) for untrusted generic content, and every unrelated security requirement remain. Retirement is recorded as retired and never as completed, and no PDF parsing, rendering or preview claim is made.
+
+---
+
+<a id="rule-p2-023"></a>
+## P2-023 — macOS outside the delivery scope
+
+**Status: accepted explicit user change, 2026-10-08.** This record amends the macOS clauses of [P2-017](#rule-p2-017) (line 417, "macOS product intent is unchanged"), [P2-001](#rule-p2-001) (Velopack on macOS) and [P2-011](#rule-p2-011) (macOS Unix streams), and every macOS deliverable and gate, under [D-001](phase-1-foundation-decisions.md#rule-d-001).
+
+**Decisions.**
+
+1. macOS is not a supported platform. There are no macOS artifacts, no `osx-*` RIDs, no macOS signing or notarisation, no App-Sandbox or XPC launch profile, no Keychain adapter, no macOS browser rows (Safari) and no macOS acceptance gates.
+2. Shared cross-platform code stays. Unix socket paths are used by Linux. A fail-closed refusal on macOS stays as shared code.
+3. Wire enum values for `macos` and `ios` stay reserved and are never reused.
+4. macOS support or validation is never claimed. macOS deliverable text is removed from the task text of PLT.45, PRF.04, PLT.40, the GOV tasks, NAT.22, NAT.24, NAT.25, REL.02, REL.10 and UPD.08 under the planning repair.
+
+**Specific supersession.** [P2-017](#rule-p2-017) line 417 (the macOS product-intent clause) is superseded. [P2-001](#rule-p2-001) is superseded for macOS Velopack distribution; Windows and Linux remain. [P2-011](#rule-p2-011) is superseded for macOS Unix streams; Windows Named Pipes and Linux Unix domain sockets remain. In the architecture, [PT-01](../architecture/21-platform-and-dependency-matrix.md#rule-pt-01) and the macOS source-support columns of architecture/21 are retired; [PP-02](../architecture/14-build-packaging-and-release.md#rule-pp-02) and the macOS clauses of [SP-02](../architecture/14-build-packaging-and-release.md#rule-sp-02) and [SP-03](../architecture/14-build-packaging-and-release.md#rule-sp-03) are retired; the macOS XPC and App Sandbox helper row of architecture/24 (line 25) is retired; the macOS wording of the local gRPC profile (architecture/contracts/09, line 81) is removed. In the requirements, the macOS wording at requirements/00 (line 264), requirements/10 (lines 31 and 38), requirements/09 (line 277) and requirements/12 (lines 408 to 410) is removed, and the Safari rows are removed with it. The browser floors are re-derived for the Blazor WebAssembly build under the browser-support artifact. Enum reservation is kept as stated in item 3.
+
+**Preserved scope.** Windows and Linux desktop, companion and Cloud scope, shared Unix socket code, the fail-closed macOS refusal, reserved wire values, provenance records and immutable published history remain. No macOS product, artifact, runner, signing or support claim is made, and no macOS CI or local macOS runtime obligation is created.
+
+---
+
+<a id="rule-p2-024"></a>
+## P2-024 — Local Linux validation in WSL2
+
+**Status: accepted explicit user change, 2026-10-08.** This record amends the wsl.exe prohibition in [ci-and-local-validation-policy.md](../assurance/ci-and-local-validation-policy.md) (item 8, line 16), the Design [AGENTS.md](../../AGENTS.md) entry at line 19, the Plan `execution-policy.md` and `arcforges-implementation.md` documents, GOV.21 ([task](../planning/delivery/lanes/governance.md#task-gov-21), "no wsl.exe") and [wp03-00](../assurance/wp03-00-contract-structure-profile.md) line 72, under [D-001](phase-1-foundation-decisions.md#rule-d-001) and [P2-017](#rule-p2-017).
+
+**Decisions.**
+
+1. Linux opt-in runtime checks run once, at affected scope, in the local WSL2 Debian distribution, invoked through PowerShell (`wsl.exe -d Debian -- …`), on a Linux-native filesystem and not `/mnt/c`.
+2. The distribution, kernel, SDK and toolchain are recorded with each run. The local WSL2 Debian environment has clang and lld and the .NET SDK 10.0.400 installed.
+3. There is no CI change and no hosted Linux runtime.
+4. Toolchain installs inside WSL are performed by the user. Remote hosts are never reached over SSH.
+5. A check that genuinely cannot run in WSL2 is documented and deferred individually, with its owner and trigger.
+
+**Specific supersession.** The clause in [ci-and-local-validation-policy.md](../assurance/ci-and-local-validation-policy.md) item 8 that forbids wsl.exe and WSL wrappers is superseded for the local Linux venue. Its historical WP02.04 table entry (line 32) remains history. The Design [AGENTS.md](../../AGENTS.md) line 19 sentence on wsl.exe wrappers, the Plan wsl.exe prohibitions, GOV.21's "no wsl.exe" outcome and the WSL-wrapper prohibition at wp03-00 line 72 are superseded. Those text edits are made in the same planning repair, and until each merges this record governs. The network and remote-state rules of the policy are unchanged.
+
+**Preserved scope.** The no-hosted-Linux-runtime and no-CI-change rules, the affected-scope and opt-in local runtime rules, the bounded network-retry rule, the no-macOS rule and the rest of [P2-017](#rule-p2-017) remain unchanged.
+
+---
+
+<a id="rule-p2-025"></a>
+## P2-025 — Unavailable external inputs recorded as blocked-external
+
+**Status: accepted explicit user change, 2026-10-08.** This record amends no earlier decision text. It fixes how acceptance gates whose external inputs are unavailable are recorded, under [D-001](phase-1-foundation-decisions.md#rule-d-001), [D-016](phase-1-foundation-decisions.md#rule-d-016) and [P2-014](#rule-p2-014).
+
+**Decisions.**
+
+1. **Postmark and SES.** The Postmark and SES accounts and the notify-subdomain DNS are unavailable. CLOUD.12 ([task](../planning/delivery/lanes/cloud.md#task-cloud-12)) may be delivered with real adapters plus test doubles used only in tests, with the external inputs recorded. Its completion stays blocked external until a live send and recovery are proven. Postmark remains primary and SES secondary under [IRD-14](#rule-ird-14).
+2. **Second Windows account.** The second Windows account needed for the wrong-user denial check is unavailable. PLT.09, PLT.10 and PLT.11 ([platform lane](../planning/delivery/lanes/platform.md)) stay delivered until it is run, and the check is recorded as blocked external.
+3. **Second Linux uid.** A second Linux uid for the same denial check is unavailable and is recorded in the same way.
+4. **Acceptance preserved.** Each blocked item keeps its full acceptance. It is never removed, waived or reported as passed, and a delivered task is not completion evidence for it.
+5. **No SSH.** SSH is not used to reach remote hosts to obtain any of these checks.
+
+**Specific supersession.** None. No earlier decision text is superseded by this record. The work-package and gate text that binds these inputs is aligned with this record in the planning repair, and the acceptance rules are not changed.
+
+**Preserved scope.** The real-delivery and recovery acceptance of the Cloud email path, the wrong-user denial acceptance of the local IPC tasks, and every commercial and security acceptance remain required before completion. Test doubles used only in tests are not live evidence.
