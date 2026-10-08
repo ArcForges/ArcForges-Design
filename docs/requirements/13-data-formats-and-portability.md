@@ -16,7 +16,7 @@ This contract governs native working data, Cloud-acknowledged authority, pending
 | **Domain Model** | The product's in-memory business model | The product |
 | **Working Store** | Durable native working data and Cloud persistence with explicit revision ownership | Cloud acknowledges Chat state; native products own local tools, pending edits and Scope working stores |
 | **Native Portable Format** | Required Scope project portability, where explicitly specified | The owning product; not a universal chat archive requirement |
-| **Interchange Format** | Third-party formats — Markdown, HTML, PDF (export only; PDF import and parsing are retired, [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)), CSV, media | Adapters; **full fidelity is not guaranteed** |
+| **Interchange Format** | Third-party formats — Markdown, HTML, PDF (PDF content import and parsing are retired; PDF files remain opaque generic attachments, [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)), CSV, media | Adapters; **full fidelity is not guaranteed** |
 | **Derived Projection / Cache** | Indexes, thumbnails, decoded caches, embeddings | Rebuildable; never authority |
 
 ### 1.1 The three highest principles

@@ -40,7 +40,7 @@ Two halves of one lifecycle: how software reaches users, and what happens when s
 | <a id="rule-pl-04"></a>PL-04 | **The signing identity and the brand identity are distinct concerns.** Where a signing certificate displays an individual name, the product surfaces and documentation must still present the product brand consistently, and the discrepancy must be anticipated rather than discovered at first release. |
 | <a id="rule-pl-05"></a>PL-05 | **Store developer accounts must be established under the intended long-term owning identity**, not casually under a personal account that later requires a brand transfer. |
 | <a id="rule-pl-06"></a>PL-06 | **Mobile provenance and the complete direct and transitive dependency closure are verified before the first mobile artifact is produced** — the **[F-023](../assurance/open-gates-register.md#rule-f-023)** gate. *Owners: Release Engineering Owner and Licensing and Provenance Owner; Product Owner approves.* |
-| <a id="rule-pl-07"></a>PL-07 | **Store category fit and consumption-only conformance are confirmed before first submission** — the **[V-09](../assurance/phase-1-official-verification.md#rule-v-09)** gate. Apple's free-companion exemption is decided by review, not by reading the guideline. |
+| <a id="rule-pl-07"></a>PL-07 | **Store category fit and consumption-only conformance are confirmed before first submission to the Android store** — the **[V-09](../assurance/phase-1-official-verification.md#rule-v-09)** gate. Store category fit is decided by the store's review, not by reading its guideline; iOS store submission is outside scope ([P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010)). |
 
 ---
 
