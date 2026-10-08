@@ -102,6 +102,21 @@ All declarations below use `ARC_ABI_EXPORT arc_status_t ARC_ABI_CALL` before the
 
 Image regions transfer at most64MiB each, validate checked dimensions/stride and cover each pixel exactly once in raster order; finish refuses missing/overlapping tiles. These paths support the admitted large images/8K frame profile without a single giant RPC message. Raw native frame bytes are not embedded in this metadata. The wrapper public methods have the parameters in the table (typed options instead of raw numeric keys), immutable result DTOs, CancellationToken on bounded asynchronous work, and IAsyncDisposable where draining is required; they do not expose arbitrary library options dictionaries.
 
+**Image clarification (planning repair 2026-10-09; recorded on [NAT.11](../../planning/delivery/lanes/native.md#task-nat-11)).** This clarification adds no export and no record layout.
+- **Version and capabilities.** The shared common-ABI header keeps minor 0. Once ArcImageNative carries the functional exports, `arc_image_get_abi_version` keeps its shipped signature and reports major 1, minor 1. The `arc_image_get_build_info` JSON then carries the capability manifest as a closed list: `image.open`, `image.read` and `image.close`, with the formats `png`, `tiff` and `exr`.
+- **Formats.** The image library accepts only PNG, TIFF and EXR, identified by content probing. Every other format, including any other format that the upstream library can decode, is refused with `UNSUPPORTED`. EXR multipart parts and mip levels are subimages within the bounded subimage and mip counts.
+- **Coverage.** No finish export exists. The "finish" above is satisfied in two places:
+  - `arc_image_read` refuses an overlapping region, or one out of raster order, with `INVALID_ARGUMENT`, and changes no state. Each handle tracks its coverage.
+  - The managed `ImageReader` completion step refuses missing coverage with a typed failure.
+- **Pixel conversion and loss.** Bit-depth mapping follows the upstream library's documented type conversion, with rounding and clamping.
+  - `rgba8` is 8-bit unorm with straight alpha and no transfer change.
+  - `rgba32fLinearPremultiplied` converts sRGB to linear only when the source reports an sRGB colour space, and premultiplies when the source alpha is unassociated.
+  - `float32Interleaved` keeps the source channels as float32, with no transfer or alpha change.
+  - A missing alpha becomes 1. Grey is replicated to RGB for the RGBA formats.
+  - Every lossy step, such as bit-depth reduction or clamping, is reported in the metadata.
+  - Colour-management transforms are out of scope. The source colour space is reported, not converted.
+- **Cancellation.** Cancellation is observed at the `arc_io_v1` callbacks and at tile boundaries. An in-flight codec call is not interrupted.
+
 ## 4. State, format and upstream implementation mapping
 
 | Operation family | Required algorithm/boundary and independent acceptance |
