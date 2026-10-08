@@ -2,7 +2,7 @@
 
 > Status: **Authoritative** — Phase 2 (Detailed Specifications)
 > Layer: Architecture — the entry point for every other architecture document
-> Governing authority: `docs/decisions/phase-1-foundation-decisions.md`
+> Governing authority: `docs/decisions/phase-1-foundation-decisions.md`, as amended by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) to [P2-025](../decisions/phase-2-specification-decisions.md#rule-p2-025) (2026-10-08: C#-first implementation, PDF preview and parsing retirement, macOS out of scope, WSL2 Linux validation, blocked-external inputs)
 > Companions: [`../requirements/00-product-scope-and-portfolio.md`](../requirements/00-product-scope-and-portfolio.md), [`../requirements/01-normative-glossary-and-invariants.md`](../requirements/01-normative-glossary-and-invariants.md)
 
 This document fixes the shape of the system. Everything else in `docs/architecture/` elaborates one part of it and must not contradict it.
@@ -17,7 +17,7 @@ Five constraints determine almost every structural decision downstream.
 |---|---|---|
 | <a id="rule-ac-01"></a>AC-01 | **State has exactly one owner** | No shared writable business database; no central service holding product state; caches record source and revision and are never write points |
 | <a id="rule-ac-02"></a>AC-02 | **Calls cross boundaries as strongly typed contracts** | No catch-all `Invoke(string, object)`; no dictionary payloads; no runtime-discovered interfaces on the AOT path |
-| <a id="rule-ac-03"></a>AC-03 | Public business RPC uses handwritten proto and binary gRPC-Web for C#, TypeScript and Kotlin | Generated clients and one operation/error/stream vocabulary; only declared standard HTTP exceptions remain |
+| <a id="rule-ac-03"></a>AC-03 | Public business RPC uses handwritten proto and binary gRPC-Web for C# clients (desktop, Cloud operator, Blazor WebAssembly, MAUI Android) ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)) | Generated C# clients and one operation/error/stream vocabulary; only declared standard HTTP exceptions remain |
 | <a id="rule-ac-04"></a>AC-04 | **Every production main path must be statically analysable where it is an AOT deliverable** | Source generation everywhere; no reflection fallback; no runtime code generation on the desktop main path |
 | <a id="rule-ac-05"></a>AC-05 | **Failure is recoverable, and permission is validated at the final execution point** | Journals, revisions, idempotency, compensation — and owner-side re-authorization on every invocation |
 
@@ -32,7 +32,7 @@ ArcScope + own assistant/store ─┐
 Android / Web companions ───────┴─ HTTPS gRPC-Web → Worker → C# Container
                                                     ↓
                                             D1 / DO / Queues / R2
-                                            AI Workflow / Workers AI
+                                            C# Harness / Workers AI (ai.internal)
 Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
 ```
 
@@ -41,7 +41,7 @@ Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
 | Path | Technology | Carries |
 |---|---|---|
 | **Private parent/child process boundary** | Authored proto + generated native gRPC over Named Pipe / UDS | Restricted parser/extension controls only; product handlers execute in process |
-| **Public request/response** | ASP.NET Core gRPC-Web server; generated C#/TS/Connect Kotlin clients | Commands, queries, durable state, uploads and downloads |
+| **Public request/response** | ASP.NET Core gRPC-Web server; generated C# clients (desktop, Blazor WebAssembly, MAUI Android) | Commands, queries, durable state, uploads and downloads |
 | **Public realtime** | Generated Event/Execution server streams with unary Poll/ReadOutput recovery | Bounded hints and output; owner state remains durable |
 
 **Prohibited:** public TCP listeners for local business IPC; authoritative mutations carried only by lossy hints; C++ pointers in RPC; bypassing the owner with direct database writes. Local Kestrel HTTP/2 over authenticated named pipes/UDS is the selected gRPC transport.
@@ -62,7 +62,7 @@ Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
 Identical in every product and in Cloud:
 
 ```
-Desktop / LocalRpc / Infrastructure / MinimalApi / Kotlin Android adapters
+Desktop / LocalRpc / Infrastructure / MinimalApi / MAUI Android adapters
                               ↓
                        Application Services
                               ↓
@@ -90,16 +90,16 @@ Fixed by **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**, e
 | Host | Mode | Notes |
 |---|---|---|
 | **ArcScope desktop** | **Native AOT** | Trim/AOT-safe dependency rules; real publish proof per RID per release |
-| **ArcForges Cloud** | **ASP.NET Core Native AOT modular monolith** | Native AOT is mandatory; every dependency and real adapter participates in publish/run proof |
-| **ArcChat Mobile — Android** | **Kotlin/Jetpack Compose** | Pinned Kotlin/Jetpack Compose and native modules; release artifact built and inspected. Affected-scope device checks are explicit local opt-in using an existing environment, recorded once under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017); no device CI or validation-driven provisioning, and untested coverage remains explicit |
-| **ArcForges Web** | **React/TypeScript; Node.js/npm build tooling** | [browser-support.v1](../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1); static public pre-rendering; [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) |
+| **ArcForges Cloud** | **ASP.NET Core Native AOT modular monolith** | Native AOT is mandatory; every dependency and real adapter participates in publish/run proof; hosts the C# Harness and durable executor ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)) |
+| **ArcChat Mobile — Android** | **.NET MAUI, `net10.0-android` only** | Mono runtime with AOT for release (the .NET 10 posture; the .NET 11 runtime decision is deferred under [D-016](../decisions/phase-1-foundation-decisions.md#rule-d-016) and the minimum and target API are deferred to AND.40), trimming and R8; release artifact built and inspected against the PRF.12 proof; no AOT compatibility is inferred from documentation ([AO-03](#rule-ao-03)). iOS and Mac Catalyst targets are out of scope ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)). Affected-scope device checks are explicit local opt-in using an existing environment, recorded once under [P2-017](../decisions/phase-2-specification-decisions.md#rule-p2-017); no device CI or validation-driven provisioning, and untested coverage remains explicit |
+| **ArcForges Web** | **Blazor WebAssembly (C#, .NET 10 SDK); no Node.js/npm application build** | [browser-support.v1](../requirements/12-quality-and-compatibility-contract.md#202-browser-supportv1); static public Site pre-rendered by a C#/.NET generator (first-party Razor `HtmlRenderer`, to be proven by PRF.11 for its use and determinism, with no WASM or JS needed to read); IL WASM by default, AOT only on a measured benchmark; Node's scope is invoking wrangler only ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) item 1); the D1 migration runner's remaining code and the Node generators move to C# under CLOUD.84 (item 6) and are not permitted Node tooling; [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) (supersedes [P2-008](../decisions/phase-2-specification-decisions.md#rule-p2-008) items 1, 2 and 4, narrows item 3, and leaves items 5 and 6 in force) |
 
 | # | Rule |
 |---|---|
 | <a id="rule-ao-01"></a>AO-01 | **AOT release gates apply only to projects actually consumed by an AOT deliverable** (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). |
 | <a id="rule-ao-02"></a>AO-02 | **Shared public contracts and client libraries consumed by desktop or mobile remain trim-safe and source-generation friendly**, regardless of who else consumes them. |
 | <a id="rule-ao-03"></a>AO-03 | **The absence of an official AOT guarantee is never treated as proof of AOT compatibility** (**[D-003](../decisions/phase-1-foundation-decisions.md#rule-d-003)**, **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**). Where documentation cannot prove a dependency's behaviour under an AOT deliverable, a real publish-and-test proof is a registered gate with an owner and trigger. |
-| <a id="rule-ao-04"></a>AO-04 | Cloud publishes the complete selected Native AOT closure. CF Workflow executes TypeScript remotely; this does not create a C# JIT exemption. |
+| <a id="rule-ao-04"></a>AO-04 | Cloud publishes the complete selected Native AOT closure. The model/tool loop is C# ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)); the Cloudflare TypeScript adapters are thin platform transport with no business decision, sit outside the Native AOT closure, and do not create a C# JIT exemption. |
 
 ---
 
@@ -142,7 +142,7 @@ ArcScope + own assistant/store ─┐
 Android / Web companions ───────┴─ HTTPS gRPC-Web → Worker → C# Container
                                                     ↓
                                             D1 / DO / Queues / R2
-                                            AI Workflow / Workers AI
+                                            C# Harness / Workers AI (ai.internal)
 Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
 ```
 
@@ -150,7 +150,7 @@ Private parser/extension children: own parent ↔ gRPC Named Pipe/UDS
 |---|---|
 | <a id="rule-lb-01"></a>LB-01 | **AGPL components may consume the Apache-2.0 interoperability packages** without changing their own licence. |
 | <a id="rule-lb-02"></a>LB-02 | **No GPL-family or AGPL-only source, project reference, package, generated artifact or transitive dependency may enter the ArcChat Mobile distributable** — enforced by architecture and dependency tests (**[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)** obligation 7). |
-| <a id="rule-lb-03"></a>LB-03 | **Base ViewModel patterns are not shared between Avalonia desktop and Kotlin Android mobile** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**). Each UI stack owns its implementation. |
+| <a id="rule-lb-03"></a>LB-03 | **Base ViewModel patterns are not shared between Avalonia desktop and MAUI Android mobile** (**[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)**; the Kotlin wording is rewritten by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)). Each UI stack owns its implementation. |
 | <a id="rule-lb-04"></a>LB-04 | **Protocol communication across an explicit process or network boundary does not change a client's licence.** Desktop and server implementations remain separate works. |
 
 ---
@@ -212,9 +212,9 @@ Every write command carries at minimum `CommandId`, the target identity, `Expect
 | [`07-sync-conflict-and-backup.md`](07-sync-conflict-and-backup.md) | Sync protocol, change feed, conflict policies, tombstones, blob lifecycle, backup topology |
 | [`08-security-architecture.md`](08-security-architecture.md) | Identity layering, authorization enforcement points, secret handling, egress, audit |
 | [`09-ai-and-agent-runtime-architecture.md`](09-ai-and-agent-runtime-architecture.md) | Agent runtime, capability registry, task engine, provider routing, credit metering |
-| [`10-web-architecture.md`](10-web-architecture.md) | Static generation, React/TypeScript application, per-surface deployment and security |
-| [`11-mobile-architecture.md`](11-mobile-architecture.md) | Kotlin Android structure, Apache boundary, offline outbox, push, secure storage |
-| [`12-native-interop-and-media.md`](12-native-interop-and-media.md) | P/Invoke discipline, the C ABI, SafeHandle, image/instrument/PDF native families and acquisition pipelines |
+| [`10-web-architecture.md`](10-web-architecture.md) | C#/.NET static generation, Blazor WebAssembly application, per-surface deployment and security |
+| [`11-mobile-architecture.md`](11-mobile-architecture.md) | MAUI Android structure, Apache boundary, offline outbox, push, secure storage |
+| [`12-native-interop-and-media.md`](12-native-interop-and-media.md) | P/Invoke discipline, the C ABI, SafeHandle, image and instrument native families and acquisition pipelines (PDF preview and parsing retired by [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)) |
 | [`13-observability-and-operations.md`](13-observability-and-operations.md) | Telemetry, correlation, health, incident tooling, operator surface |
 | [`14-build-packaging-and-release.md`](14-build-packaging-and-release.md) | Build governance, versioning axes, packaging, signing, update feed, CI gates |
 | [`15-extension-platform-architecture.md`](15-extension-platform-architecture.md) | Extension host, protocol, schema model, package runtime, catalog |
@@ -232,9 +232,9 @@ Answerable before any feature merges:
 
 **Local RPC** — Is every operation in the pinned handwritten proto set with generated messages/services/clients and explicit listener registration? Do Named Pipe/UDS peer bootstrap and reverse callbacks work in the actual AOT artifact? Are limits, cancellation, command identity, correct revision kind and previous-client compatibility verified without runtime discovery or proxy fallback?
 
-**Public RPC** — Are C#/TS/Kotlin package clients using binary gRPC-Web and matching descriptors/metadata? Do trailers, 64-bit values, scope, cancellation and output recovery agree? HTTP exceptions remain explicitly named.
+**Public RPC** — Are C# package clients (desktop, Blazor WebAssembly, MAUI) using binary gRPC-Web and matching descriptors/metadata? Do trailers, 64-bit values, scope, cancellation and output recovery agree? HTTP exceptions remain explicitly named.
 
-**Realtime** — Used only for realtime need, never as the sole durable fact? C# and TS payloads generated from the same authored contract? Recoverable through HTTP by revision or sequence after a disconnect?
+**Realtime** — Used only for realtime need, never as the sole durable fact? C# payloads generated from the same authored contract, with shared conformance vectors? Recoverable through HTTP by revision or sequence after a disconnect?
 
 **IPC and security** — Are pipe and socket permissions minimised? Are instance, session and actor verified? Does the owner perform final authorization? Are fixed public ports and arbitrary-path loading avoided?
 
@@ -242,7 +242,7 @@ Answerable before any feature merges:
 
 **UI and tasks** — Does the UI thread do only lightweight work? Is every queue bounded and back-pressured? Does long work return a `TaskHandle`? Is the task queryable, recoverable and cancellable — or explicitly non-cancellable?
 
-**AOT and publishing** — Does the host genuinely publish AOT where applicable? Are there no unreviewed trimming or AOT warnings? Does Android use the pinned Kotlin/Jetpack Compose release artifact? Are native and managed shipped as one version set? Are updates, rollbacks, schema and document formats compatible? Are signing, SBOM, dependency and secret scans present?
+**AOT and publishing** — Does the host genuinely publish AOT where applicable? Are there no unreviewed trimming or AOT warnings? Does the MAUI Android release match the pinned .NET 10 and MAUI release, with Mono AOT, trimming and R8 proven by PRF.12 and no AOT claim inferred (AO-03)? Are native and managed shipped as one version set? Are updates, rollbacks, schema and document formats compatible? Are signing, SBOM, dependency and secret scans present?
 
 ---
 
@@ -254,7 +254,7 @@ Answerable before any feature merges:
 | Bidirectional RPC produces concurrency or deadlock misjudgement | The transport is not an actor: serialize domain writes per document; never hold a lock while awaiting a callback; base writes on revision and command identity; fault-inject bidirectional callbacks and disconnects |
 | Typed HTTP client silently falls back to reflection | Generated-only API, reflection package absent from production, analyzer diagnostics escalated to errors, an AOT publish contract test per public method |
 | Realtime misused as a reliable bus | Realtime is the visibility layer; business facts land in the database, journal and outbox; clients recover by revision or sequence over HTTP |
-| Android strict AOT misrepresented | Documentation and inspected artifact state Kotlin/Jetpack Compose; server Native AOT is a separate target |
+| Android strict AOT misrepresented | Documentation and inspected artifact state the .NET MAUI Android Mono release build (AO-03; proof PRF.12); server Native AOT is a separate target |
 | ORM blocks strict AOT on a desktop deliverable | Desktop persistence uses an AOT-safe access path; a heavyweight ORM runtime is not a hard dependency of an AOT host |
 | In-process native library crash | Narrow C ABI, `SafeHandle`, input validation, fuzzing and sanitizers, sacrificial-process tests, crash dumps, journal recovery |
 | Over-sharing produces a giant monolith | A shared language is not a shared model: split contracts by boundary and ownership, enforce module ownership, ban cross-product infrastructure references |
@@ -281,4 +281,4 @@ Answerable before any feature merges:
 
 ## Retired runtime concepts
 
-Standalone ArcChat desktop, cross-product Hub/discovery/SSO/handoff/federation, public native-gRPC clients, OpenAPI business generation, SignalR, public AI WebSockets, MAUI/RN Mobile, PostgreSQL business storage and a monorepo build are historical baselines superseded by [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009)…[P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013). Current professional hosts embed Platform assistant packages, retain separate history/session/database state and communicate directly with Cloud. Private helper gRPC and standardized external MCP/device protocols remain explicit different boundaries. Historical decision/review text is provenance, not an active work package.
+Standalone ArcChat desktop, cross-product Hub/discovery/SSO/handoff/federation, public native-gRPC clients, OpenAPI business generation, SignalR, public AI WebSockets, React Native Mobile, iOS targets ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) item 3) and macOS targets ([P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023)), PostgreSQL business storage and a monorepo build are historical baselines superseded by [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009)…[P2-013](../decisions/phase-2-specification-decisions.md#rule-p2-013), and for the 2026-10-08 directives by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)…[P2-025](../decisions/phase-2-specification-decisions.md#rule-p2-025). MAUI Android is the adopted Mobile direction under P2-021, not a non-goal. Current professional hosts embed Platform assistant packages, retain separate history/session/database state and communicate directly with Cloud. Private helper gRPC and standardized external MCP/device protocols remain explicit different boundaries. Historical decision/review text is provenance, not an active work package.

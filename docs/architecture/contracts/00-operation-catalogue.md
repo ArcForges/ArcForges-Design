@@ -24,7 +24,7 @@ The contract architecture states how contracts are *shaped, versioned and genera
 
 ## 2. The shared operation contract
 
-Every operation on every surface — HTTP, local RPC, realtime — obeys the same seven rules. This uniformity supplies one semantic contract for retry/error/conflict behavior. C#, TypeScript and Kotlin have separate generated clients and language-specific adapters, verified by shared conformance vectors; they do not share a compiled client implementation.
+Every operation on every surface — HTTP, local RPC, realtime — obeys the same seven rules. This uniformity supplies one semantic contract for retry/error/conflict behavior. C# (desktop, Blazor WebAssembly and MAUI) uses generated clients from one source, with platform adapters only where a platform requires them (TypeScript and Kotlin clients retire under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)), verified by shared conformance vectors; they do not share a compiled client implementation.
 
 | # | Rule |
 |---|---|
@@ -36,7 +36,7 @@ Every operation on every surface — HTTP, local RPC, realtime — obeys the sam
 | <a id="rule-oc-06"></a>OC-06 | **Every list operation is cursor-paginated** with an opaque, scope-bound cursor. |
 | <a id="rule-oc-07"></a>OC-07 | **Every operation declares its compatibility class** (`§7`), which determines what may change without a version bump. |
 
-**Wire projection for TypeScript.** SQL/C# bigint and decimal names below describe logical values. Generated public protobuf uses bigint for 64-bit integers and canonical strings for Decimal; only declared JSON exceptions follow [Web exact-value rules](../25-web-toolchain-and-sdk.md#31-exact-wire-values): 64-bit integers and decimals are canonical strings, int32 counters remain numbers, and null/absence are not silently conflated. Existing authentication NI exceptions remain distinct from idempotent business commands.
+**Wire projection for C# clients (the TypeScript projection retires under [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)).** SQL/C# bigint and decimal names below describe logical values. Generated public protobuf uses bigint for 64-bit integers and canonical strings for Decimal; only declared JSON exceptions follow [Web exact-value rules](../25-web-toolchain-and-sdk.md#31-exact-wire-values): 64-bit integers and decimals are canonical strings, int32 counters remain numbers, and null/absence are not silently conflated. Existing authentication NI exceptions remain distinct from idempotent business commands.
 
 
 ### 2.1 The request envelope

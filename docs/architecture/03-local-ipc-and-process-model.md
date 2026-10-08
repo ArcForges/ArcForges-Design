@@ -18,7 +18,7 @@ Large parser input/output uses bounded broker resource grants and verified trans
 
 ## Required verification
 
-WP06 proves two real AOT helper-probe processes over each exact OS transport; WP08 implements the parent-bound mechanics; WP11 proves hostile-child containment; WP13 composes actual parser libraries. Tests cover wrong OS user/nonce/build, stale epoch, malformed/truncated protobuf, queue saturation, cancellation, lost acknowledgement, parent death, orphan cleanup and repeated restricted relaunch. No first-party product-to-product fixture is a current requirement. WP26/52 separately prove Cloud-targeted same-app tools, and professional products remain locally usable when Cloud is unavailable.
+WP06 proves two real AOT helper-probe processes over each exact OS transport; WP08 implements the parent-bound mechanics; WP11 proves hostile-child containment; NAT.31 composes the actual still-image parser libraries (PDF parsing is retired by [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)). Tests cover wrong OS user/nonce/build, stale epoch, malformed/truncated protobuf, queue saturation, cancellation, lost acknowledgement, parent death, orphan cleanup and repeated restricted relaunch. No first-party product-to-product fixture is a current requirement. WP26/52 separately prove Cloud-targeted same-app tools, and professional products remain locally usable when Cloud is unavailable.
 
 ## Stable rule and section references
 

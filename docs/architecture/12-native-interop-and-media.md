@@ -5,7 +5,7 @@
 > Governing authority: **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** (Native AOT desktop), **[D-016](../decisions/phase-1-foundation-decisions.md#rule-d-016)** (deferred-decision ownership), the technology constitution and closed exception list (`§8` of [`../requirements/00-product-scope-and-portfolio.md`](../requirements/00-product-scope-and-portfolio.md))
 > Companions: [`04-desktop-application-architecture.md`](04-desktop-application-architecture.md), [`06-data-persistence-and-formats.md`](06-data-persistence-and-formats.md), [`../requirements/products/arcscope.md`](../requirements/products/arcscope.md)
 
-Native code exists in ArcForges for one reason: some low-level capability has no reasonable managed substitute. It never exists because native code is faster in general, because the team is more familiar with it, or because an implementation already exists elsewhere. This document defines the boundary that keeps that concession small, auditable and reversible, and the still-image, PDF and acquisition pipelines that sit on top of it.
+Native code exists in ArcForges for one reason: some low-level capability has no reasonable managed substitute. It never exists because native code is faster in general, because the team is more familiar with it, or because an implementation already exists elsewhere. This document defines the boundary that keeps that concession small, auditable and reversible, and the still-image and acquisition pipelines that sit on top of it. PDF preview and PDF parsing are retired ([P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)).
 
 ---
 
@@ -35,7 +35,7 @@ A native memory error kills the process that loaded the library. Hostile parsing
 | Product | Permitted native surface | Explicitly not permitted |
 |---|---|---|
 | ArcScope | Device and transport SDKs, high-rate acquisition primitives, hardware timestamps, high-performance signal primitives | Session model, capture lifecycle, trigger semantics, analysis definitions, evidence storage |
-| ArcChat | Platform system APIs where required — global hotkey, notification, secure storage; **still-image and PDF rendering and bounded text extraction for thin attachment preview** (`§2.1`) | Anything in the conversation, task or capability model; any editing, layout or authoring path |
+| ArcChat | Platform system APIs where required — global hotkey, notification, secure storage; **still-image decoding for thin attachment preview** (`§2.1`; PDF rendering and text extraction retired by [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)) | Anything in the conversation, task or capability model; any editing, layout or authoring path |
 | Cloud | **None.** Cloud is managed code on a managed hosting platform (**[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)**) | All native dependencies |
 | Mobile and Web | Platform framework only; no first-party native ABI | A first-party C ABI shim |
 
@@ -45,18 +45,18 @@ A native memory error kills the process that loaded the library. Hostile parsing
 | <a id="rule-np-02"></a>NP-02 | **A native library used by two products is still loaded per process**, with no shared global state between them. |
 | <a id="rule-np-03"></a>NP-03 | **No global shared memory pool exists across products**. |
 
-### 2.1 ArcChat thin preview rendering — the one amendment, and why
+### 2.1 ArcChat thin image preview — the narrow native surface (PDF retired)
 
-The embedded assistant's thin preview of image and PDF attachments requires rasterising a page to a bitmap and extracting bounded text, and no managed-only path in the current stack delivers it. The permitted surface is therefore extended — narrowly.
+The embedded assistant's thin preview of image attachments requires decoding a still image to a bitmap, and no managed-only path in the current stack delivers that decode. The permitted surface is therefore extended, narrowly, to still-image decoding in the ContentSandbox helper (NAT.31). The former PDF rasterisation and PDF text-extraction surface is retired ([P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)); no product has a native PDF preview or a PDF parsing path. ArcScope report export (`arcscope.report.pdf.v1`) is retained by [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022): report PDF production is not part of this retirement, its writer is admitted separately under SCOPE.18, and PDFium is not a writer. Companions present an exported report only through the platform viewer or as a download.
 
 | # | Rule |
 |---|---|
-| <a id="rule-dr-01"></a>DR-01 | **The extension covers exactly two operations**: rasterising a page to a bitmap tile at a requested scale, and extracting bounded text. Nothing else. |
+| <a id="rule-dr-01"></a>DR-01 | **The extension covers exactly one operation**: decoding a still image to a bitmap tile at a requested scale. The former page-rasterisation and bounded-text operations were PDF operations and are retired ([P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)). Nothing else. |
 | <a id="rule-dr-02"></a>DR-02 | **No content, editing or authoring path may call it.** Only the assistant's thin-preview surface may reference the wrapper (`§2`), and a repository policy test asserts it. |
 | <a id="rule-dr-03"></a>DR-03 | **[NP-01](#rule-np-01) is not waived by this amendment.** The named owner, the substitute analysis, the licence position and the provenance record are prerequisites to adoption, not follow-ups (**[D-013](../decisions/phase-1-foundation-decisions.md#rule-d-013)**). |
-| <a id="rule-dr-04"></a>DR-04 | PDF parsing/rasterisation/text geometry run inside the C# ContentSandbox under the [mandatory OS profile](24-content-and-extension-isolation.md). The viewer brokers input and validates bounded results. C ABI discipline, signed loading and lifetime checks remain required; child crash/hang produces a metadata card without taking down the parent. |
-| <a id="rule-dr-05"></a>DR-05 | **Until adopted, the assistant's PDF preview is not available.** The gap is carried as [PG-12](../assurance/open-gates-register.md#rule-pg-12) in the [open-gates register](../assurance/open-gates-register.md), triggered by the first assistant PDF preview through the ContentSandbox, never absorbed by silently treating a missing preview as the metadata-card fallback. |
-| <a id="rule-dr-06"></a>DR-06 | **The same surface serves any later document-rendering need** — it is not re-opened per format. A format needing more than [DR-01](#rule-dr-01)'s two operations is a new decision. |
+| <a id="rule-dr-04"></a>DR-04 | Still-image parsing and decoding run inside the C# ContentSandbox under the [mandatory OS profile](24-content-and-extension-isolation.md). The viewer brokers input and validates bounded results. C ABI discipline, signed loading and lifetime checks remain required; child crash/hang produces a metadata card without taking down the parent. No PDF parser runs in any helper. |
+| <a id="rule-dr-05"></a>DR-05 | **The assistant's PDF preview is retired, not pending** ([P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)). PDF attachments are generic attachments: stored, transferred and downloaded as opaque files, with no parsing, presented as a metadata card with Save As and Open via the system handler; the app performs no in-app PDF parsing or rendering ([P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) item 2). [PG-12](../assurance/open-gates-register.md#rule-pg-12) is retired and is never completed; no PDF preview or PDF parsing path is a pending capability. |
+| <a id="rule-dr-06"></a>DR-06 | **Retired by [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022).** The identifier is not reused. The original text, which let further document-rendering operations use this surface, is superseded. |
 
 ---
 
@@ -156,7 +156,7 @@ These mitigations supplement the mandatory hostile-content process boundary. The
 | <a id="rule-sb-01"></a>SB-01 | **The native ABI is kept extremely small.** Every addition is reviewed. |
 | <a id="rule-sb-02"></a>SB-02 | **Input is validated in managed code before it reaches native code** — sizes, ranges, formats, counts, alignment. |
 | <a id="rule-sb-03"></a>SB-03 | **Native libraries are built with sanitiser configurations** — address and undefined behaviour — for test builds. |
-| <a id="rule-sb-04"></a>SB-04 | **Image and PDF parsers are fuzzed**, with a corpus retained and extended by every parser defect found. |
+| <a id="rule-sb-04"></a>SB-04 | **Image parsers are fuzzed**, with a corpus retained and extended by every parser defect found. PDF parsers are retired ([P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)). |
 | <a id="rule-sb-05"></a>SB-05 | **Native integration tests run in a sacrificial process**, so a crash fails a test rather than the test host. |
 | <a id="rule-sb-06"></a>SB-06 | **Crash dumps, symbols and build identifiers are retained in production**, and are sufficient to resolve a native frame. |
 | <a id="rule-sb-07"></a>SB-07 | **Business recovery relies on the journal** (`§3` of the persistence architecture). A native crash loses at most work since the last committed boundary, never committed work. |
@@ -241,4 +241,4 @@ The [package registry](01-solution-and-project-layout.md#12-package-and-native-d
 
 ## Functional producer closure
 
-[The initial functional ABI](contracts/06-native-functional-abi.md) is the required complete surface, including native library calls, states, ownership, wrappers, packages and sandbox bulk buffers. Published probe DLLs are not implementation of these functions. WP13 produces verified capability packages before product consumers; product domain decisions stay in C#.
+[The initial functional ABI](contracts/06-native-functional-abi.md) is the required complete surface, including native library calls, states, ownership, wrappers, packages and sandbox bulk buffers. Published probe DLLs are not implementation of these functions. WP13 produces verified capability packages before product consumers; product domain decisions stay in C#. Under [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022) the production still-image composition is NAT.31 and the PDF engine retirement is NAT.32.

@@ -258,11 +258,11 @@ Authority: [P2-012](../../decisions/phase-2-specification-decisions.md#rule-p2-0
 | `IContentSandbox.GetImageInfo` | private-helper |
 | `IContentSandbox.ReadImageTile` | private-helper |
 | `IContentSandbox.CloseImage` | private-helper |
-| `IContentSandbox.OpenPdf` | private-helper |
-| `IContentSandbox.GetPdfPage` | private-helper |
-| `IContentSandbox.ExtractPdfText` | private-helper |
-| `IContentSandbox.RenderPdfTile` | private-helper |
-| `IContentSandbox.ClosePdf` | private-helper |
+| `IContentSandbox.OpenPdf` | private-helper; retired ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)) |
+| `IContentSandbox.GetPdfPage` | private-helper; retired ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)) |
+| `IContentSandbox.ExtractPdfText` | private-helper; retired ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)) |
+| `IContentSandbox.RenderPdfTile` | private-helper; retired ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)) |
+| `IContentSandbox.ClosePdf` | private-helper; retired ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)) |
 | `IContentSandbox.CancelSession` | private-helper |
 | `IContentSandbox.CloseSession` | private-helper |
 | `application.list` | application-target |
@@ -367,7 +367,7 @@ These are the only 17 CON.15 `cf-service` HTTP operations. Every row has `kind=h
 | `cf.ai.dispatch` | `POST /internal/ai/v1/dispatch` | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#3-exact-internal-ports` |
 | `cf.ai.control` | `POST /internal/ai/v1/control` | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#3-exact-internal-ports` |
 | `cf.ai.delete` | `POST /internal/ai/v1/delete` | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#3-exact-internal-ports` |
-| `cf.ai.web-search` | `POST /internal/ai/v1/web-search` | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#execution-owner-and-web-search-additions` |
+| `cf.ai.web-search` | `POST /internal/ai/v1/web-search` (unresolved: whether this route stays, and which module makes the Brave call, are pending a reviewed decision; [architecture 05](../05-cloud-architecture.md); [P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) items 1 and 5 do not name Brave) | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#execution-owner-and-web-search-additions` |
 | `cf.ai.inference-job` | `POST /internal/ai/v1/inference-job` | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#8-session-bindings-inference-jobs-and-deployment-transitions` |
 | `cf.ai.inference-lease` | `POST /internal/ai/v1/inference-lease` | IW | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#8-session-bindings-inference-jobs-and-deployment-transitions` |
 | `cf.ai.inference-input` | `POST /internal/ai/v1/inference-input` | Q | `internal/cf-http/v1/schema.json` | `docs/architecture/contracts/05-cloudflare-integration.md#8-session-bindings-inference-jobs-and-deployment-transitions` |

@@ -397,7 +397,7 @@ These are **hard authoring rules**, not optimisations. [P2-009](../decisions/pha
 | # | Obligation |
 |---|---|
 | <a id="rule-ca-01"></a>CA-01 | Author business wire services/messages in Contracts handwritten proto, using the complete field registry. |
-| <a id="rule-ca-02"></a>CA-02 | Generate C#/TS bindings and released descriptors from that source; never edit generated code. |
+| <a id="rule-ca-02"></a>CA-02 | Generate C# bindings and released descriptors from that source; never edit generated code. TS and Kotlin client generation is retired ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)). |
 | <a id="rule-ca-03"></a>CA-03 | Explicitly register generated services/serializers; no runtime contract scanning. |
 | <a id="rule-ca-04"></a>CA-04 | Preserve per-owner service/package boundaries, independent versions and license closure. |
 | <a id="rule-ca-05"></a>CA-05 | Use explicit request/result messages; no overloaded wire method, CLR property or generic service. |
@@ -406,18 +406,18 @@ These are **hard authoring rules**, not optimisations. [P2-009](../decisions/pha
 | <a id="rule-ca-08"></a>CA-08 | Dispose channels/leases on peer restart and rebuild authenticated bindings. |
 | <a id="rule-ca-09"></a>CA-09 | Writes carry CommandId, target identity and the exact owner revision kind. |
 | <a id="rule-ca-10"></a>CA-10 | No object/dynamic/Type/ORM/view model/native pointer crosses a wire boundary. |
-| <a id="rule-ca-11"></a>CA-11 | C# and TS values follow the exact protobuf/JSON projection profile and independent vectors. |
+| <a id="rule-ca-11"></a>CA-11 | C# values (desktop, Cloud, Blazor WebAssembly and MAUI) follow the exact protobuf/JSON projection profile and independent vectors. The TypeScript vector leg of the int64 9007199254740993 vector (C#→TypeScript→C#) retires only when its browser-path replacement passes the PRF.11 int64, uint64 and decimal proof (C#→browser→C#; the C# leg stays) ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) item 2). The one retained TS codec, `@arcforges/ai-internal` (which binds 64-bit values to D1 as canonical strings), keeps its own vector leg: int64 9007199254740993 round trip, uint64 max, decimal scale, and rejection of overflow and leading zero. The other TS SDK vector legs retire with the TS SDKs ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) item 4). |
 | <a id="rule-ca-12"></a>CA-12 | All 17 hint payloads are generated from the same event registry. |
-| <a id="rule-ca-13"></a>CA-13 | C# uses generated gRPC-Web, React generated gRPC-Web, Kotlin Android generated gRPC-Web; HTTP exceptions are separately typed. |
+| <a id="rule-ca-13"></a>CA-13 | C# uses generated gRPC-Web in desktop, Blazor WebAssembly and MAUI Android; HTTP exceptions are separately typed. |
 | <a id="rule-ca-14"></a>CA-14 | Published service, method, field names/numbers are permanent; reserve removals and check previous/current compatibility. |
 
 **A repository-policy test asserts [CA-01](#rule-ca-01) through [CA-03](#rule-ca-03) and [CA-11](#rule-ca-11) through [CA-13](#rule-ca-13) mechanically** (`§7.2` of the layout architecture).
 
 ---
 
-### 16.1 TypeScript consumers and exact JSON values
+### 16.1 C# consumers and exact JSON values
 
-[P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) selects handwritten proto and generated C#/TS packages in [the wire registry](contracts/04-protobuf-wire-registry.md). Native/TS binary values and their JSON-exception projections follow that exact-value profile. SDK generation is followed by real client tests of auth, idempotency, streaming and compatibility against the same operation catalogue.
+[P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) selects handwritten proto and generated C#/TS packages in [the wire registry](contracts/04-protobuf-wire-registry.md); [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) makes the first-party SDKs generated C# NuGet packages only. Native and C# binary values and their JSON-exception projections follow that exact-value profile. The retained `@arcforges/ai-internal` TS codec keeps the exact-value vector leg of [CA-11](#rule-ca-11); the TS SDK vector legs retire with the TS SDKs. SDK generation is followed by real client tests of auth, idempotency, streaming and compatibility against the same operation catalogue.
 
 ---
 
