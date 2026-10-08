@@ -17,7 +17,7 @@ For every module table in model 01, physical name is `<module>_<snake_case_entit
 | Logical type / rule | D1 representation and boundary |
 |---|---|
 | UUID / opaque Id | canonical lowercase UUID `TEXT`, validated length/format; owner IDs composite-indexed; no Guid-memory-byte reinterpretation |
-| Signed exact 64 counters / instants | `INTEGER` where range is signed 64; instants are UTC microseconds. The generated Worker binding binds canonical decimal strings with SQL `CAST(? AS INTEGER)` and returns `CAST(column AS TEXT)`; no Number conversion. C# validates range before submission. |
+| Signed exact 64 counters / instants | `INTEGER` where range is signed 64; instants are UTC microseconds. The generated Worker binding (the `@arcforges/ai-internal` codec) binds canonical decimal strings with SQL `CAST(? AS INTEGER)` and returns `CAST(column AS TEXT)`; no Number conversion. Its exact-value vectors are in [CA-11](../02-contracts-and-protocols.md#rule-ca-11). C# validates range before submission. |
 | uint64 / monetary decimal | canonical `TEXT` with explicit component columns where specified. C# checked exact arithmetic; SQL never sums/coerces arbitrary decimal text to REAL. Money balances with declared fixed unit may use signed 64 only after range proof. |
 | Ordering exact decimal / unsigned values | owner-generated canonical sort key as BLOB plus identity tie-breaker; reference comparator vectors define equality/order. Never lexicographic raw decimal text. |
 | bool / enum | checked INTEGER0/1; closed enum numeric registry with unknown read preservation where specified |

@@ -127,7 +127,7 @@ layering rule or allowed reuse disposition.
 
 ### 4.2 Current Android dependency conflict and remediation
 
-*(Superseded 2026-10-08 by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) for the build: the Kotlin/Gradle Android build and its desugaring remediation retire with AND.40. The F-023 closure requirement, the no-excluded-dependency rule and the rule that no requirement is relaxed apply unchanged to the MAUI closure, verified by RG-13 and PRF.12; the minimum supported Android API is set by the MAUI target and proven by PRF.12. The text below is kept as history.)*
+*(Superseded 2026-10-08 by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) for the build: the Kotlin/Gradle Android build and its desugaring remediation retire with AND.40. The F-023 closure requirement, the no-excluded-dependency rule and the rule that no requirement is relaxed apply unchanged to the MAUI closure, verified by RG-13 and PRF.12. The Android minimum API 26 requirement of this section is unchanged by P2-021: the MAUI release must be proven on API 26 by PRF.12, and the floor may move only by a reviewed record that cites that proof; no silent change is permitted. The text below is kept as history.)*
 
 The WP00.02 collection on 2026-09-18 found Mobile commit
 `15145a4b4139525aae4185f0d2d20c87ec91686a` enabling core-library desugaring and
@@ -334,7 +334,7 @@ Publish the following package identities. Managed package versions and their com
 | ArcForges.Assistant.Avalonia | Core, Cloud, Persistence.Sqlite, Desktop.Shell; complete embedded window | No implicit native-image dependency and no PDF renderer or parser dependency (PDF preview retired, [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)); WP17 |
 | ArcForges.Native.Image | Native.Abstractions; image probe/decode | .Native.Image.Runtime.<rid>: OpenImageIO/OpenEXR/Imath |
 | ArcForges.Native.Instruments | Native.Abstractions; device transport buffers/USB | .Native.Instruments.Runtime.<rid>: libusb; serial OS adapter |
-| ArcForges.Native.Pdf | **Retired** ([P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)): no managed package, no PDFium runtime package and no arcpdf ABI remain after NAT.32; the identity is not reused | None (retired) |
+| ArcForges.Native.Pdf | **Retired** ([P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)): no managed package, no PDFium runtime package and no arcpdf ABI remain after NAT.32; the identity is not reused. ArcScope report export (`arcscope.report.pdf.v1`) is retained: its PDF writer is admitted separately under SCOPE.18, and PDFium is not a writer | None (retired) |
 | ArcForges.ContentSandbox.Contracts, .Broker | Exact ArcForges.Contracts.LocalRpc.Sandbox/Platform plus Foundation; Contracts facade has no duplicate authored/generated wire types. Broker owns restricted launch and buffer grants; helper loads the approved still-image parser wrappers | .ContentSandbox.Runtime.<rid>: signed AOT helper + OS enforcement profile, WP11 host/profile; NAT.31 still-image parser composition (no PDF parser, [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)) |
 | ArcForges.Build.Policy | Build-only, source/pin/NOTICE checks | No runtime dependency |
 | ArcForges.Contracts.LocalRpc.Platform, .LocalRpc.Sandbox | Contracts-owned internal child records/services, launch/bootstrap/lease/hints/connector and complete parser controls; public clients cannot import | Generated C# messages/client/server bindings from authored proto, WP03 |

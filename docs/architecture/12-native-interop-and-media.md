@@ -47,7 +47,7 @@ A native memory error kills the process that loaded the library. Hostile parsing
 
 ### 2.1 ArcChat thin image preview — the narrow native surface (PDF retired)
 
-The embedded assistant's thin preview of image attachments requires decoding a still image to a bitmap, and no managed-only path in the current stack delivers that decode. The permitted surface is therefore extended, narrowly, to still-image decoding in the ContentSandbox helper (NAT.31). The former PDF rasterisation and PDF text-extraction surface is retired ([P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)); no product has a native PDF preview or a PDF parsing path.
+The embedded assistant's thin preview of image attachments requires decoding a still image to a bitmap, and no managed-only path in the current stack delivers that decode. The permitted surface is therefore extended, narrowly, to still-image decoding in the ContentSandbox helper (NAT.31). The former PDF rasterisation and PDF text-extraction surface is retired ([P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)); no product has a native PDF preview or a PDF parsing path. ArcScope report export (`arcscope.report.pdf.v1`) is retained by [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022): report PDF production is not part of this retirement, its writer is admitted separately under SCOPE.18, and PDFium is not a writer. Companions present an exported report only through the platform viewer or as a download.
 
 | # | Rule |
 |---|---|

@@ -406,7 +406,7 @@ These are **hard authoring rules**, not optimisations. [P2-009](../decisions/pha
 | <a id="rule-ca-08"></a>CA-08 | Dispose channels/leases on peer restart and rebuild authenticated bindings. |
 | <a id="rule-ca-09"></a>CA-09 | Writes carry CommandId, target identity and the exact owner revision kind. |
 | <a id="rule-ca-10"></a>CA-10 | No object/dynamic/Type/ORM/view model/native pointer crosses a wire boundary. |
-| <a id="rule-ca-11"></a>CA-11 | C# values (desktop, Cloud, Blazor WebAssembly and MAUI) follow the exact protobuf/JSON projection profile and independent vectors; the TS vector leg retires with the TS SDKs ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)). |
+| <a id="rule-ca-11"></a>CA-11 | C# values (desktop, Cloud, Blazor WebAssembly and MAUI) follow the exact protobuf/JSON projection profile and independent vectors. The one retained TS codec, `@arcforges/ai-internal` (which binds 64-bit values to D1 as canonical strings), keeps its own vector leg: int64 9007199254740993 round trip, uint64 max, decimal scale, and rejection of overflow and leading zero. The TS SDK vector legs retire with the TS SDKs ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)). |
 | <a id="rule-ca-12"></a>CA-12 | All 17 hint payloads are generated from the same event registry. |
 | <a id="rule-ca-13"></a>CA-13 | C# uses generated gRPC-Web in desktop, Blazor WebAssembly and MAUI Android; HTTP exceptions are separately typed. |
 | <a id="rule-ca-14"></a>CA-14 | Published service, method, field names/numbers are permanent; reserve removals and check previous/current compatibility. |
@@ -417,7 +417,7 @@ These are **hard authoring rules**, not optimisations. [P2-009](../decisions/pha
 
 ### 16.1 C# consumers and exact JSON values
 
-[P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) selects handwritten proto and generated C#/TS packages in [the wire registry](contracts/04-protobuf-wire-registry.md); [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) makes the first-party SDKs generated C# NuGet packages only. Native and C# binary values and their JSON-exception projections follow that exact-value profile; the TS values leg is retired with the TS SDKs. SDK generation is followed by real client tests of auth, idempotency, streaming and compatibility against the same operation catalogue.
+[P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) selects handwritten proto and generated C#/TS packages in [the wire registry](contracts/04-protobuf-wire-registry.md); [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) makes the first-party SDKs generated C# NuGet packages only. Native and C# binary values and their JSON-exception projections follow that exact-value profile. The retained `@arcforges/ai-internal` TS codec keeps the exact-value vector leg of [CA-11](#rule-ca-11); the TS SDK vector legs retire with the TS SDKs. SDK generation is followed by real client tests of auth, idempotency, streaming and compatibility against the same operation catalogue.
 
 ---
 
