@@ -87,7 +87,7 @@ Automation is specified in [`05-ai-and-agent-execution.md`](05-ai-and-agent-exec
 | <a id="rule-mc-09"></a>MC-09 | **The exact MCP C# SDK version is pinned at first consumption**, and an explicit mapping between MCP extension concepts (its own `Task`, `Skill`) and the ArcForges execution vocabulary is recorded (see glossary §9). *Owner: Architecture Owner. Trigger: start of the MCP/extension work package.* |
 | <a id="rule-mc-10"></a>MC-10 | An MCP server changing its tool set **re-enters permission review** ([TR-10](07-security-privacy-and-trust.md#rule-tr-10) in the security requirements). |
 
-MCP placement is explicit: stdio servers run only in an owned desktop connector child; streamableHttp connections run either in that local child or in the AI Worker tool adapter for a Cloud connection. Cloud calls use the exact admitted HTTPS origin and Cloud SecretRef. Local calls pass through the device bridge; neither transport grants tool permission.
+MCP placement is explicit: stdio servers run only in an owned desktop connector child; streamableHttp connections run either in that local child or in the C# Cloud Harness tool adapter for a Cloud connection, with the TypeScript Cloudflare Worker limited to transport ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021) item 5). Cloud calls use the exact admitted HTTPS origin and Cloud SecretRef. Local calls pass through the device bridge; neither transport grants tool permission.
 
 ## 6. Connector
 

@@ -8,7 +8,7 @@
 
 This document defines the Cloud Agent Task model and Cloud AI economics. Native product activities and jobs retain their own lifecycles.
 
-**One Cloud Harness.** The sole model/tool loop is the C# Harness in the Cloud host ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)), run by a C# executor over D1 with an epoch lease and fenced writes, with a Durable Object alarm for wake-up. No Cloudflare Workflow holds run state. C# Native AOT owns canonical Task state, deterministic scheduling, admission and business transactions. Native acquisition, analysis, export and background maintenance are ordinary product jobs; an agent may invoke and observe them without converting them into a second agent runtime.
+**One Cloud Harness.** The sole model/tool loop is the C# Harness in the Cloud host ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)), run by a C# executor over D1 with an epoch lease and fenced writes, with a Durable Object alarm for wake-up. No Cloudflare Workflow holds run state. The executor design is gated on the [HAR.40](../planning/delivery/lanes/harness.md#task-har-40) crash-injection, lost-wake and duplicate-delivery proof; alarm and Queue delivery semantics are unverified until that proof passes. C# Native AOT owns canonical Task state, deterministic scheduling, admission and business transactions. Native acquisition, analysis, export and background maintenance are ordinary product jobs; an agent may invoke and observe them without converting them into a second agent runtime.
 
 ---
 

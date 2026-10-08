@@ -43,7 +43,7 @@ Break-glass has a separate incident form, alarm and visible expiry; it cannot by
 | UX-B composition | AS01–13; WP10/14/17/35/39 | exact Platform candidate consumed by product-specific host adapters; no adjacent source |
 | UX-C history | AS01/02/07/09/12/13, AN07–10/15/22; WP15/25/31/49/52 | local/Cloud/temporary CRUD, promotion lost ack, account switch, export/deletion and terminal output ack |
 | UX-D target/tool | AS03/05/06/11, AN05/06/09/11–13; WP09/11/26/31/52 | current same-product action, stale context/epoch/approval refusal, no second product involved |
-| UX-E protocol | all async surfaces; WP03/06/23/24/26/31/49/52 | actual binary gRPC-Web unary and server streams in AOT C#, browser and Android, no named fixture retained |
+| UX-E protocol | all async surfaces; WP03/06/23/24/26/31/49/52 | actual gRPC-Web unary and server streams in AOT C#, browser and Android: binary first, grpc-web-text on server-stream routes if binary is not observed under PRF.11, and polling if neither form streams; no binary streaming claim is made until PRF.11 observes it; no named fixture retained |
 | UX-F resources/search | AS03/08/09, AN14–18; WP13/18/19/25/35/39/40 | native/helper or Android-safe previews, current owner permissions, index completeness and exact scientific/media values |
 | UX-G operations | AS10/12/13, AN19–25; WP42/44/45/46/48/50/52/53 | admission/usage, notifications, support/export/deletion, signed update, outage and fenced restore |
 | UX-H native usability | all surfaces; WP10/17/30/31/32/49/50 | keyboard/IME/screen reader/large text, denied permissions, resize and process-death evidence |
