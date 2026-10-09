@@ -24179,7 +24179,7 @@
    "complete": [],
    "writes": [],
    "external": [
-    "Physical Android device and a real FCM receipt on it; Mobile Owner (blocked-external user input per P2-025 item 6 and P2-026 S7: completion waits, and the receipt is never passed or waived)"
+    "Physical Android device and a real FCM receipt on it; user input (blocked-external per P2-025 item 6 and P2-026 S7: completion waits, and the receipt is never passed or waived)"
    ]
   },
   {
