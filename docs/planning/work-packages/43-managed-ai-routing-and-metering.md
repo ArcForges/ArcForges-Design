@@ -150,7 +150,7 @@ The provider implementation is confined to the Cloud C# modules and the thin Clo
 
 **What must be fully done.** Record actual Workers AI responses for each selected capability and normalize them into independent sanitized fixtures. Run deterministic fixtures on ordinary CI and the credentialed real-CF candidate gate with exact Worker/model/config identities; fixtures never replace supplier/usage proof.
 
-**Testing requirements.** Model response drift, missing category, cumulative stream and embedding/rerank result validation, plus controlled real-provider run.
+**Testing requirements.** Model response drift, missing category, cumulative stream and embedding result validation (rerank validation is out of V1 under P2-026 S4), plus controlled real-provider run.
 
 **Completion gate.** The selected provider closure has both repeatable protocol tests and actual integration evidence.
 

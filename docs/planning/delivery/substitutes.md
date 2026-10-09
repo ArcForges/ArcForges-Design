@@ -13,7 +13,7 @@ A **value** substitute supplies contract-shaped data (vectors, documents, record
 | [SUB-commercial-figure-proposal](#sub-commercial-figure-proposal) | value | final approved production commercial figures (storage/window/grace/retention amounts) | [REL.08](lanes/release.md#task-rel-08) | [REL.08](lanes/release.md#task-rel-08) | [COM.02](lanes/commerce.md#task-com-02) |
 | [SUB-desktop-candidate-feed](#sub-desktop-candidate-feed) | value | the production update feed publication pointer (the real WP50.02 cutover) | [UPD.07](lanes/updater.md#task-upd-07) | [REL.10](lanes/release.md#task-rel-10) | [REL.02](lanes/release.md#task-rel-02) |
 | [SUB-device-runtime-loopback](#sub-device-runtime-loopback) | behavior | [WP-26](../work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26) real Cloud-connected durable target queue and application presence | [DEV.01](lanes/device-bridge.md#task-dev-01), [DEV.02](lanes/device-bridge.md#task-dev-02) | [DEV.14](lanes/device-bridge.md#task-dev-14) | [AST.11](lanes/assistant.md#task-ast-11) |
-| [SUB-embedding-rerank-fixture](#sub-embedding-rerank-fixture) | value | [WP-43.00](../work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.00) real Workers AI embed/rerank calls | [AIR.00](lanes/ai-routing.md#task-air-00) | [SRCH.06](lanes/search.md#task-srch-06) | [SRCH.01](lanes/search.md#task-srch-01), [SRCH.02](lanes/search.md#task-srch-02) |
+| [SUB-embedding-rerank-fixture](#sub-embedding-rerank-fixture) | value | [WP-43.00](../work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.00) real Workers AI embed calls | [AIR.00](lanes/ai-routing.md#task-air-00) | [SRCH.06](lanes/search.md#task-srch-06) | [SRCH.01](lanes/search.md#task-srch-01), [SRCH.02](lanes/search.md#task-srch-02) |
 | [SUB-fcm-recorded-responses](#sub-fcm-recorded-responses) | value | live Firebase Cloud Messaging sender responses | [OPS.10](lanes/operations.md#task-ops-10) | [AND.26](lanes/android.md#task-and-26) | [OPS.10](lanes/operations.md#task-ops-10) |
 | [SUB-fixture-turn-endpoint](#sub-fixture-turn-endpoint) | behavior | the Cloud Harness real turn/task loop (model, planner, admission, metering) | [HAR.00](lanes/harness.md#task-har-00), [HAR.02](lanes/harness.md#task-har-02), [HAR.03](lanes/harness.md#task-har-03) | [HAR.05](lanes/harness.md#task-har-05) | [AST.11](lanes/assistant.md#task-ast-11), [AND.09](lanes/android.md#task-and-09), [WEB.20](lanes/web.md#task-web-20) |
 | [SUB-guarded-batch-capacity-fixtures](#sub-guarded-batch-capacity-fixtures) | behavior | real per-module business plans not yet built when capacity is first measured | [CLOUD.47](lanes/cloud.md#task-cloud-47), [COM.15](lanes/commerce.md#task-com-15) | [REL.06](lanes/release.md#task-rel-06) | [CLOUD.07](lanes/cloud.md#task-cloud-07) |
@@ -107,8 +107,8 @@ A **value** substitute supplies contract-shaped data (vectors, documents, record
 | Field | Value |
 |---|---|
 | Class | value |
-| Stands in for | [WP-43.00](../work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.00) real Workers AI embed/rerank calls |
-| Authoritative contract | Contracts published fixture embedding/rerank vectors (deterministic decimal vectors) |
+| Stands in for | [WP-43.00](../work-packages/43-managed-ai-routing-and-metering.md#rule-wp-43.00) real Workers AI embed calls |
+| Authoritative contract | Contracts published fixture embedding vectors (deterministic decimal vectors) |
 | What its checks prove | index-write correctness (namespace scoping, filters, tombstones, dimension-change isolation) independent of real model variance |
 | What it does not prove | Any real runtime, provider, device, integration or commercial behavior. |
 | Real producer | [AIR.00](lanes/ai-routing.md#task-air-00) |

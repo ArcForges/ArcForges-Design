@@ -283,7 +283,7 @@ Before the paid cloud goes live:
 
 The cloud modular monolith is partitioned into modules, each owning an application/domain boundary, its own schema or explicit table ownership, a public module API and events, independent tests, and a prohibition on other modules writing its tables:
 
-The 19 rows in architecture 05 §3 are the complete current module inventory. PackageCatalog owns its authoring, review, publication and revocation records; Notification owns delivery intents; Scope Simulation owns simulator state. This requirements document does not maintain a second differently grouped module list.
+The 19 rows in architecture 05 §3 are the complete module inventory of the record. The PackageCatalog row is post-V1 and out of scope under P2-026 S5, so the active V1 inventory is the other 18 rows. PackageCatalog owns its authoring, review, publication and revocation records; Notification owns delivery intents; Scope Simulation owns simulator state. This requirements document does not maintain a second differently grouped module list.
 
 Scope Simulation owns the durable simulator state and manifests required by [SIM-01](arcscope.md#rule-sim-01)–[SIM-20](arcscope.md#rule-sim-20); it is an internal module, not another service.
 

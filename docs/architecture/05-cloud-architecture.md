@@ -134,7 +134,7 @@ Nineteen domain modules, following the [Cloud schema ownership map](data-model/0
 | **Support** | Feedback, bug reports, support cases, access grants, diagnostic bundles, recovery cases |
 | **TrustSafety** | Community reports, investigations, enforcement actions, appeals, security reports, advisories |
 | **Scope** | Cloud simulator state and authorized metadata replicas; native capture/analysis authority remains in ArcScope |
-| **PackageCatalog** | Publisher verification, package/version submission, review, publication and revocation; TrustSafety enforcement and Support reports remain separate owners |
+| **PackageCatalog** | Publisher verification, package/version submission, review, publication and revocation; TrustSafety enforcement and Support reports remain separate owners (post-V1: out of scope under P2-026 S5) |
 | **Configuration** | Immutable deployment configuration revisions and atomic activation; Policy owns the governed policy projection and evaluation surface |
 
 | # | Rule |

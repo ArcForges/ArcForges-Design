@@ -103,9 +103,9 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 | 13 | 26 |
 | 14 | 21 |
 | 15 | 22 |
-| 16 | 21 |
+| 16 | 20 |
 | 17 | 16 |
-| 18 | 15 |
+| 18 | 16 |
 | 19 | 10 |
 | 20 | 6 |
 | 21 | 2 |
