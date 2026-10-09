@@ -63,7 +63,7 @@
 
 | Location | Change |
 |---|---|
-| Cloud `src/ArcForges.Cloud.Modules.{Support,TrustSafety,Audit,Policy,Configuration,PackageCatalog}` (Domain, Application and Infrastructure as folders and namespaces) | Existing domain owners implement support/access, enforcement, proposals/audit, controls, configuration and catalog; Cloud.Host composes OperatorService. There is no unowned Operations persistence module. |
+| Cloud `src/ArcForges.Cloud.Modules.{Support,TrustSafety,Audit,Policy,Configuration,PackageCatalog}` (PackageCatalog is post-V1 and out of scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) (Domain, Application and Infrastructure as folders and namespaces) | Existing domain owners implement support/access, enforcement, proposals/audit, controls, configuration and catalog; Cloud.Host composes OperatorService. There is no unowned Operations persistence module. |
 | Cloud `src/ArcForges.Cloud.Modules.Notification` (Domain, Application and Infrastructure as folders and namespaces) | Transactional and broadcast email adapters with separated streams and a secondary path |
 | Web `src/Web/ArcForges.Web.App` (operations profile, Blazor WebAssembly) | The operator console on its own origin and identity system |
 | `deploy/monitoring/` | Alert definitions, service-level objective definitions, status component mapping |
@@ -180,6 +180,8 @@
 
 ### WP-45.10 — Package review and revocation console
 
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The PackageCatalog review and revocation console is not required in V1; the text below is kept as the post-V1 specification.
+
 **What must be fully done.** Integrate existing WP41 PackageCatalog operator methods with independent operator authentication, step-up/evidence and audit. Show asynchronous signed-index publication state.
 
 **Testing requirements.** Customer/PAT denial, changed proposal hash, replay, revoked package and failed index publication/retry. Use internal GetCatalogSubmission and the same typed proposal/approval path as the generated operator matrix; production catalog read-only views cannot grant operator mutation authority.
@@ -277,11 +279,11 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [OPS.08](../delivery/lanes/operations.md#task-ops-08) | [WP-45.07](45-operations-support-and-trust-safety.md#rule-wp-45.07) (full) | none |
 | [OPS.09](../delivery/lanes/operations.md#task-ops-09) | [WP-45.08](45-operations-support-and-trust-safety.md#rule-wp-45.08) (full)<br>[WP-45](45-operations-support-and-trust-safety.md#rule-wp-45) Producer prerequisites (WP45.08 must consume real WP22 mail, no fixture) (producer prerequisites; consuming [WP-22](22-identity-workspace-and-device.md#rule-wp-22) real mail artifacts without deferring [WP-22](22-identity-workspace-and-device.md#rule-wp-22)'s own gate; package-level obligation contribution) | [CLOUD.12](../delivery/lanes/cloud.md#task-cloud-12) (artifact) |
 | [OPS.10](../delivery/lanes/operations.md#task-ops-10) | [WP-45.09](45-operations-support-and-trust-safety.md#rule-wp-45.09) (all work except the parts mapped to AND.26) | [CON.22](../delivery/lanes/contracts.md#task-con-22) (contract) |
-| [OPS.11](../delivery/lanes/operations.md#task-ops-11) | [WP-45.10](45-operations-support-and-trust-safety.md#rule-wp-45.10) (all work except the parts mapped to OPS.13) | [EXT.06](../delivery/lanes/extensions.md#task-ext-06) (artifact), [CON.14](../delivery/lanes/contracts.md#task-con-14) (contract) |
+| [OPS.11](../delivery/lanes/operations.md#task-ops-11) — out of scope | [WP-45.10](45-operations-support-and-trust-safety.md#rule-wp-45.10) (all work except the parts mapped to OPS.13) | [EXT.06](../delivery/lanes/extensions.md#task-ext-06) (artifact), [CON.14](../delivery/lanes/contracts.md#task-con-14) (contract) |
 | [OPS.12](../delivery/lanes/operations.md#task-ops-12) | [WP-45.90](45-operations-support-and-trust-safety.md#rule-wp-45.90) (full) | none |
 | [OPS.13](../delivery/lanes/operations.md#task-ops-13) | [WP-45.04](45-operations-support-and-trust-safety.md#rule-wp-45.04) (exercise every generated role/method pair via the actual console UI)<br>[WP-45.10](45-operations-support-and-trust-safety.md#rule-wp-45.10) (real operator console join) | [COM.13](../delivery/lanes/commerce.md#task-com-13) (artifact), [POL.05](../delivery/lanes/policy.md#task-pol-05) (artifact), [CON.14](../delivery/lanes/contracts.md#task-con-14) (artifact) |
 
-**Consumers outside this package:** [AND.12](../delivery/lanes/android.md#task-and-12), [AND.23](../delivery/lanes/android.md#task-and-23), [CLOUD.64](../delivery/lanes/cloud.md#task-cloud-64), [COM.13](../delivery/lanes/commerce.md#task-com-13), [REL.06](../delivery/lanes/release.md#task-rel-06), [REL.09](../delivery/lanes/release.md#task-rel-09), [WEB.31](../delivery/lanes/web.md#task-web-31).
+**Consumers outside this package:** [AND.12](../delivery/lanes/android.md#task-and-12), [AND.23](../delivery/lanes/android.md#task-and-23), [CLOUD.64](../delivery/lanes/cloud.md#task-cloud-64), [COM.13](../delivery/lanes/commerce.md#task-com-13), [REL.04](../delivery/lanes/release.md#task-rel-04), [REL.06](../delivery/lanes/release.md#task-rel-06), [REL.09](../delivery/lanes/release.md#task-rel-09), [WEB.31](../delivery/lanes/web.md#task-web-31).
 
 <!-- delivery-graph:end -->
 

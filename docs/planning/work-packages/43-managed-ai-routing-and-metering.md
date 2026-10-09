@@ -67,7 +67,7 @@
 
 | Owner / location | Deliverable |
 |---|---|
-| Cloud C# modules (formerly the AI repository's `src/providers/workers-ai/` and `src/inference/`) | Selected Workers AI catalogue and capability profiles, model/text/embedding/rerank request/response normalization and service ports in C#; the thin `ai.internal` binding adapter lives in the Cloud Worker ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)) |
+| Cloud C# modules (formerly the AI repository's `src/providers/workers-ai/` and `src/inference/`) | Selected Workers AI catalogue and capability profiles, model/text/embedding request/response normalization (rerank normalization is out of V1 under P2-026 S4) and service ports in C#; the thin `ai.internal` binding adapter lives in the Cloud Worker ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)) |
 | Cloud: src/Cloud/ArcForges.Cloud.Modules.Agent/ | Catalogue/policy validation, routing decision, intent/outcome/usage/supplier records |
 | Cloud: Modules.Task, Modules.Commerce, Modules.Entitlement | Their owned run, tariff, reservation, credit/settlement and audit transaction participants |
 | Contracts: public Agent/usage and internal AI HTTP profiles | Generated types and independent fixtures from the fixed registry |
@@ -84,7 +84,7 @@ The provider implementation is confined to the Cloud C# modules and the thin Clo
 ### WP-43.00 — Provider adapters and routing
 
 
-**What must be fully done.** Implement only the selected Workers AI catalogue/capability profiles through the thin Worker `env.AI` binding adapter (`ai.internal`), which enforces only the C#-supplied admitted-model set and size caps, fail-closed, with no Workers AI token in the container and no AI Gateway ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)), carrying the C#-frozen request: default/fast text, accepted image context, bge-m3 embedding and reranker. Validate model availability and frozen config, canonical request limits and supported tool/stream shapes before dispatch. C# records admission/routing and supplier version; CF executes the already admitted intent. Acceptance gates ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 5): the `ai.internal` path is not frozen until the [HAR.40](../delivery/lanes/harness.md#task-har-40) Workers AI proof passes (binding latency, SSE pass-through, the gpt-oss tier, 429 semantics, and whether a container outbound request can reach `env.AI`); no model is dispatched until its tier and per-model token bucket are recorded; a 429 may follow a dispatch and is not retried until C# admission classifies it; and alarm and Queue delivery semantics are unverified until the executor proof records them.
+**What must be fully done.** Implement only the selected Workers AI catalogue/capability profiles through the thin Worker `env.AI` binding adapter (`ai.internal`), which enforces only the C#-supplied admitted-model set and size caps, fail-closed, with no Workers AI token in the container and no AI Gateway ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021)), carrying the C#-frozen request: default/fast text, accepted image context, bge-m3 embedding (the reranker is out of V1 under P2-026 S4). Validate model availability and frozen config, canonical request limits and supported tool/stream shapes before dispatch. C# records admission/routing and supplier version; CF executes the already admitted intent. Acceptance gates ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 5): the `ai.internal` path is not frozen until the [HAR.40](../delivery/lanes/harness.md#task-har-40) Workers AI proof passes (binding latency, SSE pass-through, the gpt-oss tier, 429 semantics, and whether a container outbound request can reach `env.AI`); no model is dispatched until its tier and per-model token bucket are recorded; a 429 may follow a dispatch and is not retried until C# admission classifies it; and alarm and Queue delivery semantics are unverified until the executor proof records them.
 
 **Testing requirements.** Actual selected models/capability shapes, withdrawn/unknown/unsupported requests, request-size/output bounds and version mismatch.
 
@@ -150,7 +150,7 @@ The provider implementation is confined to the Cloud C# modules and the thin Clo
 
 **What must be fully done.** Record actual Workers AI responses for each selected capability and normalize them into independent sanitized fixtures. Run deterministic fixtures on ordinary CI and the credentialed real-CF candidate gate with exact Worker/model/config identities; fixtures never replace supplier/usage proof.
 
-**Testing requirements.** Model response drift, missing category, cumulative stream and embedding/rerank result validation, plus controlled real-provider run.
+**Testing requirements.** Model response drift, missing category, cumulative stream and embedding result validation (rerank validation is out of V1 under P2-026 S4), plus controlled real-provider run.
 
 **Completion gate.** The selected provider closure has both repeatable protocol tests and actual integration evidence.
 

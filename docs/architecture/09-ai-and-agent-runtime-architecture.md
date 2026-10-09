@@ -73,7 +73,7 @@ Capability Registry  →  filtered by intent, permission, entitlement, policy, b
 | <a id="rule-cr-01"></a>CR-01 | **The full catalogue is never handed to the model** ([CE-01](../requirements/05-ai-and-agent-execution.md#rule-ce-01) in the AI requirements). Hundreds of tool schemas per turn degrade quality and explode cost. |
 | <a id="rule-cr-02"></a>CR-02 | **Selection is a pipeline**: intent and capability discovery within the frozen owning or explicitly targeted application and authorized Cloud scope → a small relevant capability set → invoke. |
 | <a id="rule-cr-03"></a>CR-03 | **Capability metadata drives behaviour**, not the model's inference: execution shape, effect semantics, retry semantics, cancellation semantics, preview support, checkpoint support, compensation support, risk and scope (`§4.2` of the contracts architecture). |
-| <a id="rule-cr-04"></a>CR-04 | **Invocation ordering is fixed**: native capability → trusted connector, MCP or API → computer use as an advanced fallback (`§8.1` of the ArcChat requirements). |
+| <a id="rule-cr-04"></a>CR-04 | **Invocation ordering is fixed**: native capability → trusted connector, MCP (post-V1 and out of scope, ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026))) or API → computer use as an advanced fallback (`§8.1` of the ArcChat requirements). |
 | <a id="rule-cr-05"></a>CR-05 | **A capability's availability is dynamic** and reflects installation, running state, health, compatibility, permission, entitlement and policy ([AC-04](02-contracts-and-protocols.md#rule-ac-04) in the contracts architecture). |
 
 ---
@@ -226,7 +226,7 @@ Task start
 | <a id="rule-mb-05"></a>MB-05 | **A run locks its tariff snapshot at start** ([TR-04](../requirements/05-ai-and-agent-execution.md#rule-tr-04) there); mid-run upstream price changes are absorbed. |
 | <a id="rule-mb-06"></a>MB-06 | **Fixed-precision sub-credit accounting**; per-request rounding up is prohibited ([CD-03](../requirements/05-ai-and-agent-execution.md#rule-cd-03) there). |
 | <a id="rule-mb-07"></a>MB-07 | **Platform-caused retries are not charged to the user** ([CU-03](../requirements/05-ai-and-agent-execution.md#rule-cu-03) there). |
-| <a id="rule-mb-08"></a>MB-08 | **Internal platform AI — routing classifiers, embedding, reranking, safety, health, cost prediction — never debits user credits** ([CU-01](../requirements/05-ai-and-agent-execution.md#rule-cu-01), [CU-02](../requirements/05-ai-and-agent-execution.md#rule-cu-02) there). |
+| <a id="rule-mb-08"></a>MB-08 | **Internal platform AI — routing classifiers, embedding, reranking (out of V1 under P2-026 S4), safety, health, cost prediction — never debits user credits** ([CU-01](../requirements/05-ai-and-agent-execution.md#rule-cu-01), [CU-02](../requirements/05-ai-and-agent-execution.md#rule-cu-02) there). |
 | <a id="rule-mb-09"></a>MB-09 | **An agent cannot raise its own budget** ([BG-07](../requirements/05-ai-and-agent-execution.md#rule-bg-07) there). |
 | <a id="rule-mb-10"></a>MB-10 | **Three ledgers stay separate**: provider cost, customer credit, payment/revenue ([I-011](../requirements/01-normative-glossary-and-invariants.md#rule-i-011)). |
 
@@ -344,6 +344,8 @@ Automation Definition (versioned)
 
 ## 14. MCP integration
 
+> **Post-V1 and out of scope ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** MCP integration is not required in V1. The rules below keep their IDs as the post-V1 specification.
+
 | # | Rule |
 |---|---|
 | <a id="rule-mc-01"></a>MC-01 | **MCP is an edge adapter behind the capability registry** ([`MC-01`](../requirements/08-extensions-and-developer-platform.md#rule-mc-01) in the extension requirements), never the internal protocol. |
@@ -386,14 +388,14 @@ Automation Definition (versioned)
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | Agent framework enabled only on AOT-validated surfaces; desktop stays a Native AOT deliverable |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Durable `ToolRequest` / `ToolResult` remote execution |
 | **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Reserve-then-settle, fixed precision, per-run tariff snapshot, hard stop, three ledgers |
-| **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | MCP stability, statelessness and vocabulary disambiguation |
+| **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | MCP stability, statelessness and vocabulary disambiguation (post-V1 and out of scope, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) |
 
 ## [P2-009](../decisions/phase-2-specification-decisions.md#rule-p2-009) execution placement and supplier binding
 (Superseded in part 2026-10-08 by [P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021): the only model/tool loop is the C# Harness in the Cloud Native AOT host, not a CF Workflow. The supplier binding below is unchanged.)
 
-Selected Workers AI routes: @cf/openai/gpt-oss-120b for default text/tool work; @cf/openai/gpt-oss-20b as explicit lower-latency text profile; @cf/google/gemma-4-26b-a4b-it only for accepted authorized image-context understanding; @cf/baai/bge-m3 for multilingual 1024-dimensional embeddings; @cf/baai/bge-reranker-base for bounded reranking. No text-to-image/voice product feature added. Direct bindings, no mandatory AI Gateway/Agents SDK/Vercel SDK/external provider. Text input cap 24,000 tokens, output 4096, tools 32, total context<=256 KiB default; vision max 4 approved images <=1024px longest side/1 MiB each, no raw media/capture egress. Embedding chunk512tokens/overlap 64, batch 16,1024 finite float components; query/doc use same version, max 200rerank candidates. Model max limits may be higher; product limits stay these bounded values.
+Selected Workers AI routes: @cf/openai/gpt-oss-120b for default text/tool work; @cf/openai/gpt-oss-20b as explicit lower-latency text profile; @cf/google/gemma-4-26b-a4b-it only for accepted authorized image-context understanding; @cf/baai/bge-m3 for multilingual 1024-dimensional embeddings; @cf/baai/bge-reranker-base for bounded reranking (out of V1 under P2-026 S4). No text-to-image/voice product feature added. Direct bindings, no mandatory AI Gateway/Agents SDK/Vercel SDK/external provider. Text input cap 24,000 tokens, output 4096, tools 32, total context<=256 KiB default; vision max 4 approved images <=1024px longest side/1 MiB each, no raw media/capture egress. Embedding chunk512tokens/overlap 64, batch 16,1024 finite float components; query/doc use same version, max 200rerank candidates. Model max limits may be higher; product limits stay these bounded values.
 
-Model route/config pins exact CF model ID and adapter profile v1. CF does not promise immutable weights behind an ID: a supplier change triggers eval/versioned embedding rebuild. No silent fallback across modality/tool capabilities. Operator can activate another supported selected model only through versioned config/canary; unavailable route returns named availability reason, no external-provider reroute. Model output classification stays Harness§3; tools decoded/validated through generated capability schema before proposing approval. No embedded function executor can bypass C# authorization. Rerank/scientific measurement remains advisory versus deterministic scalar/unit meanings.
+Model route/config pins exact CF model ID and adapter profile v1. CF does not promise immutable weights behind an ID: a supplier change triggers eval/versioned embedding rebuild. No silent fallback across modality/tool capabilities. Operator can activate another supported selected model only through versioned config/canary; unavailable route returns named availability reason, no external-provider reroute. Model output classification stays Harness§3; tools decoded/validated through generated capability schema before proposing approval. No embedded function executor can bypass C# authorization. Rerank (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S4)/scientific measurement remains advisory versus deterministic scalar/unit meanings.
 
 Supplier request ID is nullable until CF returns one; ArcForges attempt identity exists first. Usage counts come from per-call response if supplied; missing/partial measurements stay unknown. Normalize input/output/cached counts and exact decimal supplier price version; existing customer tariff, admission/hold/settlement/refund examples unchanged. No promise that CF aggregate billing can resolve one missing call; late supplier totals reconcile operator liability separately, never debit a customer after its existing terminal hold deadline. Production prices are operator input snapshots of published CF rates, synthetic testprices explicitly labeled.
 

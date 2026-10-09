@@ -7,6 +7,8 @@
 > Phase: J — Platform completion
 > Scheduling: this package is an obligation set; its delivery tasks and their typed prerequisites are listed in section 9, generated from the [delivery graph](../delivery/delivery-graph.json) under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018).
 
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) for every capability in this package except the typed first-party boundary (EXT.02, WP-41.02).** The extension platform, MCP and connectors, and the catalog below are not active V1 requirements; the text is kept as the post-V1 record.
+>
 > **Goal.** Open the platform without weakening it: out-of-process extensions contributing **tools, never planners** ([EA-08](../../requirements/08-extensions-and-developer-platform.md#rule-ea-08)), the dual capability boundary with a closed AOT-safe value model, declarative UI contribution, the Arc Package runtime, the catalog, and the MCP, connector and artifact handoff and standard MCP integrations — all under the same security pipeline as first-party code.
 
 > **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Contracts public SDK/CLI; Platform host; ArcChat MCP; Cloud catalog. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
@@ -16,7 +18,7 @@
 
 ## 1. Scope and purpose
 
-**In scope.** The extension host and its supervision; the handshake and protocol versioning; the typed extension-point layer and the schema-described dynamic layer; declarative panel and settings contribution; the Arc Package model and lifecycle; the catalog client; the public SDK and CLI; and the integration kinds — MCP and connectors; external-agent delegation is excluded.
+**Post-V1 and out of scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5 (the former in-scope list).** The extension host and its supervision; the handshake and protocol versioning; the typed extension-point layer and the schema-described dynamic layer; declarative panel and settings contribution; the Arc Package model and lifecycle; the catalog client; the public SDK and CLI; and the integration kinds — MCP and connectors; external-agent delegation is excluded.
 
 **Out of scope.** A paid marketplace, explicitly not in V1. A general WebView platform, explicitly a non-goal.
 
@@ -81,6 +83,8 @@
 
 ### WP-41.00 — Extension host and supervision
 
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The owners of this substep are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90). The text below is the retained post-V1 record and is not an active V1 requirement.
+
 **What must be fully done.** Enforce the package-specific OS profile from Content and Extension Isolation; broker grants do not protect against direct system calls by an unrestricted child.  Per-installation extension processes started on demand and stopped when idle, with resource limits enforced by termination, backoff restart, quarantine after repeated crashes, and typed failure for in-flight invocations. No ambient credential is inherited.
 
 **Testing requirements.** Run a malicious package against product DB/token paths, network, sibling package and process APIs; revoke permission during an invocation and test unsupported profiles.  Crash, hang, memory exhaustion and unbounded output tests; quarantine behaviour; a credential-absence assertion.
@@ -90,6 +94,8 @@
 <a id="rule-wp-41.01"></a>
 
 ### WP-41.01 — Handshake and protocol versioning
+
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The owners of this substep are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90). The text below is the retained post-V1 record and is not an active V1 requirement.
 
 **What must be fully done.** Identity verification against the installed manifest before any contribution is invoked; protocol version negotiation supporting more than one version during a migration window; refusal that is clean and explained. A process cannot claim another package's identity or a reserved namespace.
 
@@ -111,6 +117,8 @@
 
 ### WP-41.03 — Declarative UI contribution
 
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The owners of this substep are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90). The text below is the retained post-V1 record and is not an active V1 requirement.
+
 **What must be fully done.** Panel declarations from a closed, versioned element vocabulary rendered with first-party controls; declarative settings schemas; secret fields yielding references only; visible attribution of extension-contributed surfaces.
 
 **Testing requirements.** Vocabulary coverage; a negative test asserting raw markup or script is rejected; a secret-field test; an attribution test.
@@ -120,6 +128,8 @@
 <a id="rule-wp-41.04"></a>
 
 ### WP-41.04 — Package runtime
+
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The owners of this substep are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90). The text below is the retained post-V1 record and is not an active V1 requirement.
 
 **What must be fully done.** Implement manifest.v1/workflow.v1/panel.v1 validators from published Contracts, all six families and immutable staged install/update/drain/migration/revocation/rollback states in annex 08.
 
@@ -131,6 +141,8 @@
 
 ### WP-41.05 — PackageCatalog producer and consumers
 
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The owners of this substep are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90). The text below is the retained post-V1 record and is not an active V1 requirement.
+
 **What must be fully done.** Build Cloud PackageCatalog, DNS publisher verification, immutable submissions, review-state/revocation authority and signed static index producer, plus desktop/CLI consumers under arch 15/registry 04/model 01. Use WP03 fixture keys; production distribution keys are later WP53.
 
 **Testing requirements.** Owner/PAT/operator separation, duplicate version conflict, invalid archive, review/revoke replay, signed-index rollback/expiry and offline installed-package behavior.
@@ -140,6 +152,8 @@
 <a id="rule-wp-41.06"></a>
 
 ### WP-41.06 — Public SDK and CLI
+
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The owners of this substep are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90). The text below is the retained post-V1 record and is not an active V1 requirement.
 
 **What must be fully done.** Generate SDK/validators/tool payload projections from authored public proto. CLI uses eligible publisher PAT and catalog/resource methods. Third-party apps use approved public APIs or OS/file interchange.
 
@@ -151,6 +165,8 @@
 
 ### WP-41.07 — MCP placement and connectors
 
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The owners of this substep are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90). The text below is the retained post-V1 record and is not an active V1 requirement.
+
 **What must be fully done.** Implement local MCP stdio behind the owned connector child and Cloud MCP HTTP, with the egress decision made by C# and only the transport in the thin Cloud Worker adapter ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 6). Preserve MCP standard protocol; only the owned child boundary speaks ArcForges gRPC.
 
 **Testing requirements.** Origin/scope changes invalidate consent, no browser/Android local subprocess, no unrestricted AI fetch, child crash/lease recovery.
@@ -159,6 +175,8 @@
 
 <a id="rule-wp-41.90"></a>
 ### WP-41.90 — Verify the owned artifact and real integration
+
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The owners of this substep are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90). The text below is the retained post-V1 record and is not an active V1 requirement.
 
 **What must be fully done.** Split SDK/protocol, desktop host/runtime and Cloud registry ownership. Preserve standard MCP transports and out-of-process extensions. Remove the old external-agent integration wording rather than expanding accepted scope.
 
@@ -236,20 +254,32 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 
 | Delivery task | Satisfies | Start prerequisites outside this package |
 |---|---|---|
-| [EXT.00](../delivery/lanes/extensions.md#task-ext-00) | [WP-41.00](41-extension-platform-and-integrations.md#rule-wp-41.00) (full) | [PLT.45](../delivery/lanes/platform.md#task-plt-45) (artifact), [PLT.19](../delivery/lanes/platform.md#task-plt-19) (contract) |
-| [EXT.01](../delivery/lanes/extensions.md#task-ext-01) | [WP-41.01](41-extension-platform-and-integrations.md#rule-wp-41.01) (full) | none |
+| [EXT.00](../delivery/lanes/extensions.md#task-ext-00) — out of scope | [WP-41.00](41-extension-platform-and-integrations.md#rule-wp-41.00) (full) | [PLT.45](../delivery/lanes/platform.md#task-plt-45) (artifact), [PLT.19](../delivery/lanes/platform.md#task-plt-19) (contract) |
+| [EXT.01](../delivery/lanes/extensions.md#task-ext-01) — out of scope | [WP-41.01](41-extension-platform-and-integrations.md#rule-wp-41.01) (full) | none |
 | [EXT.02](../delivery/lanes/extensions.md#task-ext-02) | [WP-41.02](41-extension-platform-and-integrations.md#rule-wp-41.02) (full) | [CON.05](../delivery/lanes/contracts.md#task-con-05) (contract) |
-| [EXT.03](../delivery/lanes/extensions.md#task-ext-03) | [WP-41.03](41-extension-platform-and-integrations.md#rule-wp-41.03) (full) | none |
-| [EXT.04](../delivery/lanes/extensions.md#task-ext-04) | [WP-41.04](41-extension-platform-and-integrations.md#rule-wp-41.04) (manifest.v1/workflow.v1/panel.v1 validators and the immutable staged install/update/drain/migration/revocation/rollback state machine) | [CON.16](../delivery/lanes/contracts.md#task-con-16) (artifact) |
-| [EXT.05](../delivery/lanes/extensions.md#task-ext-05) | [WP-41.04](41-extension-platform-and-integrations.md#rule-wp-41.04) (the six package contribution kinds (skill/template/workflow/mcp/connector/extension) runtime registration and execution wiring) | none |
-| [EXT.06](../delivery/lanes/extensions.md#task-ext-06) | [WP-41.05](41-extension-platform-and-integrations.md#rule-wp-41.05) (Cloud PackageCatalog producer: DNS publisher verification, immutable submissions, review-state/revocation authority, signed static index)<br>[WP-41](41-extension-platform-and-integrations.md#rule-wp-41) PackageCatalog ownership paragraph (Sec.5-6 boundary): OperatorService is sole authenticator/caller; neither Extensions Runtime nor console writes PackageCatalog tables (package-level obligation contribution) | [CLOUD.16](../delivery/lanes/cloud.md#task-cloud-16) (artifact), [CLOUD.42](../delivery/lanes/cloud.md#task-cloud-42) (artifact), [CON.16](../delivery/lanes/contracts.md#task-con-16) (artifact) |
-| [EXT.07](../delivery/lanes/extensions.md#task-ext-07) | [WP-41.05](41-extension-platform-and-integrations.md#rule-wp-41.05) (desktop/CLI catalog consumers) | none |
-| [EXT.08](../delivery/lanes/extensions.md#task-ext-08) | [WP-41.06](41-extension-platform-and-integrations.md#rule-wp-41.06) (full)<br>[WP-41](41-extension-platform-and-integrations.md#rule-wp-41) Sec.8 gate item 8: MCP vocabulary mapping + SDK version pin -- [VG-02](../../assurance/open-gates-register.md#rule-vg-02) (package-level obligation contribution) | [CLOUD.16](../delivery/lanes/cloud.md#task-cloud-16) (artifact) |
-| [EXT.09](../delivery/lanes/extensions.md#task-ext-09) | [WP-41.07](41-extension-platform-and-integrations.md#rule-wp-41.07) (local MCP stdio placement behind the owned connector child process)<br>[WP-41](41-extension-platform-and-integrations.md#rule-wp-41) Sec.8 gate item 8: MCP vocabulary mapping + SDK version pin -- [VG-02](../../assurance/open-gates-register.md#rule-vg-02) (package-level obligation contribution) | none |
-| [EXT.10](../delivery/lanes/extensions.md#task-ext-10) | [WP-41.07](41-extension-platform-and-integrations.md#rule-wp-41.07) (Cloud MCP HTTP placement (functional acceptance kept as written; satisfied by a working placement through the C#-decided MCP egress route, never by a refusal))<br>[WP-41](41-extension-platform-and-integrations.md#rule-wp-41) Sec.8 gate item 8: MCP vocabulary mapping + SDK version pin -- [VG-02](../../assurance/open-gates-register.md#rule-vg-02) (package-level obligation contribution) | [CON.15](../delivery/lanes/contracts.md#task-con-15) (contract) |
-| [EXT.90](../delivery/lanes/extensions.md#task-ext-90) | [WP-41.90](41-extension-platform-and-integrations.md#rule-wp-41.90) (full)<br>[WP-41](41-extension-platform-and-integrations.md#rule-wp-41) Sec.8 gate item 9: extension protocol conformance suite -- [PG-09](../../assurance/open-gates-register.md#rule-pg-09) (package-level obligation contribution) | none |
+| [EXT.03](../delivery/lanes/extensions.md#task-ext-03) — out of scope | [WP-41.03](41-extension-platform-and-integrations.md#rule-wp-41.03) (full) | none |
+| [EXT.04](../delivery/lanes/extensions.md#task-ext-04) — out of scope | [WP-41.04](41-extension-platform-and-integrations.md#rule-wp-41.04) (manifest.v1/workflow.v1/panel.v1 validators and the immutable staged install/update/drain/migration/revocation/rollback state machine) | [CON.16](../delivery/lanes/contracts.md#task-con-16) (artifact) |
+| [EXT.05](../delivery/lanes/extensions.md#task-ext-05) — out of scope | [WP-41.04](41-extension-platform-and-integrations.md#rule-wp-41.04) (the six package contribution kinds (skill/template/workflow/mcp/connector/extension) runtime registration and execution wiring) | none |
+| [EXT.06](../delivery/lanes/extensions.md#task-ext-06) — out of scope | [WP-41.05](41-extension-platform-and-integrations.md#rule-wp-41.05) (Cloud PackageCatalog producer: DNS publisher verification, immutable submissions, review-state/revocation authority, signed static index)<br>[WP-41](41-extension-platform-and-integrations.md#rule-wp-41) PackageCatalog ownership paragraph (Sec.5-6 boundary): OperatorService is sole authenticator/caller; neither Extensions Runtime nor console writes PackageCatalog tables (package-level obligation contribution) | [CLOUD.16](../delivery/lanes/cloud.md#task-cloud-16) (artifact), [CLOUD.42](../delivery/lanes/cloud.md#task-cloud-42) (artifact), [CON.16](../delivery/lanes/contracts.md#task-con-16) (artifact) |
+| [EXT.07](../delivery/lanes/extensions.md#task-ext-07) — out of scope | [WP-41.05](41-extension-platform-and-integrations.md#rule-wp-41.05) (desktop/CLI catalog consumers) | none |
+| [EXT.08](../delivery/lanes/extensions.md#task-ext-08) — out of scope | [WP-41.06](41-extension-platform-and-integrations.md#rule-wp-41.06) (full)<br>[WP-41](41-extension-platform-and-integrations.md#rule-wp-41) Sec.8 gate item 8: MCP vocabulary mapping + SDK version pin -- [VG-02](../../assurance/open-gates-register.md#rule-vg-02) (package-level obligation contribution) | [CLOUD.16](../delivery/lanes/cloud.md#task-cloud-16) (artifact) |
+| [EXT.09](../delivery/lanes/extensions.md#task-ext-09) — out of scope | [WP-41.07](41-extension-platform-and-integrations.md#rule-wp-41.07) (local MCP stdio placement behind the owned connector child process)<br>[WP-41](41-extension-platform-and-integrations.md#rule-wp-41) Sec.8 gate item 8: MCP vocabulary mapping + SDK version pin -- [VG-02](../../assurance/open-gates-register.md#rule-vg-02) (package-level obligation contribution) | none |
+| [EXT.10](../delivery/lanes/extensions.md#task-ext-10) — out of scope | [WP-41.07](41-extension-platform-and-integrations.md#rule-wp-41.07) (Cloud MCP HTTP placement (functional acceptance kept as written; satisfied by a working placement through the C#-decided MCP egress route, never by a refusal))<br>[WP-41](41-extension-platform-and-integrations.md#rule-wp-41) Sec.8 gate item 8: MCP vocabulary mapping + SDK version pin -- [VG-02](../../assurance/open-gates-register.md#rule-vg-02) (package-level obligation contribution) | [CON.15](../delivery/lanes/contracts.md#task-con-15) (contract) |
+| [EXT.90](../delivery/lanes/extensions.md#task-ext-90) — out of scope | [WP-41.90](41-extension-platform-and-integrations.md#rule-wp-41.90) (full)<br>[WP-41](41-extension-platform-and-integrations.md#rule-wp-41) Sec.8 gate item 9: extension protocol conformance suite -- [PG-09](../../assurance/open-gates-register.md#rule-pg-09) (package-level obligation contribution) | none |
 
-**Consumers outside this package:** [CLOUD.84](../delivery/lanes/cloud.md#task-cloud-84), [OPS.11](../delivery/lanes/operations.md#task-ops-11), [REL.06](../delivery/lanes/release.md#task-rel-06), [SCOPE.25](../delivery/lanes/arcscope.md#task-scope-25).
+**Consumers outside this package:** [OPS.11](../delivery/lanes/operations.md#task-ops-11) — out of scope, [SCOPE.25](../delivery/lanes/arcscope.md#task-scope-25).
+
+**Out of scope (P2-026):** [WP-41](41-extension-platform-and-integrations.md#rule-wp-41) PackageCatalog ownership paragraph (Sec.5-6 boundary): OperatorService is sole authenticator/caller; neither Extensions Runtime nor console writes PackageCatalog tables — PackageCatalog ownership belongs to the out task EXT.06, and the community catalog is post-V1 ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).
+**Out of scope (P2-026):** [WP-41](41-extension-platform-and-integrations.md#rule-wp-41) Sec.8 gate item 8: MCP vocabulary mapping + SDK version pin -- [VG-02](../../assurance/open-gates-register.md#rule-vg-02) — The MCP vocabulary and SDK pin gate belongs to the out MCP tasks EXT.08 to EXT.10 ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).
+**Out of scope (P2-026):** [WP-41](41-extension-platform-and-integrations.md#rule-wp-41) Sec.8 gate item 9: extension protocol conformance suite -- [PG-09](../../assurance/open-gates-register.md#rule-pg-09) — The extension protocol conformance gate belongs to the out task EXT.90 ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).
+**Out of scope (P2-026):** [WP-41.00](41-extension-platform-and-integrations.md#rule-wp-41.00) — Extension platform substep (extension host, protocol, UI, packages, SDK and MCP placement): its owners are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90), out of V1 under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5.
+**Out of scope (P2-026):** [WP-41.01](41-extension-platform-and-integrations.md#rule-wp-41.01) — Extension platform substep (extension host, protocol, UI, packages, SDK and MCP placement): its owners are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90), out of V1 under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5.
+**Out of scope (P2-026):** [WP-41.03](41-extension-platform-and-integrations.md#rule-wp-41.03) — Extension platform substep (extension host, protocol, UI, packages, SDK and MCP placement): its owners are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90), out of V1 under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5.
+**Out of scope (P2-026):** [WP-41.04](41-extension-platform-and-integrations.md#rule-wp-41.04) — Extension platform substep (extension host, protocol, UI, packages, SDK and MCP placement): its owners are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90), out of V1 under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5.
+**Out of scope (P2-026):** [WP-41.05](41-extension-platform-and-integrations.md#rule-wp-41.05) — Extension platform substep (extension host, protocol, UI, packages, SDK and MCP placement): its owners are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90), out of V1 under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5.
+**Out of scope (P2-026):** [WP-41.06](41-extension-platform-and-integrations.md#rule-wp-41.06) — Extension platform substep (extension host, protocol, UI, packages, SDK and MCP placement): its owners are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90), out of V1 under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5.
+**Out of scope (P2-026):** [WP-41.07](41-extension-platform-and-integrations.md#rule-wp-41.07) — Extension platform substep (extension host, protocol, UI, packages, SDK and MCP placement): its owners are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90), out of V1 under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5.
+**Out of scope (P2-026):** [WP-41.90](41-extension-platform-and-integrations.md#rule-wp-41.90) — Extension platform substep (extension host, protocol, UI, packages, SDK and MCP placement): its owners are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90), out of V1 under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5.
 
 <!-- delivery-graph:end -->
 

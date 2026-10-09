@@ -458,7 +458,7 @@ An enabled model route prices every applicable billable category/tier. The follo
 
 | Consumes credits | Absorbed as ArcForges cost of goods |
 |---|---|
-| Chat responses | Cloud search embedding, indexing and reranking |
+| Chat responses | Cloud search embedding and indexing (reranking is out of V1 under P2-026 S4) |
 | Agent reasoning | Internal routing model calls |
 | Selection-scoped ArcScope actions | Abuse classification |
 | Supported image-understanding requests | Health checks |
@@ -609,4 +609,4 @@ No local/provider-key mode or external-agent delegation · native capture/analys
 | [Commerce, Entitlement and AI Credits Requirements](04-commerce-entitlement-and-credits.md) | Owns the commercial admission and metering obligations |
 | **[D-020](../decisions/phase-1-foundation-decisions.md#rule-d-020)** | Every economic figure is versioned commercial policy; reserve-then-settle; hard stop; three separate ledgers; per-run tariff snapshot |
 | **[D-010](../decisions/phase-1-foundation-decisions.md#rule-d-010)** | Local action is a durable `ToolRequest` pulled and re-authorised by the owning desktop application |
-| **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | MCP task/skill vocabulary is disambiguated in the glossary and never conflated with this model |
+| **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | MCP task/skill vocabulary (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) is disambiguated in the glossary and never conflated with this model |

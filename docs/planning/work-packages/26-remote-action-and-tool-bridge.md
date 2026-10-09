@@ -141,7 +141,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [DEV.09](../delivery/lanes/device-bridge.md#task-dev-09) | [WP-26.90](26-remote-action-and-tool-bridge.md#rule-wp-26.90) (full) | none |
 | [DEV.12](../delivery/lanes/device-bridge.md#task-dev-12) | [WP-26.03](26-remote-action-and-tool-bridge.md#rule-wp-26.03) (cross-repo agreement proof beyond each side's own unit coverage) | none |
 
-**Consumers outside this package:** [AND.25](../delivery/lanes/android.md#task-and-25), [CLOUD.36](../delivery/lanes/cloud.md#task-cloud-36), [DEV.13](../delivery/lanes/device-bridge.md#task-dev-13), [DEV.14](../delivery/lanes/device-bridge.md#task-dev-14), [HAR.05](../delivery/lanes/harness.md#task-har-05), [WEB.28](../delivery/lanes/web.md#task-web-28).
+**Consumers outside this package:** [AND.25](../delivery/lanes/android.md#task-and-25), [CLOUD.36](../delivery/lanes/cloud.md#task-cloud-36), [DEV.13](../delivery/lanes/device-bridge.md#task-dev-13), [DEV.14](../delivery/lanes/device-bridge.md#task-dev-14), [HAR.05](../delivery/lanes/harness.md#task-har-05), [SCOPE.26](../delivery/lanes/arcscope.md#task-scope-26), [WEB.28](../delivery/lanes/web.md#task-web-28).
 
 <!-- delivery-graph:end -->
 

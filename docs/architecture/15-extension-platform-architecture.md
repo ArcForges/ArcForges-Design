@@ -158,7 +158,7 @@ date/time · ResourceRef · list<Value> · record<name, Value>
 | **Skill** | No | Declarative agent guidance; versioned; resolved by the agent runtime; confers no capability (`§1` of the extension requirements) |
 | **Template** | No | Materialised through the owning product's capability, never written directly into a product store (`§2` there) |
 | **Workflow** | No | A blueprint compiled into Plan and Step objects of the unified execution model; never a second agent runtime (`§3` there) |
-| **MCP integration** | Out of process | An external capability adapter; MCP terms are disambiguated per **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** and never become the internal protocol (`§5` there) |
+| **MCP integration** (post-V1 and out of scope, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) | Out of process | An external capability adapter; MCP terms are disambiguated per **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** and never become the internal protocol (`§5` there) |
 | **Connector** | Out of process | Definition and connection instance separated; secrets held as `SecretRef` only (`§6` there) |
 | ~~External agent~~ | — | **Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006).** External-agent providers, ACP adapters, session mapping, delegation leases and result adapters are excluded ([EA-01](../requirements/08-extensions-and-developer-platform.md#rule-ea-01)–[EA-06](../requirements/08-extensions-and-developer-platform.md#rule-ea-06) of the extension requirements). **There is no external-agent contribution kind**, and a package, connector or MCP tool cannot start an autonomous delegated agent ([EA-08](../requirements/08-extensions-and-developer-platform.md#rule-ea-08) there). An integration contributes tools; it never contributes a planner |
 | **Extension** | **Yes** | The extension process model of `§3` |
@@ -213,7 +213,7 @@ date/time · ResourceRef · list<Value> · record<name, Value>
 ### 8.1 Install and verify
 
 ```
-Acquire (.arcpkg from catalog, URL or local file)
+Acquire (.arcpkg from URL or local file; the community catalog source is post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026))
  → verify integrity: hash, signature, publisher identity
  → parse manifest (before any code runs)
  → resolve compatibility: host version, contract set, protocol version, platform
@@ -228,7 +228,7 @@ Acquire (.arcpkg from catalog, URL or local file)
 | <a id="rule-pm-01"></a>PM-01 | **Integrity is verified before installation**, and an executable package should carry an SBOM. Community packages follow the same supply-chain discipline as ArcForges' own artifacts. |
 | <a id="rule-pm-02"></a>PM-02 | **Installation never executes an arbitrary script**. Installation is performed by the ArcForges installer, not by package-provided code. |
 | <a id="rule-pm-03"></a>PM-03 | **A published package version is immutable**; files of the same version are never overwritten. |
-| <a id="rule-pm-04"></a>PM-04 | **Local sideload requires no cloud account**; publishing to the official catalog requires a verified publisher account. |
+| <a id="rule-pm-04"></a>PM-04 | **Local sideload requires no cloud account**; publishing to the official catalog requires a verified publisher account. The official catalog is post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5; this rule is kept for that later reviewed decision. |
 | <a id="rule-pm-05"></a>PM-05 | **Executable packages are as self-contained as practical**. Runtime dependencies are packaged at release so dependency resolution never happens on a user machine; no npm-style transitive dependency tree exists. |
 | <a id="rule-pm-06"></a>PM-06 | **Arc Package dependencies express logical package relationships only**, and a dependency cycle fails validation. |
 | <a id="rule-pm-07"></a>PM-07 | **System dependencies are declared, detected and reported** — never silently installed by the package. |
@@ -258,6 +258,8 @@ Acquire (.arcpkg from catalog, URL or local file)
 ---
 
 ## 9. Catalog architecture
+
+> **Post-V1 and out of scope ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)).** The community catalog rules CA-01 to CA-07 are not required in V1 and are recorded as out of scope, not completed. They are kept unchanged for a later reviewed decision.
 
 | # | Rule |
 |---|---|
@@ -325,7 +327,7 @@ The `arcforge` CLI is part of the developer platform.
 | `dev` | Run against a development host; the production host itself remains an AOT product |
 | `validate` | Manifest, schema, permission declaration and executable-package checks |
 | `pack` | Produce an immutable package artifact |
-| `publish` | Submit to a catalog through the publish pipeline |
+| `publish` | Submit to a catalog through the publish pipeline (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) |
 
 | # | Rule |
 |---|---|
@@ -347,7 +349,7 @@ The `arcforge` CLI is part of the developer platform.
 | <a id="rule-xt-06"></a>XT-06 | **AOT test**: the host publishes AOT with the extension platform present, and no reflection-based path is required ([EA-03](#rule-ea-03)). |
 | <a id="rule-xt-07"></a>XT-07 | **Package lifecycle tests**: install, permission grant, update with new permissions, disable, enable, rollback, uninstall with and without private-data deletion, and revoke reaching an installed client. |
 | <a id="rule-xt-08"></a>XT-08 | **Provenance tests**: a task and artifact produced through a community package carry that package's provenance ([CK-05](#rule-ck-05)). |
-| <a id="rule-xt-09"></a>XT-09 | **Catalog-as-untrusted tests**: hostile listing content, oversized metadata and malformed manifests are rejected without executing anything. |
+| <a id="rule-xt-09"></a>XT-09 | **Catalog-as-untrusted tests** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5): hostile listing content, oversized metadata and malformed manifests are rejected without executing anything. |
 | <a id="rule-xt-10"></a>XT-10 | **Compatibility tests**: partial contribution availability is reported correctly and does not disable the whole package ([CC-01](#rule-cc-01)). |
 
 ---
@@ -368,17 +370,19 @@ The extension platform is **not**: an in-process plug-in system; a scripting lan
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | The host remains Native AOT; the extension does not have to be |
 | **[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)** | Extension points and capability contracts as versioned contracts |
 | **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** | The public SDK on the Apache boundary |
-| **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | MCP term disambiguation wherever MCP appears in this platform |
+| **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | MCP term disambiguation wherever MCP appears in this platform (post-V1 and out of scope, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) |
 
 ## Selected extension protocol composition
 
-The public IExtensionHost service, StructuredValue and typed extension message envelopes come from the Contracts proto registry. Code-first extension parameter schema generation above composes into that fixed envelope; it does not introduce a second first-party RPC protocol or expose foreign CLR types. MCP remains its explicitly accepted external standard and cannot choose the internal transport.
+The public IExtensionHost service, StructuredValue and typed extension message envelopes come from the Contracts proto registry. Code-first extension parameter schema generation above composes into that fixed envelope; it does not introduce a second first-party RPC protocol or expose foreign CLR types. MCP remains its explicitly accepted external standard (post-V1 and out of scope, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) and cannot choose the internal transport.
 
 ## Initial schemas and owner lifecycle
 
 [Extension/policy profiles](contracts/08-extension-and-policy-profiles.md) fixes the six package contribution kinds, complete manifest, template/workflow/panel schemas, connector lifecycle and staged/drained update. Author those closed schemas in Contracts and generate validators before owner implementations. Dynamic schema generation is permitted only within the already declared extension-only argument boundary; it cannot replace handwritten business proto or invent first-party product operations. Catalog, signing, immutable package Resource hosting and existing owner/grant/policy validation are actual WP41 outputs, not a filesystem-only install demo.
 
 ## PackageCatalog producer and distribution
+
+> **Post-V1 and out of scope ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)).** PackageCatalog, its catalog-index.v1 and catalog-revocations.v1 formats, and the `downloads.arcforges.com/catalog/v1/` distribution are not required in V1 and are recorded as out of scope, not completed (P2-026 S5).
 
 Cloud PackageCatalog owns the registry 04 catalog methods and model 01 publisher/package/version/review/revocation tables. WP41 implements submission/verification/scanning/review-state/index production and CLI consumer; WP45 adds operator review/revocation UI. CLI `publish` uploads immutable bytes through Resource, then calls catalog.submitVersion with a scoped publisher credential. It does not bypass review or publish directly to a public bucket.
 

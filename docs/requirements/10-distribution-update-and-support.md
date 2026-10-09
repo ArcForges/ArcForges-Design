@@ -27,10 +27,10 @@ Two halves of one lifecycle: how software reaches users, and what happens when s
 
 | Platform | Primary channel | Secondary | Notes |
 |---|---|---|---|
-| **Windows** | Signed installer from the official site, with a built-in update system | Platform store listing carrying the **same signed binary**; a package-manager manifest | Store distribution is distribution only, **never a commerce channel** (**[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**) |
+| **Windows** | Signed installer from the official site, with a built-in update system | Platform store listing carrying the **same signed binary**, and a package-manager manifest (both out of V1, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) | Store distribution is distribution only, **never a commerce channel** (**[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**) |
 | **macOS** | Out of scope ([P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023)): no macOS artifacts, Developer ID signing, notarisation or store route | — | macOS is never claimed as supported or validated |
 | **Linux** | A single self-contained portable format as the first official format | Additional package formats later | **Do not maintain many packaging formats simultaneously in the first stage** |
-| **Android** | The official app store, as an app bundle with platform app signing | A directly downloadable package may exist, and is not the primary channel | **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**: consumption-only, no in-app purchase |
+| **Android** | The direct APK, separately signed (V1 channel, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) | The official app store, as an app bundle with platform app signing, is out of V1 | **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**: consumption-only, no in-app purchase |
 
 | # | Requirement |
 |---|---|
@@ -38,9 +38,9 @@ Two halves of one lifecycle: how software reaches users, and what happens when s
 | <a id="rule-pl-02"></a>PL-02 | **No macOS artifacts are produced, signed or notarised** (macOS is out of scope, [P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023)); Linux artifacts carry checksums and repository signing where a repository is used. |
 | <a id="rule-pl-03"></a>PL-03 | Desktop product update authority remains the signed ArcForges updater across its channels. Android uses its declared direct-APK or Play channel and monotonically increasing versionCode/signing lineage; store delivery and policy gates are explicit. A higher-version rescue release, not downgrade installation, is the normal Android rollback path. |
 | <a id="rule-pl-04"></a>PL-04 | **The signing identity and the brand identity are distinct concerns.** Where a signing certificate displays an individual name, the product surfaces and documentation must still present the product brand consistently, and the discrepancy must be anticipated rather than discovered at first release. |
-| <a id="rule-pl-05"></a>PL-05 | **Store developer accounts must be established under the intended long-term owning identity**, not casually under a personal account that later requires a brand transfer. |
+| <a id="rule-pl-05"></a>PL-05 | **Store developer accounts must be established under the intended long-term owning identity** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S11), not casually under a personal account that later requires a brand transfer. |
 | <a id="rule-pl-06"></a>PL-06 | **Mobile provenance and the complete direct and transitive dependency closure are verified before the first mobile artifact is produced** — the **[F-023](../assurance/open-gates-register.md#rule-f-023)** gate. *Owners: Release Engineering Owner and Licensing and Provenance Owner; Product Owner approves.* |
-| <a id="rule-pl-07"></a>PL-07 | **Store category fit and consumption-only conformance are confirmed before first submission to the Android store** — the **[V-09](../assurance/phase-1-official-verification.md#rule-v-09)** gate. Store category fit is decided by the store's review, not by reading its guideline; iOS store submission is outside scope ([P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010)). |
+| <a id="rule-pl-07"></a>PL-07 | **Store category fit and consumption-only conformance are confirmed before first submission to the Android store** (the store category-fit leg is post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S11; the consumption-only leg stays V1 under MB-03) — the **[V-09](../assurance/phase-1-official-verification.md#rule-v-09)** gate. Store category fit is decided by the store's review, not by reading its guideline; iOS store submission is outside scope ([P2-010](../decisions/phase-2-specification-decisions.md#rule-p2-010)). |
 
 ---
 
@@ -50,7 +50,7 @@ Exactly three channels from day one:
 
 | Channel | Audience | Distribution |
 |---|---|---|
-| **Stable** | Everyone | Site, store, package manager |
+| **Stable** | Everyone | Site. Store and package-manager listings are out of V1 ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) |
 | **Beta** | Opt-in | Site only |
 | **Nightly / Canary** | Internal and explicit opt-in | Build artifacts only; **never shipped to a platform store** |
 
@@ -247,6 +247,8 @@ Four tiers, escalating only as far as necessary:
 ---
 
 ## 13. Community reports and enforcement
+
+> **Post-V1 and out of scope ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** This section governs the community ecosystem and the official catalog (ecosystem objects, delisting, catalog listings and security status, public shares). That catalog is out of V1, and it is labelled post-V1 as CA-01 to CA-13 in section 08. The rule IDs (CR-01 to CR-06, EN-*, CP-*) are kept unchanged and are not V1 requirements.
 
 | # | Requirement |
 |---|---|

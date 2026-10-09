@@ -81,7 +81,7 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 <a id="rule-wp-40.06"></a>
 ### WP-40.06 — Real Cloud query path
 
-**What must be fully done.** Use Workers AI embeddings/reranker and actual D1/Vectorize with C# owner filtering; fixture joins remain named until real provider gate.
+**What must be fully done.** Use Workers AI embeddings (the reranker is out of V1 under P2-026 S4) and actual D1/Vectorize with C# owner filtering; fixture joins remain named until real provider gate.
 
 **Testing requirements.** Real compatible client/owner/index versions and explicit lexical-only degradation.
 
@@ -138,7 +138,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [SRCH.06](../delivery/lanes/search.md#task-srch-06) | [WP-40.06](40-knowledge-search-and-retrieval.md#rule-wp-40.06) (full) | [AIR.00](../delivery/lanes/ai-routing.md#task-air-00) (artifact), [POL.08](../delivery/lanes/policy.md#task-pol-08) (artifact), [AIR.06](../delivery/lanes/ai-routing.md#task-air-06) (artifact) |
 | [SRCH.90](../delivery/lanes/search.md#task-srch-90) | [WP-40.90](40-knowledge-search-and-retrieval.md#rule-wp-40.90) (full, including index capacity acceptance) | none |
 
-**Consumers outside this package:** [HAR.01](../delivery/lanes/harness.md#task-har-01), [REL.06](../delivery/lanes/release.md#task-rel-06).
+**Consumers outside this package:** [AND.09](../delivery/lanes/android.md#task-and-09), [HAR.01](../delivery/lanes/harness.md#task-har-01), [REL.06](../delivery/lanes/release.md#task-rel-06), [WEB.20](../delivery/lanes/web.md#task-web-20).
 
 <!-- delivery-graph:end -->
 

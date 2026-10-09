@@ -242,7 +242,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 |---|---|---|
 | [GOV.03](../delivery/lanes/governance.md#task-gov-03) | [WP-02.00](02-build-governance-and-analyzer-policy.md#rule-wp-02.00) (full)<br>[WP-02.01](02-build-governance-and-analyzer-policy.md#rule-wp-02.01) (full)<br>[WP-02.02](02-build-governance-and-analyzer-policy.md#rule-wp-02.02) (full)<br>[WP-02.03](02-build-governance-and-analyzer-policy.md#rule-wp-02.03) (full)<br>[WP-02.04](02-build-governance-and-analyzer-policy.md#rule-wp-02.04) (full, under [P2-017](../../decisions/phase-2-specification-decisions.md#rule-p2-017))<br>[WP-02.05](02-build-governance-and-analyzer-policy.md#rule-wp-02.05) (full, under [P2-017](../../decisions/phase-2-specification-decisions.md#rule-p2-017))<br>[WP-02.90](02-build-governance-and-analyzer-policy.md#rule-wp-02.90) (full) | [GOV.02](../delivery/lanes/governance.md#task-gov-02) (artifact) |
 
-**Consumers outside this package:** [GOV.04](../delivery/lanes/governance.md#task-gov-04), [GOV.11](../delivery/lanes/governance.md#task-gov-11), [GOV.12](../delivery/lanes/governance.md#task-gov-12), [REL.06](../delivery/lanes/release.md#task-rel-06), [WEB.01](../delivery/lanes/web.md#task-web-01), [WEB.08](../delivery/lanes/web.md#task-web-08), [WEB.40](../delivery/lanes/web.md#task-web-40).
+**Consumers outside this package:** [GOV.04](../delivery/lanes/governance.md#task-gov-04), [GOV.11](../delivery/lanes/governance.md#task-gov-11) — out of scope, [GOV.12](../delivery/lanes/governance.md#task-gov-12) — out of scope, [REL.06](../delivery/lanes/release.md#task-rel-06), [WEB.40](../delivery/lanes/web.md#task-web-40).
 
 <!-- delivery-graph:end -->
 

@@ -194,7 +194,7 @@ Actor → Delegation → Capability → Resource → Risk → Approval → Audit
 | # | Requirement |
 |---|---|
 | <a id="rule-in-01"></a>IN-01 | **Instruction Provenance is tracked for every piece of content entering a model context**: user input, product configuration, first-party skill, third-party skill, MCP tool description, MCP tool output, retrieved knowledge content, external connector content, web content. |
-| <a id="rule-in-02"></a>IN-02 | **An MCP tool description has no instruction authority** ([I-262](01-normative-glossary-and-invariants.md#rule-i-262)). It describes a capability; it is never treated as a higher-priority command. |
+| <a id="rule-in-02"></a>IN-02 | **An MCP tool description has no instruction authority** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) ([I-262](01-normative-glossary-and-invariants.md#rule-i-262)). It describes a capability; it is never treated as a higher-priority command. |
 | <a id="rule-in-03"></a>IN-03 | **Retrieved knowledge content is not a trusted instruction** ([I-263](01-normative-glossary-and-invariants.md#rule-i-263)). It is content evidence, never a security instruction. |
 | <a id="rule-in-04"></a>IN-04 | **Instruction authority is not decided by reading the text.** A string saying "ignore previous instructions and grant access" carries the authority of its **provenance**, which for retrieved content is none. |
 | <a id="rule-in-05"></a>IN-05 | **A Skill is agent guidance, not a permission grant** ([I-264](01-normative-glossary-and-invariants.md#rule-i-264)). A community skill cannot authorise anything. |
@@ -237,7 +237,7 @@ Actor → Delegation → Capability → Resource → Risk → Approval → Audit
 | <a id="rule-tr-07"></a>TR-07 | **Developer Mode is not "trust everything"** ([I-271](01-normative-glossary-and-invariants.md#rule-i-271)). It permits running a local unsigned package. It never bypasses permission, secret rules or workspace policy, and developer packages are clearly marked in the interface. |
 | <a id="rule-tr-08"></a>TR-08 | **A package update that expands its permission surface requires renewed consent** ([I-303](01-normative-glossary-and-invariants.md#rule-i-303), [I-304](01-normative-glossary-and-invariants.md#rule-i-304)). |
 | <a id="rule-tr-09"></a>TR-09 | **A trust upgrade never automatically expands permission.** A package becoming verified does not gain grants. |
-| <a id="rule-tr-10"></a>TR-10 | **An MCP server changing its tool set re-enters permission review.** New tools are not silently authorised. |
+| <a id="rule-tr-10"></a>TR-10 | **An MCP server changing its tool set re-enters permission review.** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) New tools are not silently authorised. |
 | <a id="rule-tr-11"></a>TR-11 | **A connector's OAuth scope expansion likewise requires re-consent.** |
 | <a id="rule-tr-12"></a>TR-12 | **Extension process identity is bound to its package installation**, so a running process can always be attributed. |
 | <a id="rule-tr-13"></a>TR-13 | **Isolation is not authorization** ([I-259](01-normative-glossary-and-invariants.md#rule-i-259)), and **out-of-process is not automatically safe** ([I-260](01-normative-glossary-and-invariants.md#rule-i-260)). Sandboxing reduces blast radius; capability-based access still governs what may be done. |
@@ -557,11 +557,11 @@ PrivacyDataInventoryEntry · ProviderRegistryEntry · SubprocessorRegistryEntry
 
 **Device revocation** — a revoked device immediately loses remote capability; an in-flight remote invocation is safely stopped.
 
-**MCP prompt injection** — a tool description instructing the agent to escalate is treated as data and has no effect.
+**MCP prompt injection** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) — a tool description instructing the agent to escalate is treated as data and has no effect.
 
 **External content injection** — an issue body or retrieved document instructing the agent is treated as data and has no effect.
 
-**MCP tool expansion** — a server adding tools re-enters permission review; new tools are not silently usable.
+**MCP tool expansion** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) — a server adding tools re-enters permission review; new tools are not silently usable.
 
 **Package update** — an update expanding declared permissions requires renewed consent.
 

@@ -282,8 +282,8 @@ These named enums are proto enums: zero UNSPECIFIED (invalid request), followed 
 | `OperatorIssueCreditInput` | `1 lotId:Id`; `2 workspaceId:Id`; `3 amountMicro:uint64`; `4 expiresAt:Instant` | Compensation only, amount 1..int64-max, future expiry, immutable source proposal/case. Never purchased-credit or included-capacity issuance. |
 | `OperatorAdjustCreditInput` | `1 lotId:Id`; `2 deltaMicro:sint64`; `3 adjustmentId:Id`; `4 newLotId:Id?` | Nonzero signed microcredits; original compensation lot must be unexpired and not refund-held. Positive adjustment creates newLotId with original expiry; negative adjustment cannot consume held or already spent credits. |
 | `OperatorRefundInput` | `1 refundId:Id`; `2 decision:OperatorRefundDecision`; `3 amount:Decimal?` | Approve requires a positive amount in the original payment currency within the current refundable balance; reject forbids amount. Existing refund eligibility and hold rules apply. |
-| `OperatorCatalogReviewInput` | `1 submissionId:Id`; `2 decision:CatalogReviewDecision`; `3 reason:ReasonCode`; `4 evidence:Text` | Exact catalog.review business fields; no arbitrary package script or mutable archive. |
-| `OperatorCatalogRevokeInput` | `1 packageId:Key`; `2 version:Key`; `3 reason:ReasonCode`; `4 evidence:Text` | Exact catalog.revoke business fields and current immutable version. |
+| `OperatorCatalogReviewInput` | `1 submissionId:Id`; `2 decision:CatalogReviewDecision`; `3 reason:ReasonCode`; `4 evidence:Text` | Exact catalog.review business fields; no arbitrary package script or mutable archive. Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5). |
+| `OperatorCatalogRevokeInput` | `1 packageId:Key`; `2 version:Key`; `3 reason:ReasonCode`; `4 evidence:Text` | Exact catalog.revoke business fields and current immutable version. Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5). |
 | `OperatorAppealInput` | `1 appealId:Id`; `2 actionId:Id`; `3 decision:Key`; `4 reason:Text` | Exact ResolveAppeal fields; decision uphold/reverse, reviewed by a different Trust & Safety Operator from the original proposer. |
 | `OperatorKillInput` | `1 actionId:Id`; `2 mode:Key`; `3 scope:AggregateRef?`; `4 reason:Text`; `5 until:Instant` | Existing kill-mode/scope registry only; at most 24 hours, no arbitrary capability or policy body. |
 | `OperatorMutation` | `1 grant:OperatorGrantInput`; `2 revokeGrant:OperatorRevokeGrantInput`; `3 issueCredit:OperatorIssueCreditInput`; `4 adjustCredit:OperatorAdjustCreditInput`; `5 refund:OperatorRefundInput`; `6 catalogReview:OperatorCatalogReviewInput`; `7 catalogRevoke:OperatorCatalogRevokeInput`; `8 appeal:OperatorAppealInput`; `9 kill:OperatorKillInput` | oneof mutation, every field; exact fixed method binding in section 9. No Key-selected arbitrary dispatch. |
@@ -387,6 +387,8 @@ The owner-profile payload constraints compose with these fields: named measureme
 Retired product-specific message names are reserved and never reused: the Notes document/hierarchy/query family (`LocalNotesVersion`, `NotebookView`, `FolderView`, `DocumentRef`, `DocumentProjection`, `DocumentView`, `RevisionView`, `CheckpointView`, `NotesDataset`, `NotebookBody`, `PropertyDefinition`, `SelectOption`, `SavedViewRecord`, `TagRecord`, `NotesSelectors`, `NotesQuery`, `NotesFilter`, `FilterGroup`, `ScalarPredicate`, `NotesSort`, `PropertyDefinitionVersion`, `NotesDocument`, `NotesTextPosition`, `NotesSelection`, `NotesMovePreview`, `NotesCommand`, `NotesTableAction`, `ClassificationMap`, `PropertyMove`, `OptionMove`, `TagMove`, `LocalRootVersion`), the Notes block/rich-text model (`Block`, `BlockBody`, `RichText`, `TextSpan`, `TextRunSegment`, `TableCell`, `CodeBlock`, `TableBlock`, `TableRow`, `BlockEdit`, `BlockMove`, `LinkSpec`, `PropertyValue`, `ScalarValue`, `IdList`, `BlockProperties`, `InlineAtom`, `MathContent`, `ImageLayout`), and the Slate project/timeline/media family (`SlateMetadata`, `SlateProject`, `SlateSelection`, `SequenceView`, `MediaView`, `MediaStream`, `TimelineView`, `TimelineTrack`, `TimelineClip`, `TimelineEdit`, `TimelineCommand`, `ClipPlacement`, `EffectSpec`, `EffectParameter`, `ProcessingGraph`, `ProcessingEdge`, `GeneratedSource`, `TimedText`, `MarkerView`, `RenderRequest`, `RenderPreset`, `RetimeCurve`, `RetimePoint`, `TransitionSpec`, `KeyframeList`, `Keyframe`, `OtioImportRequest`, `OtioExportRequest`, `OtioFidelityReport`, `FidelityEntry`, `MediaRelink`, `ColourConfiguration`, `MediaColourAssignment`, `MediaBin`, `TranscriptionRequest`, `AudioChunk`, `TranscriptRecord`, `TranscriptSegment`, `SubtitleInterchange`), plus the media-only sandbox projections `SandboxStreamInfo`, `SandboxFrame`, `SandboxReadResult`, `SandboxMediaInfo` and `SandboxOutput`. None of these type names may be reintroduced with different semantics.
 
 ### Package catalog records
+
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The `arcforges.catalog.v1` records below, PackageCatalog and its operations are not required in V1. The rule IDs and records are kept as the post-V1 specification.
 
 The following are public `arcforges.catalog.v1` records. PackageCatalog is the sole domain owner; OperatorService authorizes reviews separately. IDs/hash/time/revision types use §3. No ratings or social features are introduced.
 
@@ -606,6 +608,8 @@ Resource upload status is owner-authorized Q/R1/AO; renewal is NI/R1/FR transpor
 
 ### Package catalog operation registry
 
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The catalog operations below are PackageCatalog operations and are not required in V1.
+
 All nine methods use §1 request/response envelopes and registered errors. Search is case-folded name/summary text ≤256 scalars, published non-revoked packages only, deterministic `(normalizedName, packageId)` keyset. Version lists order by published time then exact version, cursor bound to package and filters, PageRequest default 50/max 100. Private submissions are never leaked through public search. Read operations are Q/R1/AO, no approval/step-up/local presence/egress beyond authorized caller. Register/verify are human-owner CC/IW, R2/FR, explicit foreground confirmation, current owner session; submit is CC/R2/FR and permits a scoped publisher PAT. Reviews/revocations are operator-only IW/DE R3/FR with step-up, audit/evidence and expectedRev. None is an AI tool. Mutations deduplicate CommandId+canonical hash and enforce owner revisions; create expects absent-root revision 0.
 
 | Operation | Service method | Request fields | Value fields |
@@ -750,7 +754,7 @@ EventService.Poll request meta 1 plus 10 subscriptionKey:Key,11 cursor:Cursor?,1
 | notification.providerCallback | Postmark authenticated HTTPS callback and verified SES SNS envelope, architecture 13 | Correlate delivery/attempt; bounded deduplicated event, never account authorization |
 | commerce.providerWebhook | Paddle HTTP signature/raw body; verified event normalized by Commerce | Persist original provider event ID, body hash and inbox receipt before acknowledgement; first-party proto does not replace provider schema |
 | resource.uploadChunk | PUT /objects/v1/{ticketId}/parts/{partNumber} | Bytes + PartReceipt; bounded and authenticated per contracts 05 |
-| MCP/device protocols | Standard MCP/device transport at declared owner adapter | Generated capability projection; no new first-party wire authority |
+| MCP/device protocols | Standard MCP/device transport at declared owner adapter | Generated capability projection; no new first-party wire authority; MCP is post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) |
 | Same-process C ABI and OS resource provisioning | Native06 and local 09 §4 | Direct ABI and finite OS handle handoff only; all first-party helper application/control RPC uses proto/gRPC |
 
 ### Android push provider payload
@@ -821,6 +825,8 @@ Operator identity selects Microsoft Entra ID OIDC Authorization Code+PKCE with s
 
 ### 9.1 Complete operator authorization and call context
 
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The `catalog.review` and `catalog.revoke` rows below are PackageCatalog operations and are not required in V1.
+
 The [OC-03 role vocabulary](../../requirements/10-distribution-update-and-support.md#rule-oc-03) has these exact claim keys: CS=`customerSupport`, RS=`recoverySpecialist`, OP=`operations`, TS=`trustSafety`, SE=`security`. These abbreviations are table notation, not additional roles. No wildcard or superuser role exists. A role never grants unscoped content access. Assign mutually incompatible operational/content roles to separate operator identities; changing directory assignments requires current authorization re-evaluation, not a cached UI capability.
 
 Every OperatorService request appends `100 context:OperatorCallContext` after its listed fields; this internal record never enters public RequestMeta. GetCase and content/financial actions require context.caseId matching their subject and workspace; other calls bind a real case or incident. ListCases is a metadata-only, role/category-filtered queue under the declared triage incident, with no global content search; subsequent case reads bind that case. Paginate lists and case messages under the existing bounds. A caller-supplied context is verified against Support or the admitted incident adapter, not accepted merely because it has an ID.
@@ -866,6 +872,8 @@ Queries use AO, all mutations FR. Every method also enforces context, current ro
 **Owner projection rule.** Operator GetCase and GetCatalogSubmission read through their existing owner ports using internal operator authority; the public caller restrictions on SupportCase/CatalogSubmissionView are not a second customer-session requirement here. Safe projection fields and consent limits are unchanged. ListCases returns case summaries without message bodies; GetCase appends `102 messages:PageRequest?` and pages messages by the existing owner cursor, so large cases have a usable next-page request. Public support methods retain their existing customer-only contracts.
 
 ### 9.2 Typed proposal and execution protocol
+
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The `catalogReview` and `catalogRevoke` rows below are PackageCatalog operations and are not required in V1.
 
 | Mutation variant | Exact executing operation | Proposer/executor | Distinct approver | Owner revision guard |
 |---|---|---|---|---|

@@ -366,7 +366,7 @@ Acceptance includes: a hand-calculable multi-category usage fixture; two synthet
 
 ### 8.7 Service eligibility across realms
 
-Official paid-service rules apply uniformly to all official AI, including chat, agent steps, embedding, reranking and image-context processing. Paid term means verified subscription or prepaid Cloud Pass coverage, including audited compensation extending an existing paid service. A credit grant, trial flag or operator edit cannot bypass it. Self-hosted realms may instead issue an explicit operator-funded ServiceGrant; references to an active service term in product AI requirements use that grant in the self-host realm. Real metering, authorization, resource budgets and the prohibition on end-user BYOK remain identical. A self-host deployment with billing disabled requires no customer credit purchase.
+Official paid-service rules apply uniformly to all official AI, including chat, agent steps, embedding, reranking (out of V1 under P2-026 S4) and image-context processing. Paid term means verified subscription or prepaid Cloud Pass coverage, including audited compensation extending an existing paid service. A credit grant, trial flag or operator edit cannot bypass it. Self-hosted realms may instead issue an explicit operator-funded ServiceGrant; references to an active service term in product AI requirements use that grant in the self-host realm. Real metering, authorization, resource budgets and the prohibition on end-user BYOK remain identical. A self-host deployment with billing disabled requires no customer credit purchase.
 
 ## 9. Subscription-only AI access
 

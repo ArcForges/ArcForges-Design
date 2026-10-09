@@ -30,7 +30,7 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 <a id="rule-wp-32.00"></a>
 ### WP-32.00 — Signed Android release artifacts
 
-**What must be fully done.** Build AAB for Play and separately signed direct APK automatically from reviewed main, with monotonic versionCode and immutable provenance. Preserve signing custody/channel distinction and test against WP03 update schemas.
+**What must be fully done.** Build the separately signed direct APK automatically from reviewed main (the Play AAB is out of V1 under P2-026 S11), with monotonic versionCode and immutable provenance. Preserve signing custody/channel distinction and test against WP03 update schemas.
 
 **Testing requirements.** Verify actual signature/package/R8/runtime, version monotonicity, no development key in production, clean device install/upgrade.
 
@@ -39,7 +39,7 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 <a id="rule-wp-32.01"></a>
 ### WP-32.01 — Release runtime inspection
 
-**What must be fully done.** Verify the Mono AOT runtime on ART, the MAUI and public NuGet gRPC-Web closure (replacing the Kotlin, Compose and grpc-lite closure), min/target API, arm64 assets, trimming and R8 rules, 16 KB page-size alignment and required permissions on actual APK/AAB. Planning repair 2026-10-08 (DLV-34; P2-021): the inspection verifies the MAUI Mono AOT release under [PRF.12](../delivery/lanes/runtime-proofs.md#task-prf-12) and [AND.40](../delivery/lanes/android.md#task-and-40).
+**What must be fully done.** Verify the Mono AOT runtime on ART, the MAUI and public NuGet gRPC-Web closure (replacing the Kotlin, Compose and grpc-lite closure), min/target API, arm64 assets, trimming and R8 rules, 16 KB page-size alignment and required permissions on actual APK (the AAB is post-V1 and out of scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S11). Planning repair 2026-10-08 (DLV-34; P2-021): the inspection verifies the MAUI Mono AOT release under [PRF.12](../delivery/lanes/runtime-proofs.md#task-prf-12) and [AND.40](../delivery/lanes/android.md#task-and-40).
 
 **Testing requirements.** Install without development server/toolchain; startup/identity/RPC/R2/notifications and lifecycle release tests.
 
@@ -64,13 +64,13 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 **Completion gate.** Consumption-only remains true in every release branch and remote-config state.
 
 <a id="rule-wp-32.04"></a>
-### WP-32.04 — Play and direct-channel updates
+### WP-32.04 — Direct-channel updates (Play publication is out of V1 under P2-026 S11)
 
 **What must be fully done.** Implement arch 11 channel behavior and notify-only signed update client. Consume WP03 format/fixture keys now; WP53 production feed/key replacement is verified at WP50, not a backwards input.
 
 **Testing requirements.** Expired/rollback/wrong certificate/URL/hash, offline stale feed and explicit channel-switch export/reinstall guidance.
 
-**Completion gate.** Play primary and direct APK flow are complete with no silent install or unsupported cross-signature upgrade.
+**Completion gate.** the direct APK flow is complete (Play publication is out of V1 under P2-026 S11) with no silent install or unsupported cross-signature upgrade.
 
 <a id="rule-wp-32.05"></a>
 ### WP-32.05 — Physical device and recovery gates
@@ -93,7 +93,7 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 <a id="rule-wp-32.90"></a>
 ### WP-32.90 — Distribution acceptance
 
-**What must be fully done.** Archive exact signed APK/AAB, manifest/hash/versionCode/certificate identity, compatible server/Contracts release and all gate receipts; publish through the automatic main graph.
+**What must be fully done.** Archive exact signed direct APK (the AAB is post-V1 and out of scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S11), manifest/hash/versionCode/certificate identity, compatible server/Contracts release and all gate receipts; publish through the automatic main graph.
 
 **Testing requirements.** Download public candidate in a clean device path, verify signature/hash and exercise actual services.
 
@@ -138,7 +138,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [AND.23](../delivery/lanes/android.md#task-and-23) | [WP-32.90](32-mobile-release-and-store-gates.md#rule-wp-32.90) (full)<br>[WP-32](32-mobile-release-and-store-gates.md#rule-wp-32) [PG-24](../../assurance/open-gates-register.md#rule-pg-24) completion-gate paragraph (recheck on distributed artifact) (package-level obligation contribution) | none |
 | [AND.26](../delivery/lanes/android.md#task-and-26) | [WP-32](32-mobile-release-and-store-gates.md#rule-wp-32) [PG-24](../../assurance/open-gates-register.md#rule-pg-24) completion-gate paragraph (recheck on distributed artifact) ([PG-24](../../assurance/open-gates-register.md#rule-pg-24) closure)<br>[WP-32.05](32-mobile-release-and-store-gates.md#rule-wp-32.05) (physical/no-GMS/permission evidence half) | [AND.12](../delivery/lanes/android.md#task-and-12) (artifact), [OPS.10](../delivery/lanes/operations.md#task-ops-10) (artifact) |
 
-**Consumers outside this package:** [AND.12](../delivery/lanes/android.md#task-and-12), [OPS.10](../delivery/lanes/operations.md#task-ops-10), [OPS.12](../delivery/lanes/operations.md#task-ops-12), [REL.04](../delivery/lanes/release.md#task-rel-04).
+**Consumers outside this package:** [AND.12](../delivery/lanes/android.md#task-and-12), [OPS.10](../delivery/lanes/operations.md#task-ops-10), [REL.04](../delivery/lanes/release.md#task-rel-04).
 
 <!-- delivery-graph:end -->
 

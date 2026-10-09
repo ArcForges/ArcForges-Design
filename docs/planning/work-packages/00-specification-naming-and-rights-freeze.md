@@ -234,7 +234,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 |---|---|---|
 | [GOV.01](../delivery/lanes/governance.md#task-gov-01) | [WP-00.00](00-specification-naming-and-rights-freeze.md#rule-wp-00.00) (full)<br>[WP-00.01](00-specification-naming-and-rights-freeze.md#rule-wp-00.01) (full)<br>[WP-00.02](00-specification-naming-and-rights-freeze.md#rule-wp-00.02) (full)<br>[WP-00.03](00-specification-naming-and-rights-freeze.md#rule-wp-00.03) (full)<br>[WP-00.04](00-specification-naming-and-rights-freeze.md#rule-wp-00.04) (full)<br>[WP-00.05](00-specification-naming-and-rights-freeze.md#rule-wp-00.05) (full)<br>[WP-00.90](00-specification-naming-and-rights-freeze.md#rule-wp-00.90) (full) | none |
 
-**Consumers outside this package:** [CON.23](../delivery/lanes/contracts.md#task-con-23), [GOV.02](../delivery/lanes/governance.md#task-gov-02), [GOV.04](../delivery/lanes/governance.md#task-gov-04), [GOV.11](../delivery/lanes/governance.md#task-gov-11), [GOV.14](../delivery/lanes/governance.md#task-gov-14).
+**Consumers outside this package:** [CON.23](../delivery/lanes/contracts.md#task-con-23), [GOV.02](../delivery/lanes/governance.md#task-gov-02), [GOV.04](../delivery/lanes/governance.md#task-gov-04), [GOV.11](../delivery/lanes/governance.md#task-gov-11) — out of scope, [GOV.14](../delivery/lanes/governance.md#task-gov-14).
 
 <!-- delivery-graph:end -->
 

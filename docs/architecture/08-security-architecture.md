@@ -185,7 +185,7 @@ Every one of these is **data, never instruction**:
 | Boundary | Content |
 |---|---|
 | Retrieved knowledge | Document text, capture data, media metadata |
-| MCP | Tool descriptions, prompts, resource contents, server metadata |
+| MCP (post-V1 and out of scope, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) | Tool descriptions, prompts, resource contents, server metadata |
 | Connectors | Issue bodies, messages, documents, external records |
 | Web | Page content, search results |
 | Deep links | Externally originated navigation input |

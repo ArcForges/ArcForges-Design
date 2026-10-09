@@ -28,7 +28,7 @@ Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) 
 | `sync` | Sync | `sync_scope`, `change` |
 | `resource` | Resource | `cloud_object`, `upload_session` |
 | `search` | Search | inference_job receipts; derived indexes are separately rebuildable |
-| `package_catalog` | PackageCatalog | publisher, package, version, review, revocation |
+| `package_catalog` | PackageCatalog (post-V1 and out of scope under P2-026 S5) | publisher, package, version, review, revocation |
 | `notification` | Notification | `notification`, `push_registration` |
 | `policy` | Policy | `policy_bundle` |
 | `scope` | ArcScope Cloud | `simulation_definition`, `simulation_run`, `simulation_segment` (`§8.3`) |
@@ -1036,7 +1036,7 @@ Supplier exposure cannot expire merely because a customer hold expires. Confirme
 |---|---|---|
 | `logical_request_id` | `id` | **PK** |
 | `workspace_id` | `id?` | Required for user/data-scoped work; absent only for deployment health with no customer data |
-| `service_term_id` | `id?` | Required for user-delivered official inference and workspace indexing/reranking eligibility; may be absent only for separately authorized deployment platform work without customer service dependency |
+| `service_term_id` | `id?` | Required for user-delivered official inference and workspace indexing eligibility (reranking is out of V1 under P2-026 S4); may be absent only for separately authorized deployment platform work without customer service dependency |
 | `operator_job_ref` | `id?` | Required and authorised for platform beneficiaries; never a substitute for user inference eligibility |
 | `run_id`, `step_id`, `attempt_id` | `id?` | Required for every Cloud user chat/agent invocation; absent only for separately authorised platform jobs |
 | `beneficiary` | `enum(userDelivered, platformRouting, platformAbuse, platformHealth, platformIndexing, platformRetry) NN` | Decides who pays ([ST-07](../16-billing-and-commerce-architecture.md#rule-st-07), [MT-08](../../requirements/04-commerce-entitlement-and-credits.md#rule-mt-08)) |
@@ -1430,12 +1430,12 @@ Expiry forbids new writes and starts idempotent physical cleanup. The sweeper ve
 <a id="search-inference-job-execution-record"></a>
 ## 10.1 `search` — inference jobs
 
-Search owns search.inference_job as the canonical business control/receipt record; vectors and reranked candidates remain derived. It is a bounded platform Job, not task.task or a second AI loop. The private [CF inference ports](../contracts/05-cloudflare-integration.md#8-session-bindings-inference-jobs-and-deployment-transitions) carry this identity.
+Search owns search.inference_job as the canonical business control/receipt record; vectors remain derived (reranked candidates are out of V1 under P2-026 S4). It is a bounded platform Job, not task.task or a second AI loop. The private [CF inference ports](../contracts/05-cloudflare-integration.md#8-session-bindings-inference-jobs-and-deployment-transitions) carry this identity.
 
 | Fields | Type and invariant |
 |---|---|
 | job_id; workspace_id; principal_id; service_term_id | id PK and non-null scoped owner/eligibility identities; scheduled indexing uses its explicit operator-job grant for that workspace, never a fabricated interactive session |
-| purpose; input_hash; source_manifest_ref; source_set_hash | embedding/rerank; exact hash plus immutable ResourceVersionRef; input hash includes kind, normalized input, ordered source revisions/hashes, principal/scope/policy snapshot, model/profile/config and effective budget |
+| purpose; input_hash; source_manifest_ref; source_set_hash | embedding (rerank is out of V1 under P2-026 S4); exact hash plus immutable ResourceVersionRef; input hash includes kind, normalized input, ordered source revisions/hashes, principal/scope/policy snapshot, model/profile/config and effective budget |
 | model_descriptor_id; config_revision_id; profile | Pinned activated catalogue/config and selected inference profile; no dynamic provider fallback |
 | state; reason; rev; created_at; updated_at; deadline | queued/running/unknown/succeeded/failed/cancelled; named reason, monotonic revision and UTC instants. Model admission-to-result deadline: Design value 120 seconds ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 5); the deployed 90-second model-step timeout stays enforced until the HAR.40 proof records the reviewed C# policy value, which may not exceed 120 seconds; before-dispatch expiry refuses, possible-dispatch expiry is unknown |
 | logical_request_id; provider_attempt_id; intent_receipt | Existing Commerce identities, one bounded invocation per admitted job; beneficiary=platformIndexing, funding_class=platformJob, operator_job_ref=job_id. No customer capacity reservation/tariff/settlement |
@@ -1500,7 +1500,7 @@ platform.safety_receipt records immutable external journal record ID/hash, relat
 
 Add `rev:rev NN` to commerce.credit_lot; every reserve, settle, release, expiry, refund or adjustment that changes its held/remaining state advances it. Add `source_ref=proposal_id` for administrative/time-compensation grants and compensation lots; revocations carry the operator actor and proposal/case audit link. Immutable grant/revocation rows are unchanged; revocation admission guards the current entitlement snapshot version and exact grant identity.
 
-Audit owns proposal/approval persistence and exposes typed ports. Entitlement/Commerce/PackageCatalog/TrustSafety/Policy assemble their declared shared unit with Audit, platform.command and Notification/outbox; they never write another module through an unowned repository. The executing batch guards proposal state/revision/hash/expiry/generation, current actor/approver eligibility and owner revision/configuration, commits the owner change and consumes the proposal atomically. Constraint failure rolls back everything. `GetProposal` returns the safe proposal projection and reads the current result through the owning module; a refund's evolving provider outcome is not cached as a completed financial result in the proposal.
+Audit owns proposal/approval persistence and exposes typed ports. Entitlement/Commerce/PackageCatalog (post-V1 and out of scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5)/TrustSafety/Policy assemble their declared shared unit with Audit, platform.command and Notification/outbox; they never write another module through an unowned repository. The executing batch guards proposal state/revision/hash/expiry/generation, current actor/approver eligibility and owner revision/configuration, commits the owner change and consumes the proposal atomically. Constraint failure rolls back everything. `GetProposal` returns the safe proposal projection and reads the current result through the owning module; a refund's evolving provider outcome is not cached as a completed financial result in the proposal.
 
 Negative vectors: same-actor approval, wrong [OC-03](../../requirements/10-distribution-update-and-support.md#rule-oc-03) role, expired/changed/revoked approval, changed configuration, concurrent owner change, two commands consuming one approval, duplicate command with different body, compensation reduction into held balance, and unknown refund receipt after dispatch. Retain proposals and approval/audit metadata under financial/security retention and legal holds; expiry revokes execution, not the audit history. Recovery generation change invalidates unexecuted approvals. Restore quarantines dispatched refunds until provider/journal reconciliation, never resends from a restored approved state.
 
@@ -1524,6 +1524,11 @@ Templates, domain/provider settings, expiry and callback authentication are fixe
 Owner/resource existence and authorization are checked through owner ports; no cross-module write. Command receipt, policy revision, audit event and index-reconciliation outbox commit atomically under Policy+Audit with the target's current scope/recovery generation. Clear creates a versioned inherited-state row rather than deleting the command fence. Source consent records reference exact policy revision, explicit temporary patch, operation/source hash and expiry; no durable policy write occurs when the receipt is used. Search and dispatch always read current effective policy; source.getPolicy gives the client its current projection. No generic sync body can write this table.
 
 ## 11.1 `package_catalog`
+
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The package_catalog table is not required in V1 and is recorded as out of scope, not completed.
+
+
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** These tables are not required in V1 and are recorded as out of scope, not completed.
 
 | Table | Fields / constraints |
 |---|---|

@@ -29,7 +29,7 @@ Six sentences that decide almost every design question:
 | <a id="rule-pb-02"></a>PB-02 | Each host connects directly to Cloud through Platform APIs. The assistant is its own application's control UI, never a gateway for another product. |
 | <a id="rule-pb-03"></a>PB-03 | Platform assistant packages implement full per-app conversations/messages/projects/profiles/skills. Local history and drafts are app-owned; opted-in Cloud histories and Cloud automation/execution retain server authority under model 05. No shared assistant database/service across products. |
 | <a id="rule-pb-04"></a>PB-04 | **ArcChat never owns**: an authoritative ArcScope session, raw ArcScope capture, or any professional product's undo stack ([I-020](../01-normative-glossary-and-invariants.md#rule-i-020)). |
-| <a id="rule-pb-05"></a>PB-05 | Thin Preview plus OpenArtifact: text/image previews, metadata and thumbnails are sufficient; professional editing opens the owning domain inside this application. Edit-approval previews remain reviewable; no separate workbench or cross-product handoff is implied. |
+| <a id="rule-pb-05"></a>PB-05 | Thin Preview plus OpenArtifact: text previews, metadata cards for image attachments, and metadata are sufficient in V1 (decoded image previews and thumbnails are out of V1 scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026)); professional editing opens the owning domain inside this application. Edit-approval previews remain reviewable; no separate workbench or cross-product handoff is implied. |
 | <a id="rule-pb-06"></a>PB-06 | The native client and local capability bridge are open-source product functionality. Official AI requires an active paid service term with replenishing capacity and optional credits. Local AI, end-user BYOK and a desktop agent scheduler are excluded. |
 
 ### 1.1 Non-goals
@@ -187,7 +187,7 @@ Primary surfaces:
 The agent's preference order is fixed:
 
 1. **Native Arc capability** — typed, owned, auditable
-2. **Trusted connector / MCP / API** — external but declared and permissioned
+2. **Trusted connector / MCP / API** — external but declared and permissioned (MCP is post-V1 and out of scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026))
 3. **Computer use** — permitted as an advanced fallback, **never a V1 core mechanism**
 
 | # | Requirement |
@@ -238,6 +238,8 @@ The agent's preference order is fixed:
 ---
 
 ## 11. Integrations
+
+> **MCP is post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026)).** Rules IN-01 to IN-07 describe MCP integration. They are not required in V1 and are recorded as out of scope, not completed; they are kept for a later reviewed decision. The exclusions stated in IN-07 (external agent/ACP adapters, handoff and agent delegation) remain in force.
 
 | # | Requirement |
 |---|---|
@@ -358,8 +360,8 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 
 | # | Requirement |
 |---|---|
-| <a id="rule-st-01"></a>ST-01 | **Skills, MCP and Apps are manageable product objects with their own surfaces**, not buried in Settings. Settings carries defaults and preferences. |
-| <a id="rule-st-02"></a>ST-02 | End users never configure model-provider credentials. MCP/connector credentials remain purpose-scoped secrets by reference; they cannot act as a BYOK inference bypass. |
+| <a id="rule-st-01"></a>ST-01 | **Skills, MCP and Apps are manageable product objects with their own surfaces**, not buried in Settings. Settings carries defaults and preferences. *MCP is post-V1 and out of scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026).* |
+| <a id="rule-st-02"></a>ST-02 | End users never configure model-provider credentials. MCP/connector credentials (MCP is post-V1 and out of scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026)) remain purpose-scoped secrets by reference; they cannot act as a BYOK inference bypass. |
 | <a id="rule-st-03"></a>ST-03 | Cloud history and AI processing are separate choices. Desktop history defaults local; explicit Cloud history is server-owned; temporary mode is not stored. Cloud execution metadata remains authoritative even when bodies stay local. |
 | <a id="rule-st-04"></a>ST-04 | Every Cloud agent operation uses one selected owner workspace for data authorization, service eligibility and metering. Cross-realm billing or a local-only agent task billed elsewhere is excluded. |
 | <a id="rule-st-05"></a>ST-05 | Unsent drafts and local-only professional files are never uploaded merely on sign-in. Sending/attaching explicitly authorizes only the displayed content scope. |
@@ -375,7 +377,7 @@ Cloud service access has one customer mode: subscribed, operator-managed AI. The
 | **Provider failure** | Reserved credits are released; the failure is reported with a retry or alternative; the user is not charged for platform-caused retries ([CU-03](../05-ai-and-agent-execution.md#rule-cu-03)). |
 | **Agent task failure** | The **task** is marked failed, **not the conversation**. |
 | **Target application unavailable** | Task waits with TaskState=waiting and reasonFacet=device and a visible target/expiry. The user opens the target explicitly; no launch, install or retarget occurs automatically. |
-| **MCP server down** | ArcChat continues; the integration is degraded. |
+| **MCP server down** (post-V1, out of scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026)) | ArcChat continues; the integration is degraded. |
 
 ---
 
@@ -414,7 +416,7 @@ AISelectionPolicy · AIResponseUsage · CloudModelSelection · ModelDescriptor
 TaskReference · ApprovalReference
 Artifact · ArtifactReference · ArtifactProvenance
 AppRegistrationProjection · CapabilityProjection
-McpIntegration · IntegrationStatus
+McpIntegration · IntegrationStatus  // post-V1, out of scope (P2-026)
 AutomationDefinitionReference
 PersonalMemory
 SearchResultReference · ActivityProjection
@@ -439,7 +441,7 @@ ArcChatDataScope
 | **Automation** | List, enable/disable, create, "automate this" |
 | **Cloud** | Authoritative conversations/projects, single-owner workspace, AI tasks and local-tool integration |
 
-**Not required in V1**: a third-party package manager inside ArcChat, an integration marketplace, a full extension ecosystem, computer use as a core mechanism, public share links, or a large model catalogue.
+**Not required in V1**: a third-party package manager inside ArcChat, MCP integration (post-V1 under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026)), an integration marketplace, a full extension ecosystem, computer use as a core mechanism, public share links, or a large model catalogue.
 
 **Multi-agent execution, sub-agents, agent teams, handoff and external-agent delegation are excluded internally and in the UI.** Bounded concurrent tools and ordinary product jobs remain supported.
 

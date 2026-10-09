@@ -11,7 +11,7 @@
 
 ## 1. Scope and purpose
 
-Own desktop update discovery, verified download/delta, staging, safe application, rollback interlock, channels, rollout and update diagnostics. Use the selected Velopack adapter; Android/Play remains Mobile-owned. Product UI/domain state and Cloud policy production stay with their existing owners. WP50 consumes this implementation and proves the production release matrix.
+Own desktop update discovery, verified download/delta, staging, safe application, rollback interlock, channels, rollout and update diagnostics. Use the selected Velopack adapter; Android/Play remains Mobile-owned. Product UI/domain state and Cloud policy production stay with their existing owners. WP50 consumes this implementation and proves the production release matrix. Post-V1 and out of scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5 and S14: the production catalog-index and catalog-revocation feeds of WP-53.07. The Android direct-update feed is V1.
 
 ## 2. Required inputs and dependencies
 
@@ -109,7 +109,7 @@ Own desktop update discovery, verified download/delta, staging, safe application
 
 ### WP-53.07 — Production catalog and Android distribution trust
 
-**What must be fully done.** Produce production catalog/revocation and Android direct-update feeds using WP03 formats. Keep signing custody/rotation and artifact URI/certificate inventory; register per-product desktop auth URI schemes in signed installers.
+**What must be fully done.** Produce the Android direct-update feed (android-update.v1) using WP03 formats. **Out of scope (P2-026 S5, S14):** the production catalog-index and catalog-revocation feeds, and their signing custody and shards (community catalog; CON.13 and EXT.06 to EXT.07 excluded). Keep signing custody/rotation and artifact URI/certificate inventory; register per-product desktop auth URI schemes in signed installers.
 
 **Testing requirements.** Real signatures/shards/monotonic revision, current/previous trust, Android certificate match and desktop callback registration from installed packages.
 
@@ -169,7 +169,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [UPD.04](../delivery/lanes/updater.md#task-upd-04) | [WP-53.03](53-desktop-distribution-and-update.md#rule-wp-53.03) (full)<br>[WP-53](53-desktop-distribution-and-update.md#rule-wp-53) Versioned installation update journal persisted outside install/data files; the updater never writes product data or implements schema migration (SS6 impacts, [BR-05](../../architecture/14-build-packaging-and-release.md#rule-br-05)) (package-level obligation contribution) | [PLT.04](../delivery/lanes/platform.md#task-plt-04) (artifact) |
 | [UPD.05](../delivery/lanes/updater.md#task-upd-05) | [WP-53.04](53-desktop-distribution-and-update.md#rule-wp-53.04) (full) | none |
 | [UPD.06](../delivery/lanes/updater.md#task-upd-06) | [WP-53.05](53-desktop-distribution-and-update.md#rule-wp-53.05) (full) | [PLT.47](../delivery/lanes/platform.md#task-plt-47) (artifact), [FND.05](../delivery/lanes/foundation.md#task-fnd-05) (artifact) |
-| [UPD.07](../delivery/lanes/updater.md#task-upd-07) | [WP-53.07](53-desktop-distribution-and-update.md#rule-wp-53.07) (full) | [CON.16](../delivery/lanes/contracts.md#task-con-16) (contract) |
+| [UPD.07](../delivery/lanes/updater.md#task-upd-07) | [WP-53.07](53-desktop-distribution-and-update.md#rule-wp-53.07) (Android direct-update feed (android-update.v1) only; the catalog-index and catalog-revocation feeds are out of V1 ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5, S14)) | [CON.16](../delivery/lanes/contracts.md#task-con-16) (contract) |
 | [UPD.08](../delivery/lanes/updater.md#task-upd-08) | [WP-53.90](53-desktop-distribution-and-update.md#rule-wp-53.90) (full) | [PRF.02](../delivery/lanes/runtime-proofs.md#task-prf-02) (artifact), [POL.09](../delivery/lanes/policy.md#task-pol-09) (artifact) |
 
 **Consumers outside this package:** [POL.07](../delivery/lanes/policy.md#task-pol-07), [REL.02](../delivery/lanes/release.md#task-rel-02), [REL.10](../delivery/lanes/release.md#task-rel-10).

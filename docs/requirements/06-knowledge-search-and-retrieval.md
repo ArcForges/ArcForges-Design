@@ -87,9 +87,9 @@ Two ownership statements govern everything below:
 | <a id="rule-ip-03"></a>IP-03 | **An index failure is not a source failure** ([I-166](01-normative-glossary-and-invariants.md#rule-i-166) family). The resource remains fully usable; only its searchability is degraded, and that state is visible. |
 | <a id="rule-ip-04"></a>IP-04 | **Search must know its own freshness.** `IndexWatermark` and per-result freshness are first-class, so a stale result can be labelled as such. |
 | <a id="rule-ip-05"></a>IP-05 | **Keyword index updates should be as fast as practical**, because users expect a just-saved document to be findable. |
-| <a id="rule-ip-06"></a>IP-06 | Indexing is a bounded product/platform Job with progress, cancellation and recovery, not an Agent Task by default. Model-based embedding/reranking runs in Cloud; native lexical index maintenance requires no model. |
+| <a id="rule-ip-06"></a>IP-06 | Indexing is a bounded product/platform Job with progress, cancellation and recovery, not an Agent Task by default. Model-based embedding runs in Cloud (the optional reranker is out of V1 under P2-026 S4); native lexical index maintenance requires no model. |
 | <a id="rule-ip-07"></a>IP-07 | Index build is **bounded**: a background resource budget, plus power and device policy (for example not on battery, not on a metered connection where cloud work is involved). |
-| <a id="rule-ip-08"></a>IP-08 | Cloud indexing carries a **cost policy**, visible and controllable, because embedding and reranking are real cost of goods. |
+| <a id="rule-ip-08"></a>IP-08 | Cloud indexing carries a **cost policy**, visible and controllable, because embedding (and reranking, out of V1 under P2-026 S4) are real cost of goods. |
 | <a id="rule-ip-09"></a>IP-09 | Attachment text extraction and OCR are **derived pipeline** outputs, never canonical assets. Image OCR output anchors back to the image region so a citation can point at the original. PDF text extraction is retired: no PDF text is extracted and PDFs carry no page or region anchor ([P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)). |
 | <a id="rule-ip-10"></a>IP-10 | **Knowledge Source Health** is exposed: healthy, partially indexed, failing, stale — with counts and last-attempt information. |
 
@@ -119,11 +119,11 @@ Search visibility, Cloud indexing, AI retrieval and provider processing have dis
 
 | # | Requirement |
 |---|---|
-| <a id="rule-pl-01"></a>PL-01 | Exclude from AI denies model-based processing and AI retrieval, including new embedding/reranking calls, independently of ordinary keyword search. Apply the deny before every dispatch/retrieval; already-sent data cannot be recalled and must not be described as never processed. |
+| <a id="rule-pl-01"></a>PL-01 | Exclude from AI denies model-based processing and AI retrieval, including new embedding calls (and reranking calls, out of V1 under P2-026 S4), independently of ordinary keyword search. Apply the deny before every dispatch/retrieval; already-sent data cannot be recalled and must not be described as never processed. |
 | <a id="rule-pl-02"></a>PL-02 | **Exclude from AI ≠ Hide from Search** ([I-144](01-normative-glossary-and-invariants.md#rule-i-144)). An excluded document may still be findable by title and keyword; its content simply never reaches a model. |
 | <a id="rule-pl-03"></a>PL-03 | No local embedding/model loop or local semantic provider configuration. Native keyword/metadata search over available content remains distinct from Cloud semantic retrieval. |
 | <a id="rule-pl-04"></a>PL-04 | **Cloud managed semantic indexing requires Managed AI Processing permission**, because it sends content to managed AI infrastructure. |
-| <a id="rule-pl-05"></a>PL-05 | Cloud embedding/reranking for eligible indexed content is subscription-funded platform cost, measured under the AI usage contract and bounded by workspace indexing/resource policy. It does not silently spend purchased credits. New model calls stop outside an active service term. |
+| <a id="rule-pl-05"></a>PL-05 | Cloud embedding for eligible indexed content is subscription-funded platform cost (reranking is out of V1 under P2-026 S4), measured under the AI usage contract and bounded by workspace indexing/resource policy. It does not silently spend purchased credits. New model calls stop outside an active service term. |
 | <a id="rule-pl-06"></a>PL-06 | **Sync ≠ AI** ([I-182](01-normative-glossary-and-invariants.md#rule-i-182)) and **Cloud Sync ≠ Cloud Index** ([I-140](01-normative-glossary-and-invariants.md#rule-i-140)) and **Cloud Index ≠ AI Retrieval** ([I-141](01-normative-glossary-and-invariants.md#rule-i-141)) and **AI Retrieval ≠ Managed AI Processing** ([I-143](01-normative-glossary-and-invariants.md#rule-i-143)). Four independent gates. |
 | <a id="rule-pl-07"></a>PL-07 | Policy **inherits** from source to resource, with resource-level override winning. |
 | <a id="rule-pl-08"></a>PL-08 | Realm and owner workspace policy may prohibit overrides. A resource-level or one-request choice cannot loosen a governing deny. |
@@ -162,8 +162,8 @@ Search visibility, Cloud indexing, AI retrieval and provider processing have dis
 | <a id="rule-hr-01"></a>HR-01 | **Keyword + semantic + metadata form hybrid retrieval.** `Keyword Search ≠ Semantic Search` ([I-145](01-normative-glossary-and-invariants.md#rule-i-145)); both are first-class. |
 | <a id="rule-hr-02"></a>HR-02 | **Hybrid is not the sum of two scores.** Ranking fusion with normalisation is required; naive score addition across incomparable scales is prohibited. |
 | <a id="rule-hr-03"></a>HR-03 | **Exact match receives strong priority.** Lexical exactness stays first-class — a user searching a precise technical term must find it. |
-| <a id="rule-hr-04"></a>HR-04 | **Reranking is an optional enhancement layer.** A reranker failure degrades ordering; it must never fail the retrieval. |
-| <a id="rule-hr-05"></a>HR-05 | Managed reranking is subject to managed AI policy. |
+| <a id="rule-hr-04"></a>HR-04 | **Reranking is an optional enhancement layer (out of V1 under P2-026 S4; the rule below applies only to a later reviewed reranker).** A reranker failure degrades ordering; it must never fail the retrieval. |
+| <a id="rule-hr-05"></a>HR-05 | Managed reranking is subject to managed AI policy (out of V1 under P2-026 S4). |
 
 ### 5.2 Retrieval budget
 
@@ -317,11 +317,11 @@ This is the most consequential privacy control in the product.
 
 | # | Requirement |
 |---|---|
-| <a id="rule-es-01"></a>ES-01 | An external source — an MCP server, a connector — **still has an owner**, expressed as an external integration adapter, and carries its own policy set. |
+| <a id="rule-es-01"></a>ES-01 | An external source — an MCP server, a connector (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) — **still has an owner**, expressed as an external integration adapter, and carries its own policy set. |
 | <a id="rule-es-02"></a>ES-02 | Three external source shapes are distinguished: **Live Remote Source** (queried at the provider on demand), **Imported Snapshot** (creates a new owned resource in an owning product), **Synced External Projection** (a derived replica with explicit replica semantics). |
 | <a id="rule-es-03"></a>ES-03 | **Knowledge does not automatically index the whole computer.** Sources, folders and projects are added explicitly. |
 | <a id="rule-es-04"></a>ES-04 | External drives are not indexed by default. |
-| <a id="rule-es-05"></a>ES-05 | **MCP tool descriptions, resource contents and prompts are untrusted data**, never instructions ([I-262](01-normative-glossary-and-invariants.md#rule-i-262), [I-263](01-normative-glossary-and-invariants.md#rule-i-263)). |
+| <a id="rule-es-05"></a>ES-05 | **MCP tool descriptions, resource contents and prompts are untrusted data** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5), never instructions ([I-262](01-normative-glossary-and-invariants.md#rule-i-262), [I-263](01-normative-glossary-and-invariants.md#rule-i-263)). |
 
 ---
 

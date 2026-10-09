@@ -30,7 +30,7 @@ Third-party App  standalone Arc application         its own product, own domain
 | <a id="rule-sk-01"></a>SK-01 | **A Skill is never code** ([I-291](01-normative-glossary-and-invariants.md#rule-i-291)). It is declarative agent guidance, not a runtime plug-in. |
 | <a id="rule-sk-02"></a>SK-02 | **A Skill confers no capability** ([I-290](01-normative-glossary-and-invariants.md#rule-i-290)) and **grants no permission** ([I-264](01-normative-glossary-and-invariants.md#rule-i-264)). It may *refer to* capabilities; using them still requires the ordinary permission and approval path. |
 | <a id="rule-sk-03"></a>SK-03 | Skills are **versioned**. A skill update does not modify historical results; a completed Run keeps the skill version it executed under. |
-| <a id="rule-sk-04"></a>SK-04 | **Skill ≠ MCP** ([I-292](01-normative-glossary-and-invariants.md#rule-i-292)) and **MCP Prompt ≠ Skill** ([I-310](01-normative-glossary-and-invariants.md#rule-i-310)). An MCP prompt does not automatically become a Skill. |
+| <a id="rule-sk-04"></a>SK-04 | **Skill ≠ MCP** ([I-292](01-normative-glossary-and-invariants.md#rule-i-292)) and **MCP Prompt ≠ Skill** ([I-310](01-normative-glossary-and-invariants.md#rule-i-310)). An MCP prompt does not automatically become a Skill. The MCP parts of this rule are post-V1 and out of scope ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)). |
 | <a id="rule-sk-05"></a>SK-05 | A user may **fork** a community skill; the fork becomes a user-owned skill with its own lifecycle. |
 | <a id="rule-sk-06"></a>SK-06 | A packaged skill's content is **read-only managed content**; customising it produces an independent user-owned resource rather than mutating the package. |
 
@@ -73,6 +73,8 @@ Automation is specified in [`05-ai-and-agent-execution.md`](05-ai-and-agent-exec
 ## 5. MCP
 
 **MCP = an external capability integration adapter.**
+
+> **Post-V1 and out of scope ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)).** MC-01 to MC-10 are not required in V1 and are recorded as out of scope, not completed. The rules are kept unchanged for a later reviewed decision.
 
 | # | Requirement |
 |---|---|
@@ -197,7 +199,7 @@ The unresolved tension — a strongly typed AOT product versus unknown third-par
 | <a id="rule-pk-01"></a>PK-01 | **Package ≠ Contribution** ([I-300](01-normative-glossary-and-invariants.md#rule-i-300)). One package may carry several contributions: skills, templates, workflows, an integration, an extension. |
 | <a id="rule-pk-02"></a>PK-02 | A package declares a **primary category** in its manifest, so discovery and trust behave predictably. |
 | <a id="rule-pk-03"></a>PK-03 | **`PackageId` never changes across versions**, and `PublisherId` is stable. |
-| <a id="rule-pk-04"></a>PK-04 | **Local sideload requires no cloud account.** Publishing to the official community catalog requires a publisher account with verification. |
+| <a id="rule-pk-04"></a>PK-04 | **Local sideload requires no cloud account.** Publishing to the official community catalog requires a publisher account with verification. The official community catalog is post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5. |
 | <a id="rule-pk-05"></a>PK-05 | **Package version uses semantic versioning** but **`PackageVersion` is not the compatibility mechanism** ([I-301](01-normative-glossary-and-invariants.md#rule-i-301), [I-302](01-normative-glossary-and-invariants.md#rule-i-302)). Package version, extension protocol version, contract version and host application version are four separate things and must never be conflated. |
 | <a id="rule-pk-06"></a>PK-06 | **A published version is immutable.** Files for a given version can never be overwritten. |
 | <a id="rule-pk-07"></a>PK-07 | **Yank ≠ Revoke** ([I-433](01-normative-glossary-and-invariants.md#rule-i-433), [I-330](01-normative-glossary-and-invariants.md#rule-i-330)). *Yank* removes it from new installation and recommendation; *Revoke* blocks or quarantines execution. *Deprecate* is neither — it signals a successor. |
@@ -221,7 +223,7 @@ The unresolved tension — a strongly typed AOT product versus unknown third-par
 
 | Stage | Rules |
 |---|---|
-| **Discover** | From a catalog source |
+| **Discover** | From a catalog source (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) |
 | **Install** | Manifest read, integrity verified, trust evaluated, declared permission surface shown. **Install ≠ Enable** ([I-303](01-normative-glossary-and-invariants.md#rule-i-303)), **Install ≠ permission grant** ([I-304](01-normative-glossary-and-invariants.md#rule-i-304)) |
 | **Enable** | Contributions become active |
 | **Grant** | Permissions granted just-in-time or explicitly consented at install |
@@ -246,6 +248,8 @@ The unresolved tension — a strongly typed AOT product versus unknown third-par
 ## 10. Community Catalog
 
 **Community Catalog = a package discovery and distribution catalog.**
+
+> **Post-V1 and out of scope ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)).** CA-01 to CA-13 are not required in V1 and are recorded as out of scope, not completed. The rules are kept unchanged for a later reviewed decision.
 
 | # | Requirement |
 |---|---|
@@ -291,7 +295,7 @@ The official CLI is part of the developer platform, not a side tool. Its long-te
 | `dev` | Run a package against a development host with hot iteration; the host itself remains an AOT product |
 | `validate` | Validate the manifest, schema, declared permissions, compatibility, dependency graph and, for executables, the supply-chain requirements |
 | `pack` | Produce an immutable package artifact |
-| `publish` | Push to a catalog through the publish pipeline |
+| `publish` | Push to a catalog through the publish pipeline (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) |
 | `sign` | Sign a package |
 | `test` | Run conformance tests against the extension test host |
 
@@ -336,7 +340,7 @@ The official CLI is part of the developer platform, not a side tool. Its long-te
 | A browser-extension-style WebView platform | Very large security surface, no corresponding product need |
 | Reinventing a general-purpose language package manager | NuGet resolves at development and build time; Arc packages are built artifacts |
 | Reinventing container orchestration | Out of scope; isolation is achieved by process boundary and capability scoping |
-| MCP as the marketplace package ABI | MCP is an integration adapter, reached through a package |
+| MCP as the marketplace package ABI (post-V1, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) | MCP is an integration adapter, reached through a package |
 | ACP as an ArcChat domain model | ACP is an adapter |
 | Extensions redefining resource ownership | An ArcScope resource is ArcScope-owned forever; an extension may own its **own** new resource type |
 
@@ -376,7 +380,7 @@ SkillDefinition · SkillVersion
 TemplateDefinition · TemplateParameter
 WorkflowDefinition · WorkflowVersion · WorkflowStepTemplate
 IntegrationDefinition · IntegrationInstance
-McpIntegration · McpConnection
+McpIntegration · McpConnection (post-V1, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026))
 ConnectorDefinition · ConnectorConnection · ConnectorSyncState
 ExtensionDefinition · ExtensionInstance · ExtensionHostSession
 ExtensionCapabilityDescriptor · ExtensionSchema · StructuredExtensionValue
@@ -392,7 +396,7 @@ DeveloperMode
 
 | Surface | Contents |
 |---|---|
-| **Integrations** | MCP connections and connectors in one management surface, with unified status: configured, connected, degraded, failing, unauthorised, revoked |
+| **Integrations** | MCP connections and connectors (post-V1, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) in one management surface, with unified status: configured, connected, degraded, failing, unauthorised, revoked |
 | **Library** | Skills, templates and workflows as first-class reusable objects — not buried in settings |
 | **Extensions** | Installed packages, trust state, permissions, health, updates |
 
@@ -412,11 +416,11 @@ DeveloperMode
 
 **Automation** — an automation referencing a workflow re-authorises at every trigger.
 
-**MCP** — a tool maps to a capability with declared risk; a description attempting to instruct the agent has no effect; a tool-set change re-enters permission review.
+**MCP** (post-V1, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) — a tool maps to a capability with declared risk; a description attempting to instruct the agent has no effect; a tool-set change re-enters permission review.
 
 **Connector** — a definition supports several connections; a secret is stored only by reference; a live query is distinguished from an import.
 
-**Excluded executor** — packages, MCP connections and connectors cannot register an external-agent/ACP mode, start a sub-agent or bypass Cloud AI billing; ordinary bounded tools remain usable.
+**Excluded executor** — packages, MCP connections and connectors (post-V1, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) cannot register an external-agent/ACP mode, start a sub-agent or bypass Cloud AI billing; ordinary bounded tools remain usable.
 
 **Out-of-process extension** — an extension crash leaves the owning product running; the extension is restarted on demand; the affected capability shows a clear degraded state.
 
@@ -426,7 +430,7 @@ DeveloperMode
 
 **Schema code-first** — a C# record plus attributes produces schema, serializer and bindings; an attempt to pass an arbitrary CLR object across the boundary fails at compile time or validation.
 
-**Package** — an immutable published version; a yank removes it from discovery without stopping installed use; a revoke stops execution without deleting user data.
+**Package** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) — an immutable published version; a yank removes it from discovery without stopping installed use; a revoke stops execution without deleting user data.
 
 **Permission expansion** — an update adding a permission or background execution requires explicit re-consent.
 
@@ -436,11 +440,11 @@ DeveloperMode
 
 **Missing contribution** — a project referencing an unavailable effect opens, explains, and preserves the state for later restoration.
 
-**Catalog** — offline operation continues; a self-hosted catalog is usable; realm/owner policy restricts sources.
+**Catalog** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) — offline operation continues; a self-hosted catalog is usable; realm/owner policy restricts sources.
 
-**Revocation** — an installed revoked package surfaces Needs Attention and stops executing.
+**Revocation** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) — an installed revoked package surfaces Needs Attention and stops executing.
 
-**Self-host** — package identity is stable across realms; installation and trust are per realm.
+**Self-host** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) — package identity is stable across realms; installation and trust are per realm.
 
 **Third-party app** — participates through the contribution model; cannot claim a reserved official identity.
 
@@ -452,7 +456,7 @@ DeveloperMode
 
 **Developer** — developer mode is visible, cannot be enabled by a package, and does not bypass permission.
 
-**Publish** — validation gates packing; a published version cannot be overwritten; the SBOM and signature are present for executables.
+**Publish** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) — validation gates packing; a published version cannot be overwritten; the SBOM and signature are present for executables.
 
 ---
 

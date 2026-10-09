@@ -51,7 +51,7 @@ Mobile adopts the exact module map in architecture 27 (app, core and feature mod
 
 **Testing requirements.** Install real release build on physical Android, permission refusal, process death, missing Play services and callback after account switch.
 
-**Completion gate.** Produced APK or AAB runs the Mono runtime with AOT on ART with complete supported adapters and no unsafe fallback.
+**Completion gate.** Produced APK (the AAB is post-V1 and out of scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S11) runs the Mono runtime with AOT on ART with complete supported adapters and no unsafe fallback.
 
 <a id="rule-wp-30.03"></a>
 ### WP-30.03 — Published gRPC-Web contracts

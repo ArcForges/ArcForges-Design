@@ -454,7 +454,7 @@ customer  = cost at the Run's pinned retail tariff snapshot, as micro-credits   
 | <a id="rule-mo-01"></a>MO-01 | **ArcChat Mobile is consumption-only** (**[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**, **[V-09](../assurance/phase-1-official-verification.md#rule-v-09)**): no purchase surface, no embedded provider checkout, no store billing integration in the initial release, no external purchase call to action, and **no licence-key or purchase-token unlock path**. |
 | <a id="rule-mo-02"></a>MO-02 | **A build-time and CI check asserts every prohibition** ([MB-03](../requirements/04-commerce-entitlement-and-credits.md#rule-mb-03) there; [MC-01](11-mobile-architecture.md#rule-mc-01)–[MC-06](11-mobile-architecture.md#rule-mc-06) in the mobile architecture). |
 | <a id="rule-mo-03"></a>MO-03 | **The entitlement architecture remains capable of accepting a future store-originated grant** without implementing one ([MB-02](../requirements/04-commerce-entitlement-and-credits.md#rule-mb-02) there): a store grant would enter as another grant source through the same resolver. |
-| <a id="rule-mo-04"></a>MO-04 | **A store listing is a distribution channel, never a commerce channel** ([PL-03](../requirements/10-distribution-update-and-support.md#rule-pl-03) in the distribution requirements). |
+| <a id="rule-mo-04"></a>MO-04 | **A store listing is a distribution channel, never a commerce channel** (store listings are post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S11) ([PL-03](../requirements/10-distribution-update-and-support.md#rule-pl-03) in the distribution requirements). |
 
 ---
 
