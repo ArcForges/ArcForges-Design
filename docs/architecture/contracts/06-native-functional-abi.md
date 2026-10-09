@@ -96,7 +96,7 @@ All declarations below use `ARC_ABI_EXPORT arc_status_t ARC_ABI_CALL` before the
 | `arc_instruments_cancel(arc_handle_t device)` | Cancel outstanding transfer and wait for completion callback |
 | `arc_instruments_close(arc_handle_t device)` | Release claimed interface/serial handle; no lingering callback |
 | `arc_image_open(const arc_io_v1* io,const arc_image_options_v1* options,arc_handle_t* image,arc_mut_buffer_t* metadata,const arc_cancel_token_t* cancel)` | ImageReader.Open/Probe |
-| `arc_image_read(arc_handle_t image,const arc_region_v1* region,arc_mut_buffer_t* pixels,const arc_cancel_token_t* cancel)` | ReadRegionAsync, explicit packed RGBA output |
+| `arc_image_read(arc_handle_t image,const arc_region_v1* region,arc_mut_buffer_t* pixels,const arc_cancel_token_t* cancel)` | ReadRegionAsync, explicit packed output in the requested format (`rgba8`, `rgba32fLinearPremultiplied` or `float32Interleaved`) |
 | `arc_image_close(arc_handle_t image)` | ImageReader.Dispose |
 | `arc_pdf_*` (open, page_info, render, text, close) | **Retired** ([P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)): the arcpdf ABI, ArcPdfNative, its exports, PDF vectors and the library name are removed by NAT.32; the names are reserved and never reused. Until NAT.32 lands, `arc_pdf_open` returns `ARC_UNSUPPORTED` (`backend_none`), the fail-closed refusal that P2-022 item 3 keeps. |
 
@@ -108,7 +108,7 @@ Image regions transfer at most64MiB each, validate checked dimensions/stride and
 - **Coverage.** No finish export exists. The "finish" above is satisfied in two places:
   - `arc_image_read` refuses an overlapping region, or one out of raster order, with `INVALID_ARGUMENT`, and changes no state. Each handle tracks its coverage.
   - The managed `ImageReader` completion step refuses missing coverage with a typed failure.
-- **Pixel conversion and loss.** Bit-depth mapping follows the upstream library's documented type conversion, with rounding and clamping.
+- **Pixel conversion and loss.** Bit-depth mapping follows OpenImageIO's documented type conversion, with rounding and clamping.
   - `rgba8` is 8-bit unorm with straight alpha and no transfer change.
   - `rgba32fLinearPremultiplied` converts sRGB to linear only when the source reports an sRGB colour space, and premultiplies when the source alpha is unassociated.
   - `float32Interleaved` keeps the source channels as float32, with no transfer or alpha change.
