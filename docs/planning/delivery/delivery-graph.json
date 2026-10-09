@@ -24177,7 +24177,10 @@
    },
    "notes": "Merged duplicate integration or closure task formerly proposed as COM.17. Planning repair 2026-10-08 (DLV-34; P2-021): Physical FCM receipt unchanged; the receipt side uses the .NET Firebase binding. Acceptance unchanged.",
    "complete": [],
-   "writes": []
+   "writes": [],
+   "external": [
+    "Physical Android device and a real FCM receipt on it; Mobile Owner (blocked-external user input per P2-025 item 6 and P2-026 S7: completion waits, and the receipt is never passed or waived)"
+   ]
   },
   {
    "id": "AND.27",
@@ -26295,7 +26298,7 @@
    "obligations": [
     {
      "ref": "WP-53.07",
-     "part": "full"
+     "part": "Android direct-update feed (android-update.v1) only; the catalog-index and catalog-revocation feeds are out of V1 (P2-026 S5, S14)"
     }
    ],
    "outcome": "Production Android direct-update feed using the WP03 android-update.v1 format, with signing custody/rotation and artifact URI/certificate inventory; registers the ArcScope desktop auth URI scheme in its signed installers.",
@@ -26553,7 +26556,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "F-023 final closure and VG-13 (store category fit) are WP32's own gates, consumed here rather than produced. Planning repair 2026-10-08 (DLV-34; P2-021): Artifact name and identity change to the MAUI build; store, consumption-only and install/update criteria unchanged. Store activation remains gated by the existing README and releasing.md no-listing statement until a reviewed decision. Planning repair 2026-10-09 (P2-026; scope correction): reduced: Play submission, the store listing and store-channel verification are out of scope, not completed; Android V1 uses the direct-APK channel (PL-03).",
+   "notes": "F-023 final closure and VG-13 (store category fit) are WP32's own gates, consumed here rather than produced. Planning repair 2026-10-08 (DLV-34; P2-021): Artifact name and identity change to the MAUI build; store, consumption-only and install/update criteria unchanged. Store activation remains gated by the existing README and releasing.md no-listing statement until a reviewed decision. Planning repair 2026-10-09 (P2-026; scope correction): reduced: Play submission, the store listing and store-channel verification are out of scope, not completed; Android V1 uses the direct-APK channel (PL-03). Planning repair 2026-10-09 (P2-026 review fix; S7, S16(f)): the physical-device FCM receipt of AND.26 is a blocked-external user input under P2-025 item 6. This task waits on it through the AND.26 start edge, and the receipt is never passed or waived.",
    "complete": []
   },
   {
@@ -27056,7 +27059,7 @@
     "state": "not-started"
    },
    "packageAcceptance": "WP-50",
-   "notes": "Terminal task for the entire 51-package sequence (WP50 has no downstream). BR-01/BR-02/BR-03/BR-04 (build once, no partial pass, no waiving integrity/security/licence/regulatory gates, nothing incomplete presented as complete) all bind here directly. Planning repair 2026-10-09 (P2-026; scope correction): reduced: gate coverage and claim audit for excluded products (ArcSlate, ArcNotes, excluded native families, the catalog and community ecosystem), macOS and Safari claims (except the statement that iOS and macOS are outside current scope), failure rows for excluded lifecycles, and requirement-to-gate accounting for excluded owner work packages (WP-41, WP-45.10) are out of scope, not completed.",
+   "notes": "Terminal task for the entire 51-package sequence (WP50 has no downstream). BR-01/BR-02/BR-03/BR-04 (build once, no partial pass, no waiving integrity/security/licence/regulatory gates, nothing incomplete presented as complete) all bind here directly. Planning repair 2026-10-09 (P2-026; scope correction): reduced: gate coverage and claim audit for excluded products (ArcSlate, ArcNotes, excluded native families, the catalog and community ecosystem), macOS and Safari claims (except the statement that iOS and macOS are outside current scope), failure rows for excluded lifecycles, and requirement-to-gate accounting for excluded owner work packages (WP-41, WP-45.10) are out of scope, not completed. Planning repair 2026-10-09 (P2-026 review fix; S16(f)): the physical Android FCM receipt is a blocked-external user input under P2-025 item 6. It reaches this task through REL.04 and AND.26, so this task waits on it and it is never passed or waived.",
    "complete": []
   },
   {
@@ -27867,7 +27870,7 @@
    "notes": "Planning repair 2026-10-08 (DLV-34; P2-022): retirement of the merged NAT.14 PDF engine by a new reviewed deletion change; NAT.14 is not reopened. The five RPCs and their 18 PDF messages stay in the published schema unchanged (CON.04, CON.23), so no versioned wire retirement is needed here. Published history is kept: artifact-profiles native-win-x64-r1..r4 and records native-tiff-r1..r4 are not rewritten; nat-32-r1 is the successor receipt. The still-image, ContentSandbox containment, instrument and ABI families are kept. Planning repair 2026-10-08 (DLV-34; P2-022; coordinator adjudication, brief section 10): the RPC behaviour is unchanged (resource.parser_failed), not a new UNIMPLEMENTED refusal; eng/provenance/retired-artifacts.json is not written, because the retired PDF material was first-party and never packaged and that file records retired packaged targets; the retirement is recorded in this task’s ledger evidence. Planning repair 2026-10-08 (DLV-34; P2-022 item 3; coordinator adjudication, brief section 10): the start edge on GOV.17 (retired-artifact registration mechanism) is removed because NAT.32 makes no retired-artifact registration; the evidence and validation no longer name one; the OpenPdf refusal is an explicit resource.parser_failed return asserted by test. Planning repair 2026-10-08 (DLV-34; coordinator adjudication, brief section 10): the stage-integration determinism test builds its snapshot with the real clock but evaluates it at the fixed test date 2026-10-05, so it fails every DesktopPlatform pull request after that date; NAT.32, the first DesktopPlatform pull request after the 2026-10-07 baseline, carries the one-test fix. It adds no obligation, dependency or behaviour change.",
    "outOfScope": {
     "by": "P2-026",
-    "note": "PDF engine retirement is delivered history under P2-022 with no remaining active-plan work; out of scope, not completed (P2-026 S2)"
+    "note": "PDF engine retirement is delivered history under P2-022 (the ledger records NAT.32 complete, DesktopPlatform PR 172 merged at e0f2e563); no further NAT.32 work is in the active plan (P2-026 S2)"
    }
   },
   {
@@ -27992,7 +27995,7 @@
     "state": "not-started",
     "notes": "Planning repair 2026-10-08 (DLV-34; P2-021): new migration task under the contracts lane (ADOPT.03.contracts slice). Observed on the Contracts repo: npm workspaces src/public/ts/proto, src/public/ts/api-client, src/public/ts/contract-fixtures, src/internal/ts/ai-internal and src/internal/ts/operator-client; Kotlin/Maven src/public/kotlin/contracts-proto, contracts-connect-client and contract-fixtures; generators in eng/contracts.py, eng/kotlin_tools.py, eng/kotlin_consumer.py and eng/maven_tools.py."
    },
-   "notes": "Planning repair 2026-10-08 (DLV-34; P2-021 Decision 4): new migration task under the contracts lane (ADOPT.03.contracts slice). No obligation or acceptance of a complete record is removed. Starts after WEB.40, AND.40 and CLOUD.84 deliver (artifact edges: consumer migration). The P2-021 decision wording is carried in the outcome, not in obligations, because decision obligations are reserved for adoption and governance tasks. The shared file tests/StructureTests/Program.cs is also written by EXT.02; both declare RES-contracts-schema-sources (append), so no start edge on EXT.02 is used (DLV-11). Stop-publication is taken per identity after its own consumers merge; no unpublish, deprecate or delete without explicit user approval. @arcforges/ai-internal is retained. The CON.04 retirement marking (P2-022; adjudication 12) is owned here; the removal of the dormant PDF engine is out of scope with NAT.32 (P2-026), and the server closed refusal of the five PDF RPCs has no active owner: that residual is accepted (P2-026 review fix; see the appended note). CON.40 completes on CLOUD.84 with no user decision pending, because the edge-guard rule of P2-021 (adjudication 5) resolves the credential and CSRF checks. Planning repair 2026-10-09 (P2-026 review fix; accepted residual): the server closed-refusal checks for the five PDF RPCs (OpenPdf answers resource.parser_failed) were NAT.30 and NAT.32 work and are out of scope with those tasks (brief section 11 S8; user rule 2: unrelated legacy code is left alone). No active task validates that refusal. It is accepted as a residual: the existing server behaviour is unchanged, no first-party consumer may call the five RPCs (the retirement marking owned here), and no open task names an out task as its owner."
+   "notes": "Planning repair 2026-10-08 (DLV-34; P2-021 Decision 4): new migration task under the contracts lane (ADOPT.03.contracts slice). No obligation or acceptance of a complete record is removed. Starts after WEB.40, AND.40 and CLOUD.84 deliver (artifact edges: consumer migration). The P2-021 decision wording is carried in the outcome, not in obligations, because decision obligations are reserved for adoption and governance tasks. The shared file tests/StructureTests/Program.cs is also written by EXT.02; both declare RES-contracts-schema-sources (append), so no start edge on EXT.02 is used (DLV-11). Stop-publication is taken per identity after its own consumers merge; no unpublish, deprecate or delete without explicit user approval. @arcforges/ai-internal is retained. The CON.04 retirement marking (P2-022; adjudication 12) is owned here; the removal of the PDF engine code was delivered by NAT.32 (history; further NAT.32 work is out of scope under P2-026), and the server closed refusal of the five PDF RPCs has no active owner: that residual is accepted (P2-026 review fix; see the appended note). CON.40 completes on CLOUD.84 with no user decision pending, because the edge-guard rule of P2-021 (adjudication 5) resolves the credential and CSRF checks. Planning repair 2026-10-09 (P2-026 review fix; accepted residual): the server closed-refusal checks for the five PDF RPCs (OpenPdf answers resource.parser_failed) were NAT.30 and NAT.32 work and are out of scope with those tasks (brief section 11 S8; user rule 2: unrelated legacy code is left alone). No active task validates that refusal. It is accepted as a residual: the existing server behaviour is unchanged, no first-party consumer may call the five RPCs (the retirement marking owned here), and no open task names an out task as its owner."
   },
   {
    "id": "CLOUD.84",
@@ -29879,11 +29882,12 @@
   },
   {
    "gate": "PG-03",
-   "contribution": "Every native dependency the V1 instrument families admit receives AD-01..08 obligations and a licence position: libusb and the instrument libraries only (P2-026 S8). The still-image libraries (OIIO, OpenEXR, Imath) and PDFium are out of V1 (P2-026 S1 and S8; P2-022), and NAT.11 and NAT.14 do NOT satisfy PG-03. Native dependency licence review: 13.04, 33/35.04.",
+   "contribution": "Every native dependency the V1 instrument families admit receives AD-01..08 obligations and a licence position: libusb and the instrument libraries only (P2-026 S8). The still-image libraries (OIIO, OpenEXR, Imath) are out of V1 (P2-026 S1 and S8), and PDFium is retired (P2-022). The report-export PDF writer for arcscope.report.pdf.v1 (RP-06) is the second leg: its first acceptance under SCOPE.18 dependency admission is a PG-03 trigger, with its own AD-01..08 obligations and licence position (PDFium is not a writer). NAT.11 and NAT.14 do NOT satisfy PG-03. Native dependency licence review: 13.04, 33/35.04.",
    "tasks": [
     "NAT.13",
     "NAT.28",
     "SCOPE.11",
+    "SCOPE.18",
     "SCOPE.26"
    ]
   },

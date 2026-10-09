@@ -167,7 +167,7 @@ Tasks: 8 · Owning repositories: DesktopPlatform · Integration owner(s): Deskto
 | Owning repository | DesktopPlatform (`C:\MyFile\Projects\ArcForges\DesktopPlatform`); integration owner: DesktopPlatform integration owner, the holder of `roles/integration-desktopplatform` |
 | Claim, branch and ledger | `claims/upd-07` and ledger record `ledger/tasks/upd-07.md` in the Plan repository; task branch `task/upd-07` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | producer / M |
-| Obligations | [WP-53.07](../../work-packages/53-desktop-distribution-and-update.md#rule-wp-53.07) — full |
+| Obligations | [WP-53.07](../../work-packages/53-desktop-distribution-and-update.md#rule-wp-53.07) — Android direct-update feed (android-update.v1) only; the catalog-index and catalog-revocation feeds are out of V1 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5, S14) |
 | Provides | production-catalog-trust |
 | Start prerequisites | **artifact** [UPD.01](#task-upd-01) — signed feed mechanics. *Why:* this substep is where the test-signed feed's real production counterpart is built.<br>**contract** [CON.16](contracts.md#task-con-16) — native auth exceptions, android-update.v1 schema and independent signed vectors. *Why:* the producer-artifacts matrix names [WP-03.07](../../work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.07) as the exact source for these formats; fixture keys are WP02/06, no production key prerequisite for starting. |
 | Entry condition | [ADOPT.02.updater](adoption.md#task-adopt-02-updater) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |

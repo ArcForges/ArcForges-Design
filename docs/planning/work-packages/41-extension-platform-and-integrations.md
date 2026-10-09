@@ -7,6 +7,8 @@
 > Phase: J — Platform completion
 > Scheduling: this package is an obligation set; its delivery tasks and their typed prerequisites are listed in section 9, generated from the [delivery graph](../delivery/delivery-graph.json) under [P2-018](../../decisions/phase-2-specification-decisions.md#rule-p2-018).
 
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) for every capability in this package except the typed first-party boundary (EXT.02, WP-41.02).** The extension platform, MCP and connectors, and the catalog below are not active V1 requirements; the text is kept as the post-V1 record.
+>
 > **Goal.** Open the platform without weakening it: out-of-process extensions contributing **tools, never planners** ([EA-08](../../requirements/08-extensions-and-developer-platform.md#rule-ea-08)), the dual capability boundary with a closed AOT-safe value model, declarative UI contribution, the Arc Package runtime, the catalog, and the MCP, connector and artifact handoff and standard MCP integrations — all under the same security pipeline as first-party code.
 
 > **[P2-009](../../decisions/phase-2-specification-decisions.md#rule-p2-009) execution binding.** Repositories: Contracts public SDK/CLI; Platform host; ArcChat MCP; Cloud catalog. Inputs: only the applicable published producers available at this stage under [staged artifact integration](../README.md#staged-artifact-integration). Producer candidate records precede Cloud consolidation; no future package/manifest is an input. Source paths below resolve inside their assigned owner under [layout](../../architecture/01-solution-and-project-layout.md#root-and-logical-path-convention), never a shared checkout. Output: Native AOT candidate packages/executables with source SHA, package/descriptor/image/Worker identity and evidence attached to that artifact.
@@ -16,7 +18,7 @@
 
 ## 1. Scope and purpose
 
-**In scope.** The extension host and its supervision; the handshake and protocol versioning; the typed extension-point layer and the schema-described dynamic layer; declarative panel and settings contribution; the Arc Package model and lifecycle; the catalog client; the public SDK and CLI; and the integration kinds — MCP and connectors; external-agent delegation is excluded.
+**Post-V1 and out of scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5 (the former in-scope list).** The extension host and its supervision; the handshake and protocol versioning; the typed extension-point layer and the schema-described dynamic layer; declarative panel and settings contribution; the Arc Package model and lifecycle; the catalog client; the public SDK and CLI; and the integration kinds — MCP and connectors; external-agent delegation is excluded.
 
 **Out of scope.** A paid marketplace, explicitly not in V1. A general WebView platform, explicitly a non-goal.
 
@@ -81,6 +83,8 @@
 
 ### WP-41.00 — Extension host and supervision
 
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The owners of this substep are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90). The text below is the retained post-V1 record and is not an active V1 requirement.
+
 **What must be fully done.** Enforce the package-specific OS profile from Content and Extension Isolation; broker grants do not protect against direct system calls by an unrestricted child.  Per-installation extension processes started on demand and stopped when idle, with resource limits enforced by termination, backoff restart, quarantine after repeated crashes, and typed failure for in-flight invocations. No ambient credential is inherited.
 
 **Testing requirements.** Run a malicious package against product DB/token paths, network, sibling package and process APIs; revoke permission during an invocation and test unsupported profiles.  Crash, hang, memory exhaustion and unbounded output tests; quarantine behaviour; a credential-absence assertion.
@@ -90,6 +94,8 @@
 <a id="rule-wp-41.01"></a>
 
 ### WP-41.01 — Handshake and protocol versioning
+
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The owners of this substep are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90). The text below is the retained post-V1 record and is not an active V1 requirement.
 
 **What must be fully done.** Identity verification against the installed manifest before any contribution is invoked; protocol version negotiation supporting more than one version during a migration window; refusal that is clean and explained. A process cannot claim another package's identity or a reserved namespace.
 
@@ -111,6 +117,8 @@
 
 ### WP-41.03 — Declarative UI contribution
 
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The owners of this substep are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90). The text below is the retained post-V1 record and is not an active V1 requirement.
+
 **What must be fully done.** Panel declarations from a closed, versioned element vocabulary rendered with first-party controls; declarative settings schemas; secret fields yielding references only; visible attribution of extension-contributed surfaces.
 
 **Testing requirements.** Vocabulary coverage; a negative test asserting raw markup or script is rejected; a secret-field test; an attribution test.
@@ -120,6 +128,8 @@
 <a id="rule-wp-41.04"></a>
 
 ### WP-41.04 — Package runtime
+
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The owners of this substep are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90). The text below is the retained post-V1 record and is not an active V1 requirement.
 
 **What must be fully done.** Implement manifest.v1/workflow.v1/panel.v1 validators from published Contracts, all six families and immutable staged install/update/drain/migration/revocation/rollback states in annex 08.
 
@@ -131,6 +141,8 @@
 
 ### WP-41.05 — PackageCatalog producer and consumers
 
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The owners of this substep are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90). The text below is the retained post-V1 record and is not an active V1 requirement.
+
 **What must be fully done.** Build Cloud PackageCatalog, DNS publisher verification, immutable submissions, review-state/revocation authority and signed static index producer, plus desktop/CLI consumers under arch 15/registry 04/model 01. Use WP03 fixture keys; production distribution keys are later WP53.
 
 **Testing requirements.** Owner/PAT/operator separation, duplicate version conflict, invalid archive, review/revoke replay, signed-index rollback/expiry and offline installed-package behavior.
@@ -140,6 +152,8 @@
 <a id="rule-wp-41.06"></a>
 
 ### WP-41.06 — Public SDK and CLI
+
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The owners of this substep are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90). The text below is the retained post-V1 record and is not an active V1 requirement.
 
 **What must be fully done.** Generate SDK/validators/tool payload projections from authored public proto. CLI uses eligible publisher PAT and catalog/resource methods. Third-party apps use approved public APIs or OS/file interchange.
 
@@ -151,6 +165,8 @@
 
 ### WP-41.07 — MCP placement and connectors
 
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The owners of this substep are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90). The text below is the retained post-V1 record and is not an active V1 requirement.
+
 **What must be fully done.** Implement local MCP stdio behind the owned connector child and Cloud MCP HTTP, with the egress decision made by C# and only the transport in the thin Cloud Worker adapter ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 6). Preserve MCP standard protocol; only the owned child boundary speaks ArcForges gRPC.
 
 **Testing requirements.** Origin/scope changes invalidate consent, no browser/Android local subprocess, no unrestricted AI fetch, child crash/lease recovery.
@@ -159,6 +175,8 @@
 
 <a id="rule-wp-41.90"></a>
 ### WP-41.90 — Verify the owned artifact and real integration
+
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The owners of this substep are the out-of-scope extension and MCP tasks (EXT.00 to EXT.10, EXT.90). The text below is the retained post-V1 record and is not an active V1 requirement.
 
 **What must be fully done.** Split SDK/protocol, desktop host/runtime and Cloud registry ownership. Preserve standard MCP transports and out-of-process extensions. Remove the old external-agent integration wording rather than expanding accepted scope.
 

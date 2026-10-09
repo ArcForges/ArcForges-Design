@@ -162,7 +162,7 @@
 
 ### WP-13.16 — Dependency adoption and hardware receipts
 
-**What must be fully done.** Record AD01–AD08 for OIIO, OpenEXR, Imath and libusb plus every shipped transitive dependency; PDFium is not admitted (retired under [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)). Inventory serial hardware and an actual USB device with vendor/product identity, explicit interface/endpoint, firmware and driver versions.
+**What must be fully done.** Record AD01–AD08 for libusb plus every shipped transitive dependency of the instrument families; the still-image libraries (OIIO, OpenEXR and Imath) are out of V1 under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S1 and S8; PDFium is not admitted (retired under [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)). Inventory serial hardware and an actual USB device with vendor/product identity, explicit interface/endpoint, firmware and driver versions.
 
 **Testing requirements.** Match SBOM/license/source and enabled-feature lists to actual packaged files. Bind every physical result and each simulated absence to its evidence class.
 

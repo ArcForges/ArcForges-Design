@@ -248,6 +248,8 @@ Four tiers, escalating only as far as necessary:
 
 ## 13. Community reports and enforcement
 
+> **Post-V1 and out of scope ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** This section governs the community ecosystem and the official catalog (ecosystem objects, delisting, catalog listings and security status, public shares). That catalog is out of V1, and it is labelled post-V1 as CA-01 to CA-13 in section 08. The rule IDs (CR-01 to CR-06, EN-*, CP-*) are kept unchanged and are not V1 requirements.
+
 | # | Requirement |
 |---|---|
 | <a id="rule-cr-01"></a>CR-01 | **Community Report = a report about a public ecosystem object** — a package, a publisher, a public share. |

@@ -246,7 +246,7 @@ Excluded from the active plan by the decision named under each heading. These ta
 | [NAT.22](#task-nat-22) | Image package production: three supported RIDs (win-x64, win-arm64, linux-x64) | the in-app still-image decode is out of V1 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) S1 and S8: metadata cards only, no decode), so this image runtime package has no ArcScope consumer; out of scope, not completed | excluded | no record |
 | [NAT.25](#task-nat-25) | ContentSandbox Runtime.<rid> republication from the still-image composition (three supported RIDs; PDF package retired) | the ContentSandbox still-image runtime republication serves only the in-app still-image decode, which is out of V1 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) S1 and S8); out of scope, not completed | excluded | no record |
 | [NAT.31](#task-nat-31) | Still-image composition: production still-image parsers (NAT.11 family) composed into the ContentSandbox helper, with real containment re-run | composing still-image parsers into the ContentSandbox helper serves only the in-app decoded thumbnail, which is out of V1 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) S1 and S8); out of scope, not completed | excluded | no record |
-| [NAT.32](#task-nat-32) | PDF engine retirement: remove native/arcpdf-abi, ArcForges.Native.Pdf and the helper PDF parser path | PDF engine retirement is delivered history under [P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022) with no remaining active-plan work; out of scope, not completed ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) S2) | excluded | complete |
+| [NAT.32](#task-nat-32) | PDF engine retirement: remove native/arcpdf-abi, ArcForges.Native.Pdf and the helper PDF parser path | PDF engine retirement is delivered history under [P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022) (the ledger records NAT.32 complete, DesktopPlatform PR 172 merged at e0f2e563); no further NAT.32 work is in the active plan ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) S2) | excluded | complete |
 
 <a id="task-nat-11"></a>
 
@@ -407,7 +407,7 @@ Excluded from the active plan by the decision named under each heading. These ta
 
 | Field | Value |
 |---|---|
-| Scope | Out of scope (P2-026): PDF engine retirement is delivered history under [P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022) with no remaining active-plan work; out of scope, not completed ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) S2) |
+| Scope | Out of scope (P2-026): PDF engine retirement is delivered history under [P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022) (the ledger records NAT.32 complete, DesktopPlatform PR 172 merged at e0f2e563); no further NAT.32 work is in the active plan ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) S2) |
 | Owning repository | DesktopPlatform (`C:\MyFile\Projects\ArcForges\DesktopPlatform`); integration owner: DesktopPlatform integration owner, the holder of `roles/integration-desktopplatform` |
 | Claim, branch and ledger | `claims/nat-32` and ledger record `ledger/tasks/nat-32.md` in the Plan repository; task branch `task/nat-32` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | producer / M |
