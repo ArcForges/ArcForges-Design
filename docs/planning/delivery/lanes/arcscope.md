@@ -4,7 +4,7 @@
 
 Acquisition and sessions, analysis and reporting, integration and metadata sync.
 
-Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope integration owner
+Tasks: 26 · Owning repositories: ArcScope · Integration owner(s): ArcScope integration owner · Out of scope: 1 (final section)
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
@@ -17,8 +17,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | [SCOPE.07](#task-scope-07) | Durable capture writer, chunked verifiable store and crash recovery | feature | L | [SCOPE.06](#task-scope-06) (artifact), [PLT.06](platform.md#task-plt-06) (artifact) | not-started |
 | [SCOPE.08](#task-scope-08) | Replay as a source (capture-level) | feature | M | [SCOPE.07](#task-scope-07) (artifact), [SCOPE.01](#task-scope-01) (artifact) | not-started |
 | [SCOPE.09](#task-scope-09) | Long-running capture in the shell | feature | S | [SCOPE.06](#task-scope-06) (artifact), [PLT.32](platform.md#task-plt-32) (artifact) | not-started |
-| [SCOPE.10](#task-scope-10) | Reference drift check against Serial-Studio 639daafb | feature | S | none | not-started |
-| [SCOPE.11](#task-scope-11) | Owned-artifact verification and real hardware integration | feature | M | [SCOPE.01](#task-scope-01) (artifact), [SCOPE.02](#task-scope-02) (artifact), [SCOPE.03](#task-scope-03) (artifact), [SCOPE.04](#task-scope-04) (artifact), [SCOPE.05](#task-scope-05) (artifact), [SCOPE.06](#task-scope-06) (artifact), [SCOPE.07](#task-scope-07) (artifact), [SCOPE.08](#task-scope-08) (artifact), [SCOPE.09](#task-scope-09) (artifact), [NAT.24](native.md#task-nat-24) (artifact), [SCOPE.10](#task-scope-10) (artifact) | not-started |
+| [SCOPE.11](#task-scope-11) | Owned-artifact verification and real hardware integration | feature | M | [SCOPE.01](#task-scope-01) (artifact), [SCOPE.02](#task-scope-02) (artifact), [SCOPE.03](#task-scope-03) (artifact), [SCOPE.04](#task-scope-04) (artifact), [SCOPE.05](#task-scope-05) (artifact), [SCOPE.06](#task-scope-06) (artifact), [SCOPE.07](#task-scope-07) (artifact), [SCOPE.08](#task-scope-08) (artifact), [SCOPE.09](#task-scope-09) (artifact), [NAT.24](native.md#task-nat-24) (artifact) | not-started |
 | [SCOPE.12](#task-scope-12) | Visualisation: virtualised rendering, downsampling, cursors and markers | feature | L | [SCOPE.02](#task-scope-02) (artifact), [SCOPE.06](#task-scope-06) (artifact) | not-started |
 | [SCOPE.13](#task-scope-13) | Triggers with pre/post windows | feature | M | [SCOPE.05](#task-scope-05) (artifact), [SCOPE.06](#task-scope-06) (artifact) | not-started |
 | [SCOPE.14](#task-scope-14) | Measurements: scope.measurement.v1 | feature | L | [CON.91](contracts.md#task-con-91) (contract), [SCOPE.02](#task-scope-02) (artifact), [SCOPE.06](#task-scope-06) (artifact) | not-started |
@@ -248,30 +247,6 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | The old upstream edge [WP-33](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33)<-26 (remote action/tool bridge) does not apply here or anywhere else in WP33: [WP-26](../../work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26) is about remote-triggered tool execution on a running instance (durable target queue, owner reauth, remote approval), and none of WP-33.00-33.07's substep bodies mention it.. |
 
-<a id="task-scope-10"></a>
-
-### SCOPE.10 — Reference drift check against Serial-Studio 639daafb
-
-**Outcome.** A drift report exists comparing the reference against the bound commit, covering changed rows, newly introduced upstream material (mapped to an existing requirement or recorded as an accepted exclusion) and licence re-verification; every changed/new item carries a disposition.
-
-| Field | Value |
-|---|---|
-| Owning repository | ArcScope (`C:\MyFile\Projects\ArcForges\ArcScope`); integration owner: ArcScope integration owner, the holder of `roles/integration-arcscope` |
-| Claim, branch and ledger | `claims/scope-10` and ledger record `ledger/tasks/scope-10.md` in the Plan repository; task branch `task/scope-10` ([DLV-26](../README.md#rule-dlv-26)) |
-| Kind / size | feature / S |
-| Obligations | [WP-33.07](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.07) — full |
-| Provides | scope.reference-drift-report |
-| Start prerequisites | none |
-| Entry condition | [ADOPT.05.arcscope](adoption.md#task-adopt-05-arcscope) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | none |
-| Unblocks | [SCOPE.11](#task-scope-11) |
-| Write scope | `Design:docs/assurance/reference-coverage/arcscope-serial-studio.md` |
-| Shared resources | [RES-design-evidence](../shared-resources.md#res-design-evidence) (append) |
-| Validation | a completeness check that every changed/new item has a disposition; no code build required |
-| Completion evidence | drift report: changed rows, newly introduced material with assessment, licence comparison |
-| Baseline (unreviewed unless accepted) | not-started The reference matrix is accepted design-stage evidence; the implementation-time drift check itself has not run. |
-| Notes | Has no real code dependency on any other SCOPE task; can run at any time, though it is most useful shortly before SCOPE.11/[WP-33.90](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.90) closes so any licence correction lands before the package gate. |
-
 <a id="task-scope-11"></a>
 
 ### SCOPE.11 — Owned-artifact verification and real hardware integration
@@ -286,7 +261,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Package acceptance | Records the [WP-33](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) acceptance receipt after every task mapped to the package; tasks outside the package never start from it ([DLV-35](../README.md#rule-dlv-35)) |
 | Obligations | [WP-33.90](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.90) — full (excluding the generic-USB-V1 body text folded into SCOPE.04)<br>[WP-33](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33) [P2-010](../../../decisions/phase-2-specification-decisions.md#rule-p2-010) required-behavior-and-closure section (acquisition.source/framing/trigger profiles, gap/loss/durable-capture manifests, all accepted serial/network/file/USB sources) — [P2-010](../../../decisions/phase-2-specification-decisions.md#rule-p2-010) required-behavior-and-closure section: acquisition.source/framing/trigger profiles, gap/loss/durable-capture manifests, all accepted serial/network/file/USB sources, independent positive/negative vectors, actual owner integration |
 | Provides | scope.wp33-accepted-candidate |
-| Start prerequisites | **artifact** [SCOPE.01](#task-scope-01) — all WP33 tasks complete to assemble. *Why:* verify task<br>**artifact** [SCOPE.02](#task-scope-02) — as above. *Why:* as above<br>**artifact** [SCOPE.03](#task-scope-03) — as above. *Why:* as above<br>**artifact** [SCOPE.04](#task-scope-04) — as above. *Why:* as above<br>**artifact** [SCOPE.05](#task-scope-05) — as above. *Why:* as above<br>**artifact** [SCOPE.06](#task-scope-06) — as above. *Why:* as above<br>**artifact** [SCOPE.07](#task-scope-07) — as above. *Why:* as above<br>**artifact** [SCOPE.08](#task-scope-08) — as above. *Why:* as above<br>**artifact** [SCOPE.09](#task-scope-09) — as above. *Why:* as above<br>**artifact** [NAT.24](native.md#task-nat-24) — published Instruments runtime packages. *Why:* hardware-tier acquisition evidence uses the real native family<br>**artifact** [SCOPE.10](#task-scope-10) — drift report disposition (must be clean or corrected per [D-001](../../../decisions/phase-1-foundation-decisions.md#rule-d-001) before dependent work continues). *Why:* a changed licence position must correct affected rows before this package closes |
+| Start prerequisites | **artifact** [SCOPE.01](#task-scope-01) — all WP33 tasks complete to assemble. *Why:* verify task<br>**artifact** [SCOPE.02](#task-scope-02) — as above. *Why:* as above<br>**artifact** [SCOPE.03](#task-scope-03) — as above. *Why:* as above<br>**artifact** [SCOPE.04](#task-scope-04) — as above. *Why:* as above<br>**artifact** [SCOPE.05](#task-scope-05) — as above. *Why:* as above<br>**artifact** [SCOPE.06](#task-scope-06) — as above. *Why:* as above<br>**artifact** [SCOPE.07](#task-scope-07) — as above. *Why:* as above<br>**artifact** [SCOPE.08](#task-scope-08) — as above. *Why:* as above<br>**artifact** [SCOPE.09](#task-scope-09) — as above. *Why:* as above<br>**artifact** [NAT.24](native.md#task-nat-24) — published Instruments runtime packages. *Why:* hardware-tier acquisition evidence uses the real native family |
 | Entry condition | [ADOPT.05.arcscope](adoption.md#task-adopt-05-arcscope) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [REL.02](release.md#task-rel-02) |
@@ -294,6 +269,7 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Validation | real packaged hardware-path and throughput/overrun/recovery acceptance; offline-acceptance-matrix rows (fresh shell, hydrated outage, unavailable content, signout, restart) where applicable; no hosted device/emulator CI per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) (macOS is outside the delivery scope per [P2-023](../../../decisions/phase-2-specification-decisions.md#rule-p2-023)) — evidence is recorded from local/lab runs |
 | Completion evidence | owned-artifact and real-integration receipt: source commit, producer version, candidate hashes, actual runtime/OS/device/provider, scenario, result, limitations, real-vs-fixture status |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); review finding): the start edge to SCOPE.10 is removed, because SCOPE.10 is out of scope (no ArcScope consumer); the package-gate check it fed is not an ArcScope acceptance condition. |
 
 <a id="task-scope-12"></a>
 
@@ -380,10 +356,10 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Completion prerequisites | none |
 | Unblocks | [SCOPE.16](#task-scope-16), [SCOPE.18](#task-scope-18), [SCOPE.19](#task-scope-19), [SCOPE.21](#task-scope-21) |
 | Write scope | `ArcScope:src/ArcScope/ArcScope.Decoders/**`<br>`ArcScope:tests/ArcScopePipelineTests/Decoders/**` |
-| Validation | fixture corpora for each shipped V1 decoder, including malformed input; error-visibility assertion; structural no-device-write test — offline |
-| Completion evidence | fixtures for each shipped V1 decoder, error visibility and no-write assertion |
+| Validation | per-decoder fixture corpora including malformed input; error-visibility assertion; structural no-device-write test — offline |
+| Completion evidence | per-decoder fixtures, error visibility and no-write assertion |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Independent of SCOPE.14 (measurements); the two can proceed in parallel. Decoder scope (UART/I2C/SPI) is fixed by the already-frozen analysis.v1 profile in architecture doc 26-product-behavior-profiles.md — note this is the ARCHITECTURE document numbered 26, unrelated to [WP-26](../../work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26) (Remote action and tool bridge); no start edge needed since the design is already frozen, not missing. Planning repair 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); scope correction): reduced: first-party protocol decoders that V1 does not ship, with their fixture corpora, are out of scope, not completed. |
+| Notes | Independent of SCOPE.14 (measurements); the two can proceed in parallel. Decoder scope (UART/I2C/SPI) is fixed by the already-frozen analysis.v1 profile in architecture doc 26-product-behavior-profiles.md — note this is the ARCHITECTURE document numbered 26, unrelated to [WP-26](../../work-packages/26-remote-action-and-tool-bridge.md#rule-wp-26) (Remote action and tool bridge); no start edge needed since the design is already frozen, not missing. Planning repair 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); review finding): which first-party protocol decoders V1 ships is open question 19, which [P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) does not decide (no V1 decoder set is named). The acceptance text is restored to the pre-P2-026 per-decoder text, and no decoder is marked out until open question 19 is adjudicated under [DLV-43](../README.md#rule-dlv-43). |
 
 <a id="task-scope-16"></a>
 
@@ -660,3 +636,38 @@ Tasks: 27 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Completion evidence | Candidate identities, deployed environment identity, convergence scenario results and untested coverage. |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | Added during consolidation so the ArcScope sync substitute has a named replacing task. |
+
+## Out of scope
+
+Excluded from the active plan by the decision named under each heading. These tasks are not completed, are never claimable and are not remaining work; their records and ledger history are kept here.
+
+### P2-026
+
+| Task | Title | Note | Mode | Ledger status |
+|---|---|---|---|---|
+| [SCOPE.10](#task-scope-10) | Reference drift check against Serial-Studio 639daafb | Serial-Studio reference drift check has no ArcScope consumer: reference-only planning work, out of V1 under [P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) S1 and S2 (coordinator ruling on the review finding, 2026-10-09). Its completed history and output (design history) are kept and recorded as out of scope, not re-scoped. | excluded | complete |
+
+<a id="task-scope-10"></a>
+
+#### SCOPE.10 — Reference drift check against Serial-Studio 639daafb
+
+**Outcome.** A drift report exists comparing the reference against the bound commit, covering changed rows, newly introduced upstream material (mapped to an existing requirement or recorded as an accepted exclusion) and licence re-verification; every changed/new item carries a disposition.
+
+| Field | Value |
+|---|---|
+| Scope | Out of scope (P2-026): Serial-Studio reference drift check has no ArcScope consumer: reference-only planning work, out of V1 under [P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) S1 and S2 (coordinator ruling on the review finding, 2026-10-09). Its completed history and output (design history) are kept and recorded as out of scope, not re-scoped. |
+| Owning repository | ArcScope (`C:\MyFile\Projects\ArcForges\ArcScope`); integration owner: ArcScope integration owner, the holder of `roles/integration-arcscope` |
+| Claim, branch and ledger | `claims/scope-10` and ledger record `ledger/tasks/scope-10.md` in the Plan repository; task branch `task/scope-10` ([DLV-26](../README.md#rule-dlv-26)) |
+| Kind / size | feature / S |
+| Obligations | [WP-33.07](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.07) — full |
+| Provides | scope.reference-drift-report |
+| Start prerequisites | none |
+| Entry condition | [ADOPT.05.arcscope](adoption.md#task-adopt-05-arcscope) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Completion prerequisites | none |
+| Unblocks | none |
+| Write scope | `Design:docs/assurance/reference-coverage/arcscope-serial-studio.md` |
+| Shared resources | [RES-design-evidence](../shared-resources.md#res-design-evidence) (append) |
+| Validation | a completeness check that every changed/new item has a disposition; no code build required |
+| Completion evidence | drift report: changed rows, newly introduced material with assessment, licence comparison |
+| Baseline (unreviewed unless accepted) | not-started The reference matrix is accepted design-stage evidence; the implementation-time drift check itself has not run. |
+| Notes | Has no real code dependency on any other SCOPE task; can run at any time, though it is most useful shortly before SCOPE.11/[WP-33.90](../../work-packages/33-arcscope-acquisition-and-session.md#rule-wp-33.90) closes so any licence correction lands before the package gate. |

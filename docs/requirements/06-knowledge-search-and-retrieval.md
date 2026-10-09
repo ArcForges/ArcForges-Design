@@ -89,7 +89,7 @@ Two ownership statements govern everything below:
 | <a id="rule-ip-05"></a>IP-05 | **Keyword index updates should be as fast as practical**, because users expect a just-saved document to be findable. |
 | <a id="rule-ip-06"></a>IP-06 | Indexing is a bounded product/platform Job with progress, cancellation and recovery, not an Agent Task by default. Model-based embedding runs in Cloud (the optional reranker is out of V1 under P2-026 S4); native lexical index maintenance requires no model. |
 | <a id="rule-ip-07"></a>IP-07 | Index build is **bounded**: a background resource budget, plus power and device policy (for example not on battery, not on a metered connection where cloud work is involved). |
-| <a id="rule-ip-08"></a>IP-08 | Cloud indexing carries a **cost policy**, visible and controllable, because embedding and reranking are real cost of goods. |
+| <a id="rule-ip-08"></a>IP-08 | Cloud indexing carries a **cost policy**, visible and controllable, because embedding (and reranking, out of V1 under P2-026 S4) are real cost of goods. |
 | <a id="rule-ip-09"></a>IP-09 | Attachment text extraction and OCR are **derived pipeline** outputs, never canonical assets. Image OCR output anchors back to the image region so a citation can point at the original. PDF text extraction is retired: no PDF text is extracted and PDFs carry no page or region anchor ([P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022)). |
 | <a id="rule-ip-10"></a>IP-10 | **Knowledge Source Health** is exposed: healthy, partially indexed, failing, stale — with counts and last-attempt information. |
 
@@ -119,7 +119,7 @@ Search visibility, Cloud indexing, AI retrieval and provider processing have dis
 
 | # | Requirement |
 |---|---|
-| <a id="rule-pl-01"></a>PL-01 | Exclude from AI denies model-based processing and AI retrieval, including new embedding/reranking calls, independently of ordinary keyword search. Apply the deny before every dispatch/retrieval; already-sent data cannot be recalled and must not be described as never processed. |
+| <a id="rule-pl-01"></a>PL-01 | Exclude from AI denies model-based processing and AI retrieval, including new embedding calls (and reranking calls, out of V1 under P2-026 S4), independently of ordinary keyword search. Apply the deny before every dispatch/retrieval; already-sent data cannot be recalled and must not be described as never processed. |
 | <a id="rule-pl-02"></a>PL-02 | **Exclude from AI ≠ Hide from Search** ([I-144](01-normative-glossary-and-invariants.md#rule-i-144)). An excluded document may still be findable by title and keyword; its content simply never reaches a model. |
 | <a id="rule-pl-03"></a>PL-03 | No local embedding/model loop or local semantic provider configuration. Native keyword/metadata search over available content remains distinct from Cloud semantic retrieval. |
 | <a id="rule-pl-04"></a>PL-04 | **Cloud managed semantic indexing requires Managed AI Processing permission**, because it sends content to managed AI infrastructure. |

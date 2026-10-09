@@ -28,7 +28,7 @@ Notation is defined in [`00-data-model-overview.md`](00-data-model-overview.md) 
 | `sync` | Sync | `sync_scope`, `change` |
 | `resource` | Resource | `cloud_object`, `upload_session` |
 | `search` | Search | inference_job receipts; derived indexes are separately rebuildable |
-| `package_catalog` | PackageCatalog | publisher, package, version, review, revocation |
+| `package_catalog` | PackageCatalog (post-V1 and out of scope under P2-026 S5) | publisher, package, version, review, revocation |
 | `notification` | Notification | `notification`, `push_registration` |
 | `policy` | Policy | `policy_bundle` |
 | `scope` | ArcScope Cloud | `simulation_definition`, `simulation_run`, `simulation_segment` (`§8.3`) |
@@ -1524,6 +1524,8 @@ Templates, domain/provider settings, expiry and callback authentication are fixe
 Owner/resource existence and authorization are checked through owner ports; no cross-module write. Command receipt, policy revision, audit event and index-reconciliation outbox commit atomically under Policy+Audit with the target's current scope/recovery generation. Clear creates a versioned inherited-state row rather than deleting the command fence. Source consent records reference exact policy revision, explicit temporary patch, operation/source hash and expiry; no durable policy write occurs when the receipt is used. Search and dispatch always read current effective policy; source.getPolicy gives the client its current projection. No generic sync body can write this table.
 
 ## 11.1 `package_catalog`
+
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** These tables are not required in V1 and are recorded as out of scope, not completed.
 
 | Table | Fields / constraints |
 |---|---|

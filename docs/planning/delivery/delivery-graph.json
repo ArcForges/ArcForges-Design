@@ -3400,7 +3400,7 @@
   },
   {
    "id": "CON.16",
-   "title": "Signed update and realm formats (android-update.v1, realm.v1 only if a retained consumer needs it)",
+   "title": "Signed catalog/update/realm formats (catalog-index.v1, catalog-revocations.v1, android-update.v1, realm.v1)",
    "lane": "contracts",
    "repo": "Contracts",
    "kind": "contract",
@@ -3411,7 +3411,7 @@
      "part": "full for the retained formats: publish android-update.v1 and, only if a retained consumer needs it, realm.v1 schemas, canonical signing vectors and separate fixture trust roots (catalog-index.v1 and catalog-revocations.v1 are out under P2-026 S5); production keys are explicitly WP-53 output, not a WP-03 input"
     }
    ],
-   "outcome": "The retained signed-format schemas (android-update.v1, and realm.v1 only if a retained consumer needs it; catalog-index.v1 and catalog-revocations.v1 are out under P2-026 S5) are authored under public/http (or a dedicated signed-formats path) with canonical signing-vector fixtures and a deterministic fixture-only trust root (Ed25519, distinct from any production key); malformed/expired/rollback/mixed-shard negative vectors for the retained formats exist per WP-03.07's gate; android-update.v1 matches registry04's tail-section field list exactly (packageId/channel/versionName/versionCode-as-string/minSdk/minSupportedVersionCode/apkUrl/sha256/size/signingCertificateSha256/releaseNotesUrl/publishedAt, expiry<=7 days).",
+   "outcome": "The four signed-format schemas are authored under public/http (or a dedicated signed-formats path) with canonical signing-vector fixtures and a deterministic fixture-only trust root (Ed25519, distinct from any production key); malformed/expired/rollback/mixed-shard negative vectors exist per WP-03.07's gate; android-update.v1 matches registry04's tail-section field list exactly (packageId/channel/versionName/versionCode-as-string/minSdk/minSupportedVersionCode/apkUrl/sha256/size/signingCertificateSha256/releaseNotesUrl/publishedAt, expiry<=7 days).",
    "provides": [
     "signed-catalog-update-realm-formats"
    ],
@@ -10750,7 +10750,11 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: arcchat-aionui.md reference matrix already exists (bound to commit 29c9271a5) with zero reuse rows; this task re-checks for drift, does not recreate the matrix."
    },
-   "complete": []
+   "complete": [],
+   "outOfScope": {
+    "by": "P2-026",
+    "note": "AionUi reference proof has no ArcScope consumer: reference-only work, out of V1 under P2-026 S1 and S2 (coordinator ruling on the review finding, 2026-10-09). Its clean-app package-only consumption check is carried by AST.17. The reference matrix stays as history; the task is out of scope, not completed."
+   }
   },
   {
    "id": "AST.09",
@@ -10811,12 +10815,6 @@
      "task": "AST.07",
      "need": "completed WP-15.06",
      "why": "aggregation"
-    },
-    {
-     "type": "artifact",
-     "task": "AST.08",
-     "need": "completed WP-15.07",
-     "why": "aggregation"
     }
    ],
    "writes": [
@@ -10834,7 +10832,8 @@
     "state": "not-started"
    },
    "packageAcceptance": "WP-15",
-   "complete": []
+   "complete": [],
+   "notes": "Planning repair 2026-10-09 (P2-026; review finding): the start edge to AST.08 is removed, because AST.08 is out of scope (no ArcScope consumer); its package-only consumption check is carried by AST.17."
   },
   {
    "id": "AST.10",
@@ -13108,7 +13107,11 @@
    },
    "notes": "Has no real code dependency on any other SCOPE task; can run at any time, though it is most useful shortly before SCOPE.11/WP-33.90 closes so any licence correction lands before the package gate.",
    "start": [],
-   "complete": []
+   "complete": [],
+   "outOfScope": {
+    "by": "P2-026",
+    "note": "Serial-Studio reference drift check has no ArcScope consumer: reference-only planning work, out of V1 under P2-026 S1 and S2 (coordinator ruling on the review finding, 2026-10-09). Its completed history and output (design history) are kept and recorded as out of scope, not re-scoped."
+   }
   },
   {
    "id": "SCOPE.11",
@@ -13191,12 +13194,6 @@
      "task": "NAT.24",
      "need": "published Instruments runtime packages",
      "why": "hardware-tier acquisition evidence uses the real native family"
-    },
-    {
-     "type": "artifact",
-     "task": "SCOPE.10",
-     "need": "drift report disposition (must be clean or corrected per D-001 before dependent work continues)",
-     "why": "a changed licence position must correct affected rows before this package closes"
     }
    ],
    "external": [
@@ -13211,7 +13208,8 @@
     "state": "not-started"
    },
    "packageAcceptance": "WP-33",
-   "complete": []
+   "complete": [],
+   "notes": "Planning repair 2026-10-09 (P2-026; review finding): the start edge to SCOPE.10 is removed, because SCOPE.10 is out of scope (no ArcScope consumer); the package-gate check it fed is not an ArcScope acceptance condition."
   },
   {
    "id": "SCOPE.12",
@@ -13383,12 +13381,12 @@
     "ArcScope:src/ArcScope/ArcScope.Decoders/**",
     "ArcScope:tests/ArcScopePipelineTests/Decoders/**"
    ],
-   "validation": "fixture corpora for each shipped V1 decoder, including malformed input; error-visibility assertion; structural no-device-write test — offline",
-   "evidence": "fixtures for each shipped V1 decoder, error visibility and no-write assertion",
+   "validation": "per-decoder fixture corpora including malformed input; error-visibility assertion; structural no-device-write test — offline",
+   "evidence": "per-decoder fixtures, error visibility and no-write assertion",
    "baseline": {
     "state": "not-started"
    },
-   "notes": "Independent of SCOPE.14 (measurements); the two can proceed in parallel. Decoder scope (UART/I2C/SPI) is fixed by the already-frozen analysis.v1 profile in architecture doc 26-product-behavior-profiles.md — note this is the ARCHITECTURE document numbered 26, unrelated to WP-26 (Remote action and tool bridge); no start edge needed since the design is already frozen, not missing. Planning repair 2026-10-09 (P2-026; scope correction): reduced: first-party protocol decoders that V1 does not ship, with their fixture corpora, are out of scope, not completed.",
+   "notes": "Independent of SCOPE.14 (measurements); the two can proceed in parallel. Decoder scope (UART/I2C/SPI) is fixed by the already-frozen analysis.v1 profile in architecture doc 26-product-behavior-profiles.md — note this is the ARCHITECTURE document numbered 26, unrelated to WP-26 (Remote action and tool bridge); no start edge needed since the design is already frozen, not missing. Planning repair 2026-10-09 (P2-026; review finding): which first-party protocol decoders V1 ships is open question 19, which P2-026 does not decide (no V1 decoder set is named). The acceptance text is restored to the pre-P2-026 per-decoder text, and no decoder is marked out until open question 19 is adjudicated under DLV-43.",
    "complete": []
   },
   {
@@ -29866,10 +29864,9 @@
   },
   {
    "gate": "PG-01",
-   "contribution": "Historical/informational only: the per-product Reference Coverage Matrices were closed pre-package (2026-09-05); SCOPE.10 performs only the maintenance drift re-check the package gate requires. Per-product Reference Coverage Matrix: closed 2026-09-05 by design-stage evidence; registered as a versioned input at 00.04 (GOV.01, accepted); drift maintenance at 15.07/33.07 (other areas).",
+   "contribution": "Historical/informational only: the per-product Reference Coverage Matrices were closed pre-package (2026-09-05). Per-product Reference Coverage Matrix: closed 2026-09-05 by design-stage evidence; registered as a versioned input at 00.04 (GOV.01, accepted). The maintenance drift re-check (WP-33.07 in SCOPE.10; WP-15.07 in AST.08) is out of scope under P2-026 S1 and S2 and is not a package-gate condition.",
    "tasks": [
-    "GOV.01",
-    "SCOPE.10"
+    "GOV.01"
    ]
   },
   {
@@ -30358,6 +30355,16 @@
    "ref": "WP-05:web-repository-and-architecture-assertio",
    "by": "P2-026",
    "note": "Web's Node/TypeScript repository architecture assertions are the GOV.11 mechanism; out of scope with the Node tooling port and the GOV.11 successor (P2-026 S10, brief section 11 S17(a)). The C# successor is not required."
+  },
+  {
+   "ref": "WP-33.07",
+   "by": "P2-026",
+   "note": "Serial-Studio reference drift re-check (SCOPE.10) has no ArcScope consumer; out of V1 under P2-026 S1 and S2."
+  },
+  {
+   "ref": "WP-15.07",
+   "by": "P2-026",
+   "note": "AionUi reference proof and drift re-check (AST.08) has no ArcScope consumer; out of V1 under P2-026 S1 and S2. Its clean-app package-only consumption is carried by AST.17."
   }
  ]
 }

@@ -213,7 +213,7 @@ date/time · ResourceRef · list<Value> · record<name, Value>
 ### 8.1 Install and verify
 
 ```
-Acquire (.arcpkg from catalog, URL or local file)
+Acquire (.arcpkg from URL or local file; the community catalog source is post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026))
  → verify integrity: hash, signature, publisher identity
  → parse manifest (before any code runs)
  → resolve compatibility: host version, contract set, protocol version, platform
@@ -228,7 +228,7 @@ Acquire (.arcpkg from catalog, URL or local file)
 | <a id="rule-pm-01"></a>PM-01 | **Integrity is verified before installation**, and an executable package should carry an SBOM. Community packages follow the same supply-chain discipline as ArcForges' own artifacts. |
 | <a id="rule-pm-02"></a>PM-02 | **Installation never executes an arbitrary script**. Installation is performed by the ArcForges installer, not by package-provided code. |
 | <a id="rule-pm-03"></a>PM-03 | **A published package version is immutable**; files of the same version are never overwritten. |
-| <a id="rule-pm-04"></a>PM-04 | **Local sideload requires no cloud account**; publishing to the official catalog requires a verified publisher account. |
+| <a id="rule-pm-04"></a>PM-04 | **Local sideload requires no cloud account**; publishing to the official catalog requires a verified publisher account. The official catalog is post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5; this rule is kept for that later reviewed decision. |
 | <a id="rule-pm-05"></a>PM-05 | **Executable packages are as self-contained as practical**. Runtime dependencies are packaged at release so dependency resolution never happens on a user machine; no npm-style transitive dependency tree exists. |
 | <a id="rule-pm-06"></a>PM-06 | **Arc Package dependencies express logical package relationships only**, and a dependency cycle fails validation. |
 | <a id="rule-pm-07"></a>PM-07 | **System dependencies are declared, detected and reported** — never silently installed by the package. |
@@ -259,7 +259,7 @@ Acquire (.arcpkg from catalog, URL or local file)
 
 ## 9. Catalog architecture
 
-> **Post-V1 and out of scope ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)).** The community catalog rules CA-01 to CA-05 are not required in V1 and are recorded as out of scope, not completed. They are kept unchanged for a later reviewed decision.
+> **Post-V1 and out of scope ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)).** The community catalog rules CA-01 to CA-07 are not required in V1 and are recorded as out of scope, not completed. They are kept unchanged for a later reviewed decision.
 
 | # | Rule |
 |---|---|
@@ -381,6 +381,8 @@ The public IExtensionHost service, StructuredValue and typed extension message e
 [Extension/policy profiles](contracts/08-extension-and-policy-profiles.md) fixes the six package contribution kinds, complete manifest, template/workflow/panel schemas, connector lifecycle and staged/drained update. Author those closed schemas in Contracts and generate validators before owner implementations. Dynamic schema generation is permitted only within the already declared extension-only argument boundary; it cannot replace handwritten business proto or invent first-party product operations. Catalog, signing, immutable package Resource hosting and existing owner/grant/policy validation are actual WP41 outputs, not a filesystem-only install demo.
 
 ## PackageCatalog producer and distribution
+
+> **Post-V1 and out of scope ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)).** PackageCatalog, its catalog-index.v1 and catalog-revocations.v1 formats, and the `downloads.arcforges.com/catalog/v1/` distribution are not required in V1 and are recorded as out of scope, not completed (P2-026 S5).
 
 Cloud PackageCatalog owns the registry 04 catalog methods and model 01 publisher/package/version/review/revocation tables. WP41 implements submission/verification/scanning/review-state/index production and CLI consumer; WP45 adds operator review/revocation UI. CLI `publish` uploads immutable bytes through Resource, then calls catalog.submitVersion with a scoped publisher credential. It does not bypass review or publish directly to a public bucket.
 

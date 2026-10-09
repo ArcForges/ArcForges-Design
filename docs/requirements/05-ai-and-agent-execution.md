@@ -458,7 +458,7 @@ An enabled model route prices every applicable billable category/tier. The follo
 
 | Consumes credits | Absorbed as ArcForges cost of goods |
 |---|---|
-| Chat responses | Cloud search embedding, indexing and reranking |
+| Chat responses | Cloud search embedding and indexing (reranking is out of V1 under P2-026 S4) |
 | Agent reasoning | Internal routing model calls |
 | Selection-scoped ArcScope actions | Abuse classification |
 | Supported image-understanding requests | Health checks |

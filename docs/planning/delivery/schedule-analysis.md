@@ -8,10 +8,10 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 
 | Measure | Value |
 |---|---|
-| Delivery tasks | 428 (6 carried as accepted baseline), plus 50 adoption slices |
-| Out of scope (excluded from every measure here; not completed) | 33 tasks under P2-026 |
-| Dependency edges by type | artifact 1045, contract 108, integration(completion) 243, release 34 |
-| Remaining work (size units: S=1, M=2, L=4, XL=8) | 1112 |
+| Delivery tasks | 426 (6 carried as accepted baseline), plus 50 adoption slices |
+| Out of scope (excluded from every measure here; not completed) | 35 tasks under P2-026 |
+| Dependency edges by type | artifact 1042, contract 108, integration(completion) 243, release 34 |
+| Remaining work (size units: S=1, M=2, L=4, XL=8) | 1110 |
 | Longest dependency chain (levels) | 27 |
 | Widest level (tasks whose longest prerequisite chain has equal length) | 58 |
 | Critical path length (size units) | 79 |
@@ -29,10 +29,10 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 | [Desktop platform mechanisms](lanes/platform.md) | 53 | 128 | DesktopPlatform |
 | [Native producers and probes](lanes/native.md) | 9 | 18 | DesktopPlatform |
 | [Application composition](lanes/app-composition.md) | 8 | 14 | ArcScope, DesktopPlatform |
-| [Embedded assistant](lanes/assistant.md) | 22 | 49 | DesktopPlatform |
+| [Embedded assistant](lanes/assistant.md) | 21 | 48 | DesktopPlatform |
 | [Execution engine](lanes/execution.md) | 9 | 19 | DesktopPlatform |
 | [Application presence and tool bridge](lanes/device-bridge.md) | 12 | 22 | Cloud, DesktopPlatform |
-| [ArcScope](lanes/arcscope.md) | 27 | 67 | ArcScope |
+| [ArcScope](lanes/arcscope.md) | 26 | 66 | ArcScope |
 | [ArcScope Cloud simulator](lanes/simulator.md) | 10 | 36 | ArcScope, Cloud |
 | [Cloud core](lanes/cloud.md) | 66 | 151 | Cloud, DesktopPlatform |
 | [Commerce, entitlement and credits](lanes/commerce.md) | 16 | 56 | Cloud |
@@ -53,10 +53,10 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 
 | Repository | Open tasks | Lanes | Widest level (tasks at once) | Ready after its adoption slices | Examples that can run at the same time |
 |---|---|---|---|---|---|
-| ArcScope | 33 | 6 | level 9: 8 | 2 | [APP.03](lanes/app-composition.md#task-app-03) Clean Native AOT package-consumer composition for ArcScope, [SCOPE.07](lanes/arcscope.md#task-scope-07) Durable capture writer, chunked verifiable store and crash recovery, [SCOPE.12](lanes/arcscope.md#task-scope-12) Visualisation: virtualised rendering, downsampling, cursors and markers, [SCOPE.13](lanes/arcscope.md#task-scope-13) Triggers with pre/post windows |
+| ArcScope | 32 | 6 | level 9: 8 | 1 | [APP.03](lanes/app-composition.md#task-app-03) Clean Native AOT package-consumer composition for ArcScope, [SCOPE.07](lanes/arcscope.md#task-scope-07) Durable capture writer, chunked verifiable store and crash recovery, [SCOPE.12](lanes/arcscope.md#task-scope-12) Visualisation: virtualised rendering, downsampling, cursors and markers, [SCOPE.13](lanes/arcscope.md#task-scope-13) Triggers with pre/post windows |
 | Cloud | 149 | 12 | level 15: 15 | 8 | [CLOUD.32](lanes/cloud.md#task-cloud-32) Durable unary fallback (Poll/readOutput), [COM.09](lanes/commerce.md#task-com-09) Ledgers and reconciliation, [DEV.04](lanes/device-bridge.md#task-dev-04) Execution and result deduplication -- Cloud D1 attempt/result store, [HAR.06](lanes/harness.md#task-har-06) Durable Cloud automation, scheduling and automation-fixture removal |
-| Contracts | 28 | 4 | level 3: 7 | 7 | [CON.04](lanes/contracts.md#task-con-04) ContentSandbox service schema (15 methods: session/slot/image/PDF), [CON.05](lanes/contracts.md#task-con-05) Extension/Connector/LocalBootstrap service schema (annex09 helper closure minus ContentSandbox), [CON.12](lanes/contracts.md#task-con-12) Extension and policy schemas: manifest.v1/workflow.v1/panel.v1/policy body.v1/configuration.v1, [CON.16](lanes/contracts.md#task-con-16) Signed update and realm formats (android-update.v1, realm.v1 only if a retained consumer needs it) |
-| DesktopPlatform | 134 | 13 | level 7: 20 | 8 | [EXE.02](lanes/execution.md#task-exe-02) Lifecycle states and reason facets, [GOV.20](lanes/governance.md#task-gov-20) Build.Policy banned-symbol scanner: audit unmanaged function-pointer invocations instead of throwing, [NAT.05](lanes/native.md#task-nat-05) Probe evidence, licence positions, conclusions and hardware-lab inventory seed, [PLT.11](lanes/platform.md#task-plt-11) Child registration lifecycle |
+| Contracts | 28 | 4 | level 3: 7 | 7 | [CON.04](lanes/contracts.md#task-con-04) ContentSandbox service schema (15 methods: session/slot/image/PDF), [CON.05](lanes/contracts.md#task-con-05) Extension/Connector/LocalBootstrap service schema (annex09 helper closure minus ContentSandbox), [CON.12](lanes/contracts.md#task-con-12) Extension and policy schemas: manifest.v1/workflow.v1/panel.v1/policy body.v1/configuration.v1, [CON.16](lanes/contracts.md#task-con-16) Signed catalog/update/realm formats (catalog-index.v1, catalog-revocations.v1, android-update.v1, realm.v1) |
+| DesktopPlatform | 133 | 13 | level 7: 20 | 8 | [EXE.02](lanes/execution.md#task-exe-02) Lifecycle states and reason facets, [GOV.20](lanes/governance.md#task-gov-20) Build.Policy banned-symbol scanner: audit unmanaged function-pointer invocations instead of throwing, [NAT.05](lanes/native.md#task-nat-05) Probe evidence, licence positions, conclusions and hardware-lab inventory seed, [PLT.11](lanes/platform.md#task-plt-11) Child registration lifecycle |
 | Mobile | 30 | 3 | level 18: 5 | 1 | [AND.07](lanes/android.md#task-and-07) Foundation integration evidence: real candidate against deployed 22/23/24/25, [AND.08](lanes/android.md#task-and-08) Authentication, Home and workspace (AN01-AN06), [AND.12](lanes/android.md#task-and-12) Presence, push, links and settings (AN20-AN24), [AND.24](lanes/android.md#task-and-24) Real CF Harness generation/tool loop observed end to end on Android |
 | Web | 39 | 4 | level 11: 8 | 0 | [OPS.04](lanes/operations.md#task-ops-04) Status page, [WEB.02](lanes/web.md#task-web-02) Versioned public content and pricing inputs (catalogue.json), [WEB.03](lanes/web.md#task-web-03) Rendering and performance, [WEB.04](lanes/web.md#task-web-04) Internationalisation |
 
@@ -90,13 +90,13 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 |---|---|
 | 1 | 1 |
 | 2 | 58 |
-| 3 | 26 |
+| 3 | 25 |
 | 4 | 22 |
 | 5 | 29 |
 | 6 | 23 |
 | 7 | 28 |
 | 8 | 24 |
-| 9 | 31 |
+| 9 | 30 |
 | 10 | 20 |
 | 11 | 33 |
 | 12 | 28 |
@@ -122,9 +122,9 @@ Assumptions: task effort is its relative size (S=1, M=2, L=4, XL=8 units, never 
 
 | Workers | Makespan (size units) | Estimated speed-up over one worker |
 |---|---|---|
-| 1 | 1112 | 1.0× |
-| 2 | 557 | 2.0× |
-| 4 | 280 | 4.0× |
+| 1 | 1110 | 1.0× |
+| 2 | 556 | 2.0× |
+| 4 | 279 | 4.0× |
 | 8 | 141 | 7.9× |
 | 16 | 79 | 14.1× |
 | 32 | 79 | 14.1× |
@@ -135,7 +135,7 @@ Assumptions: task effort is its relative size (S=1, M=2, L=4, XL=8 units, never 
 
 Tasks whose start prerequisites are satisfied once their adoption slices have confirmed the accepted baseline, assuming no other existing work is inherited. The actual first ready set is established slice by slice during adoption and grows as reviewed existing work is recorded as inherited.
 
-[AND.01](lanes/android.md#task-and-01), [CLOUD.01](lanes/cloud.md#task-cloud-01), [CLOUD.44](lanes/cloud.md#task-cloud-44), [CLOUD.55](lanes/cloud.md#task-cloud-55), [COM.01](lanes/commerce.md#task-com-01), [COM.02](lanes/commerce.md#task-com-02), [COM.05](lanes/commerce.md#task-com-05), [CON.04](lanes/contracts.md#task-con-04), [CON.05](lanes/contracts.md#task-con-05), [CON.12](lanes/contracts.md#task-con-12), [CON.16](lanes/contracts.md#task-con-16), [CON.17](lanes/contracts.md#task-con-17), [CON.18](lanes/contracts.md#task-con-18), [CON.23](lanes/contracts.md#task-con-23), [FND.01](lanes/foundation.md#task-fnd-01), [FND.02](lanes/foundation.md#task-fnd-02), [FND.03](lanes/foundation.md#task-fnd-03), [FND.04](lanes/foundation.md#task-fnd-04), [FND.05](lanes/foundation.md#task-fnd-05), [FND.06](lanes/foundation.md#task-fnd-06), [GOV.17](lanes/governance.md#task-gov-17), [NAT.03](lanes/native.md#task-nat-03), [OPS.01](lanes/operations.md#task-ops-01), [POL.01](lanes/policy.md#task-pol-01), [SCOPE.02](lanes/arcscope.md#task-scope-02), [SCOPE.10](lanes/arcscope.md#task-scope-10)
+[AND.01](lanes/android.md#task-and-01), [CLOUD.01](lanes/cloud.md#task-cloud-01), [CLOUD.44](lanes/cloud.md#task-cloud-44), [CLOUD.55](lanes/cloud.md#task-cloud-55), [COM.01](lanes/commerce.md#task-com-01), [COM.02](lanes/commerce.md#task-com-02), [COM.05](lanes/commerce.md#task-com-05), [CON.04](lanes/contracts.md#task-con-04), [CON.05](lanes/contracts.md#task-con-05), [CON.12](lanes/contracts.md#task-con-12), [CON.16](lanes/contracts.md#task-con-16), [CON.17](lanes/contracts.md#task-con-17), [CON.18](lanes/contracts.md#task-con-18), [CON.23](lanes/contracts.md#task-con-23), [FND.01](lanes/foundation.md#task-fnd-01), [FND.02](lanes/foundation.md#task-fnd-02), [FND.03](lanes/foundation.md#task-fnd-03), [FND.04](lanes/foundation.md#task-fnd-04), [FND.05](lanes/foundation.md#task-fnd-05), [FND.06](lanes/foundation.md#task-fnd-06), [GOV.17](lanes/governance.md#task-gov-17), [NAT.03](lanes/native.md#task-nat-03), [OPS.01](lanes/operations.md#task-ops-01), [POL.01](lanes/policy.md#task-pol-01), [SCOPE.02](lanes/arcscope.md#task-scope-02)
 
 ## Remaining serial dependencies and bottlenecks
 

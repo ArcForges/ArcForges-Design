@@ -22,7 +22,7 @@ Tasks: 27 · Owning repositories: Contracts · Integration owner(s): Contracts i
 | [CON.12](#task-con-12) | Extension and policy schemas: manifest.v1/workflow.v1/panel.v1/policy body.v1/configuration.v1 | contract | M | none | not-started |
 | [CON.14](#task-con-14) | Operator control service (OperatorService, full §9/9.1/9.2 protocol) | contract | L | [CON.13](#task-con-13) (contract), [CON.09](#task-con-09) (contract), [CON.22](#task-con-22) (contract) | not-started |
 | [CON.15](#task-con-15) | Cloudflare-internal HTTP and D1 ExecutePlan bindings | contract | M | [CON.10](#task-con-10) (contract) | not-started |
-| [CON.16](#task-con-16) | Signed update and realm formats (android-update.v1, realm.v1 only if a retained consumer needs it) | contract | M | none | not-started |
+| [CON.16](#task-con-16) | Signed catalog/update/realm formats (catalog-index.v1, catalog-revocations.v1, android-update.v1, realm.v1) | contract | M | none | not-started |
 | [CON.17](#task-con-17) | Cross-language compatibility window + canonical semantic hash | contract | M | [CON.92](#task-con-92) (contract) | not-started |
 | [CON.18](#task-con-18) | Operation-scope manifest + authorization-reachability matrix generator | contract | S | none | not-started |
 | [CON.19](#task-con-19) | WP03.90 — verify the owned Contracts artifact and its real (non-consumer) integration | contract | M | [CON.02](#task-con-02) (contract), [CON.18](#task-con-18) (contract), [CON.03](#task-con-03) (artifact), [CON.04](#task-con-04) (artifact), [CON.05](#task-con-05) (artifact), [CON.06](#task-con-06) (artifact), [CON.07](#task-con-07) (artifact), [CON.08](#task-con-08) (artifact), [CON.09](#task-con-09) (artifact), [CON.10](#task-con-10) (artifact), [CON.11](#task-con-11) (artifact), [CON.12](#task-con-12) (artifact), [CON.13](#task-con-13) (artifact), [CON.14](#task-con-14) (artifact), [CON.15](#task-con-15) (artifact), [CON.16](#task-con-16) (artifact), [CON.17](#task-con-17) (artifact), [CON.21](#task-con-21) (artifact), [CON.22](#task-con-22) (artifact), [CON.01](#task-con-01) (artifact), [CON.23](#task-con-23) (artifact), [CON.24](#task-con-24) (artifact), [CON.25](#task-con-25) (artifact) | not-started |
@@ -376,9 +376,9 @@ Tasks: 27 · Owning repositories: Contracts · Integration owner(s): Contracts i
 
 <a id="task-con-16"></a>
 
-### CON.16 — Signed update and realm formats (android-update.v1, realm.v1 only if a retained consumer needs it)
+### CON.16 — Signed catalog/update/realm formats (catalog-index.v1, catalog-revocations.v1, android-update.v1, realm.v1)
 
-**Outcome.** The retained signed-format schemas (android-update.v1, and realm.v1 only if a retained consumer needs it; catalog-index.v1 and catalog-revocations.v1 are out under [P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) are authored under public/http (or a dedicated signed-formats path) with canonical signing-vector fixtures and a deterministic fixture-only trust root (Ed25519, distinct from any production key); malformed/expired/rollback/mixed-shard negative vectors for the retained formats exist per [WP-03.07](../../work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.07)'s gate; android-update.v1 matches registry04's tail-section field list exactly (packageId/channel/versionName/versionCode-as-string/minSdk/minSupportedVersionCode/apkUrl/sha256/size/signingCertificateSha256/releaseNotesUrl/publishedAt, expiry<=7 days).
+**Outcome.** The four signed-format schemas are authored under public/http (or a dedicated signed-formats path) with canonical signing-vector fixtures and a deterministic fixture-only trust root (Ed25519, distinct from any production key); malformed/expired/rollback/mixed-shard negative vectors exist per [WP-03.07](../../work-packages/03-contract-foundation-and-licence-split.md#rule-wp-03.07)'s gate; android-update.v1 matches registry04's tail-section field list exactly (packageId/channel/versionName/versionCode-as-string/minSdk/minSupportedVersionCode/apkUrl/sha256/size/signingCertificateSha256/releaseNotesUrl/publishedAt, expiry<=7 days).
 
 | Field | Value |
 |---|---|

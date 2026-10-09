@@ -81,7 +81,7 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 <a id="rule-wp-40.06"></a>
 ### WP-40.06 — Real Cloud query path
 
-**What must be fully done.** Use Workers AI embeddings/reranker and actual D1/Vectorize with C# owner filtering; fixture joins remain named until real provider gate.
+**What must be fully done.** Use Workers AI embeddings (the reranker is out of V1 under P2-026 S4) and actual D1/Vectorize with C# owner filtering; fixture joins remain named until real provider gate.
 
 **Testing requirements.** Real compatible client/owner/index versions and explicit lexical-only degradation.
 

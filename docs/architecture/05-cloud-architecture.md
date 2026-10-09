@@ -73,7 +73,7 @@ This is the authoritative routing table; arch 10 references it. All `/internal/*
 | arcforges.com | all paths including /.well-known/assetlinks.json | site Web profile; RP association static file |
 | www.arcforges.com | all paths | site Web edge → permanent HTTP 308 redirect to `https://arcforges.com`, preserving path and query before static asset handling; no independent API or session origin |
 | ops.arcforges.com | operations assets and operator APIs | Cloud Worker plus operations static profile behind separate operator Access/OIDC identity; customer sessions rejected |
-| docs.arcforges.com, downloads.arcforges.com, updates.arcforges.com | immutable documentation, packages/catalog, signed update feeds respectively | static artifact deployment; no customer cookies/business writes |
+| docs.arcforges.com, downloads.arcforges.com, updates.arcforges.com | immutable documentation, packages/catalog (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5), signed update feeds respectively | static artifact deployment; no customer cookies/business writes |
 | status.arcforges.com | all | independently hosted status adapter, reachable during Cloud outage |
 | notify.arcforges.com, news.arcforges.com | no Web routes | transactional and broadcast mail domains only |
 

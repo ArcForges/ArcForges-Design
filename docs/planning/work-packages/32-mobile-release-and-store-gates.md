@@ -30,7 +30,7 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 <a id="rule-wp-32.00"></a>
 ### WP-32.00 — Signed Android release artifacts
 
-**What must be fully done.** Build AAB for Play and separately signed direct APK automatically from reviewed main, with monotonic versionCode and immutable provenance. Preserve signing custody/channel distinction and test against WP03 update schemas.
+**What must be fully done.** Build the separately signed direct APK automatically from reviewed main (the Play AAB is out of V1 under P2-026 S11), with monotonic versionCode and immutable provenance. Preserve signing custody/channel distinction and test against WP03 update schemas.
 
 **Testing requirements.** Verify actual signature/package/R8/runtime, version monotonicity, no development key in production, clean device install/upgrade.
 
@@ -64,13 +64,13 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 **Completion gate.** Consumption-only remains true in every release branch and remote-config state.
 
 <a id="rule-wp-32.04"></a>
-### WP-32.04 — Play and direct-channel updates
+### WP-32.04 — Direct-channel updates (Play publication is out of V1 under P2-026 S11)
 
 **What must be fully done.** Implement arch 11 channel behavior and notify-only signed update client. Consume WP03 format/fixture keys now; WP53 production feed/key replacement is verified at WP50, not a backwards input.
 
 **Testing requirements.** Expired/rollback/wrong certificate/URL/hash, offline stale feed and explicit channel-switch export/reinstall guidance.
 
-**Completion gate.** Play primary and direct APK flow are complete with no silent install or unsupported cross-signature upgrade.
+**Completion gate.** the direct APK flow is complete (Play publication is out of V1 under P2-026 S11) with no silent install or unsupported cross-signature upgrade.
 
 <a id="rule-wp-32.05"></a>
 ### WP-32.05 — Physical device and recovery gates

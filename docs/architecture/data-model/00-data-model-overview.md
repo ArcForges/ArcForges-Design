@@ -273,7 +273,7 @@ Cloud is one C# Container image and one D1 authority database per realm. A unit 
 |---|---|---|
 | Committed purchase → customer notification/report | Commerce outbox → Notification/reporting consumer | Order, applicable term/grant/credit adjustment and entitlement version are already atomic; only presentation/report delivery is asynchronous. Provider reconciliation retries absent recognition, never a second grant. |
 | Content → search/index projections | Content outbox → Search indexer | Version-guarded derived projection; rebuild and journal/feed catch-up |
-| Search inference outcome → vector/rerank projection | Search outbox → Search projection consumer | Match job/result receipt, exact source/model/config and current policy; publish complete results or discard stale output, then release job pins idempotently |
+| Search inference outcome → vector projection (the rerank projection is out of V1 under P2-026 S4) | Search outbox → Search projection consumer | Match job/result receipt, exact source/model/config and current policy; publish complete results or discard stale output, then release job pins idempotently |
 | Content/Task → notifications | Owner outbox → Notification inbox | Durable attention is readable even if push fails |
 | Durable notification → Android wake | Notification transaction/outbox → FCM sender | Atomically create unique push_delivery intents; bounded retry/fenced receipt, current registration/generation/TTL check. Provider acceptance is not physical receipt; duplicate sends replace one client attention identity |
 | Account/device denial → queued work withdrawal | Identity/Device outbox → Task inbox | Admission and device execution recheck denial immediately; cancellation consumer drains queued work idempotently |
