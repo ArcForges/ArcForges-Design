@@ -1036,7 +1036,7 @@ Supplier exposure cannot expire merely because a customer hold expires. Confirme
 |---|---|---|
 | `logical_request_id` | `id` | **PK** |
 | `workspace_id` | `id?` | Required for user/data-scoped work; absent only for deployment health with no customer data |
-| `service_term_id` | `id?` | Required for user-delivered official inference and workspace indexing/reranking eligibility; may be absent only for separately authorized deployment platform work without customer service dependency |
+| `service_term_id` | `id?` | Required for user-delivered official inference and workspace indexing eligibility (reranking is out of V1 under P2-026 S4); may be absent only for separately authorized deployment platform work without customer service dependency |
 | `operator_job_ref` | `id?` | Required and authorised for platform beneficiaries; never a substitute for user inference eligibility |
 | `run_id`, `step_id`, `attempt_id` | `id?` | Required for every Cloud user chat/agent invocation; absent only for separately authorised platform jobs |
 | `beneficiary` | `enum(userDelivered, platformRouting, platformAbuse, platformHealth, platformIndexing, platformRetry) NN` | Decides who pays ([ST-07](../16-billing-and-commerce-architecture.md#rule-st-07), [MT-08](../../requirements/04-commerce-entitlement-and-credits.md#rule-mt-08)) |
@@ -1430,12 +1430,12 @@ Expiry forbids new writes and starts idempotent physical cleanup. The sweeper ve
 <a id="search-inference-job-execution-record"></a>
 ## 10.1 `search` — inference jobs
 
-Search owns search.inference_job as the canonical business control/receipt record; vectors and reranked candidates remain derived. It is a bounded platform Job, not task.task or a second AI loop. The private [CF inference ports](../contracts/05-cloudflare-integration.md#8-session-bindings-inference-jobs-and-deployment-transitions) carry this identity.
+Search owns search.inference_job as the canonical business control/receipt record; vectors remain derived (reranked candidates are out of V1 under P2-026 S4). It is a bounded platform Job, not task.task or a second AI loop. The private [CF inference ports](../contracts/05-cloudflare-integration.md#8-session-bindings-inference-jobs-and-deployment-transitions) carry this identity.
 
 | Fields | Type and invariant |
 |---|---|
 | job_id; workspace_id; principal_id; service_term_id | id PK and non-null scoped owner/eligibility identities; scheduled indexing uses its explicit operator-job grant for that workspace, never a fabricated interactive session |
-| purpose; input_hash; source_manifest_ref; source_set_hash | embedding/rerank; exact hash plus immutable ResourceVersionRef; input hash includes kind, normalized input, ordered source revisions/hashes, principal/scope/policy snapshot, model/profile/config and effective budget |
+| purpose; input_hash; source_manifest_ref; source_set_hash | embedding (rerank is out of V1 under P2-026 S4); exact hash plus immutable ResourceVersionRef; input hash includes kind, normalized input, ordered source revisions/hashes, principal/scope/policy snapshot, model/profile/config and effective budget |
 | model_descriptor_id; config_revision_id; profile | Pinned activated catalogue/config and selected inference profile; no dynamic provider fallback |
 | state; reason; rev; created_at; updated_at; deadline | queued/running/unknown/succeeded/failed/cancelled; named reason, monotonic revision and UTC instants. Model admission-to-result deadline: Design value 120 seconds ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 5); the deployed 90-second model-step timeout stays enforced until the HAR.40 proof records the reviewed C# policy value, which may not exceed 120 seconds; before-dispatch expiry refuses, possible-dispatch expiry is unknown |
 | logical_request_id; provider_attempt_id; intent_receipt | Existing Commerce identities, one bounded invocation per admitted job; beneficiary=platformIndexing, funding_class=platformJob, operator_job_ref=job_id. No customer capacity reservation/tariff/settlement |

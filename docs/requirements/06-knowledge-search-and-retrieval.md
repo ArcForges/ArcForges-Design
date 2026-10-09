@@ -162,8 +162,8 @@ Search visibility, Cloud indexing, AI retrieval and provider processing have dis
 | <a id="rule-hr-01"></a>HR-01 | **Keyword + semantic + metadata form hybrid retrieval.** `Keyword Search ≠ Semantic Search` ([I-145](01-normative-glossary-and-invariants.md#rule-i-145)); both are first-class. |
 | <a id="rule-hr-02"></a>HR-02 | **Hybrid is not the sum of two scores.** Ranking fusion with normalisation is required; naive score addition across incomparable scales is prohibited. |
 | <a id="rule-hr-03"></a>HR-03 | **Exact match receives strong priority.** Lexical exactness stays first-class — a user searching a precise technical term must find it. |
-| <a id="rule-hr-04"></a>HR-04 | **Reranking is an optional enhancement layer.** A reranker failure degrades ordering; it must never fail the retrieval. |
-| <a id="rule-hr-05"></a>HR-05 | Managed reranking is subject to managed AI policy. |
+| <a id="rule-hr-04"></a>HR-04 | **Reranking is an optional enhancement layer (out of V1 under P2-026 S4; the rule below applies only to a later reviewed reranker).** A reranker failure degrades ordering; it must never fail the retrieval. |
+| <a id="rule-hr-05"></a>HR-05 | Managed reranking is subject to managed AI policy (out of V1 under P2-026 S4). |
 
 ### 5.2 Retrieval budget
 

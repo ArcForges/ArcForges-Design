@@ -219,7 +219,7 @@ Each slice classifies the tasks of one repository and lane against the frozen ba
 | Slice | Repository | Lane | Tasks it opens | Accepted baseline in scope | Repository record |
 |---|---|---|---|---|---|
 | <a id="task-adopt-02-app-composition"></a>ADOPT.02.app-composition | DesktopPlatform | [Application composition](app-composition.md) | 6 | none | [ADOPT.02](#task-adopt-02) |
-| <a id="task-adopt-02-assistant"></a>ADOPT.02.assistant | DesktopPlatform | [Embedded assistant](assistant.md) | 21 | none | [ADOPT.02](#task-adopt-02) |
+| <a id="task-adopt-02-assistant"></a>ADOPT.02.assistant | DesktopPlatform | [Embedded assistant](assistant.md) | 22 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-cloud"></a>ADOPT.02.cloud | DesktopPlatform | [Cloud core](cloud.md) | 2 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-device-bridge"></a>ADOPT.02.device-bridge | DesktopPlatform | [Application presence and tool bridge](device-bridge.md) | 3 | none | [ADOPT.02](#task-adopt-02) |
 | <a id="task-adopt-02-execution"></a>ADOPT.02.execution | DesktopPlatform | [Execution engine](execution.md) | 9 | none | [ADOPT.02](#task-adopt-02) |
@@ -237,7 +237,7 @@ Each slice classifies the tasks of one repository and lane against the frozen ba
 | <a id="task-adopt-03-governance"></a>ADOPT.03.governance | Contracts | [Family governance and policy tests](governance.md) | 2 | none | [ADOPT.03](#task-adopt-03) |
 | <a id="task-adopt-03-release"></a>ADOPT.03.release | Contracts | [Release readiness and family release](release.md) | 1 | none | [ADOPT.03](#task-adopt-03) |
 | <a id="task-adopt-05-app-composition"></a>ADOPT.05.app-composition | ArcScope | [Application composition](app-composition.md) | 2 | none | [ADOPT.05](#task-adopt-05) |
-| <a id="task-adopt-05-arcscope"></a>ADOPT.05.arcscope | ArcScope | [ArcScope](arcscope.md) | 26 | none | [ADOPT.05](#task-adopt-05) |
+| <a id="task-adopt-05-arcscope"></a>ADOPT.05.arcscope | ArcScope | [ArcScope](arcscope.md) | 27 | none | [ADOPT.05](#task-adopt-05) |
 | <a id="task-adopt-05-governance"></a>ADOPT.05.governance | ArcScope | [Family governance and policy tests](governance.md) | 1 | none | [ADOPT.05](#task-adopt-05) |
 | <a id="task-adopt-05-release"></a>ADOPT.05.release | ArcScope | [Release readiness and family release](release.md) | 1 | none | [ADOPT.05](#task-adopt-05) |
 | <a id="task-adopt-05-runtime-proofs"></a>ADOPT.05.runtime-proofs | ArcScope | [Runtime proofs](runtime-proofs.md) | 1 | none | [ADOPT.05](#task-adopt-05) |

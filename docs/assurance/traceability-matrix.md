@@ -210,7 +210,7 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | **[VG-13](open-gates-register.md#rule-vg-13)** | `32.04` | First store submission |
 | **[PG-01](open-gates-register.md#rule-pg-01)** | **Closed by design evidence 2026-09-05.** Registered in `00.04`; drift maintenance per product | Product first release |
 | **[PG-02](open-gates-register.md#rule-pg-02)** | **Closed by design evidence 2026-09-05** — the item-level inventory. Drift validation in `01.00`; execution in `01.01`–`01.05` | All restructuring |
-| **[PG-03](open-gates-register.md#rule-pg-03)** | `13.10`, `13.12`, `13.13` | Native dependency use |
+| **[PG-03](open-gates-register.md#rule-pg-03)** | `13.04`, `13.12`, `33`, `35.04` | Native dependency licence review (still-image `13.10` and `13.13` are out of V1 under P2-026 S1 and S8) |
 | **[PG-04](open-gates-register.md#rule-pg-04)** | `45.02` | Paid cloud go-live |
 | **[PG-05](open-gates-register.md#rule-pg-05)** | `12.02` | [R-16](release-gates.md#rule-r-16) |
 | **[PG-06](open-gates-register.md#rule-pg-06)** | **Closed by design evidence 2026-09-05** — [`invariant-coverage.md`](invariant-coverage.md) `§7` | Finalising the design baseline |
@@ -219,7 +219,7 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | **[PG-08](open-gates-register.md#rule-pg-08)** | 13.04 seeds and 13.16 completes the inventory; 33/34 consume and maintain it | [C-04](release-gates.md#rule-c-04) |
 | **[PG-09](open-gates-register.md#rule-pg-09)** | `41` | Third-party extension enablement |
 | **[PG-10](open-gates-register.md#rule-pg-10)** | `42.10`, `43.06` | [L-28](release-gates.md#rule-l-28), [L-29](release-gates.md#rule-l-29) |
-| **[PG-12](open-gates-register.md#rule-pg-12)** | 11.09, 13.13 | Retired, not closed, by [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022): no PDF preview or PDF parsing claim; image containment routes through NAT.31 and PLT.54. [NAT.32](../planning/delivery/lanes/native.md#task-nat-32) is not a PG-12 gate task and does not map WP-13.13 |
+| **[PG-12](open-gates-register.md#rule-pg-12)** | 11.09 | Retired, not closed, by [P2-022](../decisions/phase-2-specification-decisions.md#rule-p2-022): no PDF preview or PDF parsing claim; still-image containment is out of V1 (P2-026 S1 and S8). [NAT.32](../planning/delivery/lanes/native.md#task-nat-32) is not a PG-12 gate task and does not map WP-13.13 |
 | **[PG-13](open-gates-register.md#rule-pg-13)** | `43.07`, `42.11` | Paid AI go-live; [PG-10](open-gates-register.md#rule-pg-10) |
 | **[PG-14b](open-gates-register.md#rule-pg-14b)** | `51.00`–`51.05` | Any ArcScope claim that Cloud simulation is delivered. **Not `34`**, whose repeatable source is file/replay from `33` |
 | **[PG-16](open-gates-register.md#rule-pg-16)** | `44.01`, `42.11` | Paid production go-live |
@@ -227,7 +227,7 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | **[PG-18](open-gates-register.md#rule-pg-18)** | `52.02`, `52.04` | Paid AI go-live; any external-effect capability |
 | **[PG-19](open-gates-register.md#rule-pg-19)** | `21.03`, `50.04` | Any schema evolution in production |
 | **[PG-21](open-gates-register.md#rule-pg-21)** | Current corpus closed by [repair verification](design-repair-verification.md); continuing drift check in 00.01 | Every later normative edit re-runs the complete citation check |
-| **[PG-22](open-gates-register.md#rule-pg-22)** | 11.09, 13.13, 41.00 | Packaged OS containment and extension permissions on each supported RID |
+| **[PG-22](open-gates-register.md#rule-pg-22)** | 11.09 (13.13 and 41.00 out of V1 under P2-026 S1, S5 and S8) | Packaged OS containment and extension permissions on each supported RID |
 | **[PG-23](open-gates-register.md#rule-pg-23)** | PRF.11, WEB.40; historical 06.05, 22.08, 23.05, 24.06, 47, 48, 49, 50.06 | Production Blazor WebAssembly profiles, generated C# SDK, browser sessions, visual quality, toolchains and release/rollback ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)) |
 | **[PG-24](open-gates-register.md#rule-pg-24)** | `45.09`, `32` | Real Android push, physical receipt and recovery evidence |
 | **[PG-25](open-gates-register.md#rule-pg-25)** | `21.08`, `46`, `50` | Self-host account deployment, realm/key/auth isolation and independent restore |

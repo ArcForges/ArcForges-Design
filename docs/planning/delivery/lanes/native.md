@@ -71,7 +71,7 @@ Tasks: 9 · Owning repositories: DesktopPlatform · Integration owner(s): Deskto
 
 ### NAT.05 — Probe evidence, licence positions, conclusions and hardware-lab inventory seed
 
-**Outcome.** Each of the two retained probes (A and C) keeps a recorded result as verification evidence only (no written conclusion record is a product dependency); every native dependency the probes introduced has a recorded licence position; the tests/HardwareLab device inventory is created (device/firmware/driver versions) -- seeding [PG-08](../../../assurance/open-gates-register.md#rule-pg-08) (completed later by NAT.28/[WP-13.16](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.16)).
+**Outcome.** Each of the two retained probes (A and C) has a written conclusion (proved / not proved / downstream constraint / open items); every native dependency the probes introduced has a recorded licence position; the tests/HardwareLab device inventory is created (device/firmware/driver versions) -- seeding [PG-08](../../../assurance/open-gates-register.md#rule-pg-08) (completed later by NAT.28/[WP-13.16](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.16)).
 
 | Field | Value |
 |---|---|
@@ -85,10 +85,10 @@ Tasks: 9 · Owning repositories: DesktopPlatform · Integration owner(s): Deskto
 | Completion prerequisites | none |
 | Unblocks | [NAT.30](#task-nat-30) |
 | Write scope | `DesktopPlatform:eng/verification/probe-evidence/**`<br>`DesktopPlatform:tests/HardwareLab/**` |
-| Validation | Completeness check: every probe has a recorded environment, procedure and result |
-| Completion evidence | Two probe result records kept as verification evidence only; licence positions for probe-introduced dependencies; hardware inventory shell |
+| Validation | Completeness check: every probe has a recorded environment, procedure, result and conclusion |
+| Completion evidence | Two written probe conclusions; licence positions for probe-introduced dependencies; hardware inventory shell |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: depends on the retained NAT.01 and NAT.03 probe results. |
-| Notes | Small synthesis task; not itself a risk probe. Planning repair 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); scope correction): reduced: written probe-conclusion records as a product dependency and licence positions for PDF-only dependencies are out of scope, not completed. |
+| Notes | Small synthesis task; not itself a risk probe. |
 
 <a id="task-nat-06"></a>
 

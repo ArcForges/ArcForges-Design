@@ -133,7 +133,7 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 | **[VG-13](../../assurance/open-gates-register.md#rule-vg-13)** — store category fit and consumption-only | 32 |
 | **[PG-01](../../assurance/open-gates-register.md#rule-pg-01)** — per-product Reference Coverage Matrix | **Closed 2026-09-05 by design-stage evidence.** Registered as versioned inputs in `00.04`; drift maintenance in `15.07`, `33.07` |
 | **[PG-02](../../assurance/open-gates-register.md#rule-pg-02)** — item-level reconciliation inventory | **Closed 2026-09-05 by design-stage evidence** — [`../../assurance/implementation-state-reconciliation.md`](../../assurance/implementation-state-reconciliation.md). Drift validation in `01.00`; disposition execution in `01.01`–`01.05` |
-| **[PG-03](../../assurance/open-gates-register.md#rule-pg-03)** — native dependency licence review | 13.04, 33, 35.04; each admitted native dependency has its licence/substitute-analysis evidence |
+| **[PG-03](../../assurance/open-gates-register.md#rule-pg-03)** — native dependency licence review | 13.04, 13.12, 33, 35.04; each admitted native dependency has its licence/substitute-analysis evidence |
 | **[PG-04](../../assurance/open-gates-register.md#rule-pg-04)** — runbook rehearsal evidence | 45 |
 | **[PG-05](../../assurance/open-gates-register.md#rule-pg-05)** — telemetry redaction proof | 12 |
 | **[PG-06](../../assurance/open-gates-register.md#rule-pg-06)** — design-stage invariant traceability | **Closed 2026-09-05 by design-stage evidence** — [`../../assurance/invariant-coverage.md`](../../assurance/invariant-coverage.md) `§7`, **429 of 429** mapped after [P2-006](../../decisions/phase-2-specification-decisions.md#rule-p2-006) added [I-491](../../requirements/01-normative-glossary-and-invariants.md#rule-i-491)–[I-498](../../requirements/01-normative-glossary-and-invariants.md#rule-i-498) |
@@ -142,7 +142,7 @@ Every gate in [`../../assurance/open-gates-register.md`](../../assurance/open-ga
 | **[PG-08](../../assurance/open-gates-register.md#rule-pg-08)** — hardware lab inventory | 13 establishes inventory; 33, 34 bind each hardware result to it |
 | **[PG-09](../../assurance/open-gates-register.md#rule-pg-09)** — extension protocol conformance | 41 (out of scope under P2-026 S5) |
 | **[PG-10](../../assurance/open-gates-register.md#rule-pg-10)** — provider test-environment coverage | 42, 43 |
-| **[PG-12](../../assurance/open-gates-register.md#rule-pg-12)** — retired by [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF dependency and containment; image-parser containment is evidenced through PG-22 and NAT.31) | 11.09, 13.13 (PDF parts retired) |
+| **[PG-12](../../assurance/open-gates-register.md#rule-pg-12)** — retired by [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022) (PDF dependency and containment; still-image containment is out of V1 under P2-026 S1 and S8, so PG-22 carries the containment proof) | 11.09 (PDF parts retired; still-image parts out of V1) |
 | **[PG-13](../../assurance/open-gates-register.md#rule-pg-13)** — real-provider metering | 43.07, 42.11 |
 | **[PG-14b](../../assurance/open-gates-register.md#rule-pg-14b)** — real Cloud simulator | 51 |
 | **[PG-16](../../assurance/open-gates-register.md#rule-pg-16)** — configuration activation | 44.01, 42.11 |

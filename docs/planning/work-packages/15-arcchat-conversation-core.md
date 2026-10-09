@@ -144,12 +144,10 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [AST.05](../delivery/lanes/assistant.md#task-ast-05) | [WP-15.04](15-arcchat-conversation-core.md#rule-wp-15.04) (full) | [PLT.42](../delivery/lanes/platform.md#task-plt-42) (artifact) |
 | [AST.06](../delivery/lanes/assistant.md#task-ast-06) | [WP-15.05](15-arcchat-conversation-core.md#rule-wp-15.05) (full) | none |
 | [AST.07](../delivery/lanes/assistant.md#task-ast-07) | [WP-15.06](15-arcchat-conversation-core.md#rule-wp-15.06) (full) | [CON.11](../delivery/lanes/contracts.md#task-con-11) (contract) |
-| [AST.08](../delivery/lanes/assistant.md#task-ast-08) — out of scope | [WP-15.07](15-arcchat-conversation-core.md#rule-wp-15.07) (full) | none |
+| [AST.08](../delivery/lanes/assistant.md#task-ast-08) | [WP-15.07](15-arcchat-conversation-core.md#rule-wp-15.07) (full) | none |
 | [AST.09](../delivery/lanes/assistant.md#task-ast-09) | [WP-15.90](15-arcchat-conversation-core.md#rule-wp-15.90) (full) | none |
 
 **Consumers outside this package:** [AST.10](../delivery/lanes/assistant.md#task-ast-10), [AST.11](../delivery/lanes/assistant.md#task-ast-11), [AST.15](../delivery/lanes/assistant.md#task-ast-15), [AST.21](../delivery/lanes/assistant.md#task-ast-21), [AST.22](../delivery/lanes/assistant.md#task-ast-22).
-
-**Out of scope (P2-026):** [WP-15.07](15-arcchat-conversation-core.md#rule-wp-15.07) — Reference and package proof substep: its only owner SCOPE.10 is out of the active plan ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) scope correction; [PG-01](../../assurance/open-gates-register.md#rule-pg-01) is informational).
 
 <!-- delivery-graph:end -->
 

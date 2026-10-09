@@ -182,7 +182,7 @@ The [WP03.02 completion receipt](../../assurance/wp03-02-implementation-evidence
 
 ### WP-03.07 — Signed catalog and update format producer
 
-**What must be fully done.** Publish catalog-index.v1, catalog-revocations.v1, android-update.v1 and realm.v1 schemas, canonical signing vectors and separate fixture trust roots. Define malformed, expired, rollback and mixed-shard vectors under arch 15/deployment 22. Production keys are WP53 output, not an input here.
+**What must be fully done.** Publish android-update.v1 schema and, only if a retained consumer needs it, realm.v1 schema (catalog-index.v1 and catalog-revocations.v1 are out of V1 under P2-026 S5), with canonical signing vectors and separate fixture trust roots. Define malformed, expired, rollback and mixed-shard vectors under arch 15/deployment 22. Production keys are WP53 output, not an input here.
 
 **Testing requirements.** Independent signature/hash verification, exact integer handling and expired/revoked/unknown-key refusal.
 
