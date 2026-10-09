@@ -327,7 +327,7 @@ The `arcforge` CLI is part of the developer platform.
 | `dev` | Run against a development host; the production host itself remains an AOT product |
 | `validate` | Manifest, schema, permission declaration and executable-package checks |
 | `pack` | Produce an immutable package artifact |
-| `publish` | Submit to a catalog through the publish pipeline |
+| `publish` | Submit to a catalog through the publish pipeline (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) |
 
 | # | Rule |
 |---|---|
@@ -349,7 +349,7 @@ The `arcforge` CLI is part of the developer platform.
 | <a id="rule-xt-06"></a>XT-06 | **AOT test**: the host publishes AOT with the extension platform present, and no reflection-based path is required ([EA-03](#rule-ea-03)). |
 | <a id="rule-xt-07"></a>XT-07 | **Package lifecycle tests**: install, permission grant, update with new permissions, disable, enable, rollback, uninstall with and without private-data deletion, and revoke reaching an installed client. |
 | <a id="rule-xt-08"></a>XT-08 | **Provenance tests**: a task and artifact produced through a community package carry that package's provenance ([CK-05](#rule-ck-05)). |
-| <a id="rule-xt-09"></a>XT-09 | **Catalog-as-untrusted tests**: hostile listing content, oversized metadata and malformed manifests are rejected without executing anything. |
+| <a id="rule-xt-09"></a>XT-09 | **Catalog-as-untrusted tests** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5): hostile listing content, oversized metadata and malformed manifests are rejected without executing anything. |
 | <a id="rule-xt-10"></a>XT-10 | **Compatibility tests**: partial contribution availability is reported correctly and does not disable the whole package ([CC-01](#rule-cc-01)). |
 
 ---

@@ -181,7 +181,7 @@ Three preview layers:
 | Layer | Meaning |
 |---|---|
 | **Summary** | Title, kind, owner, provenance, size, availability |
-| **Light preview** | Text excerpt, image, small document render (non-PDF; PDF is excluded under [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)), transcript snippet |
+| **Light preview** | Text excerpt, trusted self-produced image only (an untrusted image attachment is a DR-04 metadata card in V1, [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S1), small document render (non-PDF; PDF is excluded under [P2-022](../../decisions/phase-2-specification-decisions.md#rule-p2-022)), transcript snippet |
 | **Full access** | Download, or handoff to the owning desktop product |
 
 | # | Requirement |
