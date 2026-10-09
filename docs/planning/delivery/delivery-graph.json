@@ -27240,7 +27240,11 @@
     "Web:eng/policy/dependency-reviews/** (immutable successor receipts)",
     "Web:eng/provenance/** (immutable successor records for the proof closure)",
     "Web:docs/prf-11-*.md",
-    "Web:Directory.Packages.props (only the pins the proof closure needs)"
+    "Web:Directory.Packages.props (only the pins the proof closure needs)",
+    "Web:eng/policy/profile-budgets.json (interactionBudgets; owner PRF.11)",
+    "Web:tools/ArcForges.Web.Tooling/** (the budget tool, if it changes)",
+    "Web:tests/ArcForges.Web.Tooling.Tests/** (tests of the budget tool, if it changes)",
+    "Web:tests/ArcForges.Web.Site.Tests/** (offline no-script scan of the Site)"
    ],
    "shared": [
     {
@@ -27258,7 +27262,7 @@
     "state": "not-started",
     "notes": "Not started; no ledger record. The delivered PRF.08 React proof (offline 2026-10-03, epoch 2 2026-10-05) is history and its evidence is not reused. The React budgets in apps/app/budgets.json are not carried over silently."
    },
-   "notes": "Planning repair 2026-10-08 (DLV-34; P2-021): this proof supersedes PRF.08. It is the early Blazor proof that precedes bulk Web feature work (brief section 4.1). The completion edges copy PRF.08's CLOUD.21, CLOUD.22 and CLOUD.08 edges and its CLOUD.71 edge. CLOUD.71 provides the proof-origin route families for the React bytes only. No delivered task serves the Blazor profiles from the proof origin (static-asset binding, /api and /session/v1 precedence in the Cloud Worker, base-href /account/ and /chat/). WP-06.05 requires those checks, so PRF.11 stays not complete until a Cloud successor delivers that serving path. The successor is CLOUD.85 (ID approved in brief section 6; added by the web patch with a blocking integration completion edge). PRF.11 cannot complete until CLOUD.85 is delivered, and WEB.10, WEB.11 to WEB.33, PG-23 and REL.05 stay blocked on this proof. The acceptance is neither dropped nor re-scoped. CLOUD.71 is ledger-complete for the React bytes only (its outcome names PRF.08); its start edge is retargeted to PRF.11 edge-only, which leaves a complete task with an unmet start edge, recorded here for the coordinator. PRF.08's CON.92 start edge (generated TS gRPC-Web client) is not carried over; PRF.11 takes a new CON.92 start edge for the serialization-posture and decode-limit constants. Decision basis: P2-021 (decision obligations are reserved for adoption and governance tasks, so the decision is cited here rather than as an obligation)."
+   "notes": "Planning repair 2026-10-08 (DLV-34; P2-021): this proof supersedes PRF.08. It is the early Blazor proof that precedes bulk Web feature work (brief section 4.1). The completion edges copy PRF.08's CLOUD.21, CLOUD.22 and CLOUD.08 edges and its CLOUD.71 edge. CLOUD.71 provides the proof-origin route families for the React bytes only. No delivered task serves the Blazor profiles from the proof origin (static-asset binding, /api and /session/v1 precedence in the Cloud Worker, base-href /account/ and /chat/). WP-06.05 requires those checks, so PRF.11 stays not complete until a Cloud successor delivers that serving path. The successor is CLOUD.85 (ID approved in brief section 6; added by the web patch with a blocking integration completion edge). PRF.11 cannot complete until CLOUD.85 is delivered, and WEB.10, WEB.11 to WEB.33, PG-23 and REL.05 stay blocked on this proof. The acceptance is neither dropped nor re-scoped. CLOUD.71 is ledger-complete for the React bytes only (its outcome names PRF.08); its start edge is retargeted to PRF.11 edge-only, which leaves a complete task with an unmet start edge, recorded here for the coordinator. PRF.08's CON.92 start edge (generated TS gRPC-Web client) is not carried over; PRF.11 takes a new CON.92 start edge for the serialization-posture and decode-limit constants. Decision basis: P2-021 (decision obligations are reserved for adoption and governance tasks, so the decision is cited here rather than as an obligation). Planning repair 2026-10-09 (DLV-34; P2-026 fix6; S20(b)): D3 default. The write scope adds Web:eng/policy/profile-budgets.json, Web:tools/ArcForges.Web.Tooling/**, Web:tests/ArcForges.Web.Tooling.Tests/** and Web:tests/ArcForges.Web.Site.Tests/**. Web:src/ArcForges.Web.Ui/**, the Ui tests and Web:.github/workflows/ci.yml are deliberately not added; an in-browser CSP or framing change that needs a Ui edit stops the task for a new decision."
   },
   {
    "id": "CLOUD.85",
@@ -27270,10 +27274,10 @@
    "obligations": [
     {
      "ref": "WP-06.05",
-     "part": "partial: proof-origin serving slice (Blazor and Site bytes served same-origin with /api, /session/v1 and /proof/v1 reaching the Worker first; base href /account/ and /chat/). The deployed-origin proof is PRF.11's full WP-06.05 acceptance."
+     "part": "partial: proof-origin serving slice (Blazor and Site bytes served same-origin with /api, /session/v1 and /proof/v1 reaching the Worker first; base href / with the shells at /account/ and /chat/). The deployed-origin proof is PRF.11's full WP-06.05 acceptance."
     }
    ],
-   "outcome": "Serves the Blazor WebAssembly Account and Chat production profiles and the C# static Site from the proof origin next to the Cloud API. The Cloud Worker's static-assets binding (env.proof only) serves the content-hashed bytes that WEB.40 builds, after digest verification; /api, /session/v1 and /proof/v1 keep routing to the Worker first; the profiles are served under base href /account/ and /chat/ with the exact CSP token set of each surface (App profiles: script-src 'self' 'wasm-unsafe-eval' plus required hashes, never unsafe-eval or unsafe-inline, and style-src 'self'; the public Site keeps its strict set without wasm-unsafe-eval). The Worker stays a thin transport adapter: it makes no business decision and grants no access (P2-021 item 1). This is the serving path that WP-06.05 requires for PRF.11; CLOUD.71 remains complete for the React bytes.",
+   "outcome": "Serves the Blazor WebAssembly Account and Chat production profiles and the C# static Site from the proof origin next to the Cloud API. The Cloud Worker's static-assets binding (env.proof only) serves the content-hashed Blazor profile bytes of WEB.40's web-profiles-<sha256>.tar release asset and the C# Site bytes of its web-site-<sha256>.tar release asset (a deterministic tar, D2 option A), after digest verification; /api, /session/v1 and /proof/v1 keep routing to the Worker first; the profiles are served under base href / (the framework stays at the root, and the shells at /account/index.html and /chat/index.html load it) with the exact CSP token set of each surface (App profiles: script-src 'self' 'wasm-unsafe-eval' plus required hashes, never unsafe-eval or unsafe-inline, and style-src 'self'; the public Site keeps its strict set without wasm-unsafe-eval). The Worker stays a thin transport adapter: it makes no business decision and grants no access (P2-021 item 1). This is the serving path that WP-06.05 requires for PRF.11; CLOUD.71 remains complete for the React bytes.",
    "provides": [
     "proof-origin-blazor-serving"
    ],
@@ -27303,15 +27307,24 @@
     "Cloud:worker/foundation/** (only if the assets config cannot keep /api, /session/v1 and /proof/v1 on the Worker first)",
     "Cloud:eng/verification/proof-deploy.ts (download and digest-verify the Blazor bundle asset)",
     "Cloud:eng/verification/proof-cloudflare.ts (download and digest-verify the Blazor bundle asset)",
-    "Cloud:tests/worker/proof-assets*.test.ts"
+    "Cloud:tests/worker/proof-assets*.test.ts",
+    "Cloud:docs/prf-07-foundation-proof.md (served-profiles section and the record near line 395)",
+    "Cloud:docs/cloud-ingress.md (line 176)",
+    "Cloud:package.json (only the new test file names in the npm test script)",
+    "Cloud:eng/provenance/files.json (inventory of changed and added first-party files)",
+    "Cloud:eng/policy/dependency-policy.json (successor binding of the changed inputs)",
+    "Cloud:eng/policy/dependency-reviews/cloud-85-r1.json (new immutable receipt, chained from the receipt active on main at the time of the change)",
+    "Cloud:eng/provenance/artifact-profiles/cloud-release-r<N>.json (derived release profile; N is the next free profile number at the time of the change, not a fixed number)",
+    "Cloud:tests/worker/proof-cloudflare.test.ts (deploy tests, needs this repair)",
+    "Cloud:eng/verification/proof-site.ts (optional Site verifier, only if the Site verifier is split out of proof-deploy.ts)"
    ],
-   "validation": "Offline (CI-eligible) tests in Cloud: route precedence, with /api, /session/v1 and /proof/v1 matched ahead of static assets; digest refusal, with a changed, missing or unexpected Blazor or Site bundle digest refused before serving; the exact CSP token-set assertion on the served App-profile responses (script-src 'self' 'wasm-unsafe-eval' plus required hashes; no unsafe-eval or unsafe-inline; style-src 'self') and the strict no-wasm token set on the public Site; same-origin and base-href /account/ and /chat/ resolution from the served route table. The deployed proof-origin run of the same checks is PRF.11's local opt-in acceptance, not a hosted CI job (P2-017).",
-   "evidence": "Offline route-precedence, digest-refusal and exact CSP token-set test results in Cloud; digest record of the Blazor profile and Site bytes the proof origin serves; PRF.11's deployed proof-origin same-origin and base-href record cites this task.",
+   "validation": "Offline (CI-eligible) tests in Cloud: route precedence, with /api, /session/v1 and /proof/v1 matched ahead of static assets; digest refusal, with a changed, missing or unexpected Blazor or Site bundle digest refused before serving; the exact CSP token-set assertion on the served App-profile responses (script-src 'self' 'wasm-unsafe-eval' plus required hashes; no unsafe-eval or unsafe-inline; style-src 'self') and the strict no-wasm token set on the public Site; same-origin resolution under base href / from the served route table, with the shells at /account/ and /chat/ loading root framework paths. The deployed proof-origin run of the same checks is PRF.11's local opt-in acceptance, not a hosted CI job (P2-017).",
+   "evidence": "Offline route-precedence, digest-refusal and exact CSP token-set test results in Cloud; digest record of the WEB.40 web-profiles-<sha256>.tar and web-site-<sha256>.tar release assets (the Blazor profile and Site bytes) the proof origin serves; PRF.11's deployed proof-origin same-origin and base-href record cites this task.",
    "baseline": {
     "state": "not-started",
     "notes": "Not started; no ledger record. Added by the web graph patch 2026-10-08 with the coordinator-approved ID (brief section 6)."
    },
-   "notes": "Planning repair 2026-10-08 (DLV-34; P2-021; brief section 6, approved ID CLOUD.85): the serving successor required by WP-06.05 for PRF.11. PRF.11 takes it as a blocking integration completion edge (addComplete in the web patch). Cloud work stays transport only: no business rule or authoritative state enters the Worker, and Node remains wrangler and verification tooling only (P2-021 item 1). Decision basis: P2-021 (decision obligations are reserved for adoption and governance tasks, so the decision is cited here rather than as an obligation).",
+   "notes": "Planning repair 2026-10-08 (DLV-34; P2-021; brief section 6, approved ID CLOUD.85): the serving successor required by WP-06.05 for PRF.11. PRF.11 takes it as a blocking integration completion edge (addComplete in the web patch). Cloud work stays transport only: no business rule or authoritative state enters the Worker, and Node remains wrangler and verification tooling only (P2-021 item 1). Decision basis: P2-021 (decision obligations are reserved for adoption and governance tasks, so the decision is cited here rather than as an obligation). Planning repair 2026-10-09 (DLV-34; P2-026 fix6; S20(b)): the write scope now lists the paths of the phase-2 plan's P0 repair (docs/prf-07-foundation-proof.md, docs/cloud-ingress.md, package.json, eng/provenance/files.json, eng/policy/dependency-policy.json, eng/policy/dependency-reviews/cloud-85-r1.json, the next eng/provenance/artifact-profiles/cloud-release-r<N>.json numbered at the time of the change, tests/worker/proof-cloudflare.test.ts and the optional Site verifier eng/verification/proof-site.ts). The base href is / (D1) and the Site source is WEB.40's web-site-<sha256>.tar release asset (D2-A, S20(a)); those clauses are reworded in the outcome, validation, evidence and the WP-06.05 obligation part. Title, edges and the validation scope are unchanged.",
    "shared": [
     {
      "resource": "RES-cloud-deployment",
@@ -27973,7 +27986,49 @@
     "Contracts:docs/consuming.md",
     "Contracts:src/internal/dotnet/ArcForges.Contracts.LocalRpc.Sandbox/README.md (retired marking of the five ContentSandbox PDF RPCs only; the generated sandbox C# is unchanged)",
     "Contracts:eng/policy/contract-access.json (retired marking of the five ContentSandbox PDF RPCs only; no other entry changes)",
-    "Contracts:eng/policy/contract-access-reviews/** (new immutable review record for that marking, only if the access record requires one)"
+    "Contracts:eng/policy/contract-access-reviews/** (new immutable review record for that marking, only if the access record requires one)",
+    "Contracts:.github/workflows/ci.yml",
+    "Contracts:.github/workflows/security.yml",
+    "Contracts:.github/dependabot.yml",
+    "Contracts:.java-version",
+    "Contracts:gradle.properties",
+    "Contracts:gradle.lockfile",
+    "Contracts:gradlew",
+    "Contracts:gradlew.bat",
+    "Contracts:settings-gradle.lockfile",
+    "Contracts:eng/central-signing/**",
+    "Contracts:eng/check_provenance.py",
+    "Contracts:eng/check_licences.py",
+    "Contracts:eng/check_foundation.py",
+    "Contracts:eng/check_serialization.py",
+    "Contracts:eng/dependency_admission.py",
+    "Contracts:eng/documentation_tools.py",
+    "Contracts:eng/consumer_tools.py",
+    "Contracts:eng/build_identity.py",
+    "Contracts:eng/foundation-inventory.json",
+    "Contracts:eng/foundation-baseline.json",
+    "Contracts:eng/policy/licence-boundary.json",
+    "Contracts:tests/tooling/test_maven_release.py",
+    "Contracts:tests/tooling/test_npm_release_tags.py",
+    "Contracts:tests/tooling/test_publication_channels.py",
+    "Contracts:tests/tooling/test_publication_completion.py",
+    "Contracts:tests/tooling/test_release_guards.py",
+    "Contracts:tests/tooling/test_documentation_provenance.py",
+    "Contracts:tests/tooling/test_licence_boundary.py",
+    "Contracts:tests/tooling/test_serialization_policy.py",
+    "Contracts:tests/tooling/test_identity_http.py",
+    "Contracts:tests/tooling/test_dependency_admission.py",
+    "Contracts:tests/tooling/test_json_shape_unions.py",
+    "Contracts:tests/tooling/contract_access.test.mjs",
+    "Contracts:eng/provenance/retirements/**",
+    "Contracts:README.md",
+    "Contracts:AGENTS.md",
+    "Contracts:CONTRIBUTING.md",
+    "Contracts:SECURITY.md",
+    "Contracts:NOTICE",
+    "Contracts:docs/architecture.md",
+    "Contracts:docs/validation.md",
+    "Contracts:src/internal/ts/ai-internal/README.md"
    ],
    "shared": [
     {
@@ -27995,7 +28050,7 @@
     "state": "not-started",
     "notes": "Planning repair 2026-10-08 (DLV-34; P2-021): new migration task under the contracts lane (ADOPT.03.contracts slice). Observed on the Contracts repo: npm workspaces src/public/ts/proto, src/public/ts/api-client, src/public/ts/contract-fixtures, src/internal/ts/ai-internal and src/internal/ts/operator-client; Kotlin/Maven src/public/kotlin/contracts-proto, contracts-connect-client and contract-fixtures; generators in eng/contracts.py, eng/kotlin_tools.py, eng/kotlin_consumer.py and eng/maven_tools.py."
    },
-   "notes": "Planning repair 2026-10-08 (DLV-34; P2-021 Decision 4): new migration task under the contracts lane (ADOPT.03.contracts slice). No obligation or acceptance of a complete record is removed. Starts after WEB.40, AND.40 and CLOUD.84 deliver (artifact edges: consumer migration). The P2-021 decision wording is carried in the outcome, not in obligations, because decision obligations are reserved for adoption and governance tasks. The shared file tests/StructureTests/Program.cs is also written by EXT.02; both declare RES-contracts-schema-sources (append), so no start edge on EXT.02 is used (DLV-11). Stop-publication is taken per identity after its own consumers merge; no unpublish, deprecate or delete without explicit user approval. @arcforges/ai-internal is retained. The CON.04 retirement marking (P2-022; adjudication 12) is owned here; the removal of the PDF engine code was delivered by NAT.32 (history; further NAT.32 work is out of scope under P2-026), and the server closed refusal of the five PDF RPCs has no active owner: that residual is accepted (P2-026 review fix; see the appended note). CON.40 completes on CLOUD.84 with no user decision pending, because the edge-guard rule of P2-021 (adjudication 5) resolves the credential and CSRF checks. Planning repair 2026-10-09 (P2-026 review fix; accepted residual): the server closed-refusal checks for the five PDF RPCs (OpenPdf answers resource.parser_failed) were NAT.30 and NAT.32 work and are out of scope with those tasks (brief section 11 S8; user rule 2: unrelated legacy code is left alone). No active task validates that refusal. It is accepted as a residual: the existing server behaviour is unchanged, no first-party consumer may call the five RPCs (the retirement marking owned here), and no open task names an out task as its owner."
+   "notes": "Planning repair 2026-10-08 (DLV-34; P2-021 Decision 4): new migration task under the contracts lane (ADOPT.03.contracts slice). No obligation or acceptance of a complete record is removed. Starts after WEB.40, AND.40 and CLOUD.84 deliver (artifact edges: consumer migration). The P2-021 decision wording is carried in the outcome, not in obligations, because decision obligations are reserved for adoption and governance tasks. The shared file tests/StructureTests/Program.cs is also written by EXT.02; both declare RES-contracts-schema-sources (append), so no start edge on EXT.02 is used (DLV-11). Stop-publication is taken per identity after its own consumers merge; no unpublish, deprecate or delete without explicit user approval. @arcforges/ai-internal is retained. The CON.04 retirement marking (P2-022; adjudication 12) is owned here; the removal of the PDF engine code was delivered by NAT.32 (history; further NAT.32 work is out of scope under P2-026), and the server closed refusal of the five PDF RPCs has no active owner: that residual is accepted (P2-026 review fix; see the appended note). CON.40's complete edges are WEB.40, AND.40 and CLOUD.84 (integration), so its completion waits on those tasks and, through them, on CLOUD.21, CLOUD.05 and HAR.03 (CLOUD.84's complete edges) and on CLOUD.29 and CON.11 (AND.40's complete edges); it does not complete on CLOUD.84 alone. No user decision is pending, because the edge-guard rule of P2-021 (adjudication 5) resolves the credential and CSRF checks. Planning repair 2026-10-09 (P2-026 review fix; accepted residual): the server closed-refusal checks for the five PDF RPCs (OpenPdf answers resource.parser_failed) were NAT.30 and NAT.32 work and are out of scope with those tasks (brief section 11 S8; user rule 2: unrelated legacy code is left alone). No active task validates that refusal. It is accepted as a residual: the existing server behaviour is unchanged, no first-party consumer may call the five RPCs (the retirement marking owned here), and no open task names an out task as its owner. Planning repair 2026-10-09 (DLV-34; P2-026 fix6; S20(b)): decision 1 of the phase-2 plan. The write scope adds its paths verbatim, with the tests/tooling/* suites named file by file and eng/licence-boundary-related files resolved to eng/check_licences.py, eng/policy/licence-boundary.json and tests/tooling/test_licence_boundary.py (listed). The correction in the preceding statement replaces the phrase that CON.40 completes on CLOUD.84: the graph's complete edges are WEB.40, AND.40 and CLOUD.84, and CON.40 is delivered, not complete, until those and their own complete edges are met."
   },
   {
    "id": "CLOUD.84",
@@ -28143,7 +28198,10 @@
     "Cloud:eng/policy/dependency-reviews/cloud-84-*.json (new immutable successor records)",
     "Cloud:eng/provenance/records/cloud-84-*.json (new immutable successor records only, named for this task)",
     "Cloud:eng/provenance/files.json (only where an existing record binds an input this task changes; ordered behind CLOUD.02, CLOUD.03, CLOUD.04, CLOUD.06, CLOUD.70 and CLOUD.72 by start edges)",
-    "Cloud:docs/cloud-readiness.md (factual update: readiness decisions now in C#), Cloud:docs/cloud-ingress.md (factual update: the adapter boundary and the edge-guard rule) and Cloud:docs/d1-migration-deployment.md (factual update of the runner and deploy decisions, now C#)"
+    "Cloud:docs/cloud-readiness.md (factual update: readiness decisions now in C#), Cloud:docs/cloud-ingress.md (factual update: the adapter boundary and the edge-guard rule) and Cloud:docs/d1-migration-deployment.md (factual update of the runner and deploy decisions, now C#)",
+    "Cloud:worker/proof/entry.ts (new: the separate proof Worker entry, D1)",
+    "Cloud:tooling/cloudflare.ts (the proof bundle upload in deploy:proof, D1)",
+    "Cloud:tools/ArcForges.Cloud.Generation/** (new non-published tool project for the C# generator entry points, D3; the published projects keep only runtime decision types)"
    ],
    "shared": [
     {
@@ -28165,7 +28223,7 @@
     "state": "not-started",
     "notes": "Planning repair 2026-10-08 (DLV-34; P2-021): new task. Research footprint of the Cloud repo: about 126 TypeScript files (worker/ 35, eng/verification 16, eng/migrations 6, tests/worker 58, tooling 11), plus storage/plans and the Kotlin consumer gate in tests/kotlin-consumer. Counts are from the research footprint, not a re-count."
    },
-   "notes": "Planning repair 2026-10-08 (DLV-34; P2-021; brief section 5.7 and coordinator adjudications 5 and 7): new task; no obligation or acceptance is removed. The TypeScript credential, CSRF and Origin edge checks are kept under the P2-021 edge-guard rule (C# authoritative; generated parameters; refuse only, never grant), so no user decision is needed for them. The D1 migration runner's lease, fence, gating and sequence decisions move to C# (src/ArcForges.Cloud.Storage.D1/MigrationRunner); Node only invokes wrangler. Start edges, each a composed artifact (DLV-07) or an ordering on the TypeScript surface this task reduces: CLOUD.01, CLOUD.02, CLOUD.03, CLOUD.04, CLOUD.06, CLOUD.08, CLOUD.11, CLOUD.69 and CLOUD.70 supply the delivered shapes it reduces (the package.json overlaps with these are ordered by these edges); HAR.40 supplies the C# Harness budgets and admission constants that the generated module is generated from; Shared-file overlaps covered by declared resources or start edges: wrangler.json with CLOUD.07 and HAR.40, and worker/index.ts with HAR.03 and HAR.40 (RES-cloud-deployment, append); eng/verification/d1-identity-local.ts is owned by CLOUD.72 and excluded from this task's writes. Completion edge to HAR.03 (DLV-09): the bundle and static scans of this task run against the final worker/harness adapter code that task delivers; the MCP egress route is out of scope (P2-026). CLOUD.05 supplies the budgets through its completion edge. AND.40 must not start on this task; this task completes after AND.40. Cloud package.json has no declared shared resource; the coordinator decides whether to declare one. Coordinator adjudication 2026-10-08 (P2-021 item 1): after this task Node in the Cloud repository only invokes wrangler and runs the TypeScript tests of the thin TypeScript adapters (tests/worker/**); every other TypeScript build checker or generator under tooling/** and eng/verification/** that makes a policy or business decision (provenance, licence, dependency policy, build identity, plan and table generation) is migrated to C# within this task or retired. Planning repair 2026-10-08 (DLV-34; coordinator adjudication, brief section 10): the start edge on CLOUD.72 only ordered the dependency-policy receipt chain; it is removed. The successor receipt of this task chains from the receipt active on main at merge, as every successor receipt does. Planning repair 2026-10-09 (P2-026; scope correction): reduced: the MCP HTTP egress route in worker/ai/mcp and its egress test are out of scope, not completed; the Vectorize binding facade stays (P2-026 search decision)."
+   "notes": "Planning repair 2026-10-08 (DLV-34; P2-021; brief section 5.7 and coordinator adjudications 5 and 7): new task; no obligation or acceptance is removed. The TypeScript credential, CSRF and Origin edge checks are kept under the P2-021 edge-guard rule (C# authoritative; generated parameters; refuse only, never grant), so no user decision is needed for them. The D1 migration runner's lease, fence, gating and sequence decisions move to C# (src/ArcForges.Cloud.Storage.D1/MigrationRunner); Node only invokes wrangler. Start edges, each a composed artifact (DLV-07) or an ordering on the TypeScript surface this task reduces: CLOUD.01, CLOUD.02, CLOUD.03, CLOUD.04, CLOUD.06, CLOUD.08, CLOUD.11, CLOUD.69 and CLOUD.70 supply the delivered shapes it reduces (the package.json overlaps with these are ordered by these edges); HAR.40 supplies the C# Harness budgets and admission constants that the generated module is generated from; Shared-file overlaps covered by declared resources or start edges: wrangler.json with CLOUD.07 and HAR.40, and worker/index.ts with HAR.03 and HAR.40 (RES-cloud-deployment, append); eng/verification/d1-identity-local.ts is owned by CLOUD.72 and excluded from this task's writes. Completion edge to HAR.03 (DLV-09): the bundle and static scans of this task run against the final worker/harness adapter code that task delivers; the MCP egress route is out of scope (P2-026). CLOUD.05 supplies the budgets through its completion edge. AND.40 must not start on this task; this task completes after AND.40. Cloud package.json has no declared shared resource; the coordinator decides whether to declare one. Coordinator adjudication 2026-10-08 (P2-021 item 1): after this task Node in the Cloud repository only invokes wrangler and runs the TypeScript tests of the thin TypeScript adapters (tests/worker/**); every other TypeScript build checker or generator under tooling/** and eng/verification/** that makes a policy or business decision (provenance, licence, dependency policy, build identity, plan and table generation) is migrated to C# within this task or retired. Planning repair 2026-10-08 (DLV-34; coordinator adjudication, brief section 10): the start edge on CLOUD.72 only ordered the dependency-policy receipt chain; it is removed. The successor receipt of this task chains from the receipt active on main at merge, as every successor receipt does. Planning repair 2026-10-09 (P2-026; scope correction): reduced: the MCP HTTP egress route in worker/ai/mcp and its egress test are out of scope, not completed; the Vectorize binding facade stays (P2-026 search decision). Planning repair 2026-10-09 (DLV-34; P2-026 fix6; S20(b)): the write scope adds the separate proof entry worker/proof/entry.ts and tooling/cloudflare.ts for the proof bundle upload (D1), and the non-published generator tool project tools/ArcForges.Cloud.Generation/** (D3). The WorkerAdapter architecture test (tests/ArchitectureTests/WorkerAdapter/**) and the ci.yml quality-job gate filter are already listed, so D9 adds no path. Node build tooling stays under S17(a) (D4), including the physical-schema generator eng/verification/physical-schema.ts (D5), which is recorded here as Node build tooling and is not written by this task. The deploy decision runs in the candidate job and is sealed into the candidate (D6), and proof-only coordination stays TypeScript in the proof bundle until CLOUD.05 (D16)."
   },
   {
    "id": "GOV.30",
