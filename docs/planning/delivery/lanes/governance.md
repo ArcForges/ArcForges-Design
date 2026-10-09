@@ -593,7 +593,7 @@ Tasks: 24 · Owning repositories: AI, ArcScope, Cloud, Contracts, DesktopPlatfor
 | Owning repository | DesktopPlatform (`C:\MyFile\Projects\ArcForges\DesktopPlatform`); integration owner: DesktopPlatform integration owner, the holder of `roles/integration-desktopplatform` |
 | Claim, branch and ledger | `claims/gov-33` and ledger record `ledger/tasks/gov-33.md` in the Plan repository; task branch `task/gov-33` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | governance / S |
-| Obligations | [P2-023](../../../decisions/phase-2-specification-decisions.md#rule-p2-023) — no macOS support or validation is claimed: the LocalRpcAotTests README macOS peer-PID sentence and the macOS wording of the PASS message are removed; the shared Darwin dispatch code stays as cross-platform code |
+| Obligations | [P2-023](../../../decisions/phase-2-specification-decisions.md#rule-p2-023) — no macOS support or validation is claimed in tests/LocalRpcAotTests: the README macOS sentences (lines 23-27 and 57-60) and the macOS wording of the Program.cs PASS and guard messages (lines 52 and 76) are removed or restated; the shared Darwin dispatch code, the guard logic and the selector-mapping unit assertion stay as cross-platform code |
 | Provides | localrpc-aot-tests-no-macos-claim |
 | Start prerequisites | **artifact** [GOV.30](#task-gov-30) — the merged osx RID retirement (DesktopPlatform 6b84ca17). *Why:* this task edits files GOV.30 already touched; it starts from the merged state |
 | Entry condition | [ADOPT.02.governance](adoption.md#task-adopt-02-governance) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
