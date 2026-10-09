@@ -1525,6 +1525,9 @@ Owner/resource existence and authorization are checked through owner ports; no c
 
 ## 11.1 `package_catalog`
 
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The package_catalog table is not required in V1 and is recorded as out of scope, not completed.
+
+
 > **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** These tables are not required in V1 and are recorded as out of scope, not completed.
 
 | Table | Fields / constraints |

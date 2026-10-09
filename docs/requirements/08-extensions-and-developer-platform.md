@@ -223,7 +223,7 @@ The unresolved tension — a strongly typed AOT product versus unknown third-par
 
 | Stage | Rules |
 |---|---|
-| **Discover** | From a catalog source |
+| **Discover** | From a catalog source (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) |
 | **Install** | Manifest read, integrity verified, trust evaluated, declared permission surface shown. **Install ≠ Enable** ([I-303](01-normative-glossary-and-invariants.md#rule-i-303)), **Install ≠ permission grant** ([I-304](01-normative-glossary-and-invariants.md#rule-i-304)) |
 | **Enable** | Contributions become active |
 | **Grant** | Permissions granted just-in-time or explicitly consented at install |
@@ -295,7 +295,7 @@ The official CLI is part of the developer platform, not a side tool. Its long-te
 | `dev` | Run a package against a development host with hot iteration; the host itself remains an AOT product |
 | `validate` | Validate the manifest, schema, declared permissions, compatibility, dependency graph and, for executables, the supply-chain requirements |
 | `pack` | Produce an immutable package artifact |
-| `publish` | Push to a catalog through the publish pipeline |
+| `publish` | Push to a catalog through the publish pipeline (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) |
 | `sign` | Sign a package |
 | `test` | Run conformance tests against the extension test host |
 
@@ -430,7 +430,7 @@ DeveloperMode
 
 **Schema code-first** — a C# record plus attributes produces schema, serializer and bindings; an attempt to pass an arbitrary CLR object across the boundary fails at compile time or validation.
 
-**Package** — an immutable published version; a yank removes it from discovery without stopping installed use; a revoke stops execution without deleting user data.
+**Package** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) — an immutable published version; a yank removes it from discovery without stopping installed use; a revoke stops execution without deleting user data.
 
 **Permission expansion** — an update adding a permission or background execution requires explicit re-consent.
 
@@ -440,11 +440,11 @@ DeveloperMode
 
 **Missing contribution** — a project referencing an unavailable effect opens, explains, and preserves the state for later restoration.
 
-**Catalog** — offline operation continues; a self-hosted catalog is usable; realm/owner policy restricts sources.
+**Catalog** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) — offline operation continues; a self-hosted catalog is usable; realm/owner policy restricts sources.
 
-**Revocation** — an installed revoked package surfaces Needs Attention and stops executing.
+**Revocation** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) — an installed revoked package surfaces Needs Attention and stops executing.
 
-**Self-host** — package identity is stable across realms; installation and trust are per realm.
+**Self-host** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) — package identity is stable across realms; installation and trust are per realm.
 
 **Third-party app** — participates through the contribution model; cannot claim a reserved official identity.
 
@@ -456,7 +456,7 @@ DeveloperMode
 
 **Developer** — developer mode is visible, cannot be enabled by a package, and does not bypass permission.
 
-**Publish** — validation gates packing; a published version cannot be overwritten; the SBOM and signature are present for executables.
+**Publish** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) — validation gates packing; a published version cannot be overwritten; the SBOM and signature are present for executables.
 
 ---
 

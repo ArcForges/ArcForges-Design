@@ -21066,7 +21066,7 @@
     {
      "type": "artifact",
      "task": "CON.16",
-     "need": "WP-03 fixture signing/catalog keys (catalog/index/revocation/update/realm schemas + independent signed vectors)",
+     "need": "android-update.v1 format and WP-03 fixture signing keys (catalog and realm schemas are out, P2-026 S5)",
      "why": "archive signature verification in the lifecycle state machine needs a signed vector to check against; production keys are not required this early (see SUB-catalog-fixture-signing)"
     }
    ],
@@ -29882,12 +29882,11 @@
   },
   {
    "gate": "PG-03",
-   "contribution": "Every native dependency the V1 instrument families admit receives AD-01..08 obligations and a licence position: libusb and the instrument libraries only (P2-026 S8). The still-image libraries (OIIO, OpenEXR, Imath) are out of V1 (P2-026 S1 and S8), and PDFium is retired (P2-022). The report-export PDF writer for arcscope.report.pdf.v1 (RP-06) is the second leg: its first acceptance under SCOPE.18 dependency admission is a PG-03 trigger, with its own AD-01..08 obligations and licence position (PDFium is not a writer). NAT.11 and NAT.14 do NOT satisfy PG-03. Native dependency licence review: 13.04, 33/35.04.",
+   "contribution": "Every native dependency the V1 instrument families admit receives AD-01..08 obligations and a licence position: libusb and the instrument libraries only (P2-026 S8). The still-image libraries (OIIO, OpenEXR, Imath) are out of V1 (P2-026 S1 and S8), and PDFium is retired (P2-022). NAT.11 and NAT.14 do NOT satisfy PG-03. Native dependency licence review: 13.04, 33/35.04.",
    "tasks": [
     "NAT.13",
     "NAT.28",
     "SCOPE.11",
-    "SCOPE.18",
     "SCOPE.26"
    ]
   },
@@ -30232,7 +30231,7 @@
   },
   {
    "gate": "VG-13",
-   "contribution": "Category-fit, no-purchase-CTA/licence-key and consumption-only confirmation before store/alt-store submission. Store category fit and consumption-only posture: satisfied within WP32. REL.04 (Android release readiness) consumes, does not produce.",
+   "contribution": "No-purchase-CTA/licence-key and consumption-only confirmation for the V1 Android distribution: satisfied within WP32 (MB-03). The store category-fit leg is out of V1 (P2-026 S11; store listings and Play publication are out). REL.04 (Android release readiness) consumes, does not produce.",
    "tasks": [
     "AND.19",
     "AND.23"
@@ -30273,7 +30272,7 @@
   },
   {
    "title": "External prerequisites",
-   "text": "Hardware-lab devices, provider accounts (mail, payment, payout, push, independent backup storage), store listings and signing custody can block acceptance regardless of worker count. They are recorded on tasks and never passed without evidence."
+   "text": "Hardware-lab devices, provider accounts (mail, payment, payout, push, independent backup storage) and signing custody can block acceptance regardless of worker count. They are recorded on tasks and never passed without evidence."
   },
   {
    "title": "Exclusive resources and review capacity",

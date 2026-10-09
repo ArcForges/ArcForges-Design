@@ -317,11 +317,11 @@ This is the most consequential privacy control in the product.
 
 | # | Requirement |
 |---|---|
-| <a id="rule-es-01"></a>ES-01 | An external source — an MCP server, a connector — **still has an owner**, expressed as an external integration adapter, and carries its own policy set. |
+| <a id="rule-es-01"></a>ES-01 | An external source — an MCP server, a connector (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) — **still has an owner**, expressed as an external integration adapter, and carries its own policy set. |
 | <a id="rule-es-02"></a>ES-02 | Three external source shapes are distinguished: **Live Remote Source** (queried at the provider on demand), **Imported Snapshot** (creates a new owned resource in an owning product), **Synced External Projection** (a derived replica with explicit replica semantics). |
 | <a id="rule-es-03"></a>ES-03 | **Knowledge does not automatically index the whole computer.** Sources, folders and projects are added explicitly. |
 | <a id="rule-es-04"></a>ES-04 | External drives are not indexed by default. |
-| <a id="rule-es-05"></a>ES-05 | **MCP tool descriptions, resource contents and prompts are untrusted data**, never instructions ([I-262](01-normative-glossary-and-invariants.md#rule-i-262), [I-263](01-normative-glossary-and-invariants.md#rule-i-263)). |
+| <a id="rule-es-05"></a>ES-05 | **MCP tool descriptions, resource contents and prompts are untrusted data** (post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5), never instructions ([I-262](01-normative-glossary-and-invariants.md#rule-i-262), [I-263](01-normative-glossary-and-invariants.md#rule-i-263)). |
 
 ---
 

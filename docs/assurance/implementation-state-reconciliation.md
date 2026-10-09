@@ -396,7 +396,7 @@ All 273 `.cs` files declare `SPDX-License-Identifier: AGPL-3.0-only`, and `NOTIC
 | <a id="rule-ns-08"></a>NS-08 | `arcscope-mdf-abi` → ArcScope measurement-format I/O. Same question as [NS-07](#rule-ns-07), same treatment | **`Fence` pending a substitute analysis in [WP-35.04](../planning/work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.04)** |
 | <a id="rule-ns-09"></a>NS-09 | `arcgraphics-metal-abi` → the graphics native family, retired with no surviving consumer | **`Delete`** — no functional work is scheduled |
 | <a id="rule-ns-10"></a>NS-10 | Every shim's `.h` declares `SPDX-License-Identifier: AGPL-3.0-only`. Native shims sit inside the AGPL boundary and are not consumed by mobile or the public SDK | **Conforms** — no change |
-| <a id="rule-ns-11"></a>NS-11 | **No third-party native dependency is vendored into any shim.** The FFmpeg, OpenColorIO and image dependencies named in `NOTICE.md` are external | Licence review of those externals remains [PG-03](open-gates-register.md#rule-pg-03), per native family |
+| <a id="rule-ns-11"></a>NS-11 | **No third-party native dependency is vendored into any shim.** The FFmpeg, OpenColorIO and image dependencies (the image dependencies are post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S1 and S8) named in `NOTICE.md` are external | Licence review of those externals remains [PG-03](open-gates-register.md#rule-pg-03), per native family |
 
 ### 5.3 Build governance — better than the first pass claimed
 
