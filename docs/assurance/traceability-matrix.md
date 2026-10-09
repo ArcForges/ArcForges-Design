@@ -227,7 +227,7 @@ Every gate in [`open-gates-register.md`](open-gates-register.md) is scheduled.
 | **[PG-18](open-gates-register.md#rule-pg-18)** | `52.02`, `52.04` | Paid AI go-live; any external-effect capability |
 | **[PG-19](open-gates-register.md#rule-pg-19)** | `21.03`, `50.04` | Any schema evolution in production |
 | **[PG-21](open-gates-register.md#rule-pg-21)** | Current corpus closed by [repair verification](design-repair-verification.md); continuing drift check in 00.01 | Every later normative edit re-runs the complete citation check |
-| **[PG-22](open-gates-register.md#rule-pg-22)** | 11.09 (13.13 and 41.00 out of V1 under P2-026 S1, S5 and S8) | Packaged OS containment and extension permissions on each supported RID |
+| **[PG-22](open-gates-register.md#rule-pg-22)** | 11.09 and PLT.45 (the graph gate task; 13.13 and 41.00 out of V1 under P2-026 S1, S5 and S8) | Packaged OS containment and extension permissions on each supported RID |
 | **[PG-23](open-gates-register.md#rule-pg-23)** | PRF.11, WEB.40; historical 06.05, 22.08, 23.05, 24.06, 47, 48, 49, 50.06 | Production Blazor WebAssembly profiles, generated C# SDK, browser sessions, visual quality, toolchains and release/rollback ([P2-021](../decisions/phase-2-specification-decisions.md#rule-p2-021)) |
 | **[PG-24](open-gates-register.md#rule-pg-24)** | `45.09`, `32` | Real Android push, physical receipt and recovery evidence |
 | **[PG-25](open-gates-register.md#rule-pg-25)** | `21.08`, `46`, `50` | Self-host account deployment, realm/key/auth isolation and independent restore |

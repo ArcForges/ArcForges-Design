@@ -4,7 +4,7 @@
 
 Every active numbered substep and every package-level obligation maps to the delivery tasks that satisfy it. An obligation is satisfied only when every mapped task is complete with its recorded evidence; a mapped part never substitutes for the whole.
 
-Out of scope under P2-026: 35 delivery tasks and 18 obligations. Their rows are marked below; an obligation is covered only by an in-scope task or by its out-of-scope entry.
+Out of scope under P2-026: 35 delivery tasks and 19 obligations. Their rows are marked below; an obligation is covered only by an in-scope task or by its out-of-scope entry.
 
 ## [WP-00](../work-packages/00-specification-naming-and-rights-freeze.md#rule-wp-00) — Specification, Naming and Rights Freeze
 
@@ -74,7 +74,7 @@ Out of scope under P2-026: 35 delivery tasks and 18 obligations. Their rows are 
 | [WP-04.04](../work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04.04) | Error and reason codes | [FND.05](lanes/foundation.md#task-fnd-05) (full) |
 | [WP-04.05](../work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04.05) | Version axis types | [FND.06](lanes/foundation.md#task-fnd-06) (full) |
 | [WP-04.90](../work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04.90) | Verify the owned artifact and real integration | [FND.07](lanes/foundation.md#task-fnd-07) (full) |
-| [WP-04](../work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04) package obligation | TypeScript/Kotlin primitive projection of registry-04 exact-value rules (UUID canonical ordering, TS bigint/Decimal, JSON exceptions) | [FND.07](lanes/foundation.md#task-fnd-07) (package-level obligation contribution) |
+| [WP-04](../work-packages/04-identity-error-and-versioning-primitives.md#rule-wp-04) package obligation | TypeScript/Kotlin primitive projection of registry-04 exact-value rules (UUID canonical ordering, TS bigint/Decimal, JSON exceptions) | [FND.07](lanes/foundation.md#task-fnd-07) (package-level obligation contribution)<br>Out of scope (P2-026): TypeScript and Kotlin primitive projection of the registry-04 exact-value rules retires with the TypeScript and Kotlin SDKs ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 4; brief section 0a item 3; [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S19(h)). |
 
 ## [WP-05](../work-packages/05-architecture-and-repository-policy-tests.md#rule-wp-05) — Architecture and Repository Policy Test Suite
 

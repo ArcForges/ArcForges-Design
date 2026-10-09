@@ -73,7 +73,7 @@ Capability Registry  →  filtered by intent, permission, entitlement, policy, b
 | <a id="rule-cr-01"></a>CR-01 | **The full catalogue is never handed to the model** ([CE-01](../requirements/05-ai-and-agent-execution.md#rule-ce-01) in the AI requirements). Hundreds of tool schemas per turn degrade quality and explode cost. |
 | <a id="rule-cr-02"></a>CR-02 | **Selection is a pipeline**: intent and capability discovery within the frozen owning or explicitly targeted application and authorized Cloud scope → a small relevant capability set → invoke. |
 | <a id="rule-cr-03"></a>CR-03 | **Capability metadata drives behaviour**, not the model's inference: execution shape, effect semantics, retry semantics, cancellation semantics, preview support, checkpoint support, compensation support, risk and scope (`§4.2` of the contracts architecture). |
-| <a id="rule-cr-04"></a>CR-04 | **Invocation ordering is fixed**: native capability → trusted connector, MCP or API → computer use as an advanced fallback (`§8.1` of the ArcChat requirements). |
+| <a id="rule-cr-04"></a>CR-04 | **Invocation ordering is fixed**: native capability → trusted connector, MCP (post-V1 and out of scope, ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026))) or API → computer use as an advanced fallback (`§8.1` of the ArcChat requirements). |
 | <a id="rule-cr-05"></a>CR-05 | **A capability's availability is dynamic** and reflects installation, running state, health, compatibility, permission, entitlement and policy ([AC-04](02-contracts-and-protocols.md#rule-ac-04) in the contracts architecture). |
 
 ---
@@ -343,6 +343,8 @@ Automation Definition (versioned)
 ---
 
 ## 14. MCP integration
+
+> **Post-V1 and out of scope ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** MCP integration is not required in V1. The rules below keep their IDs as the post-V1 specification.
 
 | # | Rule |
 |---|---|

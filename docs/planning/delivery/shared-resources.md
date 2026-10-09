@@ -165,7 +165,7 @@ Repository: Contracts · Kind: file · Owner: Contracts integration owner
 
 Repository: Contracts · Kind: pointer · Owner: Contracts integration owner
 
-**Protocol.** Every merge to main publishes all Contracts packages at one allocated candidate version (Maven main as SNAPSHOT under the publication-channel profile); the integration owner keeps a single merge queue so publications stay ordered; no tag, republication or replacement version is created for verification.
+**Protocol.** Every merge to main publishes all Contracts packages at one allocated candidate version (Maven main as SNAPSHOT under the publication-channel profile); the integration owner keeps a single merge queue so publications stay ordered; no tag, republication or replacement version is created for verification. Note ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S19(h)): npm and Maven publication stop under CON.40 ([P2-021](../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 4; brief section 0a item 3); NuGet publication is unchanged.
 
 <a id="res-contracts-schema-sources"></a>
 

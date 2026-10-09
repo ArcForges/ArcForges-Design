@@ -96,7 +96,7 @@ Tasks: 11 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 
 ### POL.04 — Features, flags and deterministic rollout
 
-**Outcome.** Deterministic target/percent hashing, exclusion groups and sticky experiment allocation select the same result for the same stable subject/version across languages, and rollout cannot grant commercial or security authority.
+**Outcome.** Deterministic target/percent hashing selects the same result for the same stable subject/version in the C# server and client, and rollout cannot grant commercial or security authority.
 
 | Field | Value |
 |---|---|
@@ -111,10 +111,10 @@ Tasks: 11 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Unblocks | [POL.09](#task-pol-09) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Policy/**/Rollout/**` |
 | Shared resources | [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append) |
-| Validation | Offline tests: independent byte/hash/bucket vectors, boundary 0/9999, holdout, overlapping exclusion group, account/device change, cached signed bundle expiry. |
-| Completion evidence | Cross-language hash/bucket vector match; boundary 0/9999 test. |
+| Validation | Offline tests: independent byte/hash/bucket vectors, boundary 0/9999, account/device change, cached signed bundle expiry. |
+| Completion evidence | C# server and client hash/bucket vector match; boundary 0/9999 test. |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Planning review 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026)): the sticky experiment allocation, experiment exclusion-group, and holdout or experiment-only fixture reductions proposed by the scope classifier are not adjudicated in brief section 11 and are not applied. The outcome, evidence and validation keep their pre-P2-026 text pending a coordinator ruling under [DLV-43](../README.md#rule-dlv-43). |
+| Notes | Planning repair 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); scope correction, brief section 11 S19(c)): reduced: sticky experiment allocation, experiment exclusion-group semantics, and holdout or experiment-only fixtures beyond the byte, hash and bucket vectors are out of scope, not completed. |
 
 <a id="task-pol-05"></a>
 

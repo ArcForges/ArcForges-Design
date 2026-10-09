@@ -137,7 +137,7 @@ Tasks: 34 · Owning repositories: Web · Integration owner(s): Web integration o
 | Validation | Locale routing/annotation tests, no-trap assertion, pseudo-localisation pass — offline |
 | Completion evidence | Locale routing, no-trap and pseudo-localisation results |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): The mechanism moves from React i18n to .NET localisation (.resx) under the C# static generator. The locale routing, no-trap and pseudo-localisation criteria are unchanged. |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): The mechanism moves from React i18n to .NET localisation (.resx) under the C# static generator. The locale routing, no-trap and pseudo-localisation criteria are unchanged. Planning repair 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); scope correction, brief section 11 S19(c)): reduced: shipping of non-default locale content and translated public pages beyond the foundation is out of scope, not completed. The locale-scoped URL, alternate-language annotation and .resx foundation remains in scope. |
 
 <a id="task-web-05"></a>
 

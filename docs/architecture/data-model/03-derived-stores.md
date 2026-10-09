@@ -104,7 +104,7 @@ Separate from lexical search, and subject to the **same permission and scope rul
 | Store | Product | Source | Invalidated by | Rebuild cost |
 |---|---|---|---|---|
 | `waveform_cache` | ArcScope | Signal source | Source content hash | Expensive — background |
-| `thumbnail_cache` | ArcChat | Media/attachment | Source content hash | Moderate |
+| `thumbnail_cache` (post-V1 and out of scope under P2-026 S1: no decoded thumbnail in V1) | ArcChat | Media/attachment | Source content hash | Moderate |
 | `analysis_result` | ArcScope | Capture + definition version + config | Any of the three | Expensive |
 | `decoded_event_index` | ArcScope | Capture + decoder version | Either | Expensive |
 | `task_projection` | ArcChat, all | Authoritative task store | Authoritative revision | Cheap |

@@ -5298,7 +5298,7 @@
     "state": "not-started",
     "notes": "Confirmed at DesktopPlatform main 3cee8ae0: no tests/ReleaseArtifactTests directory or realtime project, and package-validation.yml has no PRF.06 AOT publish job."
    },
-   "notes": "Runs after PRF.07 stands up DO/Worker; the existing PRF.07 start prerequisite is unchanged. Its runtime behavior is independent of PRF.04/05, but it shares their append-only transport/build configuration where applicable. Use only the single exact Grpc.Net.Client.Web 2.84.0 pin described by PRF.05; if this task reaches the serialized build-config merge first, append that sole entry, otherwise reuse it. The exact locked closure and Apache-2.0 package licence must be recorded in this task's immutable receipt; do not change any other dependency coordinate/version except the project-conditioned generated-contract pins named in the write scope. This task's project is `tests/ReleaseArtifactTests/Realtime/RealtimeAotProbe.csproj`. Keep AOT publish evidence separate from the required local live-service proof. The project and policy/provenance rows are append-only under the declared build-config/policy-data resources; this probe is non-packable and does not alter package inventory. Hold `leases/res-cloud-deployment` only for the local live run. Do not add Gitleaks allowlists or change secret-scan behavior; no secret or credential-looking value is committed or emitted. Stage delivery as the real client side under Native AOT: the generated annex 10 clients and records, the binary gRPC-Web transport, the cursor/sequence/gap, reset, heartbeat-silence, bounded-jitter reconnect and Poll/ReadOutput recovery logic, with a locked publish-only CI job and an offline self-test that opens no socket and calls no service. PRF.07's obligation (WP-06.04) does not include EventService.Watch and no task before CLOUD.29 implements a public Watch or WatchOutput server, so the live acceptance against a deployed Worker/Container/DO stays this task's own completion acceptance after the named real producers are complete; the ledger stays delivered meanwhile and the live result is never claimed from the offline self-test. Planning repair 2026-10-08 (DLV-34; P2-023): the osx-* sections of this task's tests/ReleaseArtifactTests/Realtime/packages.lock.json are retired by GOV.30 under P2-023; this task keeps its other writes.",
+   "notes": "Runs after PRF.07 stands up DO/Worker; the existing PRF.07 start prerequisite is unchanged. Its runtime behavior is independent of PRF.04/05, but it shares their append-only transport/build configuration where applicable. Use only the single exact Grpc.Net.Client.Web 2.84.0 pin described by PRF.05; if this task reaches the serialized build-config merge first, append that sole entry, otherwise reuse it. The exact locked closure and Apache-2.0 package licence must be recorded in this task's immutable receipt; do not change any other dependency coordinate/version except the project-conditioned generated-contract pins named in the write scope. This task's project is `tests/ReleaseArtifactTests/Realtime/RealtimeAotProbe.csproj`. Keep AOT publish evidence separate from the required local live-service proof. The project and policy/provenance rows are append-only under the declared build-config/policy-data resources; this probe is non-packable and does not alter package inventory. Hold `leases/res-cloud-deployment` only for the local live run. Do not add Gitleaks allowlists or change secret-scan behavior; no secret or credential-looking value is committed or emitted. Stage delivery as the real client side under Native AOT: the generated annex 10 clients and records, the binary gRPC-Web transport, the cursor/sequence/gap, reset, heartbeat-silence, bounded-jitter reconnect and Poll/ReadOutput recovery logic, with a locked publish-only CI job and an offline self-test that opens no socket and calls no service. PRF.07's obligation (WP-06.04) does not include EventService.Watch and no task before CLOUD.29 implements a public Watch or WatchOutput server, so the live acceptance against a deployed Worker/Container/DO stays this task's own completion acceptance after the named real producers are complete; the ledger stays delivered meanwhile and the live result is never claimed from the offline self-test. Planning repair 2026-10-08 (DLV-34; P2-023): the osx-* sections of this task's tests/ReleaseArtifactTests/Realtime/packages.lock.json are retired by GOV.30 under P2-023; this task keeps its other writes. Planning note 2026-10-09 (P2-026; S3, S16(c)): kept with its EventService.Watch and ExecutionService.WatchOutput server-stream acceptance, because streaming is V1; the classifier removal of that acceptance is not applied.",
    "complete": [
     {
      "type": "integration",
@@ -9033,7 +9033,7 @@
      "part": "full"
     }
    ],
-   "outcome": "Each of the two retained probes (A and C) has a written conclusion (proved / not proved / downstream constraint / open items); every native dependency the probes introduced has a recorded licence position; the tests/HardwareLab device inventory is created (device/firmware/driver versions) -- seeding PG-08 (completed later by NAT.28/WP-13.16).",
+   "outcome": "Each of the two retained probes (A and C) keeps a recorded result as verification evidence only (no written conclusion record is a product dependency); every native dependency the probes introduced has a recorded licence position; the tests/HardwareLab device inventory is created (device/firmware/driver versions) -- seeding PG-08 (completed later by NAT.28/WP-13.16).",
    "provides": [
     "probe-conclusions",
     "hardware-lab-inventory-seed"
@@ -9056,13 +9056,13 @@
     "DesktopPlatform:eng/verification/probe-evidence/**",
     "DesktopPlatform:tests/HardwareLab/**"
    ],
-   "validation": "Completeness check: every probe has a recorded environment, procedure, result and conclusion",
-   "evidence": "Two written probe conclusions; licence positions for probe-introduced dependencies; hardware inventory shell",
+   "validation": "Completeness check: every probe has a recorded environment, procedure and result",
+   "evidence": "Two probe result records kept as verification evidence only; licence positions for probe-introduced dependencies; hardware inventory shell",
    "baseline": {
     "state": "not-started",
     "notes": "Observed none, unreviewed: depends on the retained NAT.01 and NAT.03 probe results."
    },
-   "notes": "Small synthesis task; not itself a risk probe.",
+   "notes": "Small synthesis task; not itself a risk probe. Planning repair 2026-10-09 (P2-026; scope correction, brief section 11 S19(c)): reduced: written probe-conclusion records as a product dependency and licence positions for PDF-only dependencies are out of scope, not completed.",
    "complete": []
   },
   {
@@ -9215,7 +9215,7 @@
     "state": "not-started",
     "notes": "Observed scaffold, unreviewed: the still-image shim and src/Native/ArcForges.Native.Image exist at ABI1.0 probe level (GOV.17 moves the shim to native/arcimage-abi); OpenImageIO already required by the 'shim-static' CMake profile."
    },
-   "notes": "Consumed by the assistant image previews through the ContentSandbox per the platform matrix SS3.2 slot table. Planning repair 2026-10-09 (DLV-34; coordinator adjudication, brief section 10): the NAT.11 decisions D1 to D12 of brief section 10 are recorded, and the Annex 06 clarification (contracts/06 sections 1 and 3: the functional minor and capability list, coverage and order refusal, the pixel conversion rules and the PNG/TIFF/EXR allowlist) lands with this repair. The D5 supporting paths (native-abi.yml CTest filter, tests/NativeAbiTests, eng/packaging/native_consumer.py, eng/provenance/files.json rows and a successor dependency receipt if a bound hash changes) are in the writes above, with RES-desktopplatform-policy-data (append). Planning repair 2026-10-09 (DLV-34; fix4 review follow-up, non-blocking items): the active-projects write names its path and blob rows; no scope change.",
+   "notes": "Formerly consumed by the assistant image previews through the ContentSandbox (platform matrix SS3.2 slot table); under P2-026 S1 no ArcScope assistant preview consumes it, so it is finished under the DesktopPlatform exception only (closeout; never an ArcScope prerequisite). Planning repair 2026-10-09 (DLV-34; coordinator adjudication, brief section 10): the NAT.11 decisions D1 to D12 of brief section 10 are recorded, and the Annex 06 clarification (contracts/06 sections 1 and 3: the functional minor and capability list, coverage and order refusal, the pixel conversion rules and the PNG/TIFF/EXR allowlist) lands with this repair. The D5 supporting paths (native-abi.yml CTest filter, tests/NativeAbiTests, eng/packaging/native_consumer.py, eng/provenance/files.json rows and a successor dependency receipt if a bound hash changes) are in the writes above, with RES-desktopplatform-policy-data (append). Planning repair 2026-10-09 (DLV-34; fix4 review follow-up, non-blocking items): the active-projects write names its path and blob rows; no scope change.",
    "complete": [],
    "outOfScope": {
     "by": "P2-026",
@@ -12637,7 +12637,8 @@
     "state": "not-started"
    },
    "complete": [],
-   "writes": []
+   "writes": [],
+   "notes": "Planning note 2026-10-09 (P2-026; S3, S16(c)): kept with the stream-transport acceptance over EventService.Watch and ExecutionService.WatchOutput, because streaming is V1; the classifier removal of that acceptance is not applied."
   },
   {
    "id": "SCOPE.01",
@@ -13386,7 +13387,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "Independent of SCOPE.14 (measurements); the two can proceed in parallel. Decoder scope (UART/I2C/SPI) is fixed by the already-frozen analysis.v1 profile in architecture doc 26-product-behavior-profiles.md — note this is the ARCHITECTURE document numbered 26, unrelated to WP-26 (Remote action and tool bridge); no start edge needed since the design is already frozen, not missing. Planning repair 2026-10-09 (P2-026; review finding): which first-party protocol decoders V1 ships is open question 19, which P2-026 does not decide (no V1 decoder set is named). The acceptance text is restored to the pre-P2-026 per-decoder text, and no decoder is marked out until open question 19 is adjudicated under DLV-43.",
+   "notes": "Independent of SCOPE.14 (measurements); the two can proceed in parallel. Decoder scope (UART/I2C/SPI) is fixed by the already-frozen analysis.v1 profile in architecture doc 26-product-behavior-profiles.md — note this is the ARCHITECTURE document numbered 26, unrelated to WP-26 (Remote action and tool bridge); no start edge needed since the design is already frozen, not missing. Planning repair 2026-10-09 (P2-026; brief section 11 S19(d)): the decoder framework is kept (S12) and no decoder is declared out; the V1 decoder set is whatever SCOPE.15 acceptance needs (the arcscope decoder scenario). The validation and evidence keep the baseline per-decoder wording.",
    "complete": []
   },
   {
@@ -15358,7 +15359,7 @@
     "notes": "Observed none, unreviewed: n/a -- closure task"
    },
    "packageAcceptance": "WP-21",
-   "notes": "Gate: PG-26. A localhost benchmark cannot close it per WP-21.90's own text."
+   "notes": "Gate: PG-26. A localhost benchmark cannot close it per WP-21.90's own text. Planning note 2026-10-09 (P2-026; S4, S16(c)): kept with its Vectorize threshold legs, because the semantic search leg is V1; the classifier removal of those legs is not applied."
   },
   {
    "id": "CLOUD.11",
@@ -15484,7 +15485,7 @@
     "state": "not-started",
     "notes": "Observed none, unreviewed: no auth ceremonies or mail adapters exist"
    },
-   "notes": "Must-be-real-early per implementation-sequence §3 ('Identity, refresh/session contention and real email delivery/recovery at WP22' is explicitly listed as Must be real early, not Push-until-later). Keep this must-be-real-early placement; do not move it later. Planning repair 2026-10-05: starts after CLOUD.72, which binds the Identity store and identifier source to the plan-execution port; this task binds its own Auth and Notification stores the same way. Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one. The write scope above still names the nonexistent `src/Cloud/...` layout; its claimant binds it to the real layout (precedents: CLOUD.03, CLOUD.06, CLOUD.11). Planning repair 2026-10-08 (DLV-34; P2-025): outcome, validation and evidence are re-specified in place so the task can be delivered with real adapters and test doubles used only in tests, while completion stays blocked-external until live Postmark/SES send and recovery evidence is recorded. Acceptance is preserved, not removed or passed. The complete-edge dependents CLOUD.20, CLOUD.68 and WEB.10 inherit this completion block; their owners record it on their own records. CLOUD.15, CLOUD.17, CLOUD.18 and OPS.09 start on CLOUD.12 and need only its delivery.",
+   "notes": "Must-be-real-early per implementation-sequence §3 ('Identity, refresh/session contention and real email delivery/recovery at WP22' is explicitly listed as Must be real early, not Push-until-later). Keep this must-be-real-early placement; do not move it later. Planning repair 2026-10-05: starts after CLOUD.72, which binds the Identity store and identifier source to the plan-execution port; this task binds its own Auth and Notification stores the same way. Pattern for every module (decided by the CLOUD.72 planning repair, 2026-10-05): a module project references only the Abstractions project, so each module task binds its own live store itself, under its own Persistence folder, as an internal class written against the Abstractions plan-execution port (IModulePlanPort, COM.16) and registered in the module's own Register entry with the port created for its own descriptor (IModulePlanPortFactory.For); a call to a shared transaction family goes through the Abstractions family port that CLOUD.72 adds. No module task may leave its store unbound while declaring a service that needs one. The write scope above still names the nonexistent `src/Cloud/...` layout; its claimant binds it to the real layout (precedents: CLOUD.03, CLOUD.06, CLOUD.11). Planning repair 2026-10-08 (DLV-34; P2-025): outcome, validation and evidence are re-specified in place so the task can be delivered with real adapters and test doubles used only in tests, while completion stays blocked-external until live Postmark/SES send and recovery evidence is recorded. Acceptance is preserved, not removed or passed. The complete-edge dependents CLOUD.20, CLOUD.68 and WEB.10 inherit this completion block; their owners record it on their own records. CLOUD.15, CLOUD.17, CLOUD.18 and OPS.09 start on CLOUD.12 and need only its delivery. Planning repair 2026-10-09 (P2-026; scope correction, brief section 11 S19(c)): reduced: the official-realm password path and the official social or enterprise sign-in methods are out of scope, not completed (ID-21, ID-24, ID-26); self-host OIDC, local password and the self-host enterprise identity provider stay as operator-configured providers (ID-25, C-08).",
    "complete": []
   },
   {
@@ -19315,7 +19316,7 @@
      "part": "server-side flag/rollout definition, publication and byte/hash/bucket algorithm; on-device execution split to POL.09"
     }
    ],
-   "outcome": "Deterministic target/percent hashing, exclusion groups and sticky experiment allocation select the same result for the same stable subject/version across languages, and rollout cannot grant commercial or security authority.",
+   "outcome": "Deterministic target/percent hashing selects the same result for the same stable subject/version in the C# server and client, and rollout cannot grant commercial or security authority.",
    "provides": [
     "rollout-hashing-algorithm",
     "flag-lifecycle"
@@ -19349,13 +19350,13 @@
      "mode": "append"
     }
    ],
-   "validation": "Offline tests: independent byte/hash/bucket vectors, boundary 0/9999, holdout, overlapping exclusion group, account/device change, cached signed bundle expiry.",
-   "evidence": "Cross-language hash/bucket vector match; boundary 0/9999 test.",
+   "validation": "Offline tests: independent byte/hash/bucket vectors, boundary 0/9999, account/device change, cached signed bundle expiry.",
+   "evidence": "C# server and client hash/bucket vector match; boundary 0/9999 test.",
    "baseline": {
     "state": "not-started"
    },
    "complete": [],
-   "notes": "Planning review 2026-10-09 (P2-026): the sticky experiment allocation, experiment exclusion-group, and holdout or experiment-only fixture reductions proposed by the scope classifier are not adjudicated in brief section 11 and are not applied. The outcome, evidence and validation keep their pre-P2-026 text pending a coordinator ruling under DLV-43."
+   "notes": "Planning repair 2026-10-09 (P2-026; scope correction, brief section 11 S19(c)): reduced: sticky experiment allocation, experiment exclusion-group semantics, and holdout or experiment-only fixtures beyond the byte, hash and bucket vectors are out of scope, not completed."
   },
   {
    "id": "POL.05",
@@ -24411,7 +24412,7 @@
     "state": "not-started"
    },
    "complete": [],
-   "notes": "Planning repair 2026-10-08 (DLV-34; P2-021): The mechanism moves from React i18n to .NET localisation (.resx) under the C# static generator. The locale routing, no-trap and pseudo-localisation criteria are unchanged."
+   "notes": "Planning repair 2026-10-08 (DLV-34; P2-021): The mechanism moves from React i18n to .NET localisation (.resx) under the C# static generator. The locale routing, no-trap and pseudo-localisation criteria are unchanged. Planning repair 2026-10-09 (P2-026; scope correction, brief section 11 S19(c)): reduced: shipping of non-default locale content and translated public pages beyond the foundation is out of scope, not completed. The locale-scoped URL, alternate-language annotation and .resx foundation remains in scope."
   },
   {
    "id": "WEB.05",
@@ -26730,7 +26731,7 @@
     {
      "type": "release",
      "task": "GOV.09",
-     "need": "Cloud policy tests delivered, including the standing C# check that worker/ holds no business decision",
+     "need": "Cloud policy tests delivered; the standing worker/ no-business-logic check is CLOUD.84 validation (P2-026 S16(b))",
      "why": "P2-026 S13: the Cloud production readiness release verifies the standing C# policy check it accepts"
     }
    ],
@@ -26752,7 +26753,7 @@
    "baseline": {
     "state": "not-started"
    },
-   "notes": "The game-day exercise itself is split out to REL.09 per the assignment's explicit 'combined disaster drill' bucket. Planning repair 2026-10-09 (P2-026; scope correction): the EXT.90 start edge is removed (extension platform out of scope); the standing C# policy check (GOV.09) is added as a release verification input."
+   "notes": "The game-day exercise itself is split out to REL.09 per the assignment's explicit 'combined disaster drill' bucket. Planning repair 2026-10-09 (P2-026; scope correction): the EXT.90 start edge is removed (extension platform out of scope); the GOV.09 Cloud policy tests are added as a release verification input (S13); the standing worker/ check is a CLOUD.84 validation item (S16(b))."
   },
   {
    "id": "REL.07",
@@ -29263,7 +29264,7 @@
    "kind": "pointer",
    "ownerRepo": "Contracts",
    "owner": "Contracts integration owner",
-   "protocol": "Every merge to main publishes all Contracts packages at one allocated candidate version (Maven main as SNAPSHOT under the publication-channel profile); the integration owner keeps a single merge queue so publications stay ordered; no tag, republication or replacement version is created for verification."
+   "protocol": "Every merge to main publishes all Contracts packages at one allocated candidate version (Maven main as SNAPSHOT under the publication-channel profile); the integration owner keeps a single merge queue so publications stay ordered; no tag, republication or replacement version is created for verification. Note (P2-026 S19(h)): npm and Maven publication stop under CON.40 (P2-021 item 4; brief section 0a item 3); NuGet publication is unchanged."
   },
   {
    "id": "RES-contracts-schema-sources",
@@ -30365,6 +30366,11 @@
    "ref": "WP-15.07",
    "by": "P2-026",
    "note": "AionUi reference proof and drift re-check (AST.08) has no ArcScope consumer; out of V1 under P2-026 S1 and S2. Its clean-app package-only consumption is carried by AST.17."
+  },
+  {
+   "ref": "WP-04:typescript-kotlin-primitive-projection-o",
+   "by": "P2-026",
+   "note": "TypeScript and Kotlin primitive projection of the registry-04 exact-value rules retires with the TypeScript and Kotlin SDKs (P2-021 item 4; brief section 0a item 3; P2-026 S19(h))."
   }
  ]
 }

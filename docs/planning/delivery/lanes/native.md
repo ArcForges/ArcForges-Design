@@ -71,7 +71,7 @@ Tasks: 9 · Owning repositories: DesktopPlatform · Integration owner(s): Deskto
 
 ### NAT.05 — Probe evidence, licence positions, conclusions and hardware-lab inventory seed
 
-**Outcome.** Each of the two retained probes (A and C) has a written conclusion (proved / not proved / downstream constraint / open items); every native dependency the probes introduced has a recorded licence position; the tests/HardwareLab device inventory is created (device/firmware/driver versions) -- seeding [PG-08](../../../assurance/open-gates-register.md#rule-pg-08) (completed later by NAT.28/[WP-13.16](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.16)).
+**Outcome.** Each of the two retained probes (A and C) keeps a recorded result as verification evidence only (no written conclusion record is a product dependency); every native dependency the probes introduced has a recorded licence position; the tests/HardwareLab device inventory is created (device/firmware/driver versions) -- seeding [PG-08](../../../assurance/open-gates-register.md#rule-pg-08) (completed later by NAT.28/[WP-13.16](../../work-packages/13-high-risk-technical-probes.md#rule-wp-13.16)).
 
 | Field | Value |
 |---|---|
@@ -85,10 +85,10 @@ Tasks: 9 · Owning repositories: DesktopPlatform · Integration owner(s): Deskto
 | Completion prerequisites | none |
 | Unblocks | [NAT.30](#task-nat-30) |
 | Write scope | `DesktopPlatform:eng/verification/probe-evidence/**`<br>`DesktopPlatform:tests/HardwareLab/**` |
-| Validation | Completeness check: every probe has a recorded environment, procedure, result and conclusion |
-| Completion evidence | Two written probe conclusions; licence positions for probe-introduced dependencies; hardware inventory shell |
+| Validation | Completeness check: every probe has a recorded environment, procedure and result |
+| Completion evidence | Two probe result records kept as verification evidence only; licence positions for probe-introduced dependencies; hardware inventory shell |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: depends on the retained NAT.01 and NAT.03 probe results. |
-| Notes | Small synthesis task; not itself a risk probe. |
+| Notes | Small synthesis task; not itself a risk probe. Planning repair 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); scope correction, brief section 11 S19(c)): reduced: written probe-conclusion records as a product dependency and licence positions for PDF-only dependencies are out of scope, not completed. |
 
 <a id="task-nat-06"></a>
 
@@ -271,7 +271,7 @@ Excluded from the active plan by the decision named under each heading. These ta
 | Validation | Bit depth/metadata round trip, edge tiles, decompression bomb, failed codec, incomplete-output refusal |
 | Completion evidence | Still-image codecs: behavioral, failure and package evidence |
 | Baseline (unreviewed unless accepted) | not-started Observed scaffold, unreviewed: the still-image shim and src/Native/ArcForges.Native.Image exist at ABI1.0 probe level (GOV.17 moves the shim to native/arcimage-abi); OpenImageIO already required by the 'shim-static' CMake profile. |
-| Notes | Consumed by the assistant image previews through the ContentSandbox per the platform matrix SS3.2 slot table. Planning repair 2026-10-09 ([DLV-34](../README.md#rule-dlv-34); coordinator adjudication, brief section 10): the NAT.11 decisions D1 to D12 of brief section 10 are recorded, and the Annex 06 clarification (contracts/06 sections 1 and 3: the functional minor and capability list, coverage and order refusal, the pixel conversion rules and the PNG/TIFF/EXR allowlist) lands with this repair. The D5 supporting paths (native-abi.yml CTest filter, tests/NativeAbiTests, eng/packaging/native_consumer.py, eng/provenance/files.json rows and a successor dependency receipt if a bound hash changes) are in the writes above, with RES-desktopplatform-policy-data (append). Planning repair 2026-10-09 ([DLV-34](../README.md#rule-dlv-34); fix4 review follow-up, non-blocking items): the active-projects write names its path and blob rows; no scope change. |
+| Notes | Formerly consumed by the assistant image previews through the ContentSandbox (platform matrix SS3.2 slot table); under [P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) S1 no ArcScope assistant preview consumes it, so it is finished under the DesktopPlatform exception only (closeout; never an ArcScope prerequisite). Planning repair 2026-10-09 ([DLV-34](../README.md#rule-dlv-34); coordinator adjudication, brief section 10): the NAT.11 decisions D1 to D12 of brief section 10 are recorded, and the Annex 06 clarification (contracts/06 sections 1 and 3: the functional minor and capability list, coverage and order refusal, the pixel conversion rules and the PNG/TIFF/EXR allowlist) lands with this repair. The D5 supporting paths (native-abi.yml CTest filter, tests/NativeAbiTests, eng/packaging/native_consumer.py, eng/provenance/files.json rows and a successor dependency receipt if a bound hash changes) are in the writes above, with RES-desktopplatform-policy-data (append). Planning repair 2026-10-09 ([DLV-34](../README.md#rule-dlv-34); fix4 review follow-up, non-blocking items): the active-projects write names its path and blob rows; no scope change. |
 
 <a id="task-nat-14"></a>
 
