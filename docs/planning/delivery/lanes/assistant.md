@@ -4,7 +4,7 @@
 
 Assistant abstractions, core, history store, Cloud client surface and Avalonia presentation embedded by ArcScope.
 
-Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): DesktopPlatform integration owner
+Tasks: 21 · Owning repositories: DesktopPlatform · Integration owner(s): DesktopPlatform integration owner · Out of scope: 1 (final section)
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
@@ -15,8 +15,7 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | [AST.05](#task-ast-05) | Skills | producer | S | [AST.01](#task-ast-01) (artifact), [PLT.42](platform.md#task-plt-42) (artifact) | not-started |
 | [AST.06](#task-ast-06) | Local search | producer | M | [AST.01](#task-ast-01) (artifact) | not-started |
 | [AST.07](#task-ast-07) | Local history export and import (assistant-history.v1) | producer | M | [AST.01](#task-ast-01) (artifact), [CON.11](contracts.md#task-con-11) (contract) | not-started |
-| [AST.08](#task-ast-08) | Reference and package proof (AionUi evidence, clean-app package consumption) | producer | S | [AST.01](#task-ast-01) (artifact) | not-started |
-| [AST.09](#task-ast-09) | Owned-artifact receipt and UX acceptance | acceptance | M | [AST.01](#task-ast-01) (artifact), [AST.02](#task-ast-02) (artifact), [AST.03](#task-ast-03) (artifact), [AST.04](#task-ast-04) (artifact), [AST.05](#task-ast-05) (artifact), [AST.06](#task-ast-06) (artifact), [AST.07](#task-ast-07) (artifact), [AST.08](#task-ast-08) (artifact) | not-started |
+| [AST.09](#task-ast-09) | Owned-artifact receipt and UX acceptance | acceptance | M | [AST.01](#task-ast-01) (artifact), [AST.02](#task-ast-02) (artifact), [AST.03](#task-ast-03) (artifact), [AST.04](#task-ast-04) (artifact), [AST.05](#task-ast-05) (artifact), [AST.06](#task-ast-06) (artifact), [AST.07](#task-ast-07) (artifact) | not-started |
 | [AST.10](#task-ast-10) | Complete assistant navigation shell | producer | L | [EXE.01](execution.md#task-exe-01) (artifact), [AST.01](#task-ast-01) (artifact), [AST.02](#task-ast-02) (artifact), [AST.04](#task-ast-04) (artifact), [AST.05](#task-ast-05) (artifact), [AST.06](#task-ast-06) (artifact), [AST.07](#task-ast-07) (artifact) | not-started |
 | [AST.11](#task-ast-11) | Cloud client and device runtime (fixture turn endpoint boundary) | producer | L | [CON.10](contracts.md#task-con-10) (contract), [PRF.05](runtime-proofs.md#task-prf-05) (artifact), [AST.01](#task-ast-01) (artifact) | not-started |
 | [AST.12](#task-ast-12) | Security and approval surface | producer | M | [AST.10](#task-ast-10) (artifact), [APP.05](app-composition.md#task-app-05) (artifact), [PLT.39](platform.md#task-plt-39) (artifact) | not-started |
@@ -49,7 +48,7 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Start prerequisites | **artifact** [APP.01](app-composition.md#task-app-01) — published Assistant.Abstractions product/profile identity. *Why:* one canonical store is scoped per application/profile using this real identity type<br>**contract** [CON.91](contracts.md#task-con-91) — published Foundation contract types (identity/error/revision). *Why:* typed payloads and transaction/revision handling are built on these records<br>**contract** [CON.11](contracts.md#task-con-11) — complete generated package/schema gate output. *Why:* SQLite schema and typed payloads mirror the generated Contracts schema definitions, not a private redefinition |
 | Entry condition | [ADOPT.02.assistant](adoption.md#task-adopt-02-assistant) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [AST.02](#task-ast-02), [AST.03](#task-ast-03), [AST.04](#task-ast-04), [AST.05](#task-ast-05), [AST.06](#task-ast-06), [AST.07](#task-ast-07), [AST.08](#task-ast-08), [AST.09](#task-ast-09), [AST.10](#task-ast-10), [AST.11](#task-ast-11), [AST.22](#task-ast-22) |
+| Unblocks | [AST.02](#task-ast-02), [AST.03](#task-ast-03), [AST.04](#task-ast-04), [AST.05](#task-ast-05), [AST.06](#task-ast-06), [AST.07](#task-ast-07), [AST.08](#task-ast-08) — out of scope, [AST.09](#task-ast-09), [AST.10](#task-ast-10), [AST.11](#task-ast-11), [AST.22](#task-ast-22) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Core/**`<br>`DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Persistence.Sqlite/**`<br>`DesktopPlatform:tests/AssistantCoreTests/**` |
 | Shared resources | [RES-assistant-store-schema](../shared-resources.md#res-assistant-store-schema) (append), [RES-desktopplatform-build-config](../shared-resources.md#res-desktopplatform-build-config) (append) |
 | Validation | Offline unit tests: DDL with foreign keys, migrations, disk-full, branch fork, concurrent-window stale revision, duplicate terminal frame, interrupted send; no live environment. |
@@ -84,7 +83,7 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 
 ### AST.03 — Attachments and provenance
 
-**Outcome.** Typed local refs, authorized file staging and still-image preview (PDF attachments are stored, transferred and downloaded as opaque attachments with no parsing or preview, [P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022)), resource ownership and explicit egress; attachment selection is never treated as upload consent. Missing/hostile file, lost URI/path grant, source labels, quota and temporary exclusion covered.
+**Outcome.** Typed local refs, authorized file staging and still-image metadata cards (magic-byte type, name and size for PNG, JPEG, GIF and WebP, with no decode, [P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); PDF attachments are stored, transferred and downloaded as opaque attachments with no parsing or preview, [P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022)), resource ownership and explicit egress; attachment selection is never treated as upload consent. Missing/hostile file, lost URI/path grant, source labels, quota and temporary exclusion covered.
 
 | Field | Value |
 |---|---|
@@ -99,10 +98,10 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Unblocks | [AST.09](#task-ast-09) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Core/**` |
 | Shared resources | [RES-assistant-store-schema](../shared-resources.md#res-assistant-store-schema) (append) |
-| Validation | Offline unit tests: missing/hostile file, lost URI/path grant, quota, temporary exclusion. |
+| Validation | Offline unit tests: missing/hostile file, lost URI/path grant, quota, temporary exclusion; still-image attachments (PNG, JPEG, GIF and WebP) show a metadata card (type, name and size) from magic-byte sniffing with no decode ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) S1, S16(e)). |
 | Completion evidence | Attachment provenance and egress-consent test results. |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022)): PDF attachments are opaque attachments; image preview is kept. APP.06 owns the shared freeze and preview port and is unchanged. |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022)): PDF attachments are opaque attachments; still-image preview is reduced to a metadata card ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026)). APP.06 owns the shared freeze and preview port and is unchanged. Planning repair 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); scope correction): reduced: in-app still-image preview and image decoding are out of scope, not completed (a metadata card is kept). |
 
 <a id="task-ast-04"></a>
 
@@ -197,28 +196,6 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | One of the named scaffolding rows in implementation-sequence.md §3.1. See integration_proposals IM.history-export-cloud-promotion. |
 
-<a id="task-ast-08"></a>
-
-### AST.08 — Reference and package proof (AionUi evidence, clean-app package consumption)
-
-**Outcome.** AionUi component evidence/provenance recorded; the actual candidate Assistant.Core/Assistant.Persistence.Sqlite package consumed from a clean test application with no reference runtime or imported agent scope.
-
-| Field | Value |
-|---|---|
-| Owning repository | DesktopPlatform (`C:\MyFile\Projects\ArcForges\DesktopPlatform`); integration owner: DesktopPlatform integration owner, the holder of `roles/integration-desktopplatform` |
-| Claim, branch and ledger | `claims/ast-08` and ledger record `ledger/tasks/ast-08.md` in the Plan repository; task branch `task/ast-08` ([DLV-26](../README.md#rule-dlv-26)) |
-| Kind / size | producer / S |
-| Obligations | [WP-15.07](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.07) — full |
-| Provides | assistant-core-sqlite-package-proof |
-| Start prerequisites | **artifact** [AST.01](#task-ast-01) — published Assistant.Core/Assistant.Persistence.Sqlite candidate packages. *Why:* this substep proves package-only consumption of the actual candidate, distinct from in-repo testing |
-| Entry condition | [ADOPT.02.assistant](adoption.md#task-adopt-02-assistant) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | none |
-| Unblocks | [AST.09](#task-ast-09) |
-| Write scope | `DesktopPlatform:tests/AssistantCoreTests/**` |
-| Validation | Package-only restore in a clean test app; offline behavior tests; exact package hash recorded. |
-| Completion evidence | Package hash manifest, AionUi reference-coverage citation (arcchat-aionui.md, no reused code), clean-app test results. |
-| Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: arcchat-aionui.md reference matrix already exists (bound to commit 29c9271a5) with zero reuse rows; this task re-checks for drift, does not recreate the matrix. |
-
 <a id="task-ast-09"></a>
 
 ### AST.09 — Owned-artifact receipt and UX acceptance
@@ -233,7 +210,7 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Package acceptance | Records the [WP-15](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15) acceptance receipt after every task mapped to the package; tasks outside the package never start from it ([DLV-35](../README.md#rule-dlv-35)) |
 | Obligations | [WP-15.90](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.90) — full |
 | Provides | wp15-accepted-artifact |
-| Start prerequisites | **artifact** [AST.01](#task-ast-01) — completed [WP-15.00](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.00). *Why:* aggregation<br>**artifact** [AST.02](#task-ast-02) — completed [WP-15.01](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.01). *Why:* aggregation<br>**artifact** [AST.03](#task-ast-03) — completed [WP-15.02](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.02). *Why:* aggregation<br>**artifact** [AST.04](#task-ast-04) — completed [WP-15.03](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.03). *Why:* aggregation<br>**artifact** [AST.05](#task-ast-05) — completed [WP-15.04](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.04). *Why:* aggregation<br>**artifact** [AST.06](#task-ast-06) — completed [WP-15.05](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.05). *Why:* aggregation<br>**artifact** [AST.07](#task-ast-07) — completed [WP-15.06](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.06). *Why:* aggregation<br>**artifact** [AST.08](#task-ast-08) — completed [WP-15.07](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.07). *Why:* aggregation |
+| Start prerequisites | **artifact** [AST.01](#task-ast-01) — completed [WP-15.00](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.00). *Why:* aggregation<br>**artifact** [AST.02](#task-ast-02) — completed [WP-15.01](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.01). *Why:* aggregation<br>**artifact** [AST.03](#task-ast-03) — completed [WP-15.02](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.02). *Why:* aggregation<br>**artifact** [AST.04](#task-ast-04) — completed [WP-15.03](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.03). *Why:* aggregation<br>**artifact** [AST.05](#task-ast-05) — completed [WP-15.04](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.04). *Why:* aggregation<br>**artifact** [AST.06](#task-ast-06) — completed [WP-15.05](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.05). *Why:* aggregation<br>**artifact** [AST.07](#task-ast-07) — completed [WP-15.06](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.06). *Why:* aggregation |
 | Entry condition | [ADOPT.02.assistant](adoption.md#task-adopt-02-assistant) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | none |
@@ -388,7 +365,7 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 
 ### AST.16 — Preview and host context
 
-**Outcome.** AS03/08 own-app selection/preview/navigation implemented using the frozen [WP-14.05](../../work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.05) host ports, with safe fallback for unsupported native preview (a PDF attachment gets an opaque attachment card offering Save As (download) only, with no in-app parsing, rendering or open action, [P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022)); still images keep the thin preview; no live-selection mutation, no another-product destination, citations/resources keep ownership.
+**Outcome.** AS03/08 own-app selection/preview/navigation implemented using the frozen [WP-14.05](../../work-packages/14-hub-and-minimal-provider-slice.md#rule-wp-14.05) host ports, with safe fallback for unsupported native preview (a PDF attachment gets an opaque attachment card offering Save As (download) only, with no in-app parsing, rendering or open action, [P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022)); still images show a metadata card (magic-byte type, name and size for PNG, JPEG, GIF and WebP, with no decode, [P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026)); no live-selection mutation, no another-product destination, citations/resources keep ownership.
 
 | Field | Value |
 |---|---|
@@ -402,10 +379,10 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Completion prerequisites | none |
 | Unblocks | [AST.17](#task-ast-17) |
 | Write scope | `DesktopPlatform:src/BuildingBlocks/ArcForges.Assistant.Avalonia/**` |
-| Validation | Offline tests: no live-selection mutation, no cross-product destination, citation/resource ownership preserved; PDF attachments expose Save As only (no preview, parse, render or open action). |
+| Validation | Offline tests: no live-selection mutation, no cross-product destination, citation/resource ownership preserved; PDF attachments expose Save As only (no preview, parse, render or open action); still-image attachments show the magic-byte metadata card (type, name and size; PNG, JPEG, GIF and WebP) with no decode and no in-app preview, in place of the preview test ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) S1, S16(e)). |
 | Completion evidence | Selection-mutation and ownership test results. |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022)): the native PDF preview fallback is retired. A PDF attachment shows an opaque attachment card with Save As (download) only. No open-externally action is added: handing an untrusted PDF to the operating-system default handler is outside the opaque-download rule and is not admitted without a separate security decision. |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-022](../../../decisions/phase-2-specification-decisions.md#rule-p2-022)): the native PDF preview fallback is retired. A PDF attachment shows an opaque attachment card with Save As (download) only. No open-externally action is added: handing an untrusted PDF to the operating-system default handler is outside the opaque-download rule and is not admitted without a separate security decision. Planning repair 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); scope correction): reduced: in-app still-image thumbnail and preview are out of scope, not completed (a metadata card is kept). |
 
 <a id="task-ast-17"></a>
 
@@ -467,7 +444,7 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Claim, branch and ledger | `claims/ast-19` and ledger record `ledger/tasks/ast-19.md` in the Plan repository; task branch `task/ast-19` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | integration / M |
 | Obligations | [WP-52.05](../../work-packages/52-cloud-harness.md#rule-wp-52.05) — all work except the parts mapped to DEV.13, HAR.05 |
-| Start prerequisites | **artifact** [AST.11](#task-ast-11) — real, delivered outcome of AST.11 (Cloud client and device runtime (fixture turn endpoint boundary)). *Why:* this integration exercises the real cloud client and device runtime (fixture turn endpoint boundary) instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [HAR.00](harness.md#task-har-00) — real Harness turn loop. *Why:* the assistant switches from the fixture turn endpoint to the real Workflow loop<br>**artifact** [HAR.03](harness.md#task-har-03) — real generated streaming and durable output. *Why:* the assistant reads real output streams |
+| Start prerequisites | **artifact** [AST.11](#task-ast-11) — real, delivered outcome of AST.11 (Cloud client and device runtime (fixture turn endpoint boundary)). *Why:* this integration exercises the real cloud client and device runtime (fixture turn endpoint boundary) instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [HAR.00](harness.md#task-har-00) — real Harness turn loop. *Why:* the assistant switches from the fixture turn endpoint to the C# executor ([P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021))<br>**artifact** [HAR.03](harness.md#task-har-03) — real generated streaming and durable output. *Why:* the assistant reads real output streams |
 | Entry condition | [ADOPT.02.assistant](adoption.md#task-adopt-02-assistant) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [DEV.13](device-bridge.md#task-dev-13), [HAR.05](harness.md#task-har-05) |
@@ -539,3 +516,36 @@ Tasks: 22 · Owning repositories: DesktopPlatform · Integration owner(s): Deskt
 | Completion evidence | AST.15's Cloud promotion/copy UI successfully drives a real restartable import, including lost-finalize-ack, changed-local-history and account-switch recovery |
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | Merged duplicate integration or closure task formerly proposed as CLOUD.57. |
+
+## Out of scope
+
+Excluded from the active plan by the decision named under each heading. These tasks are not completed, are never claimable and are not remaining work; their records and ledger history are kept here.
+
+### P2-026
+
+| Task | Title | Note | Mode | Ledger status |
+|---|---|---|---|---|
+| [AST.08](#task-ast-08) | Reference and package proof (AionUi evidence, clean-app package consumption) | No concrete necessary ArcScope consumer: the reference-only AionUi drift check adds no product capability and is out of scope, not completed ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) R12); its clean-app package-only consumption check is carried by AST.17. | excluded | no record |
+
+<a id="task-ast-08"></a>
+
+#### AST.08 — Reference and package proof (AionUi evidence, clean-app package consumption)
+
+**Outcome.** AionUi component evidence/provenance recorded; the actual candidate Assistant.Core/Assistant.Persistence.Sqlite package consumed from a clean test application with no reference runtime or imported agent scope.
+
+| Field | Value |
+|---|---|
+| Scope | Out of scope (P2-026): No concrete necessary ArcScope consumer: the reference-only AionUi drift check adds no product capability and is out of scope, not completed ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) R12); its clean-app package-only consumption check is carried by AST.17. |
+| Owning repository | DesktopPlatform (`C:\MyFile\Projects\ArcForges\DesktopPlatform`); integration owner: DesktopPlatform integration owner, the holder of `roles/integration-desktopplatform` |
+| Claim, branch and ledger | `claims/ast-08` and ledger record `ledger/tasks/ast-08.md` in the Plan repository; task branch `task/ast-08` ([DLV-26](../README.md#rule-dlv-26)) |
+| Kind / size | producer / S |
+| Obligations | [WP-15.07](../../work-packages/15-arcchat-conversation-core.md#rule-wp-15.07) — full |
+| Provides | assistant-core-sqlite-package-proof |
+| Start prerequisites | **artifact** [AST.01](#task-ast-01) — published Assistant.Core/Assistant.Persistence.Sqlite candidate packages. *Why:* this substep proves package-only consumption of the actual candidate, distinct from in-repo testing |
+| Entry condition | [ADOPT.02.assistant](adoption.md#task-adopt-02-assistant) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Completion prerequisites | none |
+| Unblocks | none |
+| Write scope | `DesktopPlatform:tests/AssistantCoreTests/**` |
+| Validation | Package-only restore in a clean test app; offline behavior tests; exact package hash recorded. |
+| Completion evidence | Package hash manifest, AionUi reference-coverage citation (arcchat-aionui.md, no reused code), clean-app test results. |
+| Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: arcchat-aionui.md reference matrix already exists (bound to commit 29c9271a5) with zero reuse rows; this task re-checks for drift, does not recreate the matrix. |

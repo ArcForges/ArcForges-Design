@@ -16,7 +16,7 @@ Tasks: 11 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | [POL.06](#task-pol-06) | Scoped resolution and explainability (server side) | service | M | [POL.02](#task-pol-02) (artifact) | not-started |
 | [POL.07](#task-pol-07) | Compatibility policy | service | M | [POL.02](#task-pol-02) (artifact) | not-started |
 | [POL.08](#task-pol-08) | Publication, staleness and last-known-good (server side) | service | M | [POL.02](#task-pol-02) (artifact) | not-started |
-| [POL.09](#task-pol-09) | Client-side policy resolution library (native/AOT) | service | L | [POL.04](#task-pol-04) (artifact), [CON.12](contracts.md#task-con-12) (contract), [CON.22](contracts.md#task-con-22) (contract) | not-started |
+| [POL.09](#task-pol-09) | Client-side policy resolution library (native/AOT) | service | L | [POL.04](#task-pol-04) (artifact), [CON.12](contracts.md#task-con-12) (contract), [CON.22](contracts.md#task-con-22) (contract), [POL.06](#task-pol-06) (artifact) | not-started |
 | [POL.10](#task-pol-10) | Owned-artifact receipt | service | S | [POL.09](#task-pol-09) (artifact), [POL.03](#task-pol-03) (artifact), [POL.05](#task-pol-05) (artifact), [POL.06](#task-pol-06) (artifact), [POL.07](#task-pol-07) (artifact) | not-started |
 | [POL.11](#task-pol-11) | First real publish-then-resolve round trip from Cloud Policy authority to the DesktopPlatform client library | integration | M | [POL.08](#task-pol-08) (artifact), [POL.09](#task-pol-09) (artifact) | not-started |
 
@@ -96,7 +96,7 @@ Tasks: 11 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 
 ### POL.04 — Features, flags and deterministic rollout
 
-**Outcome.** Deterministic target/percent hashing, exclusion groups and sticky experiment allocation select the same result for the same stable subject/version across languages, and rollout cannot grant commercial or security authority.
+**Outcome.** Deterministic target/percent hashing selects the same result for the same stable subject/version in the C# server and client, and rollout cannot grant commercial or security authority.
 
 | Field | Value |
 |---|---|
@@ -111,9 +111,10 @@ Tasks: 11 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Unblocks | [POL.09](#task-pol-09) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Policy/**/Rollout/**` |
 | Shared resources | [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append) |
-| Validation | Offline tests: independent byte/hash/bucket vectors, boundary 0/9999, holdout, overlapping exclusion group, account/device change, cached signed bundle expiry. |
-| Completion evidence | Cross-language hash/bucket vector match; boundary 0/9999 test. |
+| Validation | Offline tests: independent byte/hash/bucket vectors, boundary 0/9999, account/device change, cached signed bundle expiry. |
+| Completion evidence | C# server and client hash/bucket vector match; boundary 0/9999 test. |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); scope correction): reduced: sticky experiment allocation, experiment exclusion-group semantics, and holdout or experiment-only fixtures beyond the byte, hash and bucket vectors are out of scope, not completed. |
 
 <a id="task-pol-05"></a>
 
@@ -154,7 +155,7 @@ Tasks: 11 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Start prerequisites | **artifact** [POL.02](#task-pol-02) — published, validated bundles to resolve over. *Why:* resolution operates over activated configuration bundles |
 | Entry condition | [ADOPT.07.policy](adoption.md#task-adopt-07-policy) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [POL.10](#task-pol-10) |
+| Unblocks | [POL.09](#task-pol-09), [POL.10](#task-pol-10) |
 | Write scope | `Cloud:src/Cloud/ArcForges.Cloud.Modules.Policy/**/Resolution/**` |
 | Validation | Offline tests: resolution-order matrix, explainability per scope, workspace-policy override. |
 | Completion evidence | Resolution-order matrix result; explainability-per-scope result. |
@@ -217,7 +218,7 @@ Tasks: 11 · Owning repositories: Cloud, DesktopPlatform · Integration owner(s)
 | Kind / size | service / L |
 | Obligations | [WP-44.05](../../work-packages/44-dynamic-policy-and-configuration.md#rule-wp-44.05) — client-side consumption of scoped resolution/explainability<br>[WP-44.07](../../work-packages/44-dynamic-policy-and-configuration.md#rule-wp-44.07) — client caching, staleness threshold, fallback to last-known-good then compiled defaults, staleness visible, mid-operation application timing<br>[WP-44.03](../../work-packages/44-dynamic-policy-and-configuration.md#rule-wp-44.03) — client execution of the deterministic rollout hash so the same subject/version selects the same result on-device |
 | Provides | client-policy-resolution-library |
-| Start prerequisites | **artifact** [POL.04](#task-pol-04) — the deterministic rollout hashing algorithm specification. *Why:* the client must reproduce the exact same hash/bucket result as the server for the same subject/version<br>**contract** [CON.12](contracts.md#task-con-12) — policy.body.v1/configuration.v1 generated client-side (C#) types. *Why:* same schema gap as POL.02 — the client needs the generated DTOs to deserialize into<br>**contract** [CON.22](contracts.md#task-con-22) — published policy.getBundle. *Why:* the client resolution library fetches the generated policy bundle |
+| Start prerequisites | **artifact** [POL.04](#task-pol-04) — the deterministic rollout hashing algorithm specification. *Why:* the client must reproduce the exact same hash/bucket result as the server for the same subject/version<br>**contract** [CON.12](contracts.md#task-con-12) — policy.body.v1/configuration.v1 generated client-side (C#) types. *Why:* same schema gap as POL.02 — the client needs the generated DTOs to deserialize into<br>**contract** [CON.22](contracts.md#task-con-22) — published policy.getBundle. *Why:* the client resolution library fetches the generated policy bundle<br>**artifact** [POL.06](#task-pol-06) — POL.06 scoped resolution and explainability, consumed by obligation [WP-44.05](../../work-packages/44-dynamic-policy-and-configuration.md#rule-wp-44.05). *Why:* [P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) S13: the client rollout acceptance must verify the scoped resolution it consumes |
 | Entry condition | [ADOPT.02.policy](adoption.md#task-adopt-02-policy) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [POL.11](#task-pol-11) — a genuinely published bundle fetched and cached by this library, with staleness fallback proven against the deployed Cloud policy service. *Why:* this task's own tests can only prove the fallback chain mechanics in isolation; real staleness/LKG behavior needs a real publish-then-resolve round trip<br>**integration** [POL.08](#task-pol-08) — real server-side publication and staleness signal complete. *Why:* the client library starts from the published policy contract and the compiled last-known-good seed; its acceptance still resolves the real publication |
 | Unblocks | [POL.10](#task-pol-10), [POL.11](#task-pol-11), [UPD.05](updater.md#task-upd-05), [UPD.08](updater.md#task-upd-08) |

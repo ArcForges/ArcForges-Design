@@ -148,10 +148,10 @@ Owned assemblies and runtime artifacts retain source/build/pipeline identity. Th
 
 | Platform | Format | Notes |
 |---|---|---|
-| Windows | Signed `Setup.exe`, **per-user install** to a per-user application directory, no elevation required | A machine-wide MSI may be produced later for enterprise need; a package-manager manifest points at the same signed installer |
-| Windows store listing | **Unpackaged Win32**: the same signed installer, not a repackaged container | Distribution only, **never a commerce channel** (**[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**) |
+| Windows | Signed `Setup.exe`, **per-user install** to a per-user application directory, no elevation required | A machine-wide MSI may be produced later for enterprise need; package-manager listings are out of V1 under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026); a package-manager manifest, when one exists, points at the same signed installer |
+| Windows store listing (out of V1, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) | **Unpackaged Win32**: the same signed installer, not a repackaged container | Distribution only, **never a commerce channel** (**[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**) |
 | Linux | **A single self-contained portable format as the first official format** | Additional formats later; **do not maintain many packaging formats simultaneously in the first stage** |
-| Android | Signed AAB from the .NET MAUI Android release build with Play App Signing, published to the official store; the separately signed APK is the direct channel | Consumption-only (**[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**); a direct download may exist but is not the primary channel |
+| Android | Signed release APK from the .NET MAUI Android release build, separately signed and distributed directly (the V1 channel, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)); the Play AAB with Play App Signing is out of V1 | Consumption-only (**[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**); the direct APK is the V1 channel; Play publication is out of V1 (P2-026) |
 
 | # | Rule |
 |---|---|

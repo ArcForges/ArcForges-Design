@@ -158,7 +158,7 @@ date/time · ResourceRef · list<Value> · record<name, Value>
 | **Skill** | No | Declarative agent guidance; versioned; resolved by the agent runtime; confers no capability (`§1` of the extension requirements) |
 | **Template** | No | Materialised through the owning product's capability, never written directly into a product store (`§2` there) |
 | **Workflow** | No | A blueprint compiled into Plan and Step objects of the unified execution model; never a second agent runtime (`§3` there) |
-| **MCP integration** | Out of process | An external capability adapter; MCP terms are disambiguated per **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** and never become the internal protocol (`§5` there) |
+| **MCP integration** (post-V1 and out of scope, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) | Out of process | An external capability adapter; MCP terms are disambiguated per **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** and never become the internal protocol (`§5` there) |
 | **Connector** | Out of process | Definition and connection instance separated; secrets held as `SecretRef` only (`§6` there) |
 | ~~External agent~~ | — | **Retired by [P2-006](../decisions/phase-2-specification-decisions.md#rule-p2-006).** External-agent providers, ACP adapters, session mapping, delegation leases and result adapters are excluded ([EA-01](../requirements/08-extensions-and-developer-platform.md#rule-ea-01)–[EA-06](../requirements/08-extensions-and-developer-platform.md#rule-ea-06) of the extension requirements). **There is no external-agent contribution kind**, and a package, connector or MCP tool cannot start an autonomous delegated agent ([EA-08](../requirements/08-extensions-and-developer-platform.md#rule-ea-08) there). An integration contributes tools; it never contributes a planner |
 | **Extension** | **Yes** | The extension process model of `§3` |
@@ -258,6 +258,8 @@ Acquire (.arcpkg from catalog, URL or local file)
 ---
 
 ## 9. Catalog architecture
+
+> **Post-V1 and out of scope ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)).** The community catalog rules CA-01 to CA-05 are not required in V1 and are recorded as out of scope, not completed. They are kept unchanged for a later reviewed decision.
 
 | # | Rule |
 |---|---|
@@ -368,11 +370,11 @@ The extension platform is **not**: an in-process plug-in system; a scripting lan
 | **[D-008](../decisions/phase-1-foundation-decisions.md#rule-d-008)** | The host remains Native AOT; the extension does not have to be |
 | **[D-009](../decisions/phase-1-foundation-decisions.md#rule-d-009)** | Extension points and capability contracts as versioned contracts |
 | **[D-004](../decisions/phase-1-foundation-decisions.md#rule-d-004)**, **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** | The public SDK on the Apache boundary |
-| **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | MCP term disambiguation wherever MCP appears in this platform |
+| **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | MCP term disambiguation wherever MCP appears in this platform (post-V1 and out of scope, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) |
 
 ## Selected extension protocol composition
 
-The public IExtensionHost service, StructuredValue and typed extension message envelopes come from the Contracts proto registry. Code-first extension parameter schema generation above composes into that fixed envelope; it does not introduce a second first-party RPC protocol or expose foreign CLR types. MCP remains its explicitly accepted external standard and cannot choose the internal transport.
+The public IExtensionHost service, StructuredValue and typed extension message envelopes come from the Contracts proto registry. Code-first extension parameter schema generation above composes into that fixed envelope; it does not introduce a second first-party RPC protocol or expose foreign CLR types. MCP remains its explicitly accepted external standard (post-V1 and out of scope, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) and cannot choose the internal transport.
 
 ## Initial schemas and owner lifecycle
 

@@ -138,7 +138,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [AND.23](../delivery/lanes/android.md#task-and-23) | [WP-32.90](32-mobile-release-and-store-gates.md#rule-wp-32.90) (full)<br>[WP-32](32-mobile-release-and-store-gates.md#rule-wp-32) [PG-24](../../assurance/open-gates-register.md#rule-pg-24) completion-gate paragraph (recheck on distributed artifact) (package-level obligation contribution) | none |
 | [AND.26](../delivery/lanes/android.md#task-and-26) | [WP-32](32-mobile-release-and-store-gates.md#rule-wp-32) [PG-24](../../assurance/open-gates-register.md#rule-pg-24) completion-gate paragraph (recheck on distributed artifact) ([PG-24](../../assurance/open-gates-register.md#rule-pg-24) closure)<br>[WP-32.05](32-mobile-release-and-store-gates.md#rule-wp-32.05) (physical/no-GMS/permission evidence half) | [AND.12](../delivery/lanes/android.md#task-and-12) (artifact), [OPS.10](../delivery/lanes/operations.md#task-ops-10) (artifact) |
 
-**Consumers outside this package:** [AND.12](../delivery/lanes/android.md#task-and-12), [OPS.10](../delivery/lanes/operations.md#task-ops-10), [OPS.12](../delivery/lanes/operations.md#task-ops-12), [REL.04](../delivery/lanes/release.md#task-rel-04).
+**Consumers outside this package:** [AND.12](../delivery/lanes/android.md#task-and-12), [OPS.10](../delivery/lanes/operations.md#task-ops-10), [REL.04](../delivery/lanes/release.md#task-rel-04).
 
 <!-- delivery-graph:end -->
 

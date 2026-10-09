@@ -4,7 +4,7 @@
 
 Service levels, incidents, runbooks, status, operator console, support, trust and safety, mail and push delivery, package review.
 
-Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud integration owner, Web integration owner
+Tasks: 12 · Owning repositories: Cloud, Web · Integration owner(s): Cloud integration owner, Web integration owner · Out of scope: 1 (final section)
 
 | Task | Title | Kind | Size | Start prerequisites | Baseline |
 |---|---|---|---|---|---|
@@ -18,9 +18,8 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | [OPS.08](#task-ops-08) | Trust and safety | service | L | [OPS.07](#task-ops-07) (artifact), [OPS.05](#task-ops-05) (artifact) | not-started |
 | [OPS.09](#task-ops-09) | Operational mail and provider drills | service | M | [CLOUD.12](cloud.md#task-cloud-12) (artifact), [OPS.02](#task-ops-02) (artifact) | not-started |
 | [OPS.10](#task-ops-10) | Customer push delivery and registration lifecycle | service | L | [OPS.09](#task-ops-09) (artifact), [CON.22](contracts.md#task-con-22) (contract) | not-started |
-| [OPS.11](#task-ops-11) | Package review and revocation console | service | M | [EXT.06](extensions.md#task-ext-06) (artifact), [CON.14](contracts.md#task-con-14) (contract), [OPS.05](#task-ops-05) (artifact) | not-started |
-| [OPS.12](#task-ops-12) | Owned-artifact receipt | service | S | [OPS.11](#task-ops-11) (artifact), [AND.26](android.md#task-and-26) (artifact), [OPS.01](#task-ops-01) (artifact), [OPS.02](#task-ops-02) (artifact), [OPS.03](#task-ops-03) (artifact), [OPS.04](#task-ops-04) (artifact), [OPS.06](#task-ops-06) (artifact), [OPS.07](#task-ops-07) (artifact), [OPS.08](#task-ops-08) (artifact), [OPS.09](#task-ops-09) (artifact), [OPS.10](#task-ops-10) (artifact) | not-started |
-| [OPS.13](#task-ops-13) | Operator console exercises real financial-owner and kill-switch RPCs end to end | integration | M | [COM.13](commerce.md#task-com-13) (artifact), [POL.05](policy.md#task-pol-05) (artifact), [OPS.05](#task-ops-05) (artifact), [CON.14](contracts.md#task-con-14) (artifact), [OPS.11](#task-ops-11) (artifact) | not-started |
+| [OPS.12](#task-ops-12) | Owned-artifact receipt | service | S | [OPS.01](#task-ops-01) (artifact), [OPS.02](#task-ops-02) (artifact), [OPS.03](#task-ops-03) (artifact), [OPS.04](#task-ops-04) (artifact), [OPS.06](#task-ops-06) (artifact), [OPS.07](#task-ops-07) (artifact), [OPS.08](#task-ops-08) (artifact), [OPS.09](#task-ops-09) (artifact), [OPS.10](#task-ops-10) (artifact) | not-started |
+| [OPS.13](#task-ops-13) | Operator console exercises real financial-owner and kill-switch RPCs end to end | integration | M | [COM.13](commerce.md#task-com-13) (artifact), [POL.05](policy.md#task-pol-05) (artifact), [OPS.05](#task-ops-05) (artifact), [CON.14](contracts.md#task-con-14) (artifact) | not-started |
 
 ## Tasks
 
@@ -133,13 +132,13 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Start prerequisites | **contract** [CON.14](contracts.md#task-con-14) — the OperatorService full RPC surface. *Why:* same gap noted at COM.13/POL.05 — the console has nothing to call until the operator RPCs are generated<br>**artifact** [POL.05](policy.md#task-pol-05) — the kill-switch RPC implementation. *Why:* the console must exercise kill-switch activation per the same generated role/method matrix<br>**artifact** [WEB.40](web.md#task-web-40) — the Operations profile skeleton (ArcForges.Web.Operations, separate origin and identity configuration) and the C# policy suite. *Why:* the operator console is a Blazor interactive profile ([P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 2); WEB.40 creates its project and the exact CSP policy |
 | Entry condition | [ADOPT.09.operations](adoption.md#task-adopt-09-operations) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [COM.13](commerce.md#task-com-13) — the financial-owner RPC implementations. *Why:* the console must exercise grant/revoke/issueCredit/adjustCredit/refund end to end per [WP-45.04](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45.04)'s testing requirement |
-| Unblocks | [CLOUD.64](cloud.md#task-cloud-64), [OPS.06](#task-ops-06), [OPS.07](#task-ops-07), [OPS.08](#task-ops-08), [OPS.11](#task-ops-11), [OPS.13](#task-ops-13), [WEB.31](web.md#task-web-31) |
+| Unblocks | [CLOUD.64](cloud.md#task-cloud-64), [OPS.06](#task-ops-06), [OPS.07](#task-ops-07), [OPS.08](#task-ops-08), [OPS.11](#task-ops-11) — out of scope, [OPS.13](#task-ops-13), [WEB.31](web.md#task-web-31) |
 | Write scope | `Web:src/ArcForges.Web.Operations/**`<br>`Web:tests/ArcForges.Web.Operations.Tests/**` |
 | Shared resources | [RES-cloud-runbooks-and-fixtures](../shared-resources.md#res-cloud-runbooks-and-fixtures) (append), [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append), [RES-web-app-routing](../shared-resources.md#res-web-app-routing) (append) |
-| Validation | Offline/staged tests: silent-impersonation negative, scope/expiry, two-operator requirement, audit-completeness, parallel-admin-API-absence assertion, every generated role/method pair (allowed and refused), double-execution-of-one-approval negative; browser-support.v1 supported/degraded/blocked behavior per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) (no live E2E browser matrix in routine CI). |
-| Completion evidence | Silent-impersonation negative result; two-operator requirement result; full role/method matrix exercised (allowed and refused). |
+| Validation | Offline/staged tests: silent-impersonation negative, scope/expiry, two-operator requirement, audit-completeness, parallel-admin-API-absence assertion, every generated role/method pair of the retained operator contract (allowed and refused; catalog pairs are out of scope, [P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026)), double-execution-of-one-approval negative; browser-support.v1 supported/degraded/blocked behavior per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) (no live E2E browser matrix in routine CI). |
+| Completion evidence | Silent-impersonation negative result; two-operator requirement result; full retained-contract role/method matrix exercised (allowed and refused). |
 | Baseline (unreviewed unless accepted) | not-started Observed 2026-10-08 (Web a469064): no operator, admin or console code exists in the Web repo. apps/app holds only the PRF.08 React probe profiles (routes/account.tsx, routes/chat.tsx, probe/*), which are not an operator console. No ledger record. |
-| Notes | [BR-06](../../../architecture/14-build-packaging-and-release.md#rule-br-06) ('an operator never silently becomes a user') is a headline security invariant for the whole package; the silent-impersonation negative test is worth proving early against a minimal console skeleton before building every case-type UI on top. Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): The operator console is the standalone Blazor WebAssembly Operations profile ([P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 2) on its own origin and identity, not part of the Account or Chat bundles. Its writes move from the React apps/app tree to ArcForges.Web.Operations, whose skeleton WEB.40 creates. The silent-impersonation, two-operator, audit, scope/expiry and role/method criteria are unchanged. Tests are xUnit and bUnit; browser-support.v1 checks stay local opt-in per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
+| Notes | [BR-06](../../../architecture/14-build-packaging-and-release.md#rule-br-06) ('an operator never silently becomes a user') is a headline security invariant for the whole package; the silent-impersonation negative test is worth proving early against a minimal console skeleton before building every case-type UI on top. Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): The operator console is the standalone Blazor WebAssembly Operations profile ([P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021) item 2) on its own origin and identity, not part of the Account or Chat bundles. Its writes move from the React apps/app tree to ArcForges.Web.Operations, whose skeleton WEB.40 creates. The silent-impersonation, two-operator, audit, scope/expiry and role/method criteria are unchanged. Tests are xUnit and bUnit; browser-support.v1 checks stay local opt-in per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). Planning repair 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); scope correction): reduced: the PackageCatalog and catalog operator methods and their role/method pairs, the package-review feature folder and its tests in ArcForges.Web.Operations, and catalog scope in the operator role matrix are out of scope, not completed. |
 
 <a id="task-ops-06"></a>
 
@@ -190,7 +189,7 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 
 ### OPS.08 — Trust and safety
 
-**Outcome.** Community report intake drives a proportionate enforcement ladder with every action recorded and communicated, account enforcement states integrate with the account model, and appeals have a defined path and response expectation.
+**Outcome.** Account-level enforcement (community report intake for public ecosystem objects is out of scope, [P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026)) drives a proportionate enforcement ladder with every action recorded and communicated, account enforcement states integrate with the account model, and appeals have a defined path and response expectation.
 
 | Field | Value |
 |---|---|
@@ -207,12 +206,13 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Validation | Offline tests: ladder-progression, communication-completeness, appeal-path, enforcement-audit. |
 | Completion evidence | Ladder-progression test; appeal-path test. |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); scope correction): reduced: community report intake and the Community Report to Investigation to Enforcement chain for public ecosystem objects, the community-report case type on OPS.07 reference resolution, and package-version enforcement and binary security-revocation appeals ([AP-04](../../../architecture/05-cloud-architecture.md#rule-ap-04)) are out of scope, not completed. |
 
 <a id="task-ops-09"></a>
 
 ### OPS.09 — Operational mail and provider drills
 
-**Outcome.** Transactional/broadcast email use the real [WP-22](../../work-packages/22-identity-workspace-and-device.md#rule-wp-22) Postmark/SES adapters with separated streams; outage and reconciliation drills are rehearsed under a prepared secondary path; and the private security-advisory intake-through-publication process is complete with in-product containment/revocation attention.
+**Outcome.** Transactional/broadcast email use the real [WP-22](../../work-packages/22-identity-workspace-and-device.md#rule-wp-22) Postmark/SES adapters with separated streams; outage and reconciliation drills are rehearsed under a prepared secondary path; and the first-party private security-advisory intake-through-publication process is complete (third-party package advisories and in-product package containment or revocation attention are out of scope, [P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026)).
 
 | Field | Value |
 |---|---|
@@ -230,7 +230,7 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Validation | Offline tests where possible (spoofed/replayed callback, bounced/complained suppression, content-redaction) plus recorded live-provider drill evidence (unknown send, DNS readiness, independent status/incident during a real Cloud outage) kept outside routine CI per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017). |
 | Completion evidence | Live operational evidence and rollback-contact record; signed advisory authenticity and affected-version-matching results; no disclosure before approved publication. |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | This task cannot use a mail substitute — [WP-45](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45) explicitly states runtime mail fixtures are absent and that [WP-45.08](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45.08) 'is not the first email producer,' i.e. it must consume [WP-22](../../work-packages/22-identity-workspace-and-device.md#rule-wp-22)'s real adapters from day one. |
+| Notes | This task cannot use a mail substitute — [WP-45](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45) explicitly states runtime mail fixtures are absent and that [WP-45.08](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45.08) 'is not the first email producer,' i.e. it must consume [WP-22](../../work-packages/22-identity-workspace-and-device.md#rule-wp-22)'s real adapters from day one. Planning repair 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); scope correction): reduced: publisher-facing advisories for vulnerabilities in third-party packages ([SR-12](../../../requirements/06-knowledge-search-and-retrieval.md#rule-sr-12)) and in-product package containment and revocation attention ([I-442](../../../requirements/01-normative-glossary-and-invariants.md#rule-i-442)) are out of scope, not completed; only the first-party advisory process remains. |
 
 <a id="task-ops-10"></a>
 
@@ -256,30 +256,6 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Baseline (unreviewed unless accepted) | not-started |
 | Notes | Named as required-real-early scaffolding in implementation-sequence §3.1 (recorded FCM WP45.09 to WP32 proves device receipt) — unlike payment/mail, no fixture stands in for the server-side send itself; it is real against an isolated Firebase project from the start. |
 
-<a id="task-ops-11"></a>
-
-### OPS.11 — Package review and revocation console
-
-**Outcome.** The operator console integrates [WP-41](../../work-packages/41-extension-platform-and-integrations.md#rule-wp-41) PackageCatalog operator methods (catalogReview/catalogRevoke) with independent operator authentication, step-up/evidence and audit, and review/revocation decisions visibly affect real signed catalog consumers.
-
-| Field | Value |
-|---|---|
-| Owning repository | Web (`C:\MyFile\Projects\ArcForges\Web`); integration owner: Web integration owner, the holder of `roles/integration-web` |
-| Claim, branch and ledger | `claims/ops-11` and ledger record `ledger/tasks/ops-11.md` in the Plan repository; task branch `task/ops-11` ([DLV-26](../README.md#rule-dlv-26)) |
-| Kind / size | service / M |
-| Obligations | [WP-45.10](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45.10) — all work except the parts mapped to OPS.13 |
-| Provides | package-review-console |
-| Start prerequisites | **artifact** [EXT.06](extensions.md#task-ext-06) — the PackageCatalog producer's operator methods (GetCatalogSubmission etc.). *Why:* producer-artifacts-and-integration.md records an explicit WP41.05 to WP45.10 edge; this task integrates [WP-41](../../work-packages/41-extension-platform-and-integrations.md#rule-wp-41)'s methods rather than reimplementing catalog review logic<br>**contract** [CON.14](contracts.md#task-con-14) — the catalogReview/catalogRevoke operator RPC shapes. *Why:* same operator-proto gap as COM.13/POL.05/OPS.05<br>**artifact** [OPS.05](#task-ops-05) — the operator console's identity/step-up/audit shell. *Why:* [WP-45.10](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45.10) explicitly reuses 'independent operator authentication, step-up/evidence and audit' from the console rather than building a second one |
-| Entry condition | [ADOPT.09.operations](adoption.md#task-adopt-09-operations) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
-| Completion prerequisites | none |
-| Unblocks | [OPS.12](#task-ops-12), [OPS.13](#task-ops-13) |
-| Write scope | `Web:src/ArcForges.Web.Operations/Features/PackageReview/**`<br>`Web:tests/ArcForges.Web.Operations.Tests/PackageReview/**` |
-| Shared resources | [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append), [RES-web-app-routing](../shared-resources.md#res-web-app-routing) (append) |
-| Validation | Offline tests: customer/PAT denial, changed-proposal-hash, replay, revoked-package, failed-index-publication/retry. |
-| Completion evidence | Revocation affecting a real signed catalog consumer, with recorded operator evidence. |
-| Baseline (unreviewed unless accepted) | not-started |
-| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): The package review and revocation console is a feature folder of the Blazor Operations profile (ArcForges.Web.Operations) instead of the React apps/app tree. The catalogReview/catalogRevoke integration and the customer/PAT denial, changed-proposal-hash, replay, revoked-package and retry criteria are unchanged; tests are xUnit and bUnit. |
-
 <a id="task-ops-12"></a>
 
 ### OPS.12 — Owned-artifact receipt
@@ -294,14 +270,15 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Package acceptance | Records the [WP-45](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45) acceptance receipt after every task mapped to the package; tasks outside the package never start from it ([DLV-35](../README.md#rule-dlv-35)) |
 | Obligations | [WP-45.90](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45.90) — full |
 | Provides | wp45-closure-receipt |
-| Start prerequisites | **artifact** [OPS.11](#task-ops-11) — the last domain producer's evidence to attach. *Why:* the receipt aggregates every amended §5 producer/consumer result<br>**artifact** [AND.26](android.md#task-and-26) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [OPS.01](#task-ops-01) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [OPS.02](#task-ops-02) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [OPS.03](#task-ops-03) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [OPS.04](#task-ops-04) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [OPS.06](#task-ops-06) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [OPS.07](#task-ops-07) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [OPS.08](#task-ops-08) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [OPS.09](#task-ops-09) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [OPS.10](#task-ops-10) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03)) |
+| Start prerequisites | **artifact** [OPS.01](#task-ops-01) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [OPS.02](#task-ops-02) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [OPS.03](#task-ops-03) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [OPS.04](#task-ops-04) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [OPS.06](#task-ops-06) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [OPS.07](#task-ops-07) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [OPS.08](#task-ops-08) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [OPS.09](#task-ops-09) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [OPS.10](#task-ops-10) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03)) |
 | Entry condition | [ADOPT.07.operations](adoption.md#task-adopt-07-operations) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [REL.06](release.md#task-rel-06), [REL.09](release.md#task-rel-09) |
 | Write scope | `Cloud:eng/provenance/records/**` |
-| Validation | Aggregation of OPS.01-11 evidence; no-second-host architecture assertion. |
+| Validation | Aggregation of OPS.01-10 evidence; no-second-host architecture assertion. |
 | Completion evidence | The owned-artifact/real-integration receipt; no-second-Node-host assertion. |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); scope correction): reduced: the receipt aggregates OPS.01-10 only (OPS.11 is out of scope); the physical-device FCM receipt (AND.26) gates the Android release (REL.04), not this receipt. |
 
 <a id="task-ops-13"></a>
 
@@ -315,7 +292,7 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Claim, branch and ledger | `claims/ops-13` and ledger record `ledger/tasks/ops-13.md` in the Plan repository; task branch `task/ops-13` ([DLV-26](../README.md#rule-dlv-26)) |
 | Kind / size | integration / M |
 | Obligations | [WP-45.04](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45.04) — exercise every generated role/method pair via the actual console UI<br>[WP-45.10](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45.10) — real operator console join |
-| Start prerequisites | **artifact** [COM.13](commerce.md#task-com-13) — real, delivered outcome of COM.13 (Operator financial-owner proposal/approval operations). *Why:* this integration exercises the real operator financial-owner proposal/approval operations instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [POL.05](policy.md#task-pol-05) — real, delivered outcome of POL.05 (Kill switches). *Why:* this integration exercises the real kill switches instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [OPS.05](#task-ops-05) — real, delivered outcome of OPS.05 (Operator console and support access). *Why:* this integration exercises the real operator console and support access instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [CON.14](contracts.md#task-con-14) — real, delivered outcome of CON.14 (Operator control service (OperatorService, full §9/9.1/9.2 protocol)). *Why:* this integration exercises the real operator control service (OperatorService, full §9/9.1/9.2 protocol) instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [OPS.11](#task-ops-11) — real, delivered outcome of OPS.11 (Package review and revocation console). *Why:* this integration exercises the real package review and revocation console instead of a substitute, so it cannot start before that outcome exists |
+| Start prerequisites | **artifact** [COM.13](commerce.md#task-com-13) — real, delivered outcome of COM.13 (Operator financial-owner proposal/approval operations). *Why:* this integration exercises the real operator financial-owner proposal/approval operations instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [POL.05](policy.md#task-pol-05) — real, delivered outcome of POL.05 (Kill switches). *Why:* this integration exercises the real kill switches instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [OPS.05](#task-ops-05) — real, delivered outcome of OPS.05 (Operator console and support access). *Why:* this integration exercises the real operator console and support access instead of a substitute, so it cannot start before that outcome exists<br>**artifact** [CON.14](contracts.md#task-con-14) — real, delivered outcome of CON.14 (Operator control service (OperatorService, full §9/9.1/9.2 protocol)). *Why:* this integration exercises the real operator control service (OperatorService, full §9/9.1/9.2 protocol) instead of a substitute, so it cannot start before that outcome exists |
 | Entry condition | [ADOPT.09.operations](adoption.md#task-adopt-09-operations) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [COM.13](commerce.md#task-com-13) |
@@ -323,4 +300,39 @@ Tasks: 13 · Owning repositories: Cloud, Web · Integration owner(s): Cloud inte
 | Validation | Local real-integration run of the affected scenario in an existing environment, recorded once; offline and static checks in CI; no hosted runtime, device, browser, live-service or inference CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
 | Completion evidence | an authorised operator can actually grant/revoke/issueCredit/adjustCredit/refund and activate a kill switch through the console UI, not just via direct RPC test calls |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Merged duplicate integration or closure task formerly proposed as CON.98. Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): The console this task exercises is the Blazor Operations profile (OPS.05, WEB.40). The end-to-end RPC and kill-switch criteria are stack-neutral and unchanged; OPS.13 has no writes of its own. |
+| Notes | Merged duplicate integration or closure task formerly proposed as CON.98. Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): The console this task exercises is the Blazor Operations profile (OPS.05, WEB.40). The end-to-end RPC and kill-switch criteria are stack-neutral and unchanged; OPS.13 has no writes of its own. Planning repair 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); scope correction): reduced: the [WP-45.10](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45.10) real operator console join for package review (catalogReview and catalogRevoke through the console) is out of scope, not completed; the OPS.11 start edge is removed. |
+
+## Out of scope
+
+Excluded from the active plan by the decision named under each heading. These tasks are not completed, are never claimable and are not remaining work; their records and ledger history are kept here.
+
+### P2-026
+
+| Task | Title | Note | Mode | Ledger status |
+|---|---|---|---|---|
+| [OPS.11](#task-ops-11) | Package review and revocation console | Out of scope, not completed: no concrete necessary ArcScope consumer; the package review and revocation console depends on the excluded PackageCatalog and catalog ecosystem, which are post-V1 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5). | excluded | no record |
+
+<a id="task-ops-11"></a>
+
+#### OPS.11 — Package review and revocation console
+
+**Outcome.** The operator console integrates [WP-41](../../work-packages/41-extension-platform-and-integrations.md#rule-wp-41) PackageCatalog operator methods (catalogReview/catalogRevoke) with independent operator authentication, step-up/evidence and audit, and review/revocation decisions visibly affect real signed catalog consumers.
+
+| Field | Value |
+|---|---|
+| Scope | Out of scope (P2-026): Out of scope, not completed: no concrete necessary ArcScope consumer; the package review and revocation console depends on the excluded PackageCatalog and catalog ecosystem, which are post-V1 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5). |
+| Owning repository | Web (`C:\MyFile\Projects\ArcForges\Web`); integration owner: Web integration owner, the holder of `roles/integration-web` |
+| Claim, branch and ledger | `claims/ops-11` and ledger record `ledger/tasks/ops-11.md` in the Plan repository; task branch `task/ops-11` ([DLV-26](../README.md#rule-dlv-26)) |
+| Kind / size | service / M |
+| Obligations | [WP-45.10](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45.10) — all work except the parts mapped to OPS.13 |
+| Provides | package-review-console |
+| Start prerequisites | **artifact** [EXT.06](extensions.md#task-ext-06) — the PackageCatalog producer's operator methods (GetCatalogSubmission etc.). *Why:* producer-artifacts-and-integration.md records an explicit WP41.05 to WP45.10 edge; this task integrates [WP-41](../../work-packages/41-extension-platform-and-integrations.md#rule-wp-41)'s methods rather than reimplementing catalog review logic<br>**contract** [CON.14](contracts.md#task-con-14) — the catalogReview/catalogRevoke operator RPC shapes. *Why:* same operator-proto gap as COM.13/POL.05/OPS.05<br>**artifact** [OPS.05](#task-ops-05) — the operator console's identity/step-up/audit shell. *Why:* [WP-45.10](../../work-packages/45-operations-support-and-trust-safety.md#rule-wp-45.10) explicitly reuses 'independent operator authentication, step-up/evidence and audit' from the console rather than building a second one |
+| Entry condition | [ADOPT.09.operations](adoption.md#task-adopt-09-operations) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
+| Completion prerequisites | none |
+| Unblocks | none |
+| Write scope | `Web:src/ArcForges.Web.Operations/Features/PackageReview/**`<br>`Web:tests/ArcForges.Web.Operations.Tests/PackageReview/**` |
+| Shared resources | [RES-contracts-schema-sources](../shared-resources.md#res-contracts-schema-sources) (append), [RES-web-app-routing](../shared-resources.md#res-web-app-routing) (append) |
+| Validation | Offline tests: customer/PAT denial, changed-proposal-hash, replay, revoked-package, failed-index-publication/retry. |
+| Completion evidence | Revocation affecting a real signed catalog consumer, with recorded operator evidence. |
+| Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair 2026-10-08 ([DLV-34](../README.md#rule-dlv-34); [P2-021](../../../decisions/phase-2-specification-decisions.md#rule-p2-021)): The package review and revocation console is a feature folder of the Blazor Operations profile (ArcForges.Web.Operations) instead of the React apps/app tree. The catalogReview/catalogRevoke integration and the customer/PAT denial, changed-proposal-hash, replay, revoked-package and retry criteria are unchanged; tests are xUnit and bUnit. |

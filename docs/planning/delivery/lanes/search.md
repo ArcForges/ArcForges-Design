@@ -91,6 +91,7 @@ Tasks: 8 · Owning repositories: Cloud · Integration owner(s): Cloud integratio
 | Validation | Offline unit tests: budget bounds, multilingual/no-match/partial queries, exact decimal vector comparison against fixture vectors. |
 | Completion evidence | Budget-bound test matrix; multilingual/no-match/partial results; decimal-vector exactness. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
+| Notes | Planning repair 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); scope correction): reduced: the reranker path is out of scope, not completed. |
 
 <a id="task-srch-03"></a>
 
@@ -163,7 +164,7 @@ Tasks: 8 · Owning repositories: Cloud · Integration owner(s): Cloud integratio
 
 ### SRCH.06 — Real Cloud query path (fixture-to-real swap)
 
-**Outcome.** The retrieval path runs against real Workers AI embeddings/reranker and real D1/Vectorize with C# owner filtering; SUB-embedding-rerank-fixture is retired from the query path, and explicit lexical-only degradation is proven when the semantic path is unavailable.
+**Outcome.** The retrieval path runs against real Workers AI embeddings and real D1/Vectorize with C# owner filtering; SUB-embedding-rerank-fixture is retired from the query path, and explicit lexical-only degradation is proven when the semantic path is unavailable.
 
 | Field | Value |
 |---|---|
@@ -172,7 +173,7 @@ Tasks: 8 · Owning repositories: Cloud · Integration owner(s): Cloud integratio
 | Kind / size | integration / M |
 | Obligations | [WP-40.06](../../work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.06) — full |
 | Provides | real-cloud-retrieval |
-| Start prerequisites | **artifact** [AIR.00](ai-routing.md#task-air-00) — deployed Workers AI embed/rerank adapter (real, not fixture). *Why:* this task's entire purpose is proving the real provider path; a fixture cannot satisfy it<br>**artifact** [POL.08](policy.md#task-pol-08) — active policy/config snapshot naming the admitted embedding/rerank model generation. *Why:* [WP-40.01](../../work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.01)'s mandatory model-generation filter must read the currently activated model identity from policy, not a hardcoded string<br>**artifact** [SRCH.01](#task-srch-01) — scoped derived index production. *Why:* the real query path replaces fixture embeddings in the index<br>**artifact** [SRCH.02](#task-srch-02) — hybrid retrieval and budgets. *Why:* the real query path replaces fixture reranking<br>**artifact** [AIR.06](ai-routing.md#task-air-06) — the real operator-funded web-search dispatch capability. *Why:* the real query path replaces the web-search fixture and runs against the real dispatch |
+| Start prerequisites | **artifact** [AIR.00](ai-routing.md#task-air-00) — deployed Workers AI embed adapter (real, not fixture). *Why:* this task's entire purpose is proving the real provider path; a fixture cannot satisfy it<br>**artifact** [POL.08](policy.md#task-pol-08) — active policy/config snapshot naming the admitted embedding model generation. *Why:* [WP-40.01](../../work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40.01)'s mandatory model-generation filter must read the currently activated model identity from policy, not a hardcoded string<br>**artifact** [SRCH.01](#task-srch-01) — scoped derived index production. *Why:* the real query path replaces fixture embeddings in the index<br>**artifact** [SRCH.02](#task-srch-02) — hybrid retrieval and budgets. *Why:* the real query path replaces fixture hybrid retrieval<br>**artifact** [AIR.06](ai-routing.md#task-air-06) — the real operator-funded web-search dispatch capability. *Why:* the real query path replaces the web-search fixture and runs against the real dispatch |
 | Entry condition | [ADOPT.07.search](adoption.md#task-adopt-07-search) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [SRCH.90](#task-srch-90) — index capacity acceptance evidence. *Why:* this task's real-path evidence feeds the package-level acceptance in SRCH.90 |
 | Unblocks | [SRCH.90](#task-srch-90) |
@@ -181,6 +182,7 @@ Tasks: 8 · Owning repositories: Cloud · Integration owner(s): Cloud integratio
 | Validation | Real compatible client/owner/index version test against deployed CF bindings (credentialed candidate gate, not ordinary CI, per [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)'s 'no real AI inference in CI'); explicit lexical-only degradation test. |
 | Completion evidence | Real compatible client/owner/index versions; explicit lexical-only degradation. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
+| Notes | Planning repair 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); scope correction): reduced: real reranker calls on the query path are out of scope, not completed. |
 
 <a id="task-srch-90"></a>
 
@@ -199,10 +201,10 @@ Tasks: 8 · Owning repositories: Cloud · Integration owner(s): Cloud integratio
 | Start prerequisites | **artifact** [SRCH.06](#task-srch-06) — real query path evidence. *Why:* acceptance cannot close on fixture-only evidence<br>**artifact** [SRCH.03](#task-srch-03) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [SRCH.04](#task-srch-04) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03))<br>**artifact** [SRCH.05](#task-srch-05) — package task delivered. *Why:* the package acceptance receipt verifies every task mapped to the package ([DLV-03](../README.md#rule-dlv-03)) |
 | Entry condition | [ADOPT.07.search](adoption.md#task-adopt-07-search) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | **integration** [POL.02](policy.md#task-pol-02) — launch-capacity.v1 signed configuration snapshot. *Why:* capacity/threshold-refusal tests need the real signed budget document, not an invented number |
-| Unblocks | [REL.06](release.md#task-rel-06), [SRCH.06](#task-srch-06) |
+| Unblocks | [AND.09](android.md#task-and-09), [REL.06](release.md#task-rel-06), [SRCH.06](#task-srch-06), [WEB.20](web.md#task-web-20) |
 | Write scope | `Cloud:tests/Cloud.Tests.Integration/Retrieval/**` |
 | Shared resources | [RES-private-configuration](../shared-resources.md#res-private-configuration) (append) |
 | Validation | Package/contract/owner/version compatibility and failure/recovery tests; [P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017) proportionate (no live paid-provider CI loop; capacity thresholds tested against recorded/replayable fixtures where the real CF budget document is unavailable in CI). |
 | Completion evidence | Index capacity acceptance ledger: reservations, overlap, tombstone reconciliation, threshold refusal, rebuild pause/recovery. |
 | Baseline (unreviewed unless accepted) | not-started Observed none, unreviewed: Cloud repo is Hello-World stage (src/ArcForges.Cloud only: Program.cs/HelloEndpoint.cs/BuildIdentity.cs/HealthStatus.cs); no Modules.* tree exists. |
-| Notes | [WP-40](../../work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40) Sec.9 names 50/52 as downstream consumers of this released artifact; not a completion blocker for SRCH.90 itself. Contributes to [PG-26](../../../assurance/open-gates-register.md#rule-pg-26) (launch capacity envelope) as one of its producers. |
+| Notes | [WP-40](../../work-packages/40-knowledge-search-and-retrieval.md#rule-wp-40) Sec.9 names 50/52 as downstream consumers of this released artifact; not a completion blocker for SRCH.90 itself. Contributes to [PG-26](../../../assurance/open-gates-register.md#rule-pg-26) (launch capacity envelope) as one of its producers. Planning repair 2026-10-09 ([P2-026](../../../decisions/phase-2-specification-decisions.md#rule-p2-026); scope correction): reduced: reranker paid-admission threshold refusal is out of scope, not completed. |

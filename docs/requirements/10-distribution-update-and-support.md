@@ -27,10 +27,10 @@ Two halves of one lifecycle: how software reaches users, and what happens when s
 
 | Platform | Primary channel | Secondary | Notes |
 |---|---|---|---|
-| **Windows** | Signed installer from the official site, with a built-in update system | Platform store listing carrying the **same signed binary**; a package-manager manifest | Store distribution is distribution only, **never a commerce channel** (**[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**) |
+| **Windows** | Signed installer from the official site, with a built-in update system | Platform store listing carrying the **same signed binary**, and a package-manager manifest (both out of V1, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) | Store distribution is distribution only, **never a commerce channel** (**[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**) |
 | **macOS** | Out of scope ([P2-023](../decisions/phase-2-specification-decisions.md#rule-p2-023)): no macOS artifacts, Developer ID signing, notarisation or store route | — | macOS is never claimed as supported or validated |
 | **Linux** | A single self-contained portable format as the first official format | Additional package formats later | **Do not maintain many packaging formats simultaneously in the first stage** |
-| **Android** | The official app store, as an app bundle with platform app signing | A directly downloadable package may exist, and is not the primary channel | **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**: consumption-only, no in-app purchase |
+| **Android** | The direct APK, separately signed (V1 channel, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) | The official app store, as an app bundle with platform app signing, is out of V1 | **[D-022](../decisions/phase-1-foundation-decisions.md#rule-d-022)**: consumption-only, no in-app purchase |
 
 | # | Requirement |
 |---|---|
@@ -50,7 +50,7 @@ Exactly three channels from day one:
 
 | Channel | Audience | Distribution |
 |---|---|---|
-| **Stable** | Everyone | Site, store, package manager |
+| **Stable** | Everyone | Site. Store and package-manager listings are out of V1 ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) |
 | **Beta** | Opt-in | Site only |
 | **Nightly / Canary** | Internal and explicit opt-in | Build artifacts only; **never shipped to a platform store** |
 

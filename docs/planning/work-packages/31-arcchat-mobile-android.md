@@ -147,7 +147,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [AND.26](../delivery/lanes/android.md#task-and-26) | [WP-31.04](31-arcchat-mobile-android.md#rule-wp-31.04) (physical receipt closure) | [AND.23](../delivery/lanes/android.md#task-and-23) (artifact), [OPS.10](../delivery/lanes/operations.md#task-ops-10) (artifact), [AND.21](../delivery/lanes/android.md#task-and-21) (artifact) |
 | [AND.27](../delivery/lanes/android.md#task-and-27) | [WP-31.07](31-arcchat-mobile-android.md#rule-wp-31.07) (full) | [CON.24](../delivery/lanes/contracts.md#task-con-24) (contract), [CON.21](../delivery/lanes/contracts.md#task-con-21) (contract) |
 
-**Consumers outside this package:** [AND.16](../delivery/lanes/android.md#task-and-16), [AND.19](../delivery/lanes/android.md#task-and-19), [AND.23](../delivery/lanes/android.md#task-and-23), [HAR.05](../delivery/lanes/harness.md#task-har-05), [HAR.06](../delivery/lanes/harness.md#task-har-06), [OPS.10](../delivery/lanes/operations.md#task-ops-10), [OPS.12](../delivery/lanes/operations.md#task-ops-12).
+**Consumers outside this package:** [AND.16](../delivery/lanes/android.md#task-and-16), [AND.19](../delivery/lanes/android.md#task-and-19), [AND.23](../delivery/lanes/android.md#task-and-23), [HAR.05](../delivery/lanes/harness.md#task-har-05), [HAR.06](../delivery/lanes/harness.md#task-har-06), [OPS.10](../delivery/lanes/operations.md#task-ops-10), [REL.04](../delivery/lanes/release.md#task-rel-04).
 
 <!-- delivery-graph:end -->
 

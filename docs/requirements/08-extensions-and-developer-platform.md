@@ -30,7 +30,7 @@ Third-party App  standalone Arc application         its own product, own domain
 | <a id="rule-sk-01"></a>SK-01 | **A Skill is never code** ([I-291](01-normative-glossary-and-invariants.md#rule-i-291)). It is declarative agent guidance, not a runtime plug-in. |
 | <a id="rule-sk-02"></a>SK-02 | **A Skill confers no capability** ([I-290](01-normative-glossary-and-invariants.md#rule-i-290)) and **grants no permission** ([I-264](01-normative-glossary-and-invariants.md#rule-i-264)). It may *refer to* capabilities; using them still requires the ordinary permission and approval path. |
 | <a id="rule-sk-03"></a>SK-03 | Skills are **versioned**. A skill update does not modify historical results; a completed Run keeps the skill version it executed under. |
-| <a id="rule-sk-04"></a>SK-04 | **Skill ≠ MCP** ([I-292](01-normative-glossary-and-invariants.md#rule-i-292)) and **MCP Prompt ≠ Skill** ([I-310](01-normative-glossary-and-invariants.md#rule-i-310)). An MCP prompt does not automatically become a Skill. |
+| <a id="rule-sk-04"></a>SK-04 | **Skill ≠ MCP** ([I-292](01-normative-glossary-and-invariants.md#rule-i-292)) and **MCP Prompt ≠ Skill** ([I-310](01-normative-glossary-and-invariants.md#rule-i-310)). An MCP prompt does not automatically become a Skill. The MCP parts of this rule are post-V1 and out of scope ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)). |
 | <a id="rule-sk-05"></a>SK-05 | A user may **fork** a community skill; the fork becomes a user-owned skill with its own lifecycle. |
 | <a id="rule-sk-06"></a>SK-06 | A packaged skill's content is **read-only managed content**; customising it produces an independent user-owned resource rather than mutating the package. |
 
@@ -73,6 +73,8 @@ Automation is specified in [`05-ai-and-agent-execution.md`](05-ai-and-agent-exec
 ## 5. MCP
 
 **MCP = an external capability integration adapter.**
+
+> **Post-V1 and out of scope ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)).** MC-01 to MC-10 are not required in V1 and are recorded as out of scope, not completed. The rules are kept unchanged for a later reviewed decision.
 
 | # | Requirement |
 |---|---|
@@ -247,6 +249,8 @@ The unresolved tension — a strongly typed AOT product versus unknown third-par
 
 **Community Catalog = a package discovery and distribution catalog.**
 
+> **Post-V1 and out of scope ([P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)).** CA-01 to CA-13 are not required in V1 and are recorded as out of scope, not completed. The rules are kept unchanged for a later reviewed decision.
+
 | # | Requirement |
 |---|---|
 | <a id="rule-ca-01"></a>CA-01 | **Catalog ≠ Marketplace** ([I-323](01-normative-glossary-and-invariants.md#rule-i-323)). It is not a paid marketplace in this baseline. |
@@ -336,7 +340,7 @@ The official CLI is part of the developer platform, not a side tool. Its long-te
 | A browser-extension-style WebView platform | Very large security surface, no corresponding product need |
 | Reinventing a general-purpose language package manager | NuGet resolves at development and build time; Arc packages are built artifacts |
 | Reinventing container orchestration | Out of scope; isolation is achieved by process boundary and capability scoping |
-| MCP as the marketplace package ABI | MCP is an integration adapter, reached through a package |
+| MCP as the marketplace package ABI (post-V1, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) | MCP is an integration adapter, reached through a package |
 | ACP as an ArcChat domain model | ACP is an adapter |
 | Extensions redefining resource ownership | An ArcScope resource is ArcScope-owned forever; an extension may own its **own** new resource type |
 
@@ -376,7 +380,7 @@ SkillDefinition · SkillVersion
 TemplateDefinition · TemplateParameter
 WorkflowDefinition · WorkflowVersion · WorkflowStepTemplate
 IntegrationDefinition · IntegrationInstance
-McpIntegration · McpConnection
+McpIntegration · McpConnection (post-V1, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026))
 ConnectorDefinition · ConnectorConnection · ConnectorSyncState
 ExtensionDefinition · ExtensionInstance · ExtensionHostSession
 ExtensionCapabilityDescriptor · ExtensionSchema · StructuredExtensionValue
@@ -392,7 +396,7 @@ DeveloperMode
 
 | Surface | Contents |
 |---|---|
-| **Integrations** | MCP connections and connectors in one management surface, with unified status: configured, connected, degraded, failing, unauthorised, revoked |
+| **Integrations** | MCP connections and connectors (post-V1, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) in one management surface, with unified status: configured, connected, degraded, failing, unauthorised, revoked |
 | **Library** | Skills, templates and workflows as first-class reusable objects — not buried in settings |
 | **Extensions** | Installed packages, trust state, permissions, health, updates |
 
@@ -412,11 +416,11 @@ DeveloperMode
 
 **Automation** — an automation referencing a workflow re-authorises at every trigger.
 
-**MCP** — a tool maps to a capability with declared risk; a description attempting to instruct the agent has no effect; a tool-set change re-enters permission review.
+**MCP** (post-V1, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) — a tool maps to a capability with declared risk; a description attempting to instruct the agent has no effect; a tool-set change re-enters permission review.
 
 **Connector** — a definition supports several connections; a secret is stored only by reference; a live query is distinguished from an import.
 
-**Excluded executor** — packages, MCP connections and connectors cannot register an external-agent/ACP mode, start a sub-agent or bypass Cloud AI billing; ordinary bounded tools remain usable.
+**Excluded executor** — packages, MCP connections and connectors (post-V1, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026)) cannot register an external-agent/ACP mode, start a sub-agent or bypass Cloud AI billing; ordinary bounded tools remain usable.
 
 **Out-of-process extension** — an extension crash leaves the owning product running; the extension is restarted on demand; the affected capability shows a clear degraded state.
 
