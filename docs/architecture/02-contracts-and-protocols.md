@@ -383,7 +383,7 @@ Business failures use `ArcResult<T>` / `ArcError` with a **stable semantic code*
 |---|---|
 | **Shared semantics ↔ Search** | A search result is a projection, not resource authority ([SR-03](../requirements/06-knowledge-search-and-retrieval.md#rule-sr-03)). |
 | **Shared semantics ↔ Extensions** | Native products and third-party extensions may share semantics; **trust differs** (`§9` of the security requirements). |
-| **Shared semantics ↔ MCP** | **MCP is an edge adapter, never the internal protocol** ([I-307](../requirements/01-normative-glossary-and-invariants.md#rule-i-307)). **`MCP Resource ≠ ArcForges Resource`** ([I-076](../requirements/01-normative-glossary-and-invariants.md#rule-i-076)). MCP's own `Task` and `Skill` never conflate with ArcForges' (**[V-02](../assurance/phase-1-official-verification.md#rule-v-02)**, glossary §9). |
+| **Shared semantics ↔ MCP** (post-V1 and out of scope, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) | **MCP is an edge adapter, never the internal protocol** ([I-307](../requirements/01-normative-glossary-and-invariants.md#rule-i-307)). **`MCP Resource ≠ ArcForges Resource`** ([I-076](../requirements/01-normative-glossary-and-invariants.md#rule-i-076)). MCP's own `Task` and `Skill` never conflate with ArcForges' (**[V-02](../assurance/phase-1-official-verification.md#rule-v-02)**, glossary §9). |
 | **Application ↔ Cloud** | Every first-party client uses authored public proto over binary gRPC-Web. Only isolated child boundaries use private helper proto over Named Pipe/UDS; same-process handlers need no wire transport. |
 
 [Registry 04](contracts/04-protobuf-wire-registry.md) owns generated public/private messages and named standard-protocol exceptions; there is no second business DTO authority.
@@ -451,4 +451,4 @@ SuggestedTask · CorrelationId · CausationId
 | **[D-021](../decisions/phase-1-foundation-decisions.md#rule-d-021)** | The Apache interoperability boundary for schemas, DTOs, clients and contract validators |
 | **[V-05b](../assurance/phase-1-official-verification.md#rule-v-05b)** | The contract-authoring obligation that makes proxies AOT- and trim-safe |
 | **[V-05c](../assurance/phase-1-official-verification.md#rule-v-05c)**, **[F-026](../assurance/open-gates-register.md#rule-f-026)** | The typed-HTTP-client entry point and reflection-package prohibition |
-| **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | MCP statelessness and the vocabulary disambiguation requirement |
+| **[V-02](../assurance/phase-1-official-verification.md#rule-v-02)** | MCP statelessness and the vocabulary disambiguation requirement (post-V1 and out of scope, [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) |

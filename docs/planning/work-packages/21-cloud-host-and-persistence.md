@@ -45,6 +45,8 @@ Use the exact projects assigned to this WP in [architecture 27](../../architectu
 <a id="rule-wp-21.02"></a>
 ### WP-21.02 — Nineteen module boundaries
 
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) for one boundary.** PackageCatalog is the out nineteenth owner; the 18 active V1 owners are the module boundaries required in V1. The heading and rule are kept.
+
 **What must be fully done.** Implement exact module projects and D1 named-plan bridge; C# owns business decisions, Worker executes approved SQL only.
 
 **Testing requirements.** Architecture/import/plan-hash/wrong-container/public-access refusal tests.

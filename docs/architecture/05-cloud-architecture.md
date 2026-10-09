@@ -113,7 +113,7 @@ EventService.Poll uses the same pipeline. Generated output RPC and CF object rou
 
 ## 4. Modules
 
-Nineteen domain modules, following the [Cloud schema ownership map](data-model/01-cloud-data-model.md#1-schema-map), each owning an application and domain boundary, its schema or explicit table set, a public module API and published events, and independent tests.
+Nineteen domain modules (18 active in V1; PackageCatalog, the nineteenth, is post-V1 and out of scope under [P2-026](../decisions/phase-2-specification-decisions.md#rule-p2-026) S5), following the [Cloud schema ownership map](data-model/01-cloud-data-model.md#1-schema-map), each owning an application and domain boundary, its schema or explicit table set, a public module API and published events, and independent tests.
 
 | Module | Owns |
 |---|---|

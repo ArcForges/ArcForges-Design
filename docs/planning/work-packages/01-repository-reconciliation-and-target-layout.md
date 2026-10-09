@@ -175,7 +175,7 @@
 
 ---
 
-**Cloud module layout acceptance.** WP01 records all 19 domain owners listed in architecture01 §5 and their Cloud ownership. [WP21.02](21-cloud-host-and-persistence.md#rule-wp-21.02) implements their substantive Domain/Application/Infrastructure projects and compares the project list to the model01 schema map, including PackageCatalog. Platform remains shared infrastructure. Do not create empty module projects during reconciliation; this follows the schema-boundary exclusion in §1 and preserves the full 21-module acceptance at its producing step. The count is distinct from the seven independent implementation repositories.
+**Cloud module layout acceptance.** WP01 records all 19 domain owners listed in architecture01 §5 (18 active in V1; PackageCatalog, the nineteenth, is post-V1 and out of scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) and their Cloud ownership. [WP21.02](21-cloud-host-and-persistence.md#rule-wp-21.02) implements their substantive Domain/Application/Infrastructure projects and compares the project list to the model01 schema map, including PackageCatalog. Platform remains shared infrastructure. Do not create empty module projects during reconciliation; this follows the schema-boundary exclusion in §1 and preserves the full 21-module acceptance at its producing step. The count is distinct from the seven independent implementation repositories.
 
 ## 6. Impacts
 

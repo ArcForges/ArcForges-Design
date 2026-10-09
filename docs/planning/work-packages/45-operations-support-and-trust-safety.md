@@ -63,7 +63,7 @@
 
 | Location | Change |
 |---|---|
-| Cloud `src/ArcForges.Cloud.Modules.{Support,TrustSafety,Audit,Policy,Configuration,PackageCatalog}` (Domain, Application and Infrastructure as folders and namespaces) | Existing domain owners implement support/access, enforcement, proposals/audit, controls, configuration and catalog; Cloud.Host composes OperatorService. There is no unowned Operations persistence module. |
+| Cloud `src/ArcForges.Cloud.Modules.{Support,TrustSafety,Audit,Policy,Configuration,PackageCatalog}` (PackageCatalog is post-V1 and out of scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5) (Domain, Application and Infrastructure as folders and namespaces) | Existing domain owners implement support/access, enforcement, proposals/audit, controls, configuration and catalog; Cloud.Host composes OperatorService. There is no unowned Operations persistence module. |
 | Cloud `src/ArcForges.Cloud.Modules.Notification` (Domain, Application and Infrastructure as folders and namespaces) | Transactional and broadcast email adapters with separated streams and a secondary path |
 | Web `src/Web/ArcForges.Web.App` (operations profile, Blazor WebAssembly) | The operator console on its own origin and identity system |
 | `deploy/monitoring/` | Alert definitions, service-level objective definitions, status component mapping |
@@ -179,6 +179,8 @@
 <a id="rule-wp-45.10"></a>
 
 ### WP-45.10 — Package review and revocation console
+
+> **Post-V1 and out of scope ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S5).** The PackageCatalog review and revocation console is not required in V1; the text below is kept as the post-V1 specification.
 
 **What must be fully done.** Integrate existing WP41 PackageCatalog operator methods with independent operator authentication, step-up/evidence and audit. Show asynchronous signed-index publication state.
 

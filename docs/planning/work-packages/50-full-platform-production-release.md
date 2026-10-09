@@ -111,9 +111,11 @@
 
 ### WP-50.03 — Android release
 
-**What must be fully done.** The Android artifact submitted and released with every mobile gate satisfied from `32`, and the store listing consistent with the consumption-only posture.
+> **Post-V1 and out of scope for the store channel ([P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S11).** The store listing and store-channel verification below are not required in V1; the V1 Android channel is the direct APK.
 
-**Testing requirements.** Post-release install and update verification from the store channel; a listing-consistency check.
+**What must be fully done.** The Android artifact submitted and released with every mobile gate satisfied from `32`, and the store listing (post-V1 and out of scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S11) consistent with the consumption-only posture.
+
+**Testing requirements.** Post-release install and update verification from the store channel (post-V1 and out of scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S11); a listing-consistency check.
 
 **Completion gate.** The Android release is live with every mobile gate closed and the listing consistent with the consumption-only posture.
 

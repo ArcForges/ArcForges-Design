@@ -39,7 +39,7 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 <a id="rule-wp-32.01"></a>
 ### WP-32.01 — Release runtime inspection
 
-**What must be fully done.** Verify the Mono AOT runtime on ART, the MAUI and public NuGet gRPC-Web closure (replacing the Kotlin, Compose and grpc-lite closure), min/target API, arm64 assets, trimming and R8 rules, 16 KB page-size alignment and required permissions on actual APK/AAB. Planning repair 2026-10-08 (DLV-34; P2-021): the inspection verifies the MAUI Mono AOT release under [PRF.12](../delivery/lanes/runtime-proofs.md#task-prf-12) and [AND.40](../delivery/lanes/android.md#task-and-40).
+**What must be fully done.** Verify the Mono AOT runtime on ART, the MAUI and public NuGet gRPC-Web closure (replacing the Kotlin, Compose and grpc-lite closure), min/target API, arm64 assets, trimming and R8 rules, 16 KB page-size alignment and required permissions on actual APK (the AAB is post-V1 and out of scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S11). Planning repair 2026-10-08 (DLV-34; P2-021): the inspection verifies the MAUI Mono AOT release under [PRF.12](../delivery/lanes/runtime-proofs.md#task-prf-12) and [AND.40](../delivery/lanes/android.md#task-and-40).
 
 **Testing requirements.** Install without development server/toolchain; startup/identity/RPC/R2/notifications and lifecycle release tests.
 
@@ -93,7 +93,7 @@ Mobile owns app/, core/domain, core/data, core/network, core/security, core/desi
 <a id="rule-wp-32.90"></a>
 ### WP-32.90 — Distribution acceptance
 
-**What must be fully done.** Archive exact signed APK/AAB, manifest/hash/versionCode/certificate identity, compatible server/Contracts release and all gate receipts; publish through the automatic main graph.
+**What must be fully done.** Archive exact signed direct APK (the AAB is post-V1 and out of scope under [P2-026](../../decisions/phase-2-specification-decisions.md#rule-p2-026) S11), manifest/hash/versionCode/certificate identity, compatible server/Contracts release and all gate receipts; publish through the automatic main graph.
 
 **Testing requirements.** Download public candidate in a clean device path, verify signature/hash and exercise actual services.
 
