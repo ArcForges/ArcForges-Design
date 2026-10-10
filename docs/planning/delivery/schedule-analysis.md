@@ -10,7 +10,7 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 |---|---|
 | Delivery tasks | 432 (6 carried as accepted baseline), plus 50 adoption slices |
 | Out of scope (excluded from every measure here; not completed) | 35 tasks under P2-026 |
-| Dependency edges by type | artifact 1079, contract 120, integration(completion) 260, release 35 |
+| Dependency edges by type | artifact 1079, contract 121, integration(completion) 260, release 35 |
 | Remaining work (size units: S=1, M=2, L=4, XL=8) | 1123 |
 | Longest dependency chain (levels) | 31 |
 | Widest level (tasks whose longest prerequisite chain has equal length) | 58 |
