@@ -133,7 +133,7 @@ Tasks: 10 · Owning repositories: Cloud · Integration owner(s): Cloud integrati
 | Start prerequisites | **artifact** [AIR.02](#task-air-02) — metered attempts to record interactions against. *Why:* an interaction record without a metered attempt has nothing to redact/explain<br>**artifact** [CLOUD.69](cloud.md#task-cloud-69) — the Cloud-side correlation seam for the provider interaction record. *Why:* propagating correlation once is a Cloud seam ([CR-06](../../../architecture/13-observability-and-operations.md#rule-cr-06)); this task builds on it instead of adding per-module propagation |
 | Entry condition | [ADOPT.07.ai-routing](adoption.md#task-adopt-07-ai-routing) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
-| Unblocks | [AIR.90](#task-air-90) |
+| Unblocks | [AIR.90](#task-air-90), [PLT.53](platform.md#task-plt-53) |
 | Write scope | `Cloud:src/ArcForges.Cloud.Modules.Agent/InteractionRecords/**`<br>`Cloud:storage/plans/agent/interaction-records/**`<br>`Cloud:src/ArcForges.Cloud.Storage.D1/Migrations/**` |
 | Shared resources | [RES-cloud-d1-migrations](../shared-resources.md#res-cloud-d1-migrations) (append), [RES-cloud-storage-plans](../shared-resources.md#res-cloud-storage-plans) (append) |
 | Validation | Trace-separation test; content-redaction test; cost-explainability test -- offline. |
