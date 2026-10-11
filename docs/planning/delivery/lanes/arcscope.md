@@ -29,11 +29,11 @@ Tasks: 26 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | [SCOPE.20](#task-scope-20) | ArcChat capability surface for ArcScope | feature | M | [SCOPE.06](#task-scope-06) (artifact), [CON.02](contracts.md#task-con-02) (contract) | not-started |
 | [SCOPE.21](#task-scope-21) | Bounded context provision for AI | feature | M | [SCOPE.14](#task-scope-14) (artifact), [SCOPE.16](#task-scope-16) (artifact), [SCOPE.15](#task-scope-15) (artifact) | not-started |
 | [SCOPE.22](#task-scope-22) | Cloud sync scope (metadata, not raw capture) | feature | M | [SCOPE.06](#task-scope-06) (artifact), [SCOPE.18](#task-scope-18) (artifact), [SCOPE.17](#task-scope-17) (artifact), [CON.03](contracts.md#task-con-03) (contract) | not-started |
-| [SCOPE.23](#task-scope-23) | Explicit per-session raw capture upload | feature | M | [SCOPE.07](#task-scope-07) (artifact), [CLOUD.42](cloud.md#task-cloud-42) (artifact) | not-started |
+| [SCOPE.23](#task-scope-23) | Explicit per-session raw capture upload | feature | M | [SCOPE.07](#task-scope-07) (artifact), [CLOUD.42](cloud.md#task-cloud-42) (artifact), [CLOUD.18](cloud.md#task-cloud-18) (artifact) | not-started |
 | [SCOPE.24](#task-scope-24) | Import, export and format fixtures | feature | L | [SCOPE.07](#task-scope-07) (artifact), [SCOPE.14](#task-scope-14) (artifact) | not-started |
 | [SCOPE.25](#task-scope-25) | Extension boundary: no third-party raw-capture write path | feature | S | [SCOPE.20](#task-scope-20) (artifact), [SCOPE.07](#task-scope-07) (artifact), [EXT.02](extensions.md#task-ext-02) (artifact) | not-started |
 | [SCOPE.26](#task-scope-26) | Owned-artifact verification and real integration | feature | M | [SCOPE.20](#task-scope-20) (artifact), [SCOPE.21](#task-scope-21) (artifact), [SCOPE.22](#task-scope-22) (artifact), [SCOPE.23](#task-scope-23) (artifact), [SCOPE.24](#task-scope-24) (artifact), [SCOPE.25](#task-scope-25) (artifact), [DEV.05](device-bridge.md#task-dev-05) (artifact), [DEV.14](device-bridge.md#task-dev-14) (artifact) | not-started |
-| [SCOPE.27](#task-scope-27) | Real ArcScope metadata sync against the deployed Cloud sync engine | integration | M | [SCOPE.22](#task-scope-22) (artifact), [CLOUD.39](cloud.md#task-cloud-39) (artifact), [CLOUD.44](cloud.md#task-cloud-44) (artifact) | not-started |
+| [SCOPE.27](#task-scope-27) | Real ArcScope metadata sync against the deployed Cloud sync engine | integration | M | [SCOPE.22](#task-scope-22) (artifact), [CLOUD.39](cloud.md#task-cloud-39) (artifact), [CLOUD.44](cloud.md#task-cloud-44) (artifact), [CLOUD.18](cloud.md#task-cloud-18) (artifact) | not-started |
 
 ## Tasks
 
@@ -536,7 +536,7 @@ Tasks: 26 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Kind / size | feature / M |
 | Obligations | [WP-35.03](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.03) — full |
 | Provides | scope.raw-upload |
-| Start prerequisites | **artifact** [SCOPE.07](#task-scope-07) — durable capture to upload. *Why:* direct source of upload bytes<br>**artifact** [CLOUD.42](cloud.md#task-cloud-42) — published blob lifecycle mechanism (chunked upload, resumption, verification). *Why:* explicit large raw-capture upload reuses the real chunked object-storage upload path rather than a bespoke one; resumability/verification over genuinely large captures cannot be honestly proven against a stub |
+| Start prerequisites | **artifact** [SCOPE.07](#task-scope-07) — durable capture to upload. *Why:* direct source of upload bytes<br>**artifact** [CLOUD.42](cloud.md#task-cloud-42) — published blob lifecycle mechanism (chunked upload, resumption, verification). *Why:* explicit large raw-capture upload reuses the real chunked object-storage upload path rather than a bespoke one; resumability/verification over genuinely large captures cannot be honestly proven against a stub<br>**artifact** [CLOUD.18](cloud.md#task-cloud-18) — the native session client primitive (ArcForges.Security.Sessions) that gives the ArcScope installation its own authenticated Cloud session. *Why:* an explicit raw upload is an authenticated Cloud call of the ArcScope installation, so the upload path needs the delivered session primitive (S57(11)) |
 | Entry condition | [ADOPT.05.arcscope](adoption.md#task-adopt-05-arcscope) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [SCOPE.26](#task-scope-26) |
@@ -544,6 +544,7 @@ Tasks: 26 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Validation | explicit-upload flow test; negative test for no automatic trigger path; resumption and verification tests on a large capture |
 | Completion evidence | explicit upload, no-auto-trigger and resumption results |
 | Baseline (unreviewed unless accepted) | not-started |
+| Notes | Planning repair fix8 2026-10-10 ([DLV-34](../README.md#rule-dlv-34); coordinator ruling S57(11)): starts on CLOUD.18, because the explicit raw upload is an authenticated Cloud call of the ArcScope installation. The ArcScope admission of the ArcForges.Security.Sessions package is part of this task's closure and is ruled at claim time ([ADP-07](../adoption.md#rule-adp-07); the S53(2) precedent). No acceptance changes. |
 
 <a id="task-scope-24"></a>
 
@@ -627,7 +628,7 @@ Tasks: 26 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Kind / size | integration / M |
 | Obligations | [WP-35.02](../../work-packages/35-arcscope-integration-and-sync.md#rule-wp-35.02) — real-integration evidence: metadata sync scope converges against deployed Cloud authority<br>[WP-25.07](../../work-packages/25-sync-engine-and-blob-lifecycle.md#rule-wp-25.07) — ArcScope object-kind coverage of the convergence harness; the real ArcScope client participates in the three-device run |
 | Provides | ArcScope real metadata sync evidence |
-| Start prerequisites | **artifact** [SCOPE.22](#task-scope-22) — ArcScope Cloud sync scope declaration and client. *Why:* the integration exercises the ArcScope client<br>**artifact** [CLOUD.39](cloud.md#task-cloud-39) — deployed guarded publication and convergent bootstrap. *Why:* real convergence needs the real publisher<br>**artifact** [CLOUD.44](cloud.md#task-cloud-44) — multi-device convergence harness. *Why:* convergence is proven with the shared harness |
+| Start prerequisites | **artifact** [SCOPE.22](#task-scope-22) — ArcScope Cloud sync scope declaration and client. *Why:* the integration exercises the ArcScope client<br>**artifact** [CLOUD.39](cloud.md#task-cloud-39) — deployed guarded publication and convergent bootstrap. *Why:* real convergence needs the real publisher<br>**artifact** [CLOUD.44](cloud.md#task-cloud-44) — multi-device convergence harness. *Why:* convergence is proven with the shared harness<br>**artifact** [CLOUD.18](cloud.md#task-cloud-18) — the native session client primitive (ArcForges.Security.Sessions) that gives the ArcScope installation its own authenticated Cloud session. *Why:* real metadata sync against the deployed Cloud sync engine runs as an authenticated ArcScope installation; without the delivered primitive there is no real session to sync under (S57(11)) |
 | Entry condition | [ADOPT.05.arcscope](adoption.md#task-adopt-05-arcscope) — the adoption slice for this repository and lane is complete ([DLV-22](../README.md#rule-dlv-22)) |
 | Completion prerequisites | none |
 | Unblocks | [CLOUD.44](cloud.md#task-cloud-44), [CLOUD.47](cloud.md#task-cloud-47), [SCOPE.22](#task-scope-22) |
@@ -635,7 +636,7 @@ Tasks: 26 · Owning repositories: ArcScope · Integration owner(s): ArcScope int
 | Validation | Local real-integration run against a deployed test environment, recorded once; offline checks in CI; no hosted live-service CI ([P2-017](../../../decisions/phase-2-specification-decisions.md#rule-p2-017)). |
 | Completion evidence | Candidate identities, deployed environment identity, convergence scenario results and untested coverage. |
 | Baseline (unreviewed unless accepted) | not-started |
-| Notes | Added during consolidation so the ArcScope sync substitute has a named replacing task. |
+| Notes | Added during consolidation so the ArcScope sync substitute has a named replacing task. Planning repair fix8 2026-10-10 ([DLV-34](../README.md#rule-dlv-34); coordinator ruling S57(11)): starts on CLOUD.18, the native session client primitive that authenticates the ArcScope installation against the deployed Cloud; the real sync run cannot use a substitute session. The ArcScope admission of the ArcForges.Security.Sessions package is part of this task's closure and is ruled at claim time ([ADP-07](../adoption.md#rule-adp-07); the S53(2) precedent). No acceptance changes. |
 
 ## Out of scope
 

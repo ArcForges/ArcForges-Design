@@ -254,7 +254,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 | [WEB.18](../delivery/lanes/web.md#task-web-18) | [WP-48.90](48-account-portal.md#rule-wp-48.90) (full; final-review closure: 08-security-architecture account/provider closure, scoped-token display-once, cancellation restricted route)<br>[WP-48](48-account-portal.md#rule-wp-48) Required implementation and closure from the final review: 08-security-architecture account/provider closure, scoped-token display-once, cancellation restricted route (package-level obligation contribution)<br>[WP-48](48-account-portal.md#rule-wp-48) Browser matrix acceptance paragraph (browser-support.v1 for the account output) (package-level obligation contribution) | none |
 | [WEB.29](../delivery/lanes/web.md#task-web-29) | [WP-48.04](48-account-portal.md#rule-wp-48.04) (real-provider-evidence closure) | [COM.14](../delivery/lanes/commerce.md#task-com-14) (artifact), [POL.08](../delivery/lanes/policy.md#task-pol-08) (artifact) |
 
-**Consumers outside this package:** [REL.05](../delivery/lanes/release.md#task-rel-05), [WEB.19](../delivery/lanes/web.md#task-web-19), [WEB.30](../delivery/lanes/web.md#task-web-30), [WEB.31](../delivery/lanes/web.md#task-web-31).
+**Consumers outside this package:** [COM.15](../delivery/lanes/commerce.md#task-com-15), [REL.05](../delivery/lanes/release.md#task-rel-05), [WEB.19](../delivery/lanes/web.md#task-web-19), [WEB.30](../delivery/lanes/web.md#task-web-30), [WEB.31](../delivery/lanes/web.md#task-web-31).
 
 <!-- delivery-graph:end -->
 

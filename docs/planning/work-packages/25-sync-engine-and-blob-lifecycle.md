@@ -268,7 +268,7 @@ Scheduling is task-level under [P2-018](../../decisions/phase-2-specification-de
 
 | Delivery task | Satisfies | Start prerequisites outside this package |
 |---|---|---|
-| [SCOPE.27](../delivery/lanes/arcscope.md#task-scope-27) | [WP-25.07](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.07) (ArcScope object-kind coverage of the convergence harness; the real ArcScope client participates in the three-device run) | [SCOPE.22](../delivery/lanes/arcscope.md#task-scope-22) (artifact) |
+| [SCOPE.27](../delivery/lanes/arcscope.md#task-scope-27) | [WP-25.07](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.07) (ArcScope object-kind coverage of the convergence harness; the real ArcScope client participates in the three-device run) | [SCOPE.22](../delivery/lanes/arcscope.md#task-scope-22) (artifact), [CLOUD.18](../delivery/lanes/cloud.md#task-cloud-18) (artifact) |
 | [AST.21](../delivery/lanes/assistant.md#task-ast-21) | [WP-25.08](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.08) (all work except the parts mapped to CLOUD.45, CLOUD.58) | [AST.07](../delivery/lanes/assistant.md#task-ast-07) (artifact) |
 | [AST.22](../delivery/lanes/assistant.md#task-ast-22) | [WP-25.09](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.09) (full; consumer-side real integration) | [AST.15](../delivery/lanes/assistant.md#task-ast-15) (artifact), [AST.01](../delivery/lanes/assistant.md#task-ast-01) (artifact) |
 | [CLOUD.38](../delivery/lanes/cloud.md#task-cloud-38) | [WP-25.01](25-sync-engine-and-blob-lifecycle.md#rule-wp-25.01) (full) | [PLT.01](../delivery/lanes/platform.md#task-plt-01) (artifact) |

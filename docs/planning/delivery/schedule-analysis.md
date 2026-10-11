@@ -8,13 +8,13 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 
 | Measure | Value |
 |---|---|
-| Delivery tasks | 426 (6 carried as accepted baseline), plus 50 adoption slices |
+| Delivery tasks | 433 (6 carried as accepted baseline), plus 50 adoption slices |
 | Out of scope (excluded from every measure here; not completed) | 35 tasks under P2-026 |
-| Dependency edges by type | artifact 1041, contract 108, integration(completion) 243, release 34 |
-| Remaining work (size units: S=1, M=2, L=4, XL=8) | 1110 |
-| Longest dependency chain (levels) | 27 |
+| Dependency edges by type | artifact 1086, contract 126, integration(completion) 269, release 35 |
+| Remaining work (size units: S=1, M=2, L=4, XL=8) | 1125 |
+| Longest dependency chain (levels) | 31 |
 | Widest level (tasks whose longest prerequisite chain has equal length) | 58 |
-| Critical path length (size units) | 79 |
+| Critical path length (size units) | 98 |
 | Retired model | 384 numbered substeps advanced one at a time from a single Current task |
 
 ## Work by lane
@@ -23,18 +23,18 @@ All values below are computed by Plan tools/delivery.py from the current graph. 
 |---|---|---|---|
 | [Adoption stage](lanes/adoption.md) | 9 | 10 | AI, ArcScope, Cloud, Contracts, Design, DesktopPlatform, Mobile, Plan, Web |
 | [Family governance and policy tests](lanes/governance.md) | 16 | 52 | ArcScope, Cloud, Contracts, DesktopPlatform |
-| [Contracts schema closures](lanes/contracts.md) | 27 | 68 | Contracts |
+| [Contracts schema closures](lanes/contracts.md) | 30 | 72 | Contracts |
 | [Foundation values](lanes/foundation.md) | 7 | 8 | DesktopPlatform |
 | [Runtime proofs](lanes/runtime-proofs.md) | 7 | 26 | ArcScope, Cloud, DesktopPlatform, Mobile, Web |
-| [Desktop platform mechanisms](lanes/platform.md) | 53 | 128 | DesktopPlatform |
+| [Desktop platform mechanisms](lanes/platform.md) | 54 | 130 | DesktopPlatform |
 | [Native producers and probes](lanes/native.md) | 9 | 18 | DesktopPlatform |
-| [Application composition](lanes/app-composition.md) | 8 | 14 | ArcScope, DesktopPlatform |
+| [Application composition](lanes/app-composition.md) | 8 | 16 | ArcScope, DesktopPlatform |
 | [Embedded assistant](lanes/assistant.md) | 21 | 48 | DesktopPlatform |
 | [Execution engine](lanes/execution.md) | 9 | 19 | DesktopPlatform |
 | [Application presence and tool bridge](lanes/device-bridge.md) | 12 | 22 | Cloud, DesktopPlatform |
 | [ArcScope](lanes/arcscope.md) | 26 | 66 | ArcScope |
 | [ArcScope Cloud simulator](lanes/simulator.md) | 10 | 36 | ArcScope, Cloud |
-| [Cloud core](lanes/cloud.md) | 66 | 151 | Cloud, DesktopPlatform |
+| [Cloud core](lanes/cloud.md) | 69 | 158 | Cloud, DesktopPlatform |
 | [Commerce, entitlement and credits](lanes/commerce.md) | 16 | 56 | Cloud |
 | [Dynamic policy and configuration](lanes/policy.md) | 11 | 26 | Cloud, DesktopPlatform |
 | [Operations, support and trust and safety](lanes/operations.md) | 12 | 33 | Cloud, Web |
@@ -53,11 +53,11 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 
 | Repository | Open tasks | Lanes | Widest level (tasks at once) | Ready after its adoption slices | Examples that can run at the same time |
 |---|---|---|---|---|---|
-| ArcScope | 32 | 6 | level 9: 8 | 1 | [APP.03](lanes/app-composition.md#task-app-03) Clean Native AOT package-consumer composition for ArcScope, [SCOPE.07](lanes/arcscope.md#task-scope-07) Durable capture writer, chunked verifiable store and crash recovery, [SCOPE.12](lanes/arcscope.md#task-scope-12) Visualisation: virtualised rendering, downsampling, cursors and markers, [SCOPE.13](lanes/arcscope.md#task-scope-13) Triggers with pre/post windows |
-| Cloud | 149 | 12 | level 15: 15 | 8 | [CLOUD.32](lanes/cloud.md#task-cloud-32) Durable unary fallback (Poll/readOutput), [COM.09](lanes/commerce.md#task-com-09) Ledgers and reconciliation, [DEV.04](lanes/device-bridge.md#task-dev-04) Execution and result deduplication -- Cloud D1 attempt/result store, [HAR.06](lanes/harness.md#task-har-06) Durable Cloud automation, scheduling and automation-fixture removal |
-| Contracts | 28 | 4 | level 3: 7 | 7 | [CON.04](lanes/contracts.md#task-con-04) ContentSandbox service schema (15 methods: session/slot/image/PDF), [CON.05](lanes/contracts.md#task-con-05) Extension/Connector/LocalBootstrap service schema (annex09 helper closure minus ContentSandbox), [CON.12](lanes/contracts.md#task-con-12) Extension and policy schemas: manifest.v1/workflow.v1/panel.v1/policy body.v1/configuration.v1, [CON.16](lanes/contracts.md#task-con-16) Signed catalog/update/realm formats (catalog-index.v1, catalog-revocations.v1, android-update.v1, realm.v1) |
-| DesktopPlatform | 133 | 13 | level 7: 20 | 8 | [EXE.02](lanes/execution.md#task-exe-02) Lifecycle states and reason facets, [GOV.20](lanes/governance.md#task-gov-20) Build.Policy banned-symbol scanner: audit unmanaged function-pointer invocations instead of throwing, [NAT.05](lanes/native.md#task-nat-05) Probe evidence, licence positions, conclusions and hardware-lab inventory seed, [PLT.11](lanes/platform.md#task-plt-11) Child registration lifecycle |
-| Mobile | 30 | 3 | level 18: 5 | 1 | [AND.07](lanes/android.md#task-and-07) Foundation integration evidence: real candidate against deployed 22/23/24/25, [AND.08](lanes/android.md#task-and-08) Authentication, Home and workspace (AN01-AN06), [AND.12](lanes/android.md#task-and-12) Presence, push, links and settings (AN20-AN24), [AND.24](lanes/android.md#task-and-24) Real CF Harness generation/tool loop observed end to end on Android |
+| ArcScope | 32 | 6 | level 9: 7 | 1 | [SCOPE.07](lanes/arcscope.md#task-scope-07) Durable capture writer, chunked verifiable store and crash recovery, [SCOPE.12](lanes/arcscope.md#task-scope-12) Visualisation: virtualised rendering, downsampling, cursors and markers, [SCOPE.13](lanes/arcscope.md#task-scope-13) Triggers with pre/post windows, [SCOPE.14](lanes/arcscope.md#task-scope-14) Measurements: scope.measurement.v1 |
+| Cloud | 152 | 12 | level 15: 11 | 8 | [CLOUD.14](lanes/cloud.md#task-cloud-14) Device trust and remote gating, [COM.04](lanes/commerce.md#task-com-04) Provider event inbox, [HAR.06](lanes/harness.md#task-har-06) Durable Cloud automation, scheduling and automation-fixture removal, [OPS.10](lanes/operations.md#task-ops-10) Customer push delivery and registration lifecycle |
+| Contracts | 31 | 4 | level 3: 7 | 7 | [CON.04](lanes/contracts.md#task-con-04) ContentSandbox service schema (15 methods: session/slot/image/PDF), [CON.05](lanes/contracts.md#task-con-05) Extension/Connector/LocalBootstrap service schema (annex09 helper closure minus ContentSandbox), [CON.12](lanes/contracts.md#task-con-12) Extension and policy schemas: manifest.v1/workflow.v1/panel.v1/policy body.v1/configuration.v1, [CON.16](lanes/contracts.md#task-con-16) Signed catalog/update/realm formats (catalog-index.v1, catalog-revocations.v1, android-update.v1, realm.v1) |
+| DesktopPlatform | 134 | 13 | level 7: 20 | 8 | [EXE.02](lanes/execution.md#task-exe-02) Lifecycle states and reason facets, [GOV.20](lanes/governance.md#task-gov-20) Build.Policy banned-symbol scanner: audit unmanaged function-pointer invocations instead of throwing, [NAT.01](lanes/native.md#task-nat-01) Probe A: device tool execution under Native AOT, [PLT.11](lanes/platform.md#task-plt-11) Child registration lifecycle |
+| Mobile | 30 | 3 | level 22: 5 | 1 | [AND.07](lanes/android.md#task-and-07) Foundation integration evidence: real candidate against deployed 22/23/24/25, [AND.08](lanes/android.md#task-and-08) Authentication, Home and workspace (AN01-AN06), [AND.12](lanes/android.md#task-and-12) Presence, push, links and settings (AN20-AN24), [AND.24](lanes/android.md#task-and-24) Real CF Harness generation/tool loop observed end to end on Android |
 | Web | 39 | 4 | level 11: 8 | 0 | [OPS.04](lanes/operations.md#task-ops-04) Status page, [WEB.02](lanes/web.md#task-web-02) Versioned public content and pricing inputs (catalogue.json), [WEB.03](lanes/web.md#task-web-03) Rendering and performance, [WEB.04](lanes/web.md#task-web-04) Internationalisation |
 
 ## Critical path
@@ -72,17 +72,25 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 | 6 | [CON.10](lanes/contracts.md#task-con-10) | L | Task/approval/bridge/chat/agent/automation/search operation registry + ai-internal package |
 | 7 | [CON.11](lanes/contracts.md#task-con-11) | M | Application/history/execution/events operations (annex10's 13 additions) + EventService.Poll |
 | 8 | [CON.07](lanes/contracts.md#task-con-07) | L | Identity/session/device operation registry + native-auth and browser HTTP exceptions |
-| 9 | [PRF.07](lanes/runtime-proofs.md#task-prf-07) | XL | Cloudflare Native AOT host + D1 + DO/Queue/R2 foundation proof |
-| 10 | [HAR.40](lanes/harness.md#task-har-40) | XL | C# Harness foundation: D1 executor, ai.internal thin adapter and Hello-agent slice |
-| 11 | [HAR.00](lanes/harness.md#task-har-00) | XL | Turn loop, tool batching and bounds (C# run loop) |
-| 12 | [HAR.03](lanes/harness.md#task-har-03) | L | Generated streaming and durable output |
-| 13 | [AST.19](lanes/assistant.md#task-ast-19) | M | Real Cloud Harness turn loop replacing the fixture turn endpoint |
-| 14 | [DEV.13](lanes/device-bridge.md#task-dev-13) | M | Real Harness-planned tool request flowing through the real device bridge end-to-end |
-| 15 | [HAR.05](lanes/harness.md#task-har-05) | XL | Own-application execution proof and fixture turn-endpoint removal |
-| 16 | [HAR.90](lanes/harness.md#task-har-90) | M | Verify owned artifact and real integration (Harness) |
-| 17 | [REL.06](lanes/release.md#task-rel-06) | XL | Cloud/AI production readiness (deployment, migration, backup, self-host) |
-| 18 | [REL.09](lanes/release.md#task-rel-09) | L | Combined disaster drill and operational readiness confirmation |
-| 19 | [REL.11](lanes/release.md#task-rel-11) | L | Family release readiness audit and honest statement |
+| 9 | [WEB.40](lanes/web.md#task-web-40) | XL | Blazor migration of the existing Web (C# static Site, Blazor WebAssembly profiles, C# policy) |
+| 10 | [CON.40](lanes/contracts.md#task-con-40) | L | C#-only SDK standardization: stop TypeScript and Kotlin/Maven publication after consumer migration; keep @arcforges/ai-internal |
+| 11 | [CON.41](lanes/contracts.md#task-con-41) | S | Publish the public operation metadata in the PublicApi package |
+| 12 | [CLOUD.21](lanes/cloud.md#task-cloud-21) | L | Public endpoint mapping and validation |
+| 13 | [CLOUD.12](lanes/cloud.md#task-cloud-12) | L | Native and browser authentication with Postmark/SES mail adapters (live delivery evidence blocked-external) |
+| 14 | [CLOUD.15](lanes/cloud.md#task-cloud-15) | M | Step-up challenges for sensitive operations |
+| 15 | [CLOUD.16](lanes/cloud.md#task-cloud-16) | M | PAT and actor authorization |
+| 16 | [CLOUD.19](lanes/cloud.md#task-cloud-19) | L | Browser cookie-session adapter and full account-surface closure |
+| 17 | [CLOUD.26](lanes/cloud.md#task-cloud-26) | L | Generated C# clients (native and Grpc.Net.Client.Web browser) against Identity/Workspace/Device |
+| 18 | [PRF.12](lanes/runtime-proofs.md#task-prf-12) | L | MAUI Android release proof: Mono AOT release, trimming and R8, 16 KB alignment, signing, unary, server stream, trailers, cancel and Keystore against the proof ingress |
+| 19 | [AND.02](lanes/android.md#task-and-02) | L | Real MAUI module graph and AN01-AN28 route/state contracts |
+| 20 | [AND.05](lanes/android.md#task-and-05) | L | SQLite history, drafts, outbox and receipts (versioned migrations through an admitted Apache-2.0 SQLite binding) |
+| 21 | [AND.09](lanes/android.md#task-and-09) | L | Conversations and context (AN07-AN10/15/16) |
+| 22 | [AND.24](lanes/android.md#task-and-24) | M | Real CF Harness generation/tool loop observed end to end on Android |
+| 23 | [HAR.05](lanes/harness.md#task-har-05) | XL | Own-application execution proof and fixture turn-endpoint removal |
+| 24 | [HAR.90](lanes/harness.md#task-har-90) | M | Verify owned artifact and real integration (Harness) |
+| 25 | [REL.06](lanes/release.md#task-rel-06) | XL | Cloud/AI production readiness (deployment, migration, backup, self-host) |
+| 26 | [REL.09](lanes/release.md#task-rel-09) | L | Combined disaster drill and operational readiness confirmation |
+| 27 | [REL.11](lanes/release.md#task-rel-11) | L | Family release readiness audit and honest statement |
 
 ## Level widths
 
@@ -93,28 +101,32 @@ Tasks on the same delivery level have no prerequisite path between them, so they
 | 3 | 25 |
 | 4 | 22 |
 | 5 | 29 |
-| 6 | 23 |
+| 6 | 22 |
 | 7 | 28 |
 | 8 | 24 |
 | 9 | 30 |
-| 10 | 21 |
-| 11 | 33 |
-| 12 | 27 |
-| 13 | 26 |
-| 14 | 21 |
-| 15 | 22 |
-| 16 | 20 |
-| 17 | 16 |
-| 18 | 16 |
-| 19 | 10 |
-| 20 | 6 |
-| 21 | 2 |
-| 22 | 4 |
-| 23 | 2 |
-| 24 | 1 |
-| 25 | 1 |
-| 26 | 1 |
-| 27 | 1 |
+| 10 | 20 |
+| 11 | 28 |
+| 12 | 23 |
+| 13 | 23 |
+| 14 | 15 |
+| 15 | 14 |
+| 16 | 12 |
+| 17 | 9 |
+| 18 | 12 |
+| 19 | 13 |
+| 20 | 12 |
+| 21 | 15 |
+| 22 | 12 |
+| 23 | 9 |
+| 24 | 6 |
+| 25 | 4 |
+| 26 | 4 |
+| 27 | 2 |
+| 28 | 2 |
+| 29 | 1 |
+| 30 | 1 |
+| 31 | 1 |
 
 ## Simulated makespan (unmeasured estimate)
 
@@ -122,14 +134,14 @@ Assumptions: task effort is its relative size (S=1, M=2, L=4, XL=8 units, never 
 
 | Workers | Makespan (size units) | Estimated speed-up over one worker |
 |---|---|---|
-| 1 | 1110 | 1.0× |
-| 2 | 556 | 2.0× |
-| 4 | 279 | 4.0× |
-| 8 | 141 | 7.9× |
-| 16 | 79 | 14.1× |
-| 32 | 79 | 14.1× |
-| 64 | 79 | 14.1× |
-| unbounded | 79 | 14.1× |
+| 1 | 1125 | 1.0× |
+| 2 | 564 | 2.0× |
+| 4 | 283 | 4.0× |
+| 8 | 143 | 7.9× |
+| 16 | 98 | 11.5× |
+| 32 | 98 | 11.5× |
+| 64 | 98 | 11.5× |
+| unbounded | 98 | 11.5× |
 
 ## Provisional initial ready set
 
