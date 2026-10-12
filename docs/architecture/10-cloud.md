@@ -1,0 +1,158 @@
+# 10 — Cloud
+
+Decisions: [AD-0009](../decisions/AD-0009-cloud-relay-and-cost-controls.md), [AD-0010](../decisions/AD-0010-commerce-and-entitlements.md), [AD-0011](../decisions/AD-0011-identity-and-login.md). Contracts: `arcforges.fleet.v1`, `arcforges.relay.v1`, and the reused `arcforges.publicapi.v1`. Persistence: [data/cloud-store.md](../data/cloud-store.md).
+
+## 1. Components
+
+| Component | Implementation | Responsibility |
+|---|---|---|
+| Worker ingress (existing) | Cloud `worker/ingress/*` (TypeScript, thin) | Routes binary gRPC-Web business calls to the C# host. Applies edge limits. Serves provider webhook routes. |
+| Relay routes (new) | Cloud `worker/relay/*` (TypeScript, thin) | `GET /v1/node` and `GET /v1/view` WebSocket upgrades. Token verification (HMAC-SHA256, audience, expiry, scope). Forwards to the account's `FleetHub` DO. |
+| `FleetHub` Durable Object (new) | Cloud `worker/relay/fleet-hub.ts` (thin) | One per account. Hibernating WebSockets for nodes and viewers. Routes frames, keeps bounded latest-state caches, enforces token-carried limits, forwards envelopes to and from the C# host, guards its own alarm loop (AD-0009 §7). |
+| C# host (existing) | Cloud `ArcForges.Cloud` (Containers, Native AOT) | All business logic |
+| D1 (existing) | Cloud `ArcForges.Cloud.Storage.D1` | Account, registry, entitlement, commerce, commands, audit |
+| R2 (existing) | Release artifacts, support uploads | Static release manifests (`releases.arcforges.com`), support bundles (consented) |
+
+**Viewer transport.** Viewers (web, Android) receive live fleet state over a **WebSocket to `FleetHub` carrying `arcforges.relay.v1.ViewerFrame` protobuf messages**, not over a gRPC-Web stream. A streaming HTTP response would keep the Durable Object awake and billed for the stream's lifetime, while hibernating WebSockets do not (V-C01). The frames and the snapshot/delta/cursor semantics are the same contract the gRPC-Web method `FleetService.WatchFleet` defines. `WatchFleet` stays available as a gRPC-Web server stream for clients that cannot use WebSockets, and is served by the C# host with a 10-minute lifetime cap (R-API-004).
+
+## 2. C# modules
+
+| Module | Status | New or changed responsibilities |
+|---|---|---|
+| Identity | Reuse | Account authentication, sessions, step-up, recovery and deletion, unchanged. New: an `account` session can approve node sign-ins, device codes and phone pairings. |
+| Devices | Adapt | Installation kind `NODE` (with `node_id`, OS, architecture, version, host-node link for guests) and `MOBILE`; revocation cascades to node certificates and relay tokens |
+| Fleet | **New** (`ArcForges.Cloud.Modules.Fleet`) | `NodeEnrollmentService`: native sign-in (PKCE loopback), device authorization, phone pairing, node certificates, LAN hints, relay tokens, entitlement tokens. `FleetService`: node list, rename, revoke, snapshots, viewer grants, remote commands. Relay envelope processing. |
+| Entitlement | Reuse | Plan catalogue (configuration revision), snapshots, features. New: an entitlement-token claim projection. |
+| Commerce | Adapt | Paddle provider (reuse). Google Play provider (`StoreBillingService`, RTDN processing, acknowledgement job). |
+| Notification | Adapt | Push kinds `node.task_failed`, `node.task_finished`, `node.approval_needed`, `node.offline`, `node.finding`; batching from relay envelopes; preferences per kind and node (`FleetService.GetPushPreferences` and `UpdatePushPreferences`, table `fleet_push_preference`) |
+| Support | Reuse | Cases. New: attachment of consented support bundles (R2 object key). |
+| Audit | Reuse | Audit events for enrollment, revocation, remote commands and commerce |
+| Platform | Reuse | Command dedup, inbox and outbox, job leases, operating budgets and reservations |
+| Configuration | Reuse | Kill switches (`relay.live_streaming`, `relay.new_connections`, `push.enabled`, `fleet.commands`) and limits |
+| Chat, Task, Agent, Sync, Resource, Search, Scope, PackageCatalog, TrustSafety, Policy | Retain (unused) | Not composed into the flagship host profile. Their tables stay untouched. |
+
+## 3. Flows
+
+### 3.1 Native node sign-in (browser, PKCE loopback; R-AUTH-001)
+
+1. The node calls `NodeEnrollmentService.BeginNodeSignIn{code_challenge (S256), redirect_uri=http://127.0.0.1:<port>/callback, node_info}`. It receives `{flow_id, authorize_url, expires_at (10 min)}`.
+2. The node opens `authorize_url` (`https://arcforges.com/connect?flow=<id>`) in the system browser. The web profile authenticates the user (existing flows) and shows "Connect ArcForges node <name> (<os>) to <account>?". On approval, the C# host issues a one-use code bound to the flow and redirects to the loopback URI.
+3. The node calls `CompleteNodeSignIn{flow_id, code, code_verifier, csr}` and receives `{node credential (refresh token, scope node), account summary, entitlement token, node certificate if entitled}`. The installation is registered (`NODE`).
+
+**Failure states:** the user denies (`ACCESS_DENIED`); the flow expires; the loopback port is unavailable (the node falls back to device authorization); the code is reused (refused, and the flow is revoked).
+
+### 3.2 Device authorization (headless; R-AUTH-001)
+
+1. `StartDeviceAuthorization{node_info}` returns `{device_code, user_code (8 characters, alphabet BCDFGHJKLMNPQRSTVWXZ), verification_uri https://arcforges.com/activate, verification_uri_complete, interval 5 s, expires_in 600}`.
+2. The user opens the URI (or scans the QR), signs in, enters or confirms the code and approves.
+3. The node calls `PollDeviceAuthorization{device_code}` and gets `PENDING`, `SLOW_DOWN` (the interval grows by 5 s), `APPROVED` (with credentials as in 3.1), `DENIED` or `EXPIRED`. There are 5 code-entry attempts per user code (AD-0011 §7).
+
+### 3.3 Phone sign-in by QR from a signed-in node (R-AUTH-002)
+
+1. The Desktop asks the node to call `CreatePhonePairing{}` and gets `{pairing_id, qr = "arcforges://pair?i=<pairing_id>&s=<secret>", expires_at (120 s)}`.
+2. The phone scans and calls `ClaimPhonePairing{pairing_id, secret, phone_installation_info}`, and the state becomes `AWAITING_CONFIRMATION`.
+3. The Desktop (polling `GetPhonePairing`, or through a node event) shows "Allow <phone model> to sign in as <account>?". The user calls `ConfirmPhonePairing{pairing_id, approve}`.
+4. The phone polls `PollPhonePairing{pairing_id, secret}` and receives an `account` session for the phone installation (`MOBILE`).
+
+Each secret is single-use. A wrong secret consumes the pairing.
+
+### 3.4 Relay connection (node)
+
+1. The node calls `IssueRelayToken{}` with its node credential and gets `{token, expires_at (15 min), relay_url}`. The token claims: `aud=relay.node`, `acct`, `node`, `kinds_allowed`, `limits {frames_per_min, bytes_per_day, snapshot_max_bytes}` and `kid`.
+2. The node opens `wss://relay.arcforges.com/v1/node` with header `Authorization: Bearer <token>`. The Worker verifies the token and routes to `FleetHub(acct)`, which calls `acceptWebSocket` with attachment `{kind: node, node, limits, exp}`.
+3. The node sends `NodeHello`, `StatusSummary` (≤4 KiB) and then summary changes (≤1 per 60 s), with WebSocket pings every 30 s; pings do not wake the DO.
+4. The node refreshes the token at 2/3 of its lifetime with a `TokenRefresh` frame. At expiry without refresh, the DO closes the socket with code 4401.
+
+### 3.5 Viewer watch (web, Android)
+
+1. The client calls `FleetService.OpenFleetWatch{node_ids (empty = all), detail: SUMMARY | FULL}`. C# authorizes the account session, checks entitlement `remote.view` and limits, and returns `{grant (aud=relay.view, 10 min), ws_url}`.
+2. The client connects to `wss://relay.arcforges.com/v1/view` with the grant. `FleetHub` sends `ViewerFrame.snapshot` for the permitted nodes from its cache. If `detail=FULL` and a cached snapshot is older than 10 s, it sends `DemandSignal{interval 2 s, duration 10 min}` to each node, and the nodes then stream `StatusDelta` frames, which the DO fans out.
+3. Each frame carries `{node_id, node_seq, generation}`. The client resumes after reconnect by sending `ViewerResume{cursors}`. A gap beyond the cache yields `reset` plus a snapshot.
+4. The grant is refreshed through `OpenFleetWatch` before expiry, sent as a `GrantRefresh` frame.
+
+### 3.6 Remote command (R-CLOUD-004)
+
+1. The client calls `FleetService.SendNodeCommand{node_id, command (oneof), meta.command_id}`.
+2. C# then:
+   - authenticates the session;
+   - checks entitlement `remote.control`;
+   - classifies risk (AD-0009 §5);
+   - requires a step-up (passkey or recent authentication) for `MEDIUM` and `HIGH`;
+   - writes `fleet_remote_command` (`PENDING`, `expires_at` = now + 5 min);
+   - audits;
+   - signs `CommandEnvelope{command_id, account, node, command, issued_at, expires_at}` with the Ed25519 **relay command key** (`kid`).
+3. C# posts the envelope to the internal relay route (HMAC-authenticated container-to-Worker route, existing coordination pattern). `FleetHub` delivers it if the node is connected. Otherwise it stores the envelope (≤20 per node) and delivers it on reconnect if it has not expired.
+4. The node verifies the signature (public keys from enrollment and updates), the expiry, the target, and its local remote-control policy. It executes through its own API with provenance `REMOTE`, and replies `CommandResult{command_id, status, error?, receipt}`, signed with its node key.
+5. `FleetHub` forwards the result envelope to C#, which updates the command (`SUCCEEDED`, `FAILED`, `REJECTED_BY_NODE`) and audits. Viewers see the update. Undelivered commands become `EXPIRED`.
+
+### 3.7 Push (R-CLOUD-005)
+
+1. Nodes send `EventBatch` frames for push-worthy events when the user enabled them on that node.
+2. `FleetHub` batches them and forwards to C# immediately for `approval_needed`, and every 30 s otherwise.
+3. C# Notification applies preferences, deduplication (`notification_suppression`) and limits (≤50 per day per account by default), then sends FCM HTTP v1 data messages to registered `MOBILE` installations (reused push design, V-C07).
+
+### 3.8 Entitlement token (R-COM-004)
+
+`RefreshEntitlementToken{}` (node credential) returns a compact Ed25519-signed token: `{acct, node, plan, features[], issued_at, not_after (14 days), revoked_nodes[] (≤256, delta), kid}`. Nodes refresh it every 24 h while online. Public keys ship in releases, and `GetEntitlementKeys` serves rotations.
+
+### 3.9 Google Play (R-COM-002)
+
+As in [AD-0010](../decisions/AD-0010-commerce-and-entitlements.md) §3:
+- RTDN arrives at `POST /hooks/play-rtdn` as a Pub/Sub push with an authenticated OIDC token, verified in C# (`aud`, `email` of the Pub/Sub service account).
+- It is stored in `commerce_play_notification` (deduplicated by message ID) and processed by a job that re-reads `subscriptionsv2`.
+- The acknowledgement job runs with a platform job lease and retries until success or an operator alert at 24 h.
+
+### 3.10 Paddle (reuse)
+
+`POST /hooks/paddle`: verify the raw body HMAC, dedup through the platform inbox, then apply the subscription state through the existing commerce module.
+
+## 4. Durable Object layout (`FleetHub`)
+
+| Key | Content | Bound |
+|---|---|---|
+| `n/<node>/sum` | Latest `StatusSummary` bytes | 4 KiB per node |
+| `n/<node>/snap` | Latest full snapshot bytes (when demanded) | 256 KiB per node |
+| `n/<node>/chg` | Ring of the last 100 summary changes | 100 × 4 KiB |
+| `n/<node>/cmd/<id>` | Pending command envelopes | 20 per node, ≤8 KiB each |
+| `up/batch` | Outbound envelope batch to C# | 256 KiB |
+| `wake/<hour>` | Wake counter for the alarm-loop guard | — |
+
+All values are opaque bytes plus small headers. Socket attachments hold `{kind, id, exp, limits}` (≤1 KiB).
+
+## 5. Limits and cost controls (R-CLOUD-006)
+
+| Limit | Free | Pro | Enforced at |
+|---|---|---|---|
+| Nodes per account (relay) | 0 | 10 | `IssueRelayToken` |
+| Concurrent viewers | 0 | 5 | `OpenFleetWatch` + DO |
+| Node frames per minute | — | 30 (summary), 60 (delta while demanded) | DO (token claim) |
+| Relay bytes per account per day | — | 500 MiB | DO counter, C# budget |
+| Remote commands per hour | — | 120 | C# |
+| Push per account per day | — | 50 | C# Notification |
+| Support bundle uploads per day | 1 | 5 | C# Support |
+| DO wakes per hour per account | — | 3,600 | DO guard |
+
+**Global operating budgets** (`platform_operating_budget`) cover container CPU-seconds, D1 queries, R2 bytes and FCM sends per day. Exceeding 80% raises operator alerts. At 100% the kill switches apply, in this order: live streaming off (summaries only), push batching to hourly, new relay connections refused. Kill switches propagate within one token lifetime. Budget alerts from Cloudflare are informational (V-C04).
+
+## 6. Failure handling
+
+| Failure | Behaviour |
+|---|---|
+| Container cold or unavailable | The Worker returns `UNAVAILABLE` with retry advice. Relay sockets keep working with cached data. Commands queue in the C# outbox when the container returns. |
+| D1 overloaded (V-C03) | C# returns `RESOURCE` + `retry after`. Command submission is idempotent by `command_id`. |
+| DO restart or eviction | Sockets survive hibernation. On a real restart, nodes reconnect with jittered backoff (1 s → 60 s) and re-send their summaries. |
+| Clock skew | Tokens allow ±60 s. Commands carry a server-issued expiry checked against node time ±120 s, and the record notes the skew when detected. |
+
+## 7. Observability
+
+- Structured logs (C# and Worker) with correlation IDs.
+- Metrics:
+  - relay sockets, frames, bytes, wakes;
+  - command latency and outcomes;
+  - sign-in funnel;
+  - Play and Paddle webhook latency and errors;
+  - push sends and failures;
+  - operating-budget consumption.
+- Health endpoints per component.
+
+Runbooks are in [14-commercial-operations.md](14-commercial-operations.md) (R-OPS-006).

@@ -1,0 +1,1554 @@
+{
+  "schema": 1,
+  "note": "Canonical state machines. README.md is generated from this file by tools/check_design.py --write. States must equal the named proto enum (minus UNSPECIFIED) unless listed in pseudo_states or response_only. Transitions leaving a terminal state must be marked reopen (explicit manual action).",
+  "machines": [
+    {
+      "id": "SM-TASK",
+      "title": "Task",
+      "enum": "arcforges.node.v1.TaskState",
+      "persisted": "node store task.state",
+      "owner": "Scheduler",
+      "initial": [
+        "QUEUED",
+        "WAITING_DEPENDENCY"
+      ],
+      "terminal": [
+        "SUCCEEDED",
+        "FAILED",
+        "CANCELLED",
+        "LOST"
+      ],
+      "transitions": [
+        {
+          "from": [
+            "WAITING_DEPENDENCY"
+          ],
+          "to": "QUEUED",
+          "on": "dependencies satisfied"
+        },
+        {
+          "from": [
+            "WAITING_DEPENDENCY"
+          ],
+          "to": "CANCELLED",
+          "on": "dependency failed or cancelled (condition SUCCEEDED); TaskService.CancelTask"
+        },
+        {
+          "from": [
+            "QUEUED"
+          ],
+          "to": "RUNNING",
+          "on": "admitted locally; attempt created",
+          "guard": "budget, pool, global limits (03 section 4)"
+        },
+        {
+          "from": [
+            "QUEUED"
+          ],
+          "to": "PLACING",
+          "on": "placement chose a peer (placement ANY or SPECIFIC_NODE)",
+          "guard": "entitlement lan.placement; peer policy"
+        },
+        {
+          "from": [
+            "PLACING"
+          ],
+          "to": "RUNNING",
+          "on": "remote attempt started"
+        },
+        {
+          "from": [
+            "PLACING"
+          ],
+          "to": "QUEUED",
+          "on": "offer declined or expired; transfer failed before start",
+          "effect": "re-placement; any side-effect class"
+        },
+        {
+          "from": [
+            "RUNNING"
+          ],
+          "to": "PAUSED",
+          "on": "TaskService.PauseTask; pressure freeze",
+          "guard": "pause SUPPORTED and task pausable"
+        },
+        {
+          "from": [
+            "PAUSED"
+          ],
+          "to": "RUNNING",
+          "on": "TaskService.ResumeTask; pressure recovered"
+        },
+        {
+          "from": [
+            "RUNNING"
+          ],
+          "to": "SUCCEEDED",
+          "on": "attempt finished with exit code 0"
+        },
+        {
+          "from": [
+            "RUNNING"
+          ],
+          "to": "RETRY_WAIT",
+          "on": "attempt failed, LOST or PREEMPTED",
+          "guard": "retry rules allow (AD-0006 section 4) and attempts remain"
+        },
+        {
+          "from": [
+            "RETRY_WAIT"
+          ],
+          "to": "QUEUED",
+          "on": "backoff elapsed"
+        },
+        {
+          "from": [
+            "RUNNING"
+          ],
+          "to": "FAILED",
+          "on": "attempt finished non-zero, timed out, OOM, CPU limit or termination incomplete",
+          "guard": "no retry applies"
+        },
+        {
+          "from": [
+            "RUNNING"
+          ],
+          "to": "LOST",
+          "on": "attempt LOST (boot changed, container missing, peer lease ended)",
+          "guard": "not retryable"
+        },
+        {
+          "from": [
+            "QUEUED",
+            "PLACING",
+            "RUNNING",
+            "PAUSED",
+            "RETRY_WAIT"
+          ],
+          "to": "CANCELLED",
+          "on": "TaskService.CancelTask; session ended (stop_with_session); node shutdown for kill_with_node"
+        },
+        {
+          "from": [
+            "FAILED",
+            "CANCELLED",
+            "LOST"
+          ],
+          "to": "QUEUED",
+          "on": "TaskService.RetryTask",
+          "effect": "new attempt number",
+          "reopen": true
+        }
+      ]
+    },
+    {
+      "id": "SM-ATTEMPT",
+      "title": "Attempt",
+      "enum": "arcforges.node.v1.AttemptState",
+      "persisted": "node store attempt.state",
+      "owner": "Supervisor",
+      "initial": [
+        "CREATED"
+      ],
+      "terminal": [
+        "FINISHED"
+      ],
+      "transitions": [
+        {
+          "from": [
+            "CREATED"
+          ],
+          "to": "TRANSFERRING",
+          "on": "remote placement: inputs transferring"
+        },
+        {
+          "from": [
+            "CREATED"
+          ],
+          "to": "STARTING",
+          "on": "container created (job or transient unit)"
+        },
+        {
+          "from": [
+            "TRANSFERRING"
+          ],
+          "to": "STARTING",
+          "on": "inputs complete on the executor"
+        },
+        {
+          "from": [
+            "STARTING"
+          ],
+          "to": "RUNNING",
+          "on": "process started (job resumed or unit job done)"
+        },
+        {
+          "from": [
+            "STARTING"
+          ],
+          "to": "FINISHED",
+          "on": "spawn failed or policy denied",
+          "effect": "termination SPAWN_FAILED or POLICY_DENIED; effect DID_NOT_HAPPEN"
+        },
+        {
+          "from": [
+            "RUNNING"
+          ],
+          "to": "PAUSING",
+          "on": "freeze requested"
+        },
+        {
+          "from": [
+            "PAUSING"
+          ],
+          "to": "PAUSED",
+          "on": "freeze confirmed (cgroup.events frozen 1)"
+        },
+        {
+          "from": [
+            "PAUSED"
+          ],
+          "to": "RUNNING",
+          "on": "thaw"
+        },
+        {
+          "from": [
+            "RUNNING",
+            "PAUSING",
+            "PAUSED"
+          ],
+          "to": "STOPPING",
+          "on": "cancel, timeout, CPU limit, preemption"
+        },
+        {
+          "from": [
+            "RUNNING"
+          ],
+          "to": "FINALIZING",
+          "on": "root process exited",
+          "effect": "leftover processes terminated after leftover_grace"
+        },
+        {
+          "from": [
+            "STOPPING"
+          ],
+          "to": "FINALIZING",
+          "on": "container empty, or verification window (5 s) elapsed",
+          "effect": "TERMINATION_INCOMPLETE when processes remain"
+        },
+        {
+          "from": [
+            "CREATED"
+          ],
+          "to": "FINALIZING",
+          "on": "result-cache hit (CACHE_RESTORE attempt)"
+        },
+        {
+          "from": [
+            "FINALIZING"
+          ],
+          "to": "FINISHED",
+          "on": "output, accounting and records finalized"
+        },
+        {
+          "from": [
+            "CREATED",
+            "TRANSFERRING",
+            "STARTING",
+            "RUNNING",
+            "PAUSING",
+            "PAUSED",
+            "STOPPING",
+            "FINALIZING"
+          ],
+          "to": "FINISHED",
+          "on": "recovery: container missing, boot changed, or peer lease ended",
+          "effect": "termination LOST; effect UNKNOWN"
+        }
+      ]
+    },
+    {
+      "id": "SM-FINDING",
+      "title": "Finding",
+      "enum": "arcforges.node.v1.FindingState",
+      "persisted": "node store finding.state",
+      "owner": "Diagnosis",
+      "initial": [
+        "OPEN"
+      ],
+      "terminal": [
+        "RESOLVED",
+        "AUTO_RESOLVED"
+      ],
+      "transitions": [
+        {
+          "from": [
+            "OPEN"
+          ],
+          "to": "ACKNOWLEDGED",
+          "on": "DiagnosisService.AcknowledgeFinding"
+        },
+        {
+          "from": [
+            "OPEN",
+            "ACKNOWLEDGED"
+          ],
+          "to": "MUTED",
+          "on": "DiagnosisService.MuteFinding"
+        },
+        {
+          "from": [
+            "MUTED"
+          ],
+          "to": "OPEN",
+          "on": "mute expired while the condition persists"
+        },
+        {
+          "from": [
+            "OPEN",
+            "ACKNOWLEDGED"
+          ],
+          "to": "RESOLVED",
+          "on": "DiagnosisService.ApplyRemedy succeeded and the condition cleared"
+        },
+        {
+          "from": [
+            "OPEN",
+            "ACKNOWLEDGED",
+            "MUTED"
+          ],
+          "to": "AUTO_RESOLVED",
+          "on": "condition cleared for 2 consecutive checks"
+        }
+      ]
+    },
+    {
+      "id": "SM-NODE",
+      "title": "Node lifecycle",
+      "enum": "arcforges.node.v1.NodeLifecycleState",
+      "persisted": "in memory; journaled as NodeStatusChanged events",
+      "owner": "Host",
+      "pseudo_states": [
+        "STOPPED"
+      ],
+      "initial": [
+        "STARTING"
+      ],
+      "terminal": [
+        "STOPPED"
+      ],
+      "transitions": [
+        {
+          "from": [
+            "STARTING"
+          ],
+          "to": "RECOVERING",
+          "on": "store opened and migrated (02 section 2 steps 1-4)"
+        },
+        {
+          "from": [
+            "RECOVERING"
+          ],
+          "to": "READY",
+          "on": "recovery done, enforcement self-test passed, endpoint listening"
+        },
+        {
+          "from": [
+            "RECOVERING"
+          ],
+          "to": "DEGRADED",
+          "on": "recovery done; some capability missing (OBSERVE_ONLY or PARTIAL)"
+        },
+        {
+          "from": [
+            "READY"
+          ],
+          "to": "DEGRADED",
+          "on": "capability lost (e.g. user manager restarted without delegation)"
+        },
+        {
+          "from": [
+            "DEGRADED"
+          ],
+          "to": "READY",
+          "on": "capability restored"
+        },
+        {
+          "from": [
+            "READY",
+            "DEGRADED"
+          ],
+          "to": "STOPPING",
+          "on": "NodeService.StopNode; OS logoff; service stop"
+        },
+        {
+          "from": [
+            "READY",
+            "DEGRADED"
+          ],
+          "to": "UPDATING",
+          "on": "update switch (13 section 5.3)"
+        },
+        {
+          "from": [
+            "STOPPING",
+            "UPDATING"
+          ],
+          "to": "STOPPED",
+          "on": "process exit (code 0, or 75 for an update restart)"
+        },
+        {
+          "from": [
+            "STARTING",
+            "RECOVERING"
+          ],
+          "to": "STOPPED",
+          "on": "fatal startup error (store incompatible, endpoint held by another instance)"
+        }
+      ]
+    },
+    {
+      "id": "SM-GUEST-LINK",
+      "title": "WSL guest link (host side)",
+      "enum": "arcforges.node.v1.GuestLinkState",
+      "persisted": "node store guest_link.state",
+      "owner": "Guest manager",
+      "initial": [
+        "NOT_INSTALLED",
+        "DISCOVERED"
+      ],
+      "terminal": [],
+      "transitions": [
+        {
+          "from": [
+            "NOT_INSTALLED"
+          ],
+          "to": "DISCOVERED",
+          "on": "guest node installed in the distribution (user action)"
+        },
+        {
+          "from": [
+            "DISCOVERED"
+          ],
+          "to": "CONNECTING",
+          "on": "host starts the wsl.exe bridge"
+        },
+        {
+          "from": [
+            "CONNECTING"
+          ],
+          "to": "LINKED",
+          "on": "GuestLinkService.OpenLink hello received",
+          "guard": "link token valid; protocol compatible"
+        },
+        {
+          "from": [
+            "CONNECTING"
+          ],
+          "to": "LOST",
+          "on": "bridge exited or no hello within 30 s"
+        },
+        {
+          "from": [
+            "LINKED"
+          ],
+          "to": "DEGRADED",
+          "on": "guest reports degraded enforcement (no systemd, missing controllers)"
+        },
+        {
+          "from": [
+            "DEGRADED"
+          ],
+          "to": "LINKED",
+          "on": "guest capabilities restored"
+        },
+        {
+          "from": [
+            "LINKED",
+            "DEGRADED"
+          ],
+          "to": "LOST",
+          "on": "30 s without frames, or bridge exit",
+          "effect": "finding GUEST_LINK_LOST; guest admits standalone"
+        },
+        {
+          "from": [
+            "LOST"
+          ],
+          "to": "CONNECTING",
+          "on": "bounded backoff retry (1 s to 60 s)"
+        },
+        {
+          "from": [
+            "DISCOVERED",
+            "CONNECTING",
+            "LINKED",
+            "DEGRADED",
+            "LOST"
+          ],
+          "to": "DISABLED",
+          "on": "ResourceService.SetGuestLink enabled=false"
+        },
+        {
+          "from": [
+            "DISABLED"
+          ],
+          "to": "CONNECTING",
+          "on": "ResourceService.SetGuestLink enabled=true"
+        },
+        {
+          "from": [
+            "DISCOVERED",
+            "LOST",
+            "DISABLED"
+          ],
+          "to": "NOT_INSTALLED",
+          "on": "distribution or guest binary removed"
+        }
+      ]
+    },
+    {
+      "id": "SM-PAIRING",
+      "title": "LAN pairing (local confirmation)",
+      "enum": "arcforges.node.v1.PairingState",
+      "persisted": "node store pairing.state (secrets in memory)",
+      "owner": "Peer manager",
+      "initial": [
+        "REQUESTED",
+        "INCOMING"
+      ],
+      "terminal": [
+        "PAIRED",
+        "REJECTED",
+        "MISMATCH",
+        "EXPIRED",
+        "CANCELLED",
+        "BLOCKED"
+      ],
+      "transitions": [
+        {
+          "from": [
+            "REQUESTED"
+          ],
+          "to": "EXCHANGING",
+          "on": "responder accepted (PairingService.AwaitResponse)"
+        },
+        {
+          "from": [
+            "INCOMING"
+          ],
+          "to": "EXCHANGING",
+          "on": "PeerService.RespondToPairing accept"
+        },
+        {
+          "from": [
+            "REQUESTED",
+            "INCOMING"
+          ],
+          "to": "REJECTED",
+          "on": "responder rejected"
+        },
+        {
+          "from": [
+            "EXCHANGING"
+          ],
+          "to": "AWAITING_CONFIRMATION",
+          "on": "commitment verified (PairingService.Reveal); SAS computed"
+        },
+        {
+          "from": [
+            "EXCHANGING"
+          ],
+          "to": "MISMATCH",
+          "on": "commitment invalid"
+        },
+        {
+          "from": [
+            "AWAITING_CONFIRMATION"
+          ],
+          "to": "CONFIRMED_LOCALLY",
+          "on": "PeerService.ConfirmPairing digits_match=true"
+        },
+        {
+          "from": [
+            "AWAITING_CONFIRMATION",
+            "CONFIRMED_LOCALLY"
+          ],
+          "to": "MISMATCH",
+          "on": "either user reports different digits"
+        },
+        {
+          "from": [
+            "CONFIRMED_LOCALLY"
+          ],
+          "to": "PAIRED",
+          "on": "the other side confirmed",
+          "effect": "fingerprints pinned; peer PAIRED (PINNED); default policy status-only"
+        },
+        {
+          "from": [
+            "REQUESTED",
+            "INCOMING",
+            "EXCHANGING",
+            "AWAITING_CONFIRMATION",
+            "CONFIRMED_LOCALLY"
+          ],
+          "to": "EXPIRED",
+          "on": "120 s elapsed"
+        },
+        {
+          "from": [
+            "REQUESTED",
+            "INCOMING",
+            "EXCHANGING",
+            "AWAITING_CONFIRMATION",
+            "CONFIRMED_LOCALLY"
+          ],
+          "to": "CANCELLED",
+          "on": "PeerService.CancelPairing; PairingService.Abort"
+        },
+        {
+          "from": [
+            "REQUESTED",
+            "INCOMING"
+          ],
+          "to": "BLOCKED",
+          "on": "5 failed attempts for the peer within an hour"
+        }
+      ]
+    },
+    {
+      "id": "SM-REMOTE-ATTEMPT",
+      "title": "Remote attempt (executor side)",
+      "enum": "arcforges.peer.v1.RemoteAttemptState",
+      "persisted": "executor node store remote_attempt.state; origin mirrors as ATTEMPT_KIND_REMOTE",
+      "owner": "Placement",
+      "initial": [
+        "RESERVED"
+      ],
+      "terminal": [
+        "RELEASED",
+        "CANCELLED",
+        "PREEMPTED"
+      ],
+      "transitions": [
+        {
+          "from": [
+            "RESERVED"
+          ],
+          "to": "RECEIVING_INPUTS",
+          "on": "executor starts pulling the input manifest"
+        },
+        {
+          "from": [
+            "RECEIVING_INPUTS"
+          ],
+          "to": "QUEUED",
+          "on": "inputs materialized"
+        },
+        {
+          "from": [
+            "QUEUED"
+          ],
+          "to": "RUNNING",
+          "on": "local admission granted the reservation"
+        },
+        {
+          "from": [
+            "RUNNING"
+          ],
+          "to": "FINISHED",
+          "on": "attempt finished while the origin holds the lease"
+        },
+        {
+          "from": [
+            "RUNNING"
+          ],
+          "to": "RETAINED",
+          "on": "attempt finished after the origin went silent beyond the lease (FINISH_AND_RETAIN)"
+        },
+        {
+          "from": [
+            "FINISHED",
+            "RETAINED"
+          ],
+          "to": "RELEASED",
+          "on": "PlacementService.ReleaseRemoteAttempt; retention (7 days) ended"
+        },
+        {
+          "from": [
+            "RESERVED",
+            "RECEIVING_INPUTS",
+            "QUEUED",
+            "RUNNING"
+          ],
+          "to": "CANCELLED",
+          "on": "PlacementService.CancelRemoteAttempt; lease expired with CANCEL; executor user cancelled"
+        },
+        {
+          "from": [
+            "QUEUED",
+            "RUNNING"
+          ],
+          "to": "PREEMPTED",
+          "on": "executor pressure or policy"
+        }
+      ]
+    },
+    {
+      "id": "SM-CLEANUP-PLAN",
+      "title": "Cleanup plan",
+      "enum": "arcforges.node.v1.CleanupPlanState",
+      "persisted": "node store cleanup_plan.state",
+      "owner": "Cleanup executor",
+      "initial": [
+        "PLANNED"
+      ],
+      "terminal": [
+        "COMPLETED",
+        "PARTIAL",
+        "EXPIRED",
+        "CANCELLED"
+      ],
+      "transitions": [
+        {
+          "from": [
+            "PLANNED"
+          ],
+          "to": "AWAITING_APPROVAL",
+          "on": "StorageService.ExecuteCleanup by a caller who needs approval"
+        },
+        {
+          "from": [
+            "PLANNED"
+          ],
+          "to": "EXECUTING",
+          "on": "StorageService.ExecuteCleanup permitted",
+          "guard": "digest matches; not expired"
+        },
+        {
+          "from": [
+            "AWAITING_APPROVAL"
+          ],
+          "to": "EXECUTING",
+          "on": "approval approved"
+        },
+        {
+          "from": [
+            "AWAITING_APPROVAL"
+          ],
+          "to": "CANCELLED",
+          "on": "approval denied, cancelled or expired"
+        },
+        {
+          "from": [
+            "EXECUTING"
+          ],
+          "to": "COMPLETED",
+          "on": "every selected item DONE"
+        },
+        {
+          "from": [
+            "EXECUTING"
+          ],
+          "to": "PARTIAL",
+          "on": "some items IN_USE, CHANGED, REFERENCED, NOT_ALLOWED or FAILED"
+        },
+        {
+          "from": [
+            "PLANNED",
+            "AWAITING_APPROVAL"
+          ],
+          "to": "EXPIRED",
+          "on": "60 minutes after creation"
+        },
+        {
+          "from": [
+            "PLANNED"
+          ],
+          "to": "CANCELLED",
+          "on": "StorageService.CancelCleanupPlan"
+        }
+      ]
+    },
+    {
+      "id": "SM-WORKTREE",
+      "title": "Managed worktree",
+      "enum": "arcforges.node.v1.WorkspaceState",
+      "persisted": "node store workspace.state (kind MANAGED_WORKTREE)",
+      "owner": "Workspace manager",
+      "initial": [
+        "CREATING"
+      ],
+      "terminal": [
+        "REMOVED"
+      ],
+      "transitions": [
+        {
+          "from": [
+            "CREATING"
+          ],
+          "to": "ACTIVE",
+          "on": "git worktree add succeeded (node job)"
+        },
+        {
+          "from": [
+            "CREATING"
+          ],
+          "to": "FAILED",
+          "on": "node job failed"
+        },
+        {
+          "from": [
+            "ACTIVE"
+          ],
+          "to": "IDLE",
+          "on": "no task, session or lock for 14 days"
+        },
+        {
+          "from": [
+            "IDLE"
+          ],
+          "to": "ACTIVE",
+          "on": "used by a task or session"
+        },
+        {
+          "from": [
+            "ACTIVE",
+            "IDLE"
+          ],
+          "to": "REMOVING",
+          "on": "WorkspaceService.RemoveWorktree; approved cleanup item",
+          "guard": "clean, or archive_changes approved"
+        },
+        {
+          "from": [
+            "REMOVING"
+          ],
+          "to": "REMOVED",
+          "on": "git worktree remove succeeded"
+        },
+        {
+          "from": [
+            "REMOVING"
+          ],
+          "to": "ACTIVE",
+          "on": "removal failed (in use or git refused)"
+        },
+        {
+          "from": [
+            "FAILED"
+          ],
+          "to": "REMOVED",
+          "on": "partial directory cleaned up"
+        }
+      ]
+    },
+    {
+      "id": "SM-SESSION",
+      "title": "AI client session",
+      "enum": "arcforges.node.v1.SessionState",
+      "persisted": "node store session.state",
+      "owner": "Session service",
+      "initial": [
+        "ACTIVE"
+      ],
+      "terminal": [
+        "ENDED"
+      ],
+      "transitions": [
+        {
+          "from": [
+            "ACTIVE"
+          ],
+          "to": "IDLE",
+          "on": "no hook, MCP or task activity for 30 minutes"
+        },
+        {
+          "from": [
+            "IDLE"
+          ],
+          "to": "ACTIVE",
+          "on": "activity"
+        },
+        {
+          "from": [
+            "ACTIVE",
+            "IDLE"
+          ],
+          "to": "ENDED",
+          "on": "SessionEnd hook; agent root process exited; 24 h inactivity; SessionService.EndSession",
+          "effect": "services with stop_with_session stop"
+        }
+      ]
+    },
+    {
+      "id": "SM-APPROVAL",
+      "title": "Approval",
+      "enum": "arcforges.node.v1.ApprovalState",
+      "persisted": "node store approval.state",
+      "owner": "Approval service",
+      "initial": [
+        "PENDING"
+      ],
+      "terminal": [
+        "EXECUTED",
+        "FAILED",
+        "DENIED",
+        "EXPIRED",
+        "CANCELLED"
+      ],
+      "transitions": [
+        {
+          "from": [
+            "PENDING"
+          ],
+          "to": "APPROVED",
+          "on": "ApprovalService.DecideApproval approve",
+          "guard": "approver HUMAN, or REMOTE with step-up and remote.allow_approvals"
+        },
+        {
+          "from": [
+            "APPROVED"
+          ],
+          "to": "EXECUTED",
+          "on": "captured request executed with its command_id"
+        },
+        {
+          "from": [
+            "APPROVED"
+          ],
+          "to": "FAILED",
+          "on": "captured request failed (outcome stored)"
+        },
+        {
+          "from": [
+            "PENDING"
+          ],
+          "to": "DENIED",
+          "on": "ApprovalService.DecideApproval deny"
+        },
+        {
+          "from": [
+            "PENDING"
+          ],
+          "to": "EXPIRED",
+          "on": "approval TTL elapsed (default 24 h)"
+        },
+        {
+          "from": [
+            "PENDING"
+          ],
+          "to": "CANCELLED",
+          "on": "ApprovalService.CancelApproval"
+        }
+      ]
+    },
+    {
+      "id": "SM-SIGN-IN",
+      "title": "Node browser sign-in (cloud side)",
+      "enum": "arcforges.fleet.v1.NodeSignInState",
+      "persisted": "cloud fleet_node_sign_in.state; node mirrors as SignInFlowState",
+      "owner": "Fleet module",
+      "initial": [
+        "PENDING"
+      ],
+      "terminal": [
+        "COMPLETED",
+        "DENIED",
+        "EXPIRED",
+        "REVOKED"
+      ],
+      "transitions": [
+        {
+          "from": [
+            "PENDING"
+          ],
+          "to": "APPROVED",
+          "on": "NodeEnrollmentService.ApproveNodeSignIn approve",
+          "effect": "one-use code issued; browser redirected to the loopback URI"
+        },
+        {
+          "from": [
+            "PENDING"
+          ],
+          "to": "DENIED",
+          "on": "NodeEnrollmentService.ApproveNodeSignIn deny"
+        },
+        {
+          "from": [
+            "APPROVED"
+          ],
+          "to": "COMPLETED",
+          "on": "NodeEnrollmentService.CompleteNodeSignIn with a valid code and verifier",
+          "effect": "installation registered; credentials issued"
+        },
+        {
+          "from": [
+            "APPROVED"
+          ],
+          "to": "REVOKED",
+          "on": "code presented twice"
+        },
+        {
+          "from": [
+            "PENDING",
+            "APPROVED"
+          ],
+          "to": "EXPIRED",
+          "on": "10 minutes elapsed"
+        }
+      ]
+    },
+    {
+      "id": "SM-DEVICE-AUTH",
+      "title": "Device authorization (headless sign-in)",
+      "enum": "arcforges.fleet.v1.DeviceAuthorizationState",
+      "response_only": [
+        "SLOW_DOWN"
+      ],
+      "persisted": "cloud fleet_device_authorization.state",
+      "owner": "Fleet module",
+      "initial": [
+        "PENDING"
+      ],
+      "terminal": [
+        "COMPLETED",
+        "DENIED",
+        "EXPIRED"
+      ],
+      "transitions": [
+        {
+          "from": [
+            "PENDING"
+          ],
+          "to": "APPROVED",
+          "on": "NodeEnrollmentService.ApproveDeviceCode approve"
+        },
+        {
+          "from": [
+            "PENDING"
+          ],
+          "to": "DENIED",
+          "on": "NodeEnrollmentService.ApproveDeviceCode deny; 5 failed code entries"
+        },
+        {
+          "from": [
+            "APPROVED"
+          ],
+          "to": "COMPLETED",
+          "on": "PollDeviceAuthorization delivered credentials"
+        },
+        {
+          "from": [
+            "PENDING",
+            "APPROVED"
+          ],
+          "to": "EXPIRED",
+          "on": "600 s elapsed"
+        }
+      ]
+    },
+    {
+      "id": "SM-PHONE-PAIRING",
+      "title": "Phone sign-in by QR",
+      "enum": "arcforges.fleet.v1.PhonePairingCloudState",
+      "persisted": "cloud fleet_phone_pairing.state; node mirrors as PhonePairingState",
+      "owner": "Fleet module",
+      "initial": [
+        "WAITING_FOR_SCAN"
+      ],
+      "terminal": [
+        "COMPLETED",
+        "DENIED",
+        "EXPIRED",
+        "CONSUMED"
+      ],
+      "transitions": [
+        {
+          "from": [
+            "WAITING_FOR_SCAN"
+          ],
+          "to": "AWAITING_CONFIRMATION",
+          "on": "NodeEnrollmentService.ClaimPhonePairing with the right secret"
+        },
+        {
+          "from": [
+            "WAITING_FOR_SCAN"
+          ],
+          "to": "CONSUMED",
+          "on": "a wrong secret was presented"
+        },
+        {
+          "from": [
+            "AWAITING_CONFIRMATION"
+          ],
+          "to": "CONFIRMED",
+          "on": "NodeEnrollmentService.ConfirmPhonePairing approve (desktop user)"
+        },
+        {
+          "from": [
+            "AWAITING_CONFIRMATION"
+          ],
+          "to": "DENIED",
+          "on": "NodeEnrollmentService.ConfirmPhonePairing deny"
+        },
+        {
+          "from": [
+            "CONFIRMED"
+          ],
+          "to": "COMPLETED",
+          "on": "PollPhonePairing delivered the phone credentials"
+        },
+        {
+          "from": [
+            "WAITING_FOR_SCAN",
+            "AWAITING_CONFIRMATION",
+            "CONFIRMED"
+          ],
+          "to": "EXPIRED",
+          "on": "120 s elapsed"
+        }
+      ]
+    },
+    {
+      "id": "SM-RELAY",
+      "title": "Relay connection (node side)",
+      "enum": "arcforges.node.v1.RelayState",
+      "persisted": "in memory; reported in AccountStatus",
+      "owner": "Cloud link",
+      "initial": [
+        "DISABLED"
+      ],
+      "terminal": [],
+      "transitions": [
+        {
+          "from": [
+            "DISABLED"
+          ],
+          "to": "CONNECTING",
+          "on": "signed in, cloud link enabled, entitlement relay"
+        },
+        {
+          "from": [
+            "CONNECTING"
+          ],
+          "to": "CONNECTED",
+          "on": "token issued, WebSocket accepted, NodeHello acknowledged"
+        },
+        {
+          "from": [
+            "CONNECTING",
+            "CONNECTED"
+          ],
+          "to": "BACKOFF",
+          "on": "network failure; close 4401, 4408 or 4429; container unavailable"
+        },
+        {
+          "from": [
+            "BACKOFF"
+          ],
+          "to": "CONNECTING",
+          "on": "jittered backoff 1 s to 60 s"
+        },
+        {
+          "from": [
+            "CONNECTING",
+            "CONNECTED"
+          ],
+          "to": "REFUSED",
+          "on": "ENTITLEMENT, plan limit, kill switch, unsupported version (close 4403 or 4503)"
+        },
+        {
+          "from": [
+            "REFUSED"
+          ],
+          "to": "CONNECTING",
+          "on": "entitlement changed, or 1 h elapsed"
+        },
+        {
+          "from": [
+            "CONNECTING",
+            "CONNECTED",
+            "BACKOFF",
+            "REFUSED"
+          ],
+          "to": "DISABLED",
+          "on": "AccountService.SetCloudLink false; sign-out; node revoked"
+        }
+      ]
+    },
+    {
+      "id": "SM-REMOTE-COMMAND",
+      "title": "Remote command",
+      "enum": "arcforges.fleet.v1.RemoteCommandState",
+      "persisted": "cloud fleet_remote_command.state; node remote_command_log",
+      "owner": "Fleet module",
+      "initial": [
+        "ACCEPTED"
+      ],
+      "terminal": [
+        "SUCCEEDED",
+        "FAILED",
+        "REJECTED_BY_NODE",
+        "EXPIRED",
+        "CANCELLED"
+      ],
+      "transitions": [
+        {
+          "from": [
+            "ACCEPTED"
+          ],
+          "to": "DELIVERED",
+          "on": "FleetHub delivered the signed envelope to the node socket"
+        },
+        {
+          "from": [
+            "DELIVERED"
+          ],
+          "to": "SUCCEEDED",
+          "on": "signed result with a receipt"
+        },
+        {
+          "from": [
+            "DELIVERED"
+          ],
+          "to": "FAILED",
+          "on": "signed result with an error"
+        },
+        {
+          "from": [
+            "DELIVERED"
+          ],
+          "to": "REJECTED_BY_NODE",
+          "on": "node signature, expiry, target or remote-control policy check failed"
+        },
+        {
+          "from": [
+            "ACCEPTED",
+            "DELIVERED"
+          ],
+          "to": "EXPIRED",
+          "on": "expiry (<= 5 min) passed without a result",
+          "effect": "never executed late"
+        },
+        {
+          "from": [
+            "ACCEPTED"
+          ],
+          "to": "CANCELLED",
+          "on": "FleetService.CancelNodeCommand"
+        }
+      ]
+    },
+    {
+      "id": "SM-SUBSCRIPTION",
+      "title": "Subscription (normalized across Paddle and Google Play)",
+      "enum": "arcforges.fleet.v1.SubscriptionState",
+      "persisted": "cloud commerce_subscription (reused) with provider state; fleet_play_purchase.play_state",
+      "owner": "Commerce module",
+      "initial": [
+        "PENDING",
+        "ACTIVE",
+        "TRIALING"
+      ],
+      "terminal": [
+        "EXPIRED",
+        "REVOKED"
+      ],
+      "transitions": [
+        {
+          "from": [
+            "PENDING"
+          ],
+          "to": "ACTIVE",
+          "on": "payment completed (Play purchase PURCHASED; Paddle subscription active)"
+        },
+        {
+          "from": [
+            "PENDING"
+          ],
+          "to": "EXPIRED",
+          "on": "pending purchase cancelled"
+        },
+        {
+          "from": [
+            "TRIALING"
+          ],
+          "to": "ACTIVE",
+          "on": "trial converted"
+        },
+        {
+          "from": [
+            "TRIALING"
+          ],
+          "to": "EXPIRED",
+          "on": "trial ended without payment"
+        },
+        {
+          "from": [
+            "ACTIVE"
+          ],
+          "to": "PAYMENT_ISSUE",
+          "on": "Paddle past_due; Play grace period"
+        },
+        {
+          "from": [
+            "PAYMENT_ISSUE"
+          ],
+          "to": "ACTIVE",
+          "on": "payment recovered"
+        },
+        {
+          "from": [
+            "PAYMENT_ISSUE"
+          ],
+          "to": "ON_HOLD",
+          "on": "Play account hold"
+        },
+        {
+          "from": [
+            "ON_HOLD"
+          ],
+          "to": "ACTIVE",
+          "on": "payment recovered"
+        },
+        {
+          "from": [
+            "ACTIVE"
+          ],
+          "to": "PAUSED",
+          "on": "provider pause"
+        },
+        {
+          "from": [
+            "PAUSED"
+          ],
+          "to": "ACTIVE",
+          "on": "pause ended"
+        },
+        {
+          "from": [
+            "ACTIVE",
+            "PAYMENT_ISSUE"
+          ],
+          "to": "CANCELED_ACTIVE",
+          "on": "cancellation scheduled at period end"
+        },
+        {
+          "from": [
+            "CANCELED_ACTIVE"
+          ],
+          "to": "ACTIVE",
+          "on": "reactivated before period end"
+        },
+        {
+          "from": [
+            "CANCELED_ACTIVE",
+            "PAYMENT_ISSUE",
+            "ON_HOLD",
+            "PAUSED"
+          ],
+          "to": "EXPIRED",
+          "on": "period ended or dunning exhausted"
+        },
+        {
+          "from": [
+            "ACTIVE",
+            "TRIALING",
+            "PAYMENT_ISSUE",
+            "ON_HOLD",
+            "PAUSED",
+            "CANCELED_ACTIVE"
+          ],
+          "to": "REVOKED",
+          "on": "full refund, chargeback, voided purchase, Play revocation",
+          "effect": "entitlement removed immediately"
+        }
+      ]
+    },
+    {
+      "id": "SM-UPDATE",
+      "title": "Node update",
+      "enum": "arcforges.node.v1.UpdateState",
+      "persisted": "node store update_state.state; run/update-switch.json during a switch",
+      "owner": "Updater",
+      "initial": [
+        "IDLE",
+        "MANAGED_EXTERNALLY"
+      ],
+      "terminal": [
+        "MANAGED_EXTERNALLY"
+      ],
+      "transitions": [
+        {
+          "from": [
+            "IDLE"
+          ],
+          "to": "CHECKING",
+          "on": "6-hour timer; UpdateService.CheckNow"
+        },
+        {
+          "from": [
+            "CHECKING"
+          ],
+          "to": "IDLE",
+          "on": "no newer non-revoked version"
+        },
+        {
+          "from": [
+            "CHECKING"
+          ],
+          "to": "DOWNLOADING",
+          "on": "newer version and mode AUTO (or CheckNow under NOTIFY)"
+        },
+        {
+          "from": [
+            "CHECKING",
+            "DOWNLOADING"
+          ],
+          "to": "FAILED",
+          "on": "manifest refused (signature, expiry, rollback protection) or digest mismatch"
+        },
+        {
+          "from": [
+            "DOWNLOADING"
+          ],
+          "to": "STAGED",
+          "on": "verified, extracted, staged self-test passed"
+        },
+        {
+          "from": [
+            "STAGED"
+          ],
+          "to": "PENDING_RESTART",
+          "on": "policy window open; restart announced"
+        },
+        {
+          "from": [
+            "STAGED",
+            "PENDING_RESTART"
+          ],
+          "to": "SWITCHING",
+          "on": "countdown ended; UpdateService.ApplyNow"
+        },
+        {
+          "from": [
+            "PENDING_RESTART"
+          ],
+          "to": "STAGED",
+          "on": "UpdateService.Postpone"
+        },
+        {
+          "from": [
+            "SWITCHING"
+          ],
+          "to": "VERIFYING",
+          "on": "new version started"
+        },
+        {
+          "from": [
+            "VERIFYING"
+          ],
+          "to": "IDLE",
+          "on": "health check passed within 120 s",
+          "effect": "new version ACTIVE; previous kept"
+        },
+        {
+          "from": [
+            "VERIFYING",
+            "SWITCHING"
+          ],
+          "to": "ROLLED_BACK",
+          "on": "health check failed, crash loop, store incompatibility",
+          "effect": "finding UPDATE_FAILED; version marked BAD"
+        },
+        {
+          "from": [
+            "IDLE"
+          ],
+          "to": "SWITCHING",
+          "on": "UpdateService.Rollback (to the previous version)"
+        },
+        {
+          "from": [
+            "ROLLED_BACK",
+            "FAILED"
+          ],
+          "to": "IDLE",
+          "on": "next check cycle"
+        }
+      ]
+    },
+    {
+      "id": "SM-INTEGRATION",
+      "title": "AI client integration",
+      "enum": "arcforges.node.v1.IntegrationState",
+      "persisted": "derived from integration_write, client settings and probes (re-evaluated by file watchers)",
+      "owner": "Integration service",
+      "initial": [
+        "CLIENT_NOT_FOUND",
+        "NOT_CONFIGURED"
+      ],
+      "terminal": [],
+      "transitions": [
+        {
+          "from": [
+            "CLIENT_NOT_FOUND"
+          ],
+          "to": "NOT_CONFIGURED",
+          "on": "client detected"
+        },
+        {
+          "from": [
+            "NOT_CONFIGURED",
+            "PARTIAL"
+          ],
+          "to": "CONFIGURED",
+          "on": "IntegrationService.ApplyIntegration (all selected components)"
+        },
+        {
+          "from": [
+            "NOT_CONFIGURED"
+          ],
+          "to": "PARTIAL",
+          "on": "IntegrationService.ApplyIntegration (subset of components)"
+        },
+        {
+          "from": [
+            "CONFIGURED",
+            "PARTIAL"
+          ],
+          "to": "DEGRADED",
+          "on": "conflict detected: hooks disabled or untrusted, probe failed, configuration edited away"
+        },
+        {
+          "from": [
+            "DEGRADED"
+          ],
+          "to": "CONFIGURED",
+          "on": "conflict resolved and re-checked"
+        },
+        {
+          "from": [
+            "CONFIGURED",
+            "PARTIAL",
+            "DEGRADED"
+          ],
+          "to": "NOT_CONFIGURED",
+          "on": "removal plan applied"
+        },
+        {
+          "from": [
+            "NOT_CONFIGURED",
+            "CONFIGURED",
+            "PARTIAL",
+            "DEGRADED"
+          ],
+          "to": "CLIENT_NOT_FOUND",
+          "on": "client uninstalled"
+        }
+      ]
+    }
+  ]
+}

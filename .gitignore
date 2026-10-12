@@ -1,0 +1,10 @@
+.worktree/
+.worktrees/
+.vs/
+.idea/
+.vscode/
+**/bin/
+**/obj/
+__pycache__/
+*.pyc
+artifacts/

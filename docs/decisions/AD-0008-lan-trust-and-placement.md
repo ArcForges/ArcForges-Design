@@ -1,0 +1,44 @@
+# AD-0008 — LAN: discovery, trust, placement, transfer and caches
+
+- Status: Accepted (2026-10-12)
+
+## Decision
+
+1. **Discovery is not trust.** Nodes advertise `_arcforges._tcp.local` through DNS-SD:
+   - Windows uses `DnsServiceRegister` and `DnsServiceBrowse` (V-T04).
+   - Linux uses an in-process C# mDNS responder and browser on UDP 5353, which works without Avahi (L-11).
+
+   Users may also add peers by `host:port`. Signed-in nodes of the same account receive **account-assisted hints**: each other's last LAN endpoints and certificate fingerprints, through the cloud. Removal events are unreliable on Windows, so entries expire by TTL (120 s) unless refreshed.
+2. **Node identity.** Each node generates an ECDSA P-256 key at first start (non-exportable where the OS allows). Its self-signed certificate carries `node_id` in the subject alternative name.
+3. **Trust (pairing), either:**
+   - **Account trust (Pro):** a signed-in node obtains a node certificate issued by its account's CA in ArcForges Cloud (`NodeEnrollmentService.IssueNodeCertificate`, 30-day validity, auto-renewed). Same-account nodes trust each other's account certificates, subject to per-peer policy defaults. Revocation lists ride on the entitlement token refresh and the relay.
+   - **Local pairing (Free and Pro):** two nodes run an authenticated key agreement over the peer channel. Both displays show a 6-digit short authentication string derived from the transcript, the user confirms on both, and each pins the other's certificate fingerprint.
+
+   LAN **placement and cache sharing** are Pro features (product definition §5), verified offline with the signed entitlement token. Free pairing is limited to WSL guests and status viewing.
+4. **Transport.** gRPC over HTTP/2 with mutual TLS 1.3 on a configurable TCP port (default 47820), with certificate validation by account CA or pin. Unknown or revoked peers are refused before HTTP/2 starts.
+5. **Per-peer policy.** Each peer has these settings:
+   - allow placement to it, and accept placement from it;
+   - accept cache read and accept cache write;
+   - maximum CPU and memory share offered;
+   - allowed toolchains and command patterns;
+   - approval required, and data classes allowed to leave (source, outputs, logs).
+
+   The default for a newly paired peer is status-only.
+6. **Placement.** The origin node scores candidates: local, and peers whose policy allows placement and whose offer meets the constraints. The score combines constraint fit, offered free resources, estimated duration from operational memory, transfer cost (input bytes not already on the peer), cache warmth (matching compatibility keys on the peer) and the current queue.
+   - The origin requests **offers** (`PlacementService.RequestOffer`, valid 30 s with a reservation token), accepts the best, and falls back to the local queue if none qualify.
+   - Only **separate tasks** are placed. A single process never spans machines (R-LAN-010).
+7. **Transfer.**
+   - Inputs travel as a content-addressed manifest (path, mode, size, SHA-256) of the workspace view the task needs. It is computed from the git index and working tree with declared includes and excludes, or from an explicit path set.
+   - The executor requests missing blobs (`TransferService`, 4 MiB chunks, verified digests) and materializes them into a managed **remote workspace** kept per origin workspace, for incremental reuse.
+   - Declared outputs return the same way. Logs stream live through the attempt stream.
+   - LAN data never routes through the cloud (R-LAN-006).
+8. **Failure and ownership.**
+   - A remote attempt keeps running when the origin disconnects. The origin resumes the attempt stream by cursor.
+   - The executor holds a lease renewed by the origin (default 5 min). If the origin disappears beyond the lease, the executor applies its policy: finish and retain results (default), or cancel.
+   - If the executor disappears beyond the lease, the origin marks the attempt `LOST`, and retries elsewhere only if the task is retryable.
+   - The executor's local policy may refuse or preempt remote work at any time. Preemption is reported as `PREEMPTED`.
+9. **Shared caches.**
+   - A node may serve its sccache and ccache stores to peers through an authenticated **WebDAV-compatible endpoint** over the same mTLS listener (`/cache/<cache_id>/`). This uses standard client configuration: `SCCACHE_WEBDAV_ENDPOINT` (V-T02), and ccache HTTP remote storage or a helper (V-T03).
+   - The serving node enforces quotas and read/write policy.
+   - NuGet and Cargo package caches are not shared over the LAN in this scope. Each node keeps its own shared local cache, and duplicate downloads across nodes are reported.
+10. **Versioning.** The peer handshake exchanges protocol version ranges and feature flags. Incompatible peers are shown as `INCOMPATIBLE` with the required versions.
