@@ -24,7 +24,7 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 | R-EXE-014 | Ordering inside a pool is priority first, then fair share across owners, then submission time. No waiting task starves longer than the configured starvation bound (default 10 min) while lower-priority tasks are admitted in the same pool. | Simulation and real tests of starvation bounds. |
 | R-EXE-015 | Every task and attempt has one authoritative owner node. Remote attempts are owned by the executing node, and the task by the origin node. | Contract and state machine; LAN closed-loop test. |
 | R-EXE-016 | Operations (submit, cancel, retry, priority change) are idempotent by caller-supplied command id within a 24 h window. | Unit test returns the original receipt on replay. |
-| R-EXE-017 | The working directory and environment captured at submission are recorded with secrets redacted by policy (variables matching secret patterns are stored as presence only). | Unit tests of redaction; record inspection. |
+| R-EXE-017 | The working directory and environment captured at submission are recorded with secrets redacted by policy: in records, exports and bundles, variables matching secret patterns appear as presence only. For execution, their values are kept sealed (encrypted under a key in the OS secret store) until the task is terminal and the retry window has passed, so queued tasks, restarts and retries run with the submitted environment. | Unit tests of redaction; record inspection; sealed-store tests (restart and retry keep values; purge after the window; `secrets_unavailable` afterwards). |
 | R-EXE-018 | Output capture survives restarts because processes write to node-owned files. Callers read history and live tails through the API. | Real test reads output written while the service was down. |
 
 ## R-RES — Resource observation and control
@@ -54,6 +54,7 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 | R-TOOL-003 | Adapters never present tool flags as hard limits. Hard limits come only from OS enforcement, and records state both. | UI and record review; unit tests of labels. |
 | R-TOOL-004 | Each adapter declares which redirections are best-effort (tools that may ignore variables) and which are contained. | Adapter manifest field; documentation test. |
 | R-TOOL-005 | MSBuild node reuse and similar daemons are managed explicitly. Within a managed execution, node reuse is disabled by default, or a shared daemon is accounted as a shared service with an owner. | Real test shows no MSBuild node outlives its execution unless policy keeps a shared daemon. |
+| R-TOOL-006 | FASTBuild is supported: detection, a managed cache (`FASTBUILD_CACHE_PATH`, read and write modes, trimming with `-cachetrim`), local worker concurrency from the CPU grant (`-j`), and records. FASTBuild distributed compilation (`-dist`, brokerage and FBuildWorker) is observed and recorded but not managed in this scope ([05](../architecture/05-toolchains-caches.md) §3.8). | Real test when FASTBuild is installed (F-T02); otherwise recorded as missing tool. |
 
 ## R-CACHE — Caches
 
@@ -77,7 +78,7 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 | R-STOR-003 | Workspaces are registered checkouts or node-managed git worktrees. Managed worktrees are created and removed through the node with branch, base and owner recorded. | Real git worktree tests. |
 | R-STOR-004 | Managed executions get per-attempt temporary directories (TMP, TEMP and TMPDIR), removed after the attempt unless retained by policy for diagnosis. | Real test. |
 | R-STOR-005 | Quotas per sub-root, and retention for logs and records, are enforced. Exceeding a hard quota blocks new allocations with a typed error. | Unit and real tests. |
-| R-STOR-006 | Cleanup is two-phase: plan (dry run with exact paths, sizes and reasons), then execute after approval. It never touches directories in use by running or queued attempts, pinned items, or paths outside managed roots unless the user explicitly selects them in that plan. Deletion first moves items to a quarantine with a delayed purge (default 24 h). | Real tests, including active-use protection and quarantine restore. |
+| R-STOR-006 | Cleanup is two-phase: plan (dry run with exact paths, sizes and reasons), then execute after approval. It never touches directories in use by running or queued attempts, pinned items, or paths outside managed roots unless the user explicitly selects them in that plan. Deletion first moves items to a quarantine on the same volume with a delayed purge (default 24 h). Items on a volume with no quarantine root (managed roots or a configured `storage.quarantine_roots` entry) can only be deleted after an explicit per-item delete-without-quarantine confirmation. | Real tests, including active-use protection, quarantine restore and the cross-volume confirmation. |
 | R-STOR-007 | Disk analysis reports usage by sub-root, workspace and cache, duplicated caches, abandoned worktrees (no recent activity, no live owner, merged or deleted branch) and per-task restore copies, with reclaimable estimates. | Real test on a seeded tree. |
 | R-STOR-008 | Cleanup is bounded: one cleanup execution removes at most the planned set. No wildcard or unbounded deletion API exists. | API review and negative tests. |
 
@@ -115,12 +116,12 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 | R-AI-001 | The MCP adapter exposes managed execution and inspection tools over stdio. It supports MCP revisions 2025-11-25 and 2026-07-28, uses explicit server-minted task handles, and offers the official tasks extension where the client supports it (V-A01). | MCP conformance tests for both revisions. |
 | R-AI-002 | Long operations never block a tool call beyond its bounded wait (default 45 s). The call returns the task handle, current state and an output tail, and the agent continues with wait, status or output tools. | Closed-loop MCP tests. |
 | R-AI-003 | Claude Code integration installs, with consent, an MCP server entry, hooks (SessionStart, SessionEnd, SubagentStart, SubagentStop, PreToolUse and PostToolUse for Bash) and optional plugin packaging. It records the session, subagent, working directory and agent process identity (V-A02). | Closed-loop test with recorded hook payloads; real configuration validation against the installed client. |
-| R-AI-004 | Codex integration installs, with consent, an MCP server entry and hooks (SessionStart, SubagentStart, SubagentStop, PreToolUse and PostToolUse). Because Codex hooks fail open, the integration reports hooks as guardrails, not enforcement (V-A04). | Same as R-AI-003. |
+| R-AI-004 | Codex integration installs, with consent, an MCP server entry and hooks (SessionStart, SessionEnd, SubagentStart, SubagentStop, PreToolUse and PostToolUse). Because Codex hooks fail open, the integration reports hooks as guardrails, not enforcement (V-A04). | Same as R-AI-003. |
 | R-AI-005 | Routing modes are MCP tool (always available), command rewrite through `arcforges run` (only after a passing in-client reachability probe), deny-with-guidance, and observe-only. The active mode per client and session is visible. | Closed-loop tests per mode; probe tests (F-A01). |
 | R-AI-006 | Bypassed heavy work (processes under a registered agent process tree that are not managed) is detected, attributed to the session where ancestry allows, and reported. Unattributable work is reported as unattributed, never guessed. | Real test runs a heavy command outside ArcForges under a registered fake agent process. |
 | R-AI-007 | Coverage per session reports routes, managed and bypassed counts, and unknowns. The node never claims to know model, thinking state or internal completion status beyond events the client exposes. | Contract fields and UI labels; review. |
 | R-AI-008 | Integration never edits managed or enterprise settings, never silently overrides user or repository instructions, shows a diff before writing, and reports conflicts (hooks disabled, untrusted, sandbox denies IPC). | Tests with fixture settings files, including managed-only policies. |
-| R-AI-009 | Managed tasks cannot replace or reconfigure the ArcForges installation. Configuration changes from AI clients go through policy-gated APIs that may require approval. | Policy tests; install directory protection check. |
+| R-AI-009 | Guardrails keep managed tasks from accidentally replacing or reconfiguring the ArcForges installation. These are read-only version directories with digest checks at startup, tamper findings for out-of-band edits, and optional Linux unit hardening. Configuration changes from AI clients go through policy-gated APIs that may require approval. Same-user bypasses are documented, never claimed impossible. | Policy tests; read-only and digest checks; tamper-finding test. |
 
 ## R-API — Contracts and state
 
@@ -141,7 +142,7 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 |---|---|---|
 | R-LAN-001 | Nodes discover peers through DNS-SD (`_arcforges._tcp.local`), manual address entry and account-assisted hints. Discovery never implies trust. | Unit tests; real single-host test with two nodes; physical LAN deferred. |
 | R-LAN-002 | Trust comes from pairing: either both nodes belong to the same account (cloud-issued node certificates), or a local short-authentication-string comparison confirmed on both nodes. | Closed-loop pairing tests. |
-| R-LAN-003 | Peer traffic uses mutually authenticated TLS 1.3 with pinned or account-issued node certificates. | Tests reject unknown or revoked certificates. |
+| R-LAN-003 | Peer traffic uses mutually authenticated TLS 1.3 with pinned or account-issued node certificates. Unpaired identities may reach only the handshake and pairing services. | Tests: revoked or invalid account certificates fail the TLS handshake; unpaired identities are refused every service except handshake and pairing; pinned and same-account identities pass. |
 | R-LAN-004 | Peers report capabilities, toolchains, enforcement state and resource offers. Placement requires a per-peer policy allowing it. | Contract tests. |
 | R-LAN-005 | Placement chooses among local and peer nodes by constraints, available resources, cache locality, transfer cost and policy, and falls back to local queueing. | Unit tests of scoring; closed-loop placement tests. |
 | R-LAN-006 | Workspace inputs transfer as content-addressed manifests with blob deduplication. Outputs and artifacts return the same way. LAN data never routes through the cloud. | Closed-loop transfer tests; network capture shows no cloud egress. |
@@ -188,14 +189,14 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 |---|---|---|
 | R-COM-001 | Web subscriptions use Paddle as Merchant of Record (reused design V-C07). Checkout, renewal, cancellation, refund, payment failure and dunning update entitlements through verified webhooks. | Closed-loop tests with recorded signed webhook fixtures; live checkout deferred. |
 | R-COM-002 | Android subscriptions use Google Play Billing. The backend verifies purchases with `purchases.subscriptionsv2`, acknowledges within the window, links with `obfuscatedAccountId`, processes RTDN, and handles restore, cancellation, grace period, account hold, pause, expiry, revocation and refund (V-C05). | Closed-loop tests with a Play Developer API fake and RTDN fixtures; real purchase deferred. |
-| R-COM-003 | One entitlement snapshot per account combines web and Play sources without double-granting. Changes reach nodes within 60 s while online. | Tests. |
+| R-COM-003 | One entitlement snapshot per account combines web and Play sources without double-granting. Changes reach relay-connected nodes within 60 s (`EntitlementChanged` frame). Other online nodes receive them at their next refresh (at most 24 h), or immediately when the user refreshes or opens the account page. | Tests. |
 | R-COM-004 | Entitlement enforcement on nodes uses signed tokens with offline grace. Expiry degrades only the gated features and never interrupts running local tasks. | Tests. |
 
 ## R-DIST — Distribution and updates
 
 | ID | Requirement | Acceptance |
 |---|---|---|
-| R-DIST-001 | A per-user Windows installer (no administrator rights needed) installs the `arcforges` binary, node autostart, PATH entry, uninstall entry and the optional Desktop. A Linux user-level install script and a `.deb` package install the binary and the systemd user unit. | Real install/uninstall tests on the workstation and in WSL2 (fresh user profile or container). |
+| R-DIST-001 | A per-user Windows setup program (no administrator rights needed) installs the `arcforges` binary, the supervisor, node autostart, PATH entry, an uninstall entry that the updater keeps current, and the optional Desktop. A Linux user-level install script and a `.deb` package install the binary and the systemd user unit. | Real install/uninstall tests on the workstation and in WSL2 (fresh user profile or container). |
 | R-DIST-002 | Release artifacts are signed (Authenticode on Windows; signed manifests for all artifacts). The node verifies signatures before applying updates. | Tests with test keys; production signing deferred. |
 | R-DIST-003 | Updates are staged side by side, switched atomically when safe, health-checked and rolled back automatically on failure. Running executions survive the switch (R-EXE-008). | Real update and rollback tests with locally built versions. |
 | R-DIST-004 | `arcforges integrate` configures AI clients. The product does not assume that installing a plugin or MCP configuration installs or authorizes the native service. | Tests. |
@@ -205,7 +206,7 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 
 | ID | Requirement | Acceptance |
 |---|---|---|
-| R-OPS-001 | Onboarding, account recovery, device enrollment and revocation reuse the existing identity and device modules, adapted for nodes. | Tests. |
+| R-OPS-001 | Onboarding, account recovery, device enrollment and revocation reuse the existing identity and device contracts, D1 schema and domain stores. Their service endpoints and flows are implemented for the flagship (AF-ID-01, AF-ID-02). | Tests. |
 | R-OPS-002 | Usage limits and abuse prevention cover sign-in, pairing, relay connections, viewers, commands, push and support, with rate limits and anomaly flags. | Tests. |
 | R-OPS-003 | Privacy: command lines, environment values and output never leave a node unless a user explicitly requests them for a remote view or a support bundle. Telemetry is opt-in. | Tests and data-flow review. |
 | R-OPS-004 | Retention and deletion: account deletion removes cloud data per the retention schedule. Nodes provide a local data wipe. Exports are available. | Tests. |

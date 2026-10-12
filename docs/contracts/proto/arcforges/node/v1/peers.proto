@@ -20,7 +20,7 @@ option java_outer_classname = "NodePeersProto";
 // LAN listener, peers, pairing and per-peer policy.
 service PeerService {
   // Listener, certificate, discovery and entitlement state.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -29,7 +29,7 @@ service PeerService {
   rpc GetLanStatus(PeerServiceGetLanStatusRequest) returns (PeerServiceGetLanStatusResponse);
 
   // Turn LAN features on or off, optionally changing the port and advertisement (a policy revision).
-  // auth: HUMAN=A SCRIPT=D AGENT=D REMOTE=D
+  // auth: HUMAN=A SCRIPT=D AGENT=D REMOTE=-
   // idempotency: command_id
   // deadline: 15 s
   // stream: none
@@ -38,7 +38,7 @@ service PeerService {
   rpc SetLanEnabled(PeerServiceSetLanEnabledRequest) returns (PeerServiceSetLanEnabledResponse);
 
   // List discovered and paired peers.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -47,7 +47,7 @@ service PeerService {
   rpc ListPeers(PeerServiceListPeersRequest) returns (PeerServiceListPeersResponse);
 
   // Read one peer with its live status summary.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 10 s
   // stream: none
@@ -56,7 +56,7 @@ service PeerService {
   rpc GetPeer(PeerServiceGetPeerRequest) returns (PeerServiceGetPeerResponse);
 
   // Add a peer by address when discovery is unavailable. The peer stays untrusted until paired.
-  // auth: HUMAN=A SCRIPT=D AGENT=D REMOTE=D
+  // auth: HUMAN=A SCRIPT=D AGENT=D REMOTE=-
   // idempotency: command_id
   // deadline: 15 s
   // stream: none
@@ -65,7 +65,7 @@ service PeerService {
   rpc AddPeerAddress(PeerServiceAddPeerAddressRequest) returns (PeerServiceAddPeerAddressResponse);
 
   // Start local-confirmation pairing with a discovered peer (09 section 3.2).
-  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=D
+  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=-
   // idempotency: command_id
   // deadline: 10 s
   // stream: none
@@ -75,7 +75,7 @@ service PeerService {
   rpc BeginPairing(PeerServiceBeginPairingRequest) returns (PeerServiceBeginPairingResponse);
 
   // Accept or reject an incoming pairing request.
-  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=D
+  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=-
   // idempotency: command_id
   // deadline: 10 s
   // stream: none
@@ -85,7 +85,7 @@ service PeerService {
   rpc RespondToPairing(PeerServiceRespondToPairingRequest) returns (PeerServiceRespondToPairingResponse);
 
   // Read a pairing, including the SAS while awaiting confirmation.
-  // auth: HUMAN=A SCRIPT=D AGENT=D REMOTE=D
+  // auth: HUMAN=A SCRIPT=D AGENT=D REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -94,7 +94,7 @@ service PeerService {
   rpc GetPairing(PeerServiceGetPairingRequest) returns (PeerServiceGetPairingResponse);
 
   // Confirm that both screens show the same six digits, or report a mismatch.
-  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=D
+  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=-
   // idempotency: command_id
   // deadline: 10 s
   // stream: none
@@ -104,7 +104,7 @@ service PeerService {
   rpc ConfirmPairing(PeerServiceConfirmPairingRequest) returns (PeerServiceConfirmPairingResponse);
 
   // Abort a pairing in progress.
-  // auth: HUMAN=A SCRIPT=D AGENT=D REMOTE=D
+  // auth: HUMAN=A SCRIPT=D AGENT=D REMOTE=-
   // idempotency: command_id
   // deadline: 5 s
   // stream: none
@@ -114,7 +114,7 @@ service PeerService {
   rpc CancelPairing(PeerServiceCancelPairingRequest) returns (PeerServiceCancelPairingResponse);
 
   // Change this node's policy toward a paired peer (meta.expected_rev = peer revision).
-  // auth: HUMAN=A SCRIPT=P AGENT=D REMOTE=D
+  // auth: HUMAN=A SCRIPT=P AGENT=D REMOTE=-
   // idempotency: command_id; expected_rev
   // deadline: 10 s
   // stream: none
@@ -123,7 +123,7 @@ service PeerService {
   rpc UpdatePeerPolicy(PeerServiceUpdatePeerPolicyRequest) returns (PeerServiceUpdatePeerPolicyResponse);
 
   // Unpin and forget a peer; notifies it when reachable. Running remote attempts follow their lease rules.
-  // auth: HUMAN=A SCRIPT=D AGENT=D REMOTE=D
+  // auth: HUMAN=A SCRIPT=D AGENT=D REMOTE=-
   // idempotency: command_id
   // deadline: 10 s
   // stream: none

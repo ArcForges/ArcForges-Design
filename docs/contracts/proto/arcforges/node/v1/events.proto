@@ -112,6 +112,7 @@ enum EventTopic {
   EVENT_TOPIC_INTEGRATIONS = 15;
   EVENT_TOPIC_STORAGE = 16;
   EVENT_TOPIC_SUPPORT = 17;
+  EVENT_TOPIC_NOTIFICATIONS = 18;
 }
 
 message TaskChanged {
@@ -163,6 +164,7 @@ message NodeEvent {
     CleanupPlan cleanup_plan = 28 [json_name = "cleanupPlan"];
     NodeStatusChanged node = 29 [json_name = "node"];
     SupportBundle support_bundle = 30 [json_name = "supportBundle"];
+    NodeNotification notification = 31 [json_name = "notification"];
   }
 }
 

@@ -17,18 +17,27 @@ Decisions: [AD-0009](../decisions/AD-0009-cloud-relay-and-cost-controls.md), [AD
 
 ## 2. C# modules
 
-| Module | Status | New or changed responsibilities |
+**Baseline reality** (Cloud main `92ba1dc9`, checked 2026-10-12):
+- The host serves only `HelloService` over gRPC.
+- **Identity** holds user and credential domain rules and its D1 store (enrollment), but no authentication ceremonies, sessions, step-up, recovery or deletion endpoints.
+- **Entitlement** holds the resolver, snapshots and grants, but no service endpoints.
+- **Audit, Commerce, Configuration, Devices, Notification, Support and TrustSafety** are empty placeholders.
+- The D1 schema for all of them exists.
+
+"Reuse" below therefore means the **contracts, D1 schema and domain code that exist**. Every endpoint and flow marked *new work* is built by the named task.
+
+| Module | What is reused | New work (task) |
 |---|---|---|
-| Identity | Reuse | Account authentication, sessions, step-up, recovery and deletion, unchanged. New: an `account` session can approve node sign-ins, device codes and phone pairings. |
-| Devices | Adapt | Installation kind `NODE` (with `node_id`, OS, architecture, version, host-node link for guests) and `MOBILE`; revocation cascades to node certificates and relay tokens |
+| Identity | Contracts (`publicapi.v1.IdentityService`), D1 tables, user and credential domain rules and store | WebAuthn ceremonies, e-mail codes, cookie and native-bearer sessions with refresh rotation, step-up (AF-ID-01). E-mail goes through a provider adapter: Postmark, with Amazon SES as fallback, the historical Cloud design's choice. The provider account and sending domain are prerequisite H-19; development uses `FakeMailSender`, and live delivery is AR-14. Recovery, account deletion with grace, data export (`DataService`), security activity (AF-ID-02). New: an `account` session approves node sign-ins and device codes; phone sessions are scoped (§3.3). |
+| Devices | Contracts (`DeviceService`, product and platform are strings), D1 tables | Register, list, rename, revoke and cascade (AF-ID-02). Product values `arcforges-node` and `arcforges-mobile`. Each node, including each WSL guest, is its own device record (cloud-store §3). |
 | Fleet | **New** (`ArcForges.Cloud.Modules.Fleet`) | `NodeEnrollmentService`: native sign-in (PKCE loopback), device authorization, phone pairing, node certificates, LAN hints, relay tokens, entitlement tokens. `FleetService`: node list, rename, revoke, snapshots, viewer grants, remote commands. Relay envelope processing. |
-| Entitlement | Reuse | Plan catalogue (configuration revision), snapshots, features. New: an entitlement-token claim projection. |
-| Commerce | Adapt | Paddle provider (reuse). Google Play provider (`StoreBillingService`, RTDN processing, acknowledgement job). |
-| Notification | Adapt | Push kinds `node.task_failed`, `node.task_finished`, `node.approval_needed`, `node.offline`, `node.finding`; batching from relay envelopes; preferences per kind and node (`FleetService.GetPushPreferences` and `UpdatePushPreferences`, table `fleet_push_preference`) |
-| Support | Reuse | Cases. New: attachment of consented support bundles (R2 object key). |
-| Audit | Reuse | Audit events for enrollment, revocation, remote commands and commerce |
-| Platform | Reuse | Command dedup, inbox and outbox, job leases, operating budgets and reservations |
-| Configuration | Reuse | Kill switches (`relay.live_streaming`, `relay.new_connections`, `push.enabled`, `fleet.commands`) and limits |
+| Entitlement | Resolver, snapshots, grants (implemented), D1 tables | `EntitlementService` endpoints, plan catalogue for the flagship, entitlement-token claim projection (AF-CLD-03) |
+| Commerce | Contracts (`CommerceService`), D1 tables, the historical Paddle design (BC-01) | Paddle provider: catalogue, checkout attempts, verified webhooks, subscription lifecycle, customer portal, refunds, billing history (AF-COM-01). Google Play provider: `StoreBillingService`, RTDN, acknowledgement job (AF-CLD-07). |
+| Notification | Contracts (`NotificationService`), D1 tables, the historical FCM HTTP v1 design | Implemented by AF-CLD-06: `List`, `Acknowledge`, `RegisterPush`, `UnregisterPush`, the FCM HTTP v1 sender with short-lived service-account tokens. Push kinds `node.task_failed`, `node.task_finished`, `node.approval_needed`, `node.offline`, `node.finding`; batching from relay envelopes; preferences per kind and node (`FleetService.GetPushPreferences` and `UpdatePushPreferences`, table `fleet_push_preference`) |
+| Support | Contracts (`SupportService`), D1 tables | Cases, messages and access grants, plus consented support-bundle attachments (R2 object keys) (AF-SUP-01) |
+| Audit | D1 tables | Audit event writer and reader for enrollment, revocation, remote commands, commerce and operator actions (AF-PLAT-01) |
+| Platform | Command guard and commit tail, inbox and outbox, job leases (implemented in the D1 storage layer), D1 operating-budget tables | Operating budgets and reservations service, budget checks on metered paths (AF-PLAT-01) |
+| Configuration | D1 `config_revision` | Configuration revisions, kill switches (`relay.live_streaming`, `relay.new_connections`, `push.enabled`, `fleet.commands`) and limits (AF-PLAT-01). The operator console comes in AF-OPS-01. |
 | Chat, Task, Agent, Sync, Resource, Search, Scope, PackageCatalog, TrustSafety, Policy | Retain (unused) | Not composed into the flagship host profile. Their tables stay untouched. |
 
 ## 3. Flows
@@ -52,7 +61,8 @@ Decisions: [AD-0009](../decisions/AD-0009-cloud-relay-and-cost-controls.md), [AD
 1. The Desktop asks the node to call `CreatePhonePairing{}` and gets `{pairing_id, qr = "arcforges://pair?i=<pairing_id>&s=<secret>", expires_at (120 s)}`.
 2. The phone scans and calls `ClaimPhonePairing{pairing_id, secret, phone_installation_info}`, and the state becomes `AWAITING_CONFIRMATION`.
 3. The Desktop (polling `GetPhonePairing`, or through a node event) shows "Allow <phone model> to sign in as <account>?". The user calls `ConfirmPhonePairing{pairing_id, approve}`.
-4. The phone polls `PollPhonePairing{pairing_id, secret}` and receives an `account` session for the phone installation (`MOBILE`).
+4. The phone polls `PollPhonePairing{pairing_id, claim_token}` and receives a session with scope `mobile.limited` for its own installation (product `arcforges-mobile`).
+5. Medium- and high-risk actions, billing and account settings require a step-up on the phone (reused `IdentityService.BeginStepUp`/`CompleteStepUp`), which upgrades the session to `account`. A stolen node credential can therefore never yield account control (AD-0011 §3, T-19).
 
 Each secret is single-use. A wrong secret consumes the pairing.
 
@@ -66,7 +76,7 @@ Each secret is single-use. A wrong secret consumes the pairing.
 ### 3.5 Viewer watch (web, Android)
 
 1. The client calls `FleetService.OpenFleetWatch{node_ids (empty = all), detail: SUMMARY | FULL}`. C# authorizes the account session, checks entitlement `remote.view` and limits, and returns `{grant (aud=relay.view, 10 min), ws_url}`.
-2. The client connects to `wss://relay.arcforges.com/v1/view` with the grant. `FleetHub` sends `ViewerFrame.snapshot` for the permitted nodes from its cache. If `detail=FULL` and a cached snapshot is older than 10 s, it sends `DemandSignal{interval 2 s, duration 10 min}` to each node, and the nodes then stream `StatusDelta` frames, which the DO fans out.
+2. The client connects to `wss://relay.arcforges.com/v1/view`. Browsers cannot set headers on WebSockets, so every viewer sends the grant as a subprotocol: `Sec-WebSocket-Protocol: arcforges.v1, grant.<base64url grant>`. The Worker validates the grant **before** routing to the Durable Object, so unauthenticated sockets never wake it, and answers with the subprotocol `arcforges.v1`. Grants never appear in URLs. `FleetHub` sends `ViewerFrame.snapshot` for the permitted nodes from its cache. If `detail=FULL` and a cached snapshot is older than 10 s, it sends `DemandSignal{interval 2 s, duration 10 min}` to each node, and the nodes then stream `StatusDelta` frames, which the DO fans out.
 3. Each frame carries `{node_id, node_seq, generation}`. The client resumes after reconnect by sending `ViewerResume{cursors}`. A gap beyond the cache yields `reset` plus a snapshot.
 4. The grant is refreshed through `OpenFleetWatch` before expiry, sent as a `GrantRefresh` frame.
 
@@ -78,33 +88,41 @@ Each secret is single-use. A wrong secret consumes the pairing.
    - checks entitlement `remote.control`;
    - classifies risk (AD-0009 §5);
    - requires a step-up (passkey or recent authentication) for `MEDIUM` and `HIGH`;
-   - writes `fleet_remote_command` (`PENDING`, `expires_at` = now + 5 min);
+   - writes `fleet_remote_command` (`ACCEPTED`, `expires_at` = now + 5 min);
    - audits;
-   - signs `CommandEnvelope{command_id, account, node, command, issued_at, expires_at}` with the Ed25519 **relay command key** (`kid`).
+   - signs the `NodeCommand` payload (`fleet.v1`) with the ES256 **command signing key** (ECDSA P-256; `kid`; V-N05).
 3. C# posts the envelope to the internal relay route (HMAC-authenticated container-to-Worker route, existing coordination pattern). `FleetHub` delivers it if the node is connected. Otherwise it stores the envelope (≤20 per node) and delivers it on reconnect if it has not expired.
-4. The node verifies the signature (public keys from enrollment and updates), the expiry, the target, and its local remote-control policy. It executes through its own API with provenance `REMOTE`, and replies `CommandResult{command_id, status, error?, receipt}`, signed with its node key.
+4. The node verifies the signature (public keys from enrollment and updates), the expiry, the target, and its local remote-control policy. It executes through its own API with origin `REMOTE`, and replies with a `NodeCommandResult` (receipt or error), signed ES256 with its node key. For `ReadOutputTail` the result carries only the tail's SHA-256 and size. The tail itself goes to the requesting viewer as a relay `OutputTail` frame (node → DO → viewer) and is never stored in D1 or Durable Object storage (R-OPS-003).
 5. `FleetHub` forwards the result envelope to C#, which updates the command (`SUCCEEDED`, `FAILED`, `REJECTED_BY_NODE`) and audits. Viewers see the update. Undelivered commands become `EXPIRED`.
 
 ### 3.7 Push (R-CLOUD-005)
 
 1. Nodes send `EventBatch` frames for push-worthy events when the user enabled them on that node.
 2. `FleetHub` batches them and forwards to C# immediately for `approval_needed`, and every 30 s otherwise.
-3. C# Notification applies preferences, deduplication (`notification_suppression`) and limits (≤50 per day per account by default), then sends FCM HTTP v1 data messages to registered `MOBILE` installations (reused push design, V-C07).
+3. C# Notification applies preferences, deduplication (`notification_suppression`) and limits (≤50 per day per account by default), then sends FCM HTTP v1 data messages to the account's registered `arcforges-mobile` installations (the historical push design, V-C07; the sender is new work in AF-CLD-06).
 
 ### 3.8 Entitlement token (R-COM-004)
 
-`RefreshEntitlementToken{}` (node credential) returns a compact Ed25519-signed token: `{acct, node, plan, features[], issued_at, not_after (14 days), revoked_nodes[] (≤256, delta), kid}`. Nodes refresh it every 24 h while online. Public keys ship in releases, and `GetEntitlementKeys` serves rotations.
+`RefreshEntitlementToken{}` (node credential) returns a compact ES256-signed token (`SignedBlob` with `EntitlementClaims`): `{acct, node, plan, features[], issued_at, not_after (14 days), revoked_nodes[] (≤256, delta), kid}`. Nodes refresh it every 24 h while online. Public keys ship in releases, and `GetEntitlementKeys` serves rotations.
 
 ### 3.9 Google Play (R-COM-002)
 
 As in [AD-0010](../decisions/AD-0010-commerce-and-entitlements.md) §3:
 - RTDN arrives at `POST /hooks/play-rtdn` as a Pub/Sub push with an authenticated OIDC token, verified in C# (`aud`, `email` of the Pub/Sub service account).
-- It is stored in `commerce_play_notification` (deduplicated by message ID) and processed by a job that re-reads `subscriptionsv2`.
+- It is stored in `fleet_play_notification` (deduplicated by message ID) and processed by a job that re-reads `subscriptionsv2`.
 - The acknowledgement job runs with a platform job lease and retries until success or an operator alert at 24 h.
 
-### 3.10 Paddle (reuse)
+### 3.10 Paddle (AF-COM-01)
 
-`POST /hooks/paddle`: verify the raw body HMAC, dedup through the platform inbox, then apply the subscription state through the existing commerce module.
+`POST /hooks/paddle`: verify the raw body HMAC, dedup through the platform inbox, then apply the subscription state to the reused commerce tables. The Paddle provider follows the historical adapter design (BC-01); its implementation is new.
+
+### 3.11 Support bundle upload (R-OPS-005)
+
+1. After the user reviews the file list and consents, the node calls `NodeEnrollmentService.BeginSupportUpload` (node credential) with the case reference (or a new case subject), file name, size and SHA-256.
+2. C# checks the plan's daily upload limit and the `support uploads` kill switch, creates the case if needed, and returns an R2 presigned PUT URL valid for 15 minutes, signed for the declared length and SHA-256 checksum where R2 enforces them (A-C03). Step 4 verifies both in any case.
+3. The node uploads the bundle directly to R2 over HTTPS; the bytes never pass through the Container.
+4. The node calls `CompleteSupportUpload`. C# verifies the object's size and checksum, then appends a case message whose `diagnostic` reference names the object. The object expires after 30 days.
+5. An upload that is never completed is deleted by the R2 lifecycle rule after 1 day.
 
 ## 4. Durable Object layout (`FleetHub`)
 
@@ -132,7 +150,7 @@ All values are opaque bytes plus small headers. Socket attachments hold `{kind, 
 | Support bundle uploads per day | 1 | 5 | C# Support |
 | DO wakes per hour per account | — | 3,600 | DO guard |
 
-**Global operating budgets** (`platform_operating_budget`) cover container CPU-seconds, D1 queries, R2 bytes and FCM sends per day. Exceeding 80% raises operator alerts. At 100% the kill switches apply, in this order: live streaming off (summaries only), push batching to hourly, new relay connections refused. Kill switches propagate within one token lifetime. Budget alerts from Cloudflare are informational (V-C04).
+**Global operating budgets** (`platform_operating_budget`) cover the dimensions of [14](14-commercial-operations.md) §7.2 per UTC day. Exceeding 80% raises operator alerts. At 100% the kill switches apply in the order given there: live streaming off (summaries only), push batched hourly, new relay connections refused, support uploads refused. Kill switches propagate within one token lifetime. Budget alerts from Cloudflare are informational (V-C04).
 
 ## 6. Failure handling
 

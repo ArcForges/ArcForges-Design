@@ -18,7 +18,7 @@ option java_outer_classname = "NodeApprovalsProto";
 // List, decide and withdraw approvals.
 service ApprovalService {
   // List approvals, pending first.
-  // auth: HUMAN=A SCRIPT=A AGENT=A (own requests) REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A (own requests) REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -27,7 +27,7 @@ service ApprovalService {
   rpc ListApprovals(ApprovalServiceListApprovalsRequest) returns (ApprovalServiceListApprovalsResponse);
 
   // Read one approval, including the outcome after execution.
-  // auth: HUMAN=A SCRIPT=A AGENT=A (own requests) REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A (own requests) REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -46,7 +46,7 @@ service ApprovalService {
   rpc DecideApproval(ApprovalServiceDecideApprovalRequest) returns (ApprovalServiceDecideApprovalResponse);
 
   // Withdraw a pending approval request (requester or HUMAN).
-  // auth: requester or HUMAN
+  // auth: requester or HUMAN REMOTE=-
   // idempotency: command_id
   // deadline: 5 s
   // stream: none

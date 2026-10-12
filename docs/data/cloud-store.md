@@ -23,27 +23,30 @@ The flagship adds one module, `fleet`, and adapts a few reused tables. The new t
 | `fleet_play_purchase` | Google Play purchase tokens (hash; the token itself encrypted at rest for API re-reads), link state, acknowledgement due date | PK `purchase_token_hash`; `user_id`; pending acknowledgement | 7 years (billing records) | AD-0010 §3 |
 | `fleet_play_notification` | RTDN inbox, deduplicated by Pub/Sub message ID | PK `message_id`; unprocessed | 90 days | 10 §3.9 |
 | `fleet_push_preference` | Push preferences per kind and node (`FleetService.GetPushPreferences`, `UpdatePushPreferences`) | PK `(user_id, kind, node_scope)` | Until account deletion | Notification preferences |
-| `fleet_signing_key` | Key metadata (key ID, purpose, validity, secret binding name). Private keys live only in platform secrets. | PK `kid` | Permanent | Key rotation runbook |
+| `fleet_signing_key` | Key metadata: key ID, purpose (command signing, entitlement token, relay HMAC, Node Issuing CA intermediate), validity, secret binding name. Private keys live only in platform secrets; the Node Issuing CA root stays offline. | PK `kid` | Permanent | Key rotation runbook |
 
 ## 2. Reused tables
 
+"Reuse" here means the **D1 schema** at Cloud main `92ba1dc9`. Most of these modules have no service implementation yet. The building tasks are named in [10](../architecture/10-cloud.md) §2.
+
 | Module | Tables | Use |
 |---|---|---|
-| Identity (reuse) | `identity_user`, `identity_session`, `identity_spent_refresh`, `identity_native_authorization`, `identity_step_up_challenge`, `identity_auth_identity`, `identity_recovery_*`, `identity_security_flow` | Accounts and authentication. Node credentials are native-bearer sessions (`credential_kind` 1, refresh rotation with reuse detection through `identity_spent_refresh`) bound to the node's installation. Phones get native-bearer sessions bound to the `MOBILE` installation. Step-up for remote commands. |
-| Device (adapt) | `device_device`, `device_installation`, `device_remote_policy` | One device per machine, with an installation for the node (and one per guest distribution) and one for each phone |
-| Entitlement (reuse) | `entitlement_*` | Plan catalogue (configuration revision), snapshots and features `lan.*`, `remote.*`, `push` |
-| Commerce (adapt) | `commerce_subscription`, `commerce_provider_event`, `commerce_checkout_attempt`, `commerce_provider_customer`, `commerce_refund`, … | Paddle (reused); the Play provider writes subscription state through the same tables, linked from `fleet_play_purchase.subscription_id` |
-| Notification (adapt) | `notification_push_registration`, `notification_delivery*`, `notification_suppression` | FCM push for node events |
-| Support (reuse) | `support_support_case`, `support_case_message`, `support_access_grant` | Cases; support-bundle uploads are referenced from case messages (R2 object keys) |
-| Audit (reuse) | `audit_audit_event`, `audit_operator_*` | Enrollment, revocation, remote commands, commerce and operator actions |
-| Platform (reuse) | `platform_command`, `platform_command_guard`, `platform_inbox`, `platform_outbox`, `platform_job_lease`, `platform_operating_budget`, `platform_operating_reservation` | Command dedup, webhook inbox, outbox to the relay, jobs (acknowledgement, purge), cost budgets |
-| Config (reuse) | `config_revision` | Kill switches, limits and the plan catalogue |
+| Identity (reuse) | `identity_user`, `identity_session`, `identity_spent_refresh`, `identity_native_authorization`, `identity_step_up_challenge`, `identity_auth_identity`, `identity_recovery_*`, `identity_security_flow` | Accounts and authentication. Node credentials are native-bearer sessions (`credential_kind` 1, refresh rotation with reuse detection through `identity_spent_refresh`) bound to the node's installation. Phones get native-bearer sessions bound to their `arcforges-mobile` installation, with scope `mobile.limited` until a step-up. Step-up for remote commands. Endpoints: AF-ID-01, AF-ID-02. |
+| Device (reuse) | `device_device`, `device_installation`, `device_remote_policy` | **One device record per node**, including each WSL guest node, with one installation of product `arcforges-node`. One device record per phone, with one installation of product `arcforges-mobile`. This respects the unique index `(device_id, product_id)` without change. `fleet_node.device_id` links the node to its device. Endpoints: AF-ID-02. |
+| Entitlement (reuse) | `entitlement_*` | Plan catalogue (configuration revision), snapshots and features `lan.*`, `remote.*`, `push`. The resolver exists; endpoints: AF-CLD-03. |
+| Commerce (adapt) | `commerce_subscription`, `commerce_provider_event`, `commerce_checkout_attempt`, `commerce_provider_customer`, `commerce_refund`, … | Paddle provider (AF-COM-01); the Play provider (AF-CLD-07) writes subscription state through the same tables, linked from `fleet_play_purchase.subscription_id` |
+| Notification (adapt) | `notification_push_registration`, `notification_delivery*`, `notification_suppression` | FCM push for node events (AF-CLD-06) |
+| Support (reuse) | `support_support_case`, `support_case_message`, `support_access_grant` | Cases and access grants; support-bundle uploads are referenced from case messages (R2 object keys) (AF-SUP-01) |
+| Audit (reuse) | `audit_audit_event`, `audit_operator_*` | Enrollment, revocation, remote commands, commerce and operator actions (writer and reader: AF-PLAT-01) |
+| Platform (reuse) | `platform_command`, `platform_command_guard`, `platform_inbox`, `platform_outbox`, `platform_job_lease`, `platform_operating_budget`, `platform_operating_reservation` | Command dedup, webhook inbox, outbox to the relay, jobs (acknowledgement, purge) are implemented in the D1 storage layer. The operating-budget service is AF-PLAT-01. |
+| Config (reuse) | `config_revision` | Kill switches, limits and the plan catalogue (AF-PLAT-01) |
 
 ## 3. Adaptations (migration notes)
 
 | Change | Tables | Migration |
 |---|---|---|
-| Product ID domain gains `arcforges` | `device_installation.product_id`, `identity_session.product_id` (generated `productId` checks) | The `productId` type change regenerates the check constraints. SQLite cannot alter a CHECK, so the Cloud generator emits a table-rebuild migration (create new, copy, swap) under the repository's migration rules. AF-CLD-01. |
+| Product ID domain gains `arcforges-node` and `arcforges-mobile` | `device_installation.product_id` and `identity_session.product_id`; today `CHECK (product_id IN ('arcscope', 'companion'))` | The `productId` type change regenerates the check constraints. SQLite cannot alter a CHECK, so the Cloud generator emits a table-rebuild migration (create new, copy, swap) under the repository's migration rules. Indexes are unchanged, because each node is its own device (§2). AF-CLD-01. |
+| Operating dimensions gain `containerCpuSeconds` (8), `doRequests` (9), `d1RowsRead` (10), `d1RowsWritten` (11) and `pushSends` (12) | `platform_operating_budget.dimension` and `platform_operating_reservation.dimension`; today `CHECK (dimension IN (1..7))` | Same table-rebuild migration pattern as the product ID change. AF-PLAT-01. |
 | Device platform values | `device_device.platform` already lists `windows`, `linux` and `android` | None |
 | Push kinds | `notification_*` kind columns (text) | None (data) |
 | Plan features | Entitlement configuration | Configuration revision (data) |
@@ -57,7 +60,7 @@ The flagship adds one module, `fleet`, and adapts a few reused tables. The new t
 
 ## 5. Deletion
 
-Account deletion uses the reused flow: request, then a 30-day grace period, then purge.
+Account deletion follows the reused contract's flow, built by AF-ID-02: request, then a 30-day grace period, then purge.
 - **Purge** cascades through `identity_user` to `fleet_node`, phone pairings and commands.
 - **Revocation** revokes certificates and closes relay sockets through `HostEnvelope.kill_switches`, scoped to the account.
 - **Kept records:** `fleet_play_purchase` and commerce records stay for the statutory billing retention, keyed by hashed references with personal fields cleared ([11](../architecture/11-security-privacy.md) §5).

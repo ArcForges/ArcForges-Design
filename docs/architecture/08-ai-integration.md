@@ -25,7 +25,7 @@ Decision: [AD-0007](../decisions/AD-0007-ai-integration.md). Tool catalogue and 
 
 - `run` submits with `owner=session`, then waits through `TaskService.WaitTask` for `wait_seconds` (default 45, maximum 55). It returns `{task_id, attempt_id, state, exit_code?, tail (last 4 KiB merged), timeline_summary, next_actions}`.
 - If the task is still running, `next_actions` lists `task_wait`, `task_output` and `task_cancel` with the handle. Handles are server-minted IDs (Crockford base32 of the 16-byte UUIDv7).
-- **Tasks extension.** When the client declares `io.modelcontextprotocol/tasks` in its capabilities extensions, `run` with `async=true` returns a task handle per the extension, mapped to the same node task. `tasks/get` maps to `GetTask` and `WaitTask(0)`, and `tasks/update` maps to `WriteTaskInput` for STREAM stdin.
+- **Tasks extension.** When the client declares `io.modelcontextprotocol/tasks` in its capabilities extensions, `run` with `async=true` returns a task handle per the extension, mapped to the same node task. `tasks/get` maps to `GetTask` and `WaitTask(0)` and carries the final output once the task is terminal. `tasks/update` maps to `WriteTaskInput` for STREAM stdin, through an attach the adapter holds ([MCP](../experience/mcp.md) §4).
 - A broken response stream (2026-07-28 has no resumability) loses only the response. The node task continues, and the agent re-queries by handle.
 
 ### 2.3 Error mapping
@@ -42,19 +42,19 @@ Decision: [AD-0007](../decisions/AD-0007-ai-integration.md). Tool catalogue and 
 
 | Source | Data | Trust |
 |---|---|---|
-| SessionStart hook (Claude Code, Codex) | `session_id`, `cwd`, `transcript_path`, `model` (Codex), source; the hook process's parent PID and start time = **agent process root** | Client-asserted; the agent root is verified by the node (the PID exists, the same user owns it, and its start time matches) |
+| SessionStart hook (Claude Code, Codex) | `session_id`, `cwd`, `transcript_path`, `model` (Codex), source, `permission_mode`; the **agent process root** is the nearest ancestor of the hook process that is a known client executable: hooks run in exec form, and the handler walks up past any shell (A-A02) | Client-asserted fields; the agent root is verified by the node (it exists, the same user owns it, and its start time matches) |
 | SubagentStart/Stop hooks | `agent_id`, `agent_type`, parent `session_id` | Client-asserted |
-| PreToolUse/PostToolUse hooks | `tool_name`, `tool_input` (commands), `tool_use_id`, `agent_id` when inside a subagent | Client-asserted |
-| WorktreeCreate/Remove (Claude Code) | Worktree paths | Client-asserted; matched to workspaces |
-| MCP adapter hello | Adapter PID, parent PID (the AI client process), `clientInfo` (name, version) from `initialize` or `_meta` | Verified PIDs; `clientInfo` client-asserted |
+| PreToolUse/PostToolUse hooks | `tool_name`, `tool_input` (command, `timeout`), `tool_use_id`, `permission_mode`; `agent_id` inside a Claude Code subagent (Codex sends `agent_id` only on Subagent events) | Client-asserted |
+| Worktrees | Session `cwd` and `git worktree list` of registered workspaces. WorktreeCreate/Remove hooks are never configured, because they replace the client's own worktree handling (V-A02). | Observed |
+| MCP adapter hello | Adapter PID and its nearest client-executable ancestor (the AI client process; usually the direct parent), `clientInfo` (name, version) from `initialize` or `_meta` | Verified PIDs; `clientInfo` client-asserted |
 | `ARCFORGES_SESSION` environment variable (Claude Code through `CLAUDE_ENV_FILE`) | Session ID on CLI calls made by Bash commands | Client-carried |
 
 ### 3.2 Correlation rules
 
-1. A session is created by SessionStart, or by the first MCP call whose adapter parent PID matches no session. The latter gets `source=MCP_ONLY` with a synthetic session ID and the client name.
-2. MCP calls are attributed to the session whose agent root PID equals the adapter's parent PID (and start time). Several concurrent sessions of the same client therefore stay separate, because each spawns its own stdio server.
+1. A session is created by SessionStart, or by the first MCP call whose adapter's client ancestor matches no session. The latter gets `source=MCP_ONLY` with a synthetic session ID and the client name.
+2. MCP calls are attributed to the session whose agent root equals the adapter's client ancestor (PID and start time). Several concurrent sessions of the same client therefore stay separate, because each spawns its own stdio server.
 3. Subagent attribution:
-   - Hook-routed commands carry `--agent <agent_id>`.
+   - Claude Code hook-routed commands carry `--agent <agent_id>`. Codex commands cannot be attributed to subagents (its PreToolUse carries no `agent_id`), and coverage says so.
    - MCP calls cannot be attributed to subagents unless the client sends an agent identifier in `_meta`, which no supported client does at design time. MCP work is then attributed to the session with `agent=UNKNOWN`, and coverage says so (R-AI-007).
 4. Process-tree attribution: descendants of a session's agent root belong to the session. Descendants of a subagent cannot be separated by ancestry, because subagents run in-process, so they are attributed to the session only.
 5. The session ends on SessionEnd, when the agent root process exits, or after 24 h of inactivity. Services with `stop_with_session` stop then.
@@ -76,9 +76,12 @@ Decision: [AD-0007](../decisions/AD-0007-ai-integration.md). Tool catalogue and 
    Non-matching commands are `ALLOW_UNCHANGED`.
 3. Rewrite, when the mode is `rewrite` and the client's reachability probe is `PASS` for this environment (§4.2). The command becomes:
 
-   `arcforges run --session <sid> [--agent <aid>] --attach --title "<summary>" --cwd "<cwd>" --shell <client-shell> -- <original command string>`
+   `arcforges run --session <sid> [--agent <aid>] --attach --cancel-when-gone --title "<summary>" --cwd "<cwd>" --shell <client-shell> -- <original command string>`
 
-   The original string is passed verbatim as one argument to the client's own shell (bash on Linux and Git Bash on Windows for Claude Code; the Codex shell), so quoting and semantics are preserved. Output and exit code are byte-identical in attached mode ([04](04-execution.md) §5). The hook returns `permissionDecision: "allow"` with `updatedInput.command` (V-A02, V-A04).
+   - **Quoting.** The original string is passed verbatim as one argument to the client's own shell (bash on Linux and Git Bash on Windows for Claude Code; the Codex shell), so quoting and semantics are preserved. Output and exit code are byte-identical in attached mode ([04](04-execution.md) §5).
+   - **Permission.** The hook returns `updatedInput.command` with `permissionDecision: "ask"` by default. The client shows the rewritten command, and the user's deny and ask rules are evaluated against it (V-A02). `"allow"` is used only when the session runs in `bypassPermissions`, or when a HUMAN sets `routing.rewrite_permission=ALLOW`. That setting pre-approves every matched heavy command, and the integration page warns that deny rules written for the original command no longer match the rewritten form.
+   - **Timeouts and interrupts.** `--cancel-when-gone` binds the task to the CLI process (`SubmitTaskRequest.cancel_when_caller_gone`). When the client kills the command at its tool timeout (Claude Code Bash: default 2 min, maximum 10 min) or on interrupt, the node cancels the task within 5 s, as the original command would have stopped.
+   - **Long work.** If operational memory expects the command to run longer than the client's tool timeout (`tool_input.timeout`, else the client default), the decision is `DENY_WITH_GUIDANCE` towards the MCP `run` tool, which returns a handle instead of blocking (`routing.guide_when_longer_than_client_timeout`, default true).
 4. `DENY_WITH_GUIDANCE`, when the mode is `guide`: deny with the reason text "This command is resource-managed. Use the `run` tool of the `arcforges` MCP server with the same command and working directory." The model sees the reason, and the decision is recorded.
 5. Hook failures fail open: the client proceeds unchanged (Codex documents this; Claude Code proceeds on hook errors other than exit code 2). Coverage counts them as `ROUTE_FAILED`.
 
@@ -113,13 +116,13 @@ The UI and MCP present coverage as observed facts with these labels, never as co
 
 **Claude Code**
 - *MCP server:* user scope via `claude mcp add --scope user arcforges -- arcforges mcp serve` when the CLI is available; otherwise the user-scope configuration file entry. Project scope (`.mcp.json`) only when the user selects it.
-- *Hooks:* `~/.claude/settings.json` (user) or `.claude/settings.local.json` (local), hook entries for the events in [AD-0007](../decisions/AD-0007-ai-integration.md) §2 with command `arcforges hook claude-code <event>`.
+- *Hooks:* `~/.claude/settings.json` (user) or `.claude/settings.local.json` (local), hook entries for the events in [AD-0007](../decisions/AD-0007-ai-integration.md) §2 in exec form: `{"type": "command", "command": "<absolute path to arcforges>", "args": ["hook", "claude-code", "<event>"]}` (no shell; the minimum Claude Code version supporting `args` is recorded by AF-AI-02). Never WorktreeCreate or WorktreeRemove.
 - *Never written:* managed settings.
 - *Plugin alternative:* a marketplace plugin with `hooks/hooks.json`, `.mcp.json` and a skill describing ArcForges usage.
 
 **Codex**
 - *MCP server:* `~/.codex/config.toml` `[mcp_servers.arcforges]`, `command = "arcforges"`, `args = ["mcp","serve"]`, or the project `.codex/config.toml` when the user selects it (it loads only for trusted projects).
-- *Hooks:* `~/.codex/hooks.json` or the project hooks file, plus the trust step shown to the user ("run `/hooks` in Codex to trust ArcForges hooks").
+- *Hooks:* `~/.codex/hooks.json` or the project hooks file, plus the trust step shown to the user ("run `/hooks` in Codex to trust ArcForges hooks"). Codex SessionEnd and interrupt hooks run with short default timeouts (about 1 s), so the handler only records and returns.
 - *Never written:* `requirements.toml` (managed).
 
 ### 6.2 Conflicts detected and reported (never auto-resolved)

@@ -68,7 +68,8 @@ flowchart TB
    - Container present with live processes → re-attach: tail logs from stored offsets, record a `node_gap` segment.
    - Root process finished while the node was down → finalize from the durable exit record `logs/<attempt>/exit.json`:
      - **Linux:** written by `ExecStopPost=arcforges node exit-record`, which systemd runs even without the node (L-13).
-     - **Windows:** written by the `arcforges node exec-wrap` wait-thread; job accounting supplies CPU and peak commit.
+     - **Windows:** written by the attempt's holder (`arcforges node exec-wrap`), with the job accounting.
+   - **Windows re-open.** Jobs stay openable by name because each attempt's holder keeps the child and root job handles until the node acknowledges the exit (L-14). The node re-associates its completion port (clear, then attach; L-15) and queries limit violations it missed.
    - Container absent and no exit record → `LOST` with evidence (`container_missing`, or `boot_changed` when step 4 found a new boot).
 6. Start the platform layer: create or re-open the root container and verify enforcement capabilities. Record `NodeCapabilities`.
    - **Windows:** the root job.
@@ -115,8 +116,8 @@ The client waits for readiness up to 5 s (CLI) or 15 s (Desktop, MCP adapter), t
 
 | Source | Content | Owner |
 |---|---|---|
-| `node.json` (file) | Data root, listener options, LAN port, updater channel, telemetry consent, log level | User (CLI `arcforges config`, Desktop Settings) |
-| Store `policy_document` | All behavioural policy (budgets, pools, routing, approvals, remote control, privacy, retention) | Policy engine (revisioned) |
+| `node.json` (file) | Data root, log level, telemetry consent (`NodeService.GetNodeSettings`/`UpdateNodeSettings`) | User (CLI `arcforges config`, Desktop Settings) |
+| Store `policy_document` | All behavioural policy: budgets, pools, routing, approvals, remote control, privacy, retention, LAN (enabled, port, advertisement), updates (mode, channel, window) | Policy engine (revisioned) |
 | Store `node_setting` | Node name, root relocations, feature toggles | Node |
 | Environment `ARCFORGES_*` | Test hooks only (endpoint override, fake clock), honoured only by debug builds or with `--test-mode` | Tests |
 

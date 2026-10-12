@@ -18,7 +18,7 @@ option java_outer_classname = "NodeCachesProto";
 // Cache registry, settings, reports and verification.
 service CacheService {
   // List registered caches.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -27,7 +27,7 @@ service CacheService {
   rpc ListCaches(CacheServiceListCachesRequest) returns (CacheServiceListCachesResponse);
 
   // Effectiveness, duplicate copies and per-task restores for a period (R-CACHE-008).
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 15 s
   // stream: none
@@ -36,7 +36,7 @@ service CacheService {
   rpc GetCacheReport(CacheServiceGetCacheReportRequest) returns (CacheServiceGetCacheReportResponse);
 
   // Change a cache's quota or LAN sharing (a policy revision).
-  // auth: HUMAN=A SCRIPT=P AGENT=P REMOTE=high
+  // auth: HUMAN=A SCRIPT=P AGENT=P REMOTE=-
   // idempotency: command_id
   // deadline: 5 s
   // stream: none
@@ -45,7 +45,7 @@ service CacheService {
   rpc UpdateCacheSettings(CacheServiceUpdateCacheSettingsRequest) returns (CacheServiceUpdateCacheSettingsResponse);
 
   // Verify a cache under a maintenance lease (bounded to 10 minutes; waits for bound tasks to finish).
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=medium
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: command_id; one verification per cache at a time
   // deadline: 5 s (job continues)
   // stream: none

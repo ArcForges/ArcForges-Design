@@ -178,7 +178,7 @@ CREATE INDEX "ix_fleet_play_notification__unprocessed" ON "fleet_play_notificati
 
 CREATE TABLE "fleet_signing_key" (
   "kid" TEXT NOT NULL,                                                    -- key
-  "purpose" INTEGER NOT NULL CHECK ("purpose" IN (1, 2, 3)),             -- enum: command_signing, entitlement_token, relay_hmac
+  "purpose" INTEGER NOT NULL CHECK ("purpose" IN (1, 2, 3, 4)),          -- enum: command_signing, entitlement_token, relay_hmac, node_issuing_ca
   "algorithm" TEXT NOT NULL,
   "public_key" BLOB,                                                      -- NULL for HMAC keys
   "secret_ref" TEXT NOT NULL,                                             -- name of the platform secret binding; never the key

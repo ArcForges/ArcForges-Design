@@ -19,7 +19,7 @@ option java_outer_classname = "NodeToolchainsProto";
 // Detected toolchains, adapter manifests and invocation previews.
 service ToolchainService {
   // List detected toolchains.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -28,7 +28,7 @@ service ToolchainService {
   rpc ListToolchains(ToolchainServiceListToolchainsRequest) returns (ToolchainServiceListToolchainsResponse);
 
   // Rescan toolchains now.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: command_id; one detection at a time
   // deadline: 5 s (job continues)
   // stream: none
@@ -37,7 +37,7 @@ service ToolchainService {
   rpc DetectToolchains(ToolchainServiceDetectToolchainsRequest) returns (ToolchainServiceDetectToolchainsResponse);
 
   // Adapter manifests with every guarantee stated (R-TOOL-004).
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none

@@ -36,7 +36,7 @@ service WorkspaceService {
   rpc UnregisterWorkspace(WorkspaceServiceUnregisterWorkspaceRequest) returns (WorkspaceServiceUnregisterWorkspaceResponse);
 
   // List workspaces.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -45,7 +45,7 @@ service WorkspaceService {
   rpc ListWorkspaces(WorkspaceServiceListWorkspacesRequest) returns (WorkspaceServiceListWorkspacesResponse);
 
   // Read one workspace with a fresh git status summary.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 10 s
   // stream: none
@@ -54,7 +54,7 @@ service WorkspaceService {
   rpc GetWorkspace(WorkspaceServiceGetWorkspaceRequest) returns (WorkspaceServiceGetWorkspaceResponse);
 
   // Create a node-managed git worktree as a node job (SM-WORKTREE).
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=medium
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: command_id
   // deadline: 10 s (job continues)
   // stream: none
@@ -64,7 +64,7 @@ service WorkspaceService {
   rpc CreateWorktree(WorkspaceServiceCreateWorktreeRequest) returns (WorkspaceServiceCreateWorktreeResponse);
 
   // Remove a managed worktree. A dirty worktree is refused unless archive_changes is set (approval needed).
-  // auth: HUMAN=A SCRIPT=A AGENT=A (clean) / P (archive) REMOTE=high
+  // auth: HUMAN=A SCRIPT=A AGENT=A (clean) / P (archive) REMOTE=-
   // idempotency: command_id
   // deadline: 10 s (job continues)
   // stream: none

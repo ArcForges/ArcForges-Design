@@ -201,5 +201,33 @@ class RepositoryState(unittest.TestCase):
         self.assertEqual({r["id"] for r in model["requirements"]}, cd.requirement_ids())
 
 
+class PlanConsistency(unittest.TestCase):
+    def model_and_graph(self):
+        model = {"requirements": [{"id": "R-EXE-001", "tasks": ["AF-NODE-02"]}]}
+        graph = {"tasks": [{"id": tid, "requirements": ["R-EXE-001"] if tid == "AF-NODE-02" else []}
+                           for tid in sorted(cd.task_ids_in_design())]}
+        return model, graph
+
+    def test_matching_mappings_pass(self):
+        model, graph = self.model_and_graph()
+        rep = cd.Report()
+        cd.check_plan_consistency(rep, model, graph)
+        self.assertEqual(rep.errors, [])
+
+    def test_disagreeing_mappings_fail(self):
+        model, graph = self.model_and_graph()
+        next(t for t in graph["tasks"] if t["id"] == "AF-EXEC-01")["requirements"] = ["R-EXE-001"]
+        rep = cd.Report()
+        cd.check_plan_consistency(rep, model, graph)
+        self.assertTrue(any("R-EXE-001 lists tasks" in e for e in rep.errors), rep.errors)
+
+    def test_unknown_task_fails(self):
+        model, graph = self.model_and_graph()
+        model["requirements"][0]["tasks"].append("AF-NOPE-01")
+        rep = cd.Report()
+        cd.check_plan_consistency(rep, model, graph)
+        self.assertTrue(any("unknown task AF-NOPE-01" in e for e in rep.errors), rep.errors)
+
+
 if __name__ == "__main__":
     unittest.main()

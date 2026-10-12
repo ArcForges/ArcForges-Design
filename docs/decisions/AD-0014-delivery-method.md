@@ -1,6 +1,6 @@
 # AD-0014 — Delivery method: serial development, distinct evidence, honest acceptance
 
-- Status: Accepted (2026-10-12)
+- Status: Accepted (2026-10-12; revised the same day after the independent review: `blocked` state and real dependencies, so one blocked task cannot stall the plan)
 - Supersedes for active development:
   - the parallel delivery model of ArcForges-Design-Parallel (P2-018, DLV-25, DLV-31 build slot, DLV-42 coordinator capacity) and of Plan-Parallel `execution-policy.md`, `single-task-command.md` and `arcforges-implementation.md`;
   - the launcher instruction to "use up to 10 concurrent subagents";
@@ -30,7 +30,9 @@
    - controlled failure scenarios.
 
    They never fake the behaviour under test. Real OS enforcement, deployment and full product acceptance are never claimed from fakes (R-TEST-001).
-7. **Task states (Plan ledger):** `planned`, `active`, `delivered` (merged and published or deployed, own acceptance met at development stage), `complete` (also all completion prerequisites and recorded real-environment evidence that is possible now) and `superseded`.
+7. **Task states (Plan ledger):** `planned`, `active`, `blocked` (waiting on named human prerequisites or register entries; not counted as the active task), `delivered` (merged and published or deployed, own acceptance met at development stage), `complete` (also all completion prerequisites and recorded real-environment evidence that is possible now) and `superseded`.
 
    Deferred real-world validation (acceptance register) does not block `complete` for development-stage scope. It is tracked to its own register entry with prerequisites, trigger and owner.
-8. **Blockers.** A task needing an unavailable human action (credentials, purchases, signing custody, a physical device) completes everything else, records the exact pending human step in the acceptance register, and the plan continues with independent tasks.
+8. **Blockers.** A task needing an unavailable human action (credentials, purchases, signing custody, a physical device, approval to publish) completes everything else and records the exact pending step in the acceptance register.
+   - If the step prevents delivery, the task becomes `blocked` with the register IDs, and the plan continues with the next task that does not depend on it.
+   - The Plan graph's `depends_on` lists only real dependencies (the serial order is separate), so independent tasks are never held back by a blocked one.

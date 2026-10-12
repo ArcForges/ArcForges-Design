@@ -16,6 +16,7 @@ The toolchain registry (`ArcForges.Node.Toolchains`) scans at startup, daily, on
 | `python`, `pip` | `--version` | Version, venv flag |
 | `git` | `git --version` | Version |
 | `sccache`, `ccache` | `--version` | Version |
+| `fastbuild` | `FBuild.exe -version` / `fbuild -version` | Version, path, worker binary presence (`FBuildWorker`) |
 
 Missing tools are reported, never installed by the node (R-TOOL-001).
 
@@ -122,6 +123,20 @@ Adapters are compiled into the node (no runtime plug-ins in this scope). The man
 
 This adapter covers all other commands. It sets only `TMP`/`TEMP`/`TMPDIR` and uses default estimates. Phases come from CPU, I/O and output heuristics alone.
 
+### 3.8 FASTBuild (`FBuild`)
+
+| Operation | Side effect | Estimate | Phases |
+|---|---|---|---|
+| `FBuild <targets>` | IDEMPOTENT (build graph outputs) | N × 1,000 / N × 512 MiB | parse → compile → link |
+| `FBuild -cachetrim <MiB>` | IDEMPOTENT (maintenance) | 1,000 / 256 MiB | maintenance |
+
+- **Concurrency.** `-j<N>` from the CPU grant, unless the caller set `-j` (the caller's value is recorded). Without `-dist`, FASTBuild uses only local workers, so the OS limits of the attempt container fully apply.
+- **Cache.** `FASTBUILD_CACHE_PATH=<cache>/fastbuild` (BEST_EFFORT until F-T02 confirms that it takes precedence over a project's `Settings { .CachePath }`; otherwise the project's cache is reported as observed, not managed). The adapter adds `-cache` (equivalent to `-cacheread` plus `-cachewrite`) when the workspace policy enables compiler caching, or `-cacheread` for a read-only cache (V-T06). FASTBuild sets no cache size limit, so maintenance runs `FBuild -cachetrim <quota MiB>` under the cache's maintenance lease (§4).
+- **Distribution (observed, not managed).** `-dist` with a brokerage path (`FASTBUILD_BROKERAGE_PATH`) sends work to `FBuildWorker` processes on other machines. ArcForges records the use of `-dist` and the brokerage path, and labels the attempt `distributed_by_tool`. It does not run or govern remote workers in this scope: their resource use is outside ArcForges control, and the record says so (R-LAN-010).
+  - **Possible future option:** an executor node runs `FBuildWorker` as a shared service under its per-peer policy. It needs its own decision.
+- **Phase markers:** "Building ", "FBuild: OK", "FBuild: Error", the compiler and linker processes.
+- **Validation.** F-T02 (FASTBuild is not installed on the workstation, L-10; the user installs it, H-11).
+
 ## 4. Cache registry
 
 `cache_instance` rows ([data](../data/node-store.md)):
@@ -133,6 +148,7 @@ This adapter covers all other commands. It sets only `TMP`/`TEMP`/`TMPDIR` and u
 | `nuget.scratch` | `<cache>/nuget/scratch` | 2 GiB | Cleared when no .NET attempt runs | n/a | No |
 | `sccache` | `<cache>/sccache` | 20 GiB (`SCCACHE_CACHE_SIZE`) | Tool LRU | Tool | Yes (§6) |
 | `ccache` | `<cache>/ccache` | 10 GiB (`CCACHE_MAXSIZE`) | Tool LRU | Tool | Yes (§6) |
+| `fastbuild` | `<cache>/fastbuild` | 20 GiB | `FBuild -cachetrim` in maintenance windows | Tool | No (local only in this scope) |
 | `npm` | `<cache>/npm` | 10 GiB | `npm cache verify` (GC) in idle windows | `npm cache verify` | No |
 | `pip` | `<cache>/pip` | 5 GiB | LRU | n/a | No |
 | `cargo.registry` (observed) | `$CARGO_HOME/registry` | none (report only) | none | n/a | No |
@@ -143,6 +159,7 @@ This adapter covers all other commands. It sets only `TMP`/`TEMP`/`TMPDIR` and u
 | Kind | Key |
 |---|---|
 | NuGet, npm, pip | `os-family/arch` (content is version-addressed) |
+| FASTBuild | `fastbuild/version-major.minor/os/arch` |
 | sccache, ccache | `tool/version-major.minor/os/arch`. Compiler identity is hashed by the tool itself. |
 | CAS | none (content-addressed) |
 | Remote workspaces | `origin_node/origin_workspace` |
@@ -166,7 +183,10 @@ Shared daemons run in a node-owned container (Windows child job `Local\ArcForges
 1. The serving node exposes a **WebDAV-compatible subset** on its mTLS peer listener: `OPTIONS`, `PROPFIND` (depth 0/1), `GET`, `HEAD`, `PUT`, `DELETE` under `/cache/<cache_id>/`. Per-peer policy decides read and write access, with a quota enforced per peer (R-CACHE-007).
 2. Tools cannot present client certificates (sccache uses a WebDAV client with basic/bearer authentication, V-T02). Each consuming node therefore runs a **local cache proxy** on `127.0.0.1:<ephemeral>` that forwards to the serving peer over the mTLS channel. The proxy requires a per-node bearer token.
    - sccache: `SCCACHE_WEBDAV_ENDPOINT=http://127.0.0.1:<port>/peer/<peer_id>/cache/<cache_id>/` with `SCCACHE_WEBDAV_TOKEN`.
-   - ccache: `remote_storage=http://127.0.0.1:<port>/peer/<peer_id>/cache/<cache_id>/|bearer-token=...`. This uses ccache's HTTP backend or its remote storage helper, depending on the installed ccache version (F-T01).
+   - ccache: ccache 4.14+ deprecates its built-in HTTP backend in favour of remote storage helpers. ArcForges therefore ships a small helper with the node: `arcforges node ccache-storage`, which implements the ccache remote storage helper protocol and talks to the local proxy.
+     - The setting is `remote_storage = crsh:<helper URL> @bearer-token=<token>`, with whitespace-separated attributes per the installed ccache's manual.
+     - ccache versions without helper support fall back to `http://127.0.0.1:<port>/peer/<peer_id>/cache/<cache_id>/` on the built-in backend (plain HTTP to loopback only).
+     - The adapter records which mode is used, and F-T01 verifies the exact syntax against the installed version.
 3. Multi-level use: sccache `SCCACHE_MULTILEVEL_CHAIN=disk,webdav` keeps the local disk as L0 (V-T02).
 4. Entries are opaque to ArcForges. Integrity is the tool's responsibility; the proxy only enforces size limits (an entry ≤ 256 MiB) and quotas.
 

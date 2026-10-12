@@ -51,8 +51,7 @@
         "docs/contracts/proto/arcforges/node/v1/tasks.proto"
       ],
       "tasks": [
-        "AF-EXEC-01",
-        "AF-EXEC-02"
+        "AF-EXEC-01"
       ],
       "verification": "real Windows and WSL2 launch tests (argv, shell, environment, stdin, quoting corpus)"
     },
@@ -64,8 +63,7 @@
         "docs/contracts/proto/arcforges/node/v1/tasks.proto"
       ],
       "tasks": [
-        "AF-EXEC-01",
-        "AF-EXEC-02",
+        "AF-SCHED-01",
         "AF-AI-01"
       ],
       "verification": "service readiness tests (regex, port, file); stop_with_session"
@@ -122,8 +120,7 @@
         "docs/contracts/proto/arcforges/node/v1/tasks.proto"
       ],
       "tasks": [
-        "AF-EXEC-01",
-        "AF-EXEC-02"
+        "AF-EXEC-01"
       ],
       "verification": "boot-identity change simulation and container-missing recovery tests"
     },
@@ -208,8 +205,7 @@
         "docs/data/node-store.md"
       ],
       "tasks": [
-        "AF-NODE-02",
-        "AF-EXEC-01"
+        "AF-NODE-02"
       ],
       "verification": "store crash-consistency and idempotency tests; closed-loop submit/kill/restart"
     },
@@ -221,8 +217,8 @@
         "docs/contracts/proto/arcforges/node/v1/tasks.proto"
       ],
       "tasks": [
-        "AF-EXEC-01",
-        "AF-EXEC-02"
+        "AF-NODE-02",
+        "AF-EXEC-01"
       ],
       "verification": "real Windows and WSL2 launch tests (argv, shell, environment, stdin, quoting corpus)"
     },
@@ -237,8 +233,7 @@
       ],
       "tasks": [
         "AF-EXEC-01",
-        "AF-EXEC-02",
-        "AF-DIST-02"
+        "AF-EXEC-02"
       ],
       "verification": "kill node during runs; update switch with running executions (F-L03)"
     },
@@ -287,7 +282,6 @@
         "docs/contracts/proto/arcforges/node/v1/resources.proto"
       ],
       "tasks": [
-        "AF-RES-01",
         "AF-SCHED-01"
       ],
       "verification": "budget formula unit tests; headroom and memory admission load tests (15 section 4)"
@@ -300,7 +294,6 @@
         "docs/contracts/proto/arcforges/node/v1/resources.proto"
       ],
       "tasks": [
-        "AF-RES-01",
         "AF-SCHED-01"
       ],
       "verification": "budget formula unit tests; headroom and memory admission load tests (15 section 4)"
@@ -468,6 +461,17 @@
         "AF-TOOL-02"
       ],
       "verification": "real tool runs confirming each redirection and concurrency claim (F-T01)"
+    },
+    {
+      "id": "R-TOOL-006",
+      "design": [
+        "docs/architecture/05-toolchains-caches.md",
+        "docs/contracts/proto/arcforges/node/v1/toolchains.proto"
+      ],
+      "tasks": [
+        "AF-TOOL-02"
+      ],
+      "verification": "real FASTBuild build: cache path precedence, -cachetrim maintenance, -j concurrency (F-T02)"
     },
     {
       "id": "R-CACHE-001",
@@ -766,8 +770,7 @@
         "docs/contracts/proto/arcforges/node/v1/memory.proto"
       ],
       "tasks": [
-        "AF-DIAG-01",
-        "AF-MCP-01"
+        "AF-DIAG-01"
       ],
       "verification": "fact learning, staleness and use-in-admission tests; MCP memory_query"
     },
@@ -778,8 +781,7 @@
         "docs/contracts/proto/arcforges/node/v1/memory.proto"
       ],
       "tasks": [
-        "AF-DIAG-01",
-        "AF-MCP-01"
+        "AF-DIAG-01"
       ],
       "verification": "fact learning, staleness and use-in-admission tests; MCP memory_query"
     },
@@ -864,8 +866,7 @@
         "docs/contracts/proto/arcforges/node/v1/sessions.proto"
       ],
       "tasks": [
-        "AF-AI-01",
-        "AF-AI-02"
+        "AF-AI-01"
       ],
       "verification": "hook fixture routing tests; bypass detection with real process trees"
     },
@@ -877,8 +878,7 @@
         "docs/contracts/proto/arcforges/node/v1/sessions.proto"
       ],
       "tasks": [
-        "AF-AI-01",
-        "AF-AI-02"
+        "AF-AI-01"
       ],
       "verification": "hook fixture routing tests; bypass detection with real process trees"
     },
@@ -941,8 +941,7 @@
         "docs/contracts/proto/arcforges/node/v1/events.proto"
       ],
       "tasks": [
-        "AF-NODE-01",
-        "AF-DESK-01"
+        "AF-NODE-01"
       ],
       "verification": "stream gap/reset tests; cross-surface latency test (15)"
     },
@@ -955,8 +954,7 @@
         "docs/contracts/proto/arcforges/node/v1/events.proto"
       ],
       "tasks": [
-        "AF-NODE-01",
-        "AF-DESK-01"
+        "AF-NODE-01"
       ],
       "verification": "stream gap/reset tests; cross-surface latency test (15)"
     },
@@ -969,8 +967,8 @@
         "docs/contracts/proto/arcforges/node/v1/events.proto"
       ],
       "tasks": [
-        "AF-NODE-01",
-        "AF-DESK-01"
+        "AF-DESK-01",
+        "AF-WEB-03"
       ],
       "verification": "stream gap/reset tests; cross-surface latency test (15)"
     },
@@ -1008,8 +1006,7 @@
         "docs/contracts/errors.md"
       ],
       "tasks": [
-        "AF-CON-01",
-        "AF-NODE-01"
+        "AF-CON-01"
       ],
       "verification": "per-method deadline profiles; version negotiation; error mapping tests"
     },
@@ -1155,6 +1152,7 @@
         "docs/contracts/proto/arcforges/relay/v1/relay.proto"
       ],
       "tasks": [
+        "AF-CLD-01",
         "AF-CLD-04"
       ],
       "verification": "local workerd relay closed loop; hibernation-safe frame handling"
@@ -1205,6 +1203,7 @@
         "docs/architecture/14-commercial-operations.md"
       ],
       "tasks": [
+        "AF-PLAT-01",
         "AF-CLD-04",
         "AF-OPS-01"
       ],
@@ -1239,6 +1238,7 @@
         "docs/experience/cli.md"
       ],
       "tasks": [
+        "AF-CON-02",
         "AF-NODE-01",
         "AF-EXEC-01"
       ],
@@ -1275,7 +1275,10 @@
       ],
       "tasks": [
         "AF-DESK-01",
+        "AF-DESK-02",
+        "AF-WEB-01",
         "AF-WEB-02",
+        "AF-WEB-03",
         "AF-AND-01",
         "AF-ACC-01"
       ],
@@ -1326,6 +1329,8 @@
         "docs/architecture/10-cloud.md"
       ],
       "tasks": [
+        "AF-ID-01",
+        "AF-ID-02",
         "AF-CLD-02",
         "AF-WEB-02"
       ],
@@ -1339,8 +1344,9 @@
         "docs/architecture/11-security-privacy.md"
       ],
       "tasks": [
-        "AF-CLD-02",
-        "AF-DIST-01"
+        "AF-DIST-01",
+        "AF-ID-01",
+        "AF-CLD-02"
       ],
       "verification": "review of labels; no elevation paths"
     },
@@ -1352,9 +1358,7 @@
         "docs/contracts/proto/arcforges/fleet/v1/fleet.proto"
       ],
       "tasks": [
-        "AF-CLD-07",
-        "AF-AND-03",
-        "AF-WEB-02"
+        "AF-COM-01"
       ],
       "verification": "FakePaddle and FakePlayDeveloperApi closed loop; real purchases AR-05, AR-06"
     },
@@ -1367,8 +1371,7 @@
       ],
       "tasks": [
         "AF-CLD-07",
-        "AF-AND-03",
-        "AF-WEB-02"
+        "AF-AND-03"
       ],
       "verification": "FakePaddle and FakePlayDeveloperApi closed loop; real purchases AR-05, AR-06"
     },
@@ -1380,9 +1383,8 @@
         "docs/contracts/proto/arcforges/fleet/v1/fleet.proto"
       ],
       "tasks": [
-        "AF-CLD-07",
-        "AF-AND-03",
-        "AF-WEB-02"
+        "AF-CLD-04",
+        "AF-CLD-07"
       ],
       "verification": "FakePaddle and FakePlayDeveloperApi closed loop; real purchases AR-05, AR-06"
     },
@@ -1415,7 +1417,8 @@
         "docs/decisions/AD-0012-distribution-and-updates.md"
       ],
       "tasks": [
-        "AF-DIST-01"
+        "AF-DIST-01",
+        "AF-DIST-02"
       ],
       "verification": "real install/uninstall tests; signature verification with test keys; production signing AR-04"
     },
@@ -1459,13 +1462,17 @@
       "design": [
         "docs/architecture/14-commercial-operations.md",
         "docs/architecture/11-security-privacy.md",
-        "docs/architecture/10-cloud.md"
+        "docs/architecture/10-cloud.md",
+        "docs/decisions/AD-0011-identity-and-login.md",
+        "docs/contracts/reuse-map.md"
       ],
       "tasks": [
+        "AF-ID-01",
+        "AF-ID-02",
         "AF-CLD-02",
         "AF-WEB-02"
       ],
-      "verification": "reused identity flows with node enrollment"
+      "verification": "identity endpoints on the reused contracts and schema: ScriptedBrowser and FakeMailSender closed loops"
     },
     {
       "id": "R-OPS-002",
@@ -1474,6 +1481,7 @@
         "docs/architecture/11-security-privacy.md"
       ],
       "tasks": [
+        "AF-PLAT-01",
         "AF-CLD-04",
         "AF-OPS-01"
       ],
@@ -1487,8 +1495,8 @@
         "docs/architecture/10-cloud.md"
       ],
       "tasks": [
-        "AF-CLD-04",
-        "AF-REC-01"
+        "AF-REC-01",
+        "AF-CLD-04"
       ],
       "verification": "data-flow tests: no command lines or output leave the node by default"
     },
@@ -1501,6 +1509,7 @@
       ],
       "tasks": [
         "AF-CLD-01",
+        "AF-ID-02",
         "AF-WEB-02"
       ],
       "verification": "deletion and export closed loop; node wipe test"
@@ -1524,6 +1533,7 @@
         "docs/architecture/11-security-privacy.md"
       ],
       "tasks": [
+        "AF-PLAT-01",
         "AF-OPS-01"
       ],
       "verification": "health endpoints, alert rules, runbook review; production AR-09"
@@ -1560,6 +1570,7 @@
       ],
       "tasks": [
         "AF-SEC-01",
+        "AF-PLAT-01",
         "AF-CLD-05"
       ],
       "verification": "audit record tests for privileged and remote actions"
@@ -1594,6 +1605,7 @@
       ],
       "tasks": [
         "AF-REPO-01",
+        "AF-DOCS-01",
         "AF-ACC-01"
       ],
       "verification": "review of each task's evidence"

@@ -20,7 +20,7 @@ option java_outer_classname = "NodeStorageProto";
 // Managed roots, analysis, cleanup plans, quarantine and relocation.
 service StorageService {
   // Usage and quota per managed sub-root and free space per volume.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -29,7 +29,7 @@ service StorageService {
   rpc GetStorageSummary(StorageServiceGetStorageSummaryRequest) returns (StorageServiceGetStorageSummaryResponse);
 
   // List ownership records (architecture 06 section 2).
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 10 s
   // stream: none
@@ -38,7 +38,7 @@ service StorageService {
   rpc ListManagedDirectories(StorageServiceListManagedDirectoriesRequest) returns (StorageServiceListManagedDirectoriesResponse);
 
   // Pin or unpin a managed directory against cleanup and retention.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: command_id
   // deadline: 5 s
   // stream: none
@@ -47,7 +47,7 @@ service StorageService {
   rpc SetDirectoryPinned(StorageServiceSetDirectoryPinnedRequest) returns (StorageServiceSetDirectoryPinnedResponse);
 
   // Start a bounded disk analysis job (architecture 06 section 6).
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=medium
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: command_id; one running analysis per scope (returns it)
   // deadline: 5 s (job continues)
   // stream: none
@@ -56,7 +56,7 @@ service StorageService {
   rpc AnalyzeStorage(StorageServiceAnalyzeStorageRequest) returns (StorageServiceAnalyzeStorageResponse);
 
   // Read an analysis and its items.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 10 s
   // stream: none
@@ -65,7 +65,7 @@ service StorageService {
   rpc GetStorageAnalysis(StorageServiceGetStorageAnalysisRequest) returns (StorageServiceGetStorageAnalysisResponse);
 
   // Create a cleanup plan from an analysis selection or rules. Nothing is acted on during planning.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=medium
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: command_id
   // deadline: 30 s
   // stream: none
@@ -75,7 +75,7 @@ service StorageService {
   rpc PlanCleanup(StorageServicePlanCleanupRequest) returns (StorageServicePlanCleanupResponse);
 
   // Add a path outside managed roots to this plan only. Needs a separate confirmation.
-  // auth: HUMAN=A SCRIPT=D AGENT=D REMOTE=D
+  // auth: HUMAN=A SCRIPT=D AGENT=D REMOTE=-
   // idempotency: command_id
   // deadline: 30 s
   // stream: none
@@ -84,7 +84,7 @@ service StorageService {
   rpc AddExternalPath(StorageServiceAddExternalPathRequest) returns (StorageServiceAddExternalPathResponse);
 
   // Read a cleanup plan with per-item outcomes.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -93,7 +93,7 @@ service StorageService {
   rpc GetCleanupPlan(StorageServiceGetCleanupPlanRequest) returns (StorageServiceGetCleanupPlanResponse);
 
   // Execute selected items of a plan after re-validating each (architecture 06 section 7).
-  // auth: HUMAN=A SCRIPT=P AGENT=P (A for low risk if cleanup.agent_execute=LOW_RISK_ONLY) REMOTE=high
+  // auth: HUMAN=A SCRIPT=P AGENT=P (A for low risk if cleanup.agent_execute=LOW_RISK_ONLY) REMOTE=-
   // idempotency: command_id
   // deadline: 10 s (job continues)
   // stream: none
@@ -103,7 +103,7 @@ service StorageService {
   rpc ExecuteCleanup(StorageServiceExecuteCleanupRequest) returns (StorageServiceExecuteCleanupResponse);
 
   // Cancel a plan that has not started executing.
-  // auth: HUMAN=A SCRIPT=A AGENT=A (own) REMOTE=medium
+  // auth: HUMAN=A SCRIPT=A AGENT=A (own) REMOTE=-
   // idempotency: command_id
   // deadline: 5 s
   // stream: none
@@ -113,7 +113,7 @@ service StorageService {
   rpc CancelCleanupPlan(StorageServiceCancelCleanupPlanRequest) returns (StorageServiceCancelCleanupPlanResponse);
 
   // List quarantined items awaiting purge.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -122,7 +122,7 @@ service StorageService {
   rpc ListQuarantine(StorageServiceListQuarantineRequest) returns (StorageServiceListQuarantineResponse);
 
   // Move a quarantined item back to its original path.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=medium
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: command_id
   // deadline: 30 s
   // stream: none
@@ -131,7 +131,7 @@ service StorageService {
   rpc RestoreQuarantine(StorageServiceRestoreQuarantineRequest) returns (StorageServiceRestoreQuarantineResponse);
 
   // Relocate a managed sub-root (copy, verify, switch; the old location is quarantined). Refused while attempts use it.
-  // auth: HUMAN=A SCRIPT=P AGENT=D REMOTE=D
+  // auth: HUMAN=A SCRIPT=P AGENT=D REMOTE=-
   // idempotency: command_id
   // deadline: 10 s (job continues)
   // stream: none

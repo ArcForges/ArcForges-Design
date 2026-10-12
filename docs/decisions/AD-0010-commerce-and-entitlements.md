@@ -20,7 +20,7 @@
    5. **Restore:** the app queries existing purchases and resubmits their tokens. Purchases made outside the app (no account identifier) are linked to the signed-in account only after explicit confirmation.
 4. **One entitlement snapshot per account** combines all sources with source precedence. A user holding both web and Play subscriptions is warned about the duplicate. Entitlement is the union, with no double grant of quantity-based features.
 5. **Offline enforcement on nodes.**
-   - The cloud issues a signed **entitlement token** to each enrolled node: Ed25519, the account's plan features, `not_after` = now + 14 days, and refresh at least every 24 h while online.
+   - The cloud issues a signed **entitlement token** to each enrolled node: ES256 (ECDSA P-256; .NET has no built-in Ed25519, V-N05), the account's plan features, `not_after` = now + 14 days, and refresh at least every 24 h while online.
    - Nodes verify it with the embedded public key set, which is rotated through releases and the relay.
    - On expiry, only the gated features (LAN placement, LAN cache, relay) stop for new work. Running tasks are never interrupted (R-COM-004).
 6. **Failure states shown to users:** payment failed (dunning), on hold, grace period, pending (Play `PENDING` purchases are not granted), refunded (revoked immediately) and region-restricted.

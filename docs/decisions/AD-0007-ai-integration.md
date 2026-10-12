@@ -1,6 +1,6 @@
 # AD-0007 — AI client integration: MCP first, hooks for identity and routing, honest coverage
 
-- Status: Accepted (2026-10-12)
+- Status: Accepted (2026-10-12; revised after the independent review the same day: no worktree hooks, exec-form hooks, `ask` for rewrites, caller-bound rewritten runs, guardrail wording)
 - Evidence: V-A01–V-A05, A-A01 ([platform verification](../verification/platform-capabilities.md))
 
 ## Decision
@@ -10,8 +10,12 @@
    - It supports MCP revisions **2025-11-25** (initialize handshake) and **2026-07-28** (stateless, `server/discover`), chosen per request by the client's declared version. Task handles are explicit, server-minted tool arguments.
    - Long work returns within a bounded wait (default 45 s, maximum 55 s) with state, an output tail and the handle. Where a client declares the `io.modelcontextprotocol/tasks` extension, the adapter returns task handles as the extension defines.
 2. **Identity through hooks.** The `arcforges hook <client> <event>` handler is configured for:
-   - Claude Code: SessionStart, SessionEnd, SubagentStart, SubagentStop, PreToolUse and PostToolUse (Bash), WorktreeCreate and WorktreeRemove;
+   - Claude Code: SessionStart, SessionEnd, SubagentStart, SubagentStop, Stop, and PreToolUse and PostToolUse (Bash);
    - Codex: SessionStart, SessionEnd, SubagentStart, SubagentStop, PreToolUse and PostToolUse.
+
+   **Never WorktreeCreate or WorktreeRemove.** A configured Claude Code WorktreeCreate hook *replaces* git worktree creation and must print the path; a WorktreeRemove hook that exits 0 counts as removed. Observing them would break `--worktree` sessions and subagent isolation (V-A02). Worktrees are observed instead through the session's `cwd` and `git worktree list` in registered workspaces.
+
+   **Exec form.** Hooks are configured in exec form (`command` = the absolute `arcforges` path, `args` = `["hook", "<client>", "<event>"]`; no shell) wherever the client supports it. The handler finds the agent process by walking up from its parent to the nearest ancestor that is a known client executable (A-A02).
 
    It registers the session (`session_id`), subagents (`agent_id`, `agent_type`), the working directory, the transcript path where given, and the **agent process identity** (the hook process's parent PID and start time). On Claude Code it writes `ARCFORGES_SESSION=<id>` to `CLAUDE_ENV_FILE`, so later commands carry the session.
 3. **Command routing (opt-in per workspace or client):**
@@ -19,7 +23,7 @@
 | Mode | Mechanism | Enabled when |
 |---|---|---|
 | `mcp` | Agent uses `run` and related MCP tools | Always available |
-| `rewrite` | PreToolUse returns `allow` with `updatedInput` replacing a matching shell command with `arcforges run --session … --agent … --attach -- <original>` | Only if the per-client **reachability probe** passes inside that client's command environment (A-A01), and policy allows |
+| `rewrite` | PreToolUse returns `updatedInput` replacing a matching shell command with `arcforges run --session … --agent … --attach --cancel-when-gone -- <original>`, with `permissionDecision: "ask"`, so the user confirms the rewritten command. `"allow"` (which skips the user's permission prompt) is used only under `bypassPermissions` or when a HUMAN sets `routing.rewrite_permission=ALLOW`, with a stated warning. A command whose expected duration exceeds the client's tool timeout is guided to MCP `run` instead. | Only if the per-client **reachability probe** passes inside that client's command environment (A-A01), and policy allows |
 | `guide` | PreToolUse denies matching heavy commands with a reason directing the agent to the MCP `run` tool | When rewrite is unavailable and policy prefers guidance |
 | `observe` | No routing; heavy unmanaged descendants are recorded and reported | Default for unmatched commands, or when hooks are disabled |
 
@@ -35,4 +39,10 @@
    - It reports conflicts: hooks disabled (`disableAllHooks`, `allowManagedHooksOnly`, `allow_managed_hooks_only`), hooks untrusted (Codex `/hooks`), a sandbox denying IPC, or project instructions that prescribe other build entry points.
    - It never edits a repository's instruction files (AGENTS.md, CLAUDE.md). It offers a snippet the user may add.
 7. **Packaging.** Claude Code and Codex plugin packages bundle the MCP configuration, hooks and skills. Installing a plugin never installs or authorizes the native node. The plugin's SessionStart hook detects a missing node and prints install guidance (R-DIST-004).
-8. **No self-modification.** Managed tasks cannot write the ArcForges installation directory: Windows uses an ACL deny for the user's own write access on the versioned app directory, inherited by managed jobs; Linux installs files read-only. Policy and configuration changes requested through MCP go through `PolicyService` with approval where the policy demands it (R-AI-009).
+8. **Guardrails against self-modification, not a security boundary.** Managed tasks run as the same user as the node, so nothing that user can do is technically impossible for them. The node raises the cost of accidental damage:
+   - **Read-only versions.** Version directories are installed read-only, and the node verifies their digests at startup (with a finding on mismatch).
+   - **Approvals.** Policy and configuration changes requested through MCP go through `PolicyService` with approval where policy demands it.
+   - **Tamper detection.** A file watcher reports out-of-band edits of `node.json` and the store directory by other processes (finding `ENFORCEMENT_DEGRADED`).
+   - **Optional Linux hardening.** Managed transient units get `ReadOnlyPaths=` for the installation and `InaccessiblePaths=` for the node store and secrets, where the user manager supports it (A-L04).
+
+   Documented bypasses include direct same-user writes and spawning a pseudo-terminal to look interactive (R-AI-009, [11](../architecture/11-security-privacy.md) §1).

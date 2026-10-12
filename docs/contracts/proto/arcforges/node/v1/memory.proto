@@ -18,7 +18,7 @@ option java_outer_classname = "NodeMemoryProto";
 // Inspect, query and forget operational memory facts (R-MEM-003).
 service MemoryService {
   // List facts.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -27,7 +27,7 @@ service MemoryService {
   rpc ListFacts(MemoryServiceListFactsRequest) returns (MemoryServiceListFactsResponse);
 
   // Read one fact.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -45,7 +45,7 @@ service MemoryService {
   rpc QueryFacts(MemoryServiceQueryFactsRequest) returns (MemoryServiceQueryFactsResponse);
 
   // Delete one fact or every fact under a scope prefix.
-  // auth: HUMAN=A SCRIPT=A AGENT=P REMOTE=medium
+  // auth: HUMAN=A SCRIPT=A AGENT=P REMOTE=-
   // idempotency: command_id
   // deadline: 10 s
   // stream: none

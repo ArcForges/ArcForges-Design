@@ -21,7 +21,7 @@ Requirement: R-PERF-001. Every target names its measurement. "Workstation" means
 
 | Target | Value | Measurement | Where |
 |---|---|---|---|
-| Idle CPU | ≤ 0.5% of one core (10-minute average) | Process CPU time delta, LAN and cloud off. Timers: monitor 1 s, diagnosis 30 s. | Workstation, both OSes |
+| Idle CPU | ≤ 0.5% of one core (10-minute average) | Process CPU time delta, LAN and cloud off. Timers: monitor 1 s; diagnosis 15 s per running attempt (none while idle) and 60 s for node-wide rules ([07](07-records-diagnosis-memory.md) §2). | Workstation, both OSes |
 | Idle memory | Windows ≤ 60 MB private bytes (node + supervisor); Linux ≤ 70 MB RSS | After 10 minutes idle, with a store of 10,000 attempts | Workstation |
 | Under load: 50 concurrent executions (synthetic `TestLoad` workers) | Node ≤ 2% of one core (excluding the executions), ≤ 150 MB | 10-minute steady state | Workstation |
 | Per-execution helper overhead | Windows `exec-wrap` ≤ 3 MB private each; Linux 0 (`exit-record` runs only at exit) | Private bytes of the helper process | Workstation |

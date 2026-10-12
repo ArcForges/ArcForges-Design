@@ -214,6 +214,24 @@ service NodeEnrollmentService {
   // errors: none (implicit codes only)
   // locality: cloud
   rpc GetEntitlementKeys(NodeEnrollmentServiceGetEntitlementKeysRequest) returns (NodeEnrollmentServiceGetEntitlementKeysResponse);
+
+  // Reserve a consented support-bundle upload for a case of the node's account. Returns a short-lived R2 upload URL bound to the size and SHA-256 (architecture 10 section 3.11).
+  // auth: node credential; plan limit on support uploads per day
+  // idempotency: command_id
+  // deadline: 10 s
+  // stream: none
+  // errors: STATE/not_found, RESOURCE/rate_limited, RESOURCE/too_large, RESOURCE/kill_switch_active, VALIDATION/invalid_argument
+  // locality: cloud
+  rpc BeginSupportUpload(NodeEnrollmentServiceBeginSupportUploadRequest) returns (NodeEnrollmentServiceBeginSupportUploadResponse);
+
+  // Confirm an upload: the host verifies the object's size and SHA-256 in R2, then attaches it to the case as a message with a diagnostic reference (expires after 30 days).
+  // auth: node credential
+  // idempotency: natural: completing a completed upload returns the same message
+  // deadline: 20 s
+  // stream: none
+  // errors: STATE/not_found, STATE/expired, STATE/invalid_state
+  // locality: cloud
+  rpc CompleteSupportUpload(NodeEnrollmentServiceCompleteSupportUploadRequest) returns (NodeEnrollmentServiceCompleteSupportUploadResponse);
 }
 
 message NodeEnrollmentServiceBeginNodeSignInRequest {
@@ -488,7 +506,7 @@ message NodeEnrollmentServicePollPhonePairingResponse {
 }
 message NodeEnrollmentServicePollPhonePairingValue {
   PhonePairingView pairing = 10 [json_name = "pairing"];
-  MobileSessionCredentials credentials = 11 [json_name = "credentials"]; // CONFIRMED only; the pairing becomes COMPLETED
+  MobileSessionCredentials credentials = 11 [json_name = "credentials"]; // CONFIRMED only, scope LIMITED; the pairing becomes COMPLETED
 }
 
 message NodeEnrollmentServiceIssueNodeCertificateRequest {
@@ -573,6 +591,49 @@ message NodeEnrollmentServiceGetEntitlementKeysResponse {
 message NodeEnrollmentServiceGetEntitlementKeysValue {
   repeated PublicKey entitlement_keys = 10 [json_name = "entitlementKeys"];
   repeated PublicKey command_keys = 11 [json_name = "commandKeys"];
+}
+
+message NodeEnrollmentServiceBeginSupportUploadRequest {
+  arcforges.foundation.v1.RequestMeta meta = 1 [json_name = "meta"];
+  reserved 2 to 9;
+  optional string case_reference = 10 [json_name = "caseReference"]; // validate: a case of the account, or empty with new_case_subject
+  optional string new_case_subject = 11 [json_name = "newCaseSubject"]; // validate: 1..200 chars when case_reference is empty; creates the case
+  optional string file_name = 12 [json_name = "fileName"]; // validate: 1..128 chars of [A-Za-z0-9._-]
+  optional uint64 size_bytes = 13 [json_name = "sizeBytes"]; // validate: 1 byte..100 MiB
+  optional string sha256 = 14 [json_name = "sha256"]; // validate: 64 lowercase hex characters
+}
+message NodeEnrollmentServiceBeginSupportUploadResponse {
+  arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
+  oneof outcome {
+    NodeEnrollmentServiceBeginSupportUploadValue value = 2 [json_name = "value"];
+    arcforges.foundation.v1.ArcError error = 3 [json_name = "error"];
+  }
+  reserved 4 to 9;
+}
+message NodeEnrollmentServiceBeginSupportUploadValue {
+  arcforges.foundation.v1.Id upload_id = 10 [json_name = "uploadId"];
+  arcforges.foundation.v1.Id case_id = 11 [json_name = "caseId"];
+  optional string upload_url = 12 [json_name = "uploadUrl"]; // R2 presigned PUT, valid 15 minutes, requires the declared length and x-amz-checksum-sha256
+  arcforges.foundation.v1.Instant expires_at = 13 [json_name = "expiresAt"];
+}
+
+message NodeEnrollmentServiceCompleteSupportUploadRequest {
+  arcforges.foundation.v1.RequestMeta meta = 1 [json_name = "meta"];
+  reserved 2 to 9;
+  arcforges.foundation.v1.Id upload_id = 10 [json_name = "uploadId"]; // validate: required; issued to this node
+}
+message NodeEnrollmentServiceCompleteSupportUploadResponse {
+  arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
+  oneof outcome {
+    NodeEnrollmentServiceCompleteSupportUploadValue value = 2 [json_name = "value"];
+    arcforges.foundation.v1.ArcError error = 3 [json_name = "error"];
+  }
+  reserved 4 to 9;
+}
+message NodeEnrollmentServiceCompleteSupportUploadValue {
+  arcforges.foundation.v1.Id case_id = 10 [json_name = "caseId"];
+  arcforges.foundation.v1.Id message_id = 11 [json_name = "messageId"];
+  arcforges.foundation.v1.Instant object_expires_at = 12 [json_name = "objectExpiresAt"];
 }
 
 // Node registry, relay tokens, viewer grants, live fleet state and remote commands.
@@ -1168,7 +1229,7 @@ message AccountSummary {
 
 message PublicKey {
   optional string kid = 1 [json_name = "kid"];
-  optional string algorithm = 2 [json_name = "algorithm"]; // "Ed25519"
+  optional string algorithm = 2 [json_name = "algorithm"]; // "ES256" (ECDSA P-256 with SHA-256)
   optional bytes key = 3 [json_name = "key"];
   arcforges.foundation.v1.Instant not_before = 4 [json_name = "notBefore"];
   arcforges.foundation.v1.Instant not_after = 5 [json_name = "notAfter"];
@@ -1177,12 +1238,12 @@ message PublicKey {
 // A detached-signature container: payload is a serialized message, signature covers payload bytes.
 message SignedBlob {
   optional bytes payload = 1 [json_name = "payload"];
-  optional bytes signature = 2 [json_name = "signature"];
+  optional bytes signature = 2 [json_name = "signature"]; // IEEE P1363 r||s (64 bytes)
   optional string kid = 3 [json_name = "kid"];
-  optional string algorithm = 4 [json_name = "algorithm"]; // "Ed25519" (cloud) or "ES256" (node)
+  optional string algorithm = 4 [json_name = "algorithm"]; // "ES256" for cloud keys and node keys
 }
 
-// Payload of the entitlement token (SignedBlob, Ed25519).
+// Payload of the entitlement token (SignedBlob, ES256).
 message EntitlementClaims {
   arcforges.foundation.v1.Id account_id = 1 [json_name = "accountId"];
   arcforges.foundation.v1.Id node_id = 2 [json_name = "nodeId"];
@@ -1206,12 +1267,19 @@ message NodeCredentials {
   arcforges.foundation.v1.Id installation_id = 9 [json_name = "installationId"];
 }
 
+enum MobileSessionScope {
+  MOBILE_SESSION_SCOPE_UNSPECIFIED = 0;
+  MOBILE_SESSION_SCOPE_LIMITED = 1; // fleet view, push registration, low-risk commands; obtained by QR pairing
+  MOBILE_SESSION_SCOPE_ACCOUNT = 2; // full account session after a step-up on the phone (passkey or e-mail code)
+}
+
 message MobileSessionCredentials {
-  optional string refresh_token = 1 [json_name = "refreshToken"]; // reused Identity session machinery; installation kind MOBILE
+  optional string refresh_token = 1 [json_name = "refreshToken"]; // Identity native-bearer session; product arcforges-mobile
   optional string access_token = 2 [json_name = "accessToken"];
   arcforges.foundation.v1.Instant access_expires_at = 3 [json_name = "accessExpiresAt"];
   AccountSummary account = 4 [json_name = "account"];
   arcforges.foundation.v1.Id installation_id = 5 [json_name = "installationId"];
+  optional MobileSessionScope scope = 6 [json_name = "scope"];
 }
 
 message NodeSignInFlowView {
@@ -1360,6 +1428,7 @@ message FleetNode {
   arcforges.foundation.v1.Instant enrolled_at = 10 [json_name = "enrolledAt"];
   StatusSummary summary = 11 [json_name = "summary"]; // cached by the relay; absent when never connected
   optional bool relay_enabled = 12 [json_name = "relayEnabled"];
+  arcforges.foundation.v1.Id device_id = 13 [json_name = "deviceId"]; // the node's own device record (publicapi.v1.DeviceService)
 }
 
 // Commands a viewer may send to a node (AD-0009 section 5). Risk is fixed per kind.
@@ -1431,7 +1500,7 @@ message StopNodeCommand {
   optional bool cancel_running = 1 [json_name = "cancelRunning"];
 }
 
-// Payload of the signed command envelope (SignedBlob, Ed25519, cloud key).
+// Payload of the signed command envelope (SignedBlob, ES256, cloud command key).
 message NodeCommand {
   arcforges.foundation.v1.Id command_id = 1 [json_name = "commandId"];
   arcforges.foundation.v1.Id account_id = 2 [json_name = "accountId"];
@@ -1454,8 +1523,9 @@ message NodeCommandResult {
     arcforges.foundation.v1.Receipt receipt = 10 [json_name = "receipt"];
     arcforges.foundation.v1.ArcError error = 11 [json_name = "error"];
   }
-  optional bytes output_tail = 20 [json_name = "outputTail"]; // ReadOutputTail only
+  optional bytes output_tail_sha256 = 20 [json_name = "outputTailSha256"]; // ReadOutputTail only; the tail travels in relay OutputTail frames and is never stored
   optional string detail = 21 [json_name = "detail"];
+  optional uint32 output_tail_bytes = 22 [json_name = "outputTailBytes"];
 }
 
 message RemoteCommandView {

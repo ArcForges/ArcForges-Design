@@ -588,15 +588,26 @@ def check_traceability(rep: Report, plan: Path | None) -> None:
     for rid in sorted(reqs - covered):
         rep.error(f"traceability: requirement {rid} not traced")
     if plan:
-        graph = json.loads(read(plan))
-        tasks = {t["id"] for t in graph["tasks"]}
-        for tid, where in sorted(task_ids_in_design().items()):
-            if tid not in tasks:
-                rep.error(f"task {tid} referenced in {sorted(where)} is not in the delivery graph")
-        for entry in model.get("requirements", []):
-            for tid in entry.get("tasks", []):
-                if tid not in tasks:
-                    rep.error(f"traceability: {entry['id']} names unknown task {tid}")
+        check_plan_consistency(rep, model, json.loads(read(plan)))
+
+
+def check_plan_consistency(rep: Report, model: dict, graph: dict) -> None:
+    """The traceability model and the Plan delivery graph must name the same tasks per requirement."""
+    tasks = {t["id"] for t in graph["tasks"]}
+    for tid, where in sorted(task_ids_in_design().items()):
+        if tid not in tasks:
+            rep.error(f"task {tid} referenced in {sorted(where)} is not in the delivery graph")
+    by_req: dict[str, set[str]] = {}
+    for t in graph["tasks"]:
+        for r in t.get("requirements", []):
+            by_req.setdefault(r, set()).add(t["id"])
+    for entry in model.get("requirements", []):
+        have = set(entry.get("tasks", []))
+        for tid in sorted(have - tasks):
+            rep.error(f"traceability: {entry['id']} names unknown task {tid}")
+        want = by_req.get(entry["id"], set())
+        if have != want:
+            rep.error(f"traceability: {entry['id']} lists tasks {sorted(have)} but the delivery graph has {sorted(want)}")
 
 
 # ----------------------------------------------------------------------------- main

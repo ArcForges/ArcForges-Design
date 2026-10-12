@@ -4,7 +4,7 @@ Decision: [AD-0008](../decisions/AD-0008-lan-trust-and-placement.md). Contracts:
 
 ## 1. Listener and identity
 
-- The listener is TCP `0.0.0.0:47820` (configurable; IPv6 dual-stack where available). Kestrel HTTPS uses TLS 1.3 only and requires a client certificate. It is enabled when the user turns on LAN features. WSL2 mirrored networking exposes the guest on the LAN (L-12), but guest nodes do **not** open a LAN listener by default: their LAN presence is through the host node.
+- The listener is TCP `0.0.0.0:47820` (configurable; IPv6 dual-stack where available). Kestrel HTTPS uses TLS 1.3 only and requires a client certificate. It is enabled when the user turns on LAN features. The TLS layer accepts any well-formed client certificate, but refuses invalid or revoked account certificates. A gRPC interceptor then limits unpaired identities to `PeerHandshakeService.Hello` and `PairingService`, and every other service requires a pinned or same-account identity (AD-0008 §4). WSL2 mirrored networking exposes the guest on the LAN (L-12), but guest nodes do **not** open a LAN listener by default: their LAN presence is through the host node.
 - **Node key:** ECDSA P-256. On Windows it is stored as a CNG key with export disabled, in the user profile. On Linux it is a 0600 PKCS#8 file in the data root. The self-signed certificate SAN contains `URI:arcforges:node:<node_id>`.
 - **Account certificate (Pro, signed in):**
   1. The node submits a CSR to `NodeEnrollmentService.IssueNodeCertificate`.
@@ -17,7 +17,7 @@ Decision: [AD-0008](../decisions/AD-0008-lan-trust-and-placement.md). Contracts:
 
 | Mechanism | Detail |
 |---|---|
-| DNS-SD | Service `_arcforges._tcp.local`, instance `<node name>`. TXT records: `id` (node ID, base32), `v` (protocol range, for example `1-1`), `fp` (first 16 hex digits of the certificate SHA-256), `acct` (first 8 hex digits of the account-ID hash, or `-`), `tls=1`. Windows registers and browses with `DnsServiceRegister`/`DnsServiceBrowse` (V-T04). Linux uses the in-process responder and browser (RFC 6762/6763 subset: PTR, SRV, TXT, A, AAAA; probing; announcements; TTL 120 s). |
+| DNS-SD | Service `_arcforges._tcp.local`, instance `<node name>`. TXT records: `id` (node ID, base32), `v` (protocol range, for example `1-1`), `fp` (first 16 hex digits of the certificate SHA-256), `tls=1`, and `acct` (first 8 hex digits of a per-account hash) only when `lan.advertise_account_hint` is on (default off). Advertising is limited to networks the user marks as trusted: Windows Private-category networks, and on Linux the interfaces the user selects. Windows registers and browses with `DnsServiceRegister`/`DnsServiceBrowse` (V-T04). Linux uses the in-process responder and browser (RFC 6762/6763 subset: PTR, SRV, TXT, A, AAAA; probing; announcements; TTL 120 s). |
 | Manual | `PeerService.AddPeerAddress(host, port)` |
 | Account hints (Pro) | `NodeEnrollmentService.GetLanHints` returns same-account nodes' last LAN endpoints and fingerprints |
 | Advertisement control | Policy `lan.advertise` (default true while LAN features are on) |
@@ -35,10 +35,13 @@ Both nodes hold account certificates for the same `account_id`. After the mTLS h
 1. A user starts pairing on node A for discovered peer B (`PeerService.BeginPairing`). B shows an incoming request to its user, which can be accepted or rejected.
 2. A opens a TLS connection to B using self-signed certificates, unverified for now.
 3. The commitment exchange (`peer.v1.PairingService`, all over that TLS session):
-   1. A sends `commit = SHA-256(nonce_A ‖ fp_A ‖ exporter)`, where `exporter` = TLS exported keying material (label `"EXPORTER-arcforges-pairing"`, 32 bytes).
-   2. B sends `nonce_B` and `fp_B`.
-   3. A reveals `nonce_A` and `fp_A`, and B verifies the commitment.
-4. Both compute `SAS = uint32(HMAC-SHA-256(nonce_A ‖ nonce_B, fp_A ‖ fp_B ‖ exporter ‖ "arcforges-pairing-v1")[0..4]) mod 1,000,000`, shown as six digits.
+   1. A sends `commit = SHA-256(nonce_A ‖ fp_A)`.
+   2. B sends `nonce_B` and `fp_B`. A checks that `fp_B` equals the certificate B presented in this TLS session.
+   3. A reveals `nonce_A` and `fp_A`. B verifies the commitment, and checks that `fp_A` equals the client certificate A presented.
+4. Both compute `SAS = uint32(HMAC-SHA-256(nonce_A ‖ nonce_B, fp_A ‖ fp_B ‖ "arcforges-pairing-v1")[0..4]) mod 1,000,000`, shown as six digits.
+   - **Why it defeats a man in the middle.** An attacker presents its own certificates to each side, so the two sides use different fingerprints and compute different digits.
+   - **Why the commitment matters.** It stops the attacker from choosing a nonce after seeing the other, so it cannot search for colliding digits.
+   - **No exporter.** None is used, because .NET 10 does not expose one (V-N05).
 5. Both users confirm the digits match (`ConfirmPairing`). Each node pins the other's certificate fingerprint, and the peer becomes `PAIRED (PINNED)`.
 6. Mismatch, rejection or a 120 s timeout aborts the pairing. Five failed attempts per peer per hour block it (R-LAN-002).
 
@@ -66,12 +69,15 @@ For each task with `placement=ANY` (or naming a node), the origin computes for e
 
 ```
 eligible(c) = constraints met (os, arch, toolchains, labels) ∧ policy allows ∧ peer reachable ∧ compatible protocol
-score(c) = w_t · est_start_delay(c) + w_d · est_duration(c) + w_x · transfer_seconds(c) − w_c · cache_warmth(c)
+score(c) = est_start_delay(c) + est_duration(c) + transfer_seconds(c) − warmth_bonus(c)      (all terms in seconds)
   est_start_delay: from the candidate's offer (queue ETA)
-  est_duration: operational memory DURATION p50 scaled by the candidate's CPU class (relative benchmark score exchanged at pairing)
+  est_duration: the candidate's own DURATION p50 for this command fingerprint when it holds an ACTIVE fact (exchanged in the offer);
+                otherwise the origin's p50 scaled by the candidate's CPU class (relative benchmark score exchanged at pairing)
   transfer_seconds: (input bytes the candidate lacks) / measured LAN throughput (EWMA of past transfers, default 50 MB/s)
   cache_warmth: share of the task's cache bindings for which the candidate holds a matching compat_key cache with hits in the last 7 days
-defaults: w_t = w_d = w_x = 1 (seconds), w_c = 60 s × cache_warmth
+  warmth_bonus: w_c · cache_warmth(c) only when est_duration is borrowed from another node; 0 when it is the candidate's own fact,
+                because that fact already reflects the candidate's cache state (no double counting)
+defaults: w_c = 60 s (so a fully warm cache is worth one minute); cache_warmth is in [0, 1]
 choose argmin(score); local wins ties.
 ```
 
@@ -99,7 +105,7 @@ Placement is re-evaluated only before start. Running attempts never migrate (R-L
   1. The executor calls `PutManifest` on itself.
   2. It computes what is missing against its CAS and the remote workspace's current manifest.
   3. It pulls blobs from the origin with `DownloadBlob` (server stream, 4 MiB chunks, SHA-256 verified per blob, resumable by offset).
-  4. It materializes the remote workspace `work/remote/<origin_node>/<origin_workspace>/` by hardlinking from the CAS on the same volume (copying otherwise), and deletes files absent from the manifest inside that directory only.
+  4. It materializes the remote workspace `work/remote/<origin_node>/<origin_workspace>/` by copying from the CAS, or by block-cloning where the file system supports it (Windows ReFS/Dev Drive `FSCTL_DUPLICATE_EXTENTS_TO_FILE`, Linux `FICLONE`). It never hardlinks, because builds that write in place would corrupt the stored blob and every workspace sharing it. Files absent from the manifest are deleted inside that directory only.
 - **Outputs** use the same mechanism in reverse, origin pulling.
 - **Limits:** a manifest has at most 2 million entries; a single transfer at most 100 GiB. Both are configurable. All traffic stays on the peer connection and never routes through the cloud (R-LAN-006).
 
@@ -126,4 +132,11 @@ Each is verified offline from the signed entitlement token ([AD-0010](../decisio
 
 ## 9. WSL guests are not LAN peers
 
-The host–guest link uses the `wsl.exe` bridge and `peer.v1.GuestLinkService` over a byte stream ([03](03-resource-control.md) §6). Trust is established by the host launching the bridge as the same user plus a link token, not by pairing. A guest appears in the UI as part of its host machine.
+The host–guest link uses the `wsl.exe` bridge and `peer.v1.GuestLinkService` over a byte stream ([03](03-resource-control.md) §6). A guest appears in the UI as part of its host machine.
+
+- **Discovery.** The host lists WSL2 distributions (`wsl.exe --list --verbose`). For each running one, it checks for the guest binary at `~/.local/share/arcforges/app/current/arcforges` or `/usr/bin/arcforges`, using `wsl.exe -d <distro> --exec test -x <path>`.
+- **Trust.**
+  - **The bridge.** The host launches the bridge as the same Windows user. The guest node accepts the bridge only from its own uid (`SO_PEERCRED`).
+  - **First link (trust on first use).** The host generates a 32-byte link token, stored in the Windows Credential Manager, and sends it with its node ID. The guest pins that host node ID and the token's hash (`host_link`).
+  - **Later links** must present the same host and token. A link from a different host is refused and recorded (`ResourceService.GetHostLink`). The user accepts the new host inside the guest with `arcforges guests trust-host <host-node-id>` (`TrustHost`, HUMAN and interactive only); its next link is then pinned as on first use.
+- **No pairing.** Guests are never paired as LAN peers.

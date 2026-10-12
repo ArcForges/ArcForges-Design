@@ -44,7 +44,7 @@ service SupportService {
   rpc ListSupportBundles(SupportServiceListSupportBundlesRequest) returns (SupportServiceListSupportBundlesResponse);
 
   // Upload a reviewed bundle to a support case with explicit consent.
-  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=D
+  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=-
   // idempotency: command_id
   // deadline: 10 s (upload continues)
   // stream: none

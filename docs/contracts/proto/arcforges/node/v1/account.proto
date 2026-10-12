@@ -18,7 +18,7 @@ option java_outer_classname = "NodeAccountProto";
 // Account link, sign-in, phone pairing, entitlement and cloud link.
 service AccountService {
   // Account, entitlement, enrollment and relay state.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -27,7 +27,7 @@ service AccountService {
   rpc GetAccountStatus(AccountServiceGetAccountStatusRequest) returns (AccountServiceGetAccountStatusResponse);
 
   // Start a browser (PKCE loopback) or device-code sign-in. The node completes it itself.
-  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=D
+  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=-
   // idempotency: command_id; one active flow at a time (returns it)
   // deadline: 15 s
   // stream: none
@@ -37,7 +37,7 @@ service AccountService {
   rpc BeginSignIn(AccountServiceBeginSignInRequest) returns (AccountServiceBeginSignInResponse);
 
   // Read the state of a sign-in flow.
-  // auth: HUMAN=A SCRIPT=A AGENT=D REMOTE=D
+  // auth: HUMAN=A SCRIPT=A AGENT=D REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -46,7 +46,7 @@ service AccountService {
   rpc GetSignInFlow(AccountServiceGetSignInFlowRequest) returns (AccountServiceGetSignInFlowResponse);
 
   // Cancel an active sign-in flow.
-  // auth: HUMAN=A SCRIPT=D AGENT=D REMOTE=D
+  // auth: HUMAN=A SCRIPT=D AGENT=D REMOTE=-
   // idempotency: command_id
   // deadline: 5 s
   // stream: none
@@ -56,7 +56,7 @@ service AccountService {
   rpc CancelSignIn(AccountServiceCancelSignInRequest) returns (AccountServiceCancelSignInResponse);
 
   // Sign the node out: revoke its credential in the cloud when reachable, delete local credentials, stop the relay.
-  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=D
+  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=-
   // idempotency: command_id
   // deadline: 15 s
   // stream: none
@@ -65,7 +65,7 @@ service AccountService {
   rpc SignOut(AccountServiceSignOutRequest) returns (AccountServiceSignOutResponse);
 
   // Create a QR pairing for signing a phone in as this account (10 section 3.3).
-  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=D
+  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=-
   // idempotency: command_id
   // deadline: 15 s
   // stream: none
@@ -75,7 +75,7 @@ service AccountService {
   rpc CreatePhonePairing(AccountServiceCreatePhonePairingRequest) returns (AccountServiceCreatePhonePairingResponse);
 
   // Read a phone pairing, including the claiming phone's model once scanned.
-  // auth: HUMAN=A SCRIPT=D AGENT=D REMOTE=D
+  // auth: HUMAN=A SCRIPT=D AGENT=D REMOTE=-
   // idempotency: read
   // deadline: 10 s
   // stream: none
@@ -84,7 +84,7 @@ service AccountService {
   rpc GetPhonePairing(AccountServiceGetPhonePairingRequest) returns (AccountServiceGetPhonePairingResponse);
 
   // Allow or deny the phone that scanned the code.
-  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=D
+  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=-
   // idempotency: command_id
   // deadline: 15 s
   // stream: none
@@ -94,7 +94,7 @@ service AccountService {
   rpc ConfirmPhonePairing(AccountServiceConfirmPhonePairingRequest) returns (AccountServiceConfirmPhonePairingResponse);
 
   // Turn the cloud link (relay, push events, entitlement refresh) on or off for this node.
-  // auth: HUMAN=A SCRIPT=P AGENT=D REMOTE=D
+  // auth: HUMAN=A SCRIPT=P AGENT=D REMOTE=-
   // idempotency: command_id
   // deadline: 10 s
   // stream: none
@@ -103,7 +103,7 @@ service AccountService {
   rpc SetCloudLink(AccountServiceSetCloudLinkRequest) returns (AccountServiceSetCloudLinkResponse);
 
   // Refresh the signed entitlement token now.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: command_id
   // deadline: 15 s
   // stream: none

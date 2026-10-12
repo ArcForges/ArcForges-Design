@@ -20,36 +20,41 @@ Hosted CI builds each release `<v>` from a tagged commit of the ArcForges reposi
 
 | Artifact | Contents |
 |---|---|
-| `arcforges-<v>-win-x64.msi`, `-win-arm64.msi` | Per-user MSI (§3.1) |
+| `arcforges-setup-<v>-win-x64.exe`, `-win-arm64.exe` | Per-user setup program (§3.1) |
 | `arcforges-<v>-win-x64.zip`, `-win-arm64.zip` | Version directory (Scoop, updater payload) |
 | `arcforges-<v>-linux-x64.tar.zst`, `-linux-arm64.tar.zst` | Version directory (`install.sh`, updater payload) |
 | `arcforges_<v>_amd64.deb`, `_arm64.deb` | System package (§3.3) |
 | `install.sh` | User-level installer script (versioned with the release) |
-| `manifest.json`, `manifest.json.sig` | Release manifest and its Ed25519 signature (§4) |
+| `manifest.json`, `manifest.json.sig` | Release manifest and its ES256 signature (§4) |
 | `sbom.cdx.json` | CycloneDX SBOM ([11](11-security-privacy.md) §6) |
 
-- **Windows version directory:** `arcforges.exe`, `arcforges-supervisor.exe`, and `arcforges-desktop.exe` with its native Avalonia/Skia libraries.
+- **Windows version directory:** `arcforges.exe`, `arcforges-supervisor.exe`, `arcforges-setup.exe` (uninstall and repair), and `arcforges-desktop.exe` with its native Avalonia/Skia libraries.
 - **Linux version directory:** `arcforges` and `arcforges-desktop` with its native libraries.
 - **Android:** released separately through Google Play (§8).
 
 ## 3. Installation
 
-### 3.1 Windows (per-user MSI; no administrator rights)
+### 3.1 Windows (per-user setup program; no administrator rights)
 
-- **Package.** Per-user install scope (`MSIINSTALLPERUSER=1`, `ALLUSERS=2` resolved to per-user), authored with WiX Toolset.
-- **Features:**
-  - `Core` (required): version directory, `current` junction, PATH entry, autostart, uninstall entry;
-  - `Desktop` (default on): `arcforges-desktop.exe`, a Start menu shortcut and an optional Desktop shortcut;
-  - `Integrations` (default off): opens the Desktop first-run integration step. It never writes client configuration without consent (R-AI-008).
+- **Program.** `arcforges-setup-<v>-<rid>.exe` (project `ArcForges.Setup`; Native AOT; GUI subsystem; Authenticode-signed). It shares the staged-switch engine with the node updater (`ArcForges.Node.Updates`), so first install, upgrade and self-update use one code path ([AD-0012](../decisions/AD-0012-distribution-and-updates.md) §2).
+- **Options (pages):**
+  - **Core** (always): version directory, the `current` and `previous` junctions, PATH entry, autostart and uninstall entry;
+  - **Desktop** (default on): `arcforges-desktop.exe`, a Start menu shortcut and an optional Desktop shortcut;
+  - **Set up AI clients** (default off): opens the Desktop first-run integration step. It never writes client configuration without consent (R-AI-008).
 - **Registrations.**
   - `HKCU\Software\Microsoft\Windows\CurrentVersion\Run\ArcForgesNode` = `"%LOCALAPPDATA%\ArcForges\app\current\arcforges-supervisor.exe"`. The supervisor is a GUI-subsystem executable, so logon shows no console window. It starts `arcforges.exe node run` with `CREATE_NO_WINDOW` (AD-0003 §1; A-N03).
   - `HKCU\Environment\Path` gets `%LOCALAPPDATA%\ArcForges\app\current` appended, followed by a `WM_SETTINGCHANGE` broadcast.
-  - The uninstall entry is the MSI's own.
-- **Custom actions.** Each is an invocation of the installed native executable; there are no script custom actions.
-  - After install: start `arcforges-supervisor.exe`, then `arcforges node wait-ready --timeout 30`.
-  - Before uninstall: `arcforges node stop --reason uninstall --timeout 60`. Running managed executions are listed in the uninstall dialog, and the user chooses either to wait or to cancel them all (R-DIST-001).
-- **Uninstall** removes the version directories, junctions, PATH entry and Run key. It keeps the data root unless the user ticks **Remove ArcForges data**, which runs `arcforges node wipe --all --yes` before removal.
-- **Optional machine-wide service mode** (separate administrator MSI feature `MachineService`). It installs a Windows service `ArcForgesNode` that runs the same node, as the installing user (credential prompt). No product flow requires it; it exists for always-on hosts that need the node before logon.
+  - `HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\ArcForges` is written by the setup program with:
+    - `DisplayName`, `DisplayVersion` (kept current by the updater), `Publisher`, `InstallLocation` and `EstimatedSize`;
+    - `UninstallString` = `"…\app\current\arcforges-setup.exe" --uninstall` and `QuietUninstallString`;
+    - `NoModify` and `NoRepair`.
+  - `HKCU\Software\ArcForges\InstallSource` = `setup`, `winget` (set by `--source winget` from the winget manifest) or `scoop` (Scoop installs the portable zip and runs `arcforges-setup --register-scoop`, which skips the updater) ([AD-0012](../decisions/AD-0012-distribution-and-updates.md) §4).
+- **After install:** start `arcforges-supervisor.exe`, then `arcforges node wait-ready --timeout 30`.
+- **Uninstall.**
+  - **Steps:** `arcforges node stop --reason uninstall --timeout 60`; running managed executions are listed, and the user chooses to wait or to cancel them all (R-DIST-001). Then remove **every** `app\*` version directory, both junctions, the PATH entry, the Run key, `InstallSource` and the uninstall entry.
+  - **Data:** the data root is kept unless the user ticks **Remove ArcForges data**, which runs `arcforges node wipe --all --yes` first.
+- **Test isolation.** For automated tests, `--test-root <dir> --test-registry-key HKCU\Software\ArcForges-Test` installs under a temporary root and registry key, never touching the user's real Run key, PATH or uninstall entry. The real logon start of the supervisor is a human-attended check (H-15).
+- **Machine-wide service mode** is out of the current scope (AR-16). It would be a separate per-machine installer.
 
 ### 3.2 Linux user install (`install.sh`)
 
@@ -153,7 +158,9 @@ ExecStart=%h/.local/share/arcforges/app/previous/arcforges node update-rollback 
 }
 ```
 
-- **Signature.** `manifest.json.sig` holds the key ID (`kid`) and an Ed25519 signature over the exact manifest bytes. The updater, `install.sh` and the MSI embed the public key set: at most two active keys, rotated through releases.
+- **Signature.** `manifest.json.sig` is JSON `{"kid": "…", "alg": "ES256", "sig": "<base64 DER ECDSA signature>"}` over the exact manifest bytes.
+  - **Verifiers:** the updater (.NET `ECDsa.VerifyData` with `Rfc3279DerSequence`), the setup program, and `install.sh` (`openssl dgst -sha256 -verify <embedded pem> -signature <der>`; the script refuses to install when `openssl` is missing and says how to install it).
+  - **Keys:** at most two active public keys, embedded in releases and rotated through them.
 - **Validity.** A manifest is refused in either case:
   - `expires_at` has passed (protection against freeze attacks);
   - `published_at` is older than the last accepted manifest (rollback protection; the node stores the last accepted timestamp).
@@ -182,9 +189,10 @@ ExecStart=%h/.local/share/arcforges/app/previous/arcforges node update-rollback 
 ### 5.3 Switch and restart
 
 1. **Announce.** When the policy window opens, or the user chooses **Restart now**, the node announces `UPDATE_PENDING` to clients. The Desktop shows a 60-second countdown with a **Postpone** button.
-2. **Record the switch.** The node writes `run/update-switch.json {from, to, phase, attempt_count}`, then points `previous` at the running version and `current` at `<v>`:
-   - **Linux:** create symlink `app/.next` → `<v>`, then `rename()` it over `app/current`. This is atomic.
-   - **Windows:** create junction `app\.next` → `<v>`, then `MoveFileEx(.next, current, MOVEFILE_REPLACE_EXISTING)`. Junction replacement is not guaranteed atomic, so startup recovery completes or reverts any half-finished switch it finds recorded in `update-switch.json`.
+2. **Record the switch.** The node writes `run/update-switch.json {from, to, phase, switched_at, attempt_count}` before each step, then points `previous` at the running version and `current` at `<v>`. The phases are `staged`, `previous_set`, `current_set`, `started` and `healthy`.
+   - **Linux:** create symlink `app/.next` → `<v>`, then `rename()` it over `app/current` (atomic). `previous` is set the same way.
+   - **Windows:** retarget the existing `app\current` junction in place. Open it with `FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS` and call `FSCTL_SET_REPARSE_POINT` with mount-point data for `app\<v>`. This works without elevation and replaces the target in one operation (L-16). Replacing a junction with `MoveFileEx` fails (error 5), so it is never used. `previous` is retargeted the same way.
+   - **Crash recovery:** on start, the node (or, on Windows, the supervisor) reads `update-switch.json` and completes or reverts a switch that stopped between phases.
 3. **Restart the node.**
    - **Linux:** the node runs shutdown ([02](02-node-service.md) §2) and exits with code 75. systemd restarts it from the new `current` (§3.4).
    - **Windows:** the node runs shutdown and exits with code 75. The supervisor starts the new `current\arcforges.exe node run`, then hands itself over: it starts `current\arcforges-supervisor.exe --adopt <node pid>` and exits, so no process keeps running from the old version directory.
@@ -199,10 +207,11 @@ ExecStart=%h/.local/share/arcforges/app/previous/arcforges node update-rollback 
 
   It then writes phase `HEALTHY` to `update-switch.json`.
 - **Commit.** The node marks `<v>` `ACTIVE` and the previous version `PREVIOUS`. It deletes versions older than the last two once no process holds files in them. On Windows that is checked by attempting to rename the directory; a failed attempt is retried hourly.
-- **Rollback triggers:**
+- **Rollback triggers** (only for a switch that is recent and not yet `healthy`):
   1. The new node detects an unrecoverable condition, such as a store incompatibility or a failed self-test.
   2. The node fails to reach `HEALTHY` within 120 s.
   3. The node crash-loops: systemd's start limit (5 in 10 minutes) fires `OnFailure`, or the Windows supervisor counts 3 failed starts within 5 minutes of a switch.
+- **Recent-switch guard.** `arcforges-node-rollback.service` (via `OnFailure`) and the supervisor act only when `update-switch.json` shows a switch in the last 15 minutes that never reached `healthy`. A crash loop unrelated to an update leaves the unit failed, writes a log entry and lets the next client auto-start try again. It never rolls back a healthy version.
 - **Rollback mechanism.**
   - **Linux:** `arcforges-node-rollback.service` runs `app/previous/arcforges node update-rollback --restart`.
   - **Windows:** the supervisor runs the equivalent steps from the previous version.
@@ -227,7 +236,7 @@ ExecStart=%h/.local/share/arcforges/app/previous/arcforges node update-rollback 
 
 | Route | Artifact | Publication |
 |---|---|---|
-| winget | Manifest referencing the MSI URL and SHA-256 | PR to `microsoft/winget-pkgs` (release task; human account) |
+| winget | Manifest (installer type `exe`) referencing the setup program URL and SHA-256, with silent switches `--silent --source winget` | PR to `microsoft/winget-pkgs` (release task; human account) |
 | Scoop | Bucket manifest referencing the zip and its hash | ArcForges bucket repository |
 | apt | Repository with a signed `Release` file | R2 static hosting, signed with the apt GPG key (human custody) |
 | Claude Code plugin | Marketplace plugin: `.mcp.json` (runs `arcforges mcp serve`), hooks configuration and a skill | Plugin marketplace repository. Installing it does not install the native node; the hooks print guidance when `arcforges` is missing (R-DIST-004). |
@@ -243,9 +252,9 @@ ExecStart=%h/.local/share/arcforges/app/previous/arcforges node update-rollback 
 
 | Test | Kind |
 |---|---|
-| MSI install, upgrade and uninstall on a separate per-user data root on the workstation; a fresh second Windows account is deferred (acceptance register) | Real, workstation |
+| Setup program install, upgrade (as a self-update and as a newer setup) and uninstall, under `--test-root` and a test registry key on the workstation; a clean machine is deferred (AR-01); the real logon start needs a human logoff and logon (H-15) | Real, workstation |
 | `install.sh` and `.deb` in a clean systemd-enabled WSL2 Debian environment | Real |
-| Update switch with running executions on both platforms; crash injection at each switch phase; health-check failure; crash-loop rollback | Real |
+| Update switch with running executions on both platforms; crash injection at each phase of `update-switch.json`; junction retarget recovery; health-check failure; crash-loop rollback; the recent-switch guard refusing rollback of a healthy version; ownership rules per install source (Scoop and apt disable the updater) | Real |
 | Manifest signature, expiry, freeze and rollback protection, revocation | Unit, plus closed-loop tests with a local HTTP server |
 | Expand-only migration check: a schema diff tool fails on any drop or rename in a release | CI |
 | Production signing, SmartScreen reputation, winget and apt publication | Deferred (acceptance register) |

@@ -37,7 +37,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
   - `F5`: refresh the current page snapshot;
   - `Ctrl+,`: Settings.
 - **Navigation badges** show counts of open error findings and pending approvals.
-- **Data:** `NodeEventService.Subscribe` with topics NODE, QUEUE, RESOURCES (5 s), FINDINGS, APPROVALS and ACCOUNT, plus page-specific topics while a page is open.
+- **Data:** `NodeEventService.Subscribe` with topics NODE, QUEUE, RESOURCES (5 s), FINDINGS, APPROVALS, ACCOUNT and NOTIFICATIONS, plus page-specific topics while a page is open.
 
 ---
 
@@ -375,11 +375,30 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 
 ## D-13 Toolchains
 
-- **Purpose.** Detected tools, adapter guarantees and an invocation preview.
-- **Permissions.** HUMAN.
-- **Layout.** Toolchain table (kind, version, path, identity), adapter manifests (each environment edit with HONORED or BEST_EFFORT and its source), and a **Preview** box (command plus working directory → `ToolchainService.PreviewInvocation`).
-- **Data and actions:** `ListToolchains`, `ListAdapters`, `DetectToolchains` (rescan job), `PreviewInvocation`.
-- **States:** S-EMPTY ("No toolchains detected"). Missing tools show "Not installed; ArcForges never installs tools."
+- **Purpose.** See detected tools, what each adapter guarantees, and preview how a command would run.
+- **Permissions.** HUMAN. Rescanning is allowed for every origin; nothing here installs tools.
+- **Layout.** The toolchain table (kind, version, path, identity); the adapter manifests (each environment edit marked HONORED or BEST_EFFORT, with its source); the **Preview** box.
+- **Wireframe:**
+
+```
+┌ Toolchains ─ last scan 09:12 ─────────────────────────────────────── [Rescan] ┐
+│ Kind      Version   Path                                   Identity            │
+│ dotnet    10.0.401  C:\Program Files\dotnet\dotnet.exe     sdk 10.0.401 x64    │
+│ cargo     1.92.0    C:\Users\sam\.cargo\bin\cargo.exe      rustc 1.92.0        │
+│ fastbuild —         Not installed; ArcForges never installs tools.             │
+├ Adapter: dotnet ───────────────────────────────────────────────────────────────┤
+│ MSBUILDDISABLENODEREUSE=1   HONORED      (A-T01, F-T01)                         │
+│ NUGET_PACKAGES=<cache>      HONORED                                             │
+├ Preview ───────────────────────────────────────────────────────────────────────┤
+│ Command [dotnet build -c Release____]  in [C:\src\app ▾]          [Preview]    │
+│ → argv, environment edits, caches bound, concurrency flags                     │
+└────────────────────────────────────────────────────────────────────────────────┘
+```
+
+- **Data:** `ToolchainService.ListToolchains`, `ListAdapters`; topic JOBS while a rescan runs.
+- **Actions:** **Rescan** (`DetectToolchains`, a job with progress); **Preview** (`PreviewInvocation`), which shows the resolved argv, environment edits, cache bindings and concurrency flags without running anything.
+- **States:** S-EMPTY ("No toolchains detected"). Missing tools show "Not installed; ArcForges never installs tools." Rescan running (progress); preview refused (unknown tool: "Runs unadapted; no cache or concurrency control").
+- **Accessibility.** HONORED and BEST_EFFORT are text with an icon. The preview result is a read-only text region that follows the Preview button in focus order.
 
 ## D-14 Integrations
 
@@ -491,11 +510,30 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 
 ## D-18 Updates
 
-- **Purpose.** Version, channel, update and rollback.
-- **Permissions.** HUMAN.
-- **Layout.** Current and previous version, channel, state (SM-UPDATE), available version with notes link, schedule, bad versions, and "Managed by apt" when applicable.
-- **Data and actions:** `UpdateService.GetUpdateStatus`, `CheckNow`, `ApplyNow` (confirmation "The node restarts. Running tasks continue."), `Postpone`, `Rollback` (confirmation); channel and window are in Policy → Updates. Topic UPDATES.
-- **States:** MANAGED_EXTERNALLY (read-only); ROLLED_BACK with the reason; S-OFFLINE for checks.
+- **Purpose.** See the installed version and channel, update now or later, and roll back.
+- **Permissions.** HUMAN. Rollback is HUMAN-only and interactive (11 §1).
+- **Layout.** Current and previous version; channel and install source; the update state (SM-UPDATE); the available version with notes; the schedule; bad versions; "Managed by <package manager>" when applicable.
+- **Wireframe:**
+
+```
+┌ Updates ─ 1.2.0 (stable) · installed by setup program ────────────────────────┐
+│ State: AVAILABLE   1.2.1 · released 10 Oct · [Release notes ↗]                 │
+│ Schedule: daily 02:00–05:00 (Policy → Updates)    Metered network: defer       │
+│ [Update now]  [Postpone 1 day]  [Check now]                                    │
+│ Previous version: 1.1.4                                   [Roll back…]          │
+│ Bad versions (never installed): 1.2.0-beta.3                                    │
+└────────────────────────────────────────────────────────────────────────────────┘
+```
+
+- **Data:** `UpdateService.GetUpdateStatus`; topic UPDATES.
+- **Actions:**
+  - **Check now** (`CheckNow`).
+  - **Update now** (`ApplyNow`), with the confirmation "The node restarts. Running tasks continue."
+  - **Postpone** (`Postpone`).
+  - **Roll back** (`Rollback`), with the confirmation "ArcForges returns to 1.1.4 and restarts. Running tasks continue."
+  - Channel and window are edited in Policy → Updates.
+- **States:** MANAGED_EXTERNALLY (read-only, naming winget, Scoop or apt); ROLLED_BACK with the reason; switching (progress, with actions disabled); S-OFFLINE for checks.
+- **Accessibility.** The state is a polite live region during download and switch. Release notes open in the browser, and the link says so.
 
 ## D-19 Diagnostics and support
 
@@ -521,6 +559,23 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 
 - **Purpose.** Node configuration (`node.json`) and Desktop preferences.
 - **Permissions.** HUMAN.
+- **Layout.** Two groups: **Node** (data root, log level, telemetry) and **Desktop** (theme, notifications, start at sign-in, tray behaviour).
+- **Wireframe:**
+
+```
+┌ Settings ──────────────────────────────────────────────────────────────────────┐
+│ Node                                                                            │
+│  Data root   D:\ArcForges\data                         [Relocate… → Storage]    │
+│  Log level   [Information ▾]     ⓘ Restart required                             │
+│  Telemetry   ☐ Send daily anonymous counters  (What is sent?)                   │
+│ Desktop                                                                         │
+│  Theme       (•) System ( ) Light ( ) Dark ( ) High contrast                    │
+│  Notify me   ☑ Task failed ☐ Task finished ☑ Approval needed ☑ Finding ☑ Update │
+│  ☑ Start ArcForges Desktop when I sign in    Close button: [Minimize to tray ▾] │
+│                                                          [Discard] [Save]       │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
 - **Fields:**
   - data root (relocation goes to D-11);
   - log level;
@@ -530,14 +585,47 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
   - start Desktop at sign-in;
   - tray behaviour.
 - **Data and actions:** `NodeService.GetNodeSettings` and `UpdateNodeSettings` (log level, telemetry), the same as `arcforges config`; the data root links to D-11 relocation. Desktop preferences (theme, notifications, start at sign-in, tray) are stored locally by the reused shell layout persistence.
-- **States:** "Restart required" for data root and log level.
+- **States:** "Restart required" for data root and log level; unsaved changes (leaving the page asks to save or discard).
+- **Accessibility.** Each group is a labelled region. "What is sent?" opens the counter list as a dialog. The theme applies at once and is announced.
 
 ## D-21 Notification drawer
 
 - **Purpose.** Recent notifications with deep links.
-- **Layout.** A right-side drawer listing the notification centre entries (`notification` table via the event stream), with **Mark all read**. Entries link to tasks, findings, approvals and updates.
-- **Accessibility.** The drawer is a dialog; `Esc` closes it and returns focus to the bell button.
+- **Permissions.** HUMAN.
+- **Layout.** A right-side drawer listing the notification centre entries, with **Mark all read**. Entries link to tasks, findings, approvals and updates.
+- **Wireframe:**
+
+```
+                                   ┌ Notifications ─────────── [Mark all read] ✕ ┐
+                                   │ ● npm test failed (exit 1) · 2 min ago       │
+                                   │ ● Codex asks to cancel npm test · 5 min ago  │
+                                   │   Update 1.2.1 available · today 08:00       │
+                                   └──────────────────────────────────────────────┘
+```
+
+- **Data:** `NodeService.ListNotifications` (the latest 500 entries) and topic NOTIFICATIONS for new ones; the bell badge shows `unread_count`.
+- **Actions:** open an entry (navigates to its link and calls `MarkNotificationsRead` with its ID); **Mark all read** (`MarkNotificationsRead` with `up_to` = now).
+- **States:** S-EMPTY ("You're all caught up"); entry target gone (for example a purged task: "This item no longer exists").
+- **Accessibility.** The drawer is a dialog; `Esc` closes it and returns focus to the bell button. Unread entries say "unread" in text.
 
 ## D-22 About
 
-Version, node version, contract version, licences (third-party notices), SBOM link, data root path, log folder, and **Copy diagnostics summary** (non-secret). Data: `NodeService.GetNodeInfo`.
+- **Purpose.** Identify the installed versions, find logs and data, and read licences.
+- **Permissions.** HUMAN.
+- **Layout.** Versions (Desktop, node, contract); paths (data root, log folder); licences and SBOM; **Copy diagnostics summary**.
+- **Wireframe:**
+
+```
+┌ About ArcForges ────────────────────────────────────────────────────────────────┐
+│ Desktop 1.2.0 · Node 1.2.0 · Contract node.v1 (1.0)                              │
+│ Data root  D:\ArcForges\data                                       [Open folder] │
+│ Logs       D:\ArcForges\data\logs                                  [Open folder] │
+│ Third-party notices · SBOM (CycloneDX) · AGPL-3.0 licence                        │
+│                                               [Copy diagnostics summary]         │
+└──────────────────────────────────────────────────────────────────────────────────┘
+```
+
+- **Data:** `NodeService.GetNodeInfo`.
+- **Actions:** **Open folder** (the OS file manager); licence and SBOM links; **Copy diagnostics summary** (versions, OS, capabilities summary and the node state; never secrets, paths under the user profile are shortened).
+- **States:** node stopped (Desktop version only, with **Start node**).
+- **Accessibility.** Paths are selectable text. The copy action announces "Copied".

@@ -19,7 +19,7 @@ option java_outer_classname = "NodeIntegrationsProto";
 // Plan, apply and remove AI client configuration; probes; snippets.
 service IntegrationService {
   // Detected AI clients and their integration state, probes and conflicts.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 10 s
   // stream: none
@@ -46,7 +46,7 @@ service IntegrationService {
   rpc PlanRemoval(IntegrationServicePlanRemovalRequest) returns (IntegrationServicePlanRemovalResponse);
 
   // Apply a plan exactly as shown (R-AI-008). Unrelated settings are preserved; writes are recorded for removal.
-  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=D
+  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=-
   // idempotency: command_id
   // deadline: 30 s
   // stream: none
@@ -65,7 +65,7 @@ service IntegrationService {
   rpc StartProbe(IntegrationServiceStartProbeRequest) returns (IntegrationServiceStartProbeResponse);
 
   // Probe results per client and environment.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none

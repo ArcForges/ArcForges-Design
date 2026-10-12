@@ -97,7 +97,8 @@ Each row lists the command, its main options, the RPCs it calls and its notes. A
 | `samples [--attempt id] [--range 1h]` | `GetSamples` |
 | `adopt <pid> [--title t] [--pool p]` | `AdoptProcess` (HUMAN only) |
 | `terminate <pid> [--reason r]` | `TerminateProcess` |
-| `guests` / `guests link <distro> [--disable]` | `ListGuestLinks` / `SetGuestLink` |
+| `guests` / `guests link <distro> [--disable]` | `ListGuestLinks` / `SetGuestLink` (host) |
+| `guests host` / `guests trust-host <host-node-id>` | `GetHostLink` / `TrustHost` (inside a WSL guest; interactive only). The node refuses a link from a host other than the pinned one; `trust-host` accepts that host, and its next link is pinned as on first use (09 §9). |
 
 ### C-04 Policy
 

@@ -20,7 +20,7 @@ option java_outer_classname = "NodePolicyProto";
 // Read, validate and change the node policy.
 service PolicyService {
   // Read the current policy document and revision.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -29,7 +29,7 @@ service PolicyService {
   rpc GetPolicy(PolicyServiceGetPolicyRequest) returns (PolicyServiceGetPolicyResponse);
 
   // Read the default policy document for this node (for reset and comparison).
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -47,7 +47,7 @@ service PolicyService {
   rpc ValidatePolicy(PolicyServiceValidatePolicyRequest) returns (PolicyServiceValidatePolicyResponse);
 
   // Replace the policy document. meta.expected_rev must equal the current revision.
-  // auth: HUMAN=A SCRIPT=P AGENT=P REMOTE=high
+  // auth: HUMAN=A SCRIPT=P AGENT=P REMOTE=-
   // idempotency: command_id; expected_rev
   // deadline: 10 s
   // stream: none
@@ -56,7 +56,7 @@ service PolicyService {
   rpc UpdatePolicy(PolicyServiceUpdatePolicyRequest) returns (PolicyServiceUpdatePolicyResponse);
 
   // List policy revisions, newest first.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -65,7 +65,7 @@ service PolicyService {
   rpc ListPolicyRevisions(PolicyServiceListPolicyRevisionsRequest) returns (PolicyServiceListPolicyRevisionsResponse);
 
   // Create a new revision equal to an earlier one.
-  // auth: HUMAN=A SCRIPT=P AGENT=P REMOTE=high
+  // auth: HUMAN=A SCRIPT=P AGENT=P REMOTE=-
   // idempotency: command_id; expected_rev
   // deadline: 10 s
   // stream: none
@@ -74,7 +74,7 @@ service PolicyService {
   rpc RestorePolicyRevision(PolicyServiceRestorePolicyRevisionRequest) returns (PolicyServiceRestorePolicyRevisionResponse);
 
   // Explain the permission decision for an operation and origin, with its source (matrix default or override).
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -216,6 +216,12 @@ enum RoutingMode {
   ROUTING_MODE_REWRITE = 3;
 }
 
+enum ClientPermission {
+  CLIENT_PERMISSION_UNSPECIFIED = 0;
+  CLIENT_PERMISSION_ASK = 1; // the client shows the rewritten command and the user confirms
+  CLIENT_PERMISSION_ALLOW = 2; // pre-approves; only by explicit HUMAN policy or under bypassPermissions
+}
+
 enum ActionMode {
   ACTION_MODE_UNSPECIFIED = 0;
   ACTION_MODE_AUTO = 1;
@@ -323,6 +329,8 @@ message RoutingPolicy {
   repeated HeavyPattern heavy_patterns = 3 [json_name = "heavyPatterns"]; // defaults in architecture 08 section 4.1
   optional uint32 bypass_cpu_threshold_millicores = 4 [json_name = "bypassCpuThresholdMillicores"]; // default 1,000 for 10 s
   optional uint64 bypass_mem_threshold_bytes = 5 [json_name = "bypassMemThresholdBytes"]; // default 1 GiB
+  optional ClientPermission rewrite_permission = 6 [json_name = "rewritePermission"]; // default ASK; ALLOW is HUMAN-only and pre-approves matched commands
+  optional bool guide_when_longer_than_client_timeout = 7 [json_name = "guideWhenLongerThanClientTimeout"]; // default true: expected duration > client timeout -> DENY_WITH_GUIDANCE to MCP run
 }
 
 message ActionRule {
@@ -353,6 +361,8 @@ message StoragePolicy {
   optional uint32 keep_failed_tmp_hours = 6 [json_name = "keepFailedTmpHours"]; // default 24
   optional bool auto_register_workspaces = 7 [json_name = "autoRegisterWorkspaces"]; // default true
   optional uint64 min_free_bytes = 8 [json_name = "minFreeBytes"]; // default 1 GiB
+  map<string, string> quarantine_roots = 9 [json_name = "quarantineRoots"]; // volume -> directory on that volume for quarantining items outside managed roots
+  optional uint32 secret_retention_hours = 10 [json_name = "secretRetentionHours"]; // default 24: sealed secret environment values kept after a terminal state for manual retry
 }
 
 message CleanupPolicy {
@@ -401,8 +411,21 @@ message UpdatePolicy {
 message LanPolicy {
   optional bool enabled = 1 [json_name = "enabled"]; // default false
   optional uint32 port = 2 [json_name = "port"]; // default 47820
-  optional bool advertise = 3 [json_name = "advertise"]; // default true while enabled
+  optional bool advertise = 3 [json_name = "advertise"]; // default true while enabled; only on trusted networks (09 section 2)
   PeerPolicy default_peer_policy = 4 [json_name = "defaultPeerPolicy"]; // status only
+  optional bool advertise_account_hint = 5 [json_name = "advertiseAccountHint"]; // default false: adds the acct TXT record
+}
+
+enum ResultCacheMode {
+  RESULT_CACHE_MODE_UNSPECIFIED = 0;
+  RESULT_CACHE_MODE_OFF = 1; // default
+  RESULT_CACHE_MODE_OBSERVE = 2; // compute action keys and record would-be hits; never restore
+  RESULT_CACHE_MODE_RESTORE = 3; // restore hits for PURE tasks as CACHE_RESTORE attempts
+}
+
+message ResultCachePolicy {
+  optional ResultCacheMode default_mode = 1 [json_name = "defaultMode"]; // default OFF
+  map<string, ResultCacheMode> workspace_modes = 2 [json_name = "workspaceModes"]; // workspace ID -> mode; overrides default_mode
 }
 
 message ApprovalPolicy {
@@ -427,6 +450,7 @@ message PolicyDocument {
   UpdatePolicy updates = 13 [json_name = "updates"];
   LanPolicy lan = 14 [json_name = "lan"];
   ApprovalPolicy approvals = 15 [json_name = "approvals"];
+  ResultCachePolicy result_cache = 16 [json_name = "resultCache"]; // architecture 04 section 11
 }
 
 message PolicyRevision {

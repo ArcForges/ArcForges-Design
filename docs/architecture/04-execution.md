@@ -35,27 +35,42 @@ Defined by `arcforges.node.v1.TaskSpec` ([contracts](../contracts/proto/arcforge
    - Windows `SYSTEM_DEFAULT` = `PWSH` if detected, otherwise `POWERSHELL`. `BASH` resolves to Git for Windows bash when detected (the shell AI clients typically use on Windows), otherwise it is refused.
    - Linux `SYSTEM_DEFAULT` = `SH`.
    - A script over 8,000 characters (CMD) or 30,000 characters (others) is written to `tmp/<attempt>/command.<ext>` and executed as a file.
-4. **Environment resolution order:** inherit base → `unset` → `set` → adapter redirections ([05](05-toolchains-caches.md)) → ArcForges variables (`ARCFORGES_TASK_ID`, `ARCFORGES_ATTEMPT_ID`, `ARCFORGES_NODE_ID`, `ARCFORGES_SESSION` where an owner session exists). Names matching secret patterns are stored as presence-only (`set` without value) in records (R-EXE-017). Patterns are policy `privacy.secret_name_patterns`; defaults include `*TOKEN*`, `*SECRET*`, `*PASSWORD*`, `*PASSWD*`, `*_KEY`, `*APIKEY*`, `AWS_*`, `AZURE_*`, `GH_*`, `GITHUB_TOKEN` and `NPM_TOKEN`.
+4. **Environment resolution order:** inherit base → `unset` → `set` → adapter redirections ([05](05-toolchains-caches.md)) → ArcForges variables (`ARCFORGES_TASK_ID`, `ARCFORGES_ATTEMPT_ID`, `ARCFORGES_NODE_ID`, `ARCFORGES_SESSION` where an owner session exists). Names matching secret patterns (policy `privacy.secret_name_patterns`; defaults include `*TOKEN*`, `*SECRET*`, `*PASSWORD*`, `*PASSWD*`, `*_KEY`, `*APIKEY*`, `AWS_*`, `AZURE_*`, `GH_*`, `GITHUB_TOKEN` and `NPM_TOKEN`) are handled in two places:
+   - **Records** (task views, exports, support bundles) show them as presence only (R-EXE-017).
+   - **Execution state** keeps their values **sealed** until they are no longer needed, so queued tasks, restarts and retries run with the submitted environment:
+     - the values are encrypted with AES-256-GCM under a node data key kept in the OS secret store, and stored in `task_secret`;
+     - they are purged when the task reaches a terminal state and `storage.secret_retention_hours` (default 24) has passed, or on `PurgeTaskRecord`.
+
+     A manual `RetryTask` after the purge fails with `STATE/secrets_unavailable` and asks for a new submission. Non-secret environment snapshots are content-addressed (`env_snapshot`), so identical environments are stored once.
 
 ## 3. Launch
 
 | Step | Windows | Linux |
 |---|---|---|
-| Container | Create the named child job under the root job ([03](03-resource-control.md) §5) | `StartTransientUnit("arcforges-a-<attempt>.service", "fail", properties)` in `arcforges.slice`, with the limits of [03](03-resource-control.md) §5. The node waits for the job's `JobRemoved` signal (result `done`) before recording `STARTED`. |
+| Container | The node creates the named child job under the root job ([03](03-resource-control.md) §5) and starts the holder `arcforges node exec-wrap` **outside** the job, passing inheritable handles to the child job, the root job, the output files and the ack event ([AD-0005](../decisions/AD-0005-resource-enforcement.md) Windows §3) | `StartTransientUnit("arcforges-a-<attempt>.service", "fail", properties)` in `arcforges.slice`, with the limits of [03](03-resource-control.md) §5. The node waits for the job's `JobRemoved` signal (result `done`) before recording `STARTED`. |
 | Output | Create `logs/<attempt>/stdout.bin` and `stderr.bin` (share read/write) as inheritable handles; restrict inheritance with `PROC_THREAD_ATTRIBUTE_HANDLE_LIST` | Opened by the node with `O_APPEND` and passed as `StandardOutputFileDescriptor` / `StandardErrorFileDescriptor` unit properties (file descriptors over D-Bus) |
 | stdin | NUL / temp file / file / pipe | `/dev/null` / file / pipe, passed as `StandardInputFileDescriptor` |
-| Process | `CreateProcessW(..., CREATE_SUSPENDED \| CREATE_NEW_PROCESS_GROUP \| CREATE_UNICODE_ENVIRONMENT \| EXTENDED_STARTUPINFO_PRESENT, ...)` with a hidden console (`CREATE_NO_WINDOW`) for console programs → `AssignProcessToJobObject` → `ResumeThread` | Unit properties: `ExecStart` (resolved absolute program path and argv), `WorkingDirectory`, the exact environment (`Environment` plus `UnsetEnvironment` for every manager variable outside the resolved set), the caller's relevant rlimits as `Limit*`, and `BindsTo=arcforges-node.service` only for `kill_with_node` tasks. The user manager forks and execs the process inside the unit's cgroup, so no child ever runs outside its container. |
-| Exit capture | The node waits on the root process handle. After a node restart, exit is read from `JobObjectBasicAccountingInformation` (no active processes) plus `logs/<attempt>/exit.json`, written by a wait-thread in the `arcforges node exec-wrap` role. That role wraps Windows launches when the task opts into `survive_restart_exit_code` (default true). | While the node runs: D-Bus `PropertiesChanged` on the unit (`ExecMainCode`, `ExecMainStatus`, `Result`). Durable: `logs/<attempt>/exit.json`, written by `ExecStopPost=<app>/current/arcforges node exit-record --attempt <id>`, which systemd runs with `$EXIT_CODE`, `$EXIT_STATUS` and `$SERVICE_RESULT` even when the node is down (L-13). |
+| Process | The holder calls `CreateProcessW(..., CREATE_SUSPENDED \| CREATE_NEW_PROCESS_GROUP \| CREATE_UNICODE_ENVIRONMENT \| EXTENDED_STARTUPINFO_PRESENT, ...)` with a hidden console (`CREATE_NO_WINDOW`) for console programs → `AssignProcessToJobObject(child job)` → `ResumeThread`, and reports the PID and start time to the node. `kill_with_node` tasks skip the holder: the node launches them itself into a job with kill-on-close. | Unit properties: `ExecStart` (resolved absolute program path and argv), `WorkingDirectory`, the exact environment (`Environment` plus `UnsetEnvironment` for every manager variable outside the resolved set), the caller's relevant rlimits as `Limit*`, and `BindsTo=arcforges-node.service` only for `kill_with_node` tasks. The user manager forks and execs the process inside the unit's cgroup, so no child ever runs outside its container. |
+| Exit capture | The holder waits for the root process. After `leftover_grace` it terminates leftovers, then writes `logs/<attempt>/exit.json` with the exit code and the job accounting: basic and I/O accounting, peak job commit, and limit violations from `JobObjectLimitViolationInformation`. It keeps the job handles until the node sets the ack event. The node receives the same events from the job's completion port while it runs. | While the node runs: D-Bus `PropertiesChanged` on the unit (`ExecMainCode`, `ExecMainStatus`, `Result`). Durable: `logs/<attempt>/exit.json`, written by `ExecStopPost=<app>/current/arcforges node exit-record --attempt <id>`, which systemd runs with `$EXIT_CODE`, `$EXIT_STATUS` and `$SERVICE_RESULT` even when the node is down (L-13). |
 
 **Process tree tracking.** Container membership is authoritative (`JobObjectBasicProcessIdList` / the unit's `cgroup.procs`). An ancestry scan every 5 s detects `ESCAPED` descendants ([03](03-resource-control.md) §9).
 
 **Root exit and leftover processes.** The attempt's result is fixed when its root process exits. Processes still in the container after that are terminated with the forced phase of §6 after `leftover_grace` (default 5 s).
 - **Linux:** the unit's own stop, with `KillMode=control-group` and `TimeoutStopSec` = `leftover_grace`.
-- **Windows:** the node or the `exec-wrap` role calls `TerminateJobObject` on the child job.
+- **Windows:** the holder (or the node, for `kill_with_node` tasks) calls `TerminateJobObject` on the child job.
 
 The record lists the terminated leftovers (image names and counts). Repeated leftovers raise the finding `LEFTOVER_PROCESSES`. Long-lived helpers belong in shared services ([05](05-toolchains-caches.md) §5) or in `kind=SERVICE` tasks.
 
-**Compatibility of the helper roles.** `exit-record` and `exec-wrap` are invoked by path through `app/current` and may run a newer binary than the node that launched the attempt (after an update). Their arguments and the `exit.json` format are therefore a stable internal contract: `{schema: 1, attempt_id, exit_code_kind, exit_status, service_result, recorded_at}`. New fields are additive only.
+**Compatibility of the helper roles.** `exit-record` and `exec-wrap` are invoked by path through `app/current`, so after an update they may run a newer binary than the node that launched the attempt. Their arguments and the `exit.json` format are therefore a stable internal contract, with additive changes only. The format (schema 1):
+
+```json
+{"schema": 1, "attempt_id": "<base32>", "exit_code_kind": "exited|killed|dumped", "exit_status": 0,
+ "service_result": "success|exit-code|signal|oom-kill|timeout", "recorded_at": "<RFC 3339>",
+ "cpu_user_ms": 0, "cpu_kernel_ms": 0, "mem_peak_bytes": 0, "io_read_bytes": 0, "io_write_bytes": 0,
+ "oom_kills": 0, "limit_violations": ["job_memory", "cpu_time"], "leftovers_terminated": ["image.exe"]}
+```
+
+On Linux, `exit-record` reads `cpu.stat`, `memory.peak`, `memory.events` and `io.stat` of its own unit cgroup, in which `ExecStopPost` runs.
 
 ## 4. Output capture and streaming
 
@@ -91,7 +106,7 @@ Timeouts and CPU-time limits run the same sequence with the reason `TIMED_OUT` /
 - `exit_code` (int32);
 - `signal` (Linux number, plus `core_dumped`);
 - `windows_status` (NTSTATUS when the exit code is an exception code ≥ 0xC0000000);
-- `termination_reason`: `EXITED`, `CANCELLED`, `TIMED_OUT`, `CPU_TIME_EXCEEDED`, `OOM_KILLED` (Linux: `memory.events` oom_kill increased, or `SERVICE_RESULT=oom-kill`), `MEMORY_LIMIT` (Windows commit-limit notification observed and exit ≠ 0), `PREEMPTED`, `LOST`, `SPAWN_FAILED`, `NODE_SHUTDOWN`, `POLICY_DENIED` or `TERMINATION_INCOMPLETE`;
+- `termination_reason`: `EXITED`, `CANCELLED`, `TIMED_OUT`, `CPU_TIME_EXCEEDED`, `OOM_KILLED` (Linux: `memory.events` oom_kill increased, or `SERVICE_RESULT=oom-kill`), `MEMORY_LIMIT` (Windows commit-limit notification observed and exit ≠ 0), `PREEMPTED`, `LOST`, `SPAWN_FAILED`, `NODE_SHUTDOWN`, `POLICY_DENIED`, `TERMINATION_INCOMPLETE` or `CACHE_RESTORED` (result-cache restore; never an execution);
 - `effect`: `DID_NOT_HAPPEN` only for `SPAWN_FAILED` and `POLICY_DENIED`; `HAPPENED` for completed processes; `UNKNOWN` for `LOST`.
 
 ## 8. Dependencies, services, retries
@@ -105,6 +120,8 @@ Timeouts and CPU-time limits run the same sequence with the reason `TIMED_OUT` /
 ## 9. Restart recovery and LOST
 
 See [02](02-node-service.md) §2 step 5.
+- **Windows.** The attempt's holder keeps the child and root jobs open, so the restarted node re-opens them by name. It re-associates its completion port (clear, then attach; L-15), reads accounting and limit violations, and can cancel, limit or account the attempt as before. After the node records a finished attempt, it sets the attempt's ack event and the holder exits.
+- **Linux.** The node finds the unit by name, reads its state and cgroup files, and reads `exit.json` for attempts that finished while it was down.
 - Attempts recovered after a node restart get a `node_gap` timeline segment.
 - Attempts whose container vanished, or whose boot identity changed, become `LOST` with evidence `{boot_id_old, boot_id_new}` or `{container_missing}`.
 - A `LOST` attempt of a retryable task schedules a retry. Others wait for a user or agent decision (`RetryTask`).
@@ -128,4 +145,4 @@ Per [AD-0006](../decisions/AD-0006-execution-semantics.md) §8. The action key i
 - the input manifest digest (declared input globs relative to the workspace);
 - OS and architecture.
 
-Declared output globs are stored in the CAS (`cache/cas/`). Policy `result_cache.mode` per workspace: `OFF` (default), `OBSERVE` (record would-hit) or `RESTORE`. A restore produces an attempt with `termination_reason=EXITED`, `cache_restored=true` and recorded output replay. Restores never run for `SIDE_EFFECTING` or `UNKNOWN` tasks.
+Declared output globs are stored in the CAS (`cache/cas/`). Policy `result_cache` sets a mode per workspace: `OFF` (default), `OBSERVE` (record would-hit) or `RESTORE`. A restore produces an attempt of kind `CACHE_RESTORE` with `termination_reason=CACHE_RESTORED`, the recorded exit code and output replay; it is never shown as an execution. Restores run only for `PURE` tasks (AD-0006 §8).

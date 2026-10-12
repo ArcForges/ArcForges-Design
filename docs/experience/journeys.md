@@ -7,7 +7,7 @@ Each journey lists its steps across surfaces with the APIs involved, its success
 - **Actor.** A developer on Windows with Claude Code (WSL Debian also present).
 - **Preconditions.** None.
 
-1. The user downloads the MSI from W-04 and installs it per user. The node starts (13 §3.1). Linux and WSL users use `install.sh`.
+1. The user downloads the setup program from W-04 and installs it per user. The node starts (13 §3.1). Linux and WSL users use `install.sh`.
 2. Desktop D-00 shows the capabilities. In WSL Debian, the guest node is installed by `install.sh` (user action) and linked automatically: SM-GUEST-LINK DISCOVERED → LINKED.
 3. In D-14, the user plans the Claude Code integration at user scope (`PlanIntegration`), reviews the diff and applies it (`ApplyIntegration`).
 4. The user runs the probe (`StartProbe`) and pastes the instruction into Claude Code. `arcforges probe` reports PASS (`ReportProbe`).
@@ -24,7 +24,7 @@ Each journey lists its steps across surfaces with the APIs involved, its success
   - no WSL systemd (guest DEGRADED with the remedy).
 - **Verification:**
   - closed-loop `J01_IntegrationInstallTests`, using `ScriptedMcpClient` and hook fixtures against real config files in a temporary home directory;
-  - real MSI and `install.sh` tests (13 §9);
+  - real setup-program and `install.sh` tests (13 §9);
   - real Claude Code and Codex probe runs on the workstation (F-A01; recorded evidence);
   - fresh-machine install: AR-01.
 

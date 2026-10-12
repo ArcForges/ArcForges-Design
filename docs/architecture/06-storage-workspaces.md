@@ -89,10 +89,14 @@ Sizes use an incremental size cache keyed by `(path, mtime, inode/file-id)`. Dir
    - it is still inside an allowed location: managed sub-roots, registered-workspace regenerable outputs, or paths the user explicitly added to *this* plan through `AddExternalPath`, which needs a separate confirmation.
 
    Actions:
-   - `QUARANTINE`: rename into `staging/quarantine/<plan_id>/<item_id>` on the same volume. The rename fails safely if files are open, and the item is then reported `IN_USE`.
+   - `QUARANTINE`: rename into a quarantine root on the item's own volume, so the move is a rename and never a copy:
+     - `staging/quarantine/<plan_id>/<item_id>` for items on the data-root volume;
+     - otherwise `<quarantine root>/<plan_id>/<item_id>`, where policy `storage.quarantine_roots` maps the volume to a directory on it. The user creates or confirms each root, and the node keeps it user-only (owner ACL on Windows, mode `0700` on Linux).
+
+     The rename fails safely if files are open, and the item is then reported `IN_USE`.
    - `GIT_WORKTREE_REMOVE`: `git worktree remove` without `--force`.
    - `TOOL_CLEAN`: the tool's own command, for example `dotnet nuget locals http-cache --clear`.
    - `ARCHIVE_THEN_REMOVE`: §3.
-   - `DIRECT_DELETE`: only for cross-volume items the user selected with "delete without quarantine".
-4. **Purge.** Housekeeping deletes quarantine directories older than `quarantine_hours` (default 24 h). `RestoreQuarantine(item)` moves an item back while it remains.
+   - `DIRECT_DELETE`: only for items on a volume that has no quarantine root, after an explicit per-item "delete without quarantine" confirmation (R-STOR-006).
+4. **Purge.** Housekeeping deletes plan directories in every quarantine root once they are older than `quarantine_hours` (default 24 h). `RestoreQuarantine(item)` moves an item back while it remains.
 5. **Bounds.** No API deletes a path that is not an item of a validated plan. No wildcard or recursive-delete parameter exists. Each execution acts only on the listed items, at most 10,000 items and 2 TiB per plan (R-STOR-006, R-STOR-008).

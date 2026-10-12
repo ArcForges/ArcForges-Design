@@ -1,66 +1,75 @@
 # AD-0005 — Resource enforcement, WSL model and privileges
 
-- Status: Accepted (2026-10-12)
-- Evidence: [platform verification](../verification/platform-capabilities.md) V-W01–V-W06, V-L01–V-L07, L-01–L-13
+- Status: Accepted (2026-10-12; revised after the independent review the same day: job handle holders, guest budgets, aligned parameters)
+- Evidence: [platform verification](../verification/platform-capabilities.md) V-W01–V-W06, V-L01–V-L07, L-01–L-16
+
+The numeric limits and formulas live in [resource control](../architecture/03-resource-control.md) §2 and §5. The launch, cancellation and recovery sequences live in [execution](../architecture/04-execution.md) §3, §6 and §9. This decision fixes the mechanisms.
 
 ## Decision
 
 ### Process model
 
-The node runs **as the signed-in user, without elevation**. It launches managed processes as that user and never elevates them. Core features need no administrator or root rights. Two optional privileged features exist, each only after an explicit OS-level installation prompt: a machine-wide Windows service mode for headless build machines, and Linux I/O control. They are never required for development-stage acceptance.
+The node runs **as the signed-in user, without elevation**. It launches managed processes as that user and never elevates them. Core features need no administrator or root rights.
+
+Optional privileged features are designed but not part of the current deliverables: a machine-wide Windows service mode (a separate per-machine installer, AR-16), and Linux I/O control. They are never required for development-stage acceptance.
 
 ### Windows
 
-1. At startup the node creates (or re-opens) a named **root job** `Local\ArcForges.<node_id>.root` with:
-   - a hard CPU cap = `(capacity − reserved headroom) / capacity × 10000`, updated when policy or unmanaged load changes (V-W04);
-   - a job commit limit = managed memory budget (V-W05);
-   - a notification-limit threshold at 90% of that budget for soft-pressure signals (V-W03).
-2. Each attempt runs in a **child job** `Local\ArcForges.<node_id>.<attempt_id>`, nested in the root job (V-W01). Its limits:
-   - weight-based CPU rate control (weight 1–9 mapped from priority class and grant);
-   - a per-job commit limit (the attempt's memory ceiling);
+1. **Root job.** At startup the node creates (or re-opens) a named root job `Local\ArcForges.<node_id>.root`, with:
+   - a hard CPU cap;
+   - a job commit limit;
+   - a notification limit for soft-pressure signals.
+
+   Values per 03 §5 (V-W03–V-W05). They are updated with hysteresis when budgets change.
+2. **Attempt jobs.** Each attempt runs in a child job `Local\ArcForges.<node_id>.<attempt_id>`, nested in the root job (V-W01). Its limits follow 03 §5:
+   - weight-based CPU rate control, or a hard cap when a per-task cap is set;
+   - a per-job commit limit;
    - `ActiveProcessLimit` when policy sets one;
    - no breakaway allowed.
+3. **Handle holders keep jobs alive across node restarts.** A named job disappears from the namespace as soon as its last handle closes, even while processes still run inside it (L-14). So every attempt has a holder: the launcher role `arcforges node exec-wrap`.
+   - **Where it runs.** The holder runs *outside* the job (it is not assigned to it). It inherits handles to the child job, the root job and the output files.
+   - **What it does.** It creates the target process suspended, assigns it to the child job, resumes it and waits for it.
+   - **Exit record.** It writes the durable exit record with job accounting ([04](../architecture/04-execution.md) §3).
+   - **Lifetime.** It keeps both job handles until the node acknowledges the record, through the named event `Local\ArcForges.<node_id>.<attempt_id>.ack`.
 
-   `KILL_ON_JOB_CLOSE` is **not** set by default, so executions survive node restarts (AD-0006). The job is named so a restarted node re-opens it. Tasks marked `kill_with_node` get KILL_ON_JOB_CLOSE.
-3. Processes are launched suspended (`CREATE_SUSPENDED`), assigned to the job, then resumed, so no child escapes before assignment.
-4. **Termination.**
-   - Cancellation sends `CTRL_BREAK_EVENT` to the attempt's console process group (each attempt gets a new process group and a hidden console).
-   - After the grace period, `TerminateJobObject`.
-   - An ancestry scan finds processes that escaped (WMI-created, broker-launched) and reports them as `ESCAPED` (R-RES-012). It terminates them only if they are same-user descendants by ancestry and policy permits.
-5. Windows has no `memory.high` equivalent and no supported job-wide freeze, so the node reports `pause=UNSUPPORTED` on Windows. Commit-limit exhaustion fails allocations, and the node records `memory_limit_hit` from the guaranteed notification limit.
+   While any holder lives, `OpenJobObject` by name succeeds, so a restarted node re-opens the attempt and root jobs, re-reads accounting and cancels or limits them as before.
+4. **Completion ports.** A job accepts one completion port. A restarted node first clears the old association, then attaches its own (L-15). It then queries `JobObjectLimitViolationInformation` and the basic accounting, to catch limit events it missed while down.
+5. **Kill with node.** Tasks marked `kill_with_node` are launched by the node itself, without a holder, in a job with `JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE`. The node's handle is then the only one, so the job is killed when the node exits. Their exit status is captured only while the node runs.
+6. **Launch order.** Processes are created suspended (`CREATE_SUSPENDED`), assigned to the job, then resumed, so no child escapes before assignment.
+7. **Termination.**
+   - **Graceful:** cancellation sends `CTRL_BREAK_EVENT` to the attempt's console process group. Each attempt gets a new process group and a hidden console; the `arcforges node signal` helper attaches to it.
+   - **Forced:** after the grace period, `TerminateJobObject`.
+   - **Escaped processes:** an ancestry scan finds processes that escaped (WMI-created, broker-launched) and reports them as `ESCAPED` (R-RES-012). It terminates them only if they are same-user descendants by ancestry and policy permits.
+8. **No pause or soft limit.** Windows has no `memory.high` equivalent and no supported job-wide freeze, so the node reports `pause=UNSUPPORTED` on Windows. Commit-limit exhaustion fails allocations, and the node records `memory_limit_hit` from the notification limit and limit-violation queries.
 
 ### Linux (including WSL2 guests)
 
-1. **Node unit.** The node runs as the systemd **user** unit `arcforges-node.service`. It does not hold executions in its own cgroup.
-   - **Why:** systemd kills the processes left in a unit's cgroup when the unit stops or restarts after a failure.
-   - **Effect:** a node crash, update or `systemctl --user restart` never touches running executions (AD-0006 §2).
-2. **Execution containers are transient systemd user units, created through the user manager's D-Bus API** (`org.freedesktop.systemd1.Manager.StartTransientUnit`, with the AOT-compatible `Tmds.DBus.Protocol`).
-   - **Slice.** The root container is the slice `arcforges.slice`, installed as a unit file beside the node unit. At runtime the node sets these properties with `SetUnitProperties(runtime=true)`:
-     - `CPUQuota` (= `cpu.max`), which protects the reserved headroom;
-     - `MemoryHigh` and `MemoryMax`, which hold the managed memory budget;
-     - `TasksMax`.
+1. **Node unit.** The node runs as the systemd **user** unit `arcforges-node.service`, and holds no executions in its own cgroup. systemd kills the processes left in a unit's cgroup when the unit stops or restarts after a failure; keeping executions elsewhere means a node crash, update or `systemctl --user restart` never touches them (AD-0006 §2).
+2. **Execution containers are transient systemd user units**, created through the user manager's D-Bus API (`org.freedesktop.systemd1.Manager.StartTransientUnit`, using the AOT-compatible `Tmds.DBus.Protocol`).
+   - **Slice.** The root container is the slice `arcforges.slice`, installed as a unit file beside the node unit. The node sets its limits at runtime with `SetUnitProperties(runtime=true)`: `CPUQuota`, `MemoryHigh`, `MemoryMax` and `TasksMax` (values per 03 §5).
    - **Attempts.** Each attempt is a transient service `arcforges-a-<attempt_id>.service` in that slice, with:
-     - `CPUWeight` from priority and grant, plus an optional per-task `CPUQuota`;
-     - `MemoryHigh` = estimate × 1.25, `MemoryMax` = ceiling, `OOMPolicy=kill` (the whole unit stops when an OOM kill occurs) and optional `MemorySwapMax`;
-     - `TasksMax` (default 4096);
-     - `KillMode=control-group` with `TimeoutStopSec` = the task's cancellation grace;
-     - `ExecStopPost=<app>/arcforges node exit-record --attempt <id>`;
+     - `CPUWeight` (03 §5), plus an optional per-task `CPUQuota`;
+     - `MemoryHigh`, `MemoryMax`, `OOMPolicy=kill` and an optional `MemorySwapMax`;
+     - `TasksMax`;
+     - `KillMode=control-group` with `TimeoutStopSec` = `leftover_grace` (default 5 s). This applies only to the stop that follows the root process's exit;
+     - `ExecStopPost=<app>/current/arcforges node exit-record --attempt <id>`;
      - `CollectMode=inactive-or-failed`.
-   - **Launch details:**
-     - The node passes the working directory and an exact environment: `Environment=` plus `UnsetEnvironment=` for every manager variable outside the resolved set.
-     - stdio arrives as file descriptors passed over D-Bus (`StandardInputFileDescriptor`, `StandardOutputFileDescriptor`, `StandardErrorFileDescriptor`, opened by the node on its own log files and stdin pipe).
+   - **Launch.**
+     - The node passes the working directory and an exact environment (`Environment=`, plus `UnsetEnvironment=` for every manager variable outside the resolved set).
+     - stdio is passed as file descriptors over D-Bus (`StandardInputFileDescriptor`, `StandardOutputFileDescriptor`, `StandardErrorFileDescriptor`).
      - The caller's relevant rlimits are passed as `Limit*=` properties.
-   - **Parent and exit status.**
+   - **Parent and exit record.**
      - The user manager is the parent of every execution, so executions never depend on the node process.
-     - `ExecStopPost` receives `$EXIT_CODE`, `$EXIT_STATUS` and `$SERVICE_RESULT` and writes `logs/<attempt>/exit.json`. The exit status is therefore durable even while the node is down.
-     - Local evidence: L-13.
-   - **Control:**
-     - Pause uses `FreezeUnit` and `ThawUnit`.
-     - Graceful cancellation is `KillUnit(main, SIGINT|SIGTERM)` followed by `StopUnit`, whose `KillMode=control-group` kills the rest after the grace period. Forced cancellation is `KillUnit(all, SIGKILL)`.
-     - Limit changes use `SetUnitProperties(runtime=true)`.
-     - Statistics are read directly from the unit's cgroup files (`ControlGroup` property; read-only access), and completion is observed through D-Bus `PropertiesChanged`/`JobRemoved` signals plus `exit.json` (V-L03–V-L05).
-3. **Minimum platform.** cgroup v2 unified hierarchy and systemd ≥ 247 with a user manager. Older or absent managers degrade per capability (§4 and [resource control](../architecture/03-resource-control.md) §8).
-4. **Without a user manager or controllers.** If no systemd user manager exists, or a controller is missing in the user manager's delegation, the node runs in `OBSERVE_ONLY` (or `PARTIAL` per missing controller).
+     - `ExecStopPost` runs in the unit's cgroup and receives `$EXIT_CODE`, `$EXIT_STATUS` and `$SERVICE_RESULT`. It writes `logs/<attempt>/exit.json` with the cgroup accounting (`cpu.stat`, `memory.peak`, `memory.events`, `io.stat`), so the record is durable even while the node is down (L-13).
+   - **Control.**
+     - **Pause:** `FreezeUnit` / `ThawUnit`.
+     - **Graceful cancellation:** `KillUnit("all", <stop_signal>)`, default SIGTERM.
+     - **Forced cancellation:** after `cancel_grace`, `KillUnit("all", SIGKILL)`.
+     - **Limit changes:** `SetUnitProperties(runtime=true)`.
+     - **Statistics:** read directly from the unit's cgroup files, which are readable.
+     - **Completion:** observed through D-Bus `PropertiesChanged`/`JobRemoved` and `exit.json` (V-L03–V-L05).
+3. **Minimum platform.** cgroup v2 unified hierarchy and systemd ≥ 247 with a user manager. Older or absent managers degrade per capability (03 §8).
+4. **Without a user manager or controllers.** If no systemd user manager exists, or a controller is missing from its delegation, the node runs in `OBSERVE_ONLY` (or `PARTIAL` per missing controller).
    - Executions are then plain child processes, and their exit status is lost if the node restarts before they finish.
    - The node refuses tasks whose policy requires enforcement (R-RES-008).
    - Without lingering, a non-WSL user manager stops at logout, and with it every execution. This is documented, and `loginctl enable-linger` is offered as a user step.
@@ -68,16 +77,20 @@ The node runs **as the signed-in user, without elevation**. It launches managed 
 
 ### WSL2 model
 
-1. The Windows **host node** and each managed distribution's **guest node** are separate authorities linked by a **guest link**. The host launches `wsl.exe -d <distro> --exec <guest arcforges path> bridge wsl`, a long-lived child of the host node. The bridge relays one byte stream between its stdio and the guest node's Unix socket, and the host runs gRPC over it (AD-0004).
-   - This works in NAT, mirrored and consomme networking modes alike.
-   - The bridge keeps the distribution alive while the host holds the link, so the user's `instanceIdleTimeout` (V-L07) needs no change.
-   - The guest node itself runs under the user manager (L-08), not under the bridge. Its executions are transient units of that user manager (Linux §2).
+1. **Guest link.** The Windows **host node** and each managed distribution's **guest node** are separate authorities, linked by a **guest link**.
+   - **Bridge.** The host launches `wsl.exe -d <distro> --exec <guest arcforges path> bridge wsl`, a long-lived child of the host node. The bridge relays one byte stream between its stdio and the guest node's Unix socket, and the host runs gRPC over it (AD-0004).
+   - **Networking.** This works in NAT, mirrored and consomme networking modes alike.
+   - **Distribution lifetime.** The bridge keeps the distribution alive while the host holds the link, so the user's `instanceIdleTimeout` (V-L07) needs no change. Whether the user manager stays up with only the bridge connected is verified by F-L01.
+   - **Guest executions.** The guest node runs under the user manager (L-08), not under the bridge, and its executions are transient units of that user manager (Linux §2).
 2. **Capacity and accounting.**
-   - The guest's capacity is what the VM exposes (`nproc` and MemTotal, bounded by `.wslconfig`).
-   - The host counts the VM as one consumer through its VM worker process (vmmem/vmmemWSL; A-L01) and never sums guest-internal processes separately.
-   - Guest-reported managed usage is attributed inside that consumer: `guest_other = max(0, vm_usage − guest_managed)`.
-3. **Coordinated admission.** While linked, a guest asks the host for a grant before admitting an attempt (a `GrantRequest` on the `GuestLinkService.OpenLink` stream, answered by the host through `AnswerGrant`), so one fair queue spans the host and its guests. Unlinked, the guest admits within its own capacity minus its own reserve.
-4. A Windows task that runs `wsl.exe` is flagged `crosses_vm_boundary`. Its Linux processes are outside the Windows job and are labelled unmanaged unless submitted to the guest node (R-RES-011).
+   - **Guest capacity** is what the VM exposes (`nproc` and MemTotal, bounded by `.wslconfig`).
+   - **Host view:** the host counts the VM as one consumer through its VM worker process (vmmem/vmmemWSL; A-L01) and never sums guest-internal processes separately.
+   - **Attribution:** guest-reported managed usage is attributed inside that consumer: `guest_other = max(0, vm_usage − guest_managed)`.
+3. **Coordinated admission and enforcement** (03 §6).
+   - **Admission.** While linked, a guest asks the host for a grant before admitting an attempt: a `GrantRequest` on the `GuestLinkService.OpenLink` stream, answered with `AnswerGrant`. One fair queue spans the host and its guests.
+   - **Enforcement.** The host subtracts the granted guest totals from its own root caps, and pushes the same totals as the guest's slice limits (`GuestLinkService.SetGuestBudget`). Host and guest caps together never exceed the host budget.
+   - **Unlinked.** The guest admits within its own capacity minus its own reserve. That degraded mode can over-commit the physical machine, so the host raises `GUEST_LINK_LOST`.
+4. **Tasks that cross into WSL.** A Windows task that runs `wsl.exe` is flagged `crosses_vm_boundary`. Its Linux processes are outside the Windows job and are labelled unmanaged unless submitted to the guest node (R-RES-011).
 
 ### Observation versus control
 
@@ -89,4 +102,5 @@ The node runs **as the signed-in user, without elevation**. It launches managed 
 
 - No step of core functionality needs elevation, and every enforcement claim is backed by a real test in its environment.
 - Windows pause and memory soft-limits are honestly unavailable.
+- Each Windows attempt costs one small holder process (target ≤ 3 MB private, [15](../architecture/15-performance-targets.md)). That is the price of surviving node restarts.
 - Optional privileged features are designed but do not gate development-stage completion.

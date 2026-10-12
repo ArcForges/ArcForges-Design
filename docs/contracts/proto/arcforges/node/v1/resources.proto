@@ -18,7 +18,7 @@ option java_outer_classname = "NodeResourcesProto";
 // Resource observation, process views, adoption and guest links.
 service ResourceService {
   // Current capacity, reserves, unmanaged load, budgets, managed usage, pressure, volumes, guests and capabilities.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -36,7 +36,7 @@ service ResourceService {
   rpc WatchResources(ResourceServiceWatchResourcesRequest) returns (stream ResourceServiceWatchResourcesFrame);
 
   // List classified processes (managed, adopted, escaped, bypassed, unmanaged, guest VM, shared services).
-  // auth: HUMAN=A SCRIPT=A AGENT=A (own session detail) REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A (own session detail) REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -45,7 +45,7 @@ service ResourceService {
   rpc ListProcesses(ResourceServiceListProcessesRequest) returns (ResourceServiceListProcessesResponse);
 
   // Read stored samples for charts (03 section 1 retention).
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 10 s
   // stream: none
@@ -54,7 +54,7 @@ service ResourceService {
   rpc GetSamples(ResourceServiceGetSamplesRequest) returns (ResourceServiceGetSamplesResponse);
 
   // Place an existing same-user process under management (04 section 10). Creates an ADOPTED task.
-  // auth: HUMAN=A SCRIPT=D AGENT=D REMOTE=D
+  // auth: HUMAN=A SCRIPT=D AGENT=D REMOTE=-
   // idempotency: command_id
   // deadline: 10 s
   // stream: none
@@ -63,7 +63,7 @@ service ResourceService {
   rpc AdoptProcess(ResourceServiceAdoptProcessRequest) returns (ResourceServiceAdoptProcessResponse);
 
   // Terminate a same-user process that the node manages or classified as ESCAPED, BYPASSED or leftover. Never unrelated processes.
-  // auth: HUMAN=A SCRIPT=P AGENT=P REMOTE=high
+  // auth: HUMAN=A SCRIPT=P AGENT=P REMOTE=-
   // idempotency: command_id; a process already gone returns HAPPENED with detail
   // deadline: 10 s
   // stream: none
@@ -72,7 +72,7 @@ service ResourceService {
   rpc TerminateProcess(ResourceServiceTerminateProcessRequest) returns (ResourceServiceTerminateProcessResponse);
 
   // Host: guest links per WSL distribution. Guest: its host link.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -81,13 +81,31 @@ service ResourceService {
   rpc ListGuestLinks(ResourceServiceListGuestLinksRequest) returns (ResourceServiceListGuestLinksResponse);
 
   // Enable, disable or re-link the guest node of a WSL distribution (host only).
-  // auth: HUMAN=A SCRIPT=A AGENT=D REMOTE=medium
+  // auth: HUMAN=A SCRIPT=A AGENT=D REMOTE=-
   // idempotency: command_id
   // deadline: 30 s
   // stream: none
   // errors: STATE/not_found, STATE/link_down, EXECUTION/operation_failed
   // locality: node (host)
   rpc SetGuestLink(ResourceServiceSetGuestLinkRequest) returns (ResourceServiceSetGuestLinkResponse);
+
+  // Read the host this guest node has pinned, and the last link refused because it came from a different host (guest only; 09 section 9).
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
+  // idempotency: read
+  // deadline: 5 s
+  // stream: none
+  // errors: STATE/invalid_state
+  // locality: node (guest)
+  rpc GetHostLink(ResourceServiceGetHostLinkRequest) returns (ResourceServiceGetHostLinkResponse);
+
+  // Accept the host whose link was last refused: its next link is pinned as on first use (guest only; 09 section 9).
+  // auth: HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=-
+  // idempotency: command_id
+  // deadline: 5 s
+  // stream: none
+  // errors: STATE/invalid_state, VALIDATION/invalid_argument
+  // locality: node (guest)
+  rpc TrustHost(ResourceServiceTrustHostRequest) returns (ResourceServiceTrustHostResponse);
 }
 
 message ResourceServiceGetResourceSnapshotRequest {
@@ -235,6 +253,43 @@ message ResourceServiceSetGuestLinkResponse {
 }
 message ResourceServiceSetGuestLinkValue {
   GuestLinkView link = 10 [json_name = "link"];
+}
+
+message ResourceServiceGetHostLinkRequest {
+  arcforges.foundation.v1.RequestMeta meta = 1 [json_name = "meta"];
+  reserved 2 to 9;
+}
+message ResourceServiceGetHostLinkResponse {
+  arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
+  oneof outcome {
+    ResourceServiceGetHostLinkValue value = 2 [json_name = "value"];
+    arcforges.foundation.v1.ArcError error = 3 [json_name = "error"];
+  }
+  reserved 4 to 9;
+}
+message ResourceServiceGetHostLinkValue {
+  arcforges.foundation.v1.Id host_node_id = 10 [json_name = "hostNodeId"]; // absent before the first link
+  arcforges.foundation.v1.Instant pinned_at = 11 [json_name = "pinnedAt"];
+  arcforges.foundation.v1.Instant last_seen = 12 [json_name = "lastSeen"];
+  arcforges.foundation.v1.Id refused_host_node_id = 13 [json_name = "refusedHostNodeId"]; // absent when no link was refused
+  arcforges.foundation.v1.Instant refused_at = 14 [json_name = "refusedAt"];
+}
+
+message ResourceServiceTrustHostRequest {
+  arcforges.foundation.v1.RequestMeta meta = 1 [json_name = "meta"];
+  reserved 2 to 9;
+  arcforges.foundation.v1.Id host_node_id = 10 [json_name = "hostNodeId"]; // validate: required; equals refused_host_node_id
+}
+message ResourceServiceTrustHostResponse {
+  arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
+  oneof outcome {
+    ResourceServiceTrustHostValue value = 2 [json_name = "value"];
+    arcforges.foundation.v1.ArcError error = 3 [json_name = "error"];
+  }
+  reserved 4 to 9;
+}
+message ResourceServiceTrustHostValue {
+  arcforges.foundation.v1.Receipt receipt = 10 [json_name = "receipt"];
 }
 
 enum GuestLinkState {

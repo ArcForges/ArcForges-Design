@@ -21,7 +21,8 @@
 
 3. **Reused existing packages:**
    - `arcforges.foundation.v1`: `RequestMeta`, `ResponseMeta`, `ArcError`, `Id`, `Revision`, `Instant`, `PageRequest`, `PageState`, `Receipt` and `ActorChain`.
-   - `arcforges.publicapi.v1` for identity, device, entitlement, commerce, notification and support. These are adapted additively: new device kinds and a node installation kind, the Google Play provider, and node push kinds ([contracts/reuse-map.md](../contracts/reuse-map.md)).
+   - `arcforges.publicapi.v1` for identity, device, entitlement, commerce, notification and support. The existing services are unchanged. The flagship adds data values (device product values `arcforges-node` and `arcforges-mobile`, node push kinds, plan features) and one new service in a new file (`SupportAccessService`). The Google Play provider is the new `fleet.v1.StoreBillingService` ([contracts/reuse-map.md](../contracts/reuse-map.md)).
+   - `arcforges.operator.v1` (internal): `OperatorService` unchanged, plus the new `OperatorReadService` in a new file.
 
    ArcChat-family services (Chat, Task, Agent, Sync, Search, Scope, Simulation, Transfer, Export, Catalog, Extensions) are retained but unused by the flagship.
 

@@ -1,6 +1,6 @@
 # AD-0008 — LAN: discovery, trust, placement, transfer and caches
 
-- Status: Accepted (2026-10-12)
+- Status: Accepted (2026-10-12; revised after the independent review the same day: SAS bound to certificate fingerprints, listener access rule, copy or reflink for remote workspaces)
 
 ## Decision
 
@@ -12,10 +12,12 @@
 2. **Node identity.** Each node generates an ECDSA P-256 key at first start (non-exportable where the OS allows). Its self-signed certificate carries `node_id` in the subject alternative name.
 3. **Trust (pairing), either:**
    - **Account trust (Pro):** a signed-in node obtains a node certificate issued by its account's CA in ArcForges Cloud (`NodeEnrollmentService.IssueNodeCertificate`, 30-day validity, auto-renewed). Same-account nodes trust each other's account certificates, subject to per-peer policy defaults. Revocation lists ride on the entitlement token refresh and the relay.
-   - **Local pairing (Free and Pro):** two nodes run an authenticated key agreement over the peer channel. Both displays show a 6-digit short authentication string derived from the transcript, the user confirms on both, and each pins the other's certificate fingerprint.
+   - **Local pairing (Free and Pro):** two nodes run a commitment-based exchange over a TLS session. Each side checks that the certificate fingerprints claimed in the exchange equal the certificates presented in that TLS session. Both displays show a 6-digit short authentication string derived from the nonces and both fingerprints; the user confirms on both, and each pins the other's certificate fingerprint. A man in the middle presents its own certificates, so the two sides compute different strings. .NET 10 offers no TLS exporter (V-N05), so none is used.
 
-   LAN **placement and cache sharing** are Pro features (product definition §5), verified offline with the signed entitlement token. Free pairing is limited to WSL guests and status viewing.
-4. **Transport.** gRPC over HTTP/2 with mutual TLS 1.3 on a configurable TCP port (default 47820), with certificate validation by account CA or pin. Unknown or revoked peers are refused before HTTP/2 starts.
+   LAN **placement and cache sharing** are Pro features (product definition §5), verified offline with the signed entitlement token. On the Free plan, paired peers exchange status only. WSL guests are not LAN peers and need no pairing: they link to their host through the bridge (03 §6).
+4. **Transport.** gRPC over HTTP/2 with mutual TLS 1.3 on a configurable TCP port (default 47820).
+   - **At the TLS handshake:** the listener accepts any well-formed client certificate, so that unpaired nodes can pair. It refuses account certificates that are expired, wrongly signed or revoked.
+   - **After the handshake:** a gRPC interceptor admits unpaired identities only to `PeerHandshakeService.Hello` and `PairingService`. Every other service requires a pinned or same-account identity, and a blocked identity gets nothing.
 5. **Per-peer policy.** Each peer has these settings:
    - allow placement to it, and accept placement from it;
    - accept cache read and accept cache write;
@@ -29,7 +31,7 @@
    - Only **separate tasks** are placed. A single process never spans machines (R-LAN-010).
 7. **Transfer.**
    - Inputs travel as a content-addressed manifest (path, mode, size, SHA-256) of the workspace view the task needs. It is computed from the git index and working tree with declared includes and excludes, or from an explicit path set.
-   - The executor requests missing blobs (`TransferService`, 4 MiB chunks, verified digests) and materializes them into a managed **remote workspace** kept per origin workspace, for incremental reuse.
+   - The executor requests missing blobs (`TransferService`, 4 MiB chunks, verified digests) and materializes them into a managed **remote workspace** kept per origin workspace, for incremental reuse. Files are copied, or block-cloned where the file system supports it (ReFS/Dev Drive duplicate extents, Linux `FICLONE`). They are never hardlinked to the content store, because a build that writes in place would corrupt the stored blob.
    - Declared outputs return the same way. Logs stream live through the attempt stream.
    - LAN data never routes through the cloud (R-LAN-006).
 8. **Failure and ownership.**

@@ -192,6 +192,17 @@ CREATE TABLE probe_ticket (
 
 -- ------------------------------------------------------------------ tasks
 
+CREATE TABLE env_snapshot (
+  env_digest BLOB NOT NULL PRIMARY KEY CHECK (length(env_digest) = 32),  -- SHA-256 of the canonical (sorted, UTF-8) entries
+  entries BLOB NOT NULL,                        -- EnvSnapshot (store.proto): name/value pairs without secret-shaped values, compressed
+  entry_count INTEGER NOT NULL CHECK (entry_count BETWEEN 0 AND 4096),
+  byte_size INTEGER NOT NULL CHECK (byte_size BETWEEN 0 AND 1048576),  -- uncompressed
+  ref_count INTEGER NOT NULL CHECK (ref_count >= 0),  -- tasks referencing the snapshot; maintained by the scheduler
+  created_at INTEGER NOT NULL,
+  last_used_at INTEGER NOT NULL
+) STRICT;
+CREATE INDEX ix_env_snapshot__unreferenced ON env_snapshot (last_used_at) WHERE ref_count = 0;
+
 CREATE TABLE task (
   task_id BLOB NOT NULL PRIMARY KEY CHECK (length(task_id) = 16),
   state INTEGER NOT NULL CHECK (state BETWEEN 1 AND 10),  -- TaskState
@@ -199,7 +210,8 @@ CREATE TABLE task (
   kind INTEGER NOT NULL CHECK (kind BETWEEN 1 AND 5),     -- TaskKind
   title TEXT NOT NULL CHECK (length(title) <= 200),
   command_summary TEXT NOT NULL,
-  spec BLOB NOT NULL,                           -- TaskSpec with secret-shaped environment values removed
+  spec BLOB NOT NULL,                           -- TaskSpec without caller_environment (see env_digest) and without secret-shaped values (see task_secret)
+  env_digest BLOB REFERENCES env_snapshot (env_digest) ON DELETE RESTRICT,  -- inherited caller environment, when inherit = CALLER
   spec_digest BLOB NOT NULL CHECK (length(spec_digest) = 32),
   owner BLOB NOT NULL,                          -- ActorRef
   owner_origin INTEGER NOT NULL,
@@ -233,6 +245,18 @@ CREATE INDEX ix_task__workspace_created ON task (workspace_id, created_at);
 CREATE INDEX ix_task__created ON task (created_at);
 CREATE INDEX ix_task__pool_state ON task (pool, state);
 CREATE INDEX ix_task__fingerprint ON task (command_fingerprint, finished_at);
+
+CREATE TABLE task_secret (
+  task_id BLOB NOT NULL PRIMARY KEY REFERENCES task (task_id) ON DELETE CASCADE,
+  key_id TEXT NOT NULL,                         -- version of the node data key held in the OS secret store
+  nonce BLOB NOT NULL CHECK (length(nonce) = 12),
+  ciphertext BLOB NOT NULL CHECK (length(ciphertext) BETWEEN 1 AND 1048576),  -- AES-256-GCM of SecretEnvironment (store.proto); AAD = task_id
+  tag BLOB NOT NULL CHECK (length(tag) = 16),
+  names_json TEXT NOT NULL CHECK (json_valid(names_json)),  -- the sealed variable names (presence only, shown in records)
+  purge_after INTEGER,                          -- set when the task becomes terminal: finished_at + storage.secret_retention_hours
+  created_at INTEGER NOT NULL
+) STRICT;
+CREATE INDEX ix_task_secret__purge_after ON task_secret (purge_after) WHERE purge_after IS NOT NULL;
 
 CREATE TABLE task_dependency (
   task_id BLOB NOT NULL REFERENCES task (task_id) ON DELETE CASCADE,
@@ -699,7 +723,10 @@ CREATE TABLE host_link (
   host_node_id BLOB NOT NULL CHECK (length(host_node_id) = 16),
   link_token_hash BLOB NOT NULL CHECK (length(link_token_hash) = 32),
   pinned_at INTEGER NOT NULL,
-  last_seen INTEGER
+  last_seen INTEGER,
+  refused_host_node_id BLOB CHECK (refused_host_node_id IS NULL OR length(refused_host_node_id) = 16),  -- last link refused: different host
+  refused_at INTEGER,
+  accept_host_node_id BLOB CHECK (accept_host_node_id IS NULL OR length(accept_host_node_id) = 16)  -- set by TrustHost; its next link is pinned
 ) STRICT;
 
 CREATE TABLE guest_grant (

@@ -24,9 +24,11 @@ Decision: [AD-0013](../decisions/AD-0013-reuse-and-supersession.md). Classes: **
 | Item | Class | Use / reason | Task |
 |---|---|---|---|
 | `arcforges.foundation.v1` | Reuse | Envelope, error, ID and paging types for every new package | AF-CON-01 (pins) |
-| `publicapi.v1` Identity, Entitlement, Commerce, Support, Notification, Data | Reuse | Account, plan, checkout, support, push and export ([contracts/reuse-map.md](../contracts/reuse-map.md)) | AF-CLD-* |
-| `publicapi.v1` Device | Adapt | Installation kinds `NODE` and `MOBILE`; node fields | AF-CON-01 |
-| `operator.v1.OperatorService` | Reuse | Operations profile | AF-OPS-01 |
+| `publicapi.v1` Identity, Entitlement, Commerce, Support, Notification, Data | Reuse (contracts unchanged; endpoints are new work, §3) | Account, plan, checkout, support, push and export ([contracts/reuse-map.md](../contracts/reuse-map.md)) | AF-ID-01, AF-ID-02, AF-CLD-03, AF-COM-01, AF-SUP-01, AF-CLD-06 |
+| `publicapi.v1` Device | Reuse (no schema change) | Product values `arcforges-node` and `arcforges-mobile` are data; one device per node and per phone | AF-ID-02 |
+| `publicapi.v1` `SupportAccessService` (new file `support_access.proto`) | New, additive | The owner reads an operator's access request before deciding it | AF-CON-01, AF-SUP-01 |
+| `operator.v1.OperatorService` | Reuse (contract unchanged; implementation new) | Operations profile | AF-OPS-01 |
+| `operator.v1` `OperatorReadService` (new file `operator_read.proto`) | New, additive | Audit events, operating budgets and the monthly report for W-66 and W-67 | AF-CON-01, AF-OPS-01 |
 | `events.v1` | Retain | Stream position shape mirrored, not imported | — |
 | `publicapi.v1` chat, content, connector, scope, sync, transfer, application, descriptors; `catalog`, `extensions`, `simulation`, `hello`; internal `cf.*`, `local.*` | Retain | Earlier product family | — |
 | `ArcForges.Cli` tool package (command `arcforges`) | Adapt | Rename the command in its next version (conflict C-03) | AF-CON-02 |
@@ -52,11 +54,16 @@ Decision: [AD-0013](../decisions/AD-0013-reuse-and-supersession.md). Classes: **
 
 | Item | Class | Use / reason | Task |
 |---|---|---|---|
-| C# host `ArcForges.Cloud` (Containers, AOT), Worker ingress, guarded deploy scripts, local workerd verification scripts | Reuse | Flagship host profile composes only the modules it needs | AF-CLD-01 |
-| Modules Identity, Entitlement, Support, Audit, Configuration; platform tables (command dedup, inbox and outbox, job leases, operating budgets) | Reuse | [10](../architecture/10-cloud.md) §2 | AF-CLD-* |
-| Modules Devices, Commerce, Notification | Adapt | Node and mobile installations; Google Play provider; node push kinds | AF-CLD-02, AF-CLD-07, AF-CLD-06 |
+| C# host `ArcForges.Cloud` (Containers, AOT; serves only `HelloService` at `92ba1dc9`), Worker ingress, guarded deploy scripts, local workerd verification scripts | Reuse | The flagship host profile composes only the modules it needs | AF-CLD-01 |
+| D1 storage layer: command guard and commit tail, inbox and outbox, job leases | Reuse | Implemented and tested | AF-CLD-01 |
+| Identity: user and credential domain rules and the D1 store (enrollment) | Reuse (domain and schema); endpoints **new** | No authentication ceremonies, sessions, step-up, recovery or deletion endpoints exist. They are built from the reused contracts: passkeys, e-mail codes, sessions with native bearer and step-up (AF-ID-01); recovery, deletion with grace, export, devices and security activity (AF-ID-02). | AF-ID-01, AF-ID-02 |
+| Entitlement: resolver, snapshots, grants | Reuse (domain and schema); endpoints **new** | `EntitlementService` endpoints, flagship plan catalogue, token claim projection | AF-CLD-03 |
+| Devices, Commerce, Notification, Support, Audit, Configuration (15-line placeholders at `92ba1dc9`) | Contract and schema reused; implementation **new** | [10](../architecture/10-cloud.md) §2: device endpoints; Paddle provider; FCM sender; support cases and access grants; audit writer and reader; configuration revisions and kill switches | AF-ID-02, AF-COM-01, AF-CLD-06, AF-SUP-01, AF-PLAT-01 |
+| Operating budgets and reservations (tables only) | Schema reused; service **new** | Budget checks on metered paths | AF-PLAT-01 |
+| Google Play provider | New | `StoreBillingService`, RTDN, acknowledgement job | AF-CLD-07 |
+| Operator endpoints (`operator.v1.OperatorService`), including the TrustSafety enforcement and appeal methods (TrustSafety is a placeholder at `92ba1dc9`) | Contract and schema reused; implementation **new** | The operator console reads and acts through it; new `OperatorReadService` for audit and budgets | AF-OPS-01 |
 | New module Fleet; Worker relay routes and `FleetHub` Durable Object | New | [10](../architecture/10-cloud.md) | AF-CLD-02, AF-CLD-04 |
-| Modules Chat, Task, Agent, Sync, Resource, Search, Scope, PackageCatalog, TrustSafety (except reused proposals and appeals), Policy, Workspace | Retain | Not composed into the flagship host profile; tables untouched | — |
+| Modules Chat, Task, Agent, Sync, Resource, Search, Scope, PackageCatalog, Policy, Workspace | Retain | Not composed into the flagship host profile; tables untouched | — |
 | D1 schema and migrations | Reuse + Adapt | [cloud-store.md](../data/cloud-store.md) | AF-CLD-01 |
 
 ## 4. Web
@@ -64,7 +71,7 @@ Decision: [AD-0013](../decisions/AD-0013-reuse-and-supersession.md). Classes: **
 | Item | Class | Use / reason | Task |
 |---|---|---|---|
 | `ArcForges.Web.Site` (static C# generator), `ArcForges.Web.Ui`, profile bundle and budget tooling, Worker static-asset adapter, guarded deploy | Reuse | Public site pages are rewritten for ArcForges | AF-WEB-01 |
-| `ArcForges.Web.App` Account profile | Adapt | Pages W-20…W-29 | AF-WEB-02 |
+| `ArcForges.Web.App` Account profile | Adapt | Pages W-20…W-29 | AF-WEB-02 (W-24 with AF-CLD-07, W-25 with AF-SUP-01, W-29 with AF-CLD-06) |
 | `ArcForges.Web.App` Chat profile | Retain | Not routed for the flagship | — |
 | Fleet profile | New | W-40, W-41 | AF-WEB-03 |
 | `ArcForges.Web.Operations` | Adapt | Skeleton becomes the operator console (W-60…W-67) | AF-OPS-01 |
@@ -105,5 +112,5 @@ Decision: [AD-0013](../decisions/AD-0013-reuse-and-supersession.md). Classes: **
 | Item | Class | Notes |
 |---|---|---|
 | `C:\MyFile\Projects\ArcForges - Final.md` launcher | Superseded and rewritten | The new single objective; the old text is archived in Plan `history/` |
-| `.claude/agents/haiku-worker` definition | Superseded | The user directive is "no Haiku". The definition was neutralized during the 2026-10-12 planning assignment and points to the serial model. |
+| `haiku-worker` agent definitions (project-level and user-level) | Superseded | The user directives are "no Haiku" and no build slot. On 2026-10-12 both definitions, and the user-level backup, were moved to `ArcForges/.claude/coordinator/retired-agents/` and archived in Plan `history/legacy-agents/` (conflict C-14). |
 | Coordinator notes (`.claude/coordinator/`) | Retain (history) | Waiting audit and scope status kept as evidence |

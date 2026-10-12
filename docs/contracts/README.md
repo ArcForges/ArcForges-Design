@@ -6,7 +6,7 @@ The `.proto` files under [proto/](proto/) are the **specification**. Task AF-CON
 - `node`, `fleet` → `public/proto`;
 - `peer`, `relay` → `internal/proto`.
 
-The files compile with protoc 2.84.0 against the pinned foundation contract in [reference/contracts-b774c322/](reference/contracts-b774c322/README.md). The generated C# (messages and gRPC stubs) builds with zero warnings under `IsAotCompatible` (checked by `tools/check_design.py --compile`).
+The files compile with the protoc bundled in Grpc.Tools 2.84.0 (libprotoc 35.1) against the pinned foundation contract in [reference/contracts-b774c322/](reference/contracts-b774c322/README.md). The generated C# (messages and gRPC stubs) builds with zero warnings under `IsAotCompatible` (checked by `tools/check_design.py --compile`).
 
 ## 1. Packages
 
@@ -16,6 +16,8 @@ The files compile with protoc 2.84.0 against the pinned foundation contract in [
 | `arcforges.peer.v1` | `peer.proto`, 6 services | `ArcForges.Contracts.Peer.V1` / `ArcForges.Contracts.Peer` (internal) | gRPC over HTTP/2 with TLS 1.3 mTLS on TCP 47820; `GuestLinkService` over the WSL bridge byte stream | Node ↔ node | Paired peers, host ↔ guest |
 | `arcforges.fleet.v1` | `fleet.proto`, 3 services | `ArcForges.Contracts.Fleet.V1` / `ArcForges.Contracts.Fleet` | Binary gRPC-Web through the Worker ingress to the C# host; `WatchFleet` as gRPC-Web text streaming | Cloud | Nodes (node credential), web and Android (account session), unauthenticated flow endpoints |
 | `arcforges.relay.v1` | `relay.proto`, messages only | `ArcForges.Contracts.Relay.V1` / `ArcForges.Contracts.Relay` (internal) | Protobuf binary WebSocket messages; the DO ↔ C# internal container route | Relay | Nodes, viewers, `FleetHub`, C# host |
+| `arcforges.publicapi.v1` (additive) | `support_access.proto`, 1 new service (`SupportAccessService`); the reused services are unchanged | `ArcForges.Contracts.PublicApi.V1` (the package's existing namespace) | Binary gRPC-Web through the Worker ingress to the C# host | Cloud | Web Account profile (account session) |
+| `arcforges.operator.v1` (additive) | `operator_read.proto`, 1 new service (`OperatorReadService`); the reused `OperatorService` is unchanged | `ArcForges.Contracts.CloudInternal.Operator.V1` (the package's existing namespace; internal) | Binary gRPC-Web from the Operations profile to the C# host | Cloud | Operators (operator session with step-up) |
 
 Reused contracts are listed in [reuse-map.md](reuse-map.md). The method-by-method index is [api-catalogue.md](api-catalogue.md), generated from the protos.
 
@@ -72,7 +74,7 @@ Every RPC carries structured comments, which `tools/check_design.py` verifies an
 | Key | Content |
 |---|---|
 | (first lines) | Purpose |
-| `auth:` | Permission per origin (`HUMAN`, `SCRIPT`, `AGENT`: `A` allow, `P` approval, `D` deny), and the remote risk class (`REMOTE=low\|medium\|high\|-`). Peer and cloud methods name the credential (`PEER: paired`, `account session`, `node credential`, step-up). Defaults come from [security](../architecture/11-security-privacy.md) §1. |
+| `auth:` | Permission per origin (`HUMAN`, `SCRIPT`, `AGENT`: `A` allow, `P` approval, `D` deny), and the remote risk class. `REMOTE=low\|medium\|high` marks the method that a `fleet.v1.NodeCommandBody` kind invokes, with that kind's class. `REMOTE=-` means no remote command reaches the method; remote viewers see only the status summaries the node publishes. Peer and cloud methods name the credential (`PEER: paired`, `account session`, `node credential`, step-up). Defaults come from [security](../architecture/11-security-privacy.md) §1. |
 | `idempotency:` | `read`; `command_id` with its window (24 h; payload digest compared); or `natural: <key>` |
 | `deadline:` | Default server bound. For streams: lifetime, heartbeat and idle limits. |
 | `stream:` | `none`, or `server: <Frame>` with end conditions |
@@ -86,7 +88,7 @@ Every RPC carries structured comments, which `tools/check_design.py` verifies an
 
 - **Local node API.** The node assigns the origin at `NodeService.Hello` from the connection (the verified peer process, its client kind and process ancestry) and applies the permission matrix. Caller-supplied identity is never trusted ([11](../architecture/11-security-privacy.md) §1).
 - **Peer API.** Identity comes from the TLS client certificate (pinned fingerprint or account SAN). Origin `PEER`, or `HOST`/`GUEST` on the bridge.
-- **Fleet API.** The credential decides access: an account session through the reused Identity service, or a node credential. Step-up uses the reused Identity step-up. Entitlement checks use the reused Entitlement module.
+- **Fleet API.** The credential decides access: an account session from the Identity service (reused contract; endpoints AF-ID-01), or a node credential. Step-up uses the reused Identity step-up. Entitlement checks use the reused Entitlement module.
 
 ## 6. Idempotency
 

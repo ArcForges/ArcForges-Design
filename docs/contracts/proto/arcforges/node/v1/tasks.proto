@@ -29,7 +29,7 @@ service TaskService {
   rpc SubmitTask(TaskServiceSubmitTaskRequest) returns (TaskServiceSubmitTaskResponse);
 
   // Read one task.
-  // auth: HUMAN=A SCRIPT=A AGENT=A (FULL only for own session) REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A (FULL only for own session) REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -38,7 +38,7 @@ service TaskService {
   rpc GetTask(TaskServiceGetTaskRequest) returns (TaskServiceGetTaskResponse);
 
   // List tasks, newest first.
-  // auth: HUMAN=A SCRIPT=A AGENT=A (others' tasks as summary) REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A (others' tasks as summary) REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -65,7 +65,7 @@ service TaskService {
   rpc AttachTask(TaskServiceAttachTaskRequest) returns (stream TaskServiceAttachTaskFrame);
 
   // Write stdin bytes for an attached STREAM-stdin task.
-  // auth: the attached caller only
+  // auth: the attached caller only REMOTE=-
   // idempotency: offset-based
   // deadline: 5 s
   // stream: none
@@ -74,7 +74,7 @@ service TaskService {
   rpc WriteTaskInput(TaskServiceWriteTaskInputRequest) returns (TaskServiceWriteTaskInputResponse);
 
   // Close stdin of an attached STREAM-stdin task.
-  // auth: the attached caller only
+  // auth: the attached caller only REMOTE=-
   // idempotency: command_id
   // deadline: 5 s
   // stream: none
@@ -93,17 +93,17 @@ service TaskService {
   rpc CancelTask(TaskServiceCancelTaskRequest) returns (TaskServiceCancelTaskResponse);
 
   // Start a new attempt for a terminal task (manual retry; AD-0006 section 4 rules shown as warnings).
-  // auth: own: HUMAN=A SCRIPT=A AGENT=A (SIDE_EFFECTING or UNKNOWN: P) REMOTE=high
+  // auth: own: HUMAN=A SCRIPT=A AGENT=A (SIDE_EFFECTING or UNKNOWN: P) REMOTE=-
   // idempotency: command_id
   // deadline: 5 s
   // stream: none
-  // errors: STATE/not_found, STATE/invalid_state, AUTHORIZATION/approval_required
+  // errors: STATE/not_found, STATE/invalid_state, STATE/secrets_unavailable, AUTHORIZATION/approval_required
   // locality: node
   // state: SM-TASK: FAILED|CANCELLED|LOST -> QUEUED
   rpc RetryTask(TaskServiceRetryTaskRequest) returns (TaskServiceRetryTaskResponse);
 
   // Change priority or pool of a queued task, or priority (CPU weight) of a running one.
-  // auth: HUMAN=A SCRIPT=A AGENT=P REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=P REMOTE=medium
   // idempotency: command_id
   // deadline: 5 s
   // stream: none
@@ -112,7 +112,7 @@ service TaskService {
   rpc SetTaskPriority(TaskServiceSetTaskPriorityRequest) returns (TaskServiceSetTaskPriorityResponse);
 
   // Freeze a running pausable task (Linux only; Windows reports pause unsupported).
-  // auth: HUMAN=A SCRIPT=A AGENT=P REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=P REMOTE=-
   // idempotency: command_id; pausing a paused task succeeds
   // deadline: 10 s
   // stream: none
@@ -122,7 +122,7 @@ service TaskService {
   rpc PauseTask(TaskServicePauseTaskRequest) returns (TaskServicePauseTaskResponse);
 
   // Thaw a paused task.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: command_id
   // deadline: 10 s
   // stream: none
@@ -168,7 +168,7 @@ service TaskService {
   rpc WatchTaskOutput(TaskServiceWatchTaskOutputRequest) returns (stream TaskServiceWatchTaskOutputFrame);
 
   // Read one attempt.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -177,7 +177,7 @@ service TaskService {
   rpc GetAttempt(TaskServiceGetAttemptRequest) returns (TaskServiceGetAttemptResponse);
 
   // List the attempts of a task, oldest first.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -186,7 +186,7 @@ service TaskService {
   rpc ListAttempts(TaskServiceListAttemptsRequest) returns (TaskServiceListAttemptsResponse);
 
   // Read an attempt's timeline: segments, samples, phases, process records and finding links (07 section 1).
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 10 s
   // stream: none
@@ -202,6 +202,7 @@ message TaskServiceSubmitTaskRequest {
   arcforges.foundation.v1.Id session_id = 11 [json_name = "sessionId"]; // validate: optional; must be an active session whose agent root is an ancestor of the caller
   optional string agent_id = 12 [json_name = "agentId"]; // validate: <= 128 chars; requires session_id
   ProcessIdentity caller_process = 13 [json_name = "callerProcess"]; // validate: the calling process; verified by the node
+  optional bool cancel_when_caller_gone = 14 [json_name = "cancelWhenCallerGone"]; // validate: cancel when the submitting client's connection and all its attach streams are gone for 5 s before the task finishes (hook-rewritten runs)
 }
 message TaskServiceSubmitTaskResponse {
   arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
@@ -793,7 +794,7 @@ message ResourceSpec {
   optional bool preemptible = 3 [json_name = "preemptible"]; // validate: default by adapter; false otherwise
   optional bool pausable = 4 [json_name = "pausable"]; // validate: default by adapter; false otherwise
   optional bool kill_with_node = 5 [json_name = "killWithNode"]; // validate: default false
-  optional bool survive_restart_exit_code = 6 [json_name = "surviveRestartExitCode"]; // validate: default true (Windows exec-wrap)
+  reserved 6; // was survive_restart_exit_code: every attempt except kill_with_node runs under a holder (04 section 3)
   optional uint64 cancel_grace_ms = 7 [json_name = "cancelGraceMs"]; // validate: 0..300 s; default 10 s
   optional string stop_signal = 8 [json_name = "stopSignal"]; // validate: Linux only; one of SIGTERM, SIGINT, SIGHUP, SIGQUIT; default SIGTERM
 }
@@ -875,7 +876,7 @@ message Attempt {
 
 message QueueInfo {
   optional uint32 position = 1 [json_name = "position"]; // 1-based within the pool order
-  optional string blocking_reason = 2 [json_name = "blockingReason"]; // budget_memory, budget_cpu, pool_limit, global_limit, dependency, large_task_reserved, guest_grant, approval
+  optional string blocking_reason = 2 [json_name = "blockingReason"]; // budget_memory, budget_cpu, exceeds_budget, pool_limit, global_limit, dependency, large_task_reserved, guest_grant, approval
   arcforges.foundation.v1.Instant eta = 3 [json_name = "eta"]; // estimate, absent when unknown
   optional uint64 waited_ms = 4 [json_name = "waitedMs"];
 }

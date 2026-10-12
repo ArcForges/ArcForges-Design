@@ -117,10 +117,11 @@ When the client declares `io.modelcontextprotocol/tasks`:
 | Request | Mapping |
 |---|---|
 | `run` with `async: true` | Returns a task handle per the extension, with the ArcForges `task_id` as the handle ID |
-| `tasks/get` | `GetTask` and `WaitTask(0)`, mapped to the extension's status values: running, completed, failed, cancelled |
-| `tasks/result` | Final `run` output |
+| `tasks/get` | `GetTask` and `WaitTask(0)`, mapped to the extension's status values: running, completed, failed, cancelled. For a terminal task the response carries the final `run` output; the 2026-07-28 extension has no `tasks/result` (V-A01). |
 | `tasks/cancel` | `CancelTask` |
-| `tasks/update` (input) | `WriteTaskInput` for STREAM stdin |
+| `tasks/update` (input) | `WriteTaskInput` for STREAM stdin, through the adapter's own attach (below) |
+
+**Stdin for async runs.** When `run` starts a STREAM-stdin task with `async: true`, the adapter opens `AttachTask(task_id, want_stdin=true)` and keeps that attach, and its `attach_id`, for the life of the MCP session. `tasks/update` then calls `WriteTaskInput(task_id, attach_id, data, offset)`, where the adapter tracks the offset. When the MCP session ends, the attach drops and the task sees end-of-file on stdin, as with any detach (AD-0006 §7).
 
 Without the extension, `async: true` returns at once with `state` and `next_actions`.
 

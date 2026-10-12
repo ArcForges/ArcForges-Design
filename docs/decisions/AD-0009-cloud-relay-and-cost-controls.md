@@ -26,14 +26,19 @@
    - Command lines, environment and output are never sent unless a viewer explicitly requests the output tail of a task and the node's privacy policy allows it (R-OPS-003).
 5. **Remote commands (R-CLOUD-004).**
    - The client calls `FleetService.SendNodeCommand`.
-   - C# then: authenticates; checks entitlement; applies the command risk class (low: refresh, pause/resume queue; medium: cancel task, change priority; high: run new command, cleanup, change policy); requires step-up or confirmation for medium and high; writes `fleet_remote_command`; and audits.
-   - C# signs the command envelope with the account relay key and sends it through the DO.
-   - The node verifies the signature, the expiry (≤5 min) and its **local remote-control policy** (default: low allowed; medium needs the local policy flag; high disabled), executes, and returns a signed result. C# records the outcome.
+   - C# then: authenticates; checks entitlement; applies the command risk class of `fleet.v1.NodeCommandBody`:
+     - low: refresh, pause or resume a queue, read an output tail;
+     - medium: cancel a task, change a priority;
+     - high: run a task, decide an approval, set parallelism (a policy change), apply an update, stop the node.
+
+     There is no remote cleanup or general policy editing. requires step-up or confirmation for medium and high; writes `fleet_remote_command`; and audits.
+   - C# signs the command payload with the ES256 command key (V-N05) and sends it through the DO.
+   - The node verifies the signature, the expiry (≤5 min) and its **local remote-control policy** (default: low allowed; medium needs the local policy flag; high disabled), executes, and returns a signed result. C# records the outcome. Output tails travel only as relay frames to the requesting viewer and are never stored (R-OPS-003).
    - A command not delivered within its expiry becomes `EXPIRED` and is never executed late.
-6. **Push.** Node events that matter (approval needed, task failed or finished, node offline, finding raised) reach C# as batched envelopes. The existing Notification module applies user preferences, deduplication and rate limits, and sends FCM HTTP v1 data messages (R-CLOUD-005).
+6. **Push.** Node events that matter (approval needed, task failed or finished, node offline, finding raised) reach C# as batched envelopes. The Notification module applies user preferences, deduplication and rate limits, and sends FCM HTTP v1 data messages (R-CLOUD-005).
 7. **Cost controls are application-enforced (V-C04).**
    - **Per account:** maximum nodes, viewers, frames per minute, bytes per day, commands per hour, push per day and support uploads per day. These are taken from the plan catalogue and enforced in C# (token claims) and in the DO (token-carried limits).
-   - **Global:** operating budgets per resource class, using the reused `platform_operating_budget` and `platform_operating_reservation`. **Kill switches** in the configuration module can disable live streaming (degrading to on-demand snapshots), push, or new relay connections within one token lifetime.
+   - **Global:** operating budgets per resource class, using the existing `platform_operating_budget` and `platform_operating_reservation` tables, with the budget service built by AF-PLAT-01. **Kill switches** in the configuration module can disable live streaming (degrading to on-demand snapshots), push, or new relay connections within one token lifetime.
    - **DO alarm-loop guard:** alarms are scheduled only with bounded backoff, and the DO counts its own wake-ups per hour against a ceiling. When the ceiling is exceeded it closes non-essential sockets and stops scheduling alarms until the next hour.
    - Cloudflare budget alerts are configured as notification only and are never counted as enforcement.
 8. **Storage choices.**

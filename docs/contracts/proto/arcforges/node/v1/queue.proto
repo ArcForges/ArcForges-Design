@@ -19,7 +19,7 @@ option java_outer_classname = "NodeQueueProto";
 // Queue and pool inspection and control.
 service QueueService {
   // Snapshot of pools, queued entries in admission order, and the budget summary.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -28,7 +28,7 @@ service QueueService {
   rpc GetQueue(QueueServiceGetQueueRequest) returns (QueueServiceGetQueueResponse);
 
   // Explain why a task waits and what would admit it.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -37,7 +37,7 @@ service QueueService {
   rpc ExplainTask(QueueServiceExplainTaskRequest) returns (QueueServiceExplainTaskResponse);
 
   // List pools with configuration and live counts.
-  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=low
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -46,7 +46,7 @@ service QueueService {
   rpc ListPools(QueueServiceListPoolsRequest) returns (QueueServiceListPoolsResponse);
 
   // Create a pool (a policy revision).
-  // auth: HUMAN=A SCRIPT=P AGENT=P REMOTE=high
+  // auth: HUMAN=A SCRIPT=P AGENT=P REMOTE=-
   // idempotency: command_id
   // deadline: 5 s
   // stream: none
@@ -55,7 +55,7 @@ service QueueService {
   rpc CreatePool(QueueServiceCreatePoolRequest) returns (QueueServiceCreatePoolResponse);
 
   // Change a pool's weight, parallelism or default priority (a policy revision).
-  // auth: HUMAN=A SCRIPT=P AGENT=P REMOTE=high
+  // auth: HUMAN=A SCRIPT=P AGENT=P REMOTE=-
   // idempotency: command_id; meta.expected_rev = policy revision
   // deadline: 5 s
   // stream: none
@@ -64,7 +64,7 @@ service QueueService {
   rpc UpdatePool(QueueServiceUpdatePoolRequest) returns (QueueServiceUpdatePoolResponse);
 
   // Delete an empty, non-built-in pool (a policy revision).
-  // auth: HUMAN=A SCRIPT=P AGENT=P REMOTE=high
+  // auth: HUMAN=A SCRIPT=P AGENT=P REMOTE=-
   // idempotency: command_id
   // deadline: 5 s
   // stream: none
@@ -91,7 +91,7 @@ service QueueService {
   rpc ResumePool(QueueServiceResumePoolRequest) returns (QueueServiceResumePoolResponse);
 
   // Restrict or disable parallel execution for a scope (R-EXE-013). Creates a policy revision.
-  // auth: HUMAN=A SCRIPT=P AGENT=P (own session: A when lowering) REMOTE=medium
+  // auth: HUMAN=A SCRIPT=P AGENT=P (own session: A when lowering) REMOTE=high
   // idempotency: command_id
   // deadline: 5 s
   // stream: none
@@ -323,7 +323,7 @@ message BudgetSummary {
 message AdmissionExplanation {
   arcforges.foundation.v1.Id task_id = 1 [json_name = "taskId"];
   optional TaskState state = 2 [json_name = "state"];
-  optional string blocking_reason = 3 [json_name = "blockingReason"];
+  optional string blocking_reason = 3 [json_name = "blockingReason"]; // values as QueueInfo.blocking_reason
   optional string text = 4 [json_name = "text"]; // human-readable explanation
   ResourceDemand request = 5 [json_name = "request"];
   optional uint64 available_mem_bytes = 6 [json_name = "availableMemBytes"];

@@ -71,10 +71,10 @@ Plans live in the Entitlement module's configuration revision ([AD-0010](../deci
 | Purchase confirmed | Paddle receipt e-mail (MoR) or Google Play receipt | Provider-owned |
 | Payment failed, grace, hold | In-app banner (Desktop status bar, web, Android); Paddle dunning e-mails | Fix-payment link |
 | Entitlement ended | In-app banner; nodes show which features stopped for new work | Running local work is unaffected (R-COM-004) |
-| Node revoked, new device sign-in | Account security notification (reused Identity notifications) | Device and time |
+| Node revoked, new device sign-in | Account security e-mail through the Identity e-mail adapter (AF-ID-01, AF-ID-02) | Device and time |
 | Incident affecting cloud features | Status page (`status.arcforges.com`, static R2 page updated by the operator) | Affected features; local work unaffected |
 
-The product sends no marketing e-mail. Transactional e-mail uses the existing Identity e-mail path, and its live delivery is deferred validation (acceptance register).
+The product sends no marketing e-mail. Transactional e-mail goes through the Identity e-mail adapter (Postmark, with Amazon SES as fallback; [10](10-cloud.md) §2). Its live delivery is deferred validation (acceptance register AR-14).
 
 ## 5. Support
 
@@ -84,13 +84,13 @@ The product sends no marketing e-mail. Transactional e-mail uses the existing Id
 | Targets | Free: community (documentation, public issue tracker). Pro: first response in 2 business days (product-owner decision H-08 confirms or changes it). |
 | Operator access | Reading a bundle requires `RequestAccess` → user approval (`ApproveAccess`, scoped and time-limited) → `ReadDiagnostic`. Every read is audited. |
 | Refunds and compensation | Paddle refunds through the Paddle API (the operator decides through `DecideRefund`). Play refunds are issued in Google Play Console by the product owner and arrive as `SUBSCRIPTION_REVOKED` or voided-purchase notifications. Goodwill extensions use `IssueCompensation` (an entitlement grant with an expiry). |
-| Abuse | Rate and anomaly flags (§6) open trust-and-safety proposals (`ProposeEnforcement`), decided by an operator, with appeals (`GetAppeal` / `ResolveAppeal`) through the reused TrustSafety flow. |
+| Abuse | Rate and anomaly flags (§6) open trust-and-safety proposals (`ProposeEnforcement`), decided by an operator (web W-65), with appeals (`GetAppeal` / `ResolveAppeal`). The TrustSafety contracts and D1 schema are reused; the implementation is new (AF-OPS-01). |
 
 ## 6. Abuse prevention and limits (R-OPS-002)
 
 | Surface | Limit (default; configuration) | Anomaly flag |
 |---|---|---|
-| Sign-in (reused Identity) | Existing rate limits per IP and account | Existing |
+| Sign-in (Identity, AF-ID-01) | Rate limits per IP and per account | Repeated failures from one IP or against one account |
 | Node sign-in flows and device codes | 10 flows per account per hour; 5 code-entry attempts per user code | More than 3 denied flows in an hour |
 | Phone pairings | 10 per account per hour; single-use secrets | Repeated wrong secrets |
 | Node enrollment | Plan node limit; 20 enrollments per account per day | Enrollment churn above 5 revoke-and-re-enroll cycles per day |
@@ -99,7 +99,7 @@ The product sends no marketing e-mail. Transactional e-mail uses the existing Id
 | Push | 50 per account per day | — |
 | Support | Free: 1 bundle upload per day; Pro: 5 per day; 10 cases per account per day | Bundle size near the cap repeatedly |
 
-An exceeded limit returns `RESOURCE` with `retry_after` and never silently drops work. Anomaly flags create records for operator review. They never automatically lock an account.
+An exceeded limit returns `RESOURCE` with `retry_after` and never silently drops work. Anomaly flags are recorded as audit events of type `anomaly.<kind>` for operator review (web W-65). They never automatically lock an account.
 
 ## 7. Cost model and controls (R-CLOUD-006)
 
@@ -116,7 +116,8 @@ An exceeded limit returns `RESOURCE` with `retry_after` and never silently drops
 
 ### 7.2 Budgets and kill switches
 
-- **Daily operating budgets.** Configured per resource class in `platform_operating_budget` (reused): container CPU-seconds, DO requests, D1 rows read and written, R2 operations and support-bundle bytes. Every metered operation reserves against its budget (`platform_operating_reservation`).
+- **Daily operating budgets.** One budget per dimension and UTC day in `platform_operating_budget` (schema reused; the flagship dimensions are added by AF-PLAT-01, [cloud-store](../data/cloud-store.md) §3): container CPU-seconds, Durable Object requests, D1 rows read, D1 rows written, push sends, R2 class A and class B operations, and R2 bytes (support bundles). Every metered operation reserves against its dimension (`platform_operating_reservation`).
+- **Unit prices** per dimension are configuration data (`ops.unit_prices`), maintained by the operator from the Cloudflare price list. They feed the monthly report.
 - **Thresholds:**
   - **80%:** an operator alert.
   - **100%:** the kill switches apply in order ([10](10-cloud.md) §5):
@@ -126,7 +127,7 @@ An exceeded limit returns `RESOURCE` with `retry_after` and never silently drops
     4. support uploads refused.
 - **Never affected:** local execution and LAN features. LAN features keep working on cached entitlement tokens.
 - **Monthly ceiling (product-owner input H-09).** The operator sets the daily budgets so that 31 × daily ≤ the monthly ceiling. Cloudflare budget alerts are set at 50%, 80% and 100% of the ceiling as a second, notification-only signal (V-C04).
-- **Unit economics check.** A monthly operator report (generated by a C# job from budget consumption and active subscriptions) shows the cost per active Pro account, the cost per relay-connected node and Free-tier cost. It is an input to price decisions.
+- **Unit economics check.** The monthly operator report (`OperatorReadService.GetMonthlyReport`, computed on demand from budget use, unit prices and subscriptions) shows the cost per active Pro account, the cost per relay-connected node and the Free-tier cost. It is an input to price decisions.
 
 ## 8. Service operations (R-OPS-006)
 
@@ -148,7 +149,7 @@ An exceeded limit returns `RESOURCE` with `retry_after` and never silently drops
 | Paddle seller account and product setup (MoR handles tax) | Product owner | H-01 |
 | Google Play developer account, merchant profile, app listing, data-safety form | Product owner | H-02 |
 | Firebase project and FCM service account | Product owner | H-03 |
-| Code-signing certificate (Authenticode), Ed25519 release key, apt GPG key, Android upload key | Product owner (custody) | H-04 |
+| Code-signing certificate (Authenticode), ES256 release manifest key, apt GPG key, Android upload key | Product owner (custody) | H-04 |
 | Domains (`arcforges.com`, `releases.`, `relay.`, `status.`), DNS | Product owner | H-05 |
 | Cloudflare account settings: Containers enabled, budget alerts | Product owner | H-06 |
 

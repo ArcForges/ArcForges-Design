@@ -92,7 +92,7 @@ for pool in pools in weighted round-robin order:
 
 **Memory is never overcommitted** (`overcommit_mem = 1.0`, R-RES-005). CPU can be overcommitted because weights share it without harming the reserved headroom: the root cap protects that headroom (§5).
 
-A task whose `mem_expected` exceeds `B_mem` even on an idle node is not rejected. It waits with finding `exceeds_budget` and explanation, unless the policy says `reject`.
+A task whose `mem_expected` exceeds `B_mem` even on an idle node is not rejected. It waits with the queue blocking reason `exceeds_budget` and an explanation (`QueueService.ExplainTask`), so the user can raise the budget, lower the estimate with a hint, or cancel. A task that waits longer than twice the starvation bound raises `QUEUE_STARVATION`.
 
 ## 5. Enforcement mapping
 
@@ -104,7 +104,7 @@ A task whose `mem_expected` exceeds `B_mem` even on an idle node is not rejected
 | Memory | `JobMemoryLimit = commit_factor × (C_mem − R_mem)` (commit_factor default 1.5); notification limit at `B_mem` | `MemoryHigh = B_mem`, `MemoryMax = C_mem − R_mem` |
 | Processes | none | `TasksMax = 32768` |
 
-Root limits are updated when `B` changes by more than 5% of capacity, at most every 10 s (hysteresis). On Linux every limit is set through the user manager's D-Bus API (`SetUnitProperties`, runtime only), never by writing cgroup files the manager owns. Statistics are read directly from the unit cgroups ([AD-0005](../decisions/AD-0005-resource-enforcement.md) Linux §2; L-13).
+Root limits are updated when `B` changes by more than 5% of capacity, at most every 10 s (hysteresis). While WSL guests are linked, the host's root CPU cap and commit limit exclude the totals granted to guests (§6). On Linux every limit is set through the user manager's D-Bus API (`SetUnitProperties`, runtime only), never by writing cgroup files the manager owns. Statistics are read directly from the unit cgroups ([AD-0005](../decisions/AD-0005-resource-enforcement.md) Linux §2; L-13).
 
 ### Attempt containers
 
@@ -122,11 +122,16 @@ The adapter sets the tool's parallelism to `clamp(ceil(cpu_grant/1000), 1, adapt
 
 ## 6. WSL host–guest coordination
 
-1. While a guest link is up, the guest asks for a grant before admitting each attempt. It sends a `GrantRequest` frame on the link stream the host opened (`GuestLinkService.OpenLink`), because the host is the gRPC client of the guest over the bridge.
-2. The host enqueues the request as a **guest proxy task** in its own scheduler, so it competes fairly with host tasks.
-3. The host answers with `GuestLinkService.AnswerGrant` when admitted, and the guest starts the attempt as a transient unit under its own user manager. Under pressure, the host may call `RevokeGrant`.
-4. The guest releases the grant at completion with a `GrantRelease` frame, which carries the final usage.
-5. If the link is down for more than 30 s, the guest admits standalone within its own `B_guest` and reports `link_lost`. Host-side accounting then treats all VM usage as `guest_other` until the link returns.
+1. **Grant request.** While a guest link is up, the guest asks for a grant before admitting each attempt. It sends a `GrantRequest` frame on the link stream the host opened (`GuestLinkService.OpenLink`), because the host is the gRPC client of the guest over the bridge.
+2. **Fair queueing.** The host enqueues the request as a **guest proxy task** in its own scheduler, so it competes fairly with host tasks.
+3. **Grant.** The host answers with `GuestLinkService.AnswerGrant` when admitted, and the guest starts the attempt as a transient unit under its own user manager. Under pressure, the host may call `RevokeGrant`.
+4. **Release.** The guest releases the grant at completion with a `GrantRelease` frame, which carries the final usage.
+5. **Enforcement matches the grants.**
+   - Whenever the granted totals change by more than 5% of guest capacity (at most every 10 s), the host calls `GuestLinkService.SetGuestBudget`. This sets the guest slice's `CPUQuota`, `MemoryHigh`, `MemoryMax` and `TasksMax` to the granted totals.
+   - At the same time the host lowers its own root caps by the same amounts: `CpuRate` from `B_cpu − Σ granted_cpu`, and the commit limit from `B_mem − Σ granted_mem`.
+   - Host and guest caps together therefore never exceed `B`, and the user's reserved headroom holds under saturating load on both sides.
+   - The closed-loop test runs concurrent saturating host and guest loads (AF-WSL-01).
+6. **Link loss.** If the link is down for more than 30 s, the guest admits standalone within its own `B_guest` and reports `link_lost`. The guest keeps its last pushed slice limits until it admits standalone, then sets its own. Host-side accounting treats all VM usage as `guest_other` until the link returns. This degraded mode can over-commit the physical machine, and `GUEST_LINK_LOST` says so.
 
 ## 7. Adaptation and pressure
 
@@ -162,7 +167,7 @@ Each value carries the reason (for example "user manager has no cpu delegation")
 | `MANAGED` | In an attempt container | Container membership |
 | `ADOPTED` | Explicitly adopted by the user | Adoption record |
 | `ESCAPED` | Descendant of a managed process by ancestry but outside its container (WMI, breakaway, service broker) | Ancestry scan of exited and running processes |
-| `BYPASSED` | Descendant of a registered agent process, not managed, above heavy thresholds (CPU > 500 millicores for 10 s or memory > 512 MiB) | Session process roots ([08](08-ai-integration.md)) |
+| `BYPASSED` | Descendant of a registered agent process, not managed, above the policy thresholds (`routing.bypass_cpu_threshold_millicores`, default 1,000 for 10 s, or `routing.bypass_mem_threshold_bytes`, default 1 GiB) | Session process roots ([08](08-ai-integration.md)) |
 | `UNMANAGED` | Everything else | — |
 | `GUEST_VM` | The WSL VM consumer on the host | VM worker identification |
 

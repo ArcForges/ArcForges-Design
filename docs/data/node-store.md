@@ -48,7 +48,9 @@ Schema: [node-store.sql](node-store.sql). It is checked by `tools/check_design.p
 
 | Table | Purpose | Key / indexes | Owner | Retention |
 |---|---|---|---|---|
-| `task` | Tasks (SM-TASK) with a redacted spec, owner, queue fields and flags | `task_id`; queue index on live states; `(owner_session_id, created_at)`; `(workspace_id, created_at)`; `created_at`; `(pool, state)`; `(command_fingerprint, finished_at)` | Scheduler | Records: policy `record_retention_days` (90); pinned excepted |
+| `env_snapshot` | Content-addressed caller environments without secret-shaped values: identical environments are stored once (R-EXE-017) | `env_digest` (SHA-256 of the canonical entries); unreferenced `(last_used_at)` | Scheduler | Deleted 24 h after the last referencing task is purged |
+| `task` | Tasks (SM-TASK) with a redacted spec, the environment snapshot reference, owner, queue fields and flags | `task_id`; queue index on live states; `(owner_session_id, created_at)`; `(workspace_id, created_at)`; `created_at`; `(pool, state)`; `(command_fingerprint, finished_at)` | Scheduler | Records: policy `record_retention_days` (90); pinned excepted |
+| `task_secret` | Sealed values of secret-shaped environment variables, so queued tasks, restarts and retries run with the submitted environment ([04](../architecture/04-execution.md) §2). AES-256-GCM under the node data key from the OS secret store, with the task ID as associated data. | `task_id`; `purge_after` | Scheduler | Purged at `purge_after` (terminal + `storage.secret_retention_hours`, default 24 h) or on `PurgeTaskRecord`; then `RetryTask` fails with `STATE/secrets_unavailable` |
 | `task_dependency` | Dependency edges (acyclic, checked at submit) | `(task_id, depends_on_task_id)`; reverse index | Scheduler | With the task |
 | `attempt` | Attempts (SM-ATTEMPT): container, request and grant, result, accounting, output offsets | `attempt_id`; unique `(task_id, number)`; live states; `finished_at` | Supervisor | With the task; output files per log retention (14 days / 5 GiB) |
 | `timeline_segment` | Categorized intervals | `(attempt_id, start_at)` | Record builder | With the task |
@@ -82,7 +84,7 @@ Schema: [node-store.sql](node-store.sql). It is checked by `tools/check_design.p
 | `offer` | Placement offers in both directions | `offer_id` | Placement | 7 days |
 | `remote_attempt` | Executor-side remote attempts (SM-REMOTE-ATTEMPT), linked to the local `REMOTE` task | `remote_attempt_id`; `(state, lease_expires_at)` | Placement | With the local task |
 | `guest_link` | Host-side links per WSL distribution (SM-GUEST-LINK); link token in the OS secret store | `distro`; unique `guest_node_id` | Guest manager (host) | Permanent |
-| `host_link` | Guest-side pinned host and token hash | singleton | Guest link (guest) | Permanent |
+| `host_link` | Guest-side pinned host and token hash, the last refused host, and a host accepted by `TrustHost` for its next link | singleton | Guest link (guest) | Permanent |
 | `guest_grant` | Grants for guest attempts, with the host-side proxy task | `grant_id`; unique `request_id`; `state` | Scheduler (host) | 7 days after release |
 | `account_link` | Account link: installation, credential reference, entitlement token, certificates, key sets | singleton | Cloud link | Until sign-out (deleted) |
 | `sign_in_flow`, `phone_pairing` | Flow state without secrets | IDs | Cloud link | 1 day |
@@ -101,5 +103,5 @@ Schema: [node-store.sql](node-store.sql). It is checked by `tools/check_design.p
 
 ## 4. Size budget
 
-- **Store growth target:** ≤ 50 MB per 10,000 attempts, excluding logs ([15](../architecture/15-performance-targets.md)). The largest contributors are `resource_sample` (downsampled after completion), `timeline_segment` and `process_record`.
+- **Store growth target:** ≤ 50 MB per 10,000 attempts, excluding logs ([15](../architecture/15-performance-targets.md)). The largest contributors are `resource_sample` (downsampled after completion), `timeline_segment` and `process_record`. Caller environments do not grow with the attempt count: `env_snapshot` stores each distinct environment once (typically a few per shell session), and the growth benchmark submits from realistic captured shells (about 150 variables, 10–40 KB).
 - **Gating.** AF-NODE-02 adds a CI benchmark that generates 10,000 synthetic attempts and asserts the bound.
