@@ -51,7 +51,11 @@ Hosted CI builds each release `<v>` from a tagged commit of the ArcForges reposi
   - `HKCU\Software\ArcForges\InstallSource` = `setup`, `winget` (set by `--source winget` from the winget manifest) or `scoop` (Scoop installs the portable zip and runs `arcforges-setup --register-scoop`, which skips the updater) ([AD-0012](../decisions/AD-0012-distribution-and-updates.md) §4).
 - **After install:** start `arcforges-supervisor.exe`, then `arcforges node wait-ready --timeout 30`.
 - **Uninstall.**
-  - **Steps:** `arcforges node stop --reason uninstall --timeout 60`; running managed executions are listed, and the user chooses to wait or to cancel them all (R-DIST-001). Then remove **every** `app\*` version directory, both junctions, the PATH entry, the Run key, `InstallSource` and the uninstall entry.
+  - **Steps:**
+    1. `arcforges node stop --reason uninstall --timeout 60`; running managed executions are listed, and the user chooses to wait or to cancel them all (R-DIST-001).
+    2. Stop the supervisor and the Desktop app, which also run from `app\current`.
+    3. The setup program copies itself to `%TEMP%`, relaunches from there and exits, so no running image remains under `app\`.
+    4. The copy removes **every** `app\*` version directory, both junctions, the PATH entry, the Run key, `InstallSource` and the uninstall entry. It deletes itself at the next reboot (`MoveFileEx` with `MOVEFILE_DELAY_UNTIL_REBOOT`).
   - **Data:** the data root is kept unless the user ticks **Remove ArcForges data**, which runs `arcforges node wipe --all --yes` first.
 - **Test isolation.** For automated tests, `--test-root <dir> --test-registry-key HKCU\Software\ArcForges-Test` installs under a temporary root and registry key, never touching the user's real Run key, PATH or uninstall entry. The real logon start of the supervisor is a human-attended check (H-15).
 - **Machine-wide service mode** is out of the current scope (AR-16). It would be a separate per-machine installer.

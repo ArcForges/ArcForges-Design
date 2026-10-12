@@ -36,7 +36,7 @@ Decisions: [AD-0009](../decisions/AD-0009-cloud-relay-and-cost-controls.md), [AD
 | Notification | Contracts (`NotificationService`), D1 tables, the historical FCM HTTP v1 design | Implemented by AF-CLD-06: `List`, `Acknowledge`, `RegisterPush`, `UnregisterPush`, the FCM HTTP v1 sender with short-lived service-account tokens. Push kinds `node.task_failed`, `node.task_finished`, `node.approval_needed`, `node.offline`, `node.finding`; batching from relay envelopes; preferences per kind and node (`FleetService.GetPushPreferences` and `UpdatePushPreferences`, table `fleet_push_preference`) |
 | Support | Contracts (`SupportService`), D1 tables | Cases, messages and access grants, plus consented support-bundle attachments (R2 object keys) (AF-SUP-01) |
 | Audit | D1 tables | Audit event writer and reader for enrollment, revocation, remote commands, commerce and operator actions (AF-PLAT-01) |
-| Platform | Command guard and commit tail, inbox and outbox, job leases (implemented in the D1 storage layer), D1 operating-budget tables | Operating budgets and reservations service, budget checks on metered paths (AF-PLAT-01) |
+| Platform | Implemented in the D1 storage layer: command receipts and the command guard, the commit tail (outbox publisher, inbox, outbox and archive purge plans). Schema only: `platform_job_lease`, operating budgets and reservations. | AF-PLAT-01: job lease and fence plans, a job runner started by a Worker cron trigger, scheduled retention sweeps (expired receipts, inbox rows, flows and the cloud-store retention schedule) and the compact command fence; the operating-budget service and budget checks on metered paths. |
 | Configuration | D1 `config_revision` | Configuration revisions, kill switches (`relay.live_streaming`, `relay.new_connections`, `push.enabled`, `fleet.commands`) and limits (AF-PLAT-01). The operator console comes in AF-OPS-01. |
 | Chat, Task, Agent, Sync, Resource, Search, Scope, PackageCatalog, TrustSafety, Policy | Retain (unused) | Not composed into the flagship host profile. Their tables stay untouched. |
 
@@ -119,10 +119,10 @@ As in [AD-0010](../decisions/AD-0010-commerce-and-entitlements.md) §3:
 ### 3.11 Support bundle upload (R-OPS-005)
 
 1. After the user reviews the file list and consents, the node calls `NodeEnrollmentService.BeginSupportUpload` (node credential) with the case reference (or a new case subject), file name, size and SHA-256.
-2. C# checks the plan's daily upload limit and the `support uploads` kill switch, creates the case if needed, and returns an R2 presigned PUT URL valid for 15 minutes, signed for the declared length and SHA-256 checksum where R2 enforces them (A-C03). Step 4 verifies both in any case.
+2. C# checks the plan's daily upload limit and the `support uploads` kill switch, creates the case if needed, and returns an R2 presigned PUT URL for the key `support-pending/<upload_id>`, valid for 15 minutes. C# signs it with SigV4 using a bucket-scoped R2 S3 API credential (prerequisite H-16), for the declared length and SHA-256 checksum where R2 enforces them (A-C03). Step 4 verifies both in any case.
 3. The node uploads the bundle directly to R2 over HTTPS; the bytes never pass through the Container.
-4. The node calls `CompleteSupportUpload`. C# verifies the object's size and checksum, then appends a case message whose `diagnostic` reference names the object. The object expires after 30 days.
-5. An upload that is never completed is deleted by the R2 lifecycle rule after 1 day.
+4. The node calls `CompleteSupportUpload`. C# verifies the pending object's size and checksum, copies it server-side to `support-bundles/<case_id>/<upload_id>`, deletes the pending object, then appends a case message whose `diagnostic` reference names the final object.
+5. R2 lifecycle rules work by prefix: objects under `support-pending/` are deleted after 1 day (uploads never completed), and objects under `support-bundles/` after 30 days.
 
 ## 4. Durable Object layout (`FleetHub`)
 

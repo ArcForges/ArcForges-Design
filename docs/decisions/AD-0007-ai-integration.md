@@ -17,7 +17,7 @@
 
    **Exec form.** Hooks are configured in exec form (`command` = the absolute `arcforges` path, `args` = `["hook", "<client>", "<event>"]`; no shell) wherever the client supports it. The handler finds the agent process by walking up from its parent to the nearest ancestor that is a known client executable (A-A02).
 
-   It registers the session (`session_id`), subagents (`agent_id`, `agent_type`), the working directory, the transcript path where given, and the **agent process identity** (the hook process's parent PID and start time). On Claude Code it writes `ARCFORGES_SESSION=<id>` to `CLAUDE_ENV_FILE`, so later commands carry the session.
+   It registers the session (`session_id`), subagents (`agent_id`, `agent_type`), the working directory, the transcript path where given, and the **agent process identity** (the PID and start time of the nearest client-executable ancestor). On Claude Code it writes `ARCFORGES_SESSION=<id>` to `CLAUDE_ENV_FILE`, so later commands carry the session.
 3. **Command routing (opt-in per workspace or client):**
 
 | Mode | Mechanism | Enabled when |

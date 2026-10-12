@@ -183,10 +183,12 @@ Shared daemons run in a node-owned container (Windows child job `Local\ArcForges
 1. The serving node exposes a **WebDAV-compatible subset** on its mTLS peer listener: `OPTIONS`, `PROPFIND` (depth 0/1), `GET`, `HEAD`, `PUT`, `DELETE` under `/cache/<cache_id>/`. Per-peer policy decides read and write access, with a quota enforced per peer (R-CACHE-007).
 2. Tools cannot present client certificates (sccache uses a WebDAV client with basic/bearer authentication, V-T02). Each consuming node therefore runs a **local cache proxy** on `127.0.0.1:<ephemeral>` that forwards to the serving peer over the mTLS channel. The proxy requires a per-node bearer token.
    - sccache: `SCCACHE_WEBDAV_ENDPOINT=http://127.0.0.1:<port>/peer/<peer_id>/cache/<cache_id>/` with `SCCACHE_WEBDAV_TOKEN`.
-   - ccache: ccache 4.14+ deprecates its built-in HTTP backend in favour of remote storage helpers. ArcForges therefore ships a small helper with the node: `arcforges node ccache-storage`, which implements the ccache remote storage helper protocol and talks to the local proxy.
-     - The setting is `remote_storage = crsh:<helper URL> @bearer-token=<token>`, with whitespace-separated attributes per the installed ccache's manual.
-     - ccache versions without helper support fall back to `http://127.0.0.1:<port>/peer/<peer_id>/cache/<cache_id>/` on the built-in backend (plain HTTP to loopback only).
-     - The adapter records which mode is used, and F-T01 verifies the exact syntax against the installed version.
+   - ccache: ccache 4.14 deprecates its built-in HTTP backend in favour of remote storage helpers (V-T03). The **node itself serves the helper protocol** on a per-user IPC endpoint and forwards to the local cache proxy:
+     - the endpoint is the named pipe `\\.\pipe\arcforges-<user SID hash>-ccache` on Windows (DACL: the user only), and `$XDG_RUNTIME_DIR/arcforges/ccache.sock` (mode `0600`) on Linux;
+     - the setting is `remote_storage = crsh:<endpoint>`. Per the ccache manual, `crsh:` connects to a helper that is already running; ccache never starts it. While the node is down, ccache treats the remote storage as unavailable and keeps using its local cache;
+     - no token is needed, because the endpoint admits only the user (A-T03);
+     - ccache versions without helper support fall back to the built-in HTTP backend on loopback (`http://127.0.0.1:<port>/peer/<peer_id>/cache/<cache_id>/` with `@bearer-token=`, plain HTTP to loopback only);
+     - the adapter records which mode is used, and F-T04 verifies the protocol and the syntax against the installed ccache.
 3. Multi-level use: sccache `SCCACHE_MULTILEVEL_CHAIN=disk,webdav` keeps the local disk as L0 (V-T02).
 4. Entries are opaque to ArcForges. Integrity is the tool's responsibility; the proxy only enforces size limits (an entry ≤ 256 MiB) and quotas.
 

@@ -38,7 +38,7 @@ The flagship adds one module, `fleet`, and adapts a few reused tables. The new t
 | Notification (adapt) | `notification_push_registration`, `notification_delivery*`, `notification_suppression` | FCM push for node events (AF-CLD-06) |
 | Support (reuse) | `support_support_case`, `support_case_message`, `support_access_grant` | Cases and access grants; support-bundle uploads are referenced from case messages (R2 object keys) (AF-SUP-01) |
 | Audit (reuse) | `audit_audit_event`, `audit_operator_*` | Enrollment, revocation, remote commands, commerce and operator actions (writer and reader: AF-PLAT-01) |
-| Platform (reuse) | `platform_command`, `platform_command_guard`, `platform_inbox`, `platform_outbox`, `platform_job_lease`, `platform_operating_budget`, `platform_operating_reservation` | Command dedup, webhook inbox, outbox to the relay, jobs (acknowledgement, purge) are implemented in the D1 storage layer. The operating-budget service is AF-PLAT-01. |
+| Platform (reuse) | `platform_command`, `platform_command_guard`, `platform_inbox`, `platform_outbox`, `platform_job_lease`, `platform_operating_budget`, `platform_operating_reservation` | Implemented in the D1 storage layer: command dedup (receipts and guard), the webhook inbox, the outbox and their purge plans. New in AF-PLAT-01: job lease plans and the cron-driven job runner (acknowledgement, purges), the scheduled retention sweeps that apply the Retention column of this model, and the operating-budget service. |
 | Config (reuse) | `config_revision` | Kill switches, limits and the plan catalogue (AF-PLAT-01) |
 
 ## 3. Adaptations (migration notes)

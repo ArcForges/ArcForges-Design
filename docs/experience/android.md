@@ -45,7 +45,7 @@
 - **States:** cancelled in browser; network error; account pending deletion.
 - **Data:** none until sign-in.
 - **Accessibility.** The two sign-in buttons are the first two focus stops, and the QR button's name says it uses the camera.
-- **Local stack.** Debug builds also accept the callback `http://10.0.2.2:<port>/app/callback` (the emulator's loopback alias) when pointed at the local cloud stack ([16](../architecture/16-testing-strategy.md) §3.1); release builds accept only the verified `https` link.
+- **Local stack.** Against the local cloud stack ([16](../architecture/16-testing-strategy.md) §3.1), debug builds open the Custom Tab at `http://10.0.2.2:<port>` (the emulator's loopback alias). They return through a private-use URI scheme redirect (RFC 8252 §7.1) that only debug builds register and only the local stack's client registration accepts, because unverified `http` app links would need manual association on Android 12+. Release builds accept only the verified `https` link.
 
 ## A-02 Scan pairing code
 

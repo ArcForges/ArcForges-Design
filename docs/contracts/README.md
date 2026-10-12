@@ -105,6 +105,7 @@ Every RPC carries structured comments, which `tools/check_design.py` verifies an
   - new enum values, which clients must treat as unknown;
   - new oneof members.
 - **Never:** renumbering, retyping or reusing numbers. Removed fields become `reserved` with their names. Breaking changes need a `v2` package beside `v1`.
+- **From when.** These rules apply from the first cohort that AF-CON-01 publishes. Until then the design protos are specifications and may still change; each change is listed in the design PR.
 - **Clients** feature-detect with the `features` lists in `NodeService.Hello` and `PeerHandshakeService.Hello`. The Contracts repository's wire-compatibility gate compares each change with the last published package.
 - **Error codes** are additive. Clients treat an unknown code by its category.
 

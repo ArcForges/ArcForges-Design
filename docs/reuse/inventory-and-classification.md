@@ -55,7 +55,8 @@ Decision: [AD-0013](../decisions/AD-0013-reuse-and-supersession.md). Classes: **
 | Item | Class | Use / reason | Task |
 |---|---|---|---|
 | C# host `ArcForges.Cloud` (Containers, AOT; serves only `HelloService` at `92ba1dc9`), Worker ingress, guarded deploy scripts, local workerd verification scripts | Reuse | The flagship host profile composes only the modules it needs | AF-CLD-01 |
-| D1 storage layer: command guard and commit tail, inbox and outbox, job leases | Reuse | Implemented and tested | AF-CLD-01 |
+| D1 storage layer: command receipts and guard, commit tail (outbox publisher, inbox, purge plans) | Reuse | Implemented and tested | AF-CLD-01 |
+| Job leases, job runner and scheduled sweeps (`platform_job_lease` table only; `wrangler.json` has no cron triggers) | Schema reused; implementation **new** | Lease and fence plans, a Worker cron trigger calling the host, retention sweeps | AF-PLAT-01 |
 | Identity: user and credential domain rules and the D1 store (enrollment) | Reuse (domain and schema); endpoints **new** | No authentication ceremonies, sessions, step-up, recovery or deletion endpoints exist. They are built from the reused contracts: passkeys, e-mail codes, sessions with native bearer and step-up (AF-ID-01); recovery, deletion with grace, export, devices and security activity (AF-ID-02). | AF-ID-01, AF-ID-02 |
 | Entitlement: resolver, snapshots, grants | Reuse (domain and schema); endpoints **new** | `EntitlementService` endpoints, flagship plan catalogue, token claim projection | AF-CLD-03 |
 | Devices, Commerce, Notification, Support, Audit, Configuration (15-line placeholders at `92ba1dc9`) | Contract and schema reused; implementation **new** | [10](../architecture/10-cloud.md) §2: device endpoints; Paddle provider; FCM sender; support cases and access grants; audit writer and reader; configuration revisions and kill switches | AF-ID-02, AF-COM-01, AF-CLD-06, AF-SUP-01, AF-PLAT-01 |

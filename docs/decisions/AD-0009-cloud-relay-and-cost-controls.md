@@ -31,7 +31,8 @@
      - medium: cancel a task, change a priority;
      - high: run a task, decide an approval, set parallelism (a policy change), apply an update, stop the node.
 
-     There is no remote cleanup or general policy editing. requires step-up or confirmation for medium and high; writes `fleet_remote_command`; and audits.
+     There is no remote cleanup or general policy editing.
+   - The C# host requires a step-up or confirmation for medium and high commands, writes `fleet_remote_command`, and audits.
    - C# signs the command payload with the ES256 command key (V-N05) and sends it through the DO.
    - The node verifies the signature, the expiry (≤5 min) and its **local remote-control policy** (default: low allowed; medium needs the local policy flag; high disabled), executes, and returns a signed result. C# records the outcome. Output tails travel only as relay frames to the requesting viewer and are never stored (R-OPS-003).
    - A command not delivered within its expiry becomes `EXPIRED` and is never executed late.

@@ -28,7 +28,7 @@ Optional privileged features are designed but not part of the current deliverabl
    - no breakaway allowed.
 3. **Handle holders keep jobs alive across node restarts.** A named job disappears from the namespace as soon as its last handle closes, even while processes still run inside it (L-14). So every attempt has a holder: the launcher role `arcforges node exec-wrap`.
    - **Where it runs.** The holder runs *outside* the job (it is not assigned to it). It inherits handles to the child job, the root job and the output files.
-   - **What it does.** It creates the target process suspended, assigns it to the child job, resumes it and waits for it.
+   - **What it does.** It creates the target process suspended, assigns it to the **root job first and then to the child job**, resumes it and waits for it. Assigning a process that is already in the root job to the child job is what nests the child under the root (V-W01); assigning it to the child alone would leave the child a top-level job outside the root caps. Where available, `PROC_THREAD_ATTRIBUTE_JOB_LIST` with `[root, child]` does the same at creation. No ArcForges job sets UI restrictions, because those prevent nesting. F-W01 verifies the resulting hierarchy.
    - **Exit record.** It writes the durable exit record with job accounting ([04](../architecture/04-execution.md) §3).
    - **Lifetime.** It keeps both job handles until the node acknowledges the record, through the named event `Local\ArcForges.<node_id>.<attempt_id>.ack`.
 

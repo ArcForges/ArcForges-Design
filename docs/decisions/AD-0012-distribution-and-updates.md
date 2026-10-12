@@ -15,7 +15,7 @@
 2. **Installers.**
    - **Windows: a per-user setup program.** `arcforges-setup-<v>-<rid>.exe` is a Native AOT, GUI-subsystem C# program, project `ArcForges.Setup`, signed with Authenticode. A Windows Installer package is not used: the node updates itself, and an MSI-owned product registration would go stale after the first self-update.
      - **Install** puts the version directory in place, sets the junctions (`FSCTL_SET_REPARSE_POINT`, L-16), the user PATH and the `HKCU\...\Run` autostart for `arcforges-supervisor.exe` (AD-0003 §1), and writes its **own** uninstall entry under `HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\ArcForges`. The updater keeps `DisplayVersion` current there.
-     - **Uninstall** stops the node, removes every `app\*` version directory, both junctions, the PATH entry, the Run key and the uninstall entry. It keeps the data root unless the user chooses to remove it.
+     - **Uninstall** stops the node, the supervisor and the Desktop app, relaunches the setup program from `%TEMP%` (so no running image remains in a version directory), then removes every `app\*` version directory, both junctions, the PATH entry, the Run key and the uninstall entry. It keeps the data root unless the user chooses to remove it.
      - **Desktop** is installed when selected (default on for interactive installs).
      - **Silent mode** (`--silent`) is used by winget.
      - **Machine-wide service mode** (administrator) is out of the current scope (AR-16). It would be a separate per-machine installer.

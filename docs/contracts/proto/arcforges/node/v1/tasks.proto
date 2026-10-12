@@ -794,7 +794,8 @@ message ResourceSpec {
   optional bool preemptible = 3 [json_name = "preemptible"]; // validate: default by adapter; false otherwise
   optional bool pausable = 4 [json_name = "pausable"]; // validate: default by adapter; false otherwise
   optional bool kill_with_node = 5 [json_name = "killWithNode"]; // validate: default false
-  reserved 6; // was survive_restart_exit_code: every attempt except kill_with_node runs under a holder (04 section 3)
+  reserved 6; // every attempt except kill_with_node runs under a holder (04 section 3)
+  reserved "survive_restart_exit_code";
   optional uint64 cancel_grace_ms = 7 [json_name = "cancelGraceMs"]; // validate: 0..300 s; default 10 s
   optional string stop_signal = 8 [json_name = "stopSignal"]; // validate: Linux only; one of SIGTERM, SIGINT, SIGHUP, SIGQUIT; default SIGTERM
 }

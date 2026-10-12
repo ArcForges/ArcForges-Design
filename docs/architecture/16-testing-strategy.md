@@ -53,7 +53,7 @@ A fake is never used for the behaviour under test (R-TEST-001). Results from a f
 ### 3.1 Local cloud stack
 
 The cloud closed loop runs natively on the workstation and needs neither Docker nor WSL:
-1. **Worker side.** `workerd` under Miniflare (the Cloud repository's local scripts) runs the Worker ingress, the relay routes, the `FleetHub` Durable Object, and local D1, R2 and Queue.
+1. **Worker side.** `workerd` under Miniflare (the Cloud repository's local scripts) runs the Worker ingress, the relay routes, the `FleetHub` Durable Object, and local D1, R2 and Queue. Miniflare's local S3 endpoint, configured with test `s3Credentials`, serves the SigV4 presigned uploads of the support flow (F-C03 checks it first).
 2. **C# host.** `ArcForges.Cloud` runs as a native process on a loopback port: the JIT build for most suites, the Native AOT binary for the AOT suites.
 3. **Container shim.** In the local profile, the Worker's Container binding is replaced by a shim that forwards to the native host's loopback port. The host reaches D1, R2 and the Queue through the same signed internal routes as in production, with test keys. AF-CLD-01 builds the shim as part of the repository's local verification scripts.
 4. **Clients.** Nodes, CLI, Desktop view models, the Blazor app (bUnit and HTTP) and the Android view models point at the local ingress.

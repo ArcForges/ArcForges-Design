@@ -286,7 +286,7 @@ message HookEvent {
   optional uint64 tool_timeout_ms = 14 [json_name = "toolTimeoutMs"]; // validate: PreToolUse only; the client's timeout for the command (Claude Code Bash default 120,000)
   optional int32 tool_exit_code = 15 [json_name = "toolExitCode"];
   ProcessIdentity hook_process = 16 [json_name = "hookProcess"]; // validate: required; verified
-  ProcessIdentity agent_process = 17 [json_name = "agentProcess"]; // validate: parent of the hook process; verified
+  ProcessIdentity agent_process = 17 [json_name = "agentProcess"]; // validate: the nearest client-executable ancestor of the hook process; verified by the node
   optional string client_version = 18 [json_name = "clientVersion"]; // validate: <= 64 chars
   optional string permission_mode = 19 [json_name = "permissionMode"]; // validate: <= 64 chars
   optional string shell = 20 [json_name = "shell"]; // validate: bash | sh | pwsh | powershell | cmd

@@ -128,8 +128,11 @@ The adapter sets the tool's parallelism to `clamp(ceil(cpu_grant/1000), 1, adapt
 4. **Release.** The guest releases the grant at completion with a `GrantRelease` frame, which carries the final usage.
 5. **Enforcement matches the grants.**
    - Whenever the granted totals change by more than 5% of guest capacity (at most every 10 s), the host calls `GuestLinkService.SetGuestBudget`. This sets the guest slice's `CPUQuota`, `MemoryHigh`, `MemoryMax` and `TasksMax` to the granted totals.
-   - At the same time the host lowers its own root caps by the same amounts: `CpuRate` from `B_cpu − Σ granted_cpu`, and the commit limit from `B_mem − Σ granted_mem`.
-   - Host and guest caps together therefore never exceed `B`, and the user's reserved headroom holds under saturating load on both sides.
+   - At the same time the host lowers its own root limits by the same amounts:
+     - `CpuRate` from `B_cpu − Σ granted_cpu`;
+     - the commit limit to `commit_factor × (C_mem − R_mem − Σ granted_mem)`;
+     - the memory notification limit to `B_mem − Σ granted_mem`.
+   - CPU caps on both sides together therefore never exceed `B_cpu`, and the host's memory notification limit plus the guest's `MemoryHigh` never exceed `B_mem`. The Windows commit limit bounds committed virtual memory, not physical use, and is reduced proportionally. The user's reserved headroom holds under saturating load on both sides.
    - The closed-loop test runs concurrent saturating host and guest loads (AF-WSL-01).
 6. **Link loss.** If the link is down for more than 30 s, the guest admits standalone within its own `B_guest` and reports `link_lost`. The guest keeps its last pushed slice limits until it admits standalone, then sets its own. Host-side accounting treats all VM usage as `guest_other` until the link returns. This degraded mode can over-commit the physical machine, and `GUEST_LINK_LOST` says so.
 
