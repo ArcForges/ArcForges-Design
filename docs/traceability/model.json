@@ -786,7 +786,7 @@
         "AF-CACHE-01",
         "AF-AI-01"
       ],
-      "verification": "record-chain test from a session task to processes, queue reasons, cache usage, downloads and outcome; SHARED_WINDOW attribution and aggregation tests; measurement budget (caches.usage_scan_budget_ms) and store size benchmarks (15)"
+      "verification": "record-chain test from a session task to processes, queue reasons, cache usage, downloads and outcome; SHARED_WINDOW window and aggregation tests; unmeasured values stay empty; measurement budget (caches.usage_scan_budget_ms) and store size benchmarks (15)"
     },
     {
       "id": "R-DIAG-001",
@@ -993,7 +993,7 @@
         "AF-DESK-02",
         "AF-ACC-01"
       ],
-      "verification": "journey test per release-1 supported operation (product definition section 9, Verified by column; AF-ACC-01); release coverage statement tests on D-14, arcforges coverage and MCP session_coverage"
+      "verification": "journey test per release-1 supported operation (product definition section 9, Verified by column; AF-ACC-01); GetReleaseScope checked against section 9; release coverage statement tests on D-14, arcforges coverage and MCP session_coverage"
     },
     {
       "id": "R-AI-009",

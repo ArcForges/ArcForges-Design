@@ -157,7 +157,7 @@ ArcForges never claims that connecting MCP, or any single route, manages everyth
 
 The UI and MCP present coverage as observed facts with these labels, never as completeness (R-AI-007).
 
-**Release coverage statement.** Each release ships the table of the [product definition](../product/product-definition.md) §9 (supported operations and reported gaps) as a resource built into the CLI, the MCP adapter and Desktop, so every surface shows the same text. D-14, `arcforges coverage` and the MCP `session_coverage` tool (as `release_scope`) show it next to the session's facts, so gaps that are not session facts are never hidden (R-AI-011).
+**Release coverage statement.** The node serves the table of the [product definition](../product/product-definition.md) §9 for its release (supported operations, reported gaps and the journeys that verify them) through `SessionService.GetReleaseScope`, so every surface shows the same rows. D-14, `arcforges coverage` and the MCP `session_coverage` tool (as `release_scope`) show it next to the session's facts, so gaps that are not session facts are never hidden. The other coverage views, D-07 and `arcforges session coverage`, link to it (R-AI-011).
 
 ## 6. Configuration management
 

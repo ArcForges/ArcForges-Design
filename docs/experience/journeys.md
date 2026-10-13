@@ -161,7 +161,7 @@ Each journey lists its steps across surfaces with the APIs involved, its success
 2. A subagent builds and tests there through rewritten commands. Each task carries the subagent's agent ID, so the session's records separate its work from the agent's own.
 3. Each attempt gets its own `tmp/<attempt>` as TMP, TEMP and TMPDIR, under the per-attempt limit ([06](../architecture/06-storage-workspaces.md) §4, §5). It is deleted when the attempt ends; a failed attempt's directory is kept 24 h when `keep_failed_tmp` is set.
 4. The agent removes the worktree, which has uncommitted changes, with `worktree_remove` and `archive=true`. The user approves; the archive is verified before anything is removed ([06](../architecture/06-storage-workspaces.md) §3). Later the user restores it with `arcforges worktree restore <id>`.
-5. The session report lists the subagent's tasks, their temporary-directory use and the release coverage statement.
+5. The session report lists the subagent's tasks with its agent ID.
 
 - **Success:**
   - subagent work runs under the same admission, keys, limits and records as the agent's own;

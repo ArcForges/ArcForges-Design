@@ -89,13 +89,24 @@ Every attempt's record links the evidence that explains delay and waste (R-REC-0
 | Processes | `process_record` | `(attempt_id, pid, start)` |
 | Queueing | `QUEUED_*` timeline segments, whose evidence names the blocking reason and, for keys, the holders | `attempt_id` |
 | Execution | Timeline segments and adapter phase events | `attempt_id` |
-| Downloads and cache usage | `attempt_cache_usage` (`CacheUsage` per cache binding: bytes added, hits and misses where the tool reports them, packages installed and reused) and `Attempt.downloaded_bytes` | `(attempt_id, cache_id)` |
+| Downloads and cache usage | `attempt_cache_usage` (`CacheUsage` per cache binding: bytes added, hits and misses where the tool reports them, packages installed and reused), `cache_usage_window` (shared use) and `Attempt.downloaded_bytes` | `(attempt_id, cache_id)`; `window_id` |
 | Resource consumption | Attempt accounting and `resource_sample` | `attempt_id` |
 | Retries and outcomes | The task's attempts, `termination_reason`, `effect` and findings | `task_id` |
 
-- **How cache usage is measured.** `bytes_added` is the change in the cache's size between attempt start and end, taken from the size cache ([06](06-storage-workspaces.md) §6), which re-walks only directories whose modification time changed. The measurement runs after the attempt, at background priority, and never delays its result. If it would exceed policy `caches.usage_scan_budget_ms` (default 2,000 ms), it is skipped and the entry leaves `bytes_added` empty. Hits, misses and package counts come from the tools' own counters (sccache and ccache statistics, NuGet restore output).
-- **Attribution of shared caches.** When several attempts use one cache at the same time, growth and statistics cannot be split exactly: the entry says `SHARED_WINDOW` and gives the window's totals, never an invented split. `Attempt.downloaded_bytes` sums only `EXACT` entries.
-- **Aggregation.** Session, workspace and period totals add `EXACT` entries and count each shared window once (by cache and window), never once per attempt.
+- **How cache usage is measured.**
+  - The size cache ([06](06-storage-workspaces.md) §6) keeps each managed cache's size and when it was measured. It is refreshed when a window closes and by cache maintenance, re-walking only directories whose modification time changed.
+  - A **window** is a maximal interval in which one or more attempts bind a cache. An entry's baseline is the cache's last measured size before its attempt started, and a window's baseline is the last before the window opened (`baseline_at`).
+  - When an attempt ends, a background job measures the cache within policy `caches.usage_scan_budget_ms` (default 2,000 ms) and writes the attempt's entry; the attempt's result never waits for it. A measurement that would exceed the budget is skipped, and the entry leaves `bytes_added` empty, never 0.
+  - Hits and misses come from the tools' counters over the same interval (sccache and ccache statistics). Package counts come from the attempt's own output (NuGet restore output, npm and pip logs) and are always its own.
+- **Attribution.**
+  - An attempt that was the only binder during its run gets an `EXACT` entry: its values are its own.
+  - When other attempts bound the cache meanwhile, the entry is `SHARED_WINDOW` and carries the window's ID. Its size growth and counters cover the attempt's interval, including the other binders' activity, so they are never summed or split by guess.
+  - Writes by unmanaged processes since `baseline_at` are included in either case. The entry records `baseline_at`, so a stale baseline is visible.
+- **Downloads.** `Attempt.downloaded_bytes` is the sum of the attempt's `EXACT` download-cache entries. It is empty when one of them has no measured `bytes_added`, never a partial sum. Shared use counts only in its window's totals.
+- **Aggregation.**
+  - When a window closes (its last binder ends), the cache manager records its totals once in `cache_usage_window`, measured from the baseline to the close. A window that is still open counts as provisional.
+  - Node-wide period totals add the `EXACT` entries and the windows, each once.
+  - Session and workspace totals add their `EXACT` entries and list the windows they took part in separately, labelled shared, because a window's totals include other work.
 - **Bounds.** Collection stays within the node's overhead targets ([15](15-performance-targets.md) §2) and the store's size budget ([node store](../data/node-store.md) §4); evidence follows record retention (`record_retention_days`, default 90) and sample downsampling (R-REC-005).
 - **Sensitive data.** Command lines and environment values are redacted as in R-EXE-017; downloads are recorded as counts and bytes, never as URLs or credentials; exports and support bundles apply the same redaction.
 - **Foundations.** The same records feed operational memory today and later prediction and cache-sharing decisions (roadmap RM-02, RM-08).

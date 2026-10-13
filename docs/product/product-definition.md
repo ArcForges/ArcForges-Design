@@ -118,7 +118,7 @@ Release 1 manages the operations below end to end on Windows 11 and Linux, inclu
 | Machines | The WSL guest node with coordinated admission; LAN placement with content-addressed transfer between paired nodes | Managed FASTBuild workers (RM-03) | J-01, J-06, J-07 |
 | Evidence | Correlated records per attempt ([07](../architecture/07-records-diagnosis-memory.md) §1.5) | Network use per process (inferred only) | J-04 |
 
-**Where gaps are reported.** Gaps that belong to a session (bypassed commands, route failures, unknown attribution) appear in its coverage report ([08](../architecture/08-ai-integration.md) §5). The whole table above ships as the product's **release coverage statement**, shown on D-14, printed by `arcforges coverage` and returned by the MCP `session_coverage` tool next to the session's facts, so no surface implies broader coverage.
+**Where gaps are reported.** Gaps that belong to a session (bypassed commands, route failures, unknown attribution) appear in its coverage report ([08](../architecture/08-ai-integration.md) §5). The node serves the whole table above as the product's **release coverage statement** (`SessionService.GetReleaseScope`). D-14, `arcforges coverage` and the MCP `session_coverage` tool show it next to the session's facts, and D-07 and `arcforges session coverage` link to it, so no surface implies broader coverage.
 
 **Pro in release 1** is the cloud offering of §5: remote access through ArcForges Cloud, mobile monitoring and control, and push notifications.
 

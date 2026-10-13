@@ -284,7 +284,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 ```
 
 - **Data:** `SessionService.GetSession`, `GetSessionCoverage`; `TaskService.ListTasks(session)`; `DiagnosisService.GetReport(SESSION)`.
-- **Actions:** **Session report** (opens the report view); **End session**.
+- **Actions:** **Session report** (opens the report view); **What this release manages** (opens the release coverage statement on D-14); **End session**.
 - **Accessibility.** The coverage list is structured with headings, and the "Unknown" items read as a list.
 
 ## D-08 Findings
@@ -402,7 +402,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 
 - **Data:** `CacheService.ListCaches`, `GetCacheReport`.
 - **Actions:** Verify (`VerifyCache`), Settings (`UpdateCacheSettings`: quota, LAN sharing), Plan cleanup for duplicates or a trim (opens D-11 with rules).
-- **States:** a "Maintenance in progress" chip while a lease is held. The LAN sharing section is added with LAN cache sharing (AF-LAN-03); until a peer is paired it explains how to pair (link to D-15).
+- **States:** a "Maintenance in progress" chip while a lease is held. The LAN column and the LAN sharing setting are added with LAN cache sharing (AF-LAN-03). Until a peer is paired, the setting explains how to pair (link to D-15).
 
 ## D-13 Toolchains
 
@@ -450,7 +450,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 ```
 
 - **Data:** `IntegrationService.ListClients`, `ListProbeResults`; topic INTEGRATIONS.
-- **Release coverage statement.** A panel lists what this release manages and the reported gaps (product definition §9), so the page never implies broader coverage.
+- **Release coverage statement.** A panel lists what this release manages, the reported gaps and the journeys that verify them (`SessionService.GetReleaseScope`; product definition §9), so the page never implies broader coverage.
 - **Routing modes** (per client and workspace, [08](../architecture/08-ai-integration.md) §4.1): observe, guide, **rewrite** (heavy patterns only) and **rewrite all** (every shell command except passthrough patterns). Each mode shows what it covers and what stays unmanaged, from the coverage map ([08](../architecture/08-ai-integration.md) §4.4).
 - **Copy.** Choosing MCP without hooks shows: "Connecting MCP alone routes nothing. Your agent's own shell commands run outside ArcForges unless hooks rewrite them, or the agent calls the run tool." Choosing **rewrite all** shows: "Every routed command asks for your confirmation unless you pre-approve rewritten commands (deny rules written for the original commands then no longer match)." For Codex, rewriting needs that pre-approval; otherwise Codex gets guidance.
 - **Actions:**

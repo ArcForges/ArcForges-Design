@@ -138,7 +138,7 @@ The disk level of each volume is part of `ResourceSnapshot.volumes` and of the r
 | Quarantine pending purge | — | `QUARANTINE` |
 | Untracked managed directories | §2 | `UNTRACKED` (report only) |
 
-Sizes use an incremental size cache keyed by `(path, mtime, inode/file-id)`. Directory symlinks and junctions are never followed outside their root. Analysis is bounded (default 15 min, 5 million entries) and reports truncation explicitly.
+Sizes use an incremental size cache keyed by `(path, mtime, inode/file-id)`. The same size cache measures managed caches for per-attempt evidence ([07](07-records-diagnosis-memory.md) §1.5). Directory symlinks and junctions are never followed outside their root. Analysis is bounded (default 15 min, 5 million entries) and reports truncation explicitly.
 
 ## 7. Cleanup (two-phase, bounded)
 
