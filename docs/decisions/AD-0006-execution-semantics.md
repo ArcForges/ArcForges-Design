@@ -35,7 +35,7 @@
 7. **Interactive attach.** `run --attach` streams output and forwards stdin while attached.
    - **Detaching** never stops the task, except for tasks submitted with `cancel_when_caller_gone`.
    - **Hand-off before a client timeout.** A hook-rewritten run knows the client's tool timeout. Shortly before it (`routing.handoff_margin_ms`, default 15 s), if the task has not finished, the CLI calls `TaskService.ReleaseCallerBinding`, prints the task ID with how to wait for it, and exits with code 124. The task keeps its place in the queue and keeps running ([08](../architecture/08-ai-integration.md) §4.1). A task is therefore never cancelled because it was queued or slow, and never requeued at the back.
-   - **Interrupts still cancel.** If the caller disappears *before* the hand-off (the user interrupted the client), the binding cancels the task within 5 s, as the original command would have stopped.
+   - **Interrupts still cancel.** If the caller disappears *before* the hand-off (the user interrupted the client), the binding cancels the task within 5 s, as the original command would have stopped. After the hand-off, cancellation is explicit: `tasks cancel`, Desktop, or the agent's `task_cancel` (the hand-off message names the command).
    - **No duplicates.** Rewritten runs submit with `join_existing`: a resubmission of the same command, working directory and environment by the same session joins the non-terminal task instead of queueing a second copy.
    - **Restart:** stdin forwarding does not survive a node restart, and the task then sees end-of-file (documented).
 8. **Result caching (opt-in, `PURE` only).**

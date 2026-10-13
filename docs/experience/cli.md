@@ -48,7 +48,7 @@ arcforges run [run options] --shell <kind> -- "<script>"
 | 7 | Conflict (revision, already exists, digest) | Mutations |
 | 8 | Entitlement required | Gated features |
 | 9 | Wait ended without reaching the target state | `tasks wait`, `run --detach --wait <dur>` |
-| 124 | `run --client-timeout`: the run handed off before the client's timeout; the task continues (task ID and wait command on stderr). A task that itself exits with 124 prints no hand-off line. | `run` (attached) |
+| 124 | `run --client-timeout`: the run handed off before the client's timeout; the task continues (task ID, wait command and cancel command on stderr). A task that itself exits with 124 prints no hand-off line. | `run` (attached) |
 | 75 | Node unreachable and nothing was submitted (`EX_TEMPFAIL`, effect `DID_NOT_HAPPEN`) | All |
 | `run` only: task exit code 0–255 | The task's exit code; signals map to 128 + n on Linux | `run` (attached) |
 | `run` only: 125 | Not started: validation, permission, approval or queue refusal (message on stderr) | `run` |
