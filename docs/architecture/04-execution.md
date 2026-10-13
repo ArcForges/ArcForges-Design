@@ -14,10 +14,11 @@ Defined by `arcforges.node.v1.TaskSpec` ([contracts](../contracts/proto/arcforge
 | `priority` | `INTERACTIVE`, `HIGH`, `NORMAL` (default), `LOW` or `BACKGROUND`. `INTERACTIVE` is allowed only from human surfaces (CLI and Desktop), or by a policy grant for a session. |
 | `pool` | Existing pool name (default `default`; agent sessions default to `agents`) |
 | `kind` | `COMMAND` (default) or `SERVICE`, with a readiness condition |
-| `side_effect` | `PURE`, `IDEMPOTENT`, `SIDE_EFFECTING` or `UNKNOWN` (default). Adapters may propose a class, but only the caller or an adapter rule with `assert_class=true` sets `PURE`. |
+| `side_effect` | `PURE`, `IDEMPOTENT`, `SIDE_EFFECTING` or `UNKNOWN` (default). Adapters only suggest a class unless they can verify it; a caller (an AGENT only when policy allows) or a `retry_safety` rule asserts it ([AD-0006](../decisions/AD-0006-execution-semantics.md) §4). The task records the source. |
 | `retry` | `max_attempts` (≤5) and `backoff`. Effective only per [AD-0006](../decisions/AD-0006-execution-semantics.md) §4. |
 | `depends_on` | ≤64 entries of `{task_id, condition}`. Referenced tasks must exist; cycles are refused. |
-| `placement` | `LOCAL_ONLY` (default), `ANY`, or a specific node, plus required toolchains, OS, architecture and labels. |
+| `placement` | `LOCAL_ONLY` (default), `ANY`, or a specific node, plus required toolchains, OS, architecture and labels. Remote placement needs `inputs`; declared outputs return with `output_conflict` (default `STAGE`, [09](09-lan.md) §6). |
+| `concurrency` | Optional `exclusive_keys` (≤16) and `access` (`SHARED` or `EXCLUSIVE`). Adapter keys are added; the workspace's concurrency mode applies ([03](03-resource-control.md) §4). |
 | `resources` | Optional hint `{cpu_demand, mem_expected, mem_ceiling}`, `require_enforcement`, `preemptible`, `pausable` |
 | `labels` | ≤32 key/value pairs. Keys ≤64 characters, values ≤256. |
 | `title` | ≤200 characters, shown in UIs. It may leave the node as D1 data. Defaults to a redacted command summary. |
@@ -50,7 +51,7 @@ Defined by `arcforges.node.v1.TaskSpec` ([contracts](../contracts/proto/arcforge
 | Container | The node creates the named child job under the root job ([03](03-resource-control.md) §5) and starts the holder `arcforges node exec-wrap` **outside** the job, passing inheritable handles to the child job, the root job, the output files and the ack event ([AD-0005](../decisions/AD-0005-resource-enforcement.md) Windows §3) | `StartTransientUnit("arcforges-a-<attempt>.service", "fail", properties)` in `arcforges.slice`, with the limits of [03](03-resource-control.md) §5. The node waits for the job's `JobRemoved` signal (result `done`) before recording `STARTED`. |
 | Output | Create `logs/<attempt>/stdout.bin` and `stderr.bin` (share read/write) as inheritable handles; restrict inheritance with `PROC_THREAD_ATTRIBUTE_HANDLE_LIST` | Opened by the node with `O_APPEND` and passed as `StandardOutputFileDescriptor` / `StandardErrorFileDescriptor` unit properties (file descriptors over D-Bus) |
 | stdin | NUL / temp file / file / pipe | `/dev/null` / file / pipe, passed as `StandardInputFileDescriptor` |
-| Process | The holder calls `CreateProcessW(..., CREATE_SUSPENDED \| CREATE_NEW_PROCESS_GROUP \| CREATE_UNICODE_ENVIRONMENT \| EXTENDED_STARTUPINFO_PRESENT, ...)` with a hidden console (`CREATE_NO_WINDOW`) for console programs → `AssignProcessToJobObject(root job)` → `AssignProcessToJobObject(child job)`, which nests the child job under the root → `ResumeThread`, and reports the PID and start time to the node. `kill_with_node` tasks skip the holder: the node launches them itself into a job with kill-on-close. | Unit properties: `ExecStart` (resolved absolute program path and argv), `WorkingDirectory`, the exact environment (`Environment` plus `UnsetEnvironment` for every manager variable outside the resolved set), the caller's relevant rlimits as `Limit*`, and `BindsTo=arcforges-node.service` only for `kill_with_node` tasks. The user manager forks and execs the process inside the unit's cgroup, so no child ever runs outside its container. |
+| Process | The holder calls `CreateProcessW(..., CREATE_SUSPENDED \| CREATE_NEW_PROCESS_GROUP \| CREATE_UNICODE_ENVIRONMENT \| EXTENDED_STARTUPINFO_PRESENT, ...)` with a windowless console (`CREATE_NO_WINDOW`: a console without a window, which a helper can attach to; L-18) for console programs → `AssignProcessToJobObject(root job)` → `AssignProcessToJobObject(child job)`, which nests the child job under the root → `ResumeThread`, and reports the PID and start time to the node. `kill_with_node` tasks skip the holder: the node launches them itself into a job with kill-on-close. | Unit properties: `ExecStart` (resolved absolute program path and argv), `WorkingDirectory`, the exact environment (`Environment` plus `UnsetEnvironment` for every manager variable outside the resolved set), the caller's relevant rlimits as `Limit*`, and `BindsTo=arcforges-node.service` only for `kill_with_node` tasks. The user manager forks and execs the process inside the unit's cgroup, so no child ever runs outside its container. |
 | Exit capture | The holder waits for the root process. After `leftover_grace` it terminates leftovers, then writes `logs/<attempt>/exit.json` with the exit code and the job accounting: basic and I/O accounting, peak job commit, and limit violations from `JobObjectLimitViolationInformation`. It keeps the job handles until the node sets the ack event. The node receives the same events from the job's completion port while it runs. | While the node runs: D-Bus `PropertiesChanged` on the unit (`ExecMainCode`, `ExecMainStatus`, `Result`). Durable: `logs/<attempt>/exit.json`, written by `ExecStopPost=<app>/current/arcforges node exit-record --attempt <id>`, which systemd runs with `$EXIT_CODE`, `$EXIT_STATUS` and `$SERVICE_RESULT` even when the node is down (L-13). |
 
 **Process tree tracking.** Container membership is authoritative (`JobObjectBasicProcessIdList` / the unit's `cgroup.procs`). An ancestry scan every 5 s detects `ESCAPED` descendants ([03](03-resource-control.md) §9).
@@ -80,6 +81,7 @@ On Linux, `exit-record` reads `cpu.stat`, `memory.peak`, `memory.events` and `io
   - The merged, ordered view interleaves the two streams by index order.
 - `ReadTaskOutput(attempt, stream, from_offset, max_bytes ≤ 4 MiB)` returns bytes plus index records. `WatchTaskOutput` streams new chunks (≤64 KiB per frame) after an optional backfill.
 - Throughput target: ≥200 MB/s capture without loss (R-PERF-001). The process writes the files directly, so capture never back-pressures the process.
+- **Output limit.** Because the process writes the files directly, the node cannot cap them at the file system. The tailer compares the two files' size with `storage.max_attempt_output_bytes` (default 2 GiB) on every read (100 ms). On crossing it, `disk_limit_action` applies: `TERMINATE` (default) runs the cancellation sequence (§6) with `termination_reason=OUTPUT_LIMIT`; `NOTIFY` raises a finding only. The overshoot is bounded by the write rate over one tailer interval ([06](06-storage-workspaces.md) §5).
 - Retention: output is kept for the record retention period (default 14 days or 5 GiB total, oldest first; pinned tasks excepted). Compression with gzip happens after 24 h for files larger than 1 MiB.
 
 ## 5. Attach (`AttachTask`)
@@ -91,7 +93,11 @@ A server stream delivers the state, output chunks, progress, readiness and the f
 ## 6. Cancellation, timeouts and termination
 
 1. **Graceful phase.**
-   - Windows: the `arcforges node signal` helper role attaches to the attempt's console and sends `CTRL_BREAK_EVENT` to its process group. GUI processes in the tree get `WM_CLOSE` on their top-level windows.
+   - Windows (L-18):
+     - The holder started the root process with `CREATE_NO_WINDOW | CREATE_NEW_PROCESS_GROUP`, so it has a windowless console and its PID is its process-group ID.
+     - The `arcforges node signal` helper is started without a console of its own. It calls `FreeConsole`, then `AttachConsole(root pid)`, ignores control events itself (`SetConsoleCtrlHandler(NULL, TRUE)`), and calls `GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, root pid)`. One helper process serves one attempt, because a process can attach to one console at a time.
+     - Descendants that created their own console or process group, and GUI processes, do not receive the event. GUI processes in the tree get `WM_CLOSE` on their top-level windows.
+     - If the attach or the event fails (the root process has exited, or it is not a console program), the node records the reason and goes straight to the grace period. The forced phase (step 3) ends the whole job either way.
    - Linux: `KillUnit("all", SIGTERM)` (or the task's `stop_signal`), which signals every process in the unit's cgroup.
 2. **Grace period:** `cancel_grace` (default 10 s, policy maximum 300 s).
 3. **Forced phase:** `TerminateJobObject` / `KillUnit("all", SIGKILL)` (the user manager uses `cgroup.kill` where the kernel supports it).
@@ -106,7 +112,7 @@ Timeouts and CPU-time limits run the same sequence with the reason `TIMED_OUT` /
 - `exit_code` (int32);
 - `signal` (Linux number, plus `core_dumped`);
 - `windows_status` (NTSTATUS when the exit code is an exception code ≥ 0xC0000000);
-- `termination_reason`: `EXITED`, `CANCELLED`, `TIMED_OUT`, `CPU_TIME_EXCEEDED`, `OOM_KILLED` (Linux: `memory.events` oom_kill increased, or `SERVICE_RESULT=oom-kill`), `MEMORY_LIMIT` (Windows commit-limit notification observed and exit ≠ 0), `PREEMPTED`, `LOST`, `SPAWN_FAILED`, `NODE_SHUTDOWN`, `POLICY_DENIED`, `TERMINATION_INCOMPLETE` or `CACHE_RESTORED` (result-cache restore; never an execution);
+- `termination_reason`: `EXITED`, `CANCELLED`, `TIMED_OUT`, `CPU_TIME_EXCEEDED`, `OOM_KILLED` (Linux: `memory.events` oom_kill increased, or `SERVICE_RESULT=oom-kill`), `MEMORY_LIMIT` (Windows commit-limit notification observed and exit ≠ 0), `PREEMPTED`, `LOST`, `SPAWN_FAILED`, `NODE_SHUTDOWN`, `POLICY_DENIED`, `TERMINATION_INCOMPLETE`, `CACHE_RESTORED` (result-cache restore; never an execution), `OUTPUT_LIMIT` (§4) or `DISK_LIMIT` (per-attempt temporary space, or critical free space on a written volume; [06](06-storage-workspaces.md) §5);
 - `effect`: `DID_NOT_HAPPEN` only for `SPAWN_FAILED` and `POLICY_DENIED`; `HAPPENED` for completed processes; `UNKNOWN` for `LOST`.
 
 ## 8. Dependencies, services, retries
@@ -115,7 +121,7 @@ Timeouts and CPU-time limits run the same sequence with the reason `TIMED_OUT` /
 - **Services:**
   - Readiness conditions: `output_regex` (RE2-compatible subset, matched on either stream), `tcp_listen` (127.0.0.1 or ::1 port) or `file_exists`, with `readiness_timeout` (default 120 s).
   - State `RUNNING` with `ready=true` after the condition holds. A service stops with its owner session when `stop_with_session=true` (default for agent-owned services).
-- **Retries:** a new attempt with backoff `5 s × 2^n` (cap 60 s), only per [AD-0006](../decisions/AD-0006-execution-semantics.md) §4. Every attempt keeps its own records.
+- **Retries:** a new attempt with backoff `5 s × 2^n` (cap 60 s), only per [AD-0006](../decisions/AD-0006-execution-semantics.md) §4: the class must be asserted by the caller, a `retry_safety` rule or a verifying adapter. A suggested class alone never retries. Every attempt keeps its own records.
 
 ## 9. Restart recovery and LOST
 

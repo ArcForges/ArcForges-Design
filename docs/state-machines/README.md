@@ -180,7 +180,7 @@ stateDiagram-v2
   RECOVERING --> READY : recovery done, enforcement self-test passed, endpoint listen
   RECOVERING --> DEGRADED : recovery done
   READY --> DEGRADED : capability lost (e.g. user manager restarted without delegat
-  DEGRADED --> READY : capability restored
+  DEGRADED --> READY : capability restored, or disk space returned and a store writ
   READY --> STOPPING : NodeService.StopNode
   DEGRADED --> STOPPING : NodeService.StopNode
   READY --> UPDATING : update switch (13 section 5.3)
@@ -197,8 +197,8 @@ stateDiagram-v2
 | STARTING | RECOVERING | store opened and migrated (02 section 2 steps 1-4) |  |  |
 | RECOVERING | READY | recovery done, enforcement self-test passed, endpoint listening |  |  |
 | RECOVERING | DEGRADED | recovery done; some capability missing (OBSERVE_ONLY or PARTIAL) |  |  |
-| READY | DEGRADED | capability lost (e.g. user manager restarted without delegation) |  |  |
-| DEGRADED | READY | capability restored |  |  |
+| READY | DEGRADED | capability lost (e.g. user manager restarted without delegation), or a store write failed for lack of disk space (reason store_out_of_space; 06 section 5) |  |  |
+| DEGRADED | READY | capability restored, or disk space returned and a store write succeeded |  |  |
 | READY, DEGRADED | STOPPING | NodeService.StopNode; OS logoff; service stop |  |  |
 | READY, DEGRADED | UPDATING | update switch (13 section 5.3) |  |  |
 | STOPPING, UPDATING | STOPPED | process exit (code 0, or 75 for an update restart) |  |  |
@@ -243,7 +243,7 @@ stateDiagram-v2
 | CONNECTING | LOST | bridge exited or no hello within 30 s |  |  |
 | LINKED | DEGRADED | guest reports degraded enforcement (no systemd, missing controllers) |  |  |
 | DEGRADED | LINKED | guest capabilities restored |  |  |
-| LINKED, DEGRADED | LOST | 30 s without frames, or bridge exit |  | finding GUEST_LINK_LOST; guest admits standalone |
+| LINKED, DEGRADED | LOST | 30 s without frames, or bridge exit |  | finding GUEST_LINK_LOST; the guest keeps its last allocation until lease_until, then admits only within the standalone allocation, which the host keeps reserved (architecture 03 section 6) |
 | LOST | CONNECTING | bounded backoff retry (1 s to 60 s) |  |  |
 | DISCOVERED, CONNECTING, LINKED, DEGRADED, LOST | DISABLED | ResourceService.SetGuestLink enabled=false |  |  |
 | DISABLED | CONNECTING | ResourceService.SetGuestLink enabled=true |  |  |
@@ -395,6 +395,10 @@ stateDiagram-v2
   IDLE --> ACTIVE : used by a task or session
   ACTIVE --> REMOVING : WorkspaceService.RemoveWorktree
   IDLE --> REMOVING : WorkspaceService.RemoveWorktree
+  ACTIVE --> ARCHIVING : WorkspaceService.RemoveWorktree with archive_changes (approv
+  IDLE --> ARCHIVING : WorkspaceService.RemoveWorktree with archive_changes (approv
+  ARCHIVING --> REMOVING : archive verified  index and working-tree snapshot commits wr
+  ARCHIVING --> ACTIVE : archive creation or verification failed
   REMOVING --> REMOVED : git worktree remove succeeded
   REMOVING --> ACTIVE : removal failed (in use or git refused)
   FAILED --> REMOVED : partial directory cleaned up
@@ -407,7 +411,10 @@ stateDiagram-v2
 | CREATING | FAILED | node job failed |  |  |
 | ACTIVE | IDLE | no task, session or lock for 14 days |  |  |
 | IDLE | ACTIVE | used by a task or session |  |  |
-| ACTIVE, IDLE | REMOVING | WorkspaceService.RemoveWorktree; approved cleanup item | clean, or archive_changes approved |  |
+| ACTIVE, IDLE | REMOVING | WorkspaceService.RemoveWorktree; approved cleanup item | clean (no staged, unstaged or untracked changes) |  |
+| ACTIVE, IDLE | ARCHIVING | WorkspaceService.RemoveWorktree with archive_changes (approved) | dirty, and no task, session or lock uses the worktree |  |
+| ARCHIVING | REMOVING | archive verified: index and working-tree snapshot commits written, bundle created, bundle restored into a temporary directory and every file digest matched (06 section 3) |  |  |
+| ARCHIVING | ACTIVE | archive creation or verification failed; nothing removed; finding raised |  |  |
 | REMOVING | REMOVED | git worktree remove succeeded |  |  |
 | REMOVING | ACTIVE | removal failed (in use or git refused) |  |  |
 | FAILED | REMOVED | partial directory cleaned up |  |  |

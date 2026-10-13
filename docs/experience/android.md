@@ -82,7 +82,8 @@
 ┌ Fleet ─────────────── ● live ┐
 │ workstation        online    │
 │ 6 running · 4 queued  ⚠1 ①1 │
-│ CPU 74 %  Mem 33 %           │
+│ CPU 74%  Mem 33%  Disk 61%   │
+│ 2 agents · 3 subagents       │
 ├──────────────────────────────┤
 │ buildbox           online    │
 │ 2 running · 0 queued         │
@@ -94,16 +95,16 @@
 - **Purpose.** See every node at a glance and open one.
 - **Permissions.** Session of either scope; live data needs `remote.view`.
 - **Layout.** The live indicator; one card per node (guests inside their host's card).
-- **Data:** `FleetService.ListNodes`, then the viewer socket (SUMMARY).
+- **Data:** `FleetService.ListNodes`, then the viewer socket (SUMMARY): `StatusSummary` counts, CPU, memory, disk (`disk_free_bytes`, `disk_total_bytes`, `disk_level`), findings, approvals, `sessions_active` and `subagents_active`.
 - **Actions:** open a node (A-04); pull to refresh re-reads `ListNodes`.
-- **Accessibility.** Each card reads as one sentence ("workstation, online, 6 running, 4 queued, 1 finding, 1 approval").
+- **Accessibility.** Each card reads as one sentence ("workstation, online, 6 running, 4 queued, CPU 74 percent, memory 33 percent, disk 61 percent, 2 agents, 1 finding, 1 approval"). A low-space disk says "low space" in text.
 - **States:** S-EMPTY ("No nodes yet. Install ArcForges on a computer and sign in."); S-NOT-ENTITLED (shows the node list without live data, with **Get Pro**); offline.
 
 ## A-04 Node detail
 
 - **Purpose.** Watch one node and act on its tasks.
 - **Permissions.** `remote.view` to watch, `remote.control` to act. Medium- and high-risk actions need a step-up (which also upgrades a `mobile.limited` session).
-- **Layout.** A header (name, state, version, pressure, **⋯** actions menu); then sections: Running and Queued tasks, Approvals for this node, Open findings, Recent commands.
+- **Layout.** A header (name, state, version, pressure, disk, **⋯** actions menu); then sections: Running and Queued tasks, Agents, Approvals for this node, Open findings, Recent commands.
 - **Wireframe:**
 
 ```
@@ -113,6 +114,9 @@
 │  dotnet build   04:12  [⋮]  │
 │ Queued                      │
 │  npm test  #2 budget_memory │
+│ Agents                      │
+│  Claude Code · 2 subagents  │
+│  last event 10:41           │
 │ Approvals                   │
 │  Codex: cancel npm test [›] │
 │ Findings                    │
@@ -122,7 +126,7 @@
 └─────────────────────────────┘
 ```
 
-- **Data:** the viewer socket with FULL detail; `FleetService.GetNode` (recent commands).
+- **Data:** the viewer socket with FULL detail; `FleetService.GetNode` (recent commands). Queued rows use `TaskSummary.queue_position`, `blocking_reason` and `eta`. The Agents section uses `SessionSummary`: client, workspace name, subagents, last event and the managed share. Unknowns are shown as "not reported by <client>".
 - **Actions** (`SendNodeCommand`):
   - Refresh, and pause or resume the queue (low).
   - Cancel a task and change its priority (medium, step-up).
@@ -143,15 +147,16 @@
 ┌ ← npm test ──────────────────┐
 │ ● RUNNING · 2 m 10 s         │
 │ Owner: Codex · session 7Q2…  │
+│ Subagent: not reported       │
 │ Pool agents · priority NORMAL│
-│ Time: CPU 61% · I/O 12% ·    │
-│       waiting 27%            │
+│ Time: build 70% · restore    │
+│       20% · queued 10%       │
 │ [ Show output tail ]         │
 │ [ Cancel ] [ Priority ]      │
 └──────────────────────────────┘
 ```
 
-- **Data:** the viewer socket (task summary) for this task.
+- **Data:** the viewer socket's `TaskSummary` for this task: state, elapsed time, the top timeline categories (`timeline`), queue position and blocking reason while queued, exit code and `termination_reason`, owner client, `session_id`, and `subagent` with `attribution`. A subagent that no client reports is shown as "not reported", never guessed.
 - **Actions:**
   - **Show output tail** sends `ReadOutputTailCommand` (low). The tail arrives as a relay `OutputTail` frame and is never stored. If the node's privacy policy forbids it, the screen says "Output stays on the node".
   - **Cancel** (medium) and **Priority** (medium) as in A-04. Retry is not a remote command, so the button is absent.

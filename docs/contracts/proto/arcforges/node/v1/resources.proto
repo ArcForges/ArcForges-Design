@@ -323,6 +323,7 @@ message VolumeUsage {
   optional uint64 total_bytes = 2 [json_name = "totalBytes"];
   optional uint64 free_bytes = 3 [json_name = "freeBytes"];
   repeated string managed_roots = 4 [json_name = "managedRoots"];
+  optional DiskPressureLevel level = 5 [json_name = "level"];
 }
 
 message GuestConsumer {

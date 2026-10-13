@@ -78,6 +78,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 │ CPU   ████████████░░░░  9.1 / 12.4 cores│ ⚠ STALL  dotnet test (12 min idle)│
 │ Mem   ██████░░░░░░░░░░  7.2 / 21.4 GiB  │ ⓘ REPEATED_WORK cargo build ×3    │
 │ User headroom held ✔   Pressure: Normal │ ① Approval: cancel task (agent)   │
+│ Disk  D: 412 GiB free · level Normal    │                                   │
 ├──────────────── Running ───────────────┴───────────────────────────────────┤
 │ Task                     Owner          Pool     CPU   Mem    Elapsed  Cat. │
 │ dotnet build Arc.sln     Claude Code·a1 agents   3.8   2.1G   04:12    BUILD│
@@ -87,7 +88,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Data:** subscription topics TASKS (running and queued summaries), QUEUE, RESOURCES, FINDINGS (open), APPROVALS (pending) and SESSIONS (active); `QueueService.GetQueue` for the initial view.
+- **Data:** subscription topics TASKS (running and queued summaries), QUEUE, RESOURCES (including each managed volume's free space and `DiskPressureLevel`), FINDINGS (open), APPROVALS (pending) and SESSIONS (active); `QueueService.GetQueue` for the initial view.
 - **Actions:**
   - **Run task** opens the Run dialog (§D-02).
   - A row opens D-03.
@@ -118,7 +119,11 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
   - **Retry selected** (`RetryTask`). Side-effecting or unknown tasks show the warning "This command may have external effects. Retrying runs it again."
   - **Pin** (`PinTask`).
 - **Run dialog** (`Ctrl+N`):
-  - fields: command (argv or shell toggle), working directory (picker), pool, priority, timeout, labels, and an advanced section (environment, stdin file, readiness for services, placement);
+  - fields: command (argv or shell toggle), working directory (picker), pool, priority, timeout, labels, and an advanced section:
+    - environment, stdin file, readiness for services;
+    - **concurrency**: workspace access (adapter default, shared, exclusive) and extra exclusive keys, with the adapter's keys shown read-only ([03](../architecture/03-resource-control.md) §4);
+    - **retry safety**: unknown (default), idempotent or pure. Choosing one records the user's assertion (`side_effect_source=CALLER`); the adapter's suggestion is shown beside it (AD-0006 §4);
+    - **placement**: local, a peer or any; inputs and declared outputs; output conflict (stage (default), skip existing, fail, overwrite) ([09](../architecture/09-lan.md) §6);
   - **Run** = `SubmitTask` then open D-03 attached.
 - **States:** S-EMPTY, S-FAILED. Bulk actions report per-item results.
 - **Accessibility.** Checkboxes have the label "Select <title>". `Space` toggles a row and `Ctrl+A` selects all visible rows.
@@ -139,6 +144,9 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 │        2.0 GiB exp │                                                            │
 │ Tool   dotnet.build│                                                            │
 │ -m:4 (tool flag)   │                                                            │
+│ Keys ws:arc/src:bu…│                                                            │
+│ Retry  UNKNOWN     │                                                            │
+│  (adapter: IDEMP.) │                                                            │
 ├─ Timeline ─────────┴────────────────────────────────────────────────────────────┤
 │ QUEUED_ADMISSION ▏RESTORE ██ ▏BUILD ████████████ ▏NETWORK_WAIT (inferred) ░      │
 ├─ Resources ─ CPU ╱╲╱╲  Mem ▁▂▄▆  (table view)  ─ Processes (12) ─ Attempts (1) ─┤
@@ -147,7 +155,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 ```
 
 - **Data:**
-  - `TaskService.GetTask(FULL)` and `GetTimeline`;
+  - `TaskService.GetTask(FULL)` and `GetTimeline`; the summary shows the effective exclusive keys, and the retry-safety class with its source and the adapter's suggestion;
   - `AttachTask` (output and state while the page is open; it never sends stdin unless **Send input** is enabled for STREAM tasks);
   - `ResourceService.GetSamples(ATTEMPT)` and `ListAttempts`;
   - `DiagnosisService.ListFindings(subject = task)`.
@@ -167,7 +175,11 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 - **States:** S-LOADING, plus:
   - "Output purged by retention" (with the date);
   - "Remote attempt on <peer>" (output streamed from the peer);
-  - `TERMINATION_INCOMPLETE` banner with remaining PIDs and **Terminate** (approval for other owners).
+  - `TERMINATION_INCOMPLETE` banner with remaining PIDs and **Terminate** (approval for other owners);
+  - **Output limit**: "Output passed 2 GiB. The task was stopped (`OUTPUT_LIMIT`)", or with `disk_limit_action=NOTIFY` "Output beyond 2 GiB is not kept";
+  - **Disk limit**: "Stopped: temporary files passed 20 GiB", or "Stopped: drive D: critically low" (`DISK_LIMIT`), with a link to D-11;
+  - **Outputs staged** (`OUTPUT_CONFLICT`): "2 returned files changed locally since submission and were staged." **Compare**, **Keep local**, **Take remote** (`out/…/conflicts/`);
+  - **Handed off**: "The agent's command reached its client timeout at 10:44. The task continues; the agent was told to wait with `arcforges tasks wait`." ([08](../architecture/08-ai-integration.md) §4.1).
 - **Accessibility.**
   - Output is a read-only text area with a find box (`Ctrl+F`) and a polite live region throttled to one announcement per 5 s ("12 new lines").
   - The timeline has an accessible table alternative.
@@ -187,6 +199,10 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 ├ Waiting (admission order) ───────────────────────────────────────────────────────┤
 │ #1 cargo build --release  agents  needs 6.0 GiB, 3.4 GiB free → budget_memory    │
 │    ETA ~3 min · ages to HIGH at 10:24 · [Explain] [Priority ▾]                    │
+│    Reservation: holds memory for this task · lapses 10:52                        │
+│ #2 npm ci  default  exclusive_key ws:web/app:deps (held by npm install)          │
+│ #3 link-all  agents  needs 40 GiB > managed share 26 GiB → exceeds_capacity      │
+│    Cannot start on this machine. [Explain] [Cancel]                              │
 │ Parallelism: [Global: AUTO ▾]  Disable parallel execution for: [scope ▾] [Apply] │
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -195,7 +211,8 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 - **Actions:**
   - Pool create, update and delete (`CreatePool`, `UpdatePool`, `DeletePool`).
   - Pause and resume (`PausePool`, `ResumePool`).
-  - **Explain** (`ExplainTask`) opens a side panel with the AdmissionExplanation text and numbers.
+  - **Explain** (`ExplainTask`) opens a side panel with the AdmissionExplanation text and numbers: the feasibility class (feasible, exceeds budget, exceeds capacity), the blocking exclusive keys and their holders, and the large-task reservation if one applies ([03](../architecture/03-resource-control.md) §4).
+  - **Blocking reasons** are shown by name: `budget_memory`, `budget_cpu`, `exclusive_key`, `disk_space`, `exceeds_capacity` and the others of `QueueInfo`. An `exceeds_capacity` task also raises `TASK_INFEASIBLE`.
   - **Parallelism** (`SetParallelism`). Choosing DISABLED shows "Tasks in <scope> will run one at a time."
 - **States:** S-EMPTY ("No waiting tasks"), S-DENIED for read-only policy (managed by a script), revision conflict ("Policy changed elsewhere. Review and apply again.").
 - **Accessibility.** The waiting list is ordered, with position announced, and the Explain panel is a dialog with focus trapping.
@@ -216,7 +233,8 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 │ 7720  node.exe       BYPASSED   2.2   1.1G   session Codex·7f      [Terminate]  │
 │ 5512  vmmemWSL       GUEST_VM   1.5   4.0G   Debian (linked)                    │
 │ 1200  Code.exe       UNMANAGED  0.4   0.8G   –                     [Adopt]      │
-├ WSL guests ─ Debian: LINKED · admission coordinated · guest other 1.0 GiB ───────┤
+├ WSL guests ─ Debian: LINKED · CPU 3.1 cores · Mem 6.0 GiB · lease 10:46 ────────┤
+│ Standalone if the link is lost: 4.5 cores · 7.9 GiB (25% of the host budget)     │
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -225,6 +243,8 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
   - **Adopt** (`AdoptProcess`): confirmation "Place <image> (PID) and its children under ArcForges control in pool default?"
   - **Terminate** (`TerminateProcess`): confirmation naming the process and its classification. Only for MANAGED, ESCAPED, BYPASSED and leftover processes.
   - **Guest link** enable, disable and re-link (`SetGuestLink`).
+- **Memory guarantees.** An info panel states what holds on this platform ([03](../architecture/03-resource-control.md) §5.4): admission keeps accounted memory within the budget; Linux enforces hard per-attempt and root limits; Windows bounds commit only; the pressure response defends the reserve but cannot guarantee it.
+- **WSL guests.** Each linked guest shows its current allocation, the lease end and the standalone allocation; a lost link shows `GUEST_LINK_LOST` and the allocation in force ([03](../architecture/03-resource-control.md) §6).
 - **States:** S-EMPTY for a filter; "Observation only" banner when the capability is OBSERVE_ONLY, with the reason.
 - **Accessibility.** The stacked bars have text and table equivalents, and the process table is sortable by keyboard (`Enter` on a column header).
 
@@ -235,15 +255,15 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 
 ```
 ┌ Sessions ─ [Active ▾] [Client ▾] ───────────────────────────────────────────────┐
-│ Client       Session  State   Workspace  Managed  Bypassed  Routes      Started │
-│ Claude Code  a1c4…    ACTIVE  arc        14       1         MCP+hooks   09:12   │
-│ Codex        7f02…    IDLE    web        3        0         MCP only    08:55   │
+│ Client       Session  State   Workspace  Managed  Share  Routes          Started │
+│ Claude Code  a1c4…    ACTIVE  arc        14       92%    hooks rewrite   09:12   │
+│ Codex        7f02…    IDLE    web        3        40%    MCP only        08:55   │
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 - **Data:** `SessionService.ListSessions`; topic SESSIONS.
 - **Actions:** Row → D-07. **End session** (`EndSession`), with the confirmation "Services started by this session will stop."
-- **States:** S-EMPTY ("No AI sessions seen. Set up integrations on the Integrations page."). The coverage column says "unknown" when no hooks were seen.
+- **States:** S-EMPTY ("No AI sessions seen. Set up integrations on the Integrations page."). The coverage column says "unknown" when no hooks were seen. **Share** is the managed share of the session's process CPU time ([08](../architecture/08-ai-integration.md) §5). "MCP only" means no command is routed unless the agent calls the `run` tool.
 
 ## D-07 Session detail
 
@@ -254,7 +274,8 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 ┌ Claude Code session a1c4… ── ACTIVE · started 09:12 · cwd C:\src\arc ────────────┐
 │ Coverage (observed facts, not completeness):                                     │
 │  MCP connected ✔   Hooks seen: SessionStart 1, PreToolUse 52, PostToolUse 51     │
-│  Routing: rewrite ✔ (probe PASS windows/git-bash)  Route failures: 0             │
+│  Routing: rewrite (heavy) ✔ (probe PASS windows/git-bash)  Route failures: 0     │
+│  Managed share 92% · hand-offs 1 · joined resubmissions 1                        │
 │  Managed 14 tasks · 38 CPU-min      Bypassed 1 command · 1.2 CPU-min             │
 │  Unknown: subagent attribution of MCP work; model state (never available)        │
 ├ Tasks ─────────────────────────────────── ┬ Client events ───────────────────────┤
@@ -312,8 +333,10 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 ```
 ┌ Workspaces ─ [Register folder…] ────────────────────────────────────────────────┐
 │ arc   C:\src\arc   git main · clean · routing: inherit (OBSERVE)  [Worktrees ▾] │
+│       concurrency: adapter keys · running 2  [Concurrency ▾]                     │
 │   └ af/a1/fix-tests  work\3f2a…  ACTIVE · dirty (2 files) · session a1  [Remove] │
 │ web   C:\src\web   git main · 3 ahead                                            │
+│ Archives: af/a1/old-spike  archived 10-02 · verified · 37 files  [Restore]       │
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -321,8 +344,12 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 - **Actions:**
   - Register (`RegisterWorkspace`) and unregister (`UnregisterWorkspace`, "Files are not touched").
   - Create worktree (`CreateWorktree`; dialog: branch, base ref, name).
-  - Remove (`RemoveWorktree`). A dirty worktree offers "Archive changes, then remove", which needs approval when requested by an agent.
-  - Routing override (`UpdateWorkspaceSettings`).
+  - Remove (`RemoveWorktree`). A clean worktree is removed at once. A dirty worktree offers **Archive changes, then remove** ([06](../architecture/06-storage-workspaces.md) §3), which needs approval when requested by an agent:
+    - the dialog lists staged, unstaged and untracked files, binaries included;
+    - ignored files that are not regenerable output (for example `.env`) are listed with the choice **Include in the archive** or **Confirm they may be lost**. Without a choice nothing is removed;
+    - progress shows the snapshot, the bundle and the verification. A failed verification keeps the worktree and raises a finding.
+  - **Archives** (`ListWorktreeArchives`): branch, date, file count, verification time and expiry (90 days). **Restore** (`RestoreWorktree`) recreates the worktree with the staged and unstaged states.
+  - Routing override and **concurrency mode** (`UpdateWorkspaceSettings`): adapter keys (default), serial (one managed task at a time) or shared (only keys callers supply), with the explanation of each.
 - **States:** S-EMPTY. Worktree creation shows job progress.
 
 ## D-11 Storage
@@ -333,6 +360,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 ```
 ┌ Storage ─ data root D:\ArcForges\data (Dev Drive) · free 412 GiB ───────────────┐
 │ Roots: work 38 GiB/100 · cache 61 GiB · logs 2.1/5 · tmp 0.4/20  [Relocate…]    │
+│ Volumes: D: Normal · C: Low (3.1 GiB free) — new writers on C: wait             │
 │ [Analyze]  Last analysis 10:02 · reclaimable (low risk) 23.4 GiB                 │
 ├ Cleanup plan (expires 10:58) ────────────────────────────────────────────────────┤
 │ ☑ REGENERABLE_OUTPUT  C:\src\arc\obj         4.2 GiB  low    quarantine          │
@@ -349,6 +377,8 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
   - **Execute cleanup** (`ExecuteCleanup` with the digest). Confirmation: "Move 5.6 GiB into quarantine and remove 1 worktree. Quarantined items can be restored for 24 hours."
   - Restore (`RestoreQuarantine`).
   - Relocate (`UpdateRoot`), as a wizard with a free-space check.
+- **Limits.** Each quota and limit names its kind: admission threshold, monitored limit (with its interval), tool-enforced or report-only ([06](../architecture/06-storage-workspaces.md) §5). Nothing claims file-system enforcement.
+- **Disk levels.** Each volume shows `NORMAL`, `LOW` or `CRITICAL` with the free space and the thresholds. `LOW` explains that new attempts writing there wait (`disk_space`); `CRITICAL` lists the attempts that were frozen or stopped (`DISK_LIMIT`) and, if the store's volume is affected, the node's `DEGRADED` state.
 - **States:**
   - S-EXPIRED (plan expired: re-plan);
   - PARTIAL results with per-item outcomes (IN_USE, CHANGED and others);
@@ -414,10 +444,13 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 ├ Plan (Claude Code, user scope) ──────────────────────────────────────────────────┤
 │ ~/.claude/settings.json  MODIFY  + "hooks": {"PreToolUse": [...arcforges hook…]} │
 │ Conflicts: none        [Cancel] [Apply exactly these changes]                    │
+│ MCP alone routes nothing: shell commands are managed only by hook rewriting.     │
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 - **Data:** `IntegrationService.ListClients`, `ListProbeResults`; topic INTEGRATIONS.
+- **Routing modes** (per client and workspace, [08](../architecture/08-ai-integration.md) §4.1): observe, guide, **rewrite** (heavy patterns only) and **rewrite all** (every shell command except passthrough patterns). Each mode shows what it covers and what stays unmanaged, from the coverage map ([08](../architecture/08-ai-integration.md) §4.4).
+- **Copy.** Choosing MCP without hooks shows: "Connecting MCP alone routes nothing. Your agent's own shell commands run outside ArcForges unless hooks rewrite them, or the agent calls the run tool." Choosing **rewrite all** shows: "Every routed command asks for your confirmation unless you pre-approve rewritten commands (deny rules written for the original commands then no longer match)." For Codex, rewriting needs that pre-approval; otherwise Codex gets guidance.
 - **Actions:**
   - Plan (`PlanIntegration`: scope, components, routing), Apply (`ApplyIntegration` with the digest).
   - Remove (`PlanRemoval`, then Apply).

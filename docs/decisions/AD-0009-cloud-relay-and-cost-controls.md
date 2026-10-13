@@ -1,6 +1,6 @@
 # AD-0009 — Cloud relay, remote control, push and cost controls
 
-- Status: Accepted (2026-10-12)
+- Status: Accepted (2026-10-12; revised 2026-10-13 after the findings review: complete billing dimensions, structural bounds, degradation ladder, residual exposure)
 - Evidence: V-C01–V-C04
 
 ## Decision
@@ -39,9 +39,12 @@
 6. **Push.** Node events that matter (approval needed, task failed or finished, node offline, finding raised) reach C# as batched envelopes. The Notification module applies user preferences, deduplication and rate limits, and sends FCM HTTP v1 data messages (R-CLOUD-005).
 7. **Cost controls are application-enforced (V-C04).**
    - **Per account:** maximum nodes, viewers, frames per minute, bytes per day, commands per hour, push per day and support uploads per day. These are taken from the plan catalogue and enforced in C# (token claims) and in the DO (token-carried limits).
-   - **Global:** operating budgets per resource class, using the existing `platform_operating_budget` and `platform_operating_reservation` tables, with the budget service built by AF-PLAT-01. **Kill switches** in the configuration module can disable live streaming (degrading to on-demand snapshots), push, or new relay connections within one token lifetime.
+   - **Global:** operating budgets for **every billable dimension** of the products in use, including duration-based charges: container instance time (provisioned memory and disk accrue while an instance runs) and Durable Object active duration. They use the existing `platform_operating_budget` and `platform_operating_reservation` tables, with the budget service built by AF-PLAT-01 ([14](../architecture/14-commercial-operations.md) §7.1).
+   - **Structural bounds** in the deployment: `max_instances`, the instance type and the idle `sleepAfter` for containers, `limits.cpu_ms` for Workers, and hibernation for every WebSocket.
+   - **Degradation ladder:** live streaming off; existing relay sockets closed and new ones refused; push batched, then stopped; uploads refused; essential-only mode, in which the Worker answers non-essential routes without waking the container. It stops ongoing billable activity, not only new connections ([14](../architecture/14-commercial-operations.md) §7.3).
+   - **Residual exposure** that no switch can stop (essential requests, storage at rest, logs, edge traffic) is computed as a daily worst case and shown to operators ([14](../architecture/14-commercial-operations.md) §7.4).
    - **DO alarm-loop guard:** alarms are scheduled only with bounded backoff, and the DO counts its own wake-ups per hour against a ceiling. When the ceiling is exceeded it closes non-essential sockets and stops scheduling alarms until the next hour.
-   - Cloudflare budget alerts are configured as notification only and are never counted as enforcement.
+   - Cloudflare budget alerts are configured as notification only and are never counted as enforcement. Subscription gating limits who may use the service, not what it costs.
 8. **Storage choices.**
    - D1 holds the account, device and node registry, entitlement, commerce, remote commands and audit (V-C03).
    - Live status lives only in DO memory and storage (bounded: latest snapshot per node, last 100 summary changes).

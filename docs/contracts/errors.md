@@ -13,7 +13,7 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 - `INTERNAL/internal`;
 - `RESOURCE/overloaded`;
 - for local node methods: `STATE/node_stopping`;
-- for cloud methods: `AUTHENTICATION/unauthenticated` and `RESOURCE/rate_limited`.
+- for cloud methods: `AUTHENTICATION/unauthenticated`, `RESOURCE/rate_limited`, and `STATE/not_activated` while the method's surface is not activated in production ([10](../architecture/10-cloud.md) §8).
 
 **Effect rule.** A mutation that fails before any durable change returns `DID_NOT_HAPPEN`. When the outcome is uncertain (for example a peer or cloud call timed out after sending), the method returns `UNKNOWN` with `retry.mode = RECONCILE` and the read operation to call. A retry with the same `command_id` is always safe (AD-0004).
 
@@ -23,6 +23,7 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 | `VALIDATION/unsafe_batch_argument` | A batch-file argument cannot be quoted safely (CVE-2024-24576 class) | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = argument index |
 | `VALIDATION/unsupported_shell` | The requested shell is unavailable on the executing node | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = shell kind |
 | `VALIDATION/path_not_found` | A required path does not exist or is not a directory | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = path field |
+| `VALIDATION/inputs_required` | Remote placement needs input selection, and none can be derived safely (for example a non-git working directory) | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = working directory |
 | `VALIDATION/program_not_found` | `argv[0]` did not resolve through PATH/PATHEXT | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = program |
 | `VALIDATION/invalid_dependency` | A dependency is missing or forms a cycle | `NEVER` | `DID_NOT_HAPPEN` | `state.resource` = dependency |
 | `VALIDATION/invalid_policy` | The policy document has ERROR issues | `NEVER` | `DID_NOT_HAPPEN` | Issues in the method value |
@@ -65,6 +66,7 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 | `STATE/link_down` | The WSL guest link is not connected | `AFTER_TIME` | `DID_NOT_HAPPEN` | — |
 | `STATE/update_in_progress` | An update switch is running | `AFTER_TIME` | `DID_NOT_HAPPEN` | — |
 | `STATE/managed_externally` | Updates are managed by a package manager | `NEVER` | `DID_NOT_HAPPEN` | — |
+| `STATE/not_activated` | The feature is deployed but not yet activated in production ([10](../architecture/10-cloud.md) §8) | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = surface |
 | `STATE/not_signed_in` | The node has no account link | `NEVER` (sign in) | `DID_NOT_HAPPEN` | — |
 | `STATE/cloud_unreachable` | The node could not reach the cloud | `AFTER_TIME` | `DID_NOT_HAPPEN` or `UNKNOWN` | — |
 | `STATE/purchase_pending` | A Play purchase is `PENDING` and not granted | `AFTER_TIME` | `DID_NOT_HAPPEN` | — |

@@ -37,6 +37,7 @@ Hosted CI builds each release `<v>` from a tagged commit of the ArcForges reposi
 ### 3.1 Windows (per-user setup program; no administrator rights)
 
 - **Program.** `arcforges-setup-<v>-<rid>.exe` (project `ArcForges.Setup`; Native AOT; GUI subsystem; Authenticode-signed). It shares the staged-switch engine with the node updater (`ArcForges.Node.Updates`), so first install, upgrade and self-update use one code path ([AD-0012](../decisions/AD-0012-distribution-and-updates.md) §2).
+- **Platform check.** The setup program refuses Windows versions before Windows 11 with a message that names the reason (TLS 1.3 for LAN, end of support; [AD-0002](../decisions/AD-0002-platform-scope.md)).
 - **Options (pages):**
   - **Core** (always): version directory, the `current` and `previous` junctions, PATH entry, autostart and uninstall entry;
   - **Desktop** (default on): `arcforges-desktop.exe`, a Start menu shortcut and an optional Desktop shortcut;

@@ -8,6 +8,7 @@ import "arcforges/foundation/v1/foundation.proto";
 import "arcforges/node/v1/common.proto";
 import "arcforges/node/v1/diagnosis.proto";
 import "arcforges/node/v1/node.proto";
+import "arcforges/node/v1/policy.proto";
 import "arcforges/node/v1/queue.proto";
 import "arcforges/node/v1/sessions.proto";
 import "arcforges/node/v1/tasks.proto";
@@ -1350,6 +1351,12 @@ message StatusSummary {
   optional arcforges.node.v1.MemoryControl memory_control = 18 [json_name = "memoryControl"];
   optional arcforges.node.v1.UpdateState update_state = 19 [json_name = "updateState"];
   optional string name = 20 [json_name = "name"];
+  optional uint64 disk_free_bytes = 21 [json_name = "diskFreeBytes"]; // the data-root volume
+  optional uint64 disk_total_bytes = 22 [json_name = "diskTotalBytes"];
+  optional arcforges.node.v1.DiskPressureLevel disk_level = 23 [json_name = "diskLevel"]; // worst level of the volumes holding managed roots
+  optional uint64 managed_storage_bytes = 24 [json_name = "managedStorageBytes"]; // sum of the managed roots
+  optional uint32 sessions_active = 25 [json_name = "sessionsActive"];
+  optional uint32 subagents_active = 26 [json_name = "subagentsActive"];
 }
 
 message TaskSummary {
@@ -1365,6 +1372,20 @@ message TaskSummary {
   optional string client = 10 [json_name = "client"]; // claude-code | codex | cli | desktop
   optional int32 exit_code = 11 [json_name = "exitCode"];
   optional uint32 progress_percent = 12 [json_name = "progressPercent"];
+  arcforges.foundation.v1.Id session_id = 13 [json_name = "sessionId"]; // owner session, when there is one
+  optional string subagent = 14 [json_name = "subagent"]; // agent type when attribution is known; absent = none or unknown (see attribution)
+  optional arcforges.node.v1.TerminationReason termination_reason = 15 [json_name = "terminationReason"];
+  repeated CategoryShare timeline = 16 [json_name = "timeline"]; // up to 6 categories with the most time
+  optional uint32 queue_position = 17 [json_name = "queuePosition"];
+  optional string blocking_reason = 18 [json_name = "blockingReason"]; // values as node.v1.QueueInfo.blocking_reason
+  arcforges.foundation.v1.Instant eta = 19 [json_name = "eta"];
+  optional uint64 elapsed_ms = 20 [json_name = "elapsedMs"];
+  optional string attribution = 21 [json_name = "attribution"]; // KNOWN | NONE | UNKNOWN (for example MCP work of a subagent)
+}
+
+message CategoryShare {
+  optional string category = 1 [json_name = "category"]; // timeline category (07 section 1)
+  optional uint64 seconds = 2 [json_name = "seconds"];
 }
 
 message FindingSummary {
@@ -1392,6 +1413,22 @@ message SessionSummary {
   optional arcforges.node.v1.SessionState state = 3 [json_name = "state"];
   optional uint32 managed_tasks = 4 [json_name = "managedTasks"];
   optional uint32 bypassed_commands = 5 [json_name = "bypassedCommands"];
+  optional string workspace_name = 6 [json_name = "workspaceName"]; // the repository or folder name only, never a path
+  optional uint32 subagents_active = 7 [json_name = "subagentsActive"];
+  repeated SubagentSummary subagents = 8 [json_name = "subagents"]; // FULL detail only
+  optional string last_event_kind = 9 [json_name = "lastEventKind"]; // the last client-reported event, for example "PreToolUse"
+  arcforges.foundation.v1.Instant last_event_at = 10 [json_name = "lastEventAt"];
+  optional bool mcp_connected = 11 [json_name = "mcpConnected"];
+  optional arcforges.node.v1.RoutingMode routing_mode = 12 [json_name = "routingMode"]; // effective
+  optional uint32 managed_share_permille = 13 [json_name = "managedSharePermille"]; // as node.v1.SessionCoverage
+  repeated string unknowns = 14 [json_name = "unknowns"]; // what this client cannot report, for example "model state (never available)"
+}
+
+message SubagentSummary {
+  optional string agent_type = 1 [json_name = "agentType"];
+  optional string state = 2 [json_name = "state"]; // RUNNING | STOPPED (client-reported)
+  arcforges.foundation.v1.Instant started_at = 3 [json_name = "startedAt"];
+  optional uint32 managed_tasks = 4 [json_name = "managedTasks"]; // tasks attributed to this subagent; MCP work of subagents is attributed to the session
 }
 
 message StatusDelta {

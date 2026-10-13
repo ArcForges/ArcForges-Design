@@ -50,6 +50,7 @@ Requirement: R-PERF-001. Every target names its measurement. "Workstation" means
 |---|---|---|
 | Headroom protection | With managed CPU load at 100% of the budget, an unmanaged interactive probe (a fixed busy-loop with a 10 ms deadline per 100 ms period) misses ≤ 1% of deadlines | `TestLoad` probe under a saturating managed load, both OSes |
 | Memory admission | Zero OOM kills of unmanaged processes caused by managed load in the standard load scenario (`TestLoad mem-ramp`) | Kernel log / Windows commit failures |
+| Memory bounds | Linux: no attempt or root exceeds its `MemoryMax`, and swap stays within `swap_allowance` (default 0). Windows: no attempt or root exceeds its commit limit. What these bounds do and do not guarantee is stated in [03](03-resource-control.md) §5.4. | cgroup `memory.events` and `memory.swap.current`; job accounting, in `TestLoad mem-ramp` |
 | Fairness | With two sessions submitting equal work in the same pool, each receives 50% ± 10% of managed CPU-seconds over 10 minutes | Records |
 | Queue start after release | When an execution ends, the next admissible queued task starts within 500 ms | Event timestamps |
 

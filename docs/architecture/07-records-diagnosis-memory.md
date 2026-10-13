@@ -90,7 +90,9 @@ Finding lifecycle (state machine `SM-FINDING`): `OPEN` → `ACKNOWLEDGED` | `RES
 | Kind | Detection | Severity | Recommended actions (default handling) |
 |---|---|---|---|
 | `STALL` | `IDLE_NO_PROGRESS` longer than `stall_threshold` (default 5 min; adapter overrides, for example dotnet test 10 min). Services are excluded unless readiness was lost. | warning → error after 3× | Collect a tree snapshot (auto); notify (auto); cancel (approval); retry (approval, retryable only) |
-| `QUEUE_STARVATION` | Queued longer than 2 × starvation bound | warning | Notify; suggest a priority or pool change |
+| `QUEUE_STARVATION` | Queued longer than 2 × starvation bound (including tasks classed `exceeds_budget`) | warning | Notify; suggest a priority or pool change, closing applications, or a hint |
+| `TASK_INFEASIBLE` | A queued task's memory request exceeds the managed share or `max_task_memory` ([03](03-resource-control.md) §4) | error | Explain the numbers; suggest lowering the reserve, a hint, or cancelling |
+| `OUTPUT_CONFLICT` | Returned outputs of a remote attempt were staged because local files changed since submission ([09](09-lan.md) §6) | warning | Show the staged files beside the local ones; actions: keep local, take remote |
 | `OVERSUBSCRIBED` | CPU demand > 2 × `B_cpu` for 5 min | info | Suggest lower parallelism (shows the policy edit) |
 | `MEMORY_PRESSURE` | Pressure level ≥ Pressure ([03](03-resource-control.md) §7) | warning | Automatic pressure actions per policy; notify |
 | `OOM_KILLED` | `memory.events` oom_kill increased, or the Windows commit-limit notification with failure | error | Suggest a higher ceiling; retry with more memory (auto for PURE/IDEMPOTENT if policy allows) |
@@ -99,7 +101,7 @@ Finding lifecycle (state machine `SM-FINDING`): `OPEN` → `ACKNOWLEDGED` | `RES
 | `PER_TASK_RESTORE` | [05](05-toolchains-caches.md) §7 | info | Suggest removing the override; cleanup plan (approval) |
 | `CACHE_MISS_STORM` | sccache/ccache miss rate > 80% over 50 compilations in a workspace with a warm cache | info | Explain compatibility-key changes; suggest a configuration check |
 | `CACHE_CORRUPT` | Adapter failure classifier | error | Clear affected entries (approval) |
-| `DISK_PRESSURE` | Volume free < 10% or < 5 GiB | warning → error at < 2 GiB | Create a cleanup plan (auto); execute (approval) |
+| `DISK_PRESSURE` | Volume free < 10% or < 5 GiB (early warning); the volume's level `LOW` or `CRITICAL` ([06](06-storage-workspaces.md) §5) | warning → error at level `LOW` or `CRITICAL` | Create a cleanup plan (auto); execute (approval); at `LOW`, new writers on the volume wait |
 | `QUOTA_EXCEEDED` | [06](06-storage-workspaces.md) §5 | warning | Cleanup plan; quota change |
 | `UNMANAGED_HEAVY` | `BYPASSED` processes in an agent session ([03](03-resource-control.md) §9) | warning | Suggest enabling routing; show coverage |
 | `BYPASSED_COMMAND` | A hook saw a heavy command run without routing (observe mode) | info | Same as above |

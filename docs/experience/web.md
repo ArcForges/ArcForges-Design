@@ -320,13 +320,14 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
 
 ```
 ┌ Fleet ─ live ● ─────────────────────────────────────────────────────────────────┐
-│ workstation  online   Running 6  Queued 4  CPU 74 %  Mem 33 %  ⚠1  ①1           │
-│ buildbox     online   Running 2  Queued 0  CPU 40 %  Mem 20 %                   │
-│ laptop       offline  last seen 2 h ago                                          │
+│ workstation  online  Running 6 Queued 4  CPU 74% Mem 33% Disk 61% ⚠1 ①1         │
+│              Agents 2 (3 subagents)                                              │
+│ buildbox     online  Running 2 Queued 0  CPU 40% Mem 20% Disk 12% (low space ⚠)  │
+│ laptop       offline last seen 2 h ago                                           │
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Data:** `FleetService.ListNodes`, then `OpenFleetWatch(SUMMARY)`, then the viewer WebSocket (snapshot plus deltas). `WatchFleet` is the fallback.
+- **Data:** `FleetService.ListNodes`, then `OpenFleetWatch(SUMMARY)`, then the viewer WebSocket (snapshot plus deltas). `WatchFleet` is the fallback. Each row uses `StatusSummary`: running and queued counts, CPU and memory, the data-root disk use and `disk_level`, findings and approvals, and the active sessions and subagents.
 - **Actions:** open a node (W-41). No commands are sent from this page.
 - **States:** S-OFFLINE (reconnects with cursors); node offline; viewer limit reached; kill switch active ("Live updates paused; showing summaries").
 - **Accessibility.** A polite live region announces state changes only for the focused node, at most every 10 s.
@@ -340,14 +341,23 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
 
 ```
 ┌ workstation ─ online · 1.2.0 · Pressure Normal ──────────── [Refresh] [⋯ Actions] ┐
-│ Tasks: dotnet build ✔ RUNNING 04:12 [Cancel] [Priority]   npm test ✖ FAILED [Tail]│
-│ Approvals: Codex asks: cancel task npm test (medium) [Deny] [Approve]            │
-│ Findings: ⚠ STALL dotnet test                                                    │
-│ Recent commands: Cancel task npm test — SUCCEEDED 10:44                          │
+│ CPU 74% · Mem 33% · Disk D: 61% (412 GiB free) · managed storage 38 GiB           │
+│ Tasks: dotnet build ● RUNNING 04:12 (build 70%, restore 20%) [Cancel] [Priority]  │
+│        npm test ⏸ QUEUED #2 · budget_memory · ETA 3 min                            │
+│        cargo test ✖ FAILED exit 101 · EXITED [Tail]                               │
+│ Agents: Claude Code · ArcForges-Design · active · 2 subagents · managed 92%       │
+│         last event PreToolUse 10:41 · model state: unknown (never reported)       │
+│ Approvals: Codex asks: cancel task npm test (medium) [Deny] [Approve]             │
+│ Findings: ⚠ STALL dotnet test                                                     │
+│ Recent commands: Cancel task npm test — SUCCEEDED 10:44                           │
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Data:** viewer stream with `detail=FULL` (task summaries, findings, approvals, sessions); `FleetService.GetNode` (recent commands).
+- **Data:** viewer stream with `detail=FULL`; `FleetService.GetNode` (recent commands).
+  - Tasks (`TaskSummary`): state, elapsed time, the top timeline categories, queue position, blocking reason and ETA, exit code and termination reason, owner client and session, and the subagent when attribution is known.
+  - Agents (`SessionSummary`): client, workspace name, state, active subagents with their types, the last client-reported event, the routing mode and the managed share.
+  - Disk from `StatusSummary`.
+  - **What the node knows** is shown. **What no client reports** is labelled, not hidden: `unknowns` on sessions (for example "model state (never available)") and `attribution=UNKNOWN` on tasks (for example MCP work of a subagent).
 - **Actions:** each is `SendNodeCommand` with step-up for MEDIUM and HIGH, followed by command status through `command_update` frames.
   - Refresh (LOW).
   - Pause or resume the queue (LOW).
@@ -500,7 +510,7 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
 
 ### W-66 Budgets
 
-- **Purpose.** Watch daily cloud cost budgets, their thresholds and kill-switch state, and read the monthly unit-economics report ([14](../architecture/14-commercial-operations.md) §7).
+- **Purpose.** Watch daily cloud cost budgets for every billable dimension, their thresholds, the degradation ladder and kill-switch state, the residual exposure, and the monthly unit-economics report ([14](../architecture/14-commercial-operations.md) §7).
 - **Layout.** Today's budgets by dimension (bars plus a table); the kill-switch state; the monthly report.
 - **Wireframe:**
 
@@ -511,14 +521,17 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
 │ DO requests          1.9 M / 2.0 M           95    ⚠ alert                         │
 │ D1 rows read         3.1 M / 10 M            31    normal                          │
 │ Push sends           880 / 5,000             18    normal                          │
+│ Container instance-s 61,000 / 86,400        71    normal (worst case 2 × basic)     │
+│ DO duration GB-s     9,800 / 40,000 (est.)  25    normal                          │
+│ Ladder: step 0 · essential-only: off · Residual worst case: $1.10/day             │
 │ Kill switches: all on                                    [Change in Configuration] │
 │ October (partial, 12 days): est. $41.20 of $150 ceiling · $0.37 per Pro account     │
 └────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Data:** `OperatorReadService.GetOperatingBudgets(day)` and `GetMonthlyReport(month)` (new, AF-OPS-01); `GetConfiguration` (kill switches, unit prices, monthly ceiling).
+- **Data:** `OperatorReadService.GetOperatingBudgets(day)` (budgets with `estimated` flags, `residual`, `essential_only`) and `GetMonthlyReport(month)` (new, AF-OPS-01); `GetConfiguration` (kill switches, unit prices, monthly ceiling).
 - **Actions:** move the day or month; **Change in Configuration** opens W-62 (kill switches change only there).
-- **States:** no budgets configured (S-EMPTY, with a link to W-62); a dimension at alert or exhausted (the triggered kill switches are named); partial month.
+- **States:** no budgets configured (S-EMPTY, with a link to W-62); a dimension at alert or exhausted (the ladder step and the triggered kill switches are named); essential-only mode active (banner); reconciliation off (no H-21 token) or diverging by more than 20%; partial month.
 - **Accessibility.** Bars have the same values in the table. Threshold states are text plus an icon.
 
 ### W-67 Break-glass and audit

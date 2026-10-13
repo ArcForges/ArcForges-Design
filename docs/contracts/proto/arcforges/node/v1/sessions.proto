@@ -363,6 +363,7 @@ message SessionCoverage {
   repeated string unknowns = 15 [json_name = "unknowns"]; // e.g. "subagent attribution of MCP work", "model state (never available)"
   repeated ClientEventRecord client_events = 16 [json_name = "clientEvents"];
   optional uint32 route_failed = 17 [json_name = "routeFailed"];
+  optional uint32 managed_share_permille = 18 [json_name = "managedSharePermille"]; // managed CPU-seconds x 1000 / (managed + bypassed + attributed unmanaged)
 }
 
 message ProbeObservation {

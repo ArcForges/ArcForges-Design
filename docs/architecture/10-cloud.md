@@ -14,7 +14,7 @@ Decisions: [AD-0009](../decisions/AD-0009-cloud-relay-and-cost-controls.md), [AD
 | R2 (bucket to be provisioned) | Release artifacts, support uploads | Static release manifests (`releases.arcforges.com`), support bundles (consented) |
 | Queue (to be provisioned) | The wake-queue pattern of Cloud's `proof` environment (`WAKE_QUEUE`, with a dead-letter queue) | Wakes the C# host for queued background work (outbox dispatch, jobs) |
 
-**Production bindings.** At Cloud main `92ba1dc9`, only the `proof` environment of `wrangler.json` declares D1, R2 and Queue bindings, and `crons` is empty. AF-CLD-01 adds the production bindings and a repository provisioning script that creates the D1 database, the R2 bucket (with the lifecycle rules of §3.11) and the Queue. Running that script against the production account needs the user's approval (H-20). AF-CLD-04 adds the `FleetHub` Durable Object binding and its migration, and AF-PLAT-01 the cron trigger.
+**Production bindings.** At Cloud main `92ba1dc9`, only the `proof` environment of `wrangler.json` declares D1, R2 and Queue bindings, and `crons` is empty. AF-CLD-01 adds a repository provisioning script that creates the D1 database, the R2 bucket (with the lifecycle rules of §3.11) and the Queue, and the binding definitions it writes. The production `wrangler.json` receives those bindings only during production activation (§8), with the user's approval (H-20). AF-CLD-04 adds the `FleetHub` Durable Object class and its migration (no external resource), and AF-PLAT-01 the cron trigger.
 
 **Viewer transport.** Viewers (web, Android) receive live fleet state over a **WebSocket to `FleetHub` carrying `arcforges.relay.v1.ViewerFrame` protobuf messages**, not over a gRPC-Web stream. A streaming HTTP response would keep the Durable Object awake and billed for the stream's lifetime, while hibernating WebSockets do not (V-C01). The frames and the snapshot/delta/cursor semantics are the same contract the gRPC-Web method `FleetService.WatchFleet` defines. `WatchFleet` stays available as a gRPC-Web server stream for clients that cannot use WebSockets, and is served by the C# host with a 10-minute lifetime cap (R-API-004).
 
@@ -153,7 +153,7 @@ All values are opaque bytes plus small headers. Socket attachments hold `{kind, 
 | Support bundle uploads per day | 1 | 5 | C# Support |
 | DO wakes per hour per account | — | 3,600 | DO guard |
 
-**Global operating budgets** (`platform_operating_budget`) cover the dimensions of [14](14-commercial-operations.md) §7.2 per UTC day. Exceeding 80% raises operator alerts. At 100% the kill switches apply in the order given there: live streaming off (summaries only), push batched hourly, new relay connections refused, support uploads refused. Kill switches propagate within one token lifetime. Budget alerts from Cloudflare are informational (V-C04).
+**Global operating budgets** (`platform_operating_budget`) cover every billable dimension of the products in use, per UTC day ([14](14-commercial-operations.md) §7.1). Exceeding 80% raises operator alerts. At 100% the degradation ladder of [14](14-commercial-operations.md) §7.3 applies: live streaming off, then existing relay sockets closed and new ones refused, push batched then stopped, uploads refused, and finally essential-only mode, in which the Worker answers non-essential routes without waking the container. The residual exposure is computed and shown (§7.4 there). Budget alerts from Cloudflare are informational (V-C04).
 
 ## 6. Failure handling
 
@@ -177,3 +177,22 @@ All values are opaque bytes plus small headers. Socket attachments hold `{kind, 
 - Health endpoints per component.
 
 Runbooks are in [14-commercial-operations.md](14-commercial-operations.md) (R-OPS-006).
+
+## 8. Production activation
+
+Implementation delivery and production activation are separate steps ([AD-0014](../decisions/AD-0014-delivery-method.md) §9):
+- **Dark deploys.** The Cloud and Web repositories keep deploying on every main push through their guarded scripts, and flagship features ship **disabled**:
+  - **Cloud:** the configuration flag `flagship.activation` holds one switch per surface (`fleet_api`, `relay`, `push`, `commerce`, `support`), all off by default. A disabled surface is answered by the Worker with `STATE/not_activated`, without waking the container.
+  - **Web:** the repository's deploy configuration holds the switches `public_site`, `web_account` and `web_fleet`, all off. While a switch is off, the guarded deploy keeps publishing the current pages and leaves that part out, so nothing new becomes visible.
+- **No production prerequisites at merge.** Implementation tasks are verified on the local cloud stack ([16](16-testing-strategy.md) §3.1). They never need production key material, domains or provisioned resources. Until activation, the production migration step reports "not applicable" (no D1 binding), and readiness lists the flagship modules as "not provisioned".
+- **Activation** (Plan task AF-PROD-01, after the release candidate) needs the user's approval and the prerequisites H-05, H-06, H-09 (the cost ceiling the production budgets derive from), H-16 and H-20, plus H-10 for the public site. Its steps:
+  1. provision the resources with the repository script;
+  2. the user stores the key material;
+  3. add the production bindings;
+  4. run the migrations;
+  5. set the production operating budgets from the cost ceiling ([14](14-commercial-operations.md) §7.2);
+  6. enable the surfaces one at a time, each with a production smoke check;
+  7. publish the public site and the web profiles after the user approves their content.
+
+  Each step is a main-push deploy or a configuration activation. Turning a surface's switch off again withdraws that surface.
+- **Real-world acceptance** stays in the acceptance register (AR-05 to AR-09, AR-14).

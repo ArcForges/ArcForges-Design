@@ -116,6 +116,14 @@ enum PressureLevel {
   PRESSURE_LEVEL_CRITICAL = 4;
 }
 
+// Free-space level of a volume that holds managed roots (06 section 5).
+enum DiskPressureLevel {
+  DISK_PRESSURE_LEVEL_UNSPECIFIED = 0;
+  DISK_PRESSURE_LEVEL_NORMAL = 1;
+  DISK_PRESSURE_LEVEL_LOW = 2; // free < max(min_free_bytes, 5 %): no new writers on the volume
+  DISK_PRESSURE_LEVEL_CRITICAL = 3; // free < critical_free_bytes: writers paused or terminated by policy
+}
+
 // Process classification (03 section 9).
 enum ProcessLabel {
   PROCESS_LABEL_UNSPECIFIED = 0;

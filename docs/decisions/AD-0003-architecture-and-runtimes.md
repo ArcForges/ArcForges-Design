@@ -13,7 +13,7 @@
    - `arcforges bridge wsl`: the host-to-guest byte relay launched through `wsl.exe` (AD-0005).
    - Internal helper roles, never invoked by users:
      - `arcforges node exec-wrap` (Windows): the attempt's holder outside the job; launches the root process into the job, keeps the job handles until the node acknowledges, and writes the durable exit record with accounting;
-     - `arcforges node signal` (Windows): attaches to an attempt's hidden console and sends `CTRL_BREAK_EVENT`;
+     - `arcforges node signal` (Windows): attaches to an attempt's windowless console and sends `CTRL_BREAK_EVENT` (L-18);
      - `arcforges node exit-record` (Linux): the `ExecStopPost` recorder of transient execution units (AD-0005).
 
    **Windows supervisor.** `arcforges-supervisor.exe` is a small GUI-subsystem Native AOT executable (project `ArcForges.Supervisor`) with no window.

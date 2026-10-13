@@ -680,6 +680,9 @@ message GuestLinkServiceSetGuestBudgetRequest {
   optional uint64 mem_high_bytes = 11 [json_name = "memHighBytes"]; // validate: <= mem_max_bytes
   optional uint64 mem_max_bytes = 12 [json_name = "memMaxBytes"]; // validate: <= guest MemTotal
   optional uint32 tasks_max = 13 [json_name = "tasksMax"]; // validate: 64..32768
+  arcforges.foundation.v1.Instant lease_until = 14 [json_name = "leaseUntil"]; // validate: now + 30 s..10 min; renewed every 30 s while linked
+  optional uint32 standalone_cpu_millicores = 15 [json_name = "standaloneCpuMillicores"]; // validate: <= cpu_quota_millicores ceiling of the host; used after the lease lapses
+  optional uint64 standalone_mem_bytes = 16 [json_name = "standaloneMemBytes"]; // validate: <= mem_max_bytes; used after the lease lapses
 }
 message GuestLinkServiceSetGuestBudgetResponse {
   arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
@@ -785,6 +788,7 @@ message RemoteAttempt {
   arcforges.node.v1.AttemptResult result = 7 [json_name = "result"];
   optional string output_manifest_digest = 8 [json_name = "outputManifestDigest"];
   repeated KeyValueRewrite environment_rewrites = 9 [json_name = "environmentRewrites"];
+  optional uint32 workspace_slot = 10 [json_name = "workspaceSlot"]; // the leased slot of the origin workspace (09 section 6)
 }
 
 message KeyValueRewrite {

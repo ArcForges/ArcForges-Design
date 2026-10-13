@@ -37,7 +37,8 @@ Schema: [node-store.sql](node-store.sql). It is checked by `tools/check_design.p
 
 | Table | Purpose | Key / indexes | Owner | Retention |
 |---|---|---|---|---|
-| `workspace` | Registered, managed-worktree and remote workspaces (SM-WORKTREE) | `workspace_id`; unique active `root_path`; unique active `(base, branch)` | Workspace manager | Removed rows kept 90 days |
+| `workspace` | Registered, managed-worktree and remote workspaces (SM-WORKTREE), with the concurrency mode; remote workspaces are per-attempt slots with their lease holder ([09](../architecture/09-lan.md) §6) | `workspace_id`; unique active `root_path`; unique active `(base, branch)`; unique active remote slot `(origin node, origin workspace, slot)`; unique slot lease | Workspace manager | Removed rows kept 90 days |
+| `worktree_archive` | Verified archives of dirty worktrees: index and working-tree commits, bundle path, counts, verification time ([06](../architecture/06-storage-workspaces.md) §3) | `archive_id`; `expires_at` while kept; `(base_workspace_id, created_at)` | Workspace manager | 90 days (refs and bundle), then the row is kept with `removed_at` for 90 more days |
 | `session` | AI client sessions (SM-SESSION) | `session_id`; unique `(client, client_session_id)`; live agent roots; `(state, last_activity_at)` | Session service | 90 days after end |
 | `session_subagent` | Subagents per session | `(session_id, agent_id)` | Session service | With the session |
 | `hook_event` | Hook intake log with dedup key and routing decision (no raw payloads; command summaries redacted) | `hook_event_id`; unique `dedup_key`; `(session_id, at)` | Session service | 30 days |
@@ -49,10 +50,11 @@ Schema: [node-store.sql](node-store.sql). It is checked by `tools/check_design.p
 | Table | Purpose | Key / indexes | Owner | Retention |
 |---|---|---|---|---|
 | `env_snapshot` | Content-addressed caller environments without secret-shaped values: identical environments are stored once (R-EXE-017) | `env_digest` (SHA-256 of the canonical entries); unreferenced `(last_used_at)` | Scheduler | Deleted 24 h after the last referencing task is purged |
-| `task` | Tasks (SM-TASK) with a redacted spec, the environment snapshot reference, owner, queue fields and flags | `task_id`; queue index on live states; `(owner_session_id, created_at)`; `(workspace_id, created_at)`; `created_at`; `(pool, state)`; `(command_fingerprint, finished_at)` | Scheduler | Records: policy `record_retention_days` (90); pinned excepted |
+| `task` | Tasks (SM-TASK) with a redacted spec, the environment snapshot reference, owner, queue fields and flags; the side-effect class with its source and the adapter's suggestion (AD-0006 §4); the large-task reservation interval; the caller hand-off time | `task_id`; queue index on live states; join lookup `(owner_session_id, command_fingerprint)` on live states; `(owner_session_id, created_at)`; `(workspace_id, created_at)`; `created_at`; `(pool, state)`; `(command_fingerprint, finished_at)` | Scheduler | Records: policy `record_retention_days` (90); pinned excepted |
+| `task_exclusive_key` | Effective exclusive keys per task with their source (caller, adapter, workspace access or mode), so admission rebuilds the holders after a restart ([03](../architecture/03-resource-control.md) §4) | `(task_id, exclusive_key)`; `exclusive_key` | Scheduler | With the task |
 | `task_secret` | Sealed values of secret-shaped environment variables, so queued tasks, restarts and retries run with the submitted environment ([04](../architecture/04-execution.md) §2). AES-256-GCM under the node data key from the OS secret store, with the task ID as associated data. | `task_id`; `purge_after` | Scheduler | Purged at `purge_after` (terminal + `storage.secret_retention_hours`, default 24 h) or on `PurgeTaskRecord`; then `RetryTask` fails with `STATE/secrets_unavailable` |
 | `task_dependency` | Dependency edges (acyclic, checked at submit) | `(task_id, depends_on_task_id)`; reverse index | Scheduler | With the task |
-| `attempt` | Attempts (SM-ATTEMPT): container, request and grant, result, accounting, output offsets | `attempt_id`; unique `(task_id, number)`; live states; `finished_at` | Supervisor | With the task; output files per log retention (14 days / 5 GiB) |
+| `attempt` | Attempts (SM-ATTEMPT): container, request and grant, result, accounting (`accounted_mem_bytes` per [03](../architecture/03-resource-control.md) §3), output offsets; for remote placements the output bases and the applied-output result | `attempt_id`; unique `(task_id, number)`; live states; `finished_at` | Supervisor | With the task; output files per log retention (14 days / 5 GiB) |
 | `timeline_segment` | Categorized intervals | `(attempt_id, start_at)` | Record builder | With the task |
 | `phase_event` | Adapter phase markers | `(attempt_id, at, phase)` | Record builder | With the task |
 | `process_record` | Processes seen in each attempt's tree | `(attempt_id, pid, start_at)` | Monitor | With the task |
@@ -72,7 +74,7 @@ Schema: [node-store.sql](node-store.sql). It is checked by `tools/check_design.p
 | `cleanup_plan`, `cleanup_item` | Two-phase cleanup plans (SM-CLEANUP-PLAN), with fingerprints and per-item outcomes | `plan_id`; `(plan_id, item_id)` | Cleanup executor | 90 days (audit) |
 | `quarantine_entry` | Quarantined items and purge schedule | `(plan_id, item_id)`; pending purge | Cleanup executor | 90 days after purge or restore |
 | `cache_instance`, `cache_stat` | Cache registry and hourly statistics | `cache_id`; unique `(kind, compat_key)`; `(cache_id, period_start)` | Cache manager | Statistics: 90 days |
-| `cas_blob`, `manifest` | Content-addressed store index and transfer manifests (pages stored as CAS blobs) | `sha256`; `(ref_count, last_used_at)`; `digest` | Transfer | LRU within the CAS quota; manifests expire with their attempts |
+| `cas_blob`, `manifest` | Content-addressed store index and transfer manifests: inputs, outputs and output bases (pages stored as CAS blobs) | `sha256`; `(ref_count, last_used_at)`; `digest` | Transfer | LRU within the CAS quota; manifests expire with their attempts |
 | `toolchain` | Detected toolchains | `(kind, path)` | Toolchain registry | Replaced on each scan |
 
 ### LAN, guests, account, updates, integrations, support
@@ -83,8 +85,8 @@ Schema: [node-store.sql](node-store.sql). It is checked by `tools/check_design.p
 | `pairing` | Pairing state (SM-PAIRING); nonces, commitments and SAS stay in memory | `pairing_id`; `(peer_node_id, created_at)` (rate limit) | Peer manager | 7 days |
 | `offer` | Placement offers in both directions | `offer_id` | Placement | 7 days |
 | `remote_attempt` | Executor-side remote attempts (SM-REMOTE-ATTEMPT), linked to the local `REMOTE` task | `remote_attempt_id`; `(state, lease_expires_at)` | Placement | With the local task |
-| `guest_link` | Host-side links per WSL distribution (SM-GUEST-LINK); link token in the OS secret store | `distro`; unique `guest_node_id` | Guest manager (host) | Permanent |
-| `host_link` | Guest-side pinned host and token hash, the last refused host, and a host accepted by `TrustHost` for its next link | singleton | Guest link (guest) | Permanent |
+| `guest_link` | Host-side links per WSL distribution (SM-GUEST-LINK); link token in the OS secret store; the last pushed allocation, lease end and standalone allocation ([03](../architecture/03-resource-control.md) §6) | `distro`; unique `guest_node_id` | Guest manager (host) | Permanent |
+| `host_link` | Guest-side pinned host and token hash, the last refused host, a host accepted by `TrustHost` for its next link, and the last received allocation, lease end and standalone allocation, so a restart during an outage keeps the same limits | singleton | Guest link (guest) | Permanent |
 | `guest_grant` | Grants for guest attempts, with the host-side proxy task | `grant_id`; unique `request_id`; `state` | Scheduler (host) | 7 days after release |
 | `account_link` | Account link: installation, credential reference, entitlement token, certificates, key sets | singleton | Cloud link | Until sign-out (deleted) |
 | `sign_in_flow`, `phone_pairing` | Flow state without secrets | IDs | Cloud link | 1 day |

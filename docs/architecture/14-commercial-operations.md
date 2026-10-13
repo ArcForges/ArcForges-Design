@@ -103,31 +103,68 @@ An exceeded limit returns `RESOURCE` with `retry_after` and never silently drops
 
 ## 7. Cost model and controls (R-CLOUD-006)
 
-### 7.1 Cost drivers
+Cloudflare has no hard spending cap (V-C04), and subscription gating limits who uses the service, not how much it costs. Spending is therefore bounded by three things together: metering of every billable dimension, structural limits configured in the deployment, and a degradation ladder that stops new **and ongoing** billable activity. Whatever the ladder cannot stop is stated as residual exposure.
 
-| Driver | Unit | Shape | Main control |
-|---|---|---|---|
-| Container CPU and memory (C# host) | Active seconds × instance | Bursty, proportional to business calls | Sleep when idle; instance type `basic` by default (V-C02); request budgets |
-| Durable Object requests and duration | Requests; GB-s while not hibernated | Proportional to frames processed | Hibernation; demand-driven telemetry; at most 1 summary per minute without viewers; alarm-loop guard |
-| D1 | Rows read and written | Registry, commands, commerce, audit | Indexed queries only; no telemetry time series in D1 |
-| R2 | Storage, class A/B operations, egress free | Releases and support bundles | Bundle retention 30 days; per-account upload limits |
-| FCM | Free | — | Per-account push limits |
-| Worker requests | Requests | Ingress and relay upgrades | Edge rate limits |
+### 7.1 Billing dimensions and metering
 
-### 7.2 Budgets and kill switches
+Every billable dimension of the products in use (V-C02, V-C08) maps to an operating dimension (`OperatingDimension`, [cloud-store](../data/cloud-store.md) §3):
 
-- **Daily operating budgets.** One budget per dimension and UTC day in `platform_operating_budget` (schema reused; the flagship dimensions are added by AF-PLAT-01, [cloud-store](../data/cloud-store.md) §3): container CPU-seconds, Durable Object requests, D1 rows read, D1 rows written, push sends, R2 class A and class B operations, and R2 bytes (support bundles). Every metered operation reserves against its dimension (`platform_operating_reservation`).
-- **Unit prices** per dimension are configuration data (`ops.unit_prices`), maintained by the operator from the Cloudflare price list. They feed the monthly report.
-- **Thresholds:**
-  - **80%:** an operator alert.
-  - **100%:** the kill switches apply in order ([10](10-cloud.md) §5):
-    1. live streaming off;
-    2. push batched hourly;
-    3. new relay connections refused;
-    4. support uploads refused.
+| Product | Billable dimension | Operating dimension | Metered how | Structural bound |
+|---|---|---|---|---|
+| Containers (C# host) | Provisioned memory (GiB-s) and disk (GB-s) **for as long as an instance runs**, 10 ms granularity | `CONTAINER_INSTANCE_SECONDS` | Measured: the host records each instance's run interval (start to sleep) and the instance type | `max_instances` and `instance_type` in `wrangler.json`, and the idle `sleepAfter`. Worst case per day = `max_instances × 86,400 s × (memory + disk + vCPU rates of the instance type)`. |
+| Containers | CPU (vCPU-s), active only | `CONTAINER_CPU_SECONDS` | Measured: the host's process CPU time | Bounded by the worst case above |
+| Containers | Egress | `EGRESS_BYTES` | Measured: the host's outbound handler counts bytes (FCM, Paddle, Play, e-mail provider) | Allow-listed destinations only |
+| Workers | Requests and CPU time | `WORKER_REQUESTS` | Measured: request counters batched from the Worker to the host | `limits.cpu_ms` per request; edge rate limits. Requests rejected by edge rules never invoke the Worker. |
+| Durable Objects | Requests, including WebSocket opens, incoming messages at 20:1, and alarms | `DO_REQUESTS` | Measured: counters in `FleetHub`, batched to the host | Per-token frame limits, viewer and node limits, the wake guard |
+| Durable Objects | Duration: 128 MB × wall time while active and not eligible to hibernate | `DO_DURATION_GB_SECONDS` | **Estimated**: `FleetHub` measures each awake interval (first event to last handler completion) and multiplies by 0.125 GB. Reconciled daily (§7.5). | Hibernation API only (no non-hibernating `accept()`); the alarm-loop guard |
+| Durable Objects | SQLite rows written, storage | `DO_ROWS_WRITTEN` | Measured: counted by `FleetHub` | Fixed key layout (10 §4) |
+| D1 | Rows read and written, storage | `D1_ROWS_READ`, `D1_ROWS_WRITTEN` | Measured: per-query row counts returned by D1 | Indexed queries only; retention purges |
+| R2 | Class A and class B operations, storage (egress free) | `R2_CLASS_A`, `R2_CLASS_B`, `R2_BYTES` | Measured: counted per operation by the host; storage from object sizes | Per-account upload limits; lifecycle rules |
+| Queues | Operations | `QUEUE_OPERATIONS` | Measured | One wake message per batch |
+| FCM | Free | `PUSH_SENDS` | Measured | Per-account push limits |
+| E-mail provider (Postmark, SES) | Messages | `EMAILS_SENT` | Measured by the Identity e-mail adapter | Rate limits on codes and notices |
+| Workers Logs | Log events | — (residual) | Not metered | Head sampling 0.1 |
+
+**Unit prices** per dimension are configuration data (`ops.unit_prices`), maintained by the operator from the providers' price lists. They feed the monthly report and the residual-exposure figure.
+
+### 7.2 Budgets and thresholds
+
+- **Daily operating budgets.** One budget per dimension and UTC day in `platform_operating_budget`. Every metered operation reserves against its dimension (`platform_operating_reservation`); estimated dimensions are recorded after the fact.
+- **80%:** an operator alert.
+- **100%:** the degradation ladder (§7.3) applies the step for that dimension. **120%** of any dimension, or the container worst case being reached, enters essential-only mode.
+- **`EMAILS_SENT`** has no ladder step of its own: the product sends only sign-in codes and account security notices, which stay available. It alerts at 80% and 100%, and its rate limits bound it (§7.4).
 - **Never affected:** local execution and LAN features. LAN features keep working on cached entitlement tokens.
-- **Monthly ceiling (product-owner input H-09).** The operator sets the daily budgets so that 31 × daily ≤ the monthly ceiling. Cloudflare budget alerts are set at 50%, 80% and 100% of the ceiling as a second, notification-only signal (V-C04).
-- **Unit economics check.** The monthly operator report (`OperatorReadService.GetMonthlyReport`, computed on demand from budget use, unit prices and subscriptions) shows the cost per active Pro account, the cost per relay-connected node and the Free-tier cost. It is an input to price decisions.
+
+### 7.3 Degradation ladder (what actually stops spending)
+
+| Step | Triggered by | What stops | What keeps costing |
+|---|---|---|---|
+| 1. Live streaming off | `DO_REQUESTS`, `DO_DURATION_GB_SECONDS` | Delta frames and the DO wakes they cause; viewers get summaries only | Summary frames (at most 1 per minute per node) |
+| 2. Relay closed | Step 1 persisting for 15 min, or `DO_*` at 110% | **Existing** relay sockets are closed (close code 4429 `budget`) and new ones refused. Nodes back off 15 min with jitter; viewers show "Live view paused". | Nodes' daily entitlement refresh |
+| 3. Push batched, then off | `PUSH_SENDS`, `EGRESS_BYTES` | Push is batched hourly; at 120% it stops | — |
+| 4. Uploads refused | `R2_*` | Support uploads | Storage of existing bundles until lifecycle expiry |
+| 5. Essential-only mode (`cloud.essential_only`) | 120% of any dimension; `CONTAINER_*`, `WORKER_REQUESTS`, `D1_*` or `QUEUE_OPERATIONS` at 100% | Every route except sign-in, entitlement refresh, payment webhooks and operator calls is answered by the Worker with `RESOURCE/kill_switch_active` **without waking the container**. With essential traffic idle, instances sleep after `sleepAfter`. | The residual exposure (§7.4) |
+
+Each step is a kill switch in configuration, applied automatically by the budget service and reversible by an operator. Steps take effect within one token lifetime (15 min), and step 2 at once for connected sockets.
+
+### 7.4 Residual exposure
+
+Essential-only mode cannot stop:
+- **essential requests** (sign-in, entitlement refresh, payment webhooks, operator calls), which are bounded by their rate limits;
+- **container run time** for those requests, at most the structural worst case;
+- **storage at rest** (D1, R2, Durable Object storage), bounded by retention;
+- **Workers Logs** events, bounded by head sampling;
+- **unauthenticated internet traffic** that passes the edge rules, bounded by edge rate limiting and Cloudflare's network-level DDoS protection.
+
+`OperatorReadService.GetOperatingBudgets` returns `residual`: the container bound, storage at rest and essential requests at their rate limits, priced with `ops.unit_prices`, as a **daily worst case**. W-66 shows it.
+
+**Monthly ceiling (product-owner input H-09).** The operator sets the daily budgets so that `31 × (Σ daily budgets + residual daily worst case) ≤ monthly ceiling`. Cloudflare budget alerts at 50%, 80% and 100% of the ceiling are a second, notification-only signal (V-C04).
+
+### 7.5 Reconciliation
+
+A daily job compares the metered values with the providers' billing data. For Cloudflare this uses the GraphQL Analytics API with a read-only token (optional prerequisite H-21). The job raises an operator alert when a dimension diverges by more than 20%, and recalibrates the estimated dimension (`DO_DURATION_GB_SECONDS`). Reconciliation is a check, never enforcement. Without the token, the job reports that reconciliation is off.
+
+**Unit economics check.** The monthly operator report (`OperatorReadService.GetMonthlyReport`, computed on demand from budget use, unit prices and subscriptions) shows the cost per active Pro account, the cost per relay-connected node and the Free-tier cost. It is an input to price decisions.
 
 ## 8. Service operations (R-OPS-006)
 

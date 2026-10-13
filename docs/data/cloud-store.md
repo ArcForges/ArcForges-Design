@@ -46,10 +46,11 @@ The flagship adds one module, `fleet`, and adapts a few reused tables. The new t
 | Change | Tables | Migration |
 |---|---|---|
 | Product ID domain gains `arcforges-node` and `arcforges-mobile` | `device_installation.product_id` and `identity_session.product_id`; today `CHECK (product_id IN ('arcscope', 'companion'))` | The `productId` type change regenerates the check constraints. SQLite cannot alter a CHECK, so the Cloud generator emits a table-rebuild migration (create new, copy, swap) under the repository's migration rules. Indexes are unchanged, because each node is its own device (§2). AF-CLD-01. |
-| Operating dimensions gain `containerCpuSeconds` (8), `doRequests` (9), `d1RowsRead` (10), `d1RowsWritten` (11) and `pushSends` (12) | `platform_operating_budget.dimension` and `platform_operating_reservation.dimension`; today `CHECK (dimension IN (1..7))` | Same table-rebuild migration pattern as the product ID change. AF-PLAT-01. |
+| Operating dimensions gain `containerCpuSeconds` (8), `doRequests` (9), `d1RowsRead` (10), `d1RowsWritten` (11), `pushSends` (12), `containerInstanceSeconds` (13), `doDurationGbSeconds` (14), `workerRequests` (15), `doRowsWritten` (16), `egressBytes` (17), `queueOperations` (18) and `emailsSent` (19) ([14](../architecture/14-commercial-operations.md) §7.1) | `platform_operating_budget.dimension` and `platform_operating_reservation.dimension`; today `CHECK (dimension IN (1..7))` | Same table-rebuild migration pattern as the product ID change. Estimated dimensions (`doDurationGbSeconds`) are recorded after the fact, without reservations. AF-PLAT-01. |
 | Device platform values | `device_device.platform` already lists `windows`, `linux` and `android` | None |
 | Push kinds | `notification_*` kind columns (text) | None (data) |
 | Plan features | Entitlement configuration | Configuration revision (data) |
+| Cost and activation switches: `cloud.essential_only`, the ladder steps, `ops.unit_prices`, `flagship.activation` per Cloud surface | `config_revision` | Configuration revision (data); [14](../architecture/14-commercial-operations.md) §7, [10](../architecture/10-cloud.md) §8. The Web switches live in the Web repository's deploy configuration. |
 
 ## 4. Not stored in D1
 

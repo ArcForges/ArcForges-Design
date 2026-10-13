@@ -1,12 +1,12 @@
 # AD-0002 — Platform scope: Windows and Linux/WSL now; macOS later
 
-- Status: Accepted (2026-10-12)
+- Status: Accepted (2026-10-12; revised 2026-10-13 after the findings review: Windows 11 floor for TLS 1.3)
 
 ## Decision
 
 | Component | In scope now | Notes |
 |---|---|---|
-| Node, CLI, MCP adapter | Windows 10 22H2 and Windows 11 (x64, arm64); Linux glibc x64/arm64 with a systemd user manager (Debian 12/13, Ubuntu 22.04/24.04), including WSL2 distributions | Windows 10 22H2, the last Windows 10 release, is the floor. It is newer than every API floor the design uses: nested jobs since Windows 8 (V-W01), and DNS-SD (`DnsServiceRegister`/`DnsServiceBrowse`, documented for Windows 10 without a precise build, V-T04). The workstation verifies Windows 11 (F-T03); Windows 10 22H2 is an acceptance-register item. Linux without a systemd user manager runs observe-only (AD-0005). |
+| Node, CLI, MCP adapter | Windows 11 (x64, arm64); Linux glibc x64/arm64 with a systemd user manager (Debian 12/13, Ubuntu 22.04/24.04), including WSL2 distributions | Windows 11 is the floor (revised 2026-10-13). The LAN transport requires TLS 1.3, which Windows' Schannel supports only from Windows 11 and Windows Server 2022; Windows 10, including 22H2, does not (V-N06). Windows 10 also reached end of support on 2025-10-14; only paid Extended Security Updates continue. A LAN transport with a TLS 1.2 fallback for Windows 10 was considered and rejected: it would weaken the peer contract and double the test matrix for an out-of-support version. Windows 11 is newer than every other API floor the design uses (nested jobs, V-W01; DNS-SD, V-T04). The installer refuses older Windows versions with a clear message. Linux without a systemd user manager runs observe-only (AD-0005). |
 | Desktop (Avalonia) | Windows x64/arm64; Linux x64/arm64 with X11 or Wayland | The tray icon is optional where the desktop environment lacks support (V-N04). |
 | Android app | Android 8.0 (API 26) and newer, target API 36 | Matches the existing Mobile repository. |
 | Web | Current evergreen Chromium, Firefox and Safari | Blazor WebAssembly |

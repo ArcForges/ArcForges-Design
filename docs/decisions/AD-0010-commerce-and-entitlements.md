@@ -1,6 +1,6 @@
 # AD-0010 — Commerce and entitlements: Paddle on the web, Google Play on Android
 
-- Status: Accepted (2026-10-12)
+- Status: Accepted (2026-10-12; revised 2026-10-13 after the findings review: LAN gating stated as a launch decision)
 - Reuses: ArcForges-Design-Parallel BC-01 (Paddle as sole Merchant of Record, main `64173614`); the existing Cloud Entitlement module (2,439 lines at main `92ba1dc9`) and the commerce/entitlement D1 tables.
 - Supersedes for the active product: the historical Mobile position that "the Play channel is out of scope" (Mobile README, main `6702e281`). Android distribution and in-app subscription now use Google Play, as the product owner requires; direct APK prereleases remain a development channel.
 
@@ -9,6 +9,8 @@
 1. **Plan catalogue as data.** It lives in the Entitlement module's configuration revision. Launch plans:
    - `free` (no charge);
    - `pro_monthly` and `pro_annual`, each with web (Paddle) and Play (`arcforges.pro`, with base plans `monthly` and `annual`) offers.
+
+   **Feature gating at launch.** Cloud-backed features (relay, remote status and control, push) are Pro because they consume cloud resources, which the product brief makes subscriber-only. LAN placement and LAN cache sharing are also Pro, by commercial decision: they consume no cloud resources and are verified offline through the entitlement token. Pairing and peer status are free. The gating is catalogue data, so changing it needs no code change ([product definition](../product/product-definition.md) §5).
 
    A feature flag set per plan drives gating (product definition §5).
 2. **Web purchases** use Paddle hosted checkout as Merchant of Record. Verified webhooks (raw-body HMAC, per the historical adapter design) drive subscription state through the existing commerce tables.

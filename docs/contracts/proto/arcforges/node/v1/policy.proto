@@ -8,6 +8,7 @@ import "arcforges/foundation/v1/foundation.proto";
 import "arcforges/node/v1/common.proto";
 import "arcforges/node/v1/peers.proto";
 import "arcforges/node/v1/queue.proto";
+import "arcforges/node/v1/tasks.proto";
 
 option csharp_namespace = "ArcForges.Contracts.Node.V1";
 option java_package = "io.github.arcforges.contracts.node.v1";
@@ -213,13 +214,21 @@ enum RoutingMode {
   ROUTING_MODE_UNSPECIFIED = 0;
   ROUTING_MODE_OBSERVE = 1;
   ROUTING_MODE_GUIDE = 2;
-  ROUTING_MODE_REWRITE = 3;
+  ROUTING_MODE_REWRITE = 3; // heavy patterns only
+  ROUTING_MODE_REWRITE_ALL = 4; // every shell command except passthrough patterns (08 section 4.1)
 }
 
 enum ClientPermission {
   CLIENT_PERMISSION_UNSPECIFIED = 0;
   CLIENT_PERMISSION_ASK = 1; // the client shows the rewritten command and the user confirms
   CLIENT_PERMISSION_ALLOW = 2; // pre-approves; only by explicit HUMAN policy or under bypassPermissions
+}
+
+// What happens when a running attempt crosses a monitored disk limit (06 section 5).
+enum DiskLimitAction {
+  DISK_LIMIT_ACTION_UNSPECIFIED = 0;
+  DISK_LIMIT_ACTION_TERMINATE = 1; // the cancellation sequence with OUTPUT_LIMIT or DISK_LIMIT
+  DISK_LIMIT_ACTION_NOTIFY = 2; // a finding only
 }
 
 enum ActionMode {
@@ -280,6 +289,9 @@ message ResourcePolicy {
   optional bool allow_unenforced = 14 [json_name = "allowUnenforced"]; // default true on OBSERVE_ONLY nodes
   optional double commit_factor = 15 [json_name = "commitFactor"]; // validate: 1.0..4.0; default 1.5 (Windows)
   PressureThresholds pressure = 16 [json_name = "pressure"];
+  optional uint64 swap_allowance_bytes = 17 [json_name = "swapAllowanceBytes"]; // validate: default 0; Linux slice MemorySwapMax (03 section 5)
+  optional uint64 large_task_reservation_max_ms = 18 [json_name = "largeTaskReservationMaxMs"]; // validate: >= 60 s; default 30 min; a reservation then lapses (03 section 4)
+  optional double guest_standalone_fraction = 19 [json_name = "guestStandaloneFraction"]; // validate: 0.05..0.5; default 0.25 of the host budget, kept for a guest whose link is down (03 section 6)
 }
 
 message PoolPolicy {
@@ -331,6 +343,9 @@ message RoutingPolicy {
   optional uint64 bypass_mem_threshold_bytes = 5 [json_name = "bypassMemThresholdBytes"]; // default 1 GiB
   optional ClientPermission rewrite_permission = 6 [json_name = "rewritePermission"]; // default ASK; ALLOW is HUMAN-only and pre-approves matched commands
   optional bool guide_when_longer_than_client_timeout = 7 [json_name = "guideWhenLongerThanClientTimeout"]; // default true: expected duration > client timeout -> DENY_WITH_GUIDANCE to MCP run
+  repeated string passthrough_patterns = 8 [json_name = "passthroughPatterns"]; // REWRITE_ALL only: commands left unchanged; defaults in architecture 08 section 4.1
+  optional uint32 handoff_margin_ms = 9 [json_name = "handoffMarginMs"]; // default 15,000: a rewritten run hands off this long before the client's tool timeout
+  optional bool join_existing_rewrites = 10 [json_name = "joinExistingRewrites"]; // default true: rewritten runs join an identical non-terminal task of the same session
 }
 
 message ActionRule {
@@ -363,6 +378,10 @@ message StoragePolicy {
   optional uint64 min_free_bytes = 8 [json_name = "minFreeBytes"]; // default 1 GiB
   map<string, string> quarantine_roots = 9 [json_name = "quarantineRoots"]; // volume -> directory on that volume for quarantining items outside managed roots
   optional uint32 secret_retention_hours = 10 [json_name = "secretRetentionHours"]; // default 24: sealed secret environment values kept after a terminal state for manual retry
+  optional uint64 max_attempt_output_bytes = 11 [json_name = "maxAttemptOutputBytes"]; // default 2 GiB (stdout + stderr per attempt); checked by the tailer every 100 ms
+  optional uint64 max_attempt_tmp_bytes = 12 [json_name = "maxAttemptTmpBytes"]; // default 20 GiB per attempt; checked every 15 s
+  optional uint64 critical_free_bytes = 13 [json_name = "criticalFreeBytes"]; // default 512 MiB per volume holding managed roots
+  optional DiskLimitAction disk_limit_action = 14 [json_name = "diskLimitAction"]; // default TERMINATE
 }
 
 message CleanupPolicy {
@@ -414,6 +433,7 @@ message LanPolicy {
   optional bool advertise = 3 [json_name = "advertise"]; // default true while enabled; only on trusted networks (09 section 2)
   PeerPolicy default_peer_policy = 4 [json_name = "defaultPeerPolicy"]; // status only
   optional bool advertise_account_hint = 5 [json_name = "advertiseAccountHint"]; // default false: adds the acct TXT record
+  optional uint32 max_workspace_slots = 6 [json_name = "maxWorkspaceSlots"]; // default 2: remote workspace slots per origin workspace (09 section 6)
 }
 
 enum ResultCacheMode {
@@ -426,6 +446,18 @@ enum ResultCacheMode {
 message ResultCachePolicy {
   optional ResultCacheMode default_mode = 1 [json_name = "defaultMode"]; // default OFF
   map<string, ResultCacheMode> workspace_modes = 2 [json_name = "workspaceModes"]; // workspace ID -> mode; overrides default_mode
+}
+
+// Who may declare a command safe to retry automatically (AD-0006 section 4).
+message RetrySafetyRule {
+  optional string pattern = 1 [json_name = "pattern"]; // command pattern, as heavy patterns
+  arcforges.foundation.v1.Id workspace_id = 2 [json_name = "workspaceId"]; // empty = every workspace
+  optional SideEffectClass side_effect = 3 [json_name = "sideEffect"]; // PURE or IDEMPOTENT
+}
+
+message RetrySafetyPolicy {
+  repeated RetrySafetyRule rules = 1 [json_name = "rules"]; // HUMAN-edited
+  optional bool accept_agent_assertions = 2 [json_name = "acceptAgentAssertions"]; // default false: an AGENT's PURE or IDEMPOTENT becomes UNKNOWN with a warning
 }
 
 message ApprovalPolicy {
@@ -451,6 +483,7 @@ message PolicyDocument {
   LanPolicy lan = 14 [json_name = "lan"];
   ApprovalPolicy approvals = 15 [json_name = "approvals"];
   ResultCachePolicy result_cache = 16 [json_name = "resultCache"]; // architecture 04 section 11
+  RetrySafetyPolicy retry_safety = 17 [json_name = "retrySafety"];
 }
 
 message PolicyRevision {

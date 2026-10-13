@@ -4,7 +4,7 @@ Decision: [AD-0008](../decisions/AD-0008-lan-trust-and-placement.md). Contracts:
 
 ## 1. Listener and identity
 
-- The listener is TCP `0.0.0.0:47820` (configurable; IPv6 dual-stack where available). Kestrel HTTPS uses TLS 1.3 only and requires a client certificate. It is enabled when the user turns on LAN features. The TLS layer accepts any well-formed client certificate, but refuses invalid or revoked account certificates. A gRPC interceptor then limits unpaired identities to `PeerHandshakeService.Hello` and `PairingService`, and every other service requires a pinned or same-account identity (AD-0008 §4). WSL2 mirrored networking exposes the guest on the LAN (L-12), but guest nodes do **not** open a LAN listener by default: their LAN presence is through the host node.
+- The listener is TCP `0.0.0.0:47820` (configurable; IPv6 dual-stack where available). Kestrel HTTPS uses TLS 1.3 only and requires a client certificate. TLS 1.3 is available on every supported platform: Windows 11, whose Schannel supports TLS 1.3 (Windows 10 does not, V-N06; [AD-0002](../decisions/AD-0002-platform-scope.md)), and Linux with OpenSSL. It is enabled when the user turns on LAN features. The TLS layer accepts any well-formed client certificate, but refuses invalid or revoked account certificates. A gRPC interceptor then limits unpaired identities to `PeerHandshakeService.Hello` and `PairingService`, and every other service requires a pinned or same-account identity (AD-0008 §4). WSL2 mirrored networking exposes the guest on the LAN (L-12), but guest nodes do **not** open a LAN listener by default: their LAN presence is through the host node.
 - **Node key:** ECDSA P-256. On Windows it is stored as a CNG key with export disabled, in the user profile. On Linux it is a 0600 PKCS#8 file in the data root. The self-signed certificate SAN contains `URI:arcforges:node:<node_id>`.
 - **Account certificate (Pro, signed in):**
   1. The node submits a CSR to `NodeEnrollmentService.IssueNodeCertificate`.
@@ -101,12 +101,25 @@ Placement is re-evaluated only before start. Running attempts never migrate (R-L
   - other workspaces: a walk with globs.
 
   Each entry is `{path, mode, size, sha256}`. Digests come from the `file_digest_cache` (path, size, mtime, file ID → digest). The manifest itself is content-addressed.
+- **Output bases.** At submission the origin also records, for every path matched by `declared_outputs`, its current digest or "absent". These are the bases for conflict detection when outputs return.
 - **Executor pull:**
   1. The executor calls `PutManifest` on itself.
   2. It computes what is missing against its CAS and the remote workspace's current manifest.
   3. It pulls blobs from the origin with `DownloadBlob` (server stream, 4 MiB chunks, SHA-256 verified per blob, resumable by offset).
-  4. It materializes the remote workspace `work/remote/<origin_node>/<origin_workspace>/` by copying from the CAS, or by block-cloning where the file system supports it (Windows ReFS/Dev Drive `FSCTL_DUPLICATE_EXTENTS_TO_FILE`, Linux `FICLONE`). It never hardlinks, because builds that write in place would corrupt the stored blob and every workspace sharing it. Files absent from the manifest are deleted inside that directory only.
-- **Outputs** use the same mechanism in reverse, origin pulling.
+  4. It leases a **workspace slot** for the attempt: `work/remote/<origin_node>/<origin_workspace>/<slot>/` (R-LAN-011).
+     - A free slot is reused and brought to the new manifest incrementally. Files absent from the manifest are deleted inside that slot only.
+     - If every slot of the origin workspace is leased, a new slot is created, up to `lan.max_workspace_slots` (default 2). Beyond that, the remote attempt stays `RESERVED` until a slot frees, and the offer's ETA includes the wait.
+     - A slot belongs to exactly one remote attempt, from materialization until its outputs have been pulled or the attempt is released. Concurrent attempts from the same origin workspace therefore never share a writable directory.
+     - Materialization copies from the CAS, or block-clones where the file system supports it (Windows ReFS/Dev Drive `FSCTL_DUPLICATE_EXTENTS_TO_FILE`, Linux `FICLONE`). It never hardlinks, because builds that write in place would corrupt the stored blob and every workspace sharing it.
+- **Outputs** return in reverse: the executor builds a manifest of the declared outputs, and the origin pulls the blobs into `staging/transfer/`. The origin then applies them while holding the exclusive keys of the output paths ([03](03-resource-control.md) §4), so no local managed task writes them meanwhile. For each file it compares the current local digest with the base recorded at submission:
+  - **unchanged** (or absent both times): atomic replace, through a temporary file and a rename;
+  - **changed locally**, per `output_conflict`:
+    - `STAGE` (default) writes the returned file to `out/<workspace>/<task>/<attempt>/conflicts/<path>`, keeps the local file and raises `OUTPUT_CONFLICT`;
+    - `SKIP_EXISTING` keeps the local file;
+    - `FAIL` applies nothing if any file conflicts;
+    - `OVERWRITE` replaces it, and only HUMAN or SCRIPT callers may choose it.
+
+  Returned outputs never delete local files. The attempt result records the applied, conflicted and skipped counts and the staging path (`AttemptResult.outputs`).
 - **Limits:** a manifest has at most 2 million entries; a single transfer at most 100 GiB. Both are configurable. All traffic stays on the peer connection and never routes through the cloud (R-LAN-006).
 
 ## 7. Failure, ownership and versions

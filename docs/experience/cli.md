@@ -48,6 +48,7 @@ arcforges run [run options] --shell <kind> -- "<script>"
 | 7 | Conflict (revision, already exists, digest) | Mutations |
 | 8 | Entitlement required | Gated features |
 | 9 | Wait ended without reaching the target state | `tasks wait`, `run --detach --wait <dur>` |
+| 124 | `run --client-timeout`: the run handed off before the client's timeout; the task continues (task ID and wait command on stderr). A task that itself exits with 124 prints no hand-off line. | `run` (attached) |
 | 75 | Node unreachable and nothing was submitted (`EX_TEMPFAIL`, effect `DID_NOT_HAPPEN`) | All |
 | `run` only: task exit code 0–255 | The task's exit code; signals map to 128 + n on Linux | `run` (attached) |
 | `run` only: 125 | Not started: validation, permission, approval or queue refusal (message on stderr) | `run` |
@@ -62,10 +63,10 @@ Each row lists the command, its main options, the RPCs it calls and its notes. A
 
 | Command | Options | RPCs | Notes |
 |---|---|---|---|
-| `run -- <program> [args]` | `--cwd <dir>` (default: current directory), `--pool`, `--priority`, `--timeout`, `--cpu-limit-time`, `--env K=V` (repeatable), `--env-inherit caller\|node\|none`, `--unset K`, `--stdin none\|file:<path>\|stream`, `--label k=v`, `--title`, `--kind command\|service`, `--ready-regex/--ready-port/--ready-file`, `--side-effect pure\|idempotent\|side-effecting\|unknown`, `--retries n`, `--depends-on <id>[:succeeded\|finished\|ready]`, `--placement local\|any\|<node>`, `--inputs <glob>`, `--outputs <glob>`, `--cpu <cores>`, `--mem <size>`, `--mem-max <size>`, `--require-enforcement cpu,memory`, `--detach`, `--wait <dur>`, `--session <id>`, `--agent <id>`, `--shell bash\|sh\|pwsh\|powershell\|cmd` | `SubmitTask`, then `AttachTask` (attached) or `WaitTask` | Attached by default. stdin is forwarded when `--stdin stream` is set (`WriteTaskInput`, `CloseTaskInput`). `Ctrl+C` once sends `CancelTask`; a second `Ctrl+C` detaches and leaves the task running, printing its ID. |
+| `run -- <program> [args]` | `--cwd <dir>` (default: current directory), `--pool`, `--priority`, `--timeout`, `--cpu-limit-time`, `--env K=V` (repeatable), `--env-inherit caller\|node\|none`, `--unset K`, `--stdin none\|file:<path>\|stream`, `--label k=v`, `--title`, `--kind command\|service`, `--ready-regex/--ready-port/--ready-file`, `--side-effect pure\|idempotent\|side-effecting\|unknown`, `--retries n`, `--depends-on <id>[:succeeded\|finished\|ready]`, `--placement local\|any\|<node>`, `--inputs <glob>`, `--outputs <glob>`, `--output-conflict stage\|skip-existing\|fail\|overwrite`, `--exclusive <key>` (repeatable), `--exclusive-workspace`, `--client-timeout <dur>` (hand-off before an AI client's timeout, exit 124), `--join-existing`, `--cpu <cores>`, `--mem <size>`, `--mem-max <size>`, `--require-enforcement cpu,memory`, `--detach`, `--wait <dur>`, `--session <id>`, `--agent <id>`, `--shell bash\|sh\|pwsh\|powershell\|cmd` | `SubmitTask`, then `AttachTask` (attached) or `WaitTask` | Attached by default. stdin is forwarded when `--stdin stream` is set (`WriteTaskInput`, `CloseTaskInput`). `Ctrl+C` once sends `CancelTask`; a second `Ctrl+C` detaches and leaves the task running, printing its ID. |
 | `tasks list` | `--state`, `--session`, `--workspace`, `--pool`, `--label`, `--since`, `--mine`, `--limit` | `ListTasks` | — |
 | `tasks show <id>` | `--full` | `GetTask` | — |
-| `tasks wait <id>` | `--for terminal\|started\|ready`, `--timeout <dur>` (≤ 55 s per call; the CLI loops) | `WaitTask` | Exit 9 when the target is not reached before `--timeout` |
+| `tasks wait <id>` | `--for terminal\|started\|ready`, `--timeout <dur>` (≤ 55 s per call; the CLI loops), `--output tail\|all\|none` (default `tail`) | `WaitTask`, `ReadTaskOutput` | When the task is terminal: prints its output (default the last 4 KiB) and exits with the task's exit code. Exit 9 when the target is not reached before `--timeout`, with the state and queue position on stderr. This is the wait command printed by a hand-off. |
 | `tasks attach <id>` | `--from-start` | `AttachTask` | Detaching never stops the task |
 | `tasks logs <id>` | `--attempt n`, `--stream stdout\|stderr\|merged`, `--follow`, `--tail <n>` | `ReadTaskOutput`, `WatchTaskOutput` | — |
 | `tasks cancel <id>...` | `--reason`, `--grace <dur>` | `CancelTask` | Prompts on a TTY when the tasks belong to others |
@@ -117,9 +118,11 @@ Each row lists the command, its main options, the RPCs it calls and its notes. A
 |---|---|
 | `workspace list` / `show <id\|path>` | `ListWorkspaces` / `GetWorkspace` |
 | `workspace register <path> [--name n]` / `unregister <id>` | `RegisterWorkspace` / `UnregisterWorkspace` |
-| `workspace routing <id> <inherit\|observe\|guide\|rewrite>` | `UpdateWorkspaceSettings` |
+| `workspace routing <id> <inherit\|observe\|guide\|rewrite\|rewrite-all>` | `UpdateWorkspaceSettings` |
+| `workspace concurrency <id> <inherit\|adapter-keys\|serial\|shared>` | `UpdateWorkspaceSettings` |
 | `worktree create <workspace> [--branch b] [--base ref] [--name n]` | `CreateWorktree` (prints the path when ready) |
-| `worktree remove <id> [--archive]` | `RemoveWorktree` |
+| `worktree remove <id> [--archive] [--include-ignored]` | `RemoveWorktree` (with `--archive`: snapshot, bundle and verification before removal; ignored files outside regenerable outputs need `--include-ignored` or a confirmation) |
+| `worktree archives [--workspace <id>]` / `worktree restore <archive-id> [--branch b]` | `ListWorktreeArchives` / `RestoreWorktree` |
 
 ### C-06 Storage and caches
 

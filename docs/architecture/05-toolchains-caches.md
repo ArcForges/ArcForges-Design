@@ -28,7 +28,8 @@ Every adapter implements:
 Classify(TaskSpec, ResolvedCommand) -> ToolInvocation?   // null = not this adapter
 ToolInvocation {
   tool, operation (e.g. dotnet.build), phase_hints[],
-  side_effect_proposal, assert_class (bool),
+  side_effect_suggestion, assert_class (bool),   // assert only what the adapter can verify
+  exclusive_keys[]     (workspace keys the operation writes, 03 section 4),
   pausable_default, preemptible_default,
   estimate (cpu_demand, mem_expected, mem_ceiling),
   environment_edits[]  (name, value, mode=SET|PREPEND_PATH, guarantee=HONORED|BEST_EFFORT),
@@ -40,19 +41,23 @@ ToolInvocation {
 }
 ```
 
+**Side-effect classes.** An adapter cannot see what a project's build scripts, MSBuild targets, CMake code, Makefile rules or package lifecycle scripts do, so it never infers retry safety from the executable and subcommand alone:
+- `side_effect_suggestion` is shown to the user and used only when a caller assertion or a `retry_safety` rule confirms it ([AD-0006](../decisions/AD-0006-execution-semantics.md) §4);
+- `assert_class=true` is allowed only where the tool itself guarantees that no project code runs, for example `npm ci --ignore-scripts` or `cargo fetch`.
+
 Adapters are compiled into the node (no runtime plug-ins in this scope). The manifest of each adapter is published through `ToolchainService.ListAdapters`, which states every guarantee: `HONORED` means the tool documents and respects the setting (V-T01–V-T03); `BEST_EFFORT` means it may be ignored (R-TOOL-004).
 
 ## 3. Built-in adapters
 
 ### 3.1 .NET (`dotnet`, `msbuild`)
 
-| Operation | Side effect | Estimate (cpu / mem expected) | Phases |
-|---|---|---|---|
-| `restore`, `tool restore`, `workload restore` | IDEMPOTENT | 1,000 / 512 MiB | restore (network-bound by default) |
-| `build`, `pack`, `publish`, `msbuild` | IDEMPOTENT | 4,000 / 2 GiB | restore → build (per project) → link/package |
-| `test` | UNKNOWN (workspace policy may assert IDEMPOTENT) | 2,000 / 1.5 GiB | restore → build → test |
-| `format` | IDEMPOTENT (`--verify-no-changes`) / SIDE_EFFECTING (writes) | 2,000 / 1 GiB | build |
-| `run`, others | UNKNOWN | default | run |
+| Operation | Side effect (default; suggestion) | Exclusive keys | Estimate (cpu / mem expected) | Phases |
+|---|---|---|---|---|
+| `restore`, `tool restore`, `workload restore` | UNKNOWN; suggests IDEMPOTENT (MSBuild targets can hook into restore) | `ws:<w>/<project dir>:restore` | 1,000 / 512 MiB | restore (network-bound by default) |
+| `build`, `pack`, `publish`, `msbuild` | UNKNOWN; suggests IDEMPOTENT for `build` and `pack` (custom targets can deploy or call out) | `ws:<w>/<project dir>:build` | 4,000 / 2 GiB | restore → build (per project) → link/package |
+| `test` | UNKNOWN | `ws:<w>/<project dir>:build` | 2,000 / 1.5 GiB | restore → build → test |
+| `format` | UNKNOWN (`--verify-no-changes`; suggests IDEMPOTENT) / SIDE_EFFECTING (writes) | `ws:<w>/<project dir>` when writing | 2,000 / 1 GiB | build |
+| `run`, others | UNKNOWN | none | default | run |
 
 **Environment.**
 
@@ -73,12 +78,12 @@ Adapters are compiled into the node (no runtime plug-ins in this scope). The man
 
 ### 3.2 Rust (`cargo`)
 
-| Operation | Side effect | Estimate | Phases |
-|---|---|---|---|
-| `fetch` | IDEMPOTENT | 1,000 / 256 MiB | download |
-| `build`, `check`, `clippy`, `doc` | IDEMPOTENT | N × 1,000 / min(N,4) × 1.5 GiB | download → compile → link |
-| `test`, `bench` | UNKNOWN | as build | compile → test |
-| `run`, `install` | UNKNOWN / SIDE_EFFECTING | default | run |
+| Operation | Side effect (default; suggestion) | Exclusive keys | Estimate | Phases |
+|---|---|---|---|---|
+| `fetch` | IDEMPOTENT (asserted: downloads into the registry cache only) | none | 1,000 / 256 MiB | download |
+| `build`, `check`, `clippy`, `doc` | UNKNOWN; suggests IDEMPOTENT (build scripts and proc macros run project code) | `tool:cargo:<target dir>` | N × 1,000 / min(N,4) × 1.5 GiB | download → compile → link |
+| `test`, `bench` | UNKNOWN | `tool:cargo:<target dir>` | as build | compile → test |
+| `run`, `install` | UNKNOWN / SIDE_EFFECTING | `tool:cargo:<target dir>` | default | run |
 
 **Environment.**
 - `CARGO_BUILD_JOBS=<N>` when neither `-j` nor `--jobs` is present (HONORED).
@@ -90,11 +95,11 @@ Adapters are compiled into the node (no runtime plug-ins in this scope). The man
 
 ### 3.3 C/C++ (`cmake`, `ninja`, `make`, compilers)
 
-| Operation | Side effect | Estimate | Phases |
-|---|---|---|---|
-| `cmake -S/-B` (configure) | IDEMPOTENT | 1,000 / 512 MiB | configure |
-| `cmake --build`, `ninja`, `make` | IDEMPOTENT | N × 1,000 / N × 512 MiB | compile → link |
-| `ctest` | UNKNOWN | default | test |
+| Operation | Side effect (default; suggestion) | Exclusive keys | Estimate | Phases |
+|---|---|---|---|---|
+| `cmake -S/-B` (configure) | UNKNOWN; suggests IDEMPOTENT (CMake code can run any process) | `ws:<w>/<build dir>` | 1,000 / 512 MiB | configure |
+| `cmake --build`, `ninja`, `make` | UNKNOWN; suggests IDEMPOTENT (rules are arbitrary commands) | `ws:<w>/<build dir>` | N × 1,000 / N × 512 MiB | compile → link |
+| `ctest` | UNKNOWN | `ws:<w>/<build dir>` | default | test |
 
 **Environment and concurrency.**
 - `CMAKE_BUILD_PARALLEL_LEVEL=<N>` for `cmake --build`.
@@ -107,17 +112,18 @@ Adapters are compiled into the node (no runtime plug-ins in this scope). The man
 
 ### 3.4 Node (`npm`, `pnpm`, `yarn`, `npx`)
 
-- `npm ci` and `npm install` are IDEMPOTENT downloads. `npm run` and `npm test` are UNKNOWN.
+- `npm ci` and `npm install` run package lifecycle scripts, so they are UNKNOWN and suggest IDEMPOTENT. With `--ignore-scripts` the adapter asserts IDEMPOTENT. `npm run` and `npm test` are UNKNOWN.
+- Exclusive keys: `ws:<w>/<package dir>:deps` for installs (`node_modules` and the lock file); none for `npm run`.
 - Environment: `npm_config_cache=<cache>/npm` (HONORED) and `npm_config_store_dir=<cache>/pnpm-store` for pnpm (BEST_EFFORT).
 - No concurrency injection.
 
 ### 3.5 Python (`python`, `pip`, `pytest`)
 
-`pip install` is an IDEMPOTENT download, with `PIP_CACHE_DIR=<cache>/pip` (HONORED). `pytest` is UNKNOWN.
+`pip install` can build source distributions, which runs project code, so it is UNKNOWN and suggests IDEMPOTENT. `pip download` also prepares the metadata of source distributions by running their build backend, so it is asserted IDEMPOTENT only with `--only-binary=:all:` (wheels only); otherwise it is UNKNOWN and suggests IDEMPOTENT. `PIP_CACHE_DIR=<cache>/pip` (HONORED). `pytest` is UNKNOWN. Installs into a virtual environment take `ws:<w>/<venv dir>`.
 
 ### 3.6 Git
 
-`git clone`, `fetch` and `pull` are network-bound IDEMPOTENT downloads (no environment changes). Other git commands are generic.
+`git clone` and `fetch` are network-bound downloads asserted IDEMPOTENT (no environment changes). `pull`, `checkout`, `merge`, `rebase`, `commit` and other commands that write the working tree or index are UNKNOWN and take `ws:<w>:git`. Read-only commands carry no keys.
 
 ### 3.7 Generic
 
@@ -125,10 +131,10 @@ This adapter covers all other commands. It sets only `TMP`/`TEMP`/`TMPDIR` and u
 
 ### 3.8 FASTBuild (`FBuild`)
 
-| Operation | Side effect | Estimate | Phases |
-|---|---|---|---|
-| `FBuild <targets>` | IDEMPOTENT (build graph outputs) | N × 1,000 / N × 512 MiB | parse → compile → link |
-| `FBuild -cachetrim <MiB>` | IDEMPOTENT (maintenance) | 1,000 / 256 MiB | maintenance |
+| Operation | Side effect (default; suggestion) | Exclusive keys | Estimate | Phases |
+|---|---|---|---|---|
+| `FBuild <targets>` | UNKNOWN; suggests IDEMPOTENT (`Exec` nodes run arbitrary commands) | `ws:<w>/<bff dir>:build` | N × 1,000 / N × 512 MiB | parse → compile → link |
+| `FBuild -cachetrim <MiB>` | IDEMPOTENT (asserted: maintenance of the managed cache) | `tool:fastbuild:cache` | 1,000 / 256 MiB | maintenance |
 
 - **Concurrency.** `-j<N>` from the CPU grant, unless the caller set `-j` (the caller's value is recorded). Without `-dist`, FASTBuild uses only local workers, so the OS limits of the attempt container fully apply.
 - **Cache.** `FASTBUILD_CACHE_PATH=<cache>/fastbuild` (BEST_EFFORT until F-T02 confirms that it takes precedence over a project's `Settings { .CachePath }`; otherwise the project's cache is reported as observed, not managed). The adapter adds `-cache` (equivalent to `-cacheread` plus `-cachewrite`) when the workspace policy enables compiler caching, or `-cacheread` for a read-only cache (V-T06). FASTBuild sets no cache size limit, so maintenance runs `FBuild -cachetrim <quota MiB>` under the cache's maintenance lease (§4).
@@ -191,6 +197,9 @@ Shared daemons run in a node-owned container (Windows child job `Local\ArcForges
      - the adapter records which mode is used, and F-T04 verifies the protocol and the syntax against the installed ccache.
 3. Multi-level use: sccache `SCCACHE_MULTILEVEL_CHAIN=disk,webdav` keeps the local disk as L0 (V-T02).
 4. Entries are opaque to ArcForges. Integrity is the tool's responsibility; the proxy only enforces size limits (an entry ≤ 256 MiB) and quotas.
+5. **Scope boundary (launch).** LAN sharing covers compiler caches (sccache WebDAV, ccache helper) and the transfer CAS used by placement. Not covered at launch, by decision ([product definition](../product/product-definition.md) §7):
+   - **dependency caches** (NuGet, npm, Cargo, pip): each node keeps its own managed cache and downloads from the upstream registries; a LAN registry proxy would be a separate decision;
+   - **FASTBuild remote workers**: `-dist` use is observed and labelled, never managed (§3.8).
 
 ## 7. Effectiveness and duplicates
 

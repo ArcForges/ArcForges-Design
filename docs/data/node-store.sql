@@ -100,7 +100,7 @@ CREATE INDEX ix_job__state_created ON job (state, created_at);
 CREATE TABLE workspace (
   workspace_id BLOB NOT NULL PRIMARY KEY CHECK (length(workspace_id) = 16),
   kind INTEGER NOT NULL CHECK (kind IN (1, 2, 3)),      -- WorkspaceKind
-  state INTEGER NOT NULL CHECK (state BETWEEN 1 AND 6), -- WorkspaceState
+  state INTEGER NOT NULL CHECK (state BETWEEN 1 AND 7), -- WorkspaceState (7 ARCHIVING)
   name TEXT NOT NULL CHECK (length(name) BETWEEN 1 AND 100),
   root_path TEXT NOT NULL,
   repository_identity TEXT,
@@ -111,15 +111,42 @@ CREATE TABLE workspace (
   origin_node_id BLOB CHECK (origin_node_id IS NULL OR length(origin_node_id) = 16),
   origin_workspace_key TEXT,
   routing_mode INTEGER NOT NULL DEFAULT 0,      -- RoutingMode; 0 = inherit
+  concurrency_mode INTEGER NOT NULL DEFAULT 0 CHECK (concurrency_mode BETWEEN 0 AND 3),  -- WorkspaceConcurrency; 0 = inherit (ADAPTER_KEYS)
+  remote_slot INTEGER CHECK (remote_slot IS NULL OR remote_slot >= 1),  -- REMOTE: slot number under the origin workspace (09 section 6)
+  leased_by_attempt_id BLOB CHECK (leased_by_attempt_id IS NULL OR length(leased_by_attempt_id) = 16),  -- REMOTE: the remote attempt holding the slot; NULL = free
   created_at INTEGER NOT NULL,
   last_used_at INTEGER NOT NULL,
   removed_at INTEGER,
   rev INTEGER NOT NULL CHECK (rev >= 0),
   CHECK (kind <> 2 OR (base_workspace_id IS NOT NULL AND branch IS NOT NULL)),
-  CHECK (kind <> 3 OR (origin_node_id IS NOT NULL AND origin_workspace_key IS NOT NULL))
+  CHECK (kind <> 3 OR (origin_node_id IS NOT NULL AND origin_workspace_key IS NOT NULL AND remote_slot IS NOT NULL)),
+  CHECK (kind = 3 OR (remote_slot IS NULL AND leased_by_attempt_id IS NULL))
 ) STRICT;
 CREATE UNIQUE INDEX ux_workspace__root_active ON workspace (root_path) WHERE removed_at IS NULL;
 CREATE UNIQUE INDEX ux_workspace__branch_active ON workspace (base_workspace_id, branch) WHERE kind = 2 AND removed_at IS NULL;
+CREATE UNIQUE INDEX ux_workspace__remote_slot ON workspace (origin_node_id, origin_workspace_key, remote_slot) WHERE kind = 3 AND removed_at IS NULL;
+CREATE UNIQUE INDEX ux_workspace__slot_lease ON workspace (leased_by_attempt_id) WHERE leased_by_attempt_id IS NOT NULL;
+
+CREATE TABLE worktree_archive (
+  archive_id BLOB NOT NULL PRIMARY KEY CHECK (length(archive_id) = 16),
+  workspace_id BLOB NOT NULL CHECK (length(workspace_id) = 16),  -- the removed managed worktree; no foreign key, its row is purged first
+  base_workspace_id BLOB NOT NULL CHECK (length(base_workspace_id) = 16),  -- repository holding refs/arcforges/archive/<archive_id>/*
+  branch TEXT,
+  head_commit TEXT NOT NULL,
+  index_commit TEXT NOT NULL,                   -- I: the staged state
+  worktree_commit TEXT NOT NULL,                -- W: tracked and untracked (not ignored) files, parent I
+  bundle_path TEXT NOT NULL,                    -- records/worktree-archives/<archive_id>.bundle
+  ignored_archive_path TEXT,                    -- ignored files the user chose to include
+  file_count INTEGER NOT NULL CHECK (file_count >= 0),
+  size_bytes INTEGER NOT NULL CHECK (size_bytes >= 0),
+  created_at INTEGER NOT NULL,
+  verified_at INTEGER NOT NULL,                 -- written only after the bundle round trip matched (06 section 3)
+  expires_at INTEGER NOT NULL,                  -- created_at + 90 days
+  last_restored_at INTEGER,
+  removed_at INTEGER                            -- retention removed the refs and the bundle
+) STRICT;
+CREATE INDEX ix_worktree_archive__expires ON worktree_archive (expires_at) WHERE removed_at IS NULL;
+CREATE INDEX ix_worktree_archive__base_created ON worktree_archive (base_workspace_id, created_at);
 
 -- --------------------------------------------------------------- sessions
 
@@ -221,6 +248,8 @@ CREATE TABLE task (
   priority INTEGER NOT NULL CHECK (priority BETWEEN 1 AND 5),
   effective_priority INTEGER NOT NULL CHECK (effective_priority BETWEEN 1 AND 5),
   side_effect INTEGER NOT NULL CHECK (side_effect BETWEEN 1 AND 4),
+  side_effect_source INTEGER NOT NULL CHECK (side_effect_source BETWEEN 1 AND 4),  -- SideEffectSource (AD-0006 section 4)
+  side_effect_suggestion INTEGER CHECK (side_effect_suggestion IS NULL OR side_effect_suggestion BETWEEN 1 AND 4),  -- the adapter's suggestion; display only
   command_fingerprint TEXT NOT NULL,
   input_fingerprint_submit TEXT,
   created_at INTEGER NOT NULL,
@@ -230,6 +259,9 @@ CREATE TABLE task (
   retry_at INTEGER,
   aged_at INTEGER,
   reserved_for_large INTEGER NOT NULL DEFAULT 0 CHECK (reserved_for_large IN (0, 1)),
+  reserved_since INTEGER,                       -- large-task reservation start (03 section 4)
+  reservation_lapsed_at INTEGER,                -- a lapsed reservation is not retaken for large_task_reservation_max
+  caller_released_at INTEGER,                   -- ReleaseCallerBinding ran: cancel_when_caller_gone no longer applies
   current_attempt_id BLOB CHECK (current_attempt_id IS NULL OR length(current_attempt_id) = 16),
   attempt_count INTEGER NOT NULL DEFAULT 0 CHECK (attempt_count >= 0),
   ready INTEGER NOT NULL DEFAULT 0 CHECK (ready IN (0, 1)),
@@ -237,14 +269,24 @@ CREATE TABLE task (
   labels_json TEXT NOT NULL DEFAULT '{}' CHECK (json_valid(labels_json)),
   remote_command_id BLOB CHECK (remote_command_id IS NULL OR length(remote_command_id) = 16),
   purged_at INTEGER,
-  rev INTEGER NOT NULL CHECK (rev >= 0)
+  rev INTEGER NOT NULL CHECK (rev >= 0),
+  CHECK (reserved_for_large = 0 OR reserved_since IS NOT NULL)
 ) STRICT;
 CREATE INDEX ix_task__queue ON task (state, effective_priority, queued_at) WHERE state IN (1, 2, 3, 6);
+CREATE INDEX ix_task__join ON task (owner_session_id, command_fingerprint) WHERE state BETWEEN 1 AND 6;  -- SubmitTask join_existing
 CREATE INDEX ix_task__session_created ON task (owner_session_id, created_at);
 CREATE INDEX ix_task__workspace_created ON task (workspace_id, created_at);
 CREATE INDEX ix_task__created ON task (created_at);
 CREATE INDEX ix_task__pool_state ON task (pool, state);
 CREATE INDEX ix_task__fingerprint ON task (command_fingerprint, finished_at);
+
+CREATE TABLE task_exclusive_key (
+  task_id BLOB NOT NULL REFERENCES task (task_id) ON DELETE CASCADE,
+  exclusive_key TEXT NOT NULL CHECK (length(exclusive_key) BETWEEN 1 AND 512),  -- ws:<w>[/<dir>][:purpose], tool:<name>:<scope>, name:<text>
+  source INTEGER NOT NULL CHECK (source IN (1, 2, 3)),  -- 1 caller, 2 adapter, 3 workspace access or mode
+  PRIMARY KEY (task_id, exclusive_key)
+) STRICT, WITHOUT ROWID;
+CREATE INDEX ix_task_exclusive_key__key ON task_exclusive_key (exclusive_key);
 
 CREATE TABLE task_secret (
   task_id BLOB NOT NULL PRIMARY KEY REFERENCES task (task_id) ON DELETE CASCADE,
@@ -283,7 +325,7 @@ CREATE TABLE attempt (
   request_mem_expected_bytes INTEGER NOT NULL CHECK (request_mem_expected_bytes > 0),
   request_mem_ceiling_bytes INTEGER NOT NULL,
   request_source INTEGER NOT NULL CHECK (request_source BETWEEN 1 AND 4),
-  accounted_mem_bytes INTEGER NOT NULL,
+  accounted_mem_bytes INTEGER NOT NULL,         -- max(mem_expected, peak observed without reclaimable cache); never decreases while running (03 section 3)
   cpu_weight INTEGER,
   guest_grant_id BLOB CHECK (guest_grant_id IS NULL OR length(guest_grant_id) = 16),
   tool TEXT,
@@ -302,7 +344,7 @@ CREATE TABLE attempt (
   signal INTEGER,
   core_dumped INTEGER CHECK (core_dumped IS NULL OR core_dumped IN (0, 1)),
   windows_status INTEGER,
-  termination_reason INTEGER CHECK (termination_reason IS NULL OR termination_reason BETWEEN 1 AND 13),
+  termination_reason INTEGER CHECK (termination_reason IS NULL OR termination_reason BETWEEN 1 AND 15),  -- 14 OUTPUT_LIMIT, 15 DISK_LIMIT
   effect INTEGER CHECK (effect IS NULL OR effect BETWEEN 1 AND 3),   -- EffectCertainty
   detail TEXT,
   leftover_count INTEGER NOT NULL DEFAULT 0,
@@ -319,6 +361,8 @@ CREATE TABLE attempt (
   output_retained_until INTEGER,
   output_compressed INTEGER NOT NULL DEFAULT 0 CHECK (output_compressed IN (0, 1)),
   output_purged INTEGER NOT NULL DEFAULT 0 CHECK (output_purged IN (0, 1)),
+  output_base_manifest BLOB CHECK (output_base_manifest IS NULL OR length(output_base_manifest) = 32),  -- REMOTE, origin side: digest or absence of each declared output at submission (09 section 6)
+  outputs BLOB,                                 -- OutputApplyResult, once returned outputs are applied
   rev INTEGER NOT NULL CHECK (rev >= 0),
   CHECK (state <> 9 OR termination_reason IS NOT NULL)
 ) STRICT;
@@ -379,7 +423,7 @@ CREATE TABLE resource_sample (
 
 CREATE TABLE finding (
   finding_id BLOB NOT NULL PRIMARY KEY CHECK (length(finding_id) = 16),
-  kind INTEGER NOT NULL CHECK (kind BETWEEN 1 AND 24),     -- FindingKind
+  kind INTEGER NOT NULL CHECK (kind BETWEEN 1 AND 26),     -- FindingKind (25 TASK_INFEASIBLE, 26 OUTPUT_CONFLICT)
   severity INTEGER NOT NULL CHECK (severity BETWEEN 1 AND 3),
   state INTEGER NOT NULL CHECK (state BETWEEN 1 AND 5),    -- FindingState
   subject_kind TEXT NOT NULL,
@@ -617,7 +661,7 @@ CREATE INDEX ix_cas_blob__lru ON cas_blob (ref_count, last_used_at);
 
 CREATE TABLE manifest (
   digest BLOB NOT NULL PRIMARY KEY CHECK (length(digest) = 32),
-  kind INTEGER NOT NULL CHECK (kind IN (1, 2)), -- 1 input, 2 output
+  kind INTEGER NOT NULL CHECK (kind IN (1, 2, 3)), -- 1 input, 2 output, 3 output bases
   entry_count INTEGER NOT NULL CHECK (entry_count BETWEEN 0 AND 2000000),
   total_bytes INTEGER NOT NULL,
   owner_attempt_id BLOB,
@@ -715,6 +759,12 @@ CREATE TABLE guest_link (
   linked_at INTEGER,
   last_heartbeat INTEGER,
   reason TEXT,
+  alloc_cpu_millicores INTEGER,                 -- last allocation pushed with SetGuestBudget (03 section 6)
+  alloc_mem_high_bytes INTEGER,
+  alloc_mem_max_bytes INTEGER,
+  lease_until INTEGER,
+  standalone_cpu_millicores INTEGER,            -- reserved for the guest while the link is lost
+  standalone_mem_bytes INTEGER,
   rev INTEGER NOT NULL CHECK (rev >= 0)
 ) STRICT;
 
@@ -726,7 +776,13 @@ CREATE TABLE host_link (
   last_seen INTEGER,
   refused_host_node_id BLOB CHECK (refused_host_node_id IS NULL OR length(refused_host_node_id) = 16),  -- last link refused: different host
   refused_at INTEGER,
-  accept_host_node_id BLOB CHECK (accept_host_node_id IS NULL OR length(accept_host_node_id) = 16)  -- set by TrustHost; its next link is pinned
+  accept_host_node_id BLOB CHECK (accept_host_node_id IS NULL OR length(accept_host_node_id) = 16),  -- set by TrustHost; its next link is pinned
+  alloc_cpu_millicores INTEGER,                 -- last allocation received (03 section 6)
+  alloc_mem_high_bytes INTEGER,
+  alloc_mem_max_bytes INTEGER,
+  lease_until INTEGER,                          -- after it, only the standalone allocation applies
+  standalone_cpu_millicores INTEGER,
+  standalone_mem_bytes INTEGER
 ) STRICT;
 
 CREATE TABLE guest_grant (

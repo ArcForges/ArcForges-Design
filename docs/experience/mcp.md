@@ -56,6 +56,9 @@ Input schema:
     "side_effect": {"type": "string", "enum": ["pure", "idempotent", "side_effecting", "unknown"], "default": "unknown"},
     "depends_on": {"type": "array", "items": {"type": "string"}, "maxItems": 64},
     "placement": {"type": "string", "enum": ["local", "any"], "default": "local"},
+    "inputs": {"type": "object", "properties": {"include": {"type": "array", "items": {"type": "string"}, "maxItems": 256}, "exclude": {"type": "array", "items": {"type": "string"}, "maxItems": 256}}, "description": "Workspace-relative globs sent to a remote node (placement any)"},
+    "outputs": {"type": "array", "items": {"type": "string"}, "maxItems": 256, "description": "Workspace-relative paths or globs returned from a remote node"},
+    "output_conflict": {"type": "string", "enum": ["stage", "skip_existing", "fail"], "default": "stage"},
     "async": {"type": "boolean", "default": false, "description": "Return immediately (tasks extension when supported)"}
   },
   "required": ["cwd"],
@@ -83,6 +86,11 @@ Output (`structuredContent`):
 - **Mapping:** `TaskService.SubmitTask`, then `WaitTask(wait_seconds, tail_bytes = 4096)`.
 - **Command form.** `command` uses the `SHELL` form with the client's shell; `argv` uses the `ARGV` form.
 - **Environment.** `inherit=CALLER` with the adapter's environment, which is the client's environment.
+- **Placement `any`.** `PlacementSpec.inputs` is required for remote execution. The adapter derives it safely when `inputs` is omitted:
+  - In a **git workspace**, `inputs = {include: ["**"]}` under the manifest rule of [09](../architecture/09-lan.md) §6, which takes only tracked files and untracked files that are not ignored.
+  - In a **non-git directory**, the call fails with `VALIDATION/inputs_required`, because a walk of everything could send secrets or huge trees.
+  - **Outputs** default to none: a remote run then returns its exit code, records and logs, and writes no local files. Declared outputs return with `output_conflict` (default `stage`). `overwrite` is not offered to agents.
+- **Side-effect assertions.** `side_effect` values `pure` and `idempotent` from an agent take effect only when the policy `retry_safety.accept_agent_assertions` is true. Otherwise the task records `unknown` and the result carries a warning ([AD-0006](../decisions/AD-0006-execution-semantics.md) §4).
 - **Annotations:** `readOnlyHint: false`, `destructiveHint: true`, `idempotentHint: false`, `openWorldHint: true`.
 
 ### M-02 … M-19

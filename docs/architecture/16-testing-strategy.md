@@ -82,7 +82,14 @@ tests/
 - **Deterministic time.** Node subsystems take an `IClock`. Tests use a controllable clock except in real-OS timing tests.
 - **Isolation.** Each test node gets a temporary data root, a unique pipe or socket name, a unique node ID (so Windows job names cannot collide) and its own transient slice name on Linux (`arcforges-test-<id>.slice`). A fixture cleans up leftover jobs, units and processes and fails the test if any remain.
 
-## 5. Acceptance evidence per task
+## 5. Release-candidate acceptance
+
+The release candidate (AF-ACC-01) runs every journey J-01 to J-10 end to end with:
+- **real core implementations**: node, CLI, MCP adapter, hooks, Desktop view models, cloud host, Worker and Durable Object code, Blazor and Android view models;
+- **the approved external fakes** of §2 where the external system is unavailable: `FakePaddle`, `FakePlayDeveloperApi`, `FakePubSubPush`, `FakeFcm`, `FakeMailSender`, `FakeBillingClient`, `ScriptedBrowser`, `ScriptedMcpClient`, `HookPayloadFixtures`, and `PeerProcess` for other machines. A fake never replaces the behaviour under test;
+- **honest labels**: results are labelled closed-loop, and every remaining real-world validation stays in the acceptance register (AR-01 to AR-16).
+
+## 6. Acceptance evidence per task
 
 Each delivery task's PR records:
 1. the exact commands run, with their results (author);

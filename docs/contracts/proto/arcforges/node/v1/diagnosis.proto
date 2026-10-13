@@ -270,6 +270,8 @@ enum FindingKind {
   FINDING_KIND_PEER_UNREACHABLE = 22;
   FINDING_KIND_UPDATE_FAILED = 23;
   FINDING_KIND_LEFTOVER_PROCESSES = 24;
+  FINDING_KIND_TASK_INFEASIBLE = 25; // request exceeds the managed share even on an idle machine
+  FINDING_KIND_OUTPUT_CONFLICT = 26; // remote outputs staged because local files changed
 }
 
 // SM-FINDING states.

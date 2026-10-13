@@ -63,7 +63,8 @@ Journeys are specified in [experience/journeys.md](../experience/journeys.md).
 | Resource control, queueing, records, diagnosis, operational memory | Yes | Yes |
 | WSL guest node on the same machine | Yes | Yes |
 | Managed storage, caches, disk analysis and cleanup | Yes | Yes |
-| LAN multi-node placement and LAN cache sharing | No | Yes |
+| LAN pairing and peer status | Yes | Yes |
+| LAN multi-node placement and LAN cache sharing | No | Yes (launch decision; see below) |
 | Remote status and control (web, Android) through the cloud relay | No | Yes |
 | Push notifications | No | Yes |
 | Support response targets | Community | Standard |
@@ -71,14 +72,16 @@ Journeys are specified in [experience/journeys.md](../experience/journeys.md).
 - **No cloud dependency for local work.** Local execution never requires a cloud connection.
 - **Offline grace for LAN features.** LAN features verify a signed entitlement token offline, with a grace period ([AD-0010](../decisions/AD-0010-commerce-and-entitlements.md)), so a LAN keeps working through cloud outages.
 - **Plan definitions are data.** Plans are defined in the existing Entitlement module and can change without code changes. The table above is the launch configuration.
+- **Why LAN placement and cache sharing are Pro.** They consume no cloud resources, and the product brief makes only **cloud-backed** resources subscriber-only. Putting multi-machine work in Pro is a commercial launch decision: it is the main value for teams and multi-machine users, and the offline-verified entitlement token keeps it working through cloud outages. Pairing and peer status stay free. Because plans are data, making LAN features free later needs no code change ([AD-0010](../decisions/AD-0010-commerce-and-entitlements.md) §1).
 
 ## 6. Platform scope
 
-The active scope is **Windows 10/11 (x64, arm64)** and **Linux, including WSL2 on Windows (x64, arm64)** for the node, CLI, MCP adapter and Desktop. It also covers **Android 8.0+** for the mobile app and **current evergreen browsers** for the web. macOS is outside the current implementation and acceptance scope ([AD-0002](../decisions/AD-0002-platform-scope.md)). Platform boundaries are kept clean so a macOS backend can be added later without redesign. Nothing for macOS is built or claimed now.
+The active scope is **Windows 11 (x64, arm64)** and **Linux, including WSL2 on Windows (x64, arm64)** for the node, CLI, MCP adapter and Desktop. It also covers **Android 8.0+** for the mobile app and **current evergreen browsers** for the web. macOS is outside the current implementation and acceptance scope ([AD-0002](../decisions/AD-0002-platform-scope.md)). Platform boundaries are kept clean so a macOS backend can be added later without redesign. Nothing for macOS is built or claimed now.
 
 ## 7. Non-goals
 
 - Transparently running one arbitrary process across several computers. Only separate tasks are placed on different nodes, and distributed compilation is used only where a toolchain supports it (sccache-dist, FASTBuild, distcc-class tools).
+- At launch, sharing **dependency caches** (NuGet, npm, Cargo, pip) over the LAN, and **managing FASTBuild remote workers**. Each node keeps its own managed dependency caches; FASTBuild `-dist` is observed and labelled. LAN sharing covers compiler caches and placement transfers ([05](../architecture/05-toolchains-caches.md) §6).
 - Taking control of unrelated applications. The node observes the whole machine but controls only processes it launched, or processes the user explicitly adopts.
 - Exact P-core/E-core placement or other low-level scheduler knobs.
 - Replacing the AI client, the build system or the operating system's resource-control machinery.
