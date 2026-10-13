@@ -254,7 +254,7 @@ message PairingServiceAbortValue {
 // Status of a paired peer (D0/D1 data only; R-LAN-004).
 service PeerStatusService {
   // Current status summary.
-  // auth: PEER: paired (PINNED or ACCOUNT)
+  // auth: PEER: paired (PINNED)
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -312,7 +312,7 @@ service PlacementService {
   // idempotency: command_id
   // deadline: 5 s
   // stream: none
-  // errors: AUTHORIZATION/peer_policy_denied, ENTITLEMENT/feature_not_entitled, RESOURCE/queue_full
+  // errors: AUTHORIZATION/peer_policy_denied, RESOURCE/queue_full
   // locality: peer
   rpc RequestOffer(PlacementServiceRequestOfferRequest) returns (PlacementServiceRequestOfferResponse);
 
@@ -749,7 +749,7 @@ message PeerHello {
   repeated string features = 6 [json_name = "features"];
   optional arcforges.node.v1.OsFamily os = 7 [json_name = "os"];
   optional arcforges.node.v1.CpuArchitecture arch = 8 [json_name = "arch"];
-  optional string account_hint = 9 [json_name = "accountHint"]; // first 8 hex of the account-ID hash, or "-"
+  optional string account_hint = 9 [json_name = "accountHint"]; // reserved for account hints (roadmap RM-01): always "-" in release 1, so unpaired nodes learn nothing about the account
   optional double cpu_class = 10 [json_name = "cpuClass"];
 }
 

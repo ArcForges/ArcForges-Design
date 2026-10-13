@@ -42,7 +42,7 @@ Account-based trust between nodes of one account (`PAIRED (ACCOUNT)`) is accepte
 
 ### 3.3 Revocation
 
-`PeerService.RemovePeer` unpins locally and notifies the peer when it is reachable. Account revocation propagates through the CA revocation list.
+`PeerService.RemovePeer` unpins locally and notifies the peer when it is reachable; **Block** also refuses the identity in future. Trust is per peer and local: revoking a node in the cloud (`FleetService.RevokeNode`) ends only its cloud access and changes no LAN pin. A lost or stolen machine must therefore be removed or blocked on every peer that paired with it (D-15); the web revoke dialog says so. Account-wide LAN revocation arrives only with account-based trust (roadmap RM-01).
 
 ## 4. Peer policy and status
 

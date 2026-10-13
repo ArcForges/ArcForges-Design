@@ -152,3 +152,25 @@ Each journey lists its steps across surfaces with the APIs involved, its success
   - closed-loop `J10_OperationsTests` (budgets and kill switches against the local Cloud stack; operator flows through `OperatorService`);
   - runbook review;
   - production alerting configuration: AR-09.
+
+## J-11 Agent worktrees, subagents and temporary files
+
+- **Actor.** Claude Code (agent) with subagents.
+
+1. The agent creates a managed worktree with the MCP `worktree_create` tool ([06](../architecture/06-storage-workspaces.md) §3).
+2. A subagent builds and tests there through rewritten commands. Each task carries the subagent's agent ID, so the session's records separate its work from the agent's own.
+3. Each attempt gets its own `tmp/<attempt>` as TMP, TEMP and TMPDIR, under the per-attempt limit ([06](../architecture/06-storage-workspaces.md) §4, §5). It is deleted when the attempt ends; a failed attempt's directory is kept 24 h when `keep_failed_tmp` is set.
+4. The agent removes the worktree, which has uncommitted changes, with `worktree_remove` and `archive=true`. The user approves; the archive is verified before anything is removed ([06](../architecture/06-storage-workspaces.md) §3). Later the user restores it with `arcforges worktree restore <id>`.
+5. The session report lists the subagent's tasks, their temporary-directory use and the release coverage statement.
+
+- **Success:**
+  - subagent work runs under the same admission, keys, limits and records as the agent's own;
+  - no temporary directory outlives its retention;
+  - the restored worktree matches the archived state byte for byte.
+- **Failures:**
+  - Codex subagent work cannot be attributed and is labelled unknown;
+  - archiving is refused while a merge or rebase is in progress;
+  - ignored files such as `.env` are archived only when included, never discarded.
+- **Verification:**
+  - closed-loop `J11_WorktreeSubagentTests` (`HookPayloadFixtures` for subagent events, real git worktrees on Windows and WSL);
+  - the archive round trip (L-19).

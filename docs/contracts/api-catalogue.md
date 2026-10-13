@@ -147,7 +147,7 @@ Cache registry, settings, reports and verification.
 |---|---|---|---|---|---|---|---|---|
 | `ListCaches` | List registered caches. | HUMAN=A SCRIPT=A AGENT=A REMOTE=- | read | 5 s | none | none (implicit codes only) | node |  |
 | `GetCacheReport` | Effectiveness, duplicate copies and per-task restores for a period (R-CACHE-008). | HUMAN=A SCRIPT=A AGENT=A REMOTE=- | read | 15 s | none | VALIDATION/invalid_argument | node |  |
-| `UpdateCacheSettings` | Change a cache's quota or LAN sharing (a policy revision). | HUMAN=A SCRIPT=P AGENT=P REMOTE=- | command_id | 5 s | none | STATE/not_found, VALIDATION/invalid_argument, ENTITLEMENT/feature_not_entitled, AUTHORIZATION/approval_required | node |  |
+| `UpdateCacheSettings` | Change a cache's quota or LAN sharing (a policy revision). | HUMAN=A SCRIPT=P AGENT=P REMOTE=- | command_id | 5 s | none | STATE/not_found, VALIDATION/invalid_argument, AUTHORIZATION/approval_required | node |  |
 | `VerifyCache` | Verify a cache under a maintenance lease (bounded to 10 minutes; waits for bound tasks to finish). | HUMAN=A SCRIPT=A AGENT=A REMOTE=- | command_id; one verification per cache at a time | 5 s (job continues) | none | STATE/not_found, STATE/in_use | node |  |
 
 <a id="arcforgesnodev1diagnosisservice"></a>
@@ -238,7 +238,7 @@ LAN listener, peers, pairing and per-peer policy.
 
 | Method | Purpose | Auth | Idempotency | Deadline | Stream | Errors | Locality | State |
 |---|---|---|---|---|---|---|---|---|
-| `GetLanStatus` | Listener, certificate, discovery and entitlement state. | HUMAN=A SCRIPT=A AGENT=A REMOTE=- | read | 5 s | none | none (implicit codes only) | node |  |
+| `GetLanStatus` | Listener, certificate and discovery state. LAN features are free (AD-0015). | HUMAN=A SCRIPT=A AGENT=A REMOTE=- | read | 5 s | none | none (implicit codes only) | node |  |
 | `SetLanEnabled` | Turn LAN features on or off, optionally changing the port and advertisement (a policy revision). | HUMAN=A SCRIPT=D AGENT=D REMOTE=- | command_id | 15 s | none | VALIDATION/invalid_argument, EXECUTION/operation_failed, AUTHORIZATION/permission_denied | node |  |
 | `ListPeers` | List discovered and paired peers. | HUMAN=A SCRIPT=A AGENT=A REMOTE=- | read | 5 s | none | none (implicit codes only) | node |  |
 | `GetPeer` | Read one peer with its live status summary. | HUMAN=A SCRIPT=A AGENT=A REMOTE=- | read | 10 s | none | STATE/not_found | node |  |
@@ -248,7 +248,7 @@ LAN listener, peers, pairing and per-peer policy.
 | `GetPairing` | Read a pairing, including the SAS while awaiting confirmation. | HUMAN=A SCRIPT=D AGENT=D REMOTE=- | read | 5 s | none | STATE/not_found | node |  |
 | `ConfirmPairing` | Confirm that both screens show the same six digits, or report a mismatch. | HUMAN=A (interactive) SCRIPT=D AGENT=D REMOTE=- | command_id | 10 s | none | STATE/not_found, STATE/invalid_state, STATE/expired, STATE/sas_mismatch | node -> peer | SM-PAIRING: AWAITING_CONFIRMATION -> CONFIRMED_LOCALLY -> PAIRED \| MISMATCH |
 | `CancelPairing` | Abort a pairing in progress. | HUMAN=A SCRIPT=D AGENT=D REMOTE=- | command_id | 5 s | none | STATE/not_found, STATE/invalid_state | node | SM-PAIRING: * -> CANCELLED |
-| `UpdatePeerPolicy` | Change this node's policy toward a paired peer (meta.expected_rev = peer revision). | HUMAN=A SCRIPT=P AGENT=D REMOTE=- | command_id; expected_rev | 10 s | none | STATE/not_found, CONFLICT/revision_conflict, VALIDATION/invalid_argument, ENTITLEMENT/feature_not_entitled, AUTHORIZATION/approval_required | node -> peer |  |
+| `UpdatePeerPolicy` | Change this node's policy toward a paired peer (meta.expected_rev = peer revision). | HUMAN=A SCRIPT=P AGENT=D REMOTE=- | command_id; expected_rev | 10 s | none | STATE/not_found, CONFLICT/revision_conflict, VALIDATION/invalid_argument, AUTHORIZATION/approval_required | node -> peer |  |
 | `RemovePeer` | Unpin and forget a peer; notifies it when reachable. Running remote attempts follow their lease rules. | HUMAN=A SCRIPT=D AGENT=D REMOTE=- | command_id | 10 s | none | STATE/not_found | node -> peer |  |
 
 <a id="arcforgesnodev1policyservice"></a>
@@ -364,7 +364,7 @@ Task submission, inspection, waiting, attachment, output and control. Every muta
 
 | Method | Purpose | Auth | Idempotency | Deadline | Stream | Errors | Locality | State |
 |---|---|---|---|---|---|---|---|---|
-| `SubmitTask` | Submit a task. It is persisted before the receipt returns (AD-0006 section 1). | HUMAN=A SCRIPT=A AGENT=A (allowed_command_patterns) REMOTE=high | command_id; 24 h; same payload digest required | 10 s | none | VALIDATION/invalid_argument, VALIDATION/unsafe_batch_argument, VALIDATION/unsupported_shell, VALIDATION/path_not_found, VALIDATION/program_not_found, VALIDATION/invalid_dependency, VALIDATION/inputs_required, AUTHORIZATION/permission_denied, AUTHORIZATION/command_pattern_denied, AUTHORIZATION/approval_required, ENTITLEMENT/feature_not_entitled, CONFLICT/command_id_reused, RESOURCE/queue_full, RESOURCE/disk_space, RESOURCE/enforcement_unavailable, STATE/node_stopping | node | SM-TASK: (none) -> QUEUED \| WAITING_DEPENDENCY \| PLACING |
+| `SubmitTask` | Submit a task. It is persisted before the receipt returns (AD-0006 section 1). | HUMAN=A SCRIPT=A AGENT=A (allowed_command_patterns) REMOTE=high | command_id; 24 h; same payload digest required | 10 s | none | VALIDATION/invalid_argument, VALIDATION/unsafe_batch_argument, VALIDATION/unsupported_shell, VALIDATION/path_not_found, VALIDATION/program_not_found, VALIDATION/invalid_dependency, VALIDATION/inputs_required, AUTHORIZATION/permission_denied, AUTHORIZATION/command_pattern_denied, AUTHORIZATION/approval_required, CONFLICT/command_id_reused, RESOURCE/queue_full, RESOURCE/disk_space, RESOURCE/enforcement_unavailable, STATE/node_stopping | node | SM-TASK: (none) -> QUEUED \| WAITING_DEPENDENCY \| PLACING |
 | `GetTask` | Read one task. | HUMAN=A SCRIPT=A AGENT=A (FULL only for own session) REMOTE=- | read | 5 s | none | STATE/not_found, AUTHORIZATION/permission_denied | node |  |
 | `ListTasks` | List tasks, newest first. | HUMAN=A SCRIPT=A AGENT=A (others' tasks as summary) REMOTE=- | read | 5 s | none | VALIDATION/invalid_argument, VALIDATION/invalid_cursor | node |  |
 | `WaitTask` | Wait up to wait_ms for a target state. Returns the task either way (bounded wait for MCP, 08 section 2.2). | HUMAN=A SCRIPT=A AGENT=A REMOTE=- | read | wait_ms + 5 s | none | STATE/not_found, VALIDATION/invalid_argument | node |  |
@@ -491,7 +491,7 @@ Status of a paired peer (D0/D1 data only; R-LAN-004).
 
 | Method | Purpose | Auth | Idempotency | Deadline | Stream | Errors | Locality | State |
 |---|---|---|---|---|---|---|---|---|
-| `GetStatus` | Current status summary. | PEER: paired (PINNED or ACCOUNT) | read | 5 s | none | AUTHORIZATION/peer_policy_denied | peer |  |
+| `GetStatus` | Current status summary. | PEER: paired (PINNED) | read | 5 s | none | AUTHORIZATION/peer_policy_denied | peer |  |
 | `WatchStatus` | Stream status summaries on change, at most every interval. | PEER: paired | read | none; heartbeat 15 s | server: PeerStatusServiceWatchStatusFrame | AUTHORIZATION/peer_policy_denied | peer |  |
 
 <a id="arcforgespeerv1placementservice"></a>
@@ -502,7 +502,7 @@ Offers, remote attempts, leases and results (09 section 5).
 
 | Method | Purpose | Auth | Idempotency | Deadline | Stream | Errors | Locality | State |
 |---|---|---|---|---|---|---|---|---|
-| `RequestOffer` | Ask the executor for an offer. A positive offer reserves budget until accept_by. | PEER: paired; executor policy accept_from | command_id | 5 s | none | AUTHORIZATION/peer_policy_denied, ENTITLEMENT/feature_not_entitled, RESOURCE/queue_full | peer |  |
+| `RequestOffer` | Ask the executor for an offer. A positive offer reserves budget until accept_by. | PEER: paired; executor policy accept_from | command_id | 5 s | none | AUTHORIZATION/peer_policy_denied, RESOURCE/queue_full | peer |  |
 | `AcceptOffer` | Accept an offer and create a remote attempt with a 5-minute lease. | PEER: paired; same as RequestOffer | command_id | 10 s | none | STATE/expired, STATE/not_found, AUTHORIZATION/peer_policy_denied, AUTHORIZATION/command_pattern_denied, VALIDATION/invalid_argument | peer | SM-REMOTE-ATTEMPT: (none) -> RESERVED -> RECEIVING_INPUTS |
 | `DeclineOffer` | Release an offer's reservation. | PEER: paired; the requesting origin | natural | 5 s | none | STATE/not_found | peer |  |
 | `WatchRemoteAttempt` | Stream state, output, segments, usage and the final result from a cursor. | PEER: the origin of the attempt | read | none; heartbeat 15 s | server: PlacementServiceWatchRemoteAttemptFrame; resumable by cursor | STATE/not_found | peer |  |

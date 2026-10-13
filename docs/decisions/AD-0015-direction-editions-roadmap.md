@@ -14,7 +14,7 @@ ArcForges is the flagship product ([AD-0001](AD-0001-flagship-pivot.md)). ArcSco
    - The long-term target is every non-reasoning operation: commands and their subprocesses, worktrees, temporary directories, disk space, caches, scheduling and task lifecycle. Work that subagents start takes part in the same system.
    - The objective is useful completion time and reliability on the machine and the LAN, not concurrency counts or CPU utilization.
 2. **Editions.** Local and LAN functionality is free, including future local and LAN capabilities. Only cloud-backed services need a subscription. Local and LAN execution never depend on cloud availability, and no local capability is restricted to create subscription value.
-   - **Pro at launch** is the cloud offering: remote access outside the LAN (live status and confirmed actions through the relay, from the web and Android), mobile monitoring and control, and push notifications.
+   - **Pro at launch** is the cloud offering: remote access through ArcForges Cloud from anywhere (live status and confirmed actions through the relay, from the web and Android), mobile monitoring and control, and push notifications.
    - Hosted history and team administration are accepted future work (roadmap RM-06, RM-07). Account-based LAN trust and cloud discovery hints are deferred (RM-01); pairing provides LAN trust without an account.
 3. **Platform.** Windows 11 is the minimum Windows version. No effort goes into Windows 10 ([AD-0002](AD-0002-platform-scope.md)).
 4. **Initial LAN scope.** Placement with content-addressed file transfer, and compiler-cache sharing (sccache, ccache). Dependency-cache sharing (RM-02) and managed FASTBuild remote workers (RM-03) are accepted future work.

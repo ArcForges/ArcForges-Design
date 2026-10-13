@@ -402,6 +402,7 @@ message CachePolicy {
   repeated CacheQuota quotas = 1 [json_name = "quotas"]; // defaults: architecture 05 section 4
   optional bool dotnet_shared_build_servers = 2 [json_name = "dotnetSharedBuildServers"]; // default false
   optional bool redirect_tool_caches = 3 [json_name = "redirectToolCaches"]; // default true
+  optional uint32 usage_scan_budget_ms = 4 [json_name = "usageScanBudgetMs"]; // default 2000: background budget for measuring each attempt's cache growth (07 section 1.5); a measurement that would exceed it is skipped
 }
 
 message PrivacyPolicy {

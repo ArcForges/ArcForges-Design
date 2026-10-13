@@ -28,7 +28,8 @@ Requirement: R-PERF-001. Every target names its measurement. "Workstation" means
 | Admission latency (submit → `STARTED` when capacity exists) | p95 ≤ 150 ms (Windows), ≤ 250 ms (Linux, including the transient-unit job) | 500 submissions | Workstation |
 | Local event latency (state change → client stream) | p95 ≤ 200 ms | Timestamps in the event and the receiver | Workstation |
 | Output capture | ≥ 200 MB/s sustained, no loss | `TestLoad` writer at maximum rate; byte-for-byte digest comparison | Workstation |
-| Store growth | ≤ 50 MB per 10,000 attempts (records, timelines, samples; logs excluded) | Database file size after generating attempts | Workstation, CI (smaller scale) |
+| Store growth | ≤ 50 MB per 10,000 attempts (records, timelines, samples, cache usage and result-cache observations; logs excluded) | Database file size after generating attempts | Workstation, CI (smaller scale) |
+| Evidence collection per attempt | Cache-usage measurement ≤ 2 s of background work (policy `caches.usage_scan_budget_ms`), never delaying the attempt's result | Timestamps of the measurement job | Workstation |
 | Node startup to ready (warm, 100 surviving executions to re-attach) | ≤ 3 s | Startup timestamps | Workstation |
 | Guest node idle (WSL2) | ≤ 40 MB RSS, ≤ 0.5% of one core | Guest after 10 minutes idle | Workstation |
 

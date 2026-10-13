@@ -211,5 +211,6 @@ Shared daemons run in a node-owned container (Windows child job `Local\ArcForges
 - Hit/miss counts and bytes from `sccache --show-stats --stats-format=json` and `ccache --print-stats`.
 - NuGet restore counters: packages installed versus reused, parsed from restore output, and http-cache growth per attempt.
 - Per-attempt cache usage and downloads (`CacheUsage`, [07](07-records-diagnosis-memory.md) §1.5): what each attempt added to or used from each managed cache.
+- Result cache `OBSERVE` mode: observations and would-be hits per period ([04](04-execution.md) §11).
 - **Duplicate cache copies:** global-packages-like folders found by disk analysis outside the managed cache, such as `~/.nuget/packages` or per-task `NUGET_PACKAGES` folders seen in unmanaged processes' environments where readable. The report gives package-version overlap with the managed cache and the reclaimable bytes.
 - **Per-task restores:** managed attempts whose caller overrode `NUGET_PACKAGES` with a unique folder. These raise finding `PER_TASK_RESTORE`.

@@ -68,7 +68,7 @@ Journeys are specified in [experience/journeys.md](../experience/journeys.md).
 | WSL guest node on the same machine | Yes | Yes |
 | Managed storage, caches, disk analysis and cleanup | Yes | Yes |
 | LAN pairing, peer status, placement with file transfer, and compiler-cache sharing | Yes | Yes |
-| Remote access outside the LAN: live status and confirmed actions from arcforges.com and Android, through the cloud relay | No | Yes |
+| Remote access through ArcForges Cloud, from anywhere: live status and confirmed actions from arcforges.com and Android | No | Yes |
 | Mobile monitoring and control (Android app) | No | Yes |
 | Push notifications | No | Yes |
 | Support response targets | Community | Standard |
@@ -106,19 +106,21 @@ The active scope is **Windows 11 (x64, arm64)** (the minimum Windows version, co
 
 Release 1 manages the operations below end to end on Windows 11 and Linux, including WSL2 (R-AI-011). Everything else is observed where possible and reported as a coverage gap. A prompt that asks an AI client to use ArcForges is never counted as interception.
 
-| Operation | Managed in release 1 (route) | Reported as a gap |
-|---|---|---|
-| Commands and their subprocesses | The CLI, Desktop and the MCP `run` tool; Claude Code and Codex shell commands rewritten by hooks (`rewrite` for heavy commands, `rewrite-all` for every command except passthrough patterns). Each runs in a job object or transient unit under budgets, keys and records. | Commands while hooks are disabled, untrusted or failed; background launches; processes the client starts itself (MCP servers, language servers, IDE tasks): observed as bypassed or unmanaged ([08](../architecture/08-ai-integration.md) §4.4; roadmap RM-12) |
-| Work started by subagents | The same routes; Claude Code subagent commands carry the agent ID | Subagent attribution for Codex and for MCP calls: labelled unknown |
-| Worktrees | Managed creation, locks, verified archive and restore (MCP, CLI, Desktop) | Worktrees a client creates itself: observed and registered as workspaces |
-| Temporary directories | Per-attempt `tmp/<attempt>` with limits and cleanup | Tools that ignore `TMP`/`TEMP`/`TMPDIR`: reported by disk analysis |
-| Disk space | Managed roots, limits by kind, runtime limits, the low-space guard, analysis and two-phase cleanup with quarantine | Writes by unmanaged processes |
-| Caches | Managed NuGet, npm, Cargo, pip, sccache, ccache and FASTBuild caches, redirected where the tool honours it; compiler-cache sharing on the LAN | Dependency-cache sharing on the LAN (RM-02); redirection the tool may ignore is labelled `BEST_EFFORT` |
-| Scheduling and task lifecycle | Queue, pools, priorities, dependencies, services, retries by assertion, cancellation, hand-off before client timeouts, joins | — |
-| Machines | The WSL guest node with coordinated admission; LAN placement with content-addressed transfer between paired nodes | Managed FASTBuild workers (RM-03) |
-| Evidence | Correlated records per attempt ([07](../architecture/07-records-diagnosis-memory.md) §1.5) | Network use per process (inferred only) |
+| Operation | Managed in release 1 (route) | Reported as a gap | Verified by |
+|---|---|---|---|
+| Commands and their subprocesses | The CLI, Desktop and the MCP `run` tool; Claude Code shell commands rewritten by hooks (`rewrite` for heavy commands, `rewrite-all` for every command except passthrough patterns); Codex shell commands rewritten when the user pre-approves rewritten commands (`routing.rewrite_permission=ALLOW`). Each runs in a job object or transient unit under budgets, keys and records. | Commands while hooks are disabled, untrusted or failed; Codex shell commands without the pre-approval (heavy ones are denied with guidance to the `run` tool, the rest run unmanaged); background launches; processes the client starts itself (MCP servers, language servers, IDE tasks): observed as bypassed or unmanaged ([08](../architecture/08-ai-integration.md) §4.4; roadmap RM-12) | J-02, J-03 |
+| Work started by subagents | The same routes; Claude Code subagent commands carry the agent ID | Subagent attribution for Codex and for MCP calls: labelled unknown | J-11 |
+| Worktrees | Managed creation, locks, verified archive and restore (MCP, CLI, Desktop) | Worktrees a client creates itself: observed and registered as workspaces | J-11 |
+| Temporary directories | Per-attempt `tmp/<attempt>` with limits and cleanup | Tools that ignore `TMP`/`TEMP`/`TMPDIR`: reported by disk analysis | J-11 |
+| Disk space | Managed roots, limits by kind, runtime limits, the low-space guard, analysis and two-phase cleanup with quarantine | Writes by unmanaged processes | J-05 |
+| Caches | Managed NuGet, npm, Cargo, pip, sccache, ccache and FASTBuild caches, redirected where the tool honours it; compiler-cache sharing on the LAN | Dependency-cache sharing on the LAN (RM-02); redirection the tool may ignore is labelled `BEST_EFFORT`; downloads outside managed caches (for example a script's own download) are not counted | J-02, J-07 |
+| Scheduling and task lifecycle | Queue, pools, priorities, dependencies, services, retries by assertion, cancellation, hand-off before client timeouts, joins | — | J-02, J-03, J-04 |
+| Machines | The WSL guest node with coordinated admission; LAN placement with content-addressed transfer between paired nodes | Managed FASTBuild workers (RM-03) | J-01, J-06, J-07 |
+| Evidence | Correlated records per attempt ([07](../architecture/07-records-diagnosis-memory.md) §1.5) | Network use per process (inferred only) | J-04 |
 
-**Pro in release 1** is the cloud offering of §5: remote access outside the LAN, mobile monitoring and control, and push notifications.
+**Where gaps are reported.** Gaps that belong to a session (bypassed commands, route failures, unknown attribution) appear in its coverage report ([08](../architecture/08-ai-integration.md) §5). The whole table above ships as the product's **release coverage statement**, shown on D-14, printed by `arcforges coverage` and returned by the MCP `session_coverage` tool next to the session's facts, so no surface implies broader coverage.
+
+**Pro in release 1** is the cloud offering of §5: remote access through ArcForges Cloud, mobile monitoring and control, and push notifications.
 
 ## 10. Roadmap
 

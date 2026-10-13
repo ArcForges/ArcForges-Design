@@ -32,7 +32,7 @@
 |---|---|---|
 | Desktop, CLI, MCP adapter → local node | gRPC over HTTP/2 on a Windows named pipe or a Unix domain socket (DesktopPlatform LocalRpc, adapted) | Same-user peer check (pipe DACL; socket directory mode 0700 and SO_PEERCRED) plus a per-connection client hello naming the client kind |
 | Host node ↔ WSL guest node | gRPC over HTTP/2 on the byte stream of `arcforges bridge wsl` (wsl.exe stdio) → guest Unix socket | Bridge launched by the host user; guest checks the peer uid; link token exchanged at link creation |
-| Node ↔ node (LAN) | gRPC over HTTP/2 with mutual TLS 1.3 on TCP | Account-issued or pinned node certificates (AD-0008) |
+| Node ↔ node (LAN) | gRPC over HTTP/2 with mutual TLS 1.3 on TCP | Node certificates pinned by pairing (AD-0008; account-issued certificates are roadmap RM-01) |
 | Web, Android, nodes → cloud API | gRPC-Web over HTTPS through the Worker ingress (existing) | Account session (native bearer or browser cookie with CSRF) or node credential |
 | Node ↔ cloud relay | WebSocket carrying `arcforges.relay.v1` frames to a hibernating Durable Object | Short-lived signed node token (AD-0009) |
 | AI client → MCP adapter | MCP JSON-RPC over stdio (a local HTTP transport is roadmap RM-05) | Process ownership (stdio) |

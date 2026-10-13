@@ -40,7 +40,7 @@ service CacheService {
   // idempotency: command_id
   // deadline: 5 s
   // stream: none
-  // errors: STATE/not_found, VALIDATION/invalid_argument, ENTITLEMENT/feature_not_entitled, AUTHORIZATION/approval_required
+  // errors: STATE/not_found, VALIDATION/invalid_argument, AUTHORIZATION/approval_required
   // locality: node
   rpc UpdateCacheSettings(CacheServiceUpdateCacheSettingsRequest) returns (CacheServiceUpdateCacheSettingsResponse);
 
@@ -173,4 +173,6 @@ message CacheReport {
   repeated DuplicateCacheCopy duplicates = 3 [json_name = "duplicates"];
   repeated PerTaskRestore per_task_restores = 4 [json_name = "perTaskRestores"];
   optional uint64 reclaimable_bytes = 5 [json_name = "reclaimableBytes"];
+  optional uint64 result_cache_observations = 6 [json_name = "resultCacheObservations"]; // OBSERVE mode: action keys recorded in the period (04 section 11)
+  optional uint64 result_cache_would_hits = 7 [json_name = "resultCacheWouldHits"]; // observations whose key and output digest matched an earlier success (the evidence for roadmap RM-04)
 }

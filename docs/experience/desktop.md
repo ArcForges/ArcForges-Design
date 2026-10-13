@@ -402,7 +402,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 
 - **Data:** `CacheService.ListCaches`, `GetCacheReport`.
 - **Actions:** Verify (`VerifyCache`), Settings (`UpdateCacheSettings`: quota, LAN sharing), Plan cleanup for duplicates or a trim (opens D-11 with rules).
-- **States:** a "Maintenance in progress" chip while a lease is held; LAN sharing unavailable until a peer is paired (link to D-15).
+- **States:** a "Maintenance in progress" chip while a lease is held. The LAN sharing section is added with LAN cache sharing (AF-LAN-03); until a peer is paired it explains how to pair (link to D-15).
 
 ## D-13 Toolchains
 
@@ -450,6 +450,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 ```
 
 - **Data:** `IntegrationService.ListClients`, `ListProbeResults`; topic INTEGRATIONS.
+- **Release coverage statement.** A panel lists what this release manages and the reported gaps (product definition §9), so the page never implies broader coverage.
 - **Routing modes** (per client and workspace, [08](../architecture/08-ai-integration.md) §4.1): observe, guide, **rewrite** (heavy patterns only) and **rewrite all** (every shell command except passthrough patterns). Each mode shows what it covers and what stays unmanaged, from the coverage map ([08](../architecture/08-ai-integration.md) §4.4).
 - **Copy.** Choosing MCP without hooks shows: "Connecting MCP alone routes nothing. Your agent's own shell commands run outside ArcForges unless hooks rewrite them, or the agent calls the run tool." Choosing **rewrite all** shows: "Every routed command asks for your confirmation unless you pre-approve rewritten commands (deny rules written for the original commands then no longer match)." For Codex, rewriting needs that pre-approval; otherwise Codex gets guidance.
 - **Actions:**

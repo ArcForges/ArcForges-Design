@@ -147,7 +147,7 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
 - **Data:** `FleetService.ListNodes`; reused `DeviceService.List` for phones and browsers.
 - **Actions:**
   - Rename (`FleetService.RenameNode`).
-  - Revoke a node (`FleetService.RevokeNode`, step-up). Confirmation: "The node can no longer reach the cloud. Local and LAN work is unaffected."
+  - Revoke a node (`FleetService.RevokeNode`, step-up). Confirmation: "The node can no longer reach the cloud. Local and LAN work is unaffected. If the machine is lost, also remove or block it on your other machines (LAN pairing is not revoked from here)."
   - Revoke a phone (`DeviceService.Revoke`, step-up).
 - **States:** S-LOADING, S-OFFLINE and S-FAILED; S-EMPTY ("No nodes yet"); a node revoked (kept greyed out for 30 days, with the revocation time); plan node limit reached (S-NOT-ENTITLED on the next sign-in).
 - **Accessibility.** The table has row headers (node names). Guest rows state "guest of workstation" in text, not only by indentation.

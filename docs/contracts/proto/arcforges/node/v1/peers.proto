@@ -19,7 +19,7 @@ option java_outer_classname = "NodePeersProto";
 
 // LAN listener, peers, pairing and per-peer policy.
 service PeerService {
-  // Listener, certificate, discovery and entitlement state.
+  // Listener, certificate and discovery state. LAN features are free (AD-0015).
   // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
   // idempotency: read
   // deadline: 5 s
@@ -118,7 +118,7 @@ service PeerService {
   // idempotency: command_id; expected_rev
   // deadline: 10 s
   // stream: none
-  // errors: STATE/not_found, CONFLICT/revision_conflict, VALIDATION/invalid_argument, ENTITLEMENT/feature_not_entitled, AUTHORIZATION/approval_required
+  // errors: STATE/not_found, CONFLICT/revision_conflict, VALIDATION/invalid_argument, AUTHORIZATION/approval_required
   // locality: node -> peer
   rpc UpdatePeerPolicy(PeerServiceUpdatePeerPolicyRequest) returns (PeerServiceUpdatePeerPolicyResponse);
 
@@ -435,7 +435,7 @@ message Peer {
   optional PeerState state = 4 [json_name = "state"];
   optional PeerTrust trust = 5 [json_name = "trust"];
   optional string fingerprint = 6 [json_name = "fingerprint"]; // SHA-256 of the certificate, hex
-  optional bool same_account = 7 [json_name = "sameAccount"];
+  optional bool same_account = 7 [json_name = "sameAccount"]; // account-based trust (roadmap RM-01); always false in release 1
   PeerPolicy policy = 8 [json_name = "policy"]; // this node's policy toward the peer
   PeerPolicy offered = 9 [json_name = "offered"]; // what the peer offers this node (read-only)
   PeerStatusSummary status = 10 [json_name = "status"];
@@ -465,9 +465,9 @@ message LanStatus {
   optional bool advertise = 5 [json_name = "advertise"];
   optional bool dns_sd_available = 6 [json_name = "dnsSdAvailable"];
   optional string certificate_fingerprint = 7 [json_name = "certificateFingerprint"];
-  arcforges.foundation.v1.Instant account_certificate_expires_at = 8 [json_name = "accountCertificateExpiresAt"];
-  optional bool entitled_placement = 9 [json_name = "entitledPlacement"];
-  optional bool entitled_accept = 10 [json_name = "entitledAccept"];
-  optional bool entitled_cache = 11 [json_name = "entitledCache"];
+  arcforges.foundation.v1.Instant account_certificate_expires_at = 8 [json_name = "accountCertificateExpiresAt"]; // account-based LAN trust (roadmap RM-01); absent in release 1
+  optional bool entitled_placement = 9 [json_name = "entitledPlacement"]; // deprecated (AD-0015): always true; LAN features are free and never gated
+  optional bool entitled_accept = 10 [json_name = "entitledAccept"]; // deprecated (AD-0015): always true
+  optional bool entitled_cache = 11 [json_name = "entitledCache"]; // deprecated (AD-0015): always true
   optional string error = 12 [json_name = "error"];
 }

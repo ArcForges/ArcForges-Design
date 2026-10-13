@@ -71,7 +71,7 @@ Default permission matrix (policy `permissions`, editable only by `HUMAN`).
 | Google service accounts (Play Developer API, FCM) | Cloud container | Platform secrets, least privilege | Yearly |
 | Paddle webhook secret | Cloud container | Platform secret | On rotation in Paddle |
 | Loopback cache-proxy bearer | Each node | Memory plus 0600 file | Every node start |
-| MCP HTTP bearer (optional) | Each node | 0600 file | Every node start |
+| MCP HTTP bearer | Reserved for the local HTTP transport (roadmap RM-05); not created in release 1 | — | — |
 
 Secrets are never logged. Records and exports apply secret-name redaction ([04](04-execution.md) §2). Output text is scanned for credential-shaped tokens (high-entropy strings after `token=`, `Bearer `, `ghp_`, `sk-`, `AKIA` and similar) **only for exports and support bundles**, and these are masked (R-SEC-003).
 
@@ -98,6 +98,7 @@ Secrets are never logged. Records and exports apply secret-name redaction ([04](
 | T-17 | Supply chain | Tampered update | Signed manifest + Authenticode; digest checks; rollback | Real update tests with test keys |
 | T-18 | B1 | Escaped processes evade cancellation | Ancestry scan; report and terminate | Real Windows WMI test |
 | T-19 | B5 | Stolen node credential used to gain account access (for example from the Linux 0600-file fallback) | A node credential can create and confirm a phone pairing, but the phone then holds only a `mobile.limited` session. Medium- and high-risk commands, billing and account settings need a step-up on the phone (passkey or e-mail code) ([AD-0011](../decisions/AD-0011-identity-and-login.md) §3). | Closed-loop: a phone paired through a node credential cannot run medium or high commands or reach billing before step-up |
+| T-20 | B3 | Lost or stolen paired machine | Trust is per peer: the user removes or blocks the machine on every peer that paired with it (D-15). Cloud revocation ends only cloud access ([09](09-lan.md) §3.3). | Closed-loop: a removed or blocked peer reaches nothing; a cloud-revoked node keeps no cloud access |
 
 ## 5. Privacy
 

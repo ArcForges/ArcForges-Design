@@ -377,6 +377,17 @@ CREATE UNIQUE INDEX ux_attempt__task_number ON attempt (task_id, number);
 CREATE INDEX ix_attempt__live ON attempt (state) WHERE state BETWEEN 1 AND 8;
 CREATE INDEX ix_attempt__finished ON attempt (finished_at);
 
+CREATE TABLE result_cache_observation (
+  attempt_id BLOB NOT NULL PRIMARY KEY REFERENCES attempt (attempt_id) ON DELETE CASCADE,
+  workspace_id BLOB CHECK (workspace_id IS NULL OR length(workspace_id) = 16),
+  action_key BLOB NOT NULL CHECK (length(action_key) = 32),        -- 04 section 11
+  output_manifest_digest BLOB NOT NULL CHECK (length(output_manifest_digest) = 32),
+  succeeded INTEGER NOT NULL CHECK (succeeded IN (0, 1)),
+  would_hit INTEGER NOT NULL CHECK (would_hit IN (0, 1)),            -- an earlier success had the same key and output digest
+  observed_at INTEGER NOT NULL
+) STRICT, WITHOUT ROWID;
+CREATE INDEX ix_result_cache_observation__key ON result_cache_observation (action_key, observed_at);
+
 CREATE TABLE attempt_cache_usage (
   attempt_id BLOB NOT NULL REFERENCES attempt (attempt_id) ON DELETE CASCADE,
   cache_id BLOB NOT NULL CHECK (length(cache_id) = 16),
@@ -709,7 +720,7 @@ CREATE TABLE peer (
   state INTEGER NOT NULL CHECK (state BETWEEN 1 AND 7),    -- PeerState
   trust INTEGER NOT NULL CHECK (trust BETWEEN 1 AND 3),    -- PeerTrust
   fingerprint BLOB CHECK (fingerprint IS NULL OR length(fingerprint) = 32),
-  same_account INTEGER NOT NULL DEFAULT 0 CHECK (same_account IN (0, 1)),
+  same_account INTEGER NOT NULL DEFAULT 0 CHECK (same_account IN (0, 1)),  -- account-based trust (roadmap RM-01); always 0 in release 1
   policy BLOB NOT NULL,                         -- PeerPolicy (ours)
   offered BLOB,                                 -- PeerPolicy (theirs, read-only)
   status BLOB,                                  -- PeerStatusSummary
@@ -840,11 +851,11 @@ CREATE TABLE account_link (
   entitlement_not_after INTEGER,
   entitlement_version INTEGER,
   entitlement_refreshed_at INTEGER,
-  node_certificate_chain BLOB,
+  node_certificate_chain BLOB,                  -- reserved for account-based LAN trust (roadmap RM-01); empty in release 1
   node_certificate_expires_at INTEGER,
   command_keys BLOB,                            -- repeated PublicKey (KeySet wrapper)
   entitlement_keys BLOB,
-  revoked_nodes BLOB,                           -- accumulated revocation list
+  revoked_nodes BLOB,                           -- reserved for account-based LAN trust (roadmap RM-01); empty in release 1
   last_contact_at INTEGER,
   linked_at INTEGER NOT NULL,
   rev INTEGER NOT NULL CHECK (rev >= 0)

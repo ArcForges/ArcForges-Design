@@ -93,7 +93,9 @@ Every attempt's record links the evidence that explains delay and waste (R-REC-0
 | Resource consumption | Attempt accounting and `resource_sample` | `attempt_id` |
 | Retries and outcomes | The task's attempts, `termination_reason`, `effect` and findings | `task_id` |
 
-- **Attribution of shared caches.** When several attempts use one cache at the same time, growth and statistics cannot be split exactly: the record says `SHARED_WINDOW` and gives the window's totals, never an invented split.
+- **How cache usage is measured.** `bytes_added` is the change in the cache's size between attempt start and end, taken from the size cache ([06](06-storage-workspaces.md) §6), which re-walks only directories whose modification time changed. The measurement runs after the attempt, at background priority, and never delays its result. If it would exceed policy `caches.usage_scan_budget_ms` (default 2,000 ms), it is skipped and the entry leaves `bytes_added` empty. Hits, misses and package counts come from the tools' own counters (sccache and ccache statistics, NuGet restore output).
+- **Attribution of shared caches.** When several attempts use one cache at the same time, growth and statistics cannot be split exactly: the entry says `SHARED_WINDOW` and gives the window's totals, never an invented split. `Attempt.downloaded_bytes` sums only `EXACT` entries.
+- **Aggregation.** Session, workspace and period totals add `EXACT` entries and count each shared window once (by cache and window), never once per attempt.
 - **Bounds.** Collection stays within the node's overhead targets ([15](15-performance-targets.md) §2) and the store's size budget ([node store](../data/node-store.md) §4); evidence follows record retention (`record_retention_days`, default 90) and sample downsampling (R-REC-005).
 - **Sensitive data.** Command lines and environment values are redacted as in R-EXE-017; downloads are recorded as counts and bytes, never as URLs or credentials; exports and support bundles apply the same redaction.
 - **Foundations.** The same records feed operational memory today and later prediction and cache-sharing decisions (roadmap RM-02, RM-08).

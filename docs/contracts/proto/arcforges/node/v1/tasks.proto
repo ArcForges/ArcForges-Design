@@ -23,7 +23,7 @@ service TaskService {
   // idempotency: command_id; 24 h; same payload digest required
   // deadline: 10 s
   // stream: none
-  // errors: VALIDATION/invalid_argument, VALIDATION/unsafe_batch_argument, VALIDATION/unsupported_shell, VALIDATION/path_not_found, VALIDATION/program_not_found, VALIDATION/invalid_dependency, VALIDATION/inputs_required, AUTHORIZATION/permission_denied, AUTHORIZATION/command_pattern_denied, AUTHORIZATION/approval_required, ENTITLEMENT/feature_not_entitled, CONFLICT/command_id_reused, RESOURCE/queue_full, RESOURCE/disk_space, RESOURCE/enforcement_unavailable, STATE/node_stopping
+  // errors: VALIDATION/invalid_argument, VALIDATION/unsafe_batch_argument, VALIDATION/unsupported_shell, VALIDATION/path_not_found, VALIDATION/program_not_found, VALIDATION/invalid_dependency, VALIDATION/inputs_required, AUTHORIZATION/permission_denied, AUTHORIZATION/command_pattern_denied, AUTHORIZATION/approval_required, CONFLICT/command_id_reused, RESOURCE/queue_full, RESOURCE/disk_space, RESOURCE/enforcement_unavailable, STATE/node_stopping
   // locality: node
   // state: SM-TASK: (none) -> QUEUED | WAITING_DEPENDENCY | PLACING
   rpc SubmitTask(TaskServiceSubmitTaskRequest) returns (TaskServiceSubmitTaskResponse);
@@ -725,7 +725,7 @@ enum AttemptKind {
   ATTEMPT_KIND_UNSPECIFIED = 0;
   ATTEMPT_KIND_LOCAL = 1;
   ATTEMPT_KIND_REMOTE = 2; // origin-side mirror of an attempt executing on a peer
-  ATTEMPT_KIND_CACHE_RESTORE = 3; // result-cache hit; never an execution (AD-0006 section 8)
+  ATTEMPT_KIND_CACHE_RESTORE = 3; // result-cache hit; never an execution (AD-0006 section 8); roadmap RM-04, not produced in release 1
   ATTEMPT_KIND_ADOPTED = 4;
 }
 
@@ -743,7 +743,7 @@ enum TerminationReason {
   TERMINATION_REASON_NODE_SHUTDOWN = 10;
   TERMINATION_REASON_POLICY_DENIED = 11;
   TERMINATION_REASON_TERMINATION_INCOMPLETE = 12;
-  TERMINATION_REASON_CACHE_RESTORED = 13;
+  TERMINATION_REASON_CACHE_RESTORED = 13; // roadmap RM-04, not produced in release 1
   TERMINATION_REASON_OUTPUT_LIMIT = 14; // captured output exceeded storage.max_attempt_output_bytes (06 section 5)
   TERMINATION_REASON_DISK_LIMIT = 15; // per-attempt tmp limit or critical free space on a written volume (06 section 5)
 }
@@ -938,14 +938,14 @@ message Attempt {
   arcforges.foundation.v1.Id remote_attempt_id = 20 [json_name = "remoteAttemptId"]; // REMOTE kind: executor-side ID
   arcforges.foundation.v1.Revision revision = 21 [json_name = "revision"];
   repeated CacheUsage cache_usage = 22 [json_name = "cacheUsage"]; // one entry per cache binding (07 section 1.5)
-  optional uint64 downloaded_bytes = 23 [json_name = "downloadedBytes"]; // bytes added to download caches during the attempt (sum over cache_usage of download kinds)
+  optional uint64 downloaded_bytes = 23 [json_name = "downloadedBytes"]; // bytes added to download caches by this attempt alone: the sum of its EXACT download entries; shared windows count only in their CacheUsage entries (07 section 1.5)
 }
 
 // What one attempt did with one managed cache (07 section 1.5).
 message CacheUsage {
   arcforges.foundation.v1.Id cache_id = 1 [json_name = "cacheId"];
   optional string kind = 2 [json_name = "kind"]; // nuget | npm | pnpm | cargo | pip | sccache | ccache | fastbuild | cas
-  optional uint64 bytes_added = 3 [json_name = "bytesAdded"]; // cache growth during the attempt: downloads and new entries
+  optional uint64 bytes_added = 3 [json_name = "bytesAdded"]; // cache growth during the attempt (downloads and new entries); absent when the measurement exceeded caches.usage_scan_budget_ms (07 section 1.5)
   optional uint64 hits = 4 [json_name = "hits"]; // when the tool reports them (sccache, ccache)
   optional uint64 misses = 5 [json_name = "misses"];
   optional uint32 packages_installed = 6 [json_name = "packagesInstalled"]; // restores: packages downloaded or extracted (adapter-parsed)

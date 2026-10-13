@@ -783,9 +783,10 @@
       ],
       "tasks": [
         "AF-REC-01",
-        "AF-CACHE-01"
+        "AF-CACHE-01",
+        "AF-AI-01"
       ],
-      "verification": "record-chain test from a session task to processes, queue reasons, cache usage, downloads and outcome; SHARED_WINDOW attribution test; overhead and size benchmarks (15)"
+      "verification": "record-chain test from a session task to processes, queue reasons, cache usage, downloads and outcome; SHARED_WINDOW attribution and aggregation tests; measurement budget (caches.usage_scan_budget_ms) and store size benchmarks (15)"
     },
     {
       "id": "R-DIAG-001",
@@ -987,10 +988,12 @@
       ],
       "tasks": [
         "AF-AI-01",
+        "AF-MCP-01",
         "AF-AI-02",
+        "AF-DESK-02",
         "AF-ACC-01"
       ],
-      "verification": "journey test per release-1 supported operation (AF-ACC-01); coverage report lists every gap of product definition section 9"
+      "verification": "journey test per release-1 supported operation (product definition section 9, Verified by column; AF-ACC-01); release coverage statement tests on D-14, arcforges coverage and MCP session_coverage"
     },
     {
       "id": "R-AI-009",
@@ -1252,9 +1255,11 @@
       ],
       "tasks": [
         "AF-LAN-01",
+        "AF-LAN-02",
+        "AF-LAN-03",
         "AF-CLD-03"
       ],
-      "verification": "offline grace tests with expired tokens"
+      "verification": "tests with no account and with the cloud unreachable: local work, LAN pairing, placement and cache sharing work; offline grace tests with expired tokens affect cloud features only"
     },
     {
       "id": "R-CLOUD-002",
@@ -1528,7 +1533,7 @@
       "tasks": [
         "AF-CLD-03"
       ],
-      "verification": "offline token expiry degrades only gated features"
+      "verification": "offline token expiry stops only cloud features (remote.*, push); local and LAN features and running tasks are unaffected"
     },
     {
       "id": "R-DIST-001",

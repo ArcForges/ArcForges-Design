@@ -228,8 +228,8 @@
 ┌ Subscription ────────────────┐
 │ Free                         │
 │ Pro adds remote status and   │
-│ control outside your LAN,    │
-│ and notifications.           │
+│ control through ArcForges    │
+│ Cloud, and notifications.    │
 │ [ Pro monthly – price ]      │
 │ [ Pro annual – price ]       │
 │ Restore purchases            │

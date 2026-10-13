@@ -85,7 +85,7 @@ tests/
 
 ## 5. Release-candidate acceptance
 
-The release candidate (AF-ACC-01) runs every journey J-01 to J-10 end to end with:
+The release candidate (AF-ACC-01) runs every journey J-01 to J-11 end to end with:
 - **real core implementations**: node, CLI, MCP adapter, hooks, Desktop view models, cloud host, Worker and Durable Object code, Blazor and Android view models;
 - **the approved external fakes** of §2 where the external system is unavailable: `FakePaddle`, `FakePlayDeveloperApi`, `FakePubSubPush`, `FakeFcm`, `FakeMailSender`, `FakeBillingClient`, `ScriptedBrowser`, `ScriptedMcpClient`, `HookPayloadFixtures`, and `PeerProcess` for other machines. A fake never replaces the behaviour under test;
 - **honest labels**: results are labelled closed-loop, and every remaining real-world validation stays in the acceptance register (AR-01 to AR-16).
