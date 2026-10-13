@@ -66,14 +66,14 @@ Hosted CI builds each release `<v>` from a tagged commit of the ArcForges reposi
 1. **Check prerequisites:** the architecture, systemd user sessions (`systemctl --user is-system-running` reports any state other than `offline`), cgroup v2 and glibc ≥ 2.31. Missing systemd or cgroup v2 is reported as degraded enforcement ([03](03-resource-control.md) §8), not as an install failure.
 2. **Download and verify:** fetch `manifest.json` and its `.sig` from the channel URL, verify the signature with the embedded public key, then download the tarball and verify its SHA-256.
 3. **Extract:** into `~/.local/share/arcforges/app/<v>/`, then create `app/current` and `~/.local/bin/arcforges`.
-4. **Install the units:** write the units of §3.4 to `~/.config/systemd/user/`, then run `systemctl --user daemon-reload` and `systemctl --user enable --now arcforges-node.service`.
+4. **Install the units:** write the units of §3.4 to `~/.config/systemd/user/`, then run `systemctl --user daemon-reload` and `systemctl --user enable --now arcforges-node.service arcforges-guard.service`.
 5. **Confirm:** run `arcforges node wait-ready --timeout 30`, then print the status, the capability summary and the `loginctl enable-linger` guidance for headless use.
 6. **Uninstall:** `install.sh --uninstall [--remove-data]` reverses the steps.
 
 ### 3.3 Debian package
 
 - **Files:** `/opt/arcforges/<v>/…`, `/usr/bin/arcforges` → `/opt/arcforges/current/arcforges`, and the units of §3.4 under `/usr/lib/systemd/user/`, with `ExecStart=/usr/bin/arcforges node run --systemd`.
-- **Maintainer scripts:** limited to `systemctl --global enable arcforges-node.service` (postinst) and its reverse. They use no network ([11](11-security-privacy.md) §6).
+- **Maintainer scripts:** limited to `systemctl --global enable arcforges-node.service arcforges-guard.service` (postinst) and its reverse. They use no network ([11](11-security-privacy.md) §6).
 - **Updates:** through apt (repository signed with GPG). The node's self-updater disables itself when it detects a package-managed install (`/opt/arcforges` owned by root), and reports "updates are managed by apt".
 
 ### 3.4 systemd user units
@@ -111,6 +111,23 @@ Description=ArcForges managed executions
 [Slice]
 ```
 
+`arcforges-guard.service` (the disk guard for running executions while the node is down; [06](06-storage-workspaces.md) §5):
+
+```ini
+[Unit]
+Description=ArcForges disk guard for running executions
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+ExecStart=%h/.local/share/arcforges/app/current/arcforges node guard
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target
+```
+
 `arcforges-node-rollback.service`:
 
 ```ini
@@ -126,6 +143,7 @@ ExecStart=%h/.local/share/arcforges/app/previous/arcforges node update-rollback 
 - **Slice limits.** The slice's limits are runtime properties set by the node, so the unit file carries none.
 - **Readiness.** `Type=notify` with `sd_notify("READY=1")` after startup step 9 ([02](02-node-service.md) §2).
 - **Restart after an update.** Exit code 75 means "restart me": `RestartForceExitStatus` restarts the node, and `SuccessExitStatus` keeps the exit from being logged as a failure (§5.3).
+- **Guard.** `arcforges-guard.service` is independent of the node unit, so it keeps guarding executions while the node is stopped, failed or restarting. After an update switch the node restarts it from the new `current` while the node itself is up.
 
 ### 3.5 First run
 

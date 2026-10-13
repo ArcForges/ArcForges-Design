@@ -938,21 +938,27 @@ message Attempt {
   arcforges.foundation.v1.Id remote_attempt_id = 20 [json_name = "remoteAttemptId"]; // REMOTE kind: executor-side ID
   arcforges.foundation.v1.Revision revision = 21 [json_name = "revision"];
   repeated CacheUsage cache_usage = 22 [json_name = "cacheUsage"]; // one entry per cache binding (07 section 1.5)
-  optional uint64 downloaded_bytes = 23 [json_name = "downloadedBytes"]; // bytes added to download caches by this attempt alone: the sum of its EXACT download entries; absent when one of them has no measured bytes_added, never a partial sum; shared windows count only in their window totals (07 section 1.5)
+  optional uint64 downloaded_bytes = 23 [json_name = "downloadedBytes"]; // the sum of tool-reported download sizes of its cache bindings; absent when no tool reported sizes; cache growth is never counted as downloads (07 section 1.5)
+  optional string limit_enforced_by = 24 [json_name = "limitEnforcedBy"]; // NODE | GUARD: who stopped the attempt for OUTPUT_LIMIT or DISK_LIMIT; GUARD while the node was down (06 section 5)
+  optional bool guard_lost = 25 [json_name = "guardLost"]; // the attempt ran without a disk guard for part of the time the node was down (06 section 5)
 }
 
 // What one attempt did with one managed cache (07 section 1.5).
 message CacheUsage {
   arcforges.foundation.v1.Id cache_id = 1 [json_name = "cacheId"];
   optional string kind = 2 [json_name = "kind"]; // nuget | npm | pnpm | cargo | pip | sccache | ccache | fastbuild | cas
-  optional uint64 bytes_added = 3 [json_name = "bytesAdded"]; // cache growth during the attempt (downloads and new entries); absent when the measurement exceeded caches.usage_scan_budget_ms (07 section 1.5)
-  optional uint64 hits = 4 [json_name = "hits"]; // when the tool reports them (sccache, ccache)
+  optional uint64 bytes_added = 3 [json_name = "bytesAdded"]; // COUNTED: bytes the attempt wrote to a store the node serves; SOLE_BINDER: node-measured growth, the bytes of files born or grown during the attempt's binding interval by the file system's birth and change times; absent otherwise
+  optional uint64 hits = 4 [json_name = "hits"]; // the attempt's own tool counters: its per-attempt sccache server, or ccache's per-attempt statistics log; absent when the tool reports none
   optional uint64 misses = 5 [json_name = "misses"];
-  optional uint32 packages_installed = 6 [json_name = "packagesInstalled"]; // restores: packages downloaded or extracted (adapter-parsed)
+  optional uint32 packages_installed = 6 [json_name = "packagesInstalled"]; // restores: packages downloaded or extracted, parsed from the attempt's own output
   optional uint32 packages_reused = 7 [json_name = "packagesReused"]; // restores: packages already in the cache
-  optional string attribution = 8 [json_name = "attribution"]; // EXACT: no other attempt bound the cache during this attempt, so the values are its own; SHARED_WINDOW: other attempts bound it meanwhile, so size growth and counters cover this attempt's interval including their activity and are never summed (07 section 1.5)
-  arcforges.foundation.v1.Id window_id = 9 [json_name = "windowId"]; // SHARED_WINDOW only: the window whose totals are recorded once when it closes
-  arcforges.foundation.v1.Instant baseline_at = 10 [json_name = "baselineAt"]; // when the cache size used as the baseline was measured; writes by other processes since then are included
+  optional string attribution = 8 [json_name = "attribution"]; // of bytes_added only: COUNTED (writes the node served and counted for this attempt, exact: the sccache store) | SOLE_BINDER (no other managed binder during the interval; writers outside ArcForges are not excluded) | SHARED (see window_id) | UNKNOWN (not measured)
+  arcforges.foundation.v1.Id window_id = 9 [json_name = "windowId"]; // SHARED only: the window whose totals are recorded once when it closes
+  arcforges.foundation.v1.Instant baseline_at = 10 [json_name = "baselineAt"]; // deprecated (2026-10-13): unused; growth is attributed by file times, not against a baseline
+  optional uint64 downloaded_bytes = 11 [json_name = "downloadedBytes"]; // tool-reported download size for this binding (Cargo, pip); absent when the tool does not report sizes
+  arcforges.foundation.v1.Instant measured_at = 12 [json_name = "measuredAt"]; // the walk that finalized bytes_added; absent while provisional
+  optional uint64 cache_writes = 13 [json_name = "cacheWrites"]; // tool-reported new entries written by this attempt (sccache)
+  optional string counters_source = 14 [json_name = "countersSource"]; // e.g. sccache-server, ccache-stats-log, adapter-output; empty when the tool reports no counters
 }
 
 message QueueInfo {

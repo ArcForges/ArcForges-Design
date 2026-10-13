@@ -134,7 +134,7 @@ enum ProcessLabel {
   PROCESS_LABEL_BYPASSED = 4;
   PROCESS_LABEL_UNMANAGED = 5;
   PROCESS_LABEL_GUEST_VM = 6;
-  PROCESS_LABEL_SHARED_SERVICE = 7;
+  PROCESS_LABEL_SHARED_SERVICE = 7; // reserved: release 1 runs no compiler service shared between attempts (05 section 5)
   PROCESS_LABEL_NODE_SELF = 8;
 }
 

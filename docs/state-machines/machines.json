@@ -469,7 +469,7 @@
           ],
           "to": "LOST",
           "on": "30 s without frames, or bridge exit",
-          "effect": "finding GUEST_LINK_LOST; the guest keeps its last allocation until lease_until, then admits only within the standalone allocation, which the host keeps reserved (architecture 03 section 6)"
+          "effect": "finding GUEST_LINK_LOST; the guest keeps its last allocation until lease_until, then admits only within the standalone allocation; the host keeps the whole last acknowledged allocation reserved until the guest acknowledges a smaller one after reconnecting, or its distribution is observed stopped (architecture 03 section 6)"
         },
         {
           "from": [

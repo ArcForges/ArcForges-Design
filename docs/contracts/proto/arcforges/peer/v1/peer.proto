@@ -831,6 +831,7 @@ message GrantRequest {
   optional string pool = 5 [json_name = "pool"];
   arcforges.node.v1.ActorRef owner = 6 [json_name = "owner"];
   optional string title = 7 [json_name = "title"];
+  optional bool already_running = 8 [json_name = "alreadyRunning"]; // the guest admitted this attempt while the link was lost; the host accounts it at once and covers it in the next allocation (03 section 6)
 }
 
 message GrantRelease {

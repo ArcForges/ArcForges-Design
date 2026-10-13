@@ -244,7 +244,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
   - **Terminate** (`TerminateProcess`): confirmation naming the process and its classification. Only for MANAGED, ESCAPED, BYPASSED and leftover processes.
   - **Guest link** enable, disable and re-link (`SetGuestLink`).
 - **Memory guarantees.** An info panel states what holds on this platform ([03](../architecture/03-resource-control.md) §5.4): admission keeps accounted memory within the budget; Linux enforces hard per-attempt and root limits; Windows bounds commit only; the pressure response defends the reserve but cannot guarantee it.
-- **WSL guests.** Each linked guest shows its current acknowledged allocation, the lease end and the standalone allocation, which is never larger than the acknowledged allocation; a lost link shows `GUEST_LINK_LOST` and the allocation in force ([03](../architecture/03-resource-control.md) §6).
+- **WSL guests.** Each linked guest shows its current acknowledged allocation, the lease end and the standalone allocation, which is never larger than the acknowledged allocation. A lost link shows `GUEST_LINK_LOST`, the allocation still reserved for the guest, and the two ways to release it: restore the link, or stop the distribution ([03](../architecture/03-resource-control.md) §6).
 - **States:** S-EMPTY for a filter; "Observation only" banner when the capability is OBSERVE_ONLY, with the reason.
 - **Accessibility.** The stacked bars have text and table equivalents, and the process table is sortable by keyboard (`Enter` on a column header).
 

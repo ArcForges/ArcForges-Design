@@ -382,7 +382,7 @@
       "tasks": [
         "AF-WSL-01"
       ],
-      "verification": "host plus guest closed loop through the real wsl.exe bridge: saturating load with overcommitted demand, acknowledged allocations, link loss with an idle and a busy guest and node restarts (F-L01)"
+      "verification": "host plus guest closed loop through the real wsl.exe bridge: saturating load with overcommitted demand, acknowledged allocations, link loss with an idle and a busy guest, a guest that goes idle during the outage and then resumes CPU-heavy work, a stopped distribution, and node restarts (F-L01)"
     },
     {
       "id": "R-RES-011",
@@ -395,7 +395,7 @@
       "tasks": [
         "AF-WSL-01"
       ],
-      "verification": "host plus guest closed loop through the real wsl.exe bridge: saturating load with overcommitted demand, acknowledged allocations, link loss with an idle and a busy guest and node restarts (F-L01)"
+      "verification": "host plus guest closed loop through the real wsl.exe bridge: saturating load with overcommitted demand, acknowledged allocations, link loss with an idle and a busy guest, a guest that goes idle during the outage and then resumes CPU-heavy work, a stopped distribution, and node restarts (F-L01)"
     },
     {
       "id": "R-RES-012",
@@ -491,13 +491,14 @@
       "id": "R-TOOL-005",
       "design": [
         "docs/architecture/05-toolchains-caches.md",
-        "docs/contracts/proto/arcforges/node/v1/toolchains.proto"
+        "docs/contracts/proto/arcforges/node/v1/toolchains.proto",
+        "docs/architecture/04-execution.md"
       ],
       "tasks": [
         "AF-TOOL-01",
         "AF-TOOL-02"
       ],
-      "verification": "real tool runs confirming each redirection and concurrency claim (F-T01)"
+      "verification": "cache-miss compile through a per-attempt sccache server inside the attempt container, accounted to it and ended on cancellation (L-20 Windows; F-T05 Linux); no MSBuild node, MSBuild server or VBCSCompiler outlives a managed .NET build"
     },
     {
       "id": "R-TOOL-006",
@@ -551,10 +552,10 @@
         "docs/contracts/proto/arcforges/node/v1/caches.proto"
       ],
       "tasks": [
-        "AF-TOOL-02",
-        "AF-CACHE-01"
+        "AF-CACHE-01",
+        "AF-TOOL-02"
       ],
-      "verification": "sccache and ccache managed directories and limits with real compilers"
+      "verification": "sccache through the node's store and ccache with real compilers; per-attempt statistics from each attempt's own sccache server and ccache statistics log (L-20, L-21)"
     },
     {
       "id": "R-CACHE-005",
@@ -710,7 +711,7 @@
         "AF-EXEC-02",
         "AF-STOR-01"
       ],
-      "verification": "output flood, temporary-space flood and nearly-full-volume tests on both platforms; immediate limit stops; DEGRADED and recovery"
+      "verification": "output flood, temporary-space flood and nearly-full-volume tests on both platforms, also with the node killed and (Linux) failed after repeated crashes, enforced by the guards; immediate limit stops; DEGRADED and recovery"
     },
     {
       "id": "R-REC-001",
@@ -786,7 +787,7 @@
         "AF-CACHE-01",
         "AF-AI-01"
       ],
-      "verification": "record-chain test from a session task to processes, queue reasons, cache usage, downloads and outcome; SHARED_WINDOW window and aggregation tests; unmeasured values stay empty; measurement budget (caches.usage_scan_budget_ms) and store size benchmarks (15)"
+      "verification": "record-chain test from a session task to processes, queue reasons, cache usage, downloads and outcome; cache-growth tests with back-to-back attempts measured late, concurrent attempts, a writer outside ArcForges and eviction during a run (every byte counted once; unmeasured values empty); tool counters exact per attempt; downloads only from tool reports; measurement budget and store size benchmarks (15)"
     },
     {
       "id": "R-DIAG-001",

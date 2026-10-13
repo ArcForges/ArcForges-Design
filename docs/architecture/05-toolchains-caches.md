@@ -71,12 +71,13 @@ Adapters are compiled into the node (no runtime plug-ins in this scope). The man
 | `NUGET_HTTP_CACHE_PATH` | `<cache>/nuget/http` | HONORED |
 | `NUGET_SCRATCH` | `<cache>/nuget/scratch` (shared, required with shared packages, V-T01) | HONORED |
 | `NUGET_PLUGINS_CACHE_PATH` | `<cache>/nuget/plugins` | HONORED |
-| `MSBUILDDISABLENODEREUSE` | `1` unless policy `dotnet.shared_build_servers=true` | HONORED |
-| `DOTNET_CLI_USE_MSBUILD_SERVER` | `0` unless shared servers are allowed | HONORED |
-| `UseSharedCompilation` | `false` unless shared servers are allowed (MSBuild reads environment as properties) | HONORED |
+| `MSBUILDDISABLENODEREUSE` | `1` (§5) | HONORED |
+| `DOTNET_CLI_USE_MSBUILD_SERVER` | `false` (the MSBuild server is on by default from the .NET 11 SDK, V-T09) | HONORED |
+| `UseSharedCompilation` | `false` (MSBuild reads environment as properties) | HONORED |
 | `TMP`, `TEMP`, `TMPDIR` | `<tmp>/<attempt>/` | HONORED |
 
 - **Concurrency:** adds `-m:<N>` when absent.
+- **Build servers:** adds `--disable-build-servers` to `build`, `test`, `pack`, `publish` and `run` on SDK 7 or later when absent, so no compiler or build server outlives the attempt (§5).
 - **Phase markers:** "Determining projects to restore", "Restored ", "All projects are up-to-date for restore", project output lines `-> <path>`, "Build succeeded", "Build FAILED"; the processes `testhost*`, `MSBuild.exe`/`MSBuild.dll` nodes and `VBCSCompiler`.
 - **Failure classification:** NuGet network errors (NU1301, `Unable to load the service index`) are transient. NU1004 (lock mismatch) and compile errors are user errors. "The process cannot access the file" combined with a shared-folder path is a contention signal.
 
@@ -93,7 +94,7 @@ Adapters are compiled into the node (no runtime plug-ins in this scope). The man
 - `CARGO_BUILD_JOBS=<N>` when neither `-j` nor `--jobs` is present (HONORED).
 - `CARGO_HOME` is **not** redirected by default, because it also holds installed binaries. Its registry is registered as an observed cache.
 - `CARGO_TARGET_DIR` stays in the workspace unless the workspace policy `cargo.target_dir=MANAGED`, which uses `<out>/<workspace>/cargo-target/<rust-host-triple>`.
-- sccache integration (opt-in per workspace or globally) sets `RUSTC_WRAPPER=<sccache path>`, `SCCACHE_DIR=<cache>/sccache`, `SCCACHE_CACHE_SIZE=<quota>` and `SCCACHE_SERVER_PORT=<node-assigned>`. The sccache server runs as a shared service (§5).
+- sccache integration (opt-in per workspace or globally) sets `RUSTC_WRAPPER=<sccache path>` and the per-attempt server and store settings of §5. The attempt's own server runs the compiler on a miss.
 
 **Phase markers:** "Updating crates.io index", "Downloading", "Downloaded", "Compiling ", "Finished", "Running ", "test result:".
 
@@ -109,7 +110,7 @@ Adapters are compiled into the node (no runtime plug-ins in this scope). The man
 - `CMAKE_BUILD_PARALLEL_LEVEL=<N>` for `cmake --build`.
 - `-j<N>` for `ninja` and `make` when absent.
 - With compiler caching enabled, `CMAKE_C_COMPILER_LAUNCHER` and `CMAKE_CXX_COMPILER_LAUNCHER` are set to sccache or ccache. These take effect at configure time, and the record notes whether the build directory was configured with them (BEST_EFFORT for pre-configured trees).
-- `CCACHE_DIR=<cache>/ccache` and `CCACHE_MAXSIZE=<quota>` (HONORED, V-T03).
+- `CCACHE_DIR=<cache>/ccache` and `CCACHE_MAXSIZE=<quota>` (HONORED, V-T03), and the per-attempt `CCACHE_STATSLOG` (§5).
 - MSVC tasks receive the cached `vcvarsall` environment when `toolchain: msvc` is requested or auto-detected for `cl.exe`.
 
 **Phase markers:** "-- Configuring done", "-- Generating done", ninja `[x/y]`, the `link.exe`/`ld`/`lld` processes, "Linking ".
@@ -156,7 +157,7 @@ This adapter covers all other commands. It sets only `TMP`/`TEMP`/`TMPDIR` and u
 | `nuget.packages` | `<cache>/nuget/packages` | 40 GiB (warn at 80%) | Only during idle maintenance windows (no running .NET attempt). Package-version directories unused for 60 days (usage tracked from `project.assets.json` of managed restores) are trimmed, with approval. | Package signature verification is not repeated (NuGet verifies on restore); presence of `.nupkg.metadata` is checked | No (each node keeps its own; duplicates reported) |
 | `nuget.http` | `<cache>/nuget/http` | 10 GiB | LRU by file access time | n/a | No |
 | `nuget.scratch` | `<cache>/nuget/scratch` | 2 GiB | Cleared when no .NET attempt runs | n/a | No |
-| `sccache` | `<cache>/sccache` | 20 GiB (`SCCACHE_CACHE_SIZE`) | Tool LRU | Tool | Yes (§6) |
+| `sccache` | `<cache>/sccache`, served by the node (§5) | 20 GiB | LRU by the node, the store's only writer | Tool | Yes (§6) |
 | `ccache` | `<cache>/ccache` | 10 GiB (`CCACHE_MAXSIZE`) | Tool LRU | Tool | Yes (§6) |
 | `fastbuild` | `<cache>/fastbuild` | 20 GiB | `FBuild -cachetrim` in maintenance windows | Tool | No (local only in this scope) |
 | `npm` | `<cache>/npm` | 10 GiB | `npm cache verify` (GC) in idle windows | `npm cache verify` | No |
@@ -176,30 +177,69 @@ This adapter covers all other commands. It sets only `TMP`/`TEMP`/`TMPDIR` and u
 
 Mutable outputs (`bin/`, `obj/`, `target/`, CMake build trees) are never registered as shared caches. When managed, they live under `<out>/<workspace_id>/...` per workspace (R-CACHE-002).
 
-**Locking.** Tools coordinate their own concurrent access (NuGet file locks, the sccache server, ccache file locks). The node takes an exclusive **maintenance lease** on a cache only for eviction, verification and relocation. While held, admissions of tasks bound to that cache wait; maintenance runs only when none are running, and is bounded to 10 minutes.
+**Locking.** Tools coordinate their own concurrent access (NuGet file locks, ccache file locks); the node serializes writes to the sccache store it serves (§5). The node takes an exclusive **maintenance lease** on a cache only for eviction, verification and relocation. While held, admissions of tasks bound to that cache wait; maintenance runs only when none are running, and is bounded to 10 minutes.
 
 **Corruption.**
 - A CAS digest mismatch quarantines the blob and re-fetches it.
 - Tool-reported corruption patterns (adapter `failure_classifier`) raise finding `CACHE_CORRUPT` with remedy "clear affected entries". The remedy needs approval; for NuGet it deletes the specific package-version directory.
 
-## 5. Shared services (daemons)
+## 5. Compiler and build servers
 
-Shared daemons run in a node-owned container (Windows child job `Local\ArcForges.<node_id>.svc.<service>`; Linux transient unit `arcforges-svc-<service>.service` in `arcforges.slice`), with their own CPU weight and memory limit taken out of the managed budget. Each is started on first use and stopped after an idle timeout (default 15 min). They are visible on the Resources page as `SHARED_SERVICE` (R-TOOL-005):
-- the sccache server;
-- MSBuild and VBCSCompiler only when policy `dotnet.shared_build_servers=true`.
+Compiler work always runs in the container of the attempt that asked for it, so that attempt's CPU weight and caps, memory limits, accounting, priority and cancellation cover it. Release 1 runs no compiler service shared between attempts. Tools that would share a server across tasks are set up so that each attempt gets its own server, or none (R-TOOL-005).
+
+**sccache: one server per attempt, and one store served by the node.**
+- **Why.** On a cache miss, the sccache server, not the client the build invoked, runs the compiler (V-T07, L-20). The server stays in the job or cgroup of the client that started it. A server shared between attempts would therefore run one attempt's compiles in another attempt's container, charge them to it, and die with it. Several servers must not share one local cache directory either: sccache documents races, and a starting server deletes the in-progress writes of others (V-T07).
+- **An endpoint per attempt.** The adapter gives each attempt its own server, with `SCCACHE_IDLE_TIMEOUT=0` so it lives exactly as long as the attempt:
+  - **Linux:** a Unix socket in the attempt's private run directory, `SCCACHE_SERVER_UDS=$XDG_RUNTIME_DIR/arcforges/a/<attempt>/sccache.sock` (directory mode 0700).
+  - **Windows:** a loopback TCP port the node assigns to the attempt (`SCCACHE_SERVER_PORT`). sccache offers no pipe or socket option on Windows (V-T07).
+- **Started at launch, inside the container.** The server starts as a launch step ([04](04-execution.md) §3), while the node and its store are up. A server start reads the store and fails when the store is unreachable (L-21), so the adapter also sets `SCCACHE_SKIP_CACHE_CHECK=1`: a server that has to restart while the node is down still starts, and compiles without the cache (V-T07). Starting the server before the build also avoids two first compiles each starting one:
+  - **Windows:** the holder starts `sccache --start-server` in the attempt's jobs (root, then child) and waits for it before it resumes the root process.
+  - **Linux:** `arcforges node exec-launch`, the unit's `ExecStart` for attempts with launch steps, starts it inside the unit's cgroup and then replaces itself with the command (`execve`), so no wrapper stays behind (A-T04).
+- **On a miss**, the attempt's own server runs the compiler inside the attempt's job or unit. Its limits apply, its use is accounted to the attempt, and cancelling the attempt ends the server and the compile at once (L-20: within 0.1 s on Windows). Since 0.17.0 the server also aborts a compile whose client has gone (V-T07).
+- **One store, served by the node.** Every attempt's server uses the node's compiler-cache store through `SCCACHE_WEBDAV_ENDPOINT=http://127.0.0.1:<port>/cache/<cache_id>/`, with a bearer token issued for the attempt (`SCCACHE_WEBDAV_TOKEN`).
+  - **Only writer.** The node is the store's only writer: it writes entries atomically and keeps the quota by evicting the least recently used entries.
+  - **Exact per attempt.** It counts the bytes each attempt writes, which is exact even while attempts share the cache ([07](07-records-diagnosis-memory.md) §1.5).
+  - **Access.** It refuses requests without a valid token.
+  - **Protocol.** It implements what sccache uses: `GET`, `PUT`, `PROPFIND` and `MKCOL` (L-21).
+  - **Bounded answers.** It answers every request within 30 s, accepting or refusing it, because sccache waits for each write without a timeout of its own (V-T07).
+  - **LAN.** With LAN sharing on, it also reads through to peers (§6).
+- **If the store goes away** while a server runs (the node stops), compiles continue as misses and failed writes are counted as errors (L-21).
+- **End of the attempt.** Before leftover termination, the attempt's end step (Windows holder; Linux `ExecStop`, [04](04-execution.md) §3):
+  1. reads `sccache --show-stats --stats-format=json`, which gives the attempt's own counters;
+  2. runs `sccache --stop-server`, which waits at most 10 s for requests in flight (V-T07).
+
+  Leftover termination then ends anything still running.
+- **Local state.** With only the store configured, sccache keeps no local cache, and its preprocessor cache (direct mode) is off (V-T07); `SCCACHE_DIR` points into the attempt's temporary directory for anything else. C/C++ projects that want a warm preprocessor cache use ccache.
+- **Cost.** One server start per attempt that uses sccache, and no warm in-memory state between attempts. Cache entries are shared through the store.
+- **Supported versions.** sccache 0.17.0 or later (verified with 0.17.0, L-20 and L-21; 0.18.0 reviewed, V-T07). The adapter records the version and uses sccache only from that version on.
+- **Exposure on Windows.** An attempt's server listens on a loopback port without authentication. While the attempt runs, another local user could submit compile requests to it (T-21). On Linux the socket is private to the user.
+
+**ccache** compiles in the process the build started; it has no compile server (V-T08).
+- It would start the compiler outside the job only if the job allowed breakaway, which attempt jobs never do ([AD-0005](../decisions/AD-0005-resource-enforcement.md) Windows §2).
+- Its local cache directory is shared through ccache's own locks.
+- A per-attempt statistics log gives the attempt's own counters: `CCACHE_STATSLOG=<logs>/<attempt>/ccache-stats.log` (ccache 4.4 or later).
+- Remote storage for LAN sharing goes through the helper endpoint that the node serves (§6), so no task starts a long-lived helper.
+
+**.NET.** The Roslyn compiler server (VBCSCompiler) and the MSBuild server are shared per user and SDK by pipe name, and outlive the build (V-T09).
+- Managed .NET builds therefore run without them. The adapter adds `--disable-build-servers` (SDK 7 or later) and sets `MSBUILDDISABLENODEREUSE=1`, `DOTNET_CLI_USE_MSBUILD_SERVER=false` and `UseSharedCompilation=false` (§3.1). MSBuild worker nodes end with the build.
+- Sharing warm compiler servers safely across attempts is accepted future work (roadmap RM-13). Policy `dotnet.shared_build_servers` is refused in release 1.
+
+**FASTBuild** runs its local workers as its own children (§3.8).
+
+**Records.** Process records show the compiler processes under their attempt. The process label `SHARED_SERVICE` stays in the contract and is not used in release 1.
 
 ## 6. LAN cache sharing
 
 1. The serving node exposes a **WebDAV-compatible subset** on its mTLS peer listener: `OPTIONS`, `PROPFIND` (depth 0/1), `GET`, `HEAD`, `PUT`, `DELETE` under `/cache/<cache_id>/`. Per-peer policy decides read and write access, with a quota enforced per peer (R-CACHE-007).
-2. Tools cannot present client certificates (sccache uses a WebDAV client with basic/bearer authentication, V-T02). Each consuming node therefore runs a **local cache proxy** on `127.0.0.1:<ephemeral>` that forwards to the serving peer over the mTLS channel. The proxy requires a per-node bearer token.
-   - sccache: `SCCACHE_WEBDAV_ENDPOINT=http://127.0.0.1:<port>/peer/<peer_id>/cache/<cache_id>/` with `SCCACHE_WEBDAV_TOKEN`.
+2. Tools cannot present client certificates (sccache uses a WebDAV client with basic/bearer authentication, V-T02), so the node connects to peers on their behalf over the mTLS channel.
+   - sccache: attempts always use the node's own store (§5). With LAN sharing on, the store reads through to peers that allow reads, keeping fetched entries locally, and writes through to peers that allow writes. A per-attempt bearer token protects the loopback endpoint.
    - ccache: ccache 4.14 deprecates its built-in HTTP backend in favour of remote storage helpers (V-T03). The **node itself serves the helper protocol** on a per-user IPC endpoint and forwards to the local cache proxy:
      - the endpoint is the named pipe `\\.\pipe\arcforges-<user SID hash>-ccache` on Windows (DACL: the user only), and `$XDG_RUNTIME_DIR/arcforges/ccache.sock` (mode `0600`) on Linux;
      - the setting is `remote_storage = crsh:<endpoint>`. Per the ccache manual, `crsh:` connects to a helper that is already running; ccache never starts it. While the node is down, ccache treats the remote storage as unavailable and keeps using its local cache;
      - no token is needed, because the endpoint admits only the user (A-T03);
      - ccache versions without helper support fall back to the built-in HTTP backend on loopback (`http://127.0.0.1:<port>/peer/<peer_id>/cache/<cache_id>/` with `@bearer-token=`, plain HTTP to loopback only);
      - the adapter records which mode is used, and F-T04 verifies the protocol and the syntax against the installed ccache.
-3. Multi-level use: sccache `SCCACHE_MULTILEVEL_CHAIN=disk,webdav` keeps the local disk as L0 (V-T02).
+3. Multi-level use: the node's store is the local level, so sccache needs no multi-level chain of its own.
 4. Entries are opaque to ArcForges. Integrity is the tool's responsibility; the proxy only enforces size limits (an entry ≤ 256 MiB) and quotas.
 5. **Scope boundary (release 1, confirmed by the product owner, [AD-0015](../decisions/AD-0015-direction-editions-roadmap.md) §4).** LAN sharing covers compiler caches (sccache WebDAV, ccache helper) and the transfer CAS used by placement. Accepted future work ([product definition](../product/product-definition.md) §7):
    - **dependency caches** (NuGet, npm, Cargo, pip; roadmap RM-02): each node keeps its own managed cache and downloads from the upstream registries; per-attempt download evidence (§7) shows what sharing would save;

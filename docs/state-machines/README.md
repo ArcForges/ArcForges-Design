@@ -243,7 +243,7 @@ stateDiagram-v2
 | CONNECTING | LOST | bridge exited or no hello within 30 s |  |  |
 | LINKED | DEGRADED | guest reports degraded enforcement (no systemd, missing controllers) |  |  |
 | DEGRADED | LINKED | guest capabilities restored |  |  |
-| LINKED, DEGRADED | LOST | 30 s without frames, or bridge exit |  | finding GUEST_LINK_LOST; the guest keeps its last allocation until lease_until, then admits only within the standalone allocation, which the host keeps reserved (architecture 03 section 6) |
+| LINKED, DEGRADED | LOST | 30 s without frames, or bridge exit |  | finding GUEST_LINK_LOST; the guest keeps its last allocation until lease_until, then admits only within the standalone allocation; the host keeps the whole last acknowledged allocation reserved until the guest acknowledges a smaller one after reconnecting, or its distribution is observed stopped (architecture 03 section 6) |
 | LOST | CONNECTING | bounded backoff retry (1 s to 60 s) |  |  |
 | DISCOVERED, CONNECTING, LINKED, DEGRADED, LOST | DISABLED | ResourceService.SetGuestLink enabled=false |  |  |
 | DISABLED | CONNECTING | ResourceService.SetGuestLink enabled=true |  |  |

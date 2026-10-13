@@ -94,7 +94,7 @@ ArcForges runs unprivileged, so **no limit is enforced by the file system**. Per
 |---|---|---|---|
 | **Admission threshold** | At allocation: attempt start, worktree creation, transfer receive, export | The allocation is refused (`RESOURCE/quota_exceeded`, `RESOURCE/disk_space`) | ArcForges, before anything is written |
 | **Monitored limit** | At a stated interval while the writer runs | `storage.disk_limit_action`: `TERMINATE` (default) stops the writer at once, without the graceful phase ([04](04-execution.md) §6); `NOTIFY` raises a finding and lets it continue | ArcForges, after detection. The overshoot is bounded by write rate × (interval + stop latency). |
-| **Tool-enforced limit** | By the tool itself | The tool evicts | sccache (`SCCACHE_CACHE_SIZE`), ccache (`max_size`) |
+| **Tool-enforced limit** | By the tool itself | The tool evicts | ccache (`max_size`). The sccache store's quota is enforced by the node, its only writer ([05](05-toolchains-caches.md) §5). |
 | **Report-only** (`WARN` quotas) | Housekeeping (every 10 min) | A finding only | — |
 
 **Runtime limits on running writers:**
@@ -107,7 +107,7 @@ ArcForges runs unprivileged, so **no limit is enforced by the file system**. Per
 | Caches | Per cache quota | After write bursts, and in housekeeping | Eviction under the maintenance lease ([05](05-toolchains-caches.md) §4) |
 | Incoming transfers | Manifest size against free space and the `staging` quota | Before pulling, then every 5 s | Refused before, or aborted during, with `RESOURCE/disk_space` |
 
-**Low-space guard.** Every volume that holds a managed root, or the working directory of a running attempt, is checked every 5 s (`GetDiskFreeSpaceExW`, `statvfs`):
+**Low-space guard.** Every volume that holds a managed root, or the working directory of a running attempt, is checked every 5 s (`GetDiskFreeSpaceExW`, `statvfs`). While the node is down, the attempt guards below keep checking:
 
 | Level | Condition | Actions |
 |---|---|---|
@@ -120,6 +120,24 @@ ArcForges runs unprivileged, so **no limit is enforced by the file system**. Per
 - If the retry also fails (for example because an unmanaged process took the freed space), SQLite rolls the transaction back. The node then enters the lifecycle state `DEGRADED` with the reason `store_out_of_space`: it stays readable, refuses mutations with `RESOURCE/disk_space`, and returns to `READY` when space returns. It never continues with unrecorded state. This, not the reserve, is the guarantee (R-STOR-009).
 
 The disk level of each volume is part of `ResourceSnapshot.volumes` and of the remote status summary (`disk_level`).
+
+**Attempt guards: the limits hold while the node is down.** Executions survive a node stop, crash or crash loop ([02](02-node-service.md) §2), so the runtime limits above cannot depend on the node alone.
+- **Who guards.**
+  - **Windows:** each attempt's holder (`arcforges node exec-wrap`). It already runs outside the job, holds the job handles and the output files, and lives until the node acknowledges the exit record ([AD-0005](../decisions/AD-0005-resource-enforcement.md) Windows §3).
+  - **Linux:** one user unit, `arcforges-guard.service` (`Restart=always`, no start limit; [13](13-distribution-updates.md) §3.4). It guards every running attempt unit.
+- **What it knows.** Before starting an attempt, the node writes `logs/<attempt>/guard.json`: the output files, the temporary directory, the volumes the attempt writes to, the limits and actions in force, and whether the attempt is preemptible and pausable. The node also renews a heartbeat, `run/node-heartbeat`, every second.
+- **Takeover.** A guard acts only while the heartbeat is older than policy `storage.guard_takeover_ms` (default 5,000 ms): the node is stopped, crashed, hung or restarting in a loop. It then applies the runtime limits above at the same intervals:
+  - the output files every 100 ms;
+  - the temporary directory every 15 s, with its own incremental walk of that directory;
+  - free space on the attempt's volumes every 5 s.
+- **Actions.** The same as the node's:
+  - `TERMINATE` stops the attempt at once (Windows `TerminateJobObject`; Linux `KillUnit`), with `OUTPUT_LIMIT` or `DISK_LIMIT`;
+  - at `CRITICAL`, Linux freezes pausable attempts (`FreezeUnit`) and stops the rest;
+  - `NOTIFY` is recorded and leaves the attempt running.
+- **Records.** Each action is appended to `logs/<attempt>/guard-events.jsonl` with its evidence. The guard never writes the node store. When the node returns, it records the stops with `enforced_by=GUARD`, raises the findings the actions call for, and thaws frozen attempts once the level is back to `NORMAL`.
+- **Stand-down.** When the heartbeat is fresh again, the guard stops checking and the node resumes.
+- **Bound.** While the node is down, the overshoot is the write rate × (takeover delay + interval + stop latency).
+- **When a guard is missing.** A Windows holder that crashed, or a Linux guard unit that cannot run, leaves its attempts unguarded until the node returns. The node then records `guard_lost` on those attempts and raises a finding. This is the remaining gap, and it is stated, not hidden.
 
 ## 6. Disk analysis
 
