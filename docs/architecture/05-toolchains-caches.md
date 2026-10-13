@@ -201,14 +201,15 @@ Shared daemons run in a node-owned container (Windows child job `Local\ArcForges
      - the adapter records which mode is used, and F-T04 verifies the protocol and the syntax against the installed ccache.
 3. Multi-level use: sccache `SCCACHE_MULTILEVEL_CHAIN=disk,webdav` keeps the local disk as L0 (V-T02).
 4. Entries are opaque to ArcForges. Integrity is the tool's responsibility; the proxy only enforces size limits (an entry ≤ 256 MiB) and quotas.
-5. **Scope boundary (launch).** LAN sharing covers compiler caches (sccache WebDAV, ccache helper) and the transfer CAS used by placement. Not covered at launch, by decision ([product definition](../product/product-definition.md) §7):
-   - **dependency caches** (NuGet, npm, Cargo, pip): each node keeps its own managed cache and downloads from the upstream registries; a LAN registry proxy would be a separate decision;
-   - **FASTBuild remote workers**: `-dist` use is observed and labelled, never managed (§3.8).
+5. **Scope boundary (release 1, confirmed by the product owner, [AD-0015](../decisions/AD-0015-direction-editions-roadmap.md) §4).** LAN sharing covers compiler caches (sccache WebDAV, ccache helper) and the transfer CAS used by placement. Accepted future work ([product definition](../product/product-definition.md) §7):
+   - **dependency caches** (NuGet, npm, Cargo, pip; roadmap RM-02): each node keeps its own managed cache and downloads from the upstream registries; per-attempt download evidence (§7) shows what sharing would save;
+   - **FASTBuild remote workers** (roadmap RM-03): `-dist` use is observed and labelled, never managed (§3.8).
 
 ## 7. Effectiveness and duplicates
 
 `CacheService.GetCacheReport` shows the following (R-CACHE-008):
 - Hit/miss counts and bytes from `sccache --show-stats --stats-format=json` and `ccache --print-stats`.
 - NuGet restore counters: packages installed versus reused, parsed from restore output, and http-cache growth per attempt.
+- Per-attempt cache usage and downloads (`CacheUsage`, [07](07-records-diagnosis-memory.md) §1.5): what each attempt added to or used from each managed cache.
 - **Duplicate cache copies:** global-packages-like folders found by disk analysis outside the managed cache, such as `~/.nuget/packages` or per-task `NUGET_PACKAGES` folders seen in unmanaged processes' environments where readable. The report gives package-version overlap with the managed cache and the reclaimable bytes.
 - **Per-task restores:** managed attempts whose caller overrode `NUGET_PACKAGES` with a unique folder. These raise finding `PER_TASK_RESTORE`.

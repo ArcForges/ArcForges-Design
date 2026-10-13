@@ -94,6 +94,7 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 | R-REC-003 | Records expose tables, timelines and machine-readable exports (JSON Lines and protobuf) per task, session, workspace and period. | Export tests. |
 | R-REC-004 | Repeated work is detected: the same command fingerprint and input fingerprint re-executed without an input change is flagged `repeat`, and work whose inputs changed while it was queued or running is flagged `stale`. | Unit tests; real repeat test. |
 | R-REC-005 | Retention keeps records within configured size and time bounds, and downsamples resource samples. | Unit tests. |
+| R-REC-006 | Each attempt's record correlates the evidence that explains delay and waste: task and attempt identity, originating session and agent where known, workspace, processes, queueing reasons, execution phases, downloads and cache usage, resource consumption, retries and outcome. Collection stays within the stated overhead, retention, disk and redaction bounds. | Record-chain test from a session's task to its processes, queue reasons, cache usage, downloads and outcome; overhead and size benchmarks (15). |
 
 ## R-DIAG — Diagnosis and recovery
 
@@ -125,6 +126,7 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 | R-AI-007 | Coverage per session reports routes, managed and bypassed counts, and unknowns. The node never claims to know model, thinking state or internal completion status beyond events the client exposes. | Contract fields and UI labels; review. |
 | R-AI-008 | Integration never edits managed or enterprise settings, never silently overrides user or repository instructions, shows a diff before writing, and reports conflicts (hooks disabled, untrusted, sandbox denies IPC). | Tests with fixture settings files, including managed-only policies. |
 | R-AI-010 | A rewritten command is never cancelled because it waited in the queue or ran longer than the AI client's tool timeout: it hands off to a persistent task handle before the timeout and keeps its queue position. A resubmission of the exact same command joins the existing task only while that task has not started, so it never returns stale results. An interrupt before the hand-off still cancels it; after the hand-off, cancellation is explicit. | Closed-loop tests with a scripted client timeout, a queued task, an identical resubmission, a resubmission after a file edit, and an interrupt. |
+| R-AI-011 | Release 1 manages exactly the operations listed in the product definition §9, end to end. Every other operation is observed where possible and reported as a coverage gap; no surface claims interception it does not perform, and instructions given to an AI client never count as interception. | Journey tests per supported operation (AF-ACC-01); coverage report tests. |
 | R-AI-009 | Guardrails keep managed tasks from accidentally replacing or reconfiguring the ArcForges installation. These are read-only version directories with digest checks at startup, tamper findings for out-of-band edits, and optional Linux unit hardening. Configuration changes from AI clients go through policy-gated APIs that may require approval. Same-user bypasses are documented, never claimed impossible. | Policy tests; read-only and digest checks; tamper-finding test. |
 
 ## R-API — Contracts and state
@@ -144,9 +146,9 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 
 | ID | Requirement | Acceptance |
 |---|---|---|
-| R-LAN-001 | Nodes discover peers through DNS-SD (`_arcforges._tcp.local`), manual address entry and account-assisted hints. Discovery never implies trust. | Unit tests; real single-host test with two nodes; physical LAN deferred. |
-| R-LAN-002 | Trust comes from pairing: either both nodes belong to the same account (cloud-issued node certificates), or a local short-authentication-string comparison confirmed on both nodes. | Closed-loop pairing tests. |
-| R-LAN-003 | Peer traffic uses mutually authenticated TLS 1.3 with pinned or account-issued node certificates. Unpaired identities may reach only the handshake and pairing services. | Tests: revoked or invalid account certificates fail the TLS handshake; unpaired identities are refused every service except handshake and pairing; pinned and same-account identities pass. |
+| R-LAN-001 | Nodes discover peers through DNS-SD (`_arcforges._tcp.local`) and manual address entry. Discovery never implies trust. Account-assisted hints are accepted future work (roadmap RM-01). | Unit tests; real single-host test with two nodes; physical LAN deferred. |
+| R-LAN-002 | Trust comes from local pairing: a short-authentication-string comparison over both certificate fingerprints, confirmed on both nodes. LAN features need no account, entitlement or cloud connection. Account-based trust is accepted future work (roadmap RM-01). | Closed-loop pairing tests; LAN tests with no account and the cloud unreachable. |
+| R-LAN-003 | Peer traffic uses mutually authenticated TLS 1.3 with pinned node certificates. Unpaired identities may reach only the handshake and pairing services, and blocked identities nothing. | Tests: unpaired identities are refused every service except handshake and pairing; blocked identities are refused everything; pinned identities pass. |
 | R-LAN-004 | Peers report capabilities, toolchains, enforcement state and resource offers. Placement requires a per-peer policy allowing it. | Contract tests. |
 | R-LAN-005 | Placement chooses among local and peer nodes by constraints, available resources, cache locality, transfer cost and policy, and falls back to local queueing. | Unit tests of scoring; closed-loop placement tests. |
 | R-LAN-006 | Workspace inputs transfer as content-addressed manifests with blob deduplication. Outputs and artifacts return the same way. LAN data never routes through the cloud. | Closed-loop transfer tests; network capture shows no cloud egress. |
@@ -160,7 +162,7 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 
 | ID | Requirement | Acceptance |
 |---|---|---|
-| R-CLOUD-001 | Local and LAN-internal operation never requires continuous cloud connectivity. Entitlements are cached as signed tokens with an offline grace period (default 14 days). | Test with the cloud unreachable. |
+| R-CLOUD-001 | Local and LAN operation never requires an account or cloud connectivity. Cloud-feature entitlements are cached as signed tokens with an offline grace period (default 14 days), and only cloud features consult them. | Tests with no account and with the cloud unreachable. |
 | R-CLOUD-002 | Nodes connect to the cloud relay with short-lived node tokens through hibernating Durable Object WebSockets. Business decisions stay in C# (V-C01). | Closed-loop relay tests with a local Workers runtime (wrangler dev / workerd) where available; deployment evidence separately. |
 | R-CLOUD-003 | Status telemetry to the cloud is demand-driven. Full snapshots flow only while an authorized viewer watches, otherwise only presence and summary changes, within per-account rate limits. | Relay tests count frames. |
 | R-CLOUD-004 | Remote commands are authorized in C#, signed, checked again by the node's local remote-control policy, audited and idempotent. High-risk commands need confirmation on the requesting device and are allowed only if the node's policy permits them remotely. | Tests. |
@@ -196,7 +198,7 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 | R-COM-001 | Web subscriptions use Paddle as Merchant of Record (reused design V-C07). Checkout, renewal, cancellation, refund, payment failure and dunning update entitlements through verified webhooks. | Closed-loop tests with recorded signed webhook fixtures; live checkout deferred. |
 | R-COM-002 | Android subscriptions use Google Play Billing. The backend verifies purchases with `purchases.subscriptionsv2`, acknowledges within the window, links with `obfuscatedAccountId`, processes RTDN, and handles restore, cancellation, grace period, account hold, pause, expiry, revocation and refund (V-C05). | Closed-loop tests with a Play Developer API fake and RTDN fixtures; real purchase deferred. |
 | R-COM-003 | One entitlement snapshot per account combines web and Play sources without double-granting. Changes reach relay-connected nodes within 60 s (`EntitlementChanged` frame). Other online nodes receive them at their next refresh (at most 24 h), or immediately when the user refreshes or opens the account page. | Tests. |
-| R-COM-004 | Entitlement enforcement on nodes uses signed tokens with offline grace. Expiry degrades only the gated features and never interrupts running local tasks. | Tests. |
+| R-COM-004 | Signed entitlement tokens with offline grace describe cloud features only (`remote.*`, `push`). Expiry stops only cloud features, never local or LAN features, and never interrupts running tasks. | Tests. |
 
 ## R-DIST — Distribution and updates
 

@@ -40,9 +40,9 @@
    - **Delivery** means merged, with the task's development-stage acceptance met: real implementations, verified on the workstation and the local cloud stack with approved external fakes. Cloud and Web merges deploy dark: flagship surfaces stay disabled in production ([10](../architecture/10-cloud.md) §8). No implementation merge waits for production key material, domains, provisioning or publication approval.
    - **Production activation** is its own task (AF-PROD-01), after the release candidate. It needs the user's approval and the production prerequisites, and enables the surfaces step by step. The approvals it needs are never bypassed: publication of the public site and enabling production surfaces stay explicit user decisions.
    - **Real-world acceptance** is the acceptance register: real payments, devices, physical LANs, production signing.
-10. **Continuous serial execution once authorized.** A run gate holds until the user authorizes implementation. The authorization is recorded as a Plan ledger note, so every later session can see it; without that record a coordinator only reports status. After that, the coordinator works through eligible tasks one at a time without asking for "continue" after each delivery. It reports each delivery, skips `blocked` tasks, and stops only when:
+10. **Continuous serial execution once authorized.** A run gate holds until the user authorizes implementation by giving a session the Plan's execution prompt (`execution-prompt.md`) with a range of `sequence.md` steps; that range is the authorized scope. The authorization is recorded as a Plan ledger note, so every later session can see it; without an unfinished authorized range a coordinator only reports status. Within the range, the coordinator works through eligible tasks one at a time without asking for "continue" after each delivery, and it never starts a task outside the range. It reports each delivery, skips `blocked` tasks, and stops only when:
     - an outward-facing approval is needed;
-    - the authorized scope is complete;
+    - the authorized range is complete;
     - no eligible task remains;
     - a decision only the user can make is required;
     - the user says stop.

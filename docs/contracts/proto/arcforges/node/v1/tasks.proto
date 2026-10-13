@@ -937,6 +937,20 @@ message Attempt {
   optional uint32 tool_parallelism = 19 [json_name = "toolParallelism"]; // tool-level setting applied (never called a limit)
   arcforges.foundation.v1.Id remote_attempt_id = 20 [json_name = "remoteAttemptId"]; // REMOTE kind: executor-side ID
   arcforges.foundation.v1.Revision revision = 21 [json_name = "revision"];
+  repeated CacheUsage cache_usage = 22 [json_name = "cacheUsage"]; // one entry per cache binding (07 section 1.5)
+  optional uint64 downloaded_bytes = 23 [json_name = "downloadedBytes"]; // bytes added to download caches during the attempt (sum over cache_usage of download kinds)
+}
+
+// What one attempt did with one managed cache (07 section 1.5).
+message CacheUsage {
+  arcforges.foundation.v1.Id cache_id = 1 [json_name = "cacheId"];
+  optional string kind = 2 [json_name = "kind"]; // nuget | npm | pnpm | cargo | pip | sccache | ccache | fastbuild | cas
+  optional uint64 bytes_added = 3 [json_name = "bytesAdded"]; // cache growth during the attempt: downloads and new entries
+  optional uint64 hits = 4 [json_name = "hits"]; // when the tool reports them (sccache, ccache)
+  optional uint64 misses = 5 [json_name = "misses"];
+  optional uint32 packages_installed = 6 [json_name = "packagesInstalled"]; // restores: packages downloaded or extracted (adapter-parsed)
+  optional uint32 packages_reused = 7 [json_name = "packagesReused"]; // restores: packages already in the cache
+  optional string attribution = 8 [json_name = "attribution"]; // EXACT: only this attempt used the cache meanwhile; SHARED_WINDOW: concurrent users, so the values are the window's totals
 }
 
 message QueueInfo {

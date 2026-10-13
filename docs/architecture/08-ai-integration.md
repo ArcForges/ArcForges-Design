@@ -6,7 +6,7 @@ Decision: [AD-0007](../decisions/AD-0007-ai-integration.md). Tool catalogue and 
 
 | Component | Role |
 |---|---|
-| `arcforges mcp serve` | MCP server (stdio; optionally Streamable HTTP on `127.0.0.1` with a bearer token). It connects to the local node as client kind `MCP_ADAPTER` and serves tools that map one-to-one onto node RPCs. |
+| `arcforges mcp serve` | MCP server over stdio (a local HTTP transport is roadmap RM-05). It connects to the local node as client kind `MCP_ADAPTER` and serves tools that map one-to-one onto node RPCs. |
 | `arcforges hook <client> <event>` | Reads the client's hook JSON from stdin, calls `SessionService`, and writes the client's expected JSON to stdout. Latency target: p95 ≤ 50 ms ([15](15-performance-targets.md)). |
 | `arcforges integrate <client>` | Plans, applies and removes client configuration (`IntegrationService`) |
 | Node `SessionService` | Session and subagent registry, process roots, routing decisions, coverage |
@@ -141,7 +141,7 @@ PostToolUse hooks record executed heavy commands that were not routed (`BYPASSED
 
 **Non-shell operation adapters** are the MCP tools of [mcp.md](../experience/mcp.md) (M-01 to M-19): `run` in argv form (no shell), task status, waits, output, cancellation and retries, queue explanations, operational-memory queries, worktree creation and removal, cleanup plans and the doctor. Each calls the same node services as the CLI, so permissions, keys and records apply equally.
 
-ArcForges never claims that connecting MCP, or any single route, manages everything. The session coverage report (§5) shows the managed share.
+ArcForges never claims that connecting MCP, or any single route, manages everything. The session coverage report (§5) shows the managed share. The operations release 1 manages are listed in the [product definition](../product/product-definition.md) §9; routing operations that clients start outside their shell tool is roadmap RM-12.
 
 ## 5. Coverage
 

@@ -76,7 +76,7 @@ service NodeEnrollmentService {
   // state: SM-DEVICE-AUTH: (none) -> PENDING
   rpc StartDeviceAuthorization(NodeEnrollmentServiceStartDeviceAuthorizationRequest) returns (NodeEnrollmentServiceStartDeviceAuthorizationResponse);
 
-  // Poll at the given interval. APPROVED returns credentials (the CSR is sent with every poll).
+  // Poll at the given interval. APPROVED returns credentials.
   // auth: none (device_code proof)
   // idempotency: natural
   // deadline: 10 s
@@ -171,25 +171,25 @@ service NodeEnrollmentService {
   // state: SM-PHONE-PAIRING: CONFIRMED -> COMPLETED
   rpc PollPhonePairing(NodeEnrollmentServicePollPhonePairingRequest) returns (NodeEnrollmentServicePollPhonePairingResponse);
 
-  // Issue or renew a 30-day account certificate from the Node Issuing CA (Pro).
-  // auth: node credential; entitlement lan.placement or lan.accept or lan.cache
+  // Deferred (roadmap RM-01): issue or renew a 30-day account certificate for account-based LAN trust. Not served in release 1.
+  // auth: node credential (deferred feature, roadmap RM-01)
   // idempotency: command_id
   // deadline: 10 s
   // stream: none
-  // errors: ENTITLEMENT/feature_not_entitled, VALIDATION/invalid_argument, AUTHENTICATION/credential_revoked
+  // errors: VALIDATION/invalid_argument, AUTHENTICATION/credential_revoked
   // locality: cloud
   rpc IssueNodeCertificate(NodeEnrollmentServiceIssueNodeCertificateRequest) returns (NodeEnrollmentServiceIssueNodeCertificateResponse);
 
-  // Same-account nodes' last LAN endpoints and fingerprints.
-  // auth: node credential; entitlement lan.placement or lan.accept
+  // Deferred (roadmap RM-01): same-account nodes' last LAN endpoints and fingerprints. Not served in release 1.
+  // auth: node credential (deferred feature, roadmap RM-01)
   // idempotency: read
   // deadline: 5 s
   // stream: none
-  // errors: ENTITLEMENT/feature_not_entitled
+  // errors: none (implicit codes only)
   // locality: cloud
   rpc GetLanHints(NodeEnrollmentServiceGetLanHintsRequest) returns (NodeEnrollmentServiceGetLanHintsResponse);
 
-  // Report this node's LAN endpoints and fingerprint for hints.
+  // Deferred (roadmap RM-01): report this node's LAN endpoints and fingerprint for hints. Not served in release 1.
   // auth: node credential
   // idempotency: command_id
   // deadline: 5 s
@@ -298,7 +298,7 @@ message NodeEnrollmentServiceCompleteNodeSignInRequest {
   arcforges.foundation.v1.Id flow_id = 10 [json_name = "flowId"]; // validate: APPROVED
   optional string code = 11 [json_name = "code"]; // validate: one use
   optional string code_verifier = 12 [json_name = "codeVerifier"]; // validate: 43..128 chars; matches the challenge
-  optional bytes csr = 13 [json_name = "csr"]; // validate: PKCS#10 DER, P-256, SAN URI arcforges:node:<node_id>
+  optional bytes csr = 13 [json_name = "csr"]; // validate: optional; PKCS#10 DER, P-256, SAN URI arcforges:node:<node_id>; reserved for account-based LAN trust (roadmap RM-01) and ignored in release 1
 }
 message NodeEnrollmentServiceCompleteNodeSignInResponse {
   arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
@@ -333,7 +333,7 @@ message NodeEnrollmentServicePollDeviceAuthorizationRequest {
   arcforges.foundation.v1.RequestMeta meta = 1 [json_name = "meta"];
   reserved 2 to 9;
   optional string device_code = 10 [json_name = "deviceCode"]; // validate: required
-  optional bytes csr = 11 [json_name = "csr"]; // validate: PKCS#10 DER as in CompleteNodeSignIn
+  optional bytes csr = 11 [json_name = "csr"]; // validate: optional; as in CompleteNodeSignIn (reserved for roadmap RM-01)
 }
 message NodeEnrollmentServicePollDeviceAuthorizationResponse {
   arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
@@ -1252,7 +1252,7 @@ message EntitlementClaims {
   repeated string features = 4 [json_name = "features"];
   arcforges.foundation.v1.Instant issued_at = 5 [json_name = "issuedAt"];
   arcforges.foundation.v1.Instant not_after = 6 [json_name = "notAfter"]; // issued_at + 14 days
-  repeated arcforges.foundation.v1.Id revoked_nodes = 7 [json_name = "revokedNodes"]; // <= 256, delta since the node's last token
+  repeated arcforges.foundation.v1.Id revoked_nodes = 7 [json_name = "revokedNodes"]; // <= 256, delta since the node's last token; for account-based LAN trust (roadmap RM-01), empty in release 1
   optional int64 entitlement_version = 8 [json_name = "entitlementVersion"];
 }
 
@@ -1262,7 +1262,7 @@ message NodeCredentials {
   arcforges.foundation.v1.Instant access_expires_at = 3 [json_name = "accessExpiresAt"];
   AccountSummary account = 4 [json_name = "account"];
   SignedBlob entitlement_token = 5 [json_name = "entitlementToken"];
-  repeated bytes node_certificate_chain = 6 [json_name = "nodeCertificateChain"]; // DER; present when entitled to LAN features
+  repeated bytes node_certificate_chain = 6 [json_name = "nodeCertificateChain"]; // DER; account-based LAN trust (roadmap RM-01): absent in release 1
   repeated PublicKey command_keys = 7 [json_name = "commandKeys"];
   repeated PublicKey entitlement_keys = 8 [json_name = "entitlementKeys"];
   arcforges.foundation.v1.Id installation_id = 9 [json_name = "installationId"];

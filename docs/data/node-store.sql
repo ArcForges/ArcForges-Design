@@ -367,6 +367,7 @@ CREATE TABLE attempt (
   output_retained_until INTEGER,
   output_compressed INTEGER NOT NULL DEFAULT 0 CHECK (output_compressed IN (0, 1)),
   output_purged INTEGER NOT NULL DEFAULT 0 CHECK (output_purged IN (0, 1)),
+  downloaded_bytes INTEGER NOT NULL DEFAULT 0 CHECK (downloaded_bytes >= 0),  -- bytes added to download caches during the attempt (07 section 1.5)
   output_base_manifest BLOB CHECK (output_base_manifest IS NULL OR length(output_base_manifest) = 32),  -- REMOTE, origin side: digest or absence of each declared output at submission (09 section 6)
   outputs BLOB,                                 -- OutputApplyResult, once returned outputs are applied
   rev INTEGER NOT NULL CHECK (rev >= 0),
@@ -375,6 +376,19 @@ CREATE TABLE attempt (
 CREATE UNIQUE INDEX ux_attempt__task_number ON attempt (task_id, number);
 CREATE INDEX ix_attempt__live ON attempt (state) WHERE state BETWEEN 1 AND 8;
 CREATE INDEX ix_attempt__finished ON attempt (finished_at);
+
+CREATE TABLE attempt_cache_usage (
+  attempt_id BLOB NOT NULL REFERENCES attempt (attempt_id) ON DELETE CASCADE,
+  cache_id BLOB NOT NULL CHECK (length(cache_id) = 16),
+  kind TEXT NOT NULL,                           -- nuget | npm | pnpm | cargo | pip | sccache | ccache | fastbuild | cas
+  bytes_added INTEGER NOT NULL DEFAULT 0 CHECK (bytes_added >= 0),
+  hits INTEGER CHECK (hits IS NULL OR hits >= 0),          -- when the tool reports them
+  misses INTEGER CHECK (misses IS NULL OR misses >= 0),
+  packages_installed INTEGER CHECK (packages_installed IS NULL OR packages_installed >= 0),
+  packages_reused INTEGER CHECK (packages_reused IS NULL OR packages_reused >= 0),
+  attribution INTEGER NOT NULL CHECK (attribution IN (1, 2)),  -- 1 EXACT, 2 SHARED_WINDOW (concurrent users; window totals)
+  PRIMARY KEY (attempt_id, cache_id)
+) STRICT, WITHOUT ROWID;
 
 CREATE TABLE timeline_segment (
   attempt_id BLOB NOT NULL REFERENCES attempt (attempt_id) ON DELETE CASCADE,

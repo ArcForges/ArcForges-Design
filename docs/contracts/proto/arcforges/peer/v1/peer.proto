@@ -308,7 +308,7 @@ message PeerStatusServiceWatchStatusFrame {
 // Offers, remote attempts, leases and results (09 section 5).
 service PlacementService {
   // Ask the executor for an offer. A positive offer reserves budget until accept_by.
-  // auth: PEER: paired; executor policy accept_from; executor entitlement lan.accept; origin entitlement lan.placement (token presented in metadata)
+  // auth: PEER: paired; executor policy accept_from
   // idempotency: command_id
   // deadline: 5 s
   // stream: none

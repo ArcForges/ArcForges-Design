@@ -21,8 +21,9 @@ Plans live in the Entitlement module's configuration revision ([AD-0010](../deci
 | Plan | Features | Limits | Offers |
 |---|---|---|---|
 | `free` | — | Relay nodes 0, viewers 0, push 0, support uploads 1/day | — |
-| `pro` | `lan.placement`, `lan.accept`, `lan.cache`, `remote.view`, `remote.control`, `push` | [10](10-cloud.md) §5 Pro column | Paddle `pro_monthly`, `pro_annual`; Play product `arcforges.pro` with base plans `monthly` and `annual` |
+| `pro` | `remote.view`, `remote.control`, `push` | [10](10-cloud.md) §5 Pro column | Paddle `pro_monthly`, `pro_annual`; Play product `arcforges.pro` with base plans `monthly` and `annual` |
 
+- **Only cloud features are plan features.** Local and LAN capabilities are free and never appear in a plan ([AD-0015](../decisions/AD-0015-direction-editions-roadmap.md) §2).
 - **Prices, currencies, trials and introductory offers** are product-owner decisions (human prerequisite H-07). The catalogue supports them without code changes: Paddle prices and Play base-plan offers are referenced by ID.
 - **Default before the decision:** no trial, and the paid plans are disabled (configuration flag `commerce.sales_open=false`). The checkout surfaces show "Coming soon" while the flag is off.
 - **Feature changes.** Changing a plan's features creates a new configuration revision. Existing subscriptions keep the features of their plan ID, and nodes receive updated entitlement tokens within 24 h, or immediately when online through the relay `EntitlementChanged` frame.

@@ -152,4 +152,4 @@ Per [AD-0006](../decisions/AD-0006-execution-semantics.md) §8. The action key i
 - the input manifest digest (declared input globs relative to the workspace);
 - OS and architecture.
 
-Declared output globs are stored in the CAS (`cache/cas/`). Policy `result_cache` sets a mode per workspace: `OFF` (default), `OBSERVE` (record would-hit) or `RESTORE`. A restore produces an attempt of kind `CACHE_RESTORE` with `termination_reason=CACHE_RESTORED`, the recorded exit code and output replay; it is never shown as an execution. Restores run only for `PURE` tasks (AD-0006 §8).
+Declared output globs are stored in the CAS (`cache/cas/`). Policy `result_cache` sets a mode per workspace: `OFF` (default) or `OBSERVE`, which records would-be hits as the evidence for when restores would pay off. `RESTORE` is accepted future work (roadmap RM-04), and policy validation refuses it in release 1. When it arrives, a restore produces an attempt of kind `CACHE_RESTORE` with `termination_reason=CACHE_RESTORED`, the recorded exit code and output replay; it is never shown as an execution, and it runs only for `PURE` tasks (AD-0006 §8).

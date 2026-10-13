@@ -389,7 +389,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 ## D-12 Caches
 
 - **Purpose.** Cache locations, sizes, effectiveness, duplicates and sharing.
-- **Permissions.** HUMAN. LAN sharing requires entitlement `lan.cache`.
+- **Permissions.** HUMAN. LAN sharing is free; it needs a paired peer whose policy allows cache access (D-15).
 
 ```
 ┌ Caches ─ [Report: last 7 days ▾] ───────────────────────────────────────────────┐
@@ -402,7 +402,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 
 - **Data:** `CacheService.ListCaches`, `GetCacheReport`.
 - **Actions:** Verify (`VerifyCache`), Settings (`UpdateCacheSettings`: quota, LAN sharing), Plan cleanup for duplicates or a trim (opens D-11 with rules).
-- **States:** S-NOT-ENTITLED for LAN sharing; a "Maintenance in progress" chip while a lease is held.
+- **States:** a "Maintenance in progress" chip while a lease is held; LAN sharing unavailable until a peer is paired (link to D-15).
 
 ## D-13 Toolchains
 
@@ -467,7 +467,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 ## D-15 LAN
 
 - **Purpose.** Enable LAN features, pair machines, set per-peer policy.
-- **Permissions.** HUMAN only. Placement, accept and cache need Pro entitlements; pairing and status are free.
+- **Permissions.** HUMAN only. Everything on this page is free and needs no account: pairing, status, placement and cache sharing.
 
 ```
 ┌ LAN ─ Listener ON :47820 · 192.168.1.99 · fingerprint 3F9A…  [Disable]          │
@@ -488,7 +488,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
   - Confirm digits (`ConfirmPairing`), Cancel (`CancelPairing`).
   - Policy editor (`UpdatePeerPolicy`): placement out and in, cache read and write, shares, toolchains, command patterns, approval, data out (source, outputs, logs). Defaults are status only.
   - Add by address (`AddPeerAddress`), Remove or Block (`RemovePeer`).
-- **States:** S-NOT-ENTITLED for placement and cache toggles; INCOMPATIBLE peers with the required version; mismatch, expired and blocked pairing results.
+- **States:** INCOMPATIBLE peers with the required version; mismatch, expired and blocked pairing results.
 - **Accessibility.** The SAS digits are read as individual digits ("four eight one, two nine zero"), and the countdown is announced at 60, 30 and 10 seconds.
 
 ## D-16 Account
@@ -513,7 +513,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
   - Sign in: `BeginSignIn(BROWSER)` opens the system browser. "Use a code instead" uses DEVICE_CODE and shows the code, URL and QR.
   - Connect phone (`CreatePhonePairing`, then `ConfirmPhonePairing`).
   - Cloud link toggle (`SetCloudLink`).
-  - Sign out (`SignOut`), with the confirmation "Remote access and LAN account certificates stop on this node."
+  - Sign out (`SignOut`), with the confirmation "Remote access stops on this node. Local and LAN work is unaffected."
   - Manage subscription opens `arcforges.com/account/subscription`.
 - **States:** not signed in; flow expired or denied; S-OFFLINE (cloud unreachable; entitlement shown with offline grace); "Weaker credential storage" warning on Linux without a secret service.
 

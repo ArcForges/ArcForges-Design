@@ -4,33 +4,28 @@ Decision: [AD-0008](../decisions/AD-0008-lan-trust-and-placement.md). Contracts:
 
 ## 1. Listener and identity
 
-- The listener is TCP `0.0.0.0:47820` (configurable; IPv6 dual-stack where available). Kestrel HTTPS uses TLS 1.3 only and requires a client certificate. TLS 1.3 is available on every supported platform: Windows 11, whose Schannel supports TLS 1.3 (Windows 10 does not, V-N06; [AD-0002](../decisions/AD-0002-platform-scope.md)), and Linux with OpenSSL. It is enabled when the user turns on LAN features. The TLS layer accepts any well-formed client certificate, but refuses invalid or revoked account certificates. A gRPC interceptor then limits unpaired identities to `PeerHandshakeService.Hello` and `PairingService`, and every other service requires a pinned or same-account identity (AD-0008 §4). WSL2 mirrored networking exposes the guest on the LAN (L-12), but guest nodes do **not** open a LAN listener by default: their LAN presence is through the host node.
+- The listener is TCP `0.0.0.0:47820` (configurable; IPv6 dual-stack where available). Kestrel HTTPS uses TLS 1.3 only and requires a client certificate. TLS 1.3 is available on every supported platform: Windows 11, whose Schannel supports TLS 1.3 (Windows 10 does not, V-N06; [AD-0002](../decisions/AD-0002-platform-scope.md)), and Linux with OpenSSL. It is enabled when the user turns on LAN features. The TLS layer accepts any well-formed client certificate. A gRPC interceptor then limits unpaired identities to `PeerHandshakeService.Hello` and `PairingService`, and every other service requires a pinned (paired) identity (AD-0008 §4). WSL2 mirrored networking exposes the guest on the LAN (L-12), but guest nodes do **not** open a LAN listener by default: their LAN presence is through the host node.
 - **Node key:** ECDSA P-256. On Windows it is stored as a CNG key with export disabled, in the user profile. On Linux it is a 0600 PKCS#8 file in the data root. The self-signed certificate SAN contains `URI:arcforges:node:<node_id>`.
-- **Account certificate (Pro, signed in):**
-  1. The node submits a CSR to `NodeEnrollmentService.IssueNodeCertificate`.
-  2. The cloud's **ArcForges Node Issuing CA** returns a 30-day certificate with SAN `URI:arcforges:node:<node_id>` and `URI:arcforges:account:<account_id>`.
-  3. The node renews at 2/3 of its lifetime.
-
-  Revoked node IDs arrive with every entitlement token refresh (≤24 h) and every relay connection.
+- **Account certificates** (cloud-issued, for trust between nodes of one account without pairing) are accepted future work (roadmap RM-01). Release 1 uses the self-signed node certificate only, and LAN features need no account.
 
 ## 2. Discovery
 
 | Mechanism | Detail |
 |---|---|
-| DNS-SD | Service `_arcforges._tcp.local`, instance `<node name>`. TXT records: `id` (node ID, base32), `v` (protocol range, for example `1-1`), `fp` (first 16 hex digits of the certificate SHA-256), `tls=1`, and `acct` (first 8 hex digits of a per-account hash) only when `lan.advertise_account_hint` is on (default off). Advertising is limited to networks the user marks as trusted: Windows Private-category networks, and on Linux the interfaces the user selects. Windows registers and browses with `DnsServiceRegister`/`DnsServiceBrowse` (V-T04). Linux uses the in-process responder and browser (RFC 6762/6763 subset: PTR, SRV, TXT, A, AAAA; probing; announcements; TTL 120 s). |
+| DNS-SD | Service `_arcforges._tcp.local`, instance `<node name>`. TXT records: `id` (node ID, base32), `v` (protocol range, for example `1-1`), `fp` (first 16 hex digits of the certificate SHA-256), `tls=1`. The `acct` record (a per-account hash, policy `lan.advertise_account_hint`) is reserved for account hints (roadmap RM-01) and is not advertised in release 1. Advertising is limited to networks the user marks as trusted: Windows Private-category networks, and on Linux the interfaces the user selects. Windows registers and browses with `DnsServiceRegister`/`DnsServiceBrowse` (V-T04). Linux uses the in-process responder and browser (RFC 6762/6763 subset: PTR, SRV, TXT, A, AAAA; probing; announcements; TTL 120 s). |
 | Manual | `PeerService.AddPeerAddress(host, port)` |
-| Account hints (Pro) | `NodeEnrollmentService.GetLanHints` returns same-account nodes' last LAN endpoints and fingerprints |
+| Account hints | Deferred (roadmap RM-01): `NodeEnrollmentService.GetLanHints` is reserved and not served in release 1 |
 | Advertisement control | Policy `lan.advertise` (default true while LAN features are on) |
 
 Discovered peers appear as `DISCOVERED` (untrusted) and are never used until paired (R-LAN-001).
 
 ## 3. Pairing
 
-### 3.1 Same account (Pro)
+### 3.1 Same account (deferred)
 
-Both nodes hold account certificates for the same `account_id`. After the mTLS handshake validates the chain, the account SAN and the revocation list, the peer is `PAIRED (ACCOUNT)`. No confirmation is needed, because both nodes are already enrolled by the same signed-in user. The default policy is status-only until the user widens it.
+Account-based trust between nodes of one account (`PAIRED (ACCOUNT)`) is accepted future work (roadmap RM-01). In release 1 every peer, including another machine of the same user, is trusted through local confirmation (§3.2).
 
-### 3.2 Local confirmation (Free and Pro; any two nodes)
+### 3.2 Local confirmation (any two nodes)
 
 1. A user starts pairing on node A for discovered peer B (`PeerService.BeginPairing`). B shows an incoming request to its user, which can be accepted or rejected.
 2. A opens a TLS connection to B using self-signed certificates, unverified for now.
@@ -135,13 +130,9 @@ Placement is re-evaluated only before start. Running attempts never migrate (R-L
 
 **Ownership.** The task stays owned by the origin and the attempt by the executor ([AD-0004](../decisions/AD-0004-contracts-and-state.md)). The executor's local user can always see, pause or cancel remote attempts on their machine (R-LAN-008).
 
-## 8. Gating
+## 8. No subscription gating
 
-- Placement needs the origin account's entitlement `lan.placement`.
-- Accepting placements needs the executor account's entitlement `lan.accept`.
-- Cache serving and consuming need `lan.cache`.
-
-Each is verified offline from the signed entitlement token ([AD-0010](../decisions/AD-0010-commerce-and-entitlements.md) §5). Pairing and status viewing are free.
+LAN discovery, pairing, placement and cache sharing are free and need no account, entitlement or cloud connection ([AD-0015](../decisions/AD-0015-direction-editions-roadmap.md) §2). Per-peer policy ([AD-0008](../decisions/AD-0008-lan-trust-and-placement.md) §5) alone decides what each paired peer may do.
 
 ## 9. WSL guests are not LAN peers
 

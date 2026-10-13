@@ -8,7 +8,7 @@
 1. **One multi-role native executable per platform: `arcforges`** (`arcforges.exe` on Windows), built with .NET 10 Native AOT for `win-x64`, `win-arm64`, `linux-x64` and `linux-arm64`. Its roles are selected by command:
    - `arcforges node run`: the node service (authority).
    - `arcforges <command>`: the CLI ([experience/cli.md](../experience/cli.md)).
-   - `arcforges mcp serve`: the MCP adapter (stdio), and optionally `--http` for local Streamable HTTP.
+   - `arcforges mcp serve`: the MCP adapter (stdio; a local HTTP transport is roadmap RM-05).
    - `arcforges hook <client> <event>`: the AI-client hook handler.
    - `arcforges bridge wsl`: the host-to-guest byte relay launched through `wsl.exe` (AD-0005).
    - Internal helper roles, never invoked by users:

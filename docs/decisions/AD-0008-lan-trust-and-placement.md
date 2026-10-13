@@ -1,6 +1,6 @@
 # AD-0008 — LAN: discovery, trust, placement, transfer and caches
 
-- Status: Accepted (2026-10-12; revised after the independent review the same day: SAS bound to certificate fingerprints, listener access rule, copy or reflink for remote workspaces; revised 2026-10-13 after the findings review: per-attempt workspace slots, output conflict detection, TLS 1.3 platform floor)
+- Status: Accepted (2026-10-12; revised after the independent review the same day: SAS bound to certificate fingerprints, listener access rule, copy or reflink for remote workspaces; revised 2026-10-13 after the findings review: per-attempt workspace slots, output conflict detection, TLS 1.3 platform floor; revised 2026-10-13 by the product owner's decisions (AD-0015): LAN free; account-based trust and hints deferred (RM-01))
 
 ## Decision
 
@@ -8,16 +8,16 @@
    - Windows uses `DnsServiceRegister` and `DnsServiceBrowse` (V-T04).
    - Linux uses an in-process C# mDNS responder and browser on UDP 5353, which works without Avahi (L-11).
 
-   Users may also add peers by `host:port`. Signed-in nodes of the same account receive **account-assisted hints**: each other's last LAN endpoints and certificate fingerprints, through the cloud. Removal events are unreliable on Windows, so entries expire by TTL (120 s) unless refreshed.
+   Users may also add peers by `host:port`. Account-assisted hints through the cloud are accepted future work (roadmap RM-01). Removal events are unreliable on Windows, so entries expire by TTL (120 s) unless refreshed.
 2. **Node identity.** Each node generates an ECDSA P-256 key at first start (non-exportable where the OS allows). Its self-signed certificate carries `node_id` in the subject alternative name.
-3. **Trust (pairing), either:**
-   - **Account trust (Pro):** a signed-in node obtains a node certificate issued by its account's CA in ArcForges Cloud (`NodeEnrollmentService.IssueNodeCertificate`, 30-day validity, auto-renewed). Same-account nodes trust each other's account certificates, subject to per-peer policy defaults. Revocation lists ride on the entitlement token refresh and the relay.
-   - **Local pairing (Free and Pro):** two nodes run a commitment-based exchange over a TLS session. Each side checks that the certificate fingerprints claimed in the exchange equal the certificates presented in that TLS session. Both displays show a 6-digit short authentication string derived from the nonces and both fingerprints; the user confirms on both, and each pins the other's certificate fingerprint. A man in the middle presents its own certificates, so the two sides compute different strings. .NET 10 offers no TLS exporter (V-N05), so none is used.
+3. **Trust comes from local pairing.**
+   - **Local pairing:** two nodes run a commitment-based exchange over a TLS session. Each side checks that the certificate fingerprints claimed in the exchange equal the certificates presented in that TLS session. Both displays show a 6-digit short authentication string derived from the nonces and both fingerprints; the user confirms on both, and each pins the other's certificate fingerprint. A man in the middle presents its own certificates, so the two sides compute different strings. .NET 10 offers no TLS exporter (V-N05), so none is used.
+   - **Account trust is deferred** (roadmap RM-01): node certificates issued by an account CA in ArcForges Cloud, so that nodes of one account trust each other without pairing. The contracts keep the reserved RPCs (`NodeEnrollmentService.IssueNodeCertificate`, `GetLanHints`, `ReportLanEndpoints`), which release 1 does not serve.
 
-   LAN **placement and cache sharing** are Pro features (product definition §5), verified offline with the signed entitlement token. On the Free plan, paired peers exchange status only. WSL guests are not LAN peers and need no pairing: they link to their host through the bridge (03 §6).
+   LAN **pairing, placement and cache sharing are free** and need no account, entitlement or cloud connection ([AD-0015](AD-0015-direction-editions-roadmap.md) §2). A newly paired peer gets the status-only policy until the user widens it (item 5). WSL guests are not LAN peers and need no pairing: they link to their host through the bridge (03 §6).
 4. **Transport.** gRPC over HTTP/2 with mutual TLS 1.3 on a configurable TCP port (default 47820). TLS 1.3 needs Windows 11 on Windows (Schannel; V-N06), which is the platform floor ([AD-0002](AD-0002-platform-scope.md)).
-   - **At the TLS handshake:** the listener accepts any well-formed client certificate, so that unpaired nodes can pair. It refuses account certificates that are expired, wrongly signed or revoked.
-   - **After the handshake:** a gRPC interceptor admits unpaired identities only to `PeerHandshakeService.Hello` and `PairingService`. Every other service requires a pinned or same-account identity, and a blocked identity gets nothing.
+   - **At the TLS handshake:** the listener accepts any well-formed client certificate, so that unpaired nodes can pair.
+   - **After the handshake:** a gRPC interceptor admits unpaired identities only to `PeerHandshakeService.Hello` and `PairingService`. Every other service requires a pinned (paired) identity, and a blocked identity gets nothing.
 5. **Per-peer policy.** Each peer has these settings:
    - allow placement to it, and accept placement from it;
    - accept cache read and accept cache write;

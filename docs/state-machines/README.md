@@ -68,7 +68,7 @@ stateDiagram-v2
 | WAITING_DEPENDENCY | QUEUED | dependencies satisfied |  |  |
 | WAITING_DEPENDENCY | CANCELLED | dependency failed or cancelled (condition SUCCEEDED); TaskService.CancelTask |  |  |
 | QUEUED | RUNNING | admitted locally; attempt created | budget, pool, global limits (03 section 4) |  |
-| QUEUED | PLACING | placement chose a peer (placement ANY or SPECIFIC_NODE) | entitlement lan.placement; peer policy |  |
+| QUEUED | PLACING | placement chose a peer (placement ANY or SPECIFIC_NODE) | peer policy (no entitlement: LAN is free, AD-0015) |  |
 | PLACING | RUNNING | remote attempt started |  |  |
 | PLACING | QUEUED | offer declined or expired; transfer failed before start |  | re-placement; any side-effect class |
 | RUNNING | PAUSED | TaskService.PauseTask; pressure freeze | pause SUPPORTED and task pausable |  |
@@ -104,7 +104,7 @@ stateDiagram-v2
   PAUSED --> STOPPING : cancel, timeout, CPU limit, preemption
   RUNNING --> FINALIZING : root process exited
   STOPPING --> FINALIZING : container empty, or verification window (5 s) elapsed
-  CREATED --> FINALIZING : result-cache hit (CACHE_RESTORE attempt)
+  CREATED --> FINALIZING : result-cache hit (CACHE_RESTORE attempt
   FINALIZING --> FINISHED : output, accounting and records finalized
   CREATED --> FINISHED : recovery  container missing, boot changed, or peer lease end
   TRANSFERRING --> FINISHED : recovery  container missing, boot changed, or peer lease end
@@ -130,7 +130,7 @@ stateDiagram-v2
 | RUNNING, PAUSING, PAUSED | STOPPING | cancel, timeout, CPU limit, preemption |  |  |
 | RUNNING | FINALIZING | root process exited |  | leftover processes terminated after leftover_grace |
 | STOPPING | FINALIZING | container empty, or verification window (5 s) elapsed |  | TERMINATION_INCOMPLETE when processes remain |
-| CREATED | FINALIZING | result-cache hit (CACHE_RESTORE attempt) |  |  |
+| CREATED | FINALIZING | result-cache hit (CACHE_RESTORE attempt; RESTORE mode is roadmap RM-04, not in release 1) |  |  |
 | FINALIZING | FINISHED | output, accounting and records finalized |  |  |
 | CREATED, TRANSFERRING, STARTING, RUNNING, PAUSING, PAUSED, STOPPING, FINALIZING | FINISHED | recovery: container missing, boot changed, or peer lease ended |  | termination LOST; effect UNKNOWN |
 

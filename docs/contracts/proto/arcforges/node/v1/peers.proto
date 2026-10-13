@@ -357,7 +357,7 @@ enum PeerTrust {
   PEER_TRUST_UNSPECIFIED = 0;
   PEER_TRUST_NONE = 1;
   PEER_TRUST_PINNED = 2;
-  PEER_TRUST_ACCOUNT = 3;
+  PEER_TRUST_ACCOUNT = 3; // account-based trust (roadmap RM-01); not used in release 1
 }
 
 enum PairingRole {

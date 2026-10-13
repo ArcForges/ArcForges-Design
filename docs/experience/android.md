@@ -221,15 +221,15 @@
 
 - **Purpose.** Subscribe to Pro through Google Play, restore purchases, or manage a subscription.
 - **Permissions.** Session with step-up for billing actions; Google Play installed.
-- **Layout.** The current plan; what Pro adds; the plan buttons; restore; manage.
+- **Layout.** The current plan; what Pro adds (cloud services only: everything local and on the LAN is free, product definition §5); the plan buttons; restore; manage.
 - **Wireframe:**
 
 ```
 ┌ Subscription ────────────────┐
 │ Free                         │
-│ Pro adds: LAN placement and  │
-│ cache sharing, remote status │
-│ and control, notifications.  │
+│ Pro adds remote status and   │
+│ control outside your LAN,    │
+│ and notifications.           │
 │ [ Pro monthly – price ]      │
 │ [ Pro annual – price ]       │
 │ Restore purchases            │

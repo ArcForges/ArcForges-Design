@@ -348,7 +348,7 @@ message AccountStatus {
   optional string account_email_masked = 3 [json_name = "accountEmailMasked"];
   EntitlementSummary entitlement = 4 [json_name = "entitlement"];
   optional bool node_enrolled = 5 [json_name = "nodeEnrolled"];
-  arcforges.foundation.v1.Instant node_certificate_expires_at = 6 [json_name = "nodeCertificateExpiresAt"];
+  arcforges.foundation.v1.Instant node_certificate_expires_at = 6 [json_name = "nodeCertificateExpiresAt"]; // account-based LAN trust (roadmap RM-01); absent in release 1
   optional RelayState relay = 7 [json_name = "relay"];
   optional string relay_reason = 8 [json_name = "relayReason"];
   optional bool cloud_link_enabled = 9 [json_name = "cloudLinkEnabled"];

@@ -1,6 +1,6 @@
 # AD-0006 — Execution semantics: durability, retries, pause and caching
 
-- Status: Accepted (2026-10-12; revised 2026-10-13 after the findings review: retry-safety assertion sources, caller hand-off and joined resubmissions)
+- Status: Accepted (2026-10-12; revised 2026-10-13 after the findings review: retry-safety assertion sources, caller hand-off and joined resubmissions; revised 2026-10-13 by the product owner's decisions (AD-0015): result-cache restore deferred to the roadmap)
 - References: Pueue design (V-T05) for queue and persisted-log patterns; independent C# implementation.
 
 ## Decision
@@ -42,5 +42,5 @@
    - The action key is the digest of the normalized argv, declared environment subset, toolchain identity, working-directory-relative input manifest digests and the platform.
    - Outputs are stored in the node's content-addressed store. A hit restores the declared outputs and replays recorded output.
    - A restore is recorded as an attempt of kind `CACHE_RESTORE` with `termination_reason=CACHE_RESTORED`, never as an execution.
-   - Policy `result_cache` sets the mode per workspace: `OFF` (default), `OBSERVE` (records would-be hits without restoring) or `RESTORE` ([04](../architecture/04-execution.md) §11).
+   - Policy `result_cache` sets the mode per workspace: `OFF` (default) or `OBSERVE` (records would-be hits without restoring). `RESTORE` is accepted future work (roadmap RM-04; refused by policy validation in release 1) ([04](../architecture/04-execution.md) §11).
 9. **Idempotent operations.** Submit, cancel, retry, priority change, policy change and cleanup are idempotent by `command_id` (24 h). Replays return the original receipt.

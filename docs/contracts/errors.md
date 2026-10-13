@@ -41,7 +41,7 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 | `AUTHORIZATION/command_pattern_denied` | The command is outside the agent's or peer's allowed patterns | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = policy path |
 | `AUTHORIZATION/peer_policy_denied` | The peer policy does not allow this operation | `NEVER` | `DID_NOT_HAPPEN` | — |
 | `AUTHORIZATION/account_mismatch` | Play `obfuscatedAccountId` differs from the caller's account | `NEVER` | `DID_NOT_HAPPEN` | — |
-| `ENTITLEMENT/feature_not_entitled` | The plan lacks the feature (`lan.*`, `remote.*`, `push`) | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = feature |
+| `ENTITLEMENT/feature_not_entitled` | The plan lacks the cloud feature (`remote.*`, `push`); local and LAN features are never gated | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = feature |
 | `ENTITLEMENT/plan_limit_reached` | A per-plan count (nodes, viewers) is exhausted | `NEVER` | `DID_NOT_HAPPEN` | `limit` |
 | `CONFLICT/revision_conflict` | `meta.expected_rev` differs from the current revision | `NEVER` (re-read, merge) | `DID_NOT_HAPPEN` | `revision` |
 | `CONFLICT/already_exists` | The named object already exists | `NEVER` | `DID_NOT_HAPPEN` | `state.resource` |

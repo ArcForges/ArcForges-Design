@@ -77,6 +77,27 @@ Ticks merge into segments, and segments shorter than 2 s merge into neighbours. 
 
 All reports come as tables and timelines in the UIs, as `DiagnosisService.GetReport` (protobuf), and as JSON Lines exports (`ExportRecords`), one record type per line, schema `arcforges.node.v1` JSON mapping (R-REC-003).
 
+### 1.5 Correlated evidence
+
+Every attempt's record links the evidence that explains delay and waste (R-REC-006, [AD-0015](../decisions/AD-0015-direction-editions-roadmap.md) §6):
+
+| Evidence | Recorded in | Correlation key |
+|---|---|---|
+| Task and attempt identity, owner node and executor | `task`, `attempt`, `remote_attempt` | `task_id`, `attempt_id`, `remote_attempt_id` |
+| Originating session and agent | `task.owner_session_id`; the agent ID when the client reports it, otherwise `attribution=UNKNOWN` ([08](08-ai-integration.md) §3) | `session_id`, agent ID |
+| Workspace | `task.workspace_id` | `workspace_id` |
+| Processes | `process_record` | `(attempt_id, pid, start)` |
+| Queueing | `QUEUED_*` timeline segments, whose evidence names the blocking reason and, for keys, the holders | `attempt_id` |
+| Execution | Timeline segments and adapter phase events | `attempt_id` |
+| Downloads and cache usage | `attempt_cache_usage` (`CacheUsage` per cache binding: bytes added, hits and misses where the tool reports them, packages installed and reused) and `Attempt.downloaded_bytes` | `(attempt_id, cache_id)` |
+| Resource consumption | Attempt accounting and `resource_sample` | `attempt_id` |
+| Retries and outcomes | The task's attempts, `termination_reason`, `effect` and findings | `task_id` |
+
+- **Attribution of shared caches.** When several attempts use one cache at the same time, growth and statistics cannot be split exactly: the record says `SHARED_WINDOW` and gives the window's totals, never an invented split.
+- **Bounds.** Collection stays within the node's overhead targets ([15](15-performance-targets.md) §2) and the store's size budget ([node store](../data/node-store.md) §4); evidence follows record retention (`record_retention_days`, default 90) and sample downsampling (R-REC-005).
+- **Sensitive data.** Command lines and environment values are redacted as in R-EXE-017; downloads are recorded as counts and bytes, never as URLs or credentials; exports and support bundles apply the same redaction.
+- **Foundations.** The same records feed operational memory today and later prediction and cache-sharing decisions (roadmap RM-02, RM-08).
+
 ## 2. Diagnosis
 
 ### 2.1 Progress checks

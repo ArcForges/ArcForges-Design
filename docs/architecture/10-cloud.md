@@ -33,7 +33,7 @@ Decisions: [AD-0009](../decisions/AD-0009-cloud-relay-and-cost-controls.md), [AD
 |---|---|---|
 | Identity | Contracts (`publicapi.v1.IdentityService`), D1 tables, user and credential domain rules and store | WebAuthn ceremonies, e-mail codes, cookie and native-bearer sessions with refresh rotation, step-up (AF-ID-01). E-mail goes through a provider adapter: Postmark, with Amazon SES as fallback, the historical Cloud design's choice. The provider account and sending domain are prerequisite H-19; development uses `FakeMailSender`, and live delivery is AR-14. Recovery, account deletion with grace, data export (`DataService`), security activity (AF-ID-02). New: an `account` session approves node sign-ins and device codes; phone sessions are scoped (§3.3). |
 | Devices | Contracts (`DeviceService`, product and platform are strings), D1 tables | Register, list, rename, revoke and cascade (AF-ID-02). Product values `arcforges-node` and `arcforges-mobile`. Each node, including each WSL guest, is its own device record (cloud-store §3). |
-| Fleet | **New** (`ArcForges.Cloud.Modules.Fleet`) | `NodeEnrollmentService`: native sign-in (PKCE loopback), device authorization, phone pairing, node certificates, LAN hints, relay tokens, entitlement tokens. `FleetService`: node list, rename, revoke, snapshots, viewer grants, remote commands. Relay envelope processing. |
+| Fleet | **New** (`ArcForges.Cloud.Modules.Fleet`) | `NodeEnrollmentService`: native sign-in (PKCE loopback), device authorization, phone pairing, relay tokens, entitlement tokens (node certificates and LAN hints are reserved for roadmap RM-01 and not served in release 1). `FleetService`: node list, rename, revoke, snapshots, viewer grants, remote commands. Relay envelope processing. |
 | Entitlement | Resolver, snapshots, grants (implemented), D1 tables | `EntitlementService` endpoints, plan catalogue for the flagship, entitlement-token claim projection (AF-CLD-03) |
 | Commerce | Contracts (`CommerceService`), D1 tables, the historical Paddle design (BC-01) | Paddle provider: catalogue, checkout attempts, verified webhooks, subscription lifecycle, customer portal, refunds, billing history (AF-COM-01). Google Play provider: `StoreBillingService`, RTDN, acknowledgement job (AF-CLD-07). |
 | Notification | Contracts (`NotificationService`), D1 tables, the historical FCM HTTP v1 design | Implemented by AF-CLD-06: `List`, `Acknowledge`, `RegisterPush`, `UnregisterPush`, the FCM HTTP v1 sender with short-lived service-account tokens. Push kinds `node.task_failed`, `node.task_finished`, `node.approval_needed`, `node.offline`, `node.finding`; batching from relay envelopes; preferences per kind and node (`FleetService.GetPushPreferences` and `UpdatePushPreferences`, table `fleet_push_preference`) |
@@ -49,7 +49,7 @@ Decisions: [AD-0009](../decisions/AD-0009-cloud-relay-and-cost-controls.md), [AD
 
 1. The node calls `NodeEnrollmentService.BeginNodeSignIn{code_challenge (S256), redirect_uri=http://127.0.0.1:<port>/callback, node_info}`. It receives `{flow_id, authorize_url, expires_at (10 min)}`.
 2. The node opens `authorize_url` (`https://arcforges.com/connect?flow=<id>`) in the system browser. The web profile authenticates the user (existing flows) and shows "Connect ArcForges node <name> (<os>) to <account>?". On approval, the C# host issues a one-use code bound to the flow and redirects to the loopback URI.
-3. The node calls `CompleteNodeSignIn{flow_id, code, code_verifier, csr}` and receives `{node credential (refresh token, scope node), account summary, entitlement token, node certificate if entitled}`. The installation is registered (`NODE`).
+3. The node calls `CompleteNodeSignIn{flow_id, code, code_verifier}` and receives `{node credential (refresh token, scope node), account summary, entitlement token}`. The installation is registered (`NODE`). The optional `csr` field and the certificate chain are reserved for account-based LAN trust (roadmap RM-01).
 
 **Failure states:** the user denies (`ACCESS_DENIED`); the flow expires; the loopback port is unavailable (the node falls back to device authorization); the code is reused (refused, and the flow is revoked).
 
@@ -106,7 +106,7 @@ Each secret is single-use. A wrong secret consumes the pairing.
 
 ### 3.8 Entitlement token (R-COM-004)
 
-`RefreshEntitlementToken{}` (node credential) returns a compact ES256-signed token (`SignedBlob` with `EntitlementClaims`): `{acct, node, plan, features[], issued_at, not_after (14 days), revoked_nodes[] (≤256, delta), kid}`. Nodes refresh it every 24 h while online. Public keys ship in releases, and `GetEntitlementKeys` serves rotations.
+`RefreshEntitlementToken{}` (node credential) returns a compact ES256-signed token (`SignedBlob` with `EntitlementClaims`): `{acct, node, plan, features[], issued_at, not_after (14 days), revoked_nodes[] (reserved for RM-01, empty in release 1), kid}`. It describes cloud features only; local and LAN features never check it ([AD-0015](../decisions/AD-0015-direction-editions-roadmap.md) §2). Nodes refresh it every 24 h while online. Public keys ship in releases, and `GetEntitlementKeys` serves rotations.
 
 ### 3.9 Google Play (R-COM-002)
 

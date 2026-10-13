@@ -47,7 +47,7 @@
           ],
           "to": "PLACING",
           "on": "placement chose a peer (placement ANY or SPECIFIC_NODE)",
-          "guard": "entitlement lan.placement; peer policy"
+          "guard": "peer policy (no entitlement: LAN is free, AD-0015)"
         },
         {
           "from": [
@@ -241,7 +241,7 @@
             "CREATED"
           ],
           "to": "FINALIZING",
-          "on": "result-cache hit (CACHE_RESTORE attempt)"
+          "on": "result-cache hit (CACHE_RESTORE attempt; RESTORE mode is roadmap RM-04, not in release 1)"
         },
         {
           "from": [

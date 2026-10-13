@@ -773,6 +773,21 @@
       "verification": "classifier unit tests; TestLoad timeline scenarios; export schema tests"
     },
     {
+      "id": "R-REC-006",
+      "design": [
+        "docs/architecture/07-records-diagnosis-memory.md",
+        "docs/contracts/proto/arcforges/node/v1/diagnosis.proto",
+        "docs/contracts/proto/arcforges/node/v1/tasks.proto",
+        "docs/data/node-store.md",
+        "docs/decisions/AD-0015-direction-editions-roadmap.md"
+      ],
+      "tasks": [
+        "AF-REC-01",
+        "AF-CACHE-01"
+      ],
+      "verification": "record-chain test from a session task to processes, queue reasons, cache usage, downloads and outcome; SHARED_WINDOW attribution test; overhead and size benchmarks (15)"
+    },
+    {
       "id": "R-DIAG-001",
       "design": [
         "docs/architecture/07-records-diagnosis-memory.md",
@@ -961,6 +976,21 @@
         "AF-AI-01"
       ],
       "verification": "closed loop with a scripted client timeout, a queued task, an identical resubmission, a resubmission after a file edit, and an interrupt"
+    },
+    {
+      "id": "R-AI-011",
+      "design": [
+        "docs/architecture/08-ai-integration.md",
+        "docs/decisions/AD-0007-ai-integration.md",
+        "docs/product/product-definition.md",
+        "docs/decisions/AD-0015-direction-editions-roadmap.md"
+      ],
+      "tasks": [
+        "AF-AI-01",
+        "AF-AI-02",
+        "AF-ACC-01"
+      ],
+      "verification": "journey test per release-1 supported operation (AF-ACC-01); coverage report lists every gap of product definition section 9"
     },
     {
       "id": "R-AI-009",
@@ -1221,6 +1251,7 @@
         "docs/decisions/AD-0010-commerce-and-entitlements.md"
       ],
       "tasks": [
+        "AF-LAN-01",
         "AF-CLD-03"
       ],
       "verification": "offline grace tests with expired tokens"

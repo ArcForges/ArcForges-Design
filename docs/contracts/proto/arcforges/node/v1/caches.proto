@@ -92,7 +92,7 @@ message CacheServiceUpdateCacheSettingsRequest {
   reserved 2 to 9;
   arcforges.foundation.v1.Id cache_id = 10 [json_name = "cacheId"]; // validate: required
   optional uint64 quota_bytes = 11 [json_name = "quotaBytes"]; // validate: >= 1 GiB
-  optional bool lan_shared = 12 [json_name = "lanShared"]; // validate: sccache, ccache and cas only; needs entitlement lan.cache
+  optional bool lan_shared = 12 [json_name = "lanShared"]; // validate: sccache, ccache and cas only; free (no entitlement); peers still need a policy that allows cache access
 }
 message CacheServiceUpdateCacheSettingsResponse {
   arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];

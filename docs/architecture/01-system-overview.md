@@ -55,8 +55,8 @@ flowchart LR
 | T1 Single machine (Windows) | One host node | Free tier; no cloud needed |
 | T2 Windows + WSL | Host node + one guest node per linked distro | Free tier. The guest link runs over the `wsl.exe` bridge, and one fair queue spans host and guests (AD-0005) |
 | T3 Single machine (Linux) | One node (systemd user unit) | Free tier |
-| T4 LAN | Several nodes (each possibly with guests), paired | Pro tier for placement and cache sharing. Status viewing between paired nodes is free |
-| T5 Remote | Any of the above + cloud relay; web and Android viewers | Pro tier |
+| T4 LAN | Several nodes (each possibly with guests), paired | Free: pairing, status, placement and compiler-cache sharing need no account |
+| T5 Remote | Any of the above + cloud relay; web and Android viewers | Pro (cloud services) |
 
 ## 4. Trust boundaries and data classes
 

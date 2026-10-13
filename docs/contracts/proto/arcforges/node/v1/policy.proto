@@ -435,7 +435,7 @@ message LanPolicy {
   optional uint32 port = 2 [json_name = "port"]; // default 47820
   optional bool advertise = 3 [json_name = "advertise"]; // default true while enabled; only on trusted networks (09 section 2)
   PeerPolicy default_peer_policy = 4 [json_name = "defaultPeerPolicy"]; // status only
-  optional bool advertise_account_hint = 5 [json_name = "advertiseAccountHint"]; // default false: adds the acct TXT record
+  optional bool advertise_account_hint = 5 [json_name = "advertiseAccountHint"]; // default false: adds the acct TXT record; account hints are roadmap RM-01 and have no effect in release 1
   optional uint32 max_workspace_slots = 6 [json_name = "maxWorkspaceSlots"]; // default 2: remote workspace slots per origin workspace (09 section 6)
 }
 
@@ -443,7 +443,7 @@ enum ResultCacheMode {
   RESULT_CACHE_MODE_UNSPECIFIED = 0;
   RESULT_CACHE_MODE_OFF = 1; // default
   RESULT_CACHE_MODE_OBSERVE = 2; // compute action keys and record would-be hits; never restore
-  RESULT_CACHE_MODE_RESTORE = 3; // restore hits for PURE tasks as CACHE_RESTORE attempts
+  RESULT_CACHE_MODE_RESTORE = 3; // restore hits for PURE tasks as CACHE_RESTORE attempts; roadmap RM-04: policy validation refuses it in release 1
 }
 
 message ResultCachePolicy {

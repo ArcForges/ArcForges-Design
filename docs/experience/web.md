@@ -17,7 +17,7 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
 |---|---|---|---|
 | W-01 | `/` Home | The problem and the product in one screen, the three main capabilities, screenshots, Download and Pricing calls to action | Static |
 | W-02 | `/features` | Execution and queueing, resource control, caches and storage, records and diagnosis, AI integration, LAN, remote. Each feature states its platforms and honest limits (e.g. "Pause: Linux only"). | Static |
-| W-03 | `/pricing` | Free and Pro feature table (product definition §5). Prices come from the build-time catalogue. While `commerce.sales_open=false` the page shows "Coming soon". | Catalogue snapshot at build time |
+| W-03 | `/pricing` | Free and Pro feature table (product definition §5): everything local and on the LAN is free; Pro is the cloud services. Prices come from the build-time catalogue. While `commerce.sales_open=false` the page shows "Coming soon". | Catalogue snapshot at build time |
 | W-04 | `/download` | Per-OS installers (setup program x64/arm64, `install.sh`, `.deb`, winget and Scoop commands), checksum and signature verification instructions, channel selector, AI-client plugin links. Android: Google Play badge. | Release manifest snapshot at build time |
 | W-05 | `/docs` | Documentation index: install, first run, CLI, MCP, policies, LAN, troubleshooting | Static |
 | W-06 | `/security` | Security model summary, vulnerability disclosure contact, signing keys and fingerprints | Static |
@@ -147,7 +147,7 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
 - **Data:** `FleetService.ListNodes`; reused `DeviceService.List` for phones and browsers.
 - **Actions:**
   - Rename (`FleetService.RenameNode`).
-  - Revoke a node (`FleetService.RevokeNode`, step-up). Confirmation: "The node can no longer reach the cloud or use account LAN certificates. Local work is unaffected."
+  - Revoke a node (`FleetService.RevokeNode`, step-up). Confirmation: "The node can no longer reach the cloud. Local and LAN work is unaffected."
   - Revoke a phone (`DeviceService.Revoke`, step-up).
 - **States:** S-LOADING, S-OFFLINE and S-FAILED; S-EMPTY ("No nodes yet"); a node revoked (kept greyed out for 30 days, with the revocation time); plan node limit reached (S-NOT-ENTITLED on the next sign-in).
 - **Accessibility.** The table has row headers (node names). Guest rows state "guest of workstation" in text, not only by indentation.
@@ -459,7 +459,7 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
 
 ```
 ┌ Entitlements ─ account a1b2c3d4 ──────────────────────────────────────────────────┐
-│ Snapshot: pro (Paddle, renews 12 Nov) · lan.* remote.* push                        │
+│ Snapshot: pro (Paddle, renews 12 Nov) · remote.* push                              │
 │ Grants:   compensation +14 days (issued 2 Oct, case Billing question)  [Adjust]    │
 │ [Grant entitlement…]  [Revoke…]  [Issue compensation…]                            │
 └────────────────────────────────────────────────────────────────────────────────────┘

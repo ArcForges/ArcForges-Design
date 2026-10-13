@@ -97,7 +97,7 @@ Each journey lists its steps across surfaces with the APIs involved, its success
 
 1. Both nodes enable LAN (D-15). The build box is DISCOVERED through DNS-SD, or added by address.
 2. Pair: SAS digits are shown on both, both users confirm, and the peer is PAIRED (pinned) with a status-only policy.
-3. The user widens the policy: place-to on the workstation, accept-from on the build box (Pro).
+3. The user widens the policy: place-to on the workstation, accept-from on the build box. No account or subscription is involved.
 
 - **Failures:** a digit mismatch, which aborts with MISMATCH; expiry; blocked after 5 failures; incompatible versions.
 - **Verification:**
