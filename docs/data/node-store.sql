@@ -277,7 +277,7 @@ CREATE TABLE task (
   CHECK (reserved_for_large = 0 OR reserved_since IS NOT NULL)
 ) STRICT;
 CREATE INDEX ix_task__queue ON task (state, effective_priority, queued_at) WHERE state IN (1, 2, 3, 6);
-CREATE INDEX ix_task__join ON task (owner_session_id, command_digest) WHERE state BETWEEN 1 AND 6;  -- SubmitTask join_existing
+CREATE INDEX ix_task__join ON task (owner_session_id, command_digest) WHERE state IN (1, 2, 3);  -- SubmitTask join_existing: tasks not yet started
 CREATE INDEX ix_task__session_created ON task (owner_session_id, created_at);
 CREATE INDEX ix_task__workspace_created ON task (workspace_id, created_at);
 CREATE INDEX ix_task__created ON task (created_at);
