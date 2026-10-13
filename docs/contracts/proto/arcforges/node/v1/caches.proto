@@ -151,10 +151,11 @@ message CacheEffectiveness {
   optional uint32 restores_reused = 6 [json_name = "restoresReused"]; // NuGet packages reused
   optional uint32 restores_installed = 7 [json_name = "restoresInstalled"]; // NuGet packages installed
   optional string source = 8 [json_name = "source"]; // e.g. "sccache --show-stats"
-  optional uint64 added_bytes = 9 [json_name = "addedBytes"]; // node-measured growth in the period, every byte counted once (attempts, windows and unattributed growth; 07 section 1.5)
-  optional uint64 removed_bytes = 10 [json_name = "removedBytes"]; // files that disappeared between walks (eviction)
+  optional uint64 added_bytes = 9 [json_name = "addedBytes"]; // growth in the period, every byte counted once: the store's first writes and peer fills, walked growth of attempts and windows, and unattributed growth (07 section 1.5)
+  optional uint64 removed_bytes = 10 [json_name = "removedBytes"]; // files that disappeared between walks, and evictions from the store's ledger
   optional uint64 unattributed_added_bytes = 11 [json_name = "unattributedAddedBytes"]; // files born while no managed attempt bound the cache
   optional uint32 shared_windows = 12 [json_name = "sharedWindows"]; // windows of shared use in the period
+  optional uint64 peer_filled_bytes = 13 [json_name = "peerFilledBytes"]; // entries fetched from LAN peers into the node's store (05 section 5)
 }
 
 message DuplicateCacheCopy {

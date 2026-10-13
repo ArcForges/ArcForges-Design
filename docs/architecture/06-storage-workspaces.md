@@ -102,7 +102,7 @@ ArcForges runs unprivileged, so **no limit is enforced by the file system**. Per
 | Writer | Limit | Interval | Action |
 |---|---|---|---|
 | Attempt output (stdout plus stderr) | `max_attempt_output_bytes` (default 2 GiB) | Every tailer read (100 ms) | `TERMINATE`: stopped at once, `termination_reason=OUTPUT_LIMIT`; or `NOTIFY`: a finding, and the output is kept ([04](04-execution.md) §4) |
-| Attempt temporary directory | `max_attempt_tmp_bytes` (default 20 GiB) and `max_attempt_tmp_entries` (default 1,000,000) | 15 s. Directories whose modification time changed are listed to find new entries, and every known file's size is read again, so a file growing in place is seen (L-22). A pass reads at most `max_attempt_tmp_entries` entries; beyond that the attempt counts as over its limit. | `TERMINATE`: stopped at once, `DISK_LIMIT`; or `NOTIFY`: a finding |
+| Attempt temporary directory | `max_attempt_tmp_bytes` (default 20 GiB) and `max_attempt_tmp_entries` (default 1,000,000) | 15 s. Each pass is a full walk of `tmp/<attempt>/` that keeps no per-file state, so a file growing in place is seen (L-22) and memory stays small. A pass reads at most `max_attempt_tmp_entries` entries; beyond that the attempt counts as over its limit. | `TERMINATE`: stopped at once, `DISK_LIMIT`; or `NOTIFY`: a finding |
 | Sub-root totals (`HARD` quotas of §1) | Per sub-root | At allocation, and in housekeeping | New allocations refused; a finding. Running writers are covered by the rows above and by the low-space guard. |
 | Caches | Per cache quota | After write bursts, and in housekeeping | Eviction under the maintenance lease ([05](05-toolchains-caches.md) §4) |
 | Incoming transfers | Manifest size against free space and the `staging` quota | Before pulling, then every 5 s | Refused before, or aborted during, with `RESOURCE/disk_space` |
@@ -125,14 +125,14 @@ The disk level of each volume is part of `ResourceSnapshot.volumes` and of the r
 - **Who guards.**
   - **Windows:** each attempt's holder (`arcforges node exec-wrap`). It already runs outside the job, holds the job handles and the output files, and lives until the node acknowledges the exit record ([AD-0005](../decisions/AD-0005-resource-enforcement.md) Windows §3).
   - **Linux:** one user unit, `arcforges-guard.service` (`Restart=always`, no start limit; [13](13-distribution-updates.md) §3.4). It guards every running attempt unit.
-- **What it knows.** Before starting an attempt, the node writes `logs/<attempt>/guard.json`: the output files, the temporary directory, the volumes the attempt writes to, the limits and actions in force, and whether the attempt is preemptible and pausable. The node renews a heartbeat, `run/node-heartbeat`, from its enforcement loop, once recovery is done and its monitors run ([02](02-node-service.md) §2). Each renewal, every second, writes the node's instance ID and an increasing sequence number.
+- **What it knows.** Before starting an attempt, the node writes `logs/<attempt>/guard.json`: the output files, the temporary directory, the volumes the attempt writes to, the limits and actions in force, and whether the attempt is preemptible and pausable. The node renews a heartbeat, `run/node-heartbeat`, from its enforcement loop, once recovery is done and each monitor (the output tailer, the temporary-directory pass and the low-space check) has completed a cycle ([02](02-node-service.md) §2). Each renewal, every second, writes the node's instance ID and an increasing sequence number.
 - **Takeover.** A guard acts while the heartbeat's instance and sequence have not changed for policy `storage.guard_takeover_ms` (2,000–60,000 ms; default 5,000), measured on the guard's own monotonic clock, so changes of the wall clock do not matter.
   - That covers a node that is stopped, crashed or hung.
   - It also covers a node that restarts in a loop: a node renews only once it enforces, so restarts faster than the threshold leave the guards in charge.
 
   A guard that has taken over applies the runtime limits above at the same intervals:
   - the output files every 100 ms;
-  - the temporary directory every 15 s, with a full walk that keeps no per-file state and reads at most `max_attempt_tmp_entries` entries; beyond that the attempt counts as over its limit;
+  - the temporary directory every 15 s, with the same full walk as the node;
   - free space on the attempt's volumes every 5 s.
 - **Actions.** The same as the node's:
   - `TERMINATE` stops the attempt at once, with `OUTPUT_LIMIT` or `DISK_LIMIT`: Windows `TerminateJobObject`; on Linux the guard freezes the unit, then `KillUnit`, as the node does;
@@ -141,7 +141,11 @@ The disk level of each volume is part of `ResourceSnapshot.volumes` and of the r
 - **Records.** Each action is appended to `logs/<attempt>/guard-events.jsonl` with its evidence. The guard never writes the node store. When the node returns, it records the stops with `limit_enforced_by=GUARD`, raises the findings the actions call for, and thaws frozen attempts once the level is back to `NORMAL`. Stops are idempotent: a stop that the node and a guard both make is recorded once, and the first recorded reason wins.
 - **Stand-down.** When the heartbeat is fresh again, the guard stops checking and the node resumes.
 - **Bound.** While the node is down, the overshoot is the write rate × (takeover delay + interval + stop latency).
-- **Hung nodes are restarted.** A node whose heartbeat stalls for 30 s is restarted: by systemd's watchdog on Linux (`WatchdogSec=30`, pinged from the same enforcement loop), and by the supervisor on Windows. A hang therefore cannot last, which also bounds how long compiles can wait on the node's cache store ([05](05-toolchains-caches.md) §5).
+- **Hung nodes are restarted.** A node whose heartbeat stalls for 30 s is restarted:
+  - **Linux:** by systemd's watchdog (`WatchdogSec=30`, active once the node reports ready);
+  - **Windows:** by the supervisor, which counts from the node's first heartbeat, so a long store migration at startup is not mistaken for a hang.
+
+  The enforcement loop renews the heartbeat and pings the watchdog only while the cache store answers its own probe, so a hung store also leads to a restart. A hang therefore cannot last, which also bounds how long compiles can wait on the store ([05](05-toolchains-caches.md) §5).
 - **When a guard is missing.** A Windows holder that crashed, or a Linux guard unit that cannot run, leaves its attempts unguarded until the node returns. The node then records `guard_lost` on those attempts and raises a finding. This is the remaining gap, and it is stated, not hidden.
 
 ## 6. Disk analysis

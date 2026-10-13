@@ -488,7 +488,7 @@
           ],
           "to": "DISABLED",
           "on": "ResourceService.SetGuestLink enabled=false",
-          "effect": "a lost guest's reserved allocation stays until the guest acknowledges a smaller one or its distribution is observed stopped (architecture 03 section 6)"
+          "effect": "the guest's reserved allocation stays, whether the link was up or lost, until the guest acknowledges a smaller one or its distribution is observed stopped (architecture 03 section 6)"
         },
         {
           "from": [
@@ -505,7 +505,7 @@
           ],
           "to": "NOT_INSTALLED",
           "on": "distribution or guest binary removed",
-          "effect": "a lost guest's reserved allocation stays until the guest acknowledges a smaller one or its distribution is observed stopped (architecture 03 section 6)"
+          "effect": "the guest's reserved allocation stays, whether the link was up or lost, until the guest acknowledges a smaller one or its distribution is observed stopped (architecture 03 section 6)"
         }
       ]
     },

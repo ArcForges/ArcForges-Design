@@ -89,7 +89,7 @@ Every attempt's record links the evidence that explains delay and waste (R-REC-0
 | Processes | `process_record` | `(attempt_id, pid, start)` |
 | Queueing | `QUEUED_*` timeline segments, whose evidence names the blocking reason and, for keys, the holders | `attempt_id` |
 | Execution | Timeline segments and adapter phase events | `attempt_id` |
-| Downloads and cache usage | `attempt_cache_usage` (`CacheUsage` per cache binding: the tool's own counters for the attempt, and cache growth measured by the node with its attribution), `cache_usage_window` (shared use), `cache_walk` (removals and growth outside any attempt) and `Attempt.downloaded_bytes` | `(attempt_id, cache_id)`; `window_id`; `(cache_id, walk)` |
+| Downloads and cache usage | `attempt_cache_usage` (`CacheUsage` per cache binding: the tool's own counters for the attempt, and cache growth measured by the node with its attribution), `cache_usage_window` (shared use), `cache_walk` (removals and growth outside any attempt), `cache_store_ledger` (the sccache store's writes, peer fills and evictions) and `Attempt.downloaded_bytes` | `(attempt_id, cache_id)`; `window_id`; `(cache_id, walk)`; `(cache_id, period)` |
 | Resource consumption | Attempt accounting and `resource_sample` | `attempt_id` |
 | Retries and outcomes | The task's attempts, `termination_reason`, `effect` and findings | `task_id` |
 
@@ -108,12 +108,17 @@ Every attempt's record links the evidence that explains delay and waste (R-REC-0
     - `SHARED`: other managed attempts bound the cache meanwhile. The attempt has no `added_bytes`; its window (`window_id`) holds the total.
     - `UNKNOWN`: no walk completed within 24 h after the interval (budget exceeded, walk truncated), or the file system records neither birth nor change times.
   - **Provisional until measured.** An entry is final once a walk that started after its interval ended has completed (`measured_at`). The attempt's result never waits for it.
-- **Removals.** A walk also finds the files that disappeared since the previous walk: eviction by the tool or by the node. Their bytes are recorded per cache and walk (`cache_walk.removed_bytes`), never per attempt, because deletion times are unknown. Eviction therefore never reduces an attempt's `added_bytes`.
+- **Removals.** A walk also finds the files that disappeared since the previous walk: eviction by the tool or by the node. Their bytes are recorded per cache and walk (`cache_walk.removed_bytes`), never per attempt, because deletion times are unknown. The store's evictions are in its ledger (`cache_store_ledger`). Eviction therefore never reduces an attempt's `added_bytes`.
 - **Growth outside any attempt.** Files born while no managed attempt bound the cache are recorded per cache and walk as `unattributed_added_bytes`: writers outside ArcForges, made visible instead of being charged to an attempt.
 - **Windows of shared use** (walked caches only). A window is a maximal interval in which two or more attempts bind a cache at overlapping times; an attempt that was the only binder during its run belongs to no window. When a window closes, its `added_bytes` (files born or grown during it) and the sum of its attempts' tool counters are recorded once in `cache_usage_window`.
-- **Aggregation.** Every byte is counted exactly once: in one `COUNTED` attempt (the store's ledger), in one `SOLE_BINDER` attempt, in one window, or in its cache's unattributed growth.
-  - Node-wide period totals add those four.
-  - Session and workspace totals add their `COUNTED` and `SOLE_BINDER` values and list the windows they took part in separately, labelled shared.
+- **Aggregation.** Every byte is counted exactly once, in one of five places:
+  - one `COUNTED` attempt (a first write to the store);
+  - one attempt's peer fill (`peer_filled_bytes`, an entry fetched from a peer into the store for that attempt's read);
+  - one `SOLE_BINDER` attempt;
+  - one window;
+  - its cache's unattributed growth.
+
+  Node-wide period totals add those five. Session and workspace totals add their `COUNTED`, peer-fill and `SOLE_BINDER` values and list the windows they took part in separately, labelled shared.
   - Tool counters belong to single attempts and add up without double counting.
 - **Stated limits.**
   - A file born and deleted between two walks is never seen.

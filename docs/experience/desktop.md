@@ -177,7 +177,8 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
   - "Remote attempt on <peer>" (output streamed from the peer);
   - `TERMINATION_INCOMPLETE` banner with remaining PIDs and **Terminate** (approval for other owners);
   - **Output limit**: "Output passed 2 GiB. The task was stopped (`OUTPUT_LIMIT`)", or with `disk_limit_action=NOTIFY` "Output passed 2 GiB. It is kept, and a finding was raised";
-  - **Disk limit**: "Stopped: temporary files passed 20 GiB", or "Stopped: drive D: critically low" (`DISK_LIMIT`), with a link to D-11;
+  - **Disk limit**: "Stopped: temporary files passed 20 GiB", or "Stopped: drive D: critically low" (`DISK_LIMIT`), with a link to D-11. A stop made while the node was down adds "Stopped by the attempt guard while ArcForges was not running" (`limit_enforced_by=GUARD`), and an attempt that ran unguarded shows "Disk limits were not checked for part of this run" (`guard_lost`);
+  - **Compiler-cache endpoint taken** (`ENDPOINT_TAKEN`): "Stopped: another program was listening on this task's compiler-cache address, so its compiles could have reached it." with a link to the toolchain page;
   - **Outputs staged** (`OUTPUT_CONFLICT`): "2 returned files changed locally since submission and were staged." **Compare**, **Keep local**, **Take remote** (`out/…/conflicts/`);
   - **Handed off**: "The agent's command reached its client timeout at 10:44. The task continues; the agent was told to wait with `arcforges tasks wait`." ([08](../architecture/08-ai-integration.md) §4.1).
 - **Accessibility.**

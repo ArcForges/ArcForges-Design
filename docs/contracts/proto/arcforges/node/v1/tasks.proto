@@ -746,6 +746,7 @@ enum TerminationReason {
   TERMINATION_REASON_CACHE_RESTORED = 13; // roadmap RM-04, not produced in release 1
   TERMINATION_REASON_OUTPUT_LIMIT = 14; // captured output exceeded storage.max_attempt_output_bytes (06 section 5)
   TERMINATION_REASON_DISK_LIMIT = 15; // per-attempt tmp limit or critical free space on a written volume (06 section 5)
+  TERMINATION_REASON_ENDPOINT_TAKEN = 16; // another process listened on the attempt's own sccache endpoint, or took the cache store's port (05 section 5)
 }
 
 enum OutputStream {

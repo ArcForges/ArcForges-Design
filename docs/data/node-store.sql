@@ -401,6 +401,7 @@ CREATE TABLE attempt_cache_usage (
   packages_installed INTEGER CHECK (packages_installed IS NULL OR packages_installed >= 0),  -- parsed from the attempt's own output
   packages_reused INTEGER CHECK (packages_reused IS NULL OR packages_reused >= 0),
   downloaded_bytes INTEGER CHECK (downloaded_bytes IS NULL OR downloaded_bytes >= 0),  -- only when the tool reports download sizes
+  peer_filled_bytes INTEGER CHECK (peer_filled_bytes IS NULL OR peer_filled_bytes >= 0),  -- fetched from LAN peers into the node's store for this attempt's reads
   counters_source TEXT,                         -- e.g. sccache-server, ccache-stats-log, adapter-output; NULL when the tool reports none
   attribution INTEGER NOT NULL CHECK (attribution IN (1, 2, 3, 4)),  -- of bytes_added: 1 SOLE_BINDER, 2 SHARED, 3 UNKNOWN, 4 COUNTED (07 section 1.5)
   window_id BLOB REFERENCES cache_usage_window (window_id),     -- SHARED only
@@ -424,7 +425,18 @@ CREATE TABLE cache_usage_window (
 ) STRICT, WITHOUT ROWID;
 CREATE INDEX ix_cache_usage_window__cache ON cache_usage_window (cache_id, started_at);
 
--- One walk of a managed cache by the size cache: removals and growth outside any attempt (07 section 1.5).
+-- The node-served sccache store's own ledger per period: first-writer bytes, peer fills and evictions. The store is never walked (05 section 5, 07 section 1.5).
+CREATE TABLE cache_store_ledger (
+  cache_id BLOB NOT NULL CHECK (length(cache_id) = 16),
+  period_start INTEGER NOT NULL,
+  period_end INTEGER NOT NULL,
+  written_bytes INTEGER NOT NULL DEFAULT 0 CHECK (written_bytes >= 0),       -- first PUT of each key, also in the writing attempts' COUNTED entries
+  peer_filled_bytes INTEGER NOT NULL DEFAULT 0 CHECK (peer_filled_bytes >= 0),  -- fetched from peers, also in the reading attempts' entries
+  evicted_bytes INTEGER NOT NULL DEFAULT 0 CHECK (evicted_bytes >= 0),
+  PRIMARY KEY (cache_id, period_start)
+) STRICT, WITHOUT ROWID;
+
+-- One walk of a managed cache by the size cache: removals and growth outside any attempt (07 section 1.5). The sccache store is not walked.
 CREATE TABLE cache_walk (
   cache_id BLOB NOT NULL CHECK (length(cache_id) = 16),
   started_at INTEGER NOT NULL,

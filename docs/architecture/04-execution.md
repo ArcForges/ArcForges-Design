@@ -104,7 +104,7 @@ A server stream delivers the state, output chunks, progress, readiness and the f
    - Linux: `KillUnit("all", SIGTERM)` (or the task's `stop_signal`), which signals every process in the unit's cgroup.
 2. **Grace period:** `cancel_grace` (default 10 s, policy maximum 300 s).
 3. **Forced phase:** `TerminateJobObject` / `KillUnit("all", SIGKILL)` (the user manager uses `cgroup.kill` where the kernel supports it).
-4. **Limit stops** (`OUTPUT_LIMIT`, `DISK_LIMIT`, and Critical memory or disk pressure) skip the graceful phase, because the process would keep writing or allocating during the grace period: on Linux the unit is frozen at once and then killed; on Windows the job is terminated at once.
+4. **Limit stops** (`OUTPUT_LIMIT`, `DISK_LIMIT`, `ENDPOINT_TAKEN`, and Critical memory or disk pressure) skip the graceful phase, because the process would keep writing or allocating during the grace period: on Linux the unit is frozen at once and then killed; on Windows the job is terminated at once.
 4. **Escaped descendants:** terminated if same-user and policy `terminate_escaped=true` (default true for cancellation, false for node shutdown).
 5. **Verification:** the container must report zero processes within 5 s. Otherwise the attempt is marked `TERMINATION_INCOMPLETE` with the PIDs left, and a finding is raised (R-EXE-006).
 
@@ -116,7 +116,7 @@ Timeouts and CPU-time limits run the same sequence with the reason `TIMED_OUT` /
 - `exit_code` (int32);
 - `signal` (Linux number, plus `core_dumped`);
 - `windows_status` (NTSTATUS when the exit code is an exception code ≥ 0xC0000000);
-- `termination_reason`: `EXITED`, `CANCELLED`, `TIMED_OUT`, `CPU_TIME_EXCEEDED`, `OOM_KILLED` (Linux: `memory.events` oom_kill increased, or `SERVICE_RESULT=oom-kill`), `MEMORY_LIMIT` (Windows commit-limit notification observed and exit ≠ 0), `PREEMPTED`, `LOST`, `SPAWN_FAILED`, `NODE_SHUTDOWN`, `POLICY_DENIED`, `TERMINATION_INCOMPLETE`, `CACHE_RESTORED` (result-cache restore; never an execution), `OUTPUT_LIMIT` (§4) or `DISK_LIMIT` (per-attempt temporary space, or critical free space on a written volume; [06](06-storage-workspaces.md) §5);
+- `termination_reason`: `EXITED`, `CANCELLED`, `TIMED_OUT`, `CPU_TIME_EXCEEDED`, `OOM_KILLED` (Linux: `memory.events` oom_kill increased, or `SERVICE_RESULT=oom-kill`), `MEMORY_LIMIT` (Windows commit-limit notification observed and exit ≠ 0), `PREEMPTED`, `LOST`, `SPAWN_FAILED`, `NODE_SHUTDOWN`, `POLICY_DENIED`, `TERMINATION_INCOMPLETE`, `CACHE_RESTORED` (result-cache restore; never an execution), `OUTPUT_LIMIT` (§4), `DISK_LIMIT` (per-attempt temporary space, or critical free space on a written volume; [06](06-storage-workspaces.md) §5) or `ENDPOINT_TAKEN` (another process listened on the attempt's own sccache endpoint, or took the cache store's port; [05](05-toolchains-caches.md) §5);
 - `effect`: `DID_NOT_HAPPEN` only for `SPAWN_FAILED` and `POLICY_DENIED`; `HAPPENED` for completed processes; `UNKNOWN` for `LOST`.
 
 ## 8. Dependencies, services, retries
