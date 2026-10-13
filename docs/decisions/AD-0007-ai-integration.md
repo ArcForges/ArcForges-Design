@@ -1,6 +1,6 @@
 # AD-0007 — AI client integration: MCP first, hooks for identity and routing, honest coverage
 
-- Status: Accepted (2026-10-12; revised after the independent review the same day: no worktree hooks, exec-form hooks, `ask` for rewrites, caller-bound rewritten runs, guardrail wording)
+- Status: Accepted (2026-10-12; revised after the independent review the same day: no worktree hooks, exec-form hooks, `ask` for rewrites, caller-bound rewritten runs, guardrail wording; revised 2026-10-13 after the findings review: managed-command mode, hand-off before client timeouts, coverage map)
 - Evidence: V-A01–V-A05, A-A01 ([platform verification](../verification/platform-capabilities.md))
 
 ## Decision
@@ -23,11 +23,14 @@
 | Mode | Mechanism | Enabled when |
 |---|---|---|
 | `mcp` | Agent uses `run` and related MCP tools | Always available |
-| `rewrite` | PreToolUse returns `updatedInput` replacing a matching shell command with `arcforges run --session … --agent … --attach --cancel-when-gone -- <original>`, with `permissionDecision: "ask"`, so the user confirms the rewritten command. `"allow"` (which skips the user's permission prompt) is used only under `bypassPermissions` or when a HUMAN sets `routing.rewrite_permission=ALLOW`, with a stated warning. A command whose expected duration exceeds the client's tool timeout is guided to MCP `run` instead. | Only if the per-client **reachability probe** passes inside that client's command environment (A-A01), and policy allows |
+| `rewrite` | PreToolUse returns `updatedInput` replacing a matching heavy command with `arcforges run --session … --agent … --attach --cancel-when-gone --client-timeout <ms> --join-existing -- <original>`, with `permissionDecision: "ask"`, so the user confirms the rewritten command. `"allow"` (which skips the user's permission prompt) is used only under `bypassPermissions` or when a HUMAN sets `routing.rewrite_permission=ALLOW`, with a stated warning. The run **hands off** before the client's tool timeout instead of being cancelled, and a resubmission joins the existing task ([AD-0006](AD-0006-execution-semantics.md) §7). A command known to run longer than the timeout is guided to MCP `run` with `async`. | Only if the per-client **reachability probe** passes inside that client's command environment (A-A01), and policy allows |
+| `rewrite-all` | As `rewrite`, for every shell command except the passthrough patterns (simple reads, read-only git, `arcforges` itself, interactive programs). Leading `cd` and `export` segments stay with the client's shell, background launches are not routed, and unclassified commands get a light estimate. Under the default `ask`, every routed command is confirmed by the user. Codex, which has no `ask` (V-A04), rewrites only with `routing.rewrite_permission=ALLOW` and otherwise uses `guide`. | As `rewrite`; chosen per workspace or client |
 | `guide` | PreToolUse denies matching heavy commands with a reason directing the agent to the MCP `run` tool | When rewrite is unavailable and policy prefers guidance |
 | `observe` | No routing; heavy unmanaged descendants are recorded and reported | Default for unmatched commands, or when hooks are disabled |
 
-   Matching rules (heavy-command patterns per toolchain adapter) are policy data, editable by the user and per workspace.
+   Matching rules (heavy-command patterns per toolchain adapter, and passthrough patterns for `rewrite-all`) are policy data, editable by the user and per workspace.
+
+   **Connecting MCP alone intercepts nothing**: it offers tools. What each route covers, and what stays observed only, is listed in [08](../architecture/08-ai-integration.md) §4.4.
 4. **Honesty.**
    - Codex hooks fail open, and Claude Code hooks can be disabled by managed settings. The node therefore reports routing as **guardrails**, never as enforcement.
    - Per session it reports which routes were active, the managed and bypassed counts, and unknowns.

@@ -66,12 +66,12 @@ Default permission matrix (policy `permissions`, editable only by `HUMAN`).
 | Relay token HMAC key | Cloud (Worker + container secrets) | Platform secrets | 90 days, two active `kid`s |
 | Command signing key (ECDSA P-256, ES256) | Cloud container | Platform secret | Yearly; public key distributed by enrollment and releases |
 | Entitlement token key (ECDSA P-256, ES256) | Cloud container | Platform secret | Yearly; 2 active keys |
-| Node Issuing CA (P-256 intermediate) | Cloud container | Platform secret. Root is offline (human custody). | Intermediate yearly |
+| Node Issuing CA (P-256 intermediate) | Deferred with account-based LAN trust (roadmap RM-01); not created in release 1 | — | — |
 | Release signing (ES256 manifest key, Authenticode certificate, GPG apt key) | Release engineering | Offline / HSM / signing service (human prerequisite) | Per policy |
 | Google service accounts (Play Developer API, FCM) | Cloud container | Platform secrets, least privilege | Yearly |
 | Paddle webhook secret | Cloud container | Platform secret | On rotation in Paddle |
 | Loopback cache-proxy bearer | Each node | Memory plus 0600 file | Every node start |
-| MCP HTTP bearer (optional) | Each node | 0600 file | Every node start |
+| MCP HTTP bearer | Reserved for the local HTTP transport (roadmap RM-05); not created in release 1 | — | — |
 
 Secrets are never logged. Records and exports apply secret-name redaction ([04](04-execution.md) §2). Output text is scanned for credential-shaped tokens (high-entropy strings after `token=`, `Bearer `, `ghp_`, `sk-`, `AKIA` and similar) **only for exports and support bundles**, and these are masked (R-SEC-003).
 
@@ -85,7 +85,7 @@ Secrets are never logged. Records and exports apply secret-name redaction ([04](
 | T-04 | B1 | Cleanup deletes user data through symlinks or junctions | Reparse points never followed; validation re-check before acting; quarantine | Real tests with junctions and symlinks |
 | T-05 | B1 | Managed task rewrites the ArcForges installation | Guardrail: read-only version directories with digest checks at startup, and optional Linux unit hardening (`ReadOnlyPaths=`, [AD-0007](../decisions/AD-0007-ai-integration.md) §8). Same-user bypass is documented. | Real test of the read-only attribute, digest check and finding; Linux hardening test where supported (A-L04) |
 | T-06 | B2 | Fake guest link | Bridge launched by host user; uid check; link token | Unit |
-| T-07 | B3 | Rogue LAN node | Discovery ≠ trust. TLS accepts any well-formed client certificate, but refuses revoked account certificates. A gRPC interceptor limits unpaired identities to `Hello` and `Pairing` ([AD-0008](../decisions/AD-0008-lan-trust-and-placement.md) §4). | Closed-loop: an unpaired peer reaches only Hello and Pairing; a revoked certificate fails the handshake |
+| T-07 | B3 | Rogue LAN node | Discovery ≠ trust. TLS accepts any well-formed client certificate. A gRPC interceptor limits unpaired identities to `Hello` and `Pairing`, and blocked identities reach nothing ([AD-0008](../decisions/AD-0008-lan-trust-and-placement.md) §4). | Closed-loop: an unpaired peer reaches only Hello and Pairing; a blocked peer reaches nothing |
 | T-08 | B3 | MITM during local pairing | Commitment-based SAS over both certificate fingerprints. Each side checks that the fingerprints equal the certificates presented in the TLS session (no exporter, V-N05). | Unit (protocol), closed-loop with an interposed relay |
 | T-09 | B3 | Peer exfiltrates source | Per-peer `data_out` policy; default status-only | Closed-loop |
 | T-10 | B3 | Cache poisoning through a writable LAN cache | `cache_write` off by default, explicit per trusted peer; documented risk | Policy tests |
@@ -98,6 +98,7 @@ Secrets are never logged. Records and exports apply secret-name redaction ([04](
 | T-17 | Supply chain | Tampered update | Signed manifest + Authenticode; digest checks; rollback | Real update tests with test keys |
 | T-18 | B1 | Escaped processes evade cancellation | Ancestry scan; report and terminate | Real Windows WMI test |
 | T-19 | B5 | Stolen node credential used to gain account access (for example from the Linux 0600-file fallback) | A node credential can create and confirm a phone pairing, but the phone then holds only a `mobile.limited` session. Medium- and high-risk commands, billing and account settings need a step-up on the phone (passkey or e-mail code) ([AD-0011](../decisions/AD-0011-identity-and-login.md) §3). | Closed-loop: a phone paired through a node credential cannot run medium or high commands or reach billing before step-up |
+| T-20 | B3 | Lost or stolen paired machine | Trust is per peer: the user removes or blocks the machine on every peer that paired with it (D-15). Cloud revocation ends only cloud access ([09](09-lan.md) §3.3). | Closed-loop: a removed or blocked peer reaches nothing; a cloud-revoked node keeps no cloud access |
 
 ## 5. Privacy
 

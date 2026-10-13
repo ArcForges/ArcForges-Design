@@ -55,8 +55,8 @@ flowchart LR
 | T1 Single machine (Windows) | One host node | Free tier; no cloud needed |
 | T2 Windows + WSL | Host node + one guest node per linked distro | Free tier. The guest link runs over the `wsl.exe` bridge, and one fair queue spans host and guests (AD-0005) |
 | T3 Single machine (Linux) | One node (systemd user unit) | Free tier |
-| T4 LAN | Several nodes (each possibly with guests), paired | Pro tier for placement and cache sharing. Status viewing between paired nodes is free |
-| T5 Remote | Any of the above + cloud relay; web and Android viewers | Pro tier |
+| T4 LAN | Several nodes (each possibly with guests), paired | Free: pairing, status, placement and compiler-cache sharing need no account |
+| T5 Remote | Any of the above + cloud relay; web and Android viewers | Pro (cloud services) |
 
 ## 4. Trust boundaries and data classes
 
@@ -64,7 +64,7 @@ flowchart LR
 |---|---|---|
 | B1 Local user ↔ node | Named pipe / UDS | Same-user ACL / mode 0700 + peer credential; client hello |
 | B2 Host ↔ guest | `wsl.exe` stdio bridge → guest UDS | Launched by the same Windows user; guest checks uid; link token |
-| B3 Node ↔ node | TCP | mTLS 1.3 with account CA or pinned certificates; per-peer policy |
+| B3 Node ↔ node | TCP | mTLS 1.3 with pinned certificates from pairing (account-issued certificates are roadmap RM-01); per-peer policy |
 | B4 Node ↔ cloud | HTTPS gRPC-Web; WSS relay | Device credential; short-lived relay token; signed commands verified by the node |
 | B5 Browser/phone ↔ cloud | HTTPS gRPC-Web | Account session (cookie + CSRF for web; bearer for native) |
 | B6 Cloud ↔ providers | HTTPS | Provider-specific verification (Paddle HMAC, Pub/Sub push auth, Google OAuth service account) |

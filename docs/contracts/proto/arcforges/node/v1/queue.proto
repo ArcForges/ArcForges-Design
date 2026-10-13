@@ -334,5 +334,7 @@ message AdmissionExplanation {
   arcforges.foundation.v1.Instant eta = 11 [json_name = "eta"];
   arcforges.foundation.v1.Instant ages_at = 12 [json_name = "agesAt"]; // when aging raises the class
   optional bool large_reservation_active = 13 [json_name = "largeReservationActive"];
-  repeated arcforges.foundation.v1.Id waiting_on_tasks = 14 [json_name = "waitingOnTasks"];
+  repeated arcforges.foundation.v1.Id waiting_on_tasks = 14 [json_name = "waitingOnTasks"]; // dependencies, or the holders of conflicting exclusive keys
+  repeated string blocking_keys = 15 [json_name = "blockingKeys"]; // exclusive keys held by running tasks
+  optional string feasibility = 16 [json_name = "feasibility"]; // FEASIBLE | EXCEEDS_BUDGET | EXCEEDS_CAPACITY (03 section 4)
 }

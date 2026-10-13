@@ -25,7 +25,7 @@ These **contracts** are reused unchanged. At Cloud main `92ba1dc9` most of their
 | `arcforges.publicapi.v1` | New service `SupportAccessService` in a new file `support_access.proto` (`ListAccessRequests`, `GetAccessRequest`), so the owner can read an operator's access request, including its proposal hash, before deciding it with the reused `SupportService.DecideAccess`. `SupportService` is unchanged. | AF-SUP-01 |
 | `arcforges.operator.v1` (internal) | New service `OperatorReadService` in a new file `operator_read.proto` (`ListAuditEvents`, `GetOperatingBudgets`, `GetMonthlyReport`); `OperatorService` is unchanged. Same C# namespace as the package (`ArcForges.Contracts.CloudInternal.Operator.V1`). | AF-OPS-01 |
 | `arcforges.publicapi.v1.NotificationService` | New push kinds `node.task_failed`, `node.task_finished`, `node.approval_needed`, `node.offline`, `node.finding` (string values; no schema change) | AF-CLD-06 |
-| `arcforges.publicapi.v1.EntitlementService` | Feature keys `lan.placement`, `lan.accept`, `lan.cache`, `remote.view`, `remote.control`, `push` (configuration data; no schema change) | AF-CLD-03 |
+| `arcforges.publicapi.v1.EntitlementService` | Feature keys `remote.view`, `remote.control`, `push` (configuration data; no schema change). Local and LAN capabilities are never feature keys (AD-0015). | AF-CLD-03 |
 
 ## 3. New
 

@@ -35,7 +35,8 @@ Decisions: [AD-0014](../decisions/AD-0014-delivery-method.md) (verification resp
 | `ScriptedMcpClient` | Claude Code / Codex as MCP clients | MCP schema for both revisions; transcripts of real client handshakes recorded on the workstation | ArcForges tests |
 | `HookPayloadFixtures` | Client hook invocations | Fixtures captured from real clients on the workstation (F-A01 task) | ArcForges tests |
 | `PeerProcess` | Another LAN machine | A real node process with its own data root and address | ArcForges tests |
-| `TestLoad` | User workloads | Synthetic CPU, memory, output and fork patterns; deterministic | `tools/ArcForges.TestLoad` |
+
+**Synthetic workloads are not fakes.** `TestLoad` (`tools/ArcForges.TestLoad`) generates deterministic CPU, memory, output and fork patterns as the *input* to the behaviour under test (scheduling, enforcement, capture, diagnosis). It replaces no external system, so every task may use it, and evidence names the workload that ran.
 
 A fake is never used for the behaviour under test (R-TEST-001). Results from a fake-backed test are labelled `closed-loop` in evidence and never reported as real-world validation. The real billing flow on a Play-enabled emulator or device stays in the acceptance register (AR-06).
 
@@ -82,7 +83,14 @@ tests/
 - **Deterministic time.** Node subsystems take an `IClock`. Tests use a controllable clock except in real-OS timing tests.
 - **Isolation.** Each test node gets a temporary data root, a unique pipe or socket name, a unique node ID (so Windows job names cannot collide) and its own transient slice name on Linux (`arcforges-test-<id>.slice`). A fixture cleans up leftover jobs, units and processes and fails the test if any remain.
 
-## 5. Acceptance evidence per task
+## 5. Release-candidate acceptance
+
+The release candidate (AF-ACC-01) runs every journey J-01 to J-11 end to end with:
+- **real core implementations**: node, CLI, MCP adapter, hooks, Desktop view models, cloud host, Worker and Durable Object code, Blazor and Android view models;
+- **the approved external fakes** of §2 where the external system is unavailable: `FakePaddle`, `FakePlayDeveloperApi`, `FakePubSubPush`, `FakeFcm`, `FakeMailSender`, `FakeBillingClient`, `ScriptedBrowser`, `ScriptedMcpClient`, `HookPayloadFixtures`, and `PeerProcess` for other machines. A fake never replaces the behaviour under test;
+- **honest labels**: results are labelled closed-loop, and every remaining real-world validation stays in the acceptance register (AR-01 to AR-16).
+
+## 6. Acceptance evidence per task
 
 Each delivery task's PR records:
 1. the exact commands run, with their results (author);

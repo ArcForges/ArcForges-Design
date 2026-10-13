@@ -23,7 +23,7 @@ service TaskService {
   // idempotency: command_id; 24 h; same payload digest required
   // deadline: 10 s
   // stream: none
-  // errors: VALIDATION/invalid_argument, VALIDATION/unsafe_batch_argument, VALIDATION/unsupported_shell, VALIDATION/path_not_found, VALIDATION/program_not_found, VALIDATION/invalid_dependency, AUTHORIZATION/permission_denied, AUTHORIZATION/command_pattern_denied, AUTHORIZATION/approval_required, ENTITLEMENT/feature_not_entitled, CONFLICT/command_id_reused, RESOURCE/queue_full, RESOURCE/disk_space, RESOURCE/enforcement_unavailable, STATE/node_stopping
+  // errors: VALIDATION/invalid_argument, VALIDATION/unsafe_batch_argument, VALIDATION/unsupported_shell, VALIDATION/path_not_found, VALIDATION/program_not_found, VALIDATION/invalid_dependency, VALIDATION/inputs_required, AUTHORIZATION/permission_denied, AUTHORIZATION/command_pattern_denied, AUTHORIZATION/approval_required, CONFLICT/command_id_reused, RESOURCE/queue_full, RESOURCE/disk_space, RESOURCE/enforcement_unavailable, STATE/node_stopping
   // locality: node
   // state: SM-TASK: (none) -> QUEUED | WAITING_DEPENDENCY | PLACING
   rpc SubmitTask(TaskServiceSubmitTaskRequest) returns (TaskServiceSubmitTaskResponse);
@@ -81,6 +81,15 @@ service TaskService {
   // errors: STATE/not_attached
   // locality: node
   rpc CloseTaskInput(TaskServiceCloseTaskInputRequest) returns (TaskServiceCloseTaskInputResponse);
+
+  // Detach a task from its submitting caller: cancel_when_caller_gone no longer applies (hand-off before an AI client's tool timeout; 08 section 4.1).
+  // auth: the submitting caller, or HUMAN; REMOTE=-
+  // idempotency: natural: releasing twice succeeds
+  // deadline: 5 s
+  // stream: none
+  // errors: STATE/not_found, AUTHORIZATION/permission_denied
+  // locality: node
+  rpc ReleaseCallerBinding(TaskServiceReleaseCallerBindingRequest) returns (TaskServiceReleaseCallerBindingResponse);
 
   // Cancel a queued or running task through the cancellation sequence (04 section 6).
   // auth: own: HUMAN=A SCRIPT=A AGENT=A REMOTE=medium; others: HUMAN=A SCRIPT=P AGENT=P REMOTE=medium
@@ -202,7 +211,8 @@ message TaskServiceSubmitTaskRequest {
   arcforges.foundation.v1.Id session_id = 11 [json_name = "sessionId"]; // validate: optional; must be an active session whose agent root is an ancestor of the caller
   optional string agent_id = 12 [json_name = "agentId"]; // validate: <= 128 chars; requires session_id
   ProcessIdentity caller_process = 13 [json_name = "callerProcess"]; // validate: the calling process; verified by the node
-  optional bool cancel_when_caller_gone = 14 [json_name = "cancelWhenCallerGone"]; // validate: cancel when the submitting client's connection and all its attach streams are gone for 5 s before the task finishes (hook-rewritten runs)
+  optional bool cancel_when_caller_gone = 14 [json_name = "cancelWhenCallerGone"]; // validate: cancel when the submitting client's connection and all its attach streams are gone for 5 s before the task finishes, unless ReleaseCallerBinding ran first (hook-rewritten runs); a joined submission binds its caller the same way
+  optional bool join_existing = 15 [json_name = "joinExisting"]; // validate: return a task of the same session that has not started (QUEUED, WAITING_DEPENDENCY or PLACING) with the same command digest (program and arguments, or the shell string), working directory, environment digest and stdin, instead of a duplicate (08 section 4.1)
 }
 message TaskServiceSubmitTaskResponse {
   arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
@@ -218,6 +228,7 @@ message TaskServiceSubmitTaskValue {
   optional TaskState state = 12 [json_name = "state"];
   QueueInfo queue = 13 [json_name = "queue"];
   repeated string warnings = 14 [json_name = "warnings"]; // e.g. unenforced execution, routed parallelism
+  optional bool joined = 15 [json_name = "joined"]; // join_existing matched an existing task; task_id is that task
 }
 
 message TaskServiceGetTaskRequest {
@@ -340,6 +351,24 @@ message TaskServiceCloseTaskInputResponse {
 }
 message TaskServiceCloseTaskInputValue {
   arcforges.foundation.v1.Receipt receipt = 10 [json_name = "receipt"];
+}
+
+message TaskServiceReleaseCallerBindingRequest {
+  arcforges.foundation.v1.RequestMeta meta = 1 [json_name = "meta"];
+  reserved 2 to 9;
+  arcforges.foundation.v1.Id task_id = 10 [json_name = "taskId"]; // validate: required; submitted by the caller's session or client
+}
+message TaskServiceReleaseCallerBindingResponse {
+  arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
+  oneof outcome {
+    TaskServiceReleaseCallerBindingValue value = 2 [json_name = "value"];
+    arcforges.foundation.v1.ArcError error = 3 [json_name = "error"];
+  }
+  reserved 4 to 9;
+}
+message TaskServiceReleaseCallerBindingValue {
+  arcforges.foundation.v1.Receipt receipt = 10 [json_name = "receipt"];
+  optional TaskState state = 11 [json_name = "state"];
 }
 
 message TaskServiceCancelTaskRequest {
@@ -631,7 +660,24 @@ enum OutputConflict {
   OUTPUT_CONFLICT_UNSPECIFIED = 0;
   OUTPUT_CONFLICT_OVERWRITE = 1;
   OUTPUT_CONFLICT_SKIP_EXISTING = 2;
-  OUTPUT_CONFLICT_FAIL = 3;
+  OUTPUT_CONFLICT_FAIL = 3; // apply nothing when any target changed since submission
+  OUTPUT_CONFLICT_STAGE = 4; // default: replace files unchanged since submission; stage changed ones and report OUTPUT_CONFLICT
+}
+
+// How a task uses its workspace (03 section 4, exclusive keys).
+enum WorkspaceAccess {
+  WORKSPACE_ACCESS_UNSPECIFIED = 0; // adapter default
+  WORKSPACE_ACCESS_SHARED = 1; // may run beside other tasks of the workspace unless an exclusive key conflicts
+  WORKSPACE_ACCESS_EXCLUSIVE = 2; // runs alone among managed tasks of the workspace
+}
+
+// Who established a task's side-effect class (AD-0006 section 4).
+enum SideEffectSource {
+  SIDE_EFFECT_SOURCE_UNSPECIFIED = 0;
+  SIDE_EFFECT_SOURCE_DEFAULT = 1; // UNKNOWN by default
+  SIDE_EFFECT_SOURCE_CALLER = 2; // HUMAN or SCRIPT caller; AGENT only when policy accepts agent assertions
+  SIDE_EFFECT_SOURCE_POLICY = 3; // a retry_safety rule
+  SIDE_EFFECT_SOURCE_ADAPTER = 4; // an adapter assertion it can verify (for example --ignore-scripts)
 }
 
 enum LeaseExpiryAction {
@@ -679,7 +725,7 @@ enum AttemptKind {
   ATTEMPT_KIND_UNSPECIFIED = 0;
   ATTEMPT_KIND_LOCAL = 1;
   ATTEMPT_KIND_REMOTE = 2; // origin-side mirror of an attempt executing on a peer
-  ATTEMPT_KIND_CACHE_RESTORE = 3; // result-cache hit; never an execution (AD-0006 section 8)
+  ATTEMPT_KIND_CACHE_RESTORE = 3; // result-cache hit; never an execution (AD-0006 section 8); roadmap RM-04, not produced in release 1
   ATTEMPT_KIND_ADOPTED = 4;
 }
 
@@ -697,7 +743,9 @@ enum TerminationReason {
   TERMINATION_REASON_NODE_SHUTDOWN = 10;
   TERMINATION_REASON_POLICY_DENIED = 11;
   TERMINATION_REASON_TERMINATION_INCOMPLETE = 12;
-  TERMINATION_REASON_CACHE_RESTORED = 13;
+  TERMINATION_REASON_CACHE_RESTORED = 13; // roadmap RM-04, not produced in release 1
+  TERMINATION_REASON_OUTPUT_LIMIT = 14; // captured output exceeded storage.max_attempt_output_bytes (06 section 5)
+  TERMINATION_REASON_DISK_LIMIT = 15; // per-attempt tmp limit or critical free space on a written volume (06 section 5)
 }
 
 enum OutputStream {
@@ -784,7 +832,7 @@ message PlacementSpec {
   map<string, string> required_labels = 6 [json_name = "requiredLabels"]; // validate: <= 16 entries
   InputSelection inputs = 7 [json_name = "inputs"]; // validate: required for ANY or remote SPECIFIC_NODE
   repeated string declared_outputs = 8 [json_name = "declaredOutputs"]; // validate: <= 256 workspace-relative paths or globs
-  optional OutputConflict output_conflict = 9 [json_name = "outputConflict"]; // validate: default OVERWRITE
+  optional OutputConflict output_conflict = 9 [json_name = "outputConflict"]; // validate: default STAGE; OVERWRITE only from HUMAN or SCRIPT callers
   optional LeaseExpiryAction lease_expiry_action = 10 [json_name = "leaseExpiryAction"]; // validate: default FINISH_AND_RETAIN
 }
 
@@ -837,6 +885,21 @@ message TaskSpec {
   ResultCacheSpec result_cache = 20 [json_name = "resultCache"];
   optional bool stop_with_session = 21 [json_name = "stopWithSession"]; // validate: SERVICE only; default true for agent-owned services
   optional bool detach = 22 [json_name = "detach"]; // validate: SERVICE only; keeps the service after its session ends
+  ConcurrencySpec concurrency = 23 [json_name = "concurrency"]; // validate: optional; adapter keys are added (03 section 4)
+}
+
+message ConcurrencySpec {
+  repeated string exclusive_keys = 1 [json_name = "exclusiveKeys"]; // validate: <= 16 keys of <= 200 chars: ws:<workspace>[/<relative dir>][:<purpose>], tool:<name>:<scope>, or name:<text>
+  optional WorkspaceAccess access = 2 [json_name = "access"]; // validate: default from the adapter, else SHARED
+  repeated string shared_keys = 3 [json_name = "sharedKeys"]; // validate: <= 16 keys, same syntax; readers: conflict only with exclusive holders of an overlapping key (03 section 4)
+}
+
+// Applying a remote attempt's declared outputs on the origin (09 section 6).
+message OutputApplyResult {
+  optional uint32 applied = 1 [json_name = "applied"];
+  optional uint32 conflicted = 2 [json_name = "conflicted"]; // changed locally since submission
+  optional uint32 skipped = 3 [json_name = "skipped"];
+  optional string staged_path = 4 [json_name = "stagedPath"]; // where conflicting files were written instead (out/<workspace>/<task>/<attempt>/conflicts)
 }
 
 message AttemptResult {
@@ -849,6 +912,7 @@ message AttemptResult {
   optional string detail = 7 [json_name = "detail"]; // human-readable summary
   optional uint32 leftover_processes_terminated = 8 [json_name = "leftoverProcessesTerminated"];
   repeated string leftover_images = 9 [json_name = "leftoverImages"];
+  OutputApplyResult outputs = 10 [json_name = "outputs"]; // remote attempts with declared outputs
 }
 
 message Attempt {
@@ -873,11 +937,27 @@ message Attempt {
   optional uint32 tool_parallelism = 19 [json_name = "toolParallelism"]; // tool-level setting applied (never called a limit)
   arcforges.foundation.v1.Id remote_attempt_id = 20 [json_name = "remoteAttemptId"]; // REMOTE kind: executor-side ID
   arcforges.foundation.v1.Revision revision = 21 [json_name = "revision"];
+  repeated CacheUsage cache_usage = 22 [json_name = "cacheUsage"]; // one entry per cache binding (07 section 1.5)
+  optional uint64 downloaded_bytes = 23 [json_name = "downloadedBytes"]; // bytes added to download caches by this attempt alone: the sum of its EXACT download entries; absent when one of them has no measured bytes_added, never a partial sum; shared windows count only in their window totals (07 section 1.5)
+}
+
+// What one attempt did with one managed cache (07 section 1.5).
+message CacheUsage {
+  arcforges.foundation.v1.Id cache_id = 1 [json_name = "cacheId"];
+  optional string kind = 2 [json_name = "kind"]; // nuget | npm | pnpm | cargo | pip | sccache | ccache | fastbuild | cas
+  optional uint64 bytes_added = 3 [json_name = "bytesAdded"]; // cache growth during the attempt (downloads and new entries); absent when the measurement exceeded caches.usage_scan_budget_ms (07 section 1.5)
+  optional uint64 hits = 4 [json_name = "hits"]; // when the tool reports them (sccache, ccache)
+  optional uint64 misses = 5 [json_name = "misses"];
+  optional uint32 packages_installed = 6 [json_name = "packagesInstalled"]; // restores: packages downloaded or extracted (adapter-parsed)
+  optional uint32 packages_reused = 7 [json_name = "packagesReused"]; // restores: packages already in the cache
+  optional string attribution = 8 [json_name = "attribution"]; // EXACT: no other attempt bound the cache during this attempt, so the values are its own; SHARED_WINDOW: other attempts bound it meanwhile, so size growth and counters cover this attempt's interval including their activity and are never summed (07 section 1.5)
+  arcforges.foundation.v1.Id window_id = 9 [json_name = "windowId"]; // SHARED_WINDOW only: the window whose totals are recorded once when it closes
+  arcforges.foundation.v1.Instant baseline_at = 10 [json_name = "baselineAt"]; // when the cache size used as the baseline was measured; writes by other processes since then are included
 }
 
 message QueueInfo {
   optional uint32 position = 1 [json_name = "position"]; // 1-based within the pool order
-  optional string blocking_reason = 2 [json_name = "blockingReason"]; // budget_memory, budget_cpu, exceeds_budget, pool_limit, global_limit, dependency, large_task_reserved, guest_grant, approval
+  optional string blocking_reason = 2 [json_name = "blockingReason"]; // budget_memory, budget_cpu, exceeds_budget, exceeds_capacity, exclusive_key, pool_limit, global_limit, dependency, large_task_reserved, guest_grant, approval, disk_space
   arcforges.foundation.v1.Instant eta = 3 [json_name = "eta"]; // estimate, absent when unknown
   optional uint64 waited_ms = 4 [json_name = "waitedMs"];
 }
@@ -905,6 +985,11 @@ message ManagedTask {
   map<string, string> labels = 19 [json_name = "labels"];
   arcforges.foundation.v1.Revision revision = 20 [json_name = "revision"];
   optional string command_summary = 21 [json_name = "commandSummary"]; // redacted one-line summary
+  optional SideEffectClass side_effect = 22 [json_name = "sideEffect"]; // effective class
+  optional SideEffectSource side_effect_source = 23 [json_name = "sideEffectSource"];
+  optional SideEffectClass side_effect_suggestion = 24 [json_name = "sideEffectSuggestion"]; // the adapter's suggestion when it could not assert one
+  repeated string exclusive_keys = 25 [json_name = "exclusiveKeys"]; // effective keys, including adapter keys
+  repeated string shared_keys = 26 [json_name = "sharedKeys"]; // effective shared (reader) keys
 }
 
 message TaskFilter {

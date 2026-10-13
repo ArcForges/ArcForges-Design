@@ -8,12 +8,12 @@
 1. **One multi-role native executable per platform: `arcforges`** (`arcforges.exe` on Windows), built with .NET 10 Native AOT for `win-x64`, `win-arm64`, `linux-x64` and `linux-arm64`. Its roles are selected by command:
    - `arcforges node run`: the node service (authority).
    - `arcforges <command>`: the CLI ([experience/cli.md](../experience/cli.md)).
-   - `arcforges mcp serve`: the MCP adapter (stdio), and optionally `--http` for local Streamable HTTP.
+   - `arcforges mcp serve`: the MCP adapter (stdio; a local HTTP transport is roadmap RM-05).
    - `arcforges hook <client> <event>`: the AI-client hook handler.
    - `arcforges bridge wsl`: the host-to-guest byte relay launched through `wsl.exe` (AD-0005).
    - Internal helper roles, never invoked by users:
      - `arcforges node exec-wrap` (Windows): the attempt's holder outside the job; launches the root process into the job, keeps the job handles until the node acknowledges, and writes the durable exit record with accounting;
-     - `arcforges node signal` (Windows): attaches to an attempt's hidden console and sends `CTRL_BREAK_EVENT`;
+     - `arcforges node signal` (Windows): attaches to an attempt's windowless console and sends `CTRL_BREAK_EVENT` (L-18);
      - `arcforges node exit-record` (Linux): the `ExecStopPost` recorder of transient execution units (AD-0005).
 
    **Windows supervisor.** `arcforges-supervisor.exe` is a small GUI-subsystem Native AOT executable (project `ArcForges.Supervisor`) with no window.

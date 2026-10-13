@@ -41,7 +41,7 @@ VERIFICATION_MD = DOCS / "verification" / "platform-capabilities.md"
 ANN_REQUIRED = ["auth", "idempotency", "deadline", "stream", "errors", "locality"]
 ANN_KEYS = ANN_REQUIRED + ["state"]
 IMPLICIT_ERRORS = {"INTERNAL/internal", "RESOURCE/overloaded", "STATE/node_stopping",
-                   "AUTHENTICATION/unauthenticated", "RESOURCE/rate_limited"}
+                   "AUTHENTICATION/unauthenticated", "RESOURCE/rate_limited", "STATE/not_activated"}
 SCALARS = {"string", "bytes", "bool", "int32", "int64", "uint32", "uint64", "sint32", "sint64",
            "fixed32", "fixed64", "sfixed32", "sfixed64", "double", "float"}
 

@@ -130,12 +130,16 @@
         "docs/architecture/04-execution.md",
         "docs/decisions/AD-0006-execution-semantics.md",
         "docs/contracts/proto/arcforges/node/v1/tasks.proto",
-        "docs/decisions/AD-0006-execution-semantics.md"
+        "docs/decisions/AD-0006-execution-semantics.md",
+        "docs/architecture/05-toolchains-caches.md"
       ],
       "tasks": [
-        "AF-SCHED-01"
+        "AF-SCHED-01",
+        "AF-SEC-01",
+        "AF-TOOL-01",
+        "AF-TOOL-02"
       ],
-      "verification": "retry table unit tests; closed-loop OOM retry"
+      "verification": "retry table and assertion-source unit tests; agent assertion downgraded without the policy; side-effecting task not retried after node loss; closed-loop OOM retry for asserted classes"
     },
     {
       "id": "R-EXE-011",
@@ -238,6 +242,23 @@
       "verification": "kill node during runs; update switch with running executions (F-L03)"
     },
     {
+      "id": "R-EXE-019",
+      "design": [
+        "docs/architecture/03-resource-control.md",
+        "docs/architecture/05-toolchains-caches.md",
+        "docs/architecture/06-storage-workspaces.md",
+        "docs/contracts/proto/arcforges/node/v1/tasks.proto",
+        "docs/contracts/proto/arcforges/node/v1/workspaces.proto"
+      ],
+      "tasks": [
+        "AF-SCHED-01",
+        "AF-TOOL-01",
+        "AF-TOOL-02",
+        "AF-WS-01"
+      ],
+      "verification": "real tests: two .NET builds in one workspace run one after the other; npm test waits for npm ci of the same package; work in different build directories runs together; SERIAL mode; key engine and adapter key tests"
+    },
+    {
       "id": "R-RES-001",
       "design": [
         "docs/architecture/03-resource-control.md",
@@ -296,7 +317,7 @@
       "tasks": [
         "AF-SCHED-01"
       ],
-      "verification": "budget formula unit tests; headroom and memory admission load tests (15 section 4)"
+      "verification": "accounted-memory admission tests; an infeasible task never holds a reservation or blocks feasible work; memory admission load test (15 section 4)"
     },
     {
       "id": "R-RES-006",
@@ -356,12 +377,12 @@
         "docs/architecture/03-resource-control.md",
         "docs/decisions/AD-0005-resource-enforcement.md",
         "docs/contracts/proto/arcforges/node/v1/resources.proto",
-        "docs/architecture/03-resource-control.md"
+        "docs/data/node-store.md"
       ],
       "tasks": [
         "AF-WSL-01"
       ],
-      "verification": "host plus guest closed loop through the real wsl.exe bridge (F-L01)"
+      "verification": "host plus guest closed loop through the real wsl.exe bridge: saturating load with overcommitted demand, acknowledged allocations, link loss with an idle and a busy guest and node restarts (F-L01)"
     },
     {
       "id": "R-RES-011",
@@ -369,12 +390,12 @@
         "docs/architecture/03-resource-control.md",
         "docs/decisions/AD-0005-resource-enforcement.md",
         "docs/contracts/proto/arcforges/node/v1/resources.proto",
-        "docs/architecture/03-resource-control.md"
+        "docs/data/node-store.md"
       ],
       "tasks": [
         "AF-WSL-01"
       ],
-      "verification": "host plus guest closed loop through the real wsl.exe bridge (F-L01)"
+      "verification": "host plus guest closed loop through the real wsl.exe bridge: saturating load with overcommitted demand, acknowledged allocations, link loss with an idle and a busy guest and node restarts (F-L01)"
     },
     {
       "id": "R-RES-012",
@@ -402,6 +423,22 @@
         "AF-SEC-01"
       ],
       "verification": "adoption tests on both platforms"
+    },
+    {
+      "id": "R-RES-014",
+      "design": [
+        "docs/architecture/03-resource-control.md",
+        "docs/decisions/AD-0005-resource-enforcement.md",
+        "docs/contracts/proto/arcforges/node/v1/resources.proto",
+        "docs/architecture/15-performance-targets.md"
+      ],
+      "tasks": [
+        "AF-EXEC-01",
+        "AF-EXEC-02",
+        "AF-RES-01",
+        "AF-SCHED-01"
+      ],
+      "verification": "Linux MemoryMax and swap bound under mem-ramp; Windows commit bound; pressure response to a synthetic unmanaged allocator on both platforms (15 section 4)"
     },
     {
       "id": "R-TOOL-001",
@@ -592,12 +629,13 @@
       "id": "R-STOR-003",
       "design": [
         "docs/architecture/06-storage-workspaces.md",
-        "docs/contracts/proto/arcforges/node/v1/workspaces.proto"
+        "docs/contracts/proto/arcforges/node/v1/workspaces.proto",
+        "docs/data/node-store.md"
       ],
       "tasks": [
         "AF-WS-01"
       ],
-      "verification": "worktree create/remove/archive tests with real git"
+      "verification": "real git worktree tests: staged deletions and renames, unstaged, untracked, binary and intent-to-add changes archived and verified; ignored-file decision; unmerged index and dirty submodule refused; forced verification failure removes nothing; exact restore (L-19)"
     },
     {
       "id": "R-STOR-004",
@@ -621,7 +659,7 @@
       "tasks": [
         "AF-STOR-01"
       ],
-      "verification": "real directory-tree cleanup tests incl. junctions, symlinks, open files, bounds"
+      "verification": "quota and retention tests; every limit labelled with its kind"
     },
     {
       "id": "R-STOR-006",
@@ -658,6 +696,21 @@
         "AF-STOR-01"
       ],
       "verification": "real directory-tree cleanup tests incl. junctions, symlinks, open files, bounds"
+    },
+    {
+      "id": "R-STOR-009",
+      "design": [
+        "docs/architecture/06-storage-workspaces.md",
+        "docs/contracts/proto/arcforges/node/v1/storage.proto",
+        "docs/data/node-store.md",
+        "docs/architecture/04-execution.md"
+      ],
+      "tasks": [
+        "AF-EXEC-01",
+        "AF-EXEC-02",
+        "AF-STOR-01"
+      ],
+      "verification": "output flood, temporary-space flood and nearly-full-volume tests on both platforms; immediate limit stops; DEGRADED and recovery"
     },
     {
       "id": "R-REC-001",
@@ -718,6 +771,22 @@
         "AF-REC-01"
       ],
       "verification": "classifier unit tests; TestLoad timeline scenarios; export schema tests"
+    },
+    {
+      "id": "R-REC-006",
+      "design": [
+        "docs/architecture/07-records-diagnosis-memory.md",
+        "docs/contracts/proto/arcforges/node/v1/diagnosis.proto",
+        "docs/contracts/proto/arcforges/node/v1/tasks.proto",
+        "docs/data/node-store.md",
+        "docs/decisions/AD-0015-direction-editions-roadmap.md"
+      ],
+      "tasks": [
+        "AF-REC-01",
+        "AF-CACHE-01",
+        "AF-AI-01"
+      ],
+      "verification": "record-chain test from a session task to processes, queue reasons, cache usage, downloads and outcome; SHARED_WINDOW window and aggregation tests; unmeasured values stay empty; measurement budget (caches.usage_scan_budget_ms) and store size benchmarks (15)"
     },
     {
       "id": "R-DIAG-001",
@@ -856,7 +925,7 @@
         "AF-AI-01",
         "AF-AI-02"
       ],
-      "verification": "hook fixture routing tests; bypass detection with real process trees"
+      "verification": "hook fixture routing tests per mode (rewrite, rewrite-all); bypass detection with real process trees; managed share"
     },
     {
       "id": "R-AI-006",
@@ -868,7 +937,7 @@
       "tasks": [
         "AF-AI-01"
       ],
-      "verification": "hook fixture routing tests; bypass detection with real process trees"
+      "verification": "hook fixture routing tests per mode (rewrite, rewrite-all); bypass detection with real process trees; managed share"
     },
     {
       "id": "R-AI-007",
@@ -880,7 +949,7 @@
       "tasks": [
         "AF-AI-01"
       ],
-      "verification": "hook fixture routing tests; bypass detection with real process trees"
+      "verification": "hook fixture routing tests per mode (rewrite, rewrite-all); bypass detection with real process trees; managed share"
     },
     {
       "id": "R-AI-008",
@@ -893,6 +962,38 @@
         "AF-AI-02"
       ],
       "verification": "plan/apply/remove against real config files; real client probes (F-A01)"
+    },
+    {
+      "id": "R-AI-010",
+      "design": [
+        "docs/architecture/08-ai-integration.md",
+        "docs/decisions/AD-0007-ai-integration.md",
+        "docs/decisions/AD-0006-execution-semantics.md",
+        "docs/contracts/proto/arcforges/node/v1/tasks.proto"
+      ],
+      "tasks": [
+        "AF-EXEC-01",
+        "AF-EXEC-02",
+        "AF-AI-01"
+      ],
+      "verification": "closed loop with a scripted client timeout, a queued task, an identical resubmission, a resubmission after a file edit, and an interrupt"
+    },
+    {
+      "id": "R-AI-011",
+      "design": [
+        "docs/architecture/08-ai-integration.md",
+        "docs/decisions/AD-0007-ai-integration.md",
+        "docs/product/product-definition.md",
+        "docs/decisions/AD-0015-direction-editions-roadmap.md"
+      ],
+      "tasks": [
+        "AF-AI-01",
+        "AF-MCP-01",
+        "AF-AI-02",
+        "AF-DESK-02",
+        "AF-ACC-01"
+      ],
+      "verification": "journey test per release-1 supported operation (product definition section 9, Verified by column; AF-ACC-01); GetReleaseScope checked against section 9; release coverage statement tests on D-14, arcforges coverage and MCP session_coverage"
     },
     {
       "id": "R-AI-009",
@@ -1083,6 +1184,20 @@
       "verification": "placement, transfer, lease and preemption closed loop; physical LAN AR-03"
     },
     {
+      "id": "R-LAN-011",
+      "design": [
+        "docs/architecture/09-lan.md",
+        "docs/decisions/AD-0008-lan-trust-and-placement.md",
+        "docs/contracts/proto/arcforges/peer/v1/peer.proto",
+        "docs/contracts/proto/arcforges/node/v1/workspaces.proto",
+        "docs/data/node-store.md"
+      ],
+      "tasks": [
+        "AF-LAN-02"
+      ],
+      "verification": "closed loop: two concurrent remote attempts from one workspace; a local edit during a remote run is staged"
+    },
+    {
       "id": "R-LAN-007",
       "design": [
         "docs/architecture/09-lan.md",
@@ -1139,9 +1254,12 @@
         "docs/decisions/AD-0010-commerce-and-entitlements.md"
       ],
       "tasks": [
+        "AF-LAN-01",
+        "AF-LAN-02",
+        "AF-LAN-03",
         "AF-CLD-03"
       ],
-      "verification": "offline grace tests with expired tokens"
+      "verification": "tests with no account and with the cloud unreachable: local work, LAN pairing, placement and cache sharing work; offline grace tests with expired tokens affect cloud features only"
     },
     {
       "id": "R-CLOUD-002",
@@ -1203,11 +1321,29 @@
         "docs/architecture/14-commercial-operations.md"
       ],
       "tasks": [
+        "AF-CLD-01",
         "AF-PLAT-01",
         "AF-CLD-04",
         "AF-OPS-01"
       ],
-      "verification": "budget and kill-switch closed loop"
+      "verification": "every dimension's budget walks the degradation ladder in closed loop, including closing relay sockets and essential-only mode; residual exposure computed"
+    },
+    {
+      "id": "R-CLOUD-007",
+      "design": [
+        "docs/architecture/10-cloud.md",
+        "docs/decisions/AD-0009-cloud-relay-and-cost-controls.md",
+        "docs/contracts/proto/arcforges/fleet/v1/fleet.proto",
+        "docs/experience/web.md",
+        "docs/experience/android.md"
+      ],
+      "tasks": [
+        "AF-CLD-04",
+        "AF-WEB-03",
+        "AF-AND-01",
+        "AF-AND-02"
+      ],
+      "verification": "contract review against W-40, W-41 and A-03 to A-05; closed-loop viewer tests"
     },
     {
       "id": "R-UX-001",
@@ -1397,7 +1533,7 @@
       "tasks": [
         "AF-CLD-03"
       ],
-      "verification": "offline token expiry degrades only gated features"
+      "verification": "offline token expiry stops only cloud features (remote.*, push); local and LAN features and running tasks are unaffected"
     },
     {
       "id": "R-DIST-001",
@@ -1537,6 +1673,22 @@
         "AF-OPS-01"
       ],
       "verification": "health endpoints, alert rules, runbook review; production AR-09"
+    },
+    {
+      "id": "R-OPS-007",
+      "design": [
+        "docs/architecture/10-cloud.md",
+        "docs/decisions/AD-0014-delivery-method.md"
+      ],
+      "tasks": [
+        "AF-WEB-01",
+        "AF-CLD-01",
+        "AF-PLAT-01",
+        "AF-WEB-02",
+        "AF-WEB-03",
+        "AF-PROD-01"
+      ],
+      "verification": "a disabled surface answers STATE/not_activated without waking the container; dark deploy without flagship bindings; activation steps reviewed"
     },
     {
       "id": "R-PERF-001",

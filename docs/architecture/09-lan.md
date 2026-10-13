@@ -4,33 +4,28 @@ Decision: [AD-0008](../decisions/AD-0008-lan-trust-and-placement.md). Contracts:
 
 ## 1. Listener and identity
 
-- The listener is TCP `0.0.0.0:47820` (configurable; IPv6 dual-stack where available). Kestrel HTTPS uses TLS 1.3 only and requires a client certificate. It is enabled when the user turns on LAN features. The TLS layer accepts any well-formed client certificate, but refuses invalid or revoked account certificates. A gRPC interceptor then limits unpaired identities to `PeerHandshakeService.Hello` and `PairingService`, and every other service requires a pinned or same-account identity (AD-0008 §4). WSL2 mirrored networking exposes the guest on the LAN (L-12), but guest nodes do **not** open a LAN listener by default: their LAN presence is through the host node.
+- The listener is TCP `0.0.0.0:47820` (configurable; IPv6 dual-stack where available). Kestrel HTTPS uses TLS 1.3 only and requires a client certificate. TLS 1.3 is available on every supported platform: Windows 11, whose Schannel supports TLS 1.3 (Windows 10 does not, V-N06; [AD-0002](../decisions/AD-0002-platform-scope.md)), and Linux with OpenSSL. It is enabled when the user turns on LAN features. The TLS layer accepts any well-formed client certificate. A gRPC interceptor then limits unpaired identities to `PeerHandshakeService.Hello` and `PairingService`, and every other service requires a pinned (paired) identity (AD-0008 §4). WSL2 mirrored networking exposes the guest on the LAN (L-12), but guest nodes do **not** open a LAN listener by default: their LAN presence is through the host node.
 - **Node key:** ECDSA P-256. On Windows it is stored as a CNG key with export disabled, in the user profile. On Linux it is a 0600 PKCS#8 file in the data root. The self-signed certificate SAN contains `URI:arcforges:node:<node_id>`.
-- **Account certificate (Pro, signed in):**
-  1. The node submits a CSR to `NodeEnrollmentService.IssueNodeCertificate`.
-  2. The cloud's **ArcForges Node Issuing CA** returns a 30-day certificate with SAN `URI:arcforges:node:<node_id>` and `URI:arcforges:account:<account_id>`.
-  3. The node renews at 2/3 of its lifetime.
-
-  Revoked node IDs arrive with every entitlement token refresh (≤24 h) and every relay connection.
+- **Account certificates** (cloud-issued, for trust between nodes of one account without pairing) are accepted future work (roadmap RM-01). Release 1 uses the self-signed node certificate only, and LAN features need no account.
 
 ## 2. Discovery
 
 | Mechanism | Detail |
 |---|---|
-| DNS-SD | Service `_arcforges._tcp.local`, instance `<node name>`. TXT records: `id` (node ID, base32), `v` (protocol range, for example `1-1`), `fp` (first 16 hex digits of the certificate SHA-256), `tls=1`, and `acct` (first 8 hex digits of a per-account hash) only when `lan.advertise_account_hint` is on (default off). Advertising is limited to networks the user marks as trusted: Windows Private-category networks, and on Linux the interfaces the user selects. Windows registers and browses with `DnsServiceRegister`/`DnsServiceBrowse` (V-T04). Linux uses the in-process responder and browser (RFC 6762/6763 subset: PTR, SRV, TXT, A, AAAA; probing; announcements; TTL 120 s). |
+| DNS-SD | Service `_arcforges._tcp.local`, instance `<node name>`. TXT records: `id` (node ID, base32), `v` (protocol range, for example `1-1`), `fp` (first 16 hex digits of the certificate SHA-256), `tls=1`. The `acct` record (a per-account hash, policy `lan.advertise_account_hint`) is reserved for account hints (roadmap RM-01) and is not advertised in release 1. Advertising is limited to networks the user marks as trusted: Windows Private-category networks, and on Linux the interfaces the user selects. Windows registers and browses with `DnsServiceRegister`/`DnsServiceBrowse` (V-T04). Linux uses the in-process responder and browser (RFC 6762/6763 subset: PTR, SRV, TXT, A, AAAA; probing; announcements; TTL 120 s). |
 | Manual | `PeerService.AddPeerAddress(host, port)` |
-| Account hints (Pro) | `NodeEnrollmentService.GetLanHints` returns same-account nodes' last LAN endpoints and fingerprints |
+| Account hints | Deferred (roadmap RM-01): `NodeEnrollmentService.GetLanHints` is reserved and not served in release 1 |
 | Advertisement control | Policy `lan.advertise` (default true while LAN features are on) |
 
 Discovered peers appear as `DISCOVERED` (untrusted) and are never used until paired (R-LAN-001).
 
 ## 3. Pairing
 
-### 3.1 Same account (Pro)
+### 3.1 Same account (deferred)
 
-Both nodes hold account certificates for the same `account_id`. After the mTLS handshake validates the chain, the account SAN and the revocation list, the peer is `PAIRED (ACCOUNT)`. No confirmation is needed, because both nodes are already enrolled by the same signed-in user. The default policy is status-only until the user widens it.
+Account-based trust between nodes of one account (`PAIRED (ACCOUNT)`) is accepted future work (roadmap RM-01). In release 1 every peer, including another machine of the same user, is trusted through local confirmation (§3.2).
 
-### 3.2 Local confirmation (Free and Pro; any two nodes)
+### 3.2 Local confirmation (any two nodes)
 
 1. A user starts pairing on node A for discovered peer B (`PeerService.BeginPairing`). B shows an incoming request to its user, which can be accepted or rejected.
 2. A opens a TLS connection to B using self-signed certificates, unverified for now.
@@ -47,7 +42,7 @@ Both nodes hold account certificates for the same `account_id`. After the mTLS h
 
 ### 3.3 Revocation
 
-`PeerService.RemovePeer` unpins locally and notifies the peer when it is reachable. Account revocation propagates through the CA revocation list.
+`PeerService.RemovePeer` unpins locally and notifies the peer when it is reachable; **Block** also refuses the identity in future. Trust is per peer and local: revoking a node in the cloud (`FleetService.RevokeNode`) ends only its cloud access and changes no LAN pin. A lost or stolen machine must therefore be removed or blocked on every peer that paired with it (D-15); the web revoke dialog says so. Account-wide LAN revocation arrives only with account-based trust (roadmap RM-01).
 
 ## 4. Peer policy and status
 
@@ -90,7 +85,7 @@ Placement is re-evaluated only before start. Running attempts never migrate (R-L
 3. Input transfer (§6). The executor starts the attempt automatically when inputs are complete and its admission grants the reservation.
 4. `WatchRemoteAttempt(remote_attempt_id, cursor)` streams states, output chunks, segments, sample summaries and the final result. The origin mirrors them into its task record.
 5. `RenewAttemptLease` every 60 s. `CancelRemoteAttempt` cancels. `ReleaseRemoteAttempt` frees the remote workspace when retention ends.
-6. Output return (§6). The origin materializes declared outputs per `output_conflict` (`OVERWRITE`, `SKIP_EXISTING` or `FAIL`), default `OVERWRITE` inside declared output paths only.
+6. Output return (§6). The origin applies declared outputs inside the declared output paths only, comparing each file with its base recorded at submission. Files changed locally are handled per `output_conflict`: `STAGE` (default), `SKIP_EXISTING`, `FAIL`, or `OVERWRITE` for HUMAN or SCRIPT callers only. Returned outputs never delete local files.
 
 **Environment on the executor.** `inherit=CALLER` becomes `inherit=NODE` on the executor, because origin paths are not portable. Explicit `set` entries are transferred. Path-like values that point inside the origin workspace are rewritten to the remote workspace root, and the record shows each rewrite.
 
@@ -101,12 +96,25 @@ Placement is re-evaluated only before start. Running attempts never migrate (R-L
   - other workspaces: a walk with globs.
 
   Each entry is `{path, mode, size, sha256}`. Digests come from the `file_digest_cache` (path, size, mtime, file ID → digest). The manifest itself is content-addressed.
+- **Output bases.** At submission the origin also records, for every path matched by `declared_outputs`, its current digest or "absent". These are the bases for conflict detection when outputs return.
 - **Executor pull:**
   1. The executor calls `PutManifest` on itself.
   2. It computes what is missing against its CAS and the remote workspace's current manifest.
   3. It pulls blobs from the origin with `DownloadBlob` (server stream, 4 MiB chunks, SHA-256 verified per blob, resumable by offset).
-  4. It materializes the remote workspace `work/remote/<origin_node>/<origin_workspace>/` by copying from the CAS, or by block-cloning where the file system supports it (Windows ReFS/Dev Drive `FSCTL_DUPLICATE_EXTENTS_TO_FILE`, Linux `FICLONE`). It never hardlinks, because builds that write in place would corrupt the stored blob and every workspace sharing it. Files absent from the manifest are deleted inside that directory only.
-- **Outputs** use the same mechanism in reverse, origin pulling.
+  4. It leases a **workspace slot** for the attempt: `work/remote/<origin_node>/<origin_workspace>/<slot>/` (R-LAN-011).
+     - A free slot is reused and brought to the new manifest incrementally. Files absent from the manifest are deleted inside that slot only.
+     - If every slot of the origin workspace is leased, a new slot is created, up to `lan.max_workspace_slots` (default 2). Beyond that, the remote attempt stays `RESERVED` until a slot frees, and the offer's ETA includes the wait.
+     - A slot belongs to exactly one remote attempt, from materialization until its outputs have been pulled or the attempt is released. Concurrent attempts from the same origin workspace therefore never share a writable directory.
+     - Materialization copies from the CAS, or block-clones where the file system supports it (Windows ReFS/Dev Drive `FSCTL_DUPLICATE_EXTENTS_TO_FILE`, Linux `FICLONE`). It never hardlinks, because builds that write in place would corrupt the stored blob and every workspace sharing it.
+- **Outputs** return in reverse: the executor builds a manifest of the declared outputs, and the origin pulls the blobs into `staging/transfer/`. While the attempt runs remotely, the task holds no keys at the origin. To apply the outputs, the origin takes, exclusively, the keys of the output paths and the tool keys the task's adapter emits, for example `tool:dotnet:<w>` for a placed .NET build ([03](03-resource-control.md) §4). Directory keys alone would not exclude a local build that holds a tool key, so no local managed task writes or reads those outputs meanwhile. For each file it compares the current local digest with the base recorded at submission:
+  - **unchanged** (or absent both times): atomic replace, through a temporary file and a rename;
+  - **changed locally**, per `output_conflict`:
+    - `STAGE` (default) writes the returned file to `out/<workspace>/<task>/<attempt>/conflicts/<path>`, keeps the local file and raises `OUTPUT_CONFLICT`;
+    - `SKIP_EXISTING` keeps the local file;
+    - `FAIL` applies nothing if any file conflicts;
+    - `OVERWRITE` replaces it, and only HUMAN or SCRIPT callers may choose it.
+
+  Returned outputs never delete local files. The attempt result records the applied, conflicted and skipped counts and the staging path (`AttemptResult.outputs`).
 - **Limits:** a manifest has at most 2 million entries; a single transfer at most 100 GiB. Both are configurable. All traffic stays on the peer connection and never routes through the cloud (R-LAN-006).
 
 ## 7. Failure, ownership and versions
@@ -122,13 +130,9 @@ Placement is re-evaluated only before start. Running attempts never migrate (R-L
 
 **Ownership.** The task stays owned by the origin and the attempt by the executor ([AD-0004](../decisions/AD-0004-contracts-and-state.md)). The executor's local user can always see, pause or cancel remote attempts on their machine (R-LAN-008).
 
-## 8. Gating
+## 8. No subscription gating
 
-- Placement needs the origin account's entitlement `lan.placement`.
-- Accepting placements needs the executor account's entitlement `lan.accept`.
-- Cache serving and consuming need `lan.cache`.
-
-Each is verified offline from the signed entitlement token ([AD-0010](../decisions/AD-0010-commerce-and-entitlements.md) §5). Pairing and status viewing are free.
+LAN discovery, pairing, placement and cache sharing are free and need no account, entitlement or cloud connection ([AD-0015](../decisions/AD-0015-direction-editions-roadmap.md) §2). Per-peer policy ([AD-0008](../decisions/AD-0008-lan-trust-and-placement.md) §5) alone decides what each paired peer may do.
 
 ## 9. WSL guests are not LAN peers
 

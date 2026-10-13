@@ -1,6 +1,6 @@
 # AD-0014 — Delivery method: serial development, distinct evidence, honest acceptance
 
-- Status: Accepted (2026-10-12; revised the same day after the independent review: `blocked` state and real dependencies, so one blocked task cannot stall the plan)
+- Status: Accepted (2026-10-12; revised the same day after the independent review: `blocked` state and real dependencies, so one blocked task cannot stall the plan; revised 2026-10-13 after the findings review: production activation separate from delivery; continuous serial execution once authorized)
 - Supersedes for active development:
   - the parallel delivery model of ArcForges-Design-Parallel (P2-018, DLV-25, DLV-31 build slot, DLV-42 coordinator capacity) and of Plan-Parallel `execution-policy.md`, `single-task-command.md` and `arcforges-implementation.md`;
   - the launcher instruction to "use up to 10 concurrent subagents";
@@ -36,3 +36,13 @@
 8. **Blockers.** A task needing an unavailable human action (credentials, purchases, signing custody, a physical device, approval to publish) completes everything else and records the exact pending step in the acceptance register.
    - If the step prevents delivery, the task becomes `blocked` with the register IDs, and the plan continues with the next task that does not depend on it.
    - The Plan graph's `depends_on` lists only real dependencies (the serial order is separate), so independent tasks are never held back by a blocked one.
+9. **Implementation delivery, production activation and real-world acceptance are separate.**
+   - **Delivery** means merged, with the task's development-stage acceptance met: real implementations, verified on the workstation and the local cloud stack with approved external fakes. Cloud and Web merges deploy dark: flagship surfaces stay disabled in production ([10](../architecture/10-cloud.md) §8). No implementation merge waits for production key material, domains, provisioning or publication approval.
+   - **Production activation** is its own task (AF-PROD-01), after the release candidate. It needs the user's approval and the production prerequisites, and enables the surfaces step by step. The approvals it needs are never bypassed: publication of the public site and enabling production surfaces stay explicit user decisions.
+   - **Real-world acceptance** is the acceptance register: real payments, devices, physical LANs, production signing.
+10. **Continuous serial execution once authorized.** A run gate holds until the user authorizes implementation by giving a session the Plan's execution prompt (`execution-prompt.md`) with a range of `sequence.md` steps; that range is the authorized scope. The authorization is recorded as a Plan ledger note, so every later session can see it; without an unfinished authorized range a coordinator only reports status. Within the range, the coordinator works through eligible tasks one at a time without asking for "continue" after each delivery, and it never starts a task outside the range. It reports each delivery, skips `blocked` tasks, and stops only when:
+    - an outward-facing approval is needed;
+    - the authorized range is complete;
+    - no eligible task remains;
+    - a decision only the user can make is required;
+    - the user says stop.

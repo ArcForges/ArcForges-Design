@@ -14,7 +14,7 @@ Decisions: [AD-0009](../decisions/AD-0009-cloud-relay-and-cost-controls.md), [AD
 | R2 (bucket to be provisioned) | Release artifacts, support uploads | Static release manifests (`releases.arcforges.com`), support bundles (consented) |
 | Queue (to be provisioned) | The wake-queue pattern of Cloud's `proof` environment (`WAKE_QUEUE`, with a dead-letter queue) | Wakes the C# host for queued background work (outbox dispatch, jobs) |
 
-**Production bindings.** At Cloud main `92ba1dc9`, only the `proof` environment of `wrangler.json` declares D1, R2 and Queue bindings, and `crons` is empty. AF-CLD-01 adds the production bindings and a repository provisioning script that creates the D1 database, the R2 bucket (with the lifecycle rules of §3.11) and the Queue. Running that script against the production account needs the user's approval (H-20). AF-CLD-04 adds the `FleetHub` Durable Object binding and its migration, and AF-PLAT-01 the cron trigger.
+**Production bindings.** At Cloud main `92ba1dc9`, only the `proof` environment of `wrangler.json` declares D1, R2 and Queue bindings, and `crons` is empty. AF-CLD-01 adds a repository provisioning script that creates the D1 database, the R2 bucket (with the lifecycle rules of §3.11) and the Queue, and the binding definitions it writes. The production `wrangler.json` receives those bindings only during production activation (§8), with the user's approval (H-20). AF-CLD-04 adds the `FleetHub` Durable Object class and its migration (no external resource), and AF-PLAT-01 the cron trigger.
 
 **Viewer transport.** Viewers (web, Android) receive live fleet state over a **WebSocket to `FleetHub` carrying `arcforges.relay.v1.ViewerFrame` protobuf messages**, not over a gRPC-Web stream. A streaming HTTP response would keep the Durable Object awake and billed for the stream's lifetime, while hibernating WebSockets do not (V-C01). The frames and the snapshot/delta/cursor semantics are the same contract the gRPC-Web method `FleetService.WatchFleet` defines. `WatchFleet` stays available as a gRPC-Web server stream for clients that cannot use WebSockets, and is served by the C# host with a 10-minute lifetime cap (R-API-004).
 
@@ -33,7 +33,7 @@ Decisions: [AD-0009](../decisions/AD-0009-cloud-relay-and-cost-controls.md), [AD
 |---|---|---|
 | Identity | Contracts (`publicapi.v1.IdentityService`), D1 tables, user and credential domain rules and store | WebAuthn ceremonies, e-mail codes, cookie and native-bearer sessions with refresh rotation, step-up (AF-ID-01). E-mail goes through a provider adapter: Postmark, with Amazon SES as fallback, the historical Cloud design's choice. The provider account and sending domain are prerequisite H-19; development uses `FakeMailSender`, and live delivery is AR-14. Recovery, account deletion with grace, data export (`DataService`), security activity (AF-ID-02). New: an `account` session approves node sign-ins and device codes; phone sessions are scoped (§3.3). |
 | Devices | Contracts (`DeviceService`, product and platform are strings), D1 tables | Register, list, rename, revoke and cascade (AF-ID-02). Product values `arcforges-node` and `arcforges-mobile`. Each node, including each WSL guest, is its own device record (cloud-store §3). |
-| Fleet | **New** (`ArcForges.Cloud.Modules.Fleet`) | `NodeEnrollmentService`: native sign-in (PKCE loopback), device authorization, phone pairing, node certificates, LAN hints, relay tokens, entitlement tokens. `FleetService`: node list, rename, revoke, snapshots, viewer grants, remote commands. Relay envelope processing. |
+| Fleet | **New** (`ArcForges.Cloud.Modules.Fleet`) | `NodeEnrollmentService`: native sign-in (PKCE loopback), device authorization, phone pairing, relay tokens, entitlement tokens (node certificates and LAN hints are reserved for roadmap RM-01 and not served in release 1). `FleetService`: node list, rename, revoke, snapshots, viewer grants, remote commands. Relay envelope processing. |
 | Entitlement | Resolver, snapshots, grants (implemented), D1 tables | `EntitlementService` endpoints, plan catalogue for the flagship, entitlement-token claim projection (AF-CLD-03) |
 | Commerce | Contracts (`CommerceService`), D1 tables, the historical Paddle design (BC-01) | Paddle provider: catalogue, checkout attempts, verified webhooks, subscription lifecycle, customer portal, refunds, billing history (AF-COM-01). Google Play provider: `StoreBillingService`, RTDN, acknowledgement job (AF-CLD-07). |
 | Notification | Contracts (`NotificationService`), D1 tables, the historical FCM HTTP v1 design | Implemented by AF-CLD-06: `List`, `Acknowledge`, `RegisterPush`, `UnregisterPush`, the FCM HTTP v1 sender with short-lived service-account tokens. Push kinds `node.task_failed`, `node.task_finished`, `node.approval_needed`, `node.offline`, `node.finding`; batching from relay envelopes; preferences per kind and node (`FleetService.GetPushPreferences` and `UpdatePushPreferences`, table `fleet_push_preference`) |
@@ -49,7 +49,7 @@ Decisions: [AD-0009](../decisions/AD-0009-cloud-relay-and-cost-controls.md), [AD
 
 1. The node calls `NodeEnrollmentService.BeginNodeSignIn{code_challenge (S256), redirect_uri=http://127.0.0.1:<port>/callback, node_info}`. It receives `{flow_id, authorize_url, expires_at (10 min)}`.
 2. The node opens `authorize_url` (`https://arcforges.com/connect?flow=<id>`) in the system browser. The web profile authenticates the user (existing flows) and shows "Connect ArcForges node <name> (<os>) to <account>?". On approval, the C# host issues a one-use code bound to the flow and redirects to the loopback URI.
-3. The node calls `CompleteNodeSignIn{flow_id, code, code_verifier, csr}` and receives `{node credential (refresh token, scope node), account summary, entitlement token, node certificate if entitled}`. The installation is registered (`NODE`).
+3. The node calls `CompleteNodeSignIn{flow_id, code, code_verifier}` and receives `{node credential (refresh token, scope node), account summary, entitlement token}`. The installation is registered (`NODE`). The optional `csr` field and the certificate chain are reserved for account-based LAN trust (roadmap RM-01).
 
 **Failure states:** the user denies (`ACCESS_DENIED`); the flow expires; the loopback port is unavailable (the node falls back to device authorization); the code is reused (refused, and the flow is revoked).
 
@@ -106,7 +106,7 @@ Each secret is single-use. A wrong secret consumes the pairing.
 
 ### 3.8 Entitlement token (R-COM-004)
 
-`RefreshEntitlementToken{}` (node credential) returns a compact ES256-signed token (`SignedBlob` with `EntitlementClaims`): `{acct, node, plan, features[], issued_at, not_after (14 days), revoked_nodes[] (≤256, delta), kid}`. Nodes refresh it every 24 h while online. Public keys ship in releases, and `GetEntitlementKeys` serves rotations.
+`RefreshEntitlementToken{}` (node credential) returns a compact ES256-signed token (`SignedBlob` with `EntitlementClaims`): `{acct, node, plan, features[], issued_at, not_after (14 days), revoked_nodes[] (reserved for RM-01, empty in release 1), kid}`. It describes cloud features only; local and LAN features never check it ([AD-0015](../decisions/AD-0015-direction-editions-roadmap.md) §2). Nodes refresh it every 24 h while online. Public keys ship in releases, and `GetEntitlementKeys` serves rotations.
 
 ### 3.9 Google Play (R-COM-002)
 
@@ -153,7 +153,7 @@ All values are opaque bytes plus small headers. Socket attachments hold `{kind, 
 | Support bundle uploads per day | 1 | 5 | C# Support |
 | DO wakes per hour per account | — | 3,600 | DO guard |
 
-**Global operating budgets** (`platform_operating_budget`) cover the dimensions of [14](14-commercial-operations.md) §7.2 per UTC day. Exceeding 80% raises operator alerts. At 100% the kill switches apply in the order given there: live streaming off (summaries only), push batched hourly, new relay connections refused, support uploads refused. Kill switches propagate within one token lifetime. Budget alerts from Cloudflare are informational (V-C04).
+**Global operating budgets** (`platform_operating_budget`) cover every billable dimension of the products in use, per UTC day ([14](14-commercial-operations.md) §7.1). Exceeding 80% raises operator alerts. At 100% the degradation ladder of [14](14-commercial-operations.md) §7.3 applies: live streaming off, then existing relay sockets closed and new ones refused, push batched then stopped, uploads refused, and finally essential-only mode, in which the Worker answers non-essential routes without waking the container. The residual exposure is computed and shown (§7.4 there). Budget alerts from Cloudflare are informational (V-C04).
 
 ## 6. Failure handling
 
@@ -177,3 +177,32 @@ All values are opaque bytes plus small headers. Socket attachments hold `{kind, 
 - Health endpoints per component.
 
 Runbooks are in [14-commercial-operations.md](14-commercial-operations.md) (R-OPS-006).
+
+## 8. Production activation
+
+Implementation delivery and production activation are separate steps ([AD-0014](../decisions/AD-0014-delivery-method.md) §9):
+- **Dark deploys.** The Cloud and Web repositories keep deploying on every main push through their guarded scripts, and flagship features ship **disabled**:
+  - **Cloud:** the Worker variable `FLAGSHIP_SURFACES` in `wrangler.json` lists the enabled surfaces (`identity`, `fleet_api`, `relay`, `push`, `support`, `commerce`); it is empty by default. It is a deployment setting, not a D1 configuration revision, because the production D1 binding does not exist until activation, and it changes only through a reviewed main-push deploy. A disabled surface is answered by the Worker with `STATE/not_activated`, without waking the container. While no surface is enabled, the scheduled (cron) handler returns at once, so nothing wakes the container.
+  - **Web:** the repository's deploy configuration holds the switches `public_site`, `web_account` and `web_fleet`, all off. While a switch is off, the guarded deploy keeps publishing the current pages and leaves that part out, so nothing new becomes visible.
+- **No production prerequisites at merge.** Implementation tasks are verified on the local cloud stack ([16](16-testing-strategy.md) §3.1). They never need production key material, domains or provisioned resources. Until activation, the production migration step reports "not applicable" (no D1 binding), and readiness lists the flagship modules as "not provisioned".
+- **Activation** (Plan task AF-PROD-01, after the release candidate) needs the user's approval and these prerequisites:
+
+  | Surface | Prerequisites |
+  |---|---|
+  | Core: provisioning, `identity`, `fleet_api`, `relay` | H-05 (domains), H-06 (account settings), H-09 (the cost ceiling the production budgets derive from), H-16 (key material), H-19 (transactional e-mail for sign-in codes and security notices), H-20 (provisioning) |
+  | `support` | The core, and the R2 credential of H-16 |
+  | `push` | The core, and H-03 (Firebase) |
+  | `commerce` | The core, H-01 (Paddle) and, for Play, H-02, with H-07 (prices) and the published legal pages (H-10) |
+  | `public_site`, `web_account`, `web_fleet` | H-05 and, for the public site, H-10 |
+
+  A surface whose prerequisites are missing stays off and is recorded; it does not hold back the others. The steps:
+  1. provision the resources with the repository script;
+  2. the user stores the key material;
+  3. add the production bindings;
+  4. run the migrations;
+  5. set the production operating budgets from the cost ceiling ([14](14-commercial-operations.md) §7.2 and §7.4);
+  6. enable the surfaces one at a time, each with a production smoke check;
+  7. publish the public site and the web profiles after the user approves their content.
+
+  Provisioning runs the repository script with the user's approval, and the user stores the key material; every other step is a reviewed main-push deploy or a configuration activation. Removing a surface from the switch list withdraws it.
+- **Real-world acceptance** stays in the acceptance register (AR-05 to AR-09, AR-14).

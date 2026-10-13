@@ -106,6 +106,7 @@ CREATE TABLE "fleet_phone_pairing" (
 ) STRICT;
 CREATE INDEX "ix_fleet_phone_pairing__node_id_created_at" ON "fleet_phone_pairing" ("node_id", "created_at");
 
+-- Reserved for account-based LAN trust (roadmap RM-01); not written in release 1.
 CREATE TABLE "fleet_node_certificate" (
   "serial" TEXT NOT NULL,                                                 -- key (hex serial)
   "node_id" TEXT NOT NULL CHECK (length("node_id") = 36),

@@ -47,7 +47,7 @@
           ],
           "to": "PLACING",
           "on": "placement chose a peer (placement ANY or SPECIFIC_NODE)",
-          "guard": "entitlement lan.placement; peer policy"
+          "guard": "peer policy (no entitlement: LAN is free, AD-0015)"
         },
         {
           "from": [
@@ -241,7 +241,7 @@
             "CREATED"
           ],
           "to": "FINALIZING",
-          "on": "result-cache hit (CACHE_RESTORE attempt)"
+          "on": "result-cache hit (CACHE_RESTORE attempt; RESTORE mode is roadmap RM-04, not in release 1)"
         },
         {
           "from": [
@@ -364,14 +364,14 @@
             "READY"
           ],
           "to": "DEGRADED",
-          "on": "capability lost (e.g. user manager restarted without delegation)"
+          "on": "capability lost (e.g. user manager restarted without delegation), or a store write failed for lack of disk space (reason store_out_of_space; 06 section 5)"
         },
         {
           "from": [
             "DEGRADED"
           ],
           "to": "READY",
-          "on": "capability restored"
+          "on": "capability restored, or disk space returned and a store write succeeded"
         },
         {
           "from": [
@@ -469,7 +469,7 @@
           ],
           "to": "LOST",
           "on": "30 s without frames, or bridge exit",
-          "effect": "finding GUEST_LINK_LOST; guest admits standalone"
+          "effect": "finding GUEST_LINK_LOST; the guest keeps its last allocation until lease_until, then admits only within the standalone allocation, which the host keeps reserved (architecture 03 section 6)"
         },
         {
           "from": [
@@ -819,7 +819,30 @@
           ],
           "to": "REMOVING",
           "on": "WorkspaceService.RemoveWorktree; approved cleanup item",
-          "guard": "clean, or archive_changes approved"
+          "guard": "clean (no staged, unstaged or untracked changes)"
+        },
+        {
+          "from": [
+            "ACTIVE",
+            "IDLE"
+          ],
+          "to": "ARCHIVING",
+          "on": "WorkspaceService.RemoveWorktree with archive_changes (approved), with the ignored-files decision when the removal plan lists ignored files",
+          "guard": "dirty; nothing listed as blocking; no task, session or lock uses the worktree"
+        },
+        {
+          "from": [
+            "ARCHIVING"
+          ],
+          "to": "REMOVING",
+          "on": "archive verified: snapshot commits I and W written, the bundle fetched over the base ref into a temporary repository with the same commit IDs, live files matched by blob ID, mode and bytes, the index matched to I (06 section 3)"
+        },
+        {
+          "from": [
+            "ARCHIVING"
+          ],
+          "to": "ACTIVE",
+          "on": "archive creation or verification failed; nothing removed; finding raised"
         },
         {
           "from": [

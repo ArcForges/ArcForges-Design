@@ -28,7 +28,8 @@ Requirement: R-PERF-001. Every target names its measurement. "Workstation" means
 | Admission latency (submit → `STARTED` when capacity exists) | p95 ≤ 150 ms (Windows), ≤ 250 ms (Linux, including the transient-unit job) | 500 submissions | Workstation |
 | Local event latency (state change → client stream) | p95 ≤ 200 ms | Timestamps in the event and the receiver | Workstation |
 | Output capture | ≥ 200 MB/s sustained, no loss | `TestLoad` writer at maximum rate; byte-for-byte digest comparison | Workstation |
-| Store growth | ≤ 50 MB per 10,000 attempts (records, timelines, samples; logs excluded) | Database file size after generating attempts | Workstation, CI (smaller scale) |
+| Store growth | ≤ 50 MB per 10,000 attempts (records, timelines, samples, cache usage and result-cache observations; logs excluded) | Database file size after generating attempts | Workstation, CI (smaller scale) |
+| Evidence collection per attempt | Cache-usage measurement ≤ 2 s of background work (policy `caches.usage_scan_budget_ms`), never delaying the attempt's result | Timestamps of the measurement job | Workstation |
 | Node startup to ready (warm, 100 surviving executions to re-attach) | ≤ 3 s | Startup timestamps | Workstation |
 | Guest node idle (WSL2) | ≤ 40 MB RSS, ≤ 0.5% of one core | Guest after 10 minutes idle | Workstation |
 
@@ -50,6 +51,7 @@ Requirement: R-PERF-001. Every target names its measurement. "Workstation" means
 |---|---|---|
 | Headroom protection | With managed CPU load at 100% of the budget, an unmanaged interactive probe (a fixed busy-loop with a 10 ms deadline per 100 ms period) misses ≤ 1% of deadlines | `TestLoad` probe under a saturating managed load, both OSes |
 | Memory admission | Zero OOM kills of unmanaged processes caused by managed load in the standard load scenario (`TestLoad mem-ramp`) | Kernel log / Windows commit failures |
+| Memory bounds | Linux: no attempt or root exceeds its `MemoryMax`, and swap stays within `swap_allowance` (default 0). Windows: no attempt or root exceeds its commit limit. What these bounds do and do not guarantee is stated in [03](03-resource-control.md) §5.4. | cgroup `memory.events` and `memory.swap.current`; job accounting, in `TestLoad mem-ramp` |
 | Fairness | With two sessions submitting equal work in the same pool, each receives 50% ± 10% of managed CPU-seconds over 10 minutes | Records |
 | Queue start after release | When an execution ends, the next admissible queued task starts within 500 ms | Event timestamps |
 

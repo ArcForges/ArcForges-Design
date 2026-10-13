@@ -11,13 +11,13 @@ Each journey lists its steps across surfaces with the APIs involved, its success
 2. Desktop D-00 shows the capabilities. In WSL Debian, the guest node is installed by `install.sh` (user action) and linked automatically: SM-GUEST-LINK DISCOVERED → LINKED.
 3. In D-14, the user plans the Claude Code integration at user scope (`PlanIntegration`), reviews the diff and applies it (`ApplyIntegration`).
 4. The user runs the probe (`StartProbe`) and pastes the instruction into Claude Code. `arcforges probe` reports PASS (`ReportProbe`).
-5. The user selects routing REWRITE for the workspace (policy). A new Claude Code session raises SessionStart (`ReportHookEvent`) and the session appears in D-06.
+5. The user selects routing `rewrite` (heavy commands) or `rewrite-all` (every shell command except passthrough patterns) for the workspace (policy). D-14 states that connecting MCP alone routes nothing. A new Claude Code session raises SessionStart (`ReportHookEvent`) and the session appears in D-06.
 
 - **Success:**
   - MCP connected;
   - hooks seen;
   - rewrite active only where the probe passed;
-  - coverage visible.
+  - coverage visible, with the managed share and what stays unmanaged ([08](../architecture/08-ai-integration.md) §4.4).
 - **Failures:**
   - hooks disabled by managed settings (DEGRADED, conflict shown, MCP-only);
   - the probe fails (rewrite stays off; guide or MCP);
@@ -30,20 +30,22 @@ Each journey lists its steps across surfaces with the APIs involved, its success
 
 ## J-02 An agent builds through ArcForges
 
-- **Actor.** Claude Code (agent). Several sessions in parallel.
+- **Actor.** Claude Code (agent). Several sessions in parallel, some in the same workspace.
 
-1. The agent calls the MCP `run` tool with `dotnet build` (or a hook rewrites the Bash command into `arcforges run --session … -- dotnet build`).
-2. The node persists the task (`SubmitTask`). The adapter classifies `dotnet.build`, the estimate comes from memory or the adapter, and admission queues it when budgets are full.
+1. The agent calls the MCP `run` tool with `dotnet build` (or a hook rewrites the Bash command into `arcforges run --session … --client-timeout <ms> --join-existing -- dotnet build`).
+2. The node persists the task (`SubmitTask`). The adapter classifies `dotnet.build` (side effect `UNKNOWN` by default) and adds the workspace's .NET key. The estimate comes from memory or the adapter. Admission queues the task when budgets are full, or while another task holds a conflicting key: .NET builds in one workspace run one after the other, because each builds the referenced projects too, while a `dotnet test --no-build` runs beside another one. Sessions that build in parallel use separate managed worktrees ([03](../architecture/03-resource-control.md) §4).
 3. The task starts in a job or transient unit with limits. NuGet caches are redirected to the shared managed caches, `-m:N` follows the grant, and node reuse is disabled.
-4. The agent receives the result within 45 s, or a handle plus `task_wait` (bounded waits), with no retry loops.
+4. The agent receives the result within 45 s, or a handle plus `task_wait` (bounded waits), with no retry loops. A rewritten command that is still queued or running shortly before the client's tool timeout hands off: it prints the task ID and `arcforges tasks wait <id>`, exits 124, and the task keeps its place. A resubmission of the same command joins the existing task ([08](../architecture/08-ai-integration.md) §4.1).
 5. Records show the timeline (QUEUED_ADMISSION, RESTORE, BUILD), and the session coverage counts it as managed.
 
 - **Success:**
-  - the user's reserved headroom holds while 3+ builds run (15 §4);
+  - admission keeps accounted memory within the budget while 3+ builds run, and the reserve holds under the 15 §4 load as far as the platform enforces it ([03](../architecture/03-resource-control.md) §5.4);
+  - concurrent builds in one workspace never write the same project's outputs at the same time;
   - no duplicate package downloads across tasks;
   - exit codes and output are byte-identical to direct runs.
 - **Failures:**
-  - OOM, with a retry using more memory for PURE or IDEMPOTENT tasks;
+  - OOM: a retry with more memory only for tasks asserted PURE or IDEMPOTENT; an `UNKNOWN` build is reported, not retried (AD-0006 §4);
+  - the client's tool timeout: hand-off, never cancellation or requeue;
   - a stall finding;
   - the node down: MCP reports `effect` honestly and the CLI exits 75.
 - **Verification:**
@@ -82,6 +84,11 @@ Each journey lists its steps across surfaces with the APIs involved, its success
 3. The user executes. Items are re-validated and quarantined. One item is IN_USE, so the plan ends PARTIAL.
 4. The user restores one item from quarantine. The other items are purged after 24 h.
 
+- **Failures:**
+  - the volume reaches `LOW`: new tasks that write there wait (`disk_space`);
+  - it reaches `CRITICAL`: running writers are frozen or stopped with `DISK_LIMIT`, and the store reserve keeps the node's records writable ([06](../architecture/06-storage-workspaces.md) §5);
+  - a dirty worktree is archived and verified before removal, never removed with changes ([06](../architecture/06-storage-workspaces.md) §3).
+
 - **Verification:** closed-loop `J05_CleanupTests` on real directory trees, with junctions and symlinks, open files and dirty worktrees (T-04). The bounds (10,000 items / 2 TiB) are tested with synthetic plans.
 
 ## J-06 Pair a machine on the LAN
@@ -90,7 +97,7 @@ Each journey lists its steps across surfaces with the APIs involved, its success
 
 1. Both nodes enable LAN (D-15). The build box is DISCOVERED through DNS-SD, or added by address.
 2. Pair: SAS digits are shown on both, both users confirm, and the peer is PAIRED (pinned) with a status-only policy.
-3. The user widens the policy: place-to on the workstation, accept-from on the build box (Pro).
+3. The user widens the policy: place-to on the workstation, accept-from on the build box. No account or subscription is involved.
 
 - **Failures:** a digit mismatch, which aborts with MISMATCH; expiry; blocked after 5 failures; incompatible versions.
 - **Verification:**
@@ -100,8 +107,8 @@ Each journey lists its steps across surfaces with the APIs involved, its success
 ## J-07 Place work on another node
 
 1. A task with `placement=ANY` is submitted on the workstation. Scoring prefers the build box (an idle queue and a warm sccache).
-2. Offer, then accept. The executor pulls the inputs, runs the task and streams its output. The workstation shows a REMOTE attempt.
-3. The outputs return. The workstation materializes the declared outputs.
+2. Offer, then accept. The executor pulls the inputs into a workspace slot leased by this attempt, runs the task and streams its output. The workstation shows a REMOTE attempt. A second placement from the same workspace gets its own slot.
+3. The outputs return. The workstation applies the declared outputs against the digests recorded at submission. A file that changed locally meanwhile is staged beside it and raises `OUTPUT_CONFLICT` ([09](../architecture/09-lan.md) §6).
 4. The workstation disconnects mid-run. The build box finishes and retains. On reconnect the origin collects the results.
 
 - **Verification:**
@@ -136,8 +143,8 @@ Each journey lists its steps across surfaces with the APIs involved, its success
 
 ## J-10 Operate, support and enforce limits
 
-1. A budget reaches 80%, raising an operator alert. The operator views W-66.
-2. At 100% the kill switch disables live streaming automatically. Summaries continue and local work is unaffected.
+1. A budget reaches 80%, raising an operator alert. The operator views W-66, including the residual daily exposure.
+2. At 100% the degradation ladder applies the step for that dimension, for example live streaming off; if it persists, existing relay sockets are closed; at 120% the service enters essential-only mode. Summaries continue where the step allows, and local work is unaffected ([14](../architecture/14-commercial-operations.md) §7.3).
 3. A support case arrives with a consented bundle. The operator requests access, the user allows it, the operator reads it, and the read is audited.
 4. A refund is decided (Paddle) and the entitlement is revoked.
 
@@ -145,3 +152,25 @@ Each journey lists its steps across surfaces with the APIs involved, its success
   - closed-loop `J10_OperationsTests` (budgets and kill switches against the local Cloud stack; operator flows through `OperatorService`);
   - runbook review;
   - production alerting configuration: AR-09.
+
+## J-11 Agent worktrees, subagents and temporary files
+
+- **Actor.** Claude Code (agent) with subagents.
+
+1. The agent creates a managed worktree with the MCP `worktree_create` tool ([06](../architecture/06-storage-workspaces.md) §3).
+2. A subagent builds and tests there through rewritten commands. Each task carries the subagent's agent ID, so the session's records separate its work from the agent's own.
+3. Each attempt gets its own `tmp/<attempt>` as TMP, TEMP and TMPDIR, under the per-attempt limit ([06](../architecture/06-storage-workspaces.md) §4, §5). It is deleted when the attempt ends; a failed attempt's directory is kept 24 h when `keep_failed_tmp` is set.
+4. The agent removes the worktree, which has uncommitted changes, with `worktree_remove` and `archive=true`. The user approves; the archive is verified before anything is removed ([06](../architecture/06-storage-workspaces.md) §3). Later the user restores it with `arcforges worktree restore <id>`.
+5. The session report lists the subagent's tasks with its agent ID.
+
+- **Success:**
+  - subagent work runs under the same admission, keys, limits and records as the agent's own;
+  - no temporary directory outlives its retention;
+  - the restored worktree matches the archived state byte for byte.
+- **Failures:**
+  - Codex subagent work cannot be attributed and is labelled unknown;
+  - archiving is refused while a merge or rebase is in progress;
+  - ignored files such as `.env` are archived only when included, never discarded.
+- **Verification:**
+  - closed-loop `J11_WorktreeSubagentTests` (`HookPayloadFixtures` for subagent events, real git worktrees on Windows and WSL);
+  - the archive round trip (L-19).

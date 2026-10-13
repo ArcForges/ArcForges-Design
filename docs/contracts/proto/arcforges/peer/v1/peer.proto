@@ -254,7 +254,7 @@ message PairingServiceAbortValue {
 // Status of a paired peer (D0/D1 data only; R-LAN-004).
 service PeerStatusService {
   // Current status summary.
-  // auth: PEER: paired (PINNED or ACCOUNT)
+  // auth: PEER: paired (PINNED)
   // idempotency: read
   // deadline: 5 s
   // stream: none
@@ -308,11 +308,11 @@ message PeerStatusServiceWatchStatusFrame {
 // Offers, remote attempts, leases and results (09 section 5).
 service PlacementService {
   // Ask the executor for an offer. A positive offer reserves budget until accept_by.
-  // auth: PEER: paired; executor policy accept_from; executor entitlement lan.accept; origin entitlement lan.placement (token presented in metadata)
+  // auth: PEER: paired; executor policy accept_from
   // idempotency: command_id
   // deadline: 5 s
   // stream: none
-  // errors: AUTHORIZATION/peer_policy_denied, ENTITLEMENT/feature_not_entitled, RESOURCE/queue_full
+  // errors: AUTHORIZATION/peer_policy_denied, RESOURCE/queue_full
   // locality: peer
   rpc RequestOffer(PlacementServiceRequestOfferRequest) returns (PlacementServiceRequestOfferResponse);
 
@@ -592,7 +592,7 @@ service GuestLinkService {
   // locality: guest
   rpc RevokeGrant(GuestLinkServiceRevokeGrantRequest) returns (GuestLinkServiceRevokeGrantResponse);
 
-  // The host sets the guest slice limits to the granted total, so host and guest caps together never exceed the host budget (03 section 6).
+  // The host pushes the guest's allocation. The guest applies the slice limits before answering, so the answer acknowledges the allocation (03 section 6).
   // auth: HOST: the linked host
   // idempotency: natural: latest values win
   // deadline: 5 s
@@ -680,6 +680,10 @@ message GuestLinkServiceSetGuestBudgetRequest {
   optional uint64 mem_high_bytes = 11 [json_name = "memHighBytes"]; // validate: <= mem_max_bytes
   optional uint64 mem_max_bytes = 12 [json_name = "memMaxBytes"]; // validate: <= guest MemTotal
   optional uint32 tasks_max = 13 [json_name = "tasksMax"]; // validate: 64..32768
+  arcforges.foundation.v1.Instant lease_until = 14 [json_name = "leaseUntil"]; // validate: now + 30 s..10 min; renewed every 30 s while linked
+  optional uint32 standalone_cpu_millicores = 15 [json_name = "standaloneCpuMillicores"]; // validate: <= cpu_quota_millicores of this push; admission limit after the lease lapses
+  optional uint64 standalone_mem_bytes = 16 [json_name = "standaloneMemBytes"]; // validate: <= mem_high_bytes of this push; admission limit after the lease lapses
+  optional uint64 allocation_seq = 17 [json_name = "allocationSeq"]; // validate: strictly increasing per link
 }
 message GuestLinkServiceSetGuestBudgetResponse {
   arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
@@ -691,6 +695,7 @@ message GuestLinkServiceSetGuestBudgetResponse {
 }
 message GuestLinkServiceSetGuestBudgetValue {
   arcforges.foundation.v1.Receipt receipt = 10 [json_name = "receipt"];
+  optional uint64 applied_seq = 11 [json_name = "appliedSeq"]; // the allocation now in force on the guest
 }
 
 message GuestLinkServiceGetGuestStatusRequest {
@@ -744,7 +749,7 @@ message PeerHello {
   repeated string features = 6 [json_name = "features"];
   optional arcforges.node.v1.OsFamily os = 7 [json_name = "os"];
   optional arcforges.node.v1.CpuArchitecture arch = 8 [json_name = "arch"];
-  optional string account_hint = 9 [json_name = "accountHint"]; // first 8 hex of the account-ID hash, or "-"
+  optional string account_hint = 9 [json_name = "accountHint"]; // reserved for account hints (roadmap RM-01): always "-" in release 1, so unpaired nodes learn nothing about the account
   optional double cpu_class = 10 [json_name = "cpuClass"];
 }
 
@@ -785,6 +790,7 @@ message RemoteAttempt {
   arcforges.node.v1.AttemptResult result = 7 [json_name = "result"];
   optional string output_manifest_digest = 8 [json_name = "outputManifestDigest"];
   repeated KeyValueRewrite environment_rewrites = 9 [json_name = "environmentRewrites"];
+  optional uint32 workspace_slot = 10 [json_name = "workspaceSlot"]; // the leased slot of the origin workspace (09 section 6)
 }
 
 message KeyValueRewrite {

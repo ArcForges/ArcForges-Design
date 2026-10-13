@@ -6,10 +6,12 @@ Decision: [AD-0007](../decisions/AD-0007-ai-integration.md). Tool catalogue and 
 
 | Component | Role |
 |---|---|
-| `arcforges mcp serve` | MCP server (stdio; optionally Streamable HTTP on `127.0.0.1` with a bearer token). It connects to the local node as client kind `MCP_ADAPTER` and serves tools that map one-to-one onto node RPCs. |
+| `arcforges mcp serve` | MCP server over stdio (a local HTTP transport is roadmap RM-05). It connects to the local node as client kind `MCP_ADAPTER` and serves tools that map one-to-one onto node RPCs. |
 | `arcforges hook <client> <event>` | Reads the client's hook JSON from stdin, calls `SessionService`, and writes the client's expected JSON to stdout. Latency target: p95 ≤ 50 ms ([15](15-performance-targets.md)). |
 | `arcforges integrate <client>` | Plans, applies and removes client configuration (`IntegrationService`) |
 | Node `SessionService` | Session and subagent registry, process roots, routing decisions, coverage |
+
+**What connecting does.** Adding the MCP server only *offers* tools; it intercepts nothing. Shell commands an agent runs are managed only when hooks route them (`rewrite` or `rewrite-all`, §4.1) or when the agent chooses the `run` tool. §4.4 lists what each route covers, and coverage (§5) measures the rest.
 
 ## 2. MCP adapter
 
@@ -66,22 +68,48 @@ Decision: [AD-0007](../decisions/AD-0007-ai-integration.md). Tool catalogue and 
 `SessionService.ClassifyCommand(session, agent, command, cwd)` returns `{decision, rewritten_command?, reason}`:
 
 1. Unless the workspace's routing policy enables routing, the decision is `ALLOW_UNCHANGED` (observe).
-2. The adapter classification matches heavy patterns, which are policy data. Defaults:
-   - `dotnet (build|test|publish|pack|restore)`, `msbuild`;
-   - `cargo (build|test|check|clippy|bench|doc)`;
-   - `cmake --build`, `ninja`, `make`, `ctest`;
-   - `npm (ci|install|test|run build)`, `pnpm (install|test|build)`;
-   - `pytest`, `gradle`.
+2. **Which commands are routed** depends on the mode (patterns are policy data):
+   - **`rewrite` (heavy commands).** Heavy patterns, by default:
+     - `dotnet (build|test|publish|pack|restore)`, `msbuild`;
+     - `cargo (build|test|check|clippy|bench|doc)`;
+     - `cmake --build`, `ninja`, `make`, `ctest`;
+     - `npm (ci|install|test|run build)`, `pnpm (install|test|build)`;
+     - `pytest`, `gradle`.
+   - **`rewrite-all` (managed-command mode).** Every shell command, including scripts and data-processing pipelines, except the **passthrough patterns** (`routing.passthrough_patterns`). By default these are:
+     - navigation and reads: `cd`, `pwd`, `ls`, `dir`, `cat`, `type`, `head`, `tail`, `echo`, `which`, `where`, `env`;
+     - read-only git: `status`, `diff`, `log`, `show`, `branch`, `rev-parse`;
+     - searches: `rg`, `grep`, `find` without `-exec` or `-delete`;
+     - `arcforges` itself;
+     - interactive programs that need a terminal (editors, pagers, REPLs, `top`).
 
-   Non-matching commands are `ALLOW_UNCHANGED`.
-3. Rewrite, when the mode is `rewrite` and the client's reachability probe is `PASS` for this environment (§4.2). The command becomes:
+     A compound command line (pipes, `&&`, loops) is routed whole, as one shell script, unless every part is passthrough, with these rules:
+     - **Shell state stays with the client.** A leading chain of `cd`, `pushd`, `export`, `set`, `unset` and `source` segments is kept outside the routed part, so the client's shell changes directory and environment as before (`cd src && make` becomes `cd src && arcforges run … -- make`). State changes inside the routed part affect only that part, as in a subshell.
+     - **Background processes are not routed.** A line that starts a process in the background (a trailing `&`, `nohup`, `disown`, `setsid`, `start /b`) runs unchanged and is observed, because a task's processes end with the task. Long-running services use the MCP `run` tool with `kind=service`.
+     - **Light commands.** A routed command that no adapter classifies and no operational-memory fact describes is admitted with the light estimate (`source=LIGHT`: `routing.light_cpu_millicores`, default 250, and `routing.light_mem_bytes`, default 128 MiB) instead of the generic default, outside pool parallelism limits and reservations (memory admission and the global running limit still apply). Its memory ceiling is not derived from the light guess ([03](03-resource-control.md) §3), so a script that needs gigabytes is not killed for exceeding a guess. Its observed peak counts at once (accounted memory), and operational memory learns it.
 
-   `arcforges run --session <sid> [--agent <aid>] --attach --cancel-when-gone --title "<summary>" --cwd "<cwd>" --shell <client-shell> -- <original command string>`
+   Commands that are not routed are `ALLOW_UNCHANGED`.
+3. Rewrite, when the mode is `rewrite` or `rewrite-all` and the client's reachability probe is `PASS` for this environment (§4.2). The command becomes:
+
+   `arcforges run --session <sid> [--agent <aid>] --attach --cancel-when-gone --client-timeout <ms> --join-existing --title "<summary>" --shell <client-shell> -- <original command string>`
+
+   The rewrite passes no `--cwd`: the CLI runs in the client's shell and uses that shell's current directory, which is the client's working directory, or the directory a kept `cd` prefix moved to.
+
+   `--client-timeout` is the client's tool timeout for this call: `tool_input.timeout` (Claude Code) or `timeout_ms` (Codex) when present, else the client default, which the integration probe records per client version (F-A01; 120,000 ms for Claude Code Bash). A call that runs in the background (Claude Code `run_in_background`) has no tool timeout: the rewrite then omits `--client-timeout`, the run stays attached until the task ends, and stopping the background shell cancels the task.
 
    - **Quoting.** The original string is passed verbatim as one argument to the client's own shell (bash on Linux and Git Bash on Windows for Claude Code; the Codex shell), so quoting and semantics are preserved. Output and exit code are byte-identical in attached mode ([04](04-execution.md) §5).
-   - **Permission.** The hook returns `updatedInput.command` with `permissionDecision: "ask"` by default. The client shows the rewritten command, and the user's deny and ask rules are evaluated against it (V-A02). `"allow"` is used only when the session runs in `bypassPermissions`, or when a HUMAN sets `routing.rewrite_permission=ALLOW`. That setting pre-approves every matched heavy command, and the integration page warns that deny rules written for the original command no longer match the rewritten form.
-   - **Timeouts and interrupts.** `--cancel-when-gone` binds the task to the CLI process (`SubmitTaskRequest.cancel_when_caller_gone`). When the client kills the command at its tool timeout (Claude Code Bash: default 2 min, maximum 10 min) or on interrupt, the node cancels the task within 5 s, as the original command would have stopped.
-   - **Long work.** If operational memory expects the command to run longer than the client's tool timeout (`tool_input.timeout`, else the client default), the decision is `DENY_WITH_GUIDANCE` towards the MCP `run` tool, which returns a handle instead of blocking (`routing.guide_when_longer_than_client_timeout`, default true).
+   - **Permission.** The hook returns `updatedInput.command` with `permissionDecision: "ask"` by default. The client shows the rewritten command, and the user's deny and ask rules are evaluated against it (V-A02). `"allow"` is used only when the session runs in `bypassPermissions`, or when a HUMAN sets `routing.rewrite_permission=ALLOW`. That setting pre-approves every routed command, and the integration page warns that deny rules written for the original command no longer match the rewritten form.
+     - In `rewrite-all` mode the default `ask` means a confirmation for every routed command. D-14 says so when the mode is chosen; unattended managed-command mode needs `routing.rewrite_permission=ALLOW` (with the warning) or a `bypassPermissions` session.
+     - Codex has no `ask` decision (V-A04). Codex rewrites therefore happen only with `routing.rewrite_permission=ALLOW`; otherwise the Codex integration uses `guide`, which denies the heavy patterns only, while other commands run unchanged and are observed. The coverage report says which applies.
+   - **Hand-off before the client's timeout.** A task may wait in the queue or run longer than the tool call allows, and first runs have no duration estimate. The rewritten run therefore never relies on finishing in time:
+     1. `--cancel-when-gone` binds the task to the CLI process (`SubmitTaskRequest.cancel_when_caller_gone`).
+     2. At `client-timeout − min(routing.handoff_margin_ms, client-timeout / 2)` (margin default 15 s), if the task is not finished, the CLI calls `TaskService.ReleaseCallerBinding` and prints, on stderr: `arcforges: task <id> is <queued at position n | running>; it continues. Get the result with: arcforges tasks wait <id> --timeout <s> (or the MCP task_wait tool). Cancel it with: arcforges tasks cancel <id>`, where `<s>` is the same budget in seconds. It exits with code 124.
+     - A task that admission classes `exceeds_capacity` can never start on this node, so the CLI does not wait for the hand-off: it cancels the task at once, prints the explanation, and exits with 125 (not started).
+     3. The task keeps its queue position and keeps running. Each later `tasks wait` call stays within the tool timeout, and returns the task's output tail and exit code once it is terminal.
+   - **Interrupts and explicit cancellation.** If the client kills the CLI *before* the hand-off (the user interrupted it), the binding is still in force and the node cancels the task within 5 s, as the original command would have stopped. After the hand-off the task is a persistent handle: interrupting a later `tasks wait` stops the waiting, not the task. The user cancels it explicitly with `arcforges tasks cancel <id>`, on D-03, or by asking the agent, whose `task_cancel` call cancels its own session's task.
+   - **No duplicate requeues.** `--join-existing` lets a resubmission by the same session join an existing task instead of queueing a second copy (`SubmitTaskResponse.joined`; `routing.join_existing_rewrites`, default true). The match is exact: the same command digest (program and arguments, or the shell string), working directory, environment digest and stdin. Only a task that has **not started** is joined, because it has read no input yet and cannot return stale results. A resubmission while the identical task is already running starts a new task, so an agent that edited files after the hand-off always gets a run that includes its changes; the CLI says that the identical task is still running and names it.
+     - The CLI prints `arcforges: joined task <id> (queued at position n | running since <time>)`, replays the task's output from the start, and follows it.
+     - A joined submission binds its caller like a new one: an interrupt before its own hand-off cancels the task.
+   - **Known long work.** If operational memory expects the command to run longer than the client's tool timeout, the decision is `DENY_WITH_GUIDANCE` towards the MCP `run` tool with `async` (`routing.guide_when_longer_than_client_timeout`, default true). The hand-off covers everything the estimate cannot know: first runs and queue waits.
 4. `DENY_WITH_GUIDANCE`, when the mode is `guide`: deny with the reason text "This command is resource-managed. Use the `run` tool of the `arcforges` MCP server with the same command and working directory." The model sees the reason, and the decision is recorded.
 5. Hook failures fail open: the client proceeds unchanged (Codex documents this; Claude Code proceeds on hook errors other than exit code 2). Coverage counts them as `ROUTE_FAILED`.
 
@@ -98,17 +126,38 @@ Rewrite is enabled only for environments with `PASS`, and the probe is re-run af
 
 PostToolUse hooks record executed heavy commands that were not routed (`BYPASSED_COMMAND`). The resource monitor flags heavy unmanaged descendants of agent roots (`UNMANAGED_HEAVY`). Both feed coverage and findings (R-AI-006).
 
+### 4.4 What each route covers
+
+| Operation | How it can be managed | What remains unmanaged (observed and reported) |
+|---|---|---|
+| Shell-tool commands (Claude Code Bash, Codex shell) | Hooks in `rewrite` (heavy patterns) or `rewrite-all` (everything except passthrough); for Codex only with `routing.rewrite_permission=ALLOW`, otherwise `guide` | Commands when hooks are disabled, untrusted or failed (`ROUTE_FAILED`); passthrough commands by design |
+| Scripts and data-processing commands (`python`, `node`, shell scripts, `ffmpeg`, `jq`) | `rewrite-all`, or the agent's `run` tool (argv or shell form), or `arcforges run` in the script | In `rewrite` mode they are not heavy patterns: observed, and flagged when they cross the bypass thresholds |
+| Long, queued or unknown-duration work | `run` with `async`; rewritten runs hand off (§4.1) | — |
+| Worktrees | `worktree_create` / `worktree_remove` (MCP), `arcforges worktree` (CLI): managed, with locks and archives | Worktrees the client creates itself (Claude Code `--worktree`, subagent isolation): observed through the session's `cwd` and `git worktree list`, registered as workspaces when `auto_register` is on |
+| Directories | Every session's working directory inside a git repository is registered as a workspace (`auto_register`), so keys, caches and records apply to routed work there | Writes by unmanaged processes |
+| Client-internal tools (file read, edit, search, web fetch) | Not processes; outside ArcForges' scope | Not counted as bypass |
+| Processes the client starts itself (MCP servers, IDE tasks, language servers) | Not routed | Observed as unmanaged descendants of the agent root; heavy ones are flagged |
+| Processes started inside a managed task | Managed (same container) | Escapes through WMI or breakaway are detected (`ESCAPED`) |
+
+**Non-shell operation adapters** are the MCP tools of [mcp.md](../experience/mcp.md) (M-01 to M-19): `run` in argv form (no shell), task status, waits, output, cancellation and retries, queue explanations, operational-memory queries, worktree creation and removal, cleanup plans and the doctor. Each calls the same node services as the CLI, so permissions, keys and records apply equally.
+
+ArcForges never claims that connecting MCP, or any single route, manages everything. The session coverage report (§5) shows the managed share. The operations release 1 manages are listed in the [product definition](../product/product-definition.md) §9; routing operations that clients start outside their shell tool is roadmap RM-12.
+
 ## 5. Coverage
 
 `SessionCoverage` per session:
 - `routes`: MCP connected (yes/no); hooks seen per event kind; rewrite mode active; probe result;
 - `managed_tasks`: count, CPU-seconds, wall time;
+- `managed_share`: managed CPU-seconds as a share of all CPU-seconds attributed to the session (managed, bypassed and attributed unmanaged), so the effect of the chosen mode is visible;
+- `handoffs` and `joined`: rewritten runs that handed off before the client's timeout, and submissions that joined an existing task;
 - `bypassed`: commands seen through PostToolUse, plus heavy processes by ancestry, with CPU-seconds and peak memory;
 - `unattributed_heavy`: node-wide heavy unmanaged processes with no session ancestry;
 - `unknowns`: subagent attribution of MCP work, model and thinking state (never available), hooks failed or disabled;
 - `client_events`: the last client-reported events (session start and end, subagent start and stop, stop).
 
 The UI and MCP present coverage as observed facts with these labels, never as completeness (R-AI-007).
+
+**Release coverage statement.** The node serves the table of the [product definition](../product/product-definition.md) §9 for its release (supported operations, reported gaps and the journeys that verify them) through `SessionService.GetReleaseScope`, so every surface shows the same rows. D-14, `arcforges coverage` and the MCP `session_coverage` tool (as `release_scope`) show it next to the session's facts, so gaps that are not session facts are never hidden. The other coverage views, D-07 and `arcforges session coverage`, link to it (R-AI-011).
 
 ## 6. Configuration management
 
@@ -138,9 +187,14 @@ The UI and MCP present coverage as observed facts with these labels, never as co
 
 ### 6.3 Instruction snippet
 
-The integration offers an optional snippet for the user to add to project instructions, never written automatically:
+The integration offers an optional snippet for the user to add to project instructions, never written automatically. Its text follows the routing mode:
 
-> Builds and tests in this repository run through ArcForges. Use the `arcforges` MCP tools `run`, `task_wait` and `task_output` for build, test and restore commands. Do not start them directly. ArcForges queues them under shared CPU and memory limits and keeps the logs. Do not modify ArcForges itself.
+- **`rewrite` or `guide`:**
+  > Builds, tests and restores in this repository run through ArcForges. Use the `arcforges` MCP tools `run`, `task_wait` and `task_output` for them, or let the hooks route them. Do not start them in the background yourself. ArcForges queues them under shared CPU and memory limits and keeps the logs. Do not modify ArcForges itself.
+- **`rewrite-all`:**
+  > Commands in this repository run through ArcForges: the hooks route every shell command except simple reads. If a command reports that its task continues, wait for it with `arcforges tasks wait <id>` or the MCP `task_wait` tool; never start it again. For long work, use the MCP `run` tool with `async`. Do not modify ArcForges itself.
+- **MCP only (hooks unavailable):**
+  > Run builds, tests, scripts and other heavy commands with the `arcforges` MCP `run` tool instead of the shell. ArcForges cannot see commands started directly.
 
 ## 7. Non-goals and limits
 

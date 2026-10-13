@@ -64,6 +64,15 @@ service SessionService {
   // locality: node
   rpc GetSessionCoverage(SessionServiceGetSessionCoverageRequest) returns (SessionServiceGetSessionCoverageResponse);
 
+  // The release coverage statement: the operations this release manages, the gaps it reports and the journeys that verify them (product definition section 9). D-14, `arcforges coverage` and the MCP session_coverage tool show it (R-AI-011).
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
+  // idempotency: read
+  // deadline: 5 s
+  // stream: none
+  // errors: none (implicit codes only)
+  // locality: node
+  rpc GetReleaseScope(SessionServiceGetReleaseScopeRequest) returns (SessionServiceGetReleaseScopeResponse);
+
   // End a session; services with stop_with_session stop.
   // auth: HUMAN=A SCRIPT=A AGENT=A (own session) REMOTE=-
   // idempotency: command_id; ending an ended session succeeds
@@ -181,6 +190,23 @@ message SessionServiceGetSessionCoverageResponse {
 }
 message SessionServiceGetSessionCoverageValue {
   SessionCoverage coverage = 10 [json_name = "coverage"];
+}
+
+message SessionServiceGetReleaseScopeRequest {
+  arcforges.foundation.v1.RequestMeta meta = 1 [json_name = "meta"];
+  reserved 2 to 9;
+}
+message SessionServiceGetReleaseScopeResponse {
+  arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
+  oneof outcome {
+    SessionServiceGetReleaseScopeValue value = 2 [json_name = "value"];
+    arcforges.foundation.v1.ArcError error = 3 [json_name = "error"];
+  }
+  reserved 4 to 9;
+}
+message SessionServiceGetReleaseScopeValue {
+  optional string release = 10 [json_name = "release"]; // the node's release version
+  repeated ReleaseScopeEntry entries = 11 [json_name = "entries"]; // the rows of product definition section 9, in order
 }
 
 message SessionServiceEndSessionRequest {
@@ -363,6 +389,17 @@ message SessionCoverage {
   repeated string unknowns = 15 [json_name = "unknowns"]; // e.g. "subagent attribution of MCP work", "model state (never available)"
   repeated ClientEventRecord client_events = 16 [json_name = "clientEvents"];
   optional uint32 route_failed = 17 [json_name = "routeFailed"];
+  optional uint32 managed_share_permille = 18 [json_name = "managedSharePermille"]; // managed CPU-seconds x 1000 / (managed + bypassed + attributed unmanaged)
+  optional uint32 handoffs = 19 [json_name = "handoffs"]; // rewritten runs that handed off before the client's timeout
+  optional uint32 joined = 20 [json_name = "joined"]; // submissions that joined an existing task
+}
+
+// One row of the release coverage statement (product definition section 9; R-AI-011).
+message ReleaseScopeEntry {
+  optional string operation = 1 [json_name = "operation"]; // e.g. "Commands and their subprocesses"
+  optional string managed = 2 [json_name = "managed"]; // what this release manages and through which routes
+  optional string gaps = 3 [json_name = "gaps"]; // what is reported as a gap instead
+  repeated string verified_by = 4 [json_name = "verifiedBy"]; // journey IDs, e.g. "J-02"
 }
 
 message ProbeObservation {

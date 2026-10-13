@@ -40,7 +40,7 @@ service CacheService {
   // idempotency: command_id
   // deadline: 5 s
   // stream: none
-  // errors: STATE/not_found, VALIDATION/invalid_argument, ENTITLEMENT/feature_not_entitled, AUTHORIZATION/approval_required
+  // errors: STATE/not_found, VALIDATION/invalid_argument, AUTHORIZATION/approval_required
   // locality: node
   rpc UpdateCacheSettings(CacheServiceUpdateCacheSettingsRequest) returns (CacheServiceUpdateCacheSettingsResponse);
 
@@ -92,7 +92,7 @@ message CacheServiceUpdateCacheSettingsRequest {
   reserved 2 to 9;
   arcforges.foundation.v1.Id cache_id = 10 [json_name = "cacheId"]; // validate: required
   optional uint64 quota_bytes = 11 [json_name = "quotaBytes"]; // validate: >= 1 GiB
-  optional bool lan_shared = 12 [json_name = "lanShared"]; // validate: sccache, ccache and cas only; needs entitlement lan.cache
+  optional bool lan_shared = 12 [json_name = "lanShared"]; // validate: sccache, ccache and cas only; free (no entitlement); peers still need a policy that allows cache access
 }
 message CacheServiceUpdateCacheSettingsResponse {
   arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
@@ -173,4 +173,6 @@ message CacheReport {
   repeated DuplicateCacheCopy duplicates = 3 [json_name = "duplicates"];
   repeated PerTaskRestore per_task_restores = 4 [json_name = "perTaskRestores"];
   optional uint64 reclaimable_bytes = 5 [json_name = "reclaimableBytes"];
+  optional uint64 result_cache_observations = 6 [json_name = "resultCacheObservations"]; // OBSERVE mode: action keys recorded in the period (04 section 11)
+  optional uint64 result_cache_would_hits = 7 [json_name = "resultCacheWouldHits"]; // observations whose key and output digest matched an earlier success (the evidence for roadmap RM-04)
 }

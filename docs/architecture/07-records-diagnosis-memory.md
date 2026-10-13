@@ -77,6 +77,40 @@ Ticks merge into segments, and segments shorter than 2 s merge into neighbours. 
 
 All reports come as tables and timelines in the UIs, as `DiagnosisService.GetReport` (protobuf), and as JSON Lines exports (`ExportRecords`), one record type per line, schema `arcforges.node.v1` JSON mapping (R-REC-003).
 
+### 1.5 Correlated evidence
+
+Every attempt's record links the evidence that explains delay and waste (R-REC-006, [AD-0015](../decisions/AD-0015-direction-editions-roadmap.md) §6):
+
+| Evidence | Recorded in | Correlation key |
+|---|---|---|
+| Task and attempt identity, owner node and executor | `task`, `attempt`, `remote_attempt` | `task_id`, `attempt_id`, `remote_attempt_id` |
+| Originating session and agent | `task.owner_session_id`; the agent ID when the client reports it, otherwise `attribution=UNKNOWN` ([08](08-ai-integration.md) §3) | `session_id`, agent ID |
+| Workspace | `task.workspace_id` | `workspace_id` |
+| Processes | `process_record` | `(attempt_id, pid, start)` |
+| Queueing | `QUEUED_*` timeline segments, whose evidence names the blocking reason and, for keys, the holders | `attempt_id` |
+| Execution | Timeline segments and adapter phase events | `attempt_id` |
+| Downloads and cache usage | `attempt_cache_usage` (`CacheUsage` per cache binding: bytes added, hits and misses where the tool reports them, packages installed and reused), `cache_usage_window` (shared use) and `Attempt.downloaded_bytes` | `(attempt_id, cache_id)`; `window_id` |
+| Resource consumption | Attempt accounting and `resource_sample` | `attempt_id` |
+| Retries and outcomes | The task's attempts, `termination_reason`, `effect` and findings | `task_id` |
+
+- **How cache usage is measured.**
+  - The size cache ([06](06-storage-workspaces.md) §6) keeps each managed cache's size and when it was measured. It is refreshed when a window closes and by cache maintenance, re-walking only directories whose modification time changed.
+  - A **window** is a maximal interval in which two or more attempts bind a cache at overlapping times. An attempt that was the only binder during its run belongs to no window. An entry's baseline is the cache's last measured size before its attempt started, and a window's baseline is the last before the window opened (`baseline_at`).
+  - When an attempt ends, a background job measures the cache within policy `caches.usage_scan_budget_ms` (default 2,000 ms) and writes the attempt's entry; the attempt's result never waits for it. A measurement that would exceed the budget is skipped, and the entry leaves `bytes_added` empty, never 0.
+  - Hits and misses come from the tools' counters over the same interval (sccache and ccache statistics). Package counts come from the attempt's own output (NuGet restore output, npm and pip logs) and are always its own.
+- **Attribution.**
+  - An attempt that was the only binder during its run gets an `EXACT` entry: its values are its own.
+  - When other attempts bound the cache meanwhile, the entry is `SHARED_WINDOW` and carries the window's ID. Its size growth and counters cover the attempt's interval, including the other binders' activity, so they are never summed or split by guess.
+  - Writes by unmanaged processes since `baseline_at` are included in either case. The entry records `baseline_at`, so a stale baseline is visible.
+- **Downloads.** `Attempt.downloaded_bytes` is the sum of the attempt's `EXACT` download-cache entries. It is empty when one of them has no measured `bytes_added`, never a partial sum. Shared use counts only in its window's totals.
+- **Aggregation.**
+  - When a window closes (its last binder ends), the cache manager records its totals once in `cache_usage_window`, measured from the baseline to the close. A window that is still open counts as provisional.
+  - Node-wide period totals add the `EXACT` entries and the windows, each once.
+  - Session and workspace totals add their `EXACT` entries and list the windows they took part in separately, labelled shared, because a window's totals include other work.
+- **Bounds.** Collection stays within the node's overhead targets ([15](15-performance-targets.md) §2) and the store's size budget ([node store](../data/node-store.md) §4); evidence follows record retention (`record_retention_days`, default 90) and sample downsampling (R-REC-005).
+- **Sensitive data.** Command lines and environment values are redacted as in R-EXE-017; downloads are recorded as counts and bytes, never as URLs or credentials; exports and support bundles apply the same redaction.
+- **Foundations.** The same records feed operational memory today and later prediction and cache-sharing decisions (roadmap RM-02, RM-08).
+
 ## 2. Diagnosis
 
 ### 2.1 Progress checks
@@ -90,7 +124,9 @@ Finding lifecycle (state machine `SM-FINDING`): `OPEN` → `ACKNOWLEDGED` | `RES
 | Kind | Detection | Severity | Recommended actions (default handling) |
 |---|---|---|---|
 | `STALL` | `IDLE_NO_PROGRESS` longer than `stall_threshold` (default 5 min; adapter overrides, for example dotnet test 10 min). Services are excluded unless readiness was lost. | warning → error after 3× | Collect a tree snapshot (auto); notify (auto); cancel (approval); retry (approval, retryable only) |
-| `QUEUE_STARVATION` | Queued longer than 2 × starvation bound | warning | Notify; suggest a priority or pool change |
+| `QUEUE_STARVATION` | Queued longer than 2 × starvation bound (including tasks classed `exceeds_budget`) | warning | Notify; suggest a priority or pool change, closing applications, or a hint |
+| `TASK_INFEASIBLE` | A queued task's memory request exceeds the managed share or `max_task_memory` ([03](03-resource-control.md) §4) | error | Explain the numbers; suggest lowering the reserve, a hint, or cancelling |
+| `OUTPUT_CONFLICT` | Returned outputs of a remote attempt were staged because local files changed since submission ([09](09-lan.md) §6) | warning | Show the staged files beside the local ones; actions: keep local, take remote |
 | `OVERSUBSCRIBED` | CPU demand > 2 × `B_cpu` for 5 min | info | Suggest lower parallelism (shows the policy edit) |
 | `MEMORY_PRESSURE` | Pressure level ≥ Pressure ([03](03-resource-control.md) §7) | warning | Automatic pressure actions per policy; notify |
 | `OOM_KILLED` | `memory.events` oom_kill increased, or the Windows commit-limit notification with failure | error | Suggest a higher ceiling; retry with more memory (auto for PURE/IDEMPOTENT if policy allows) |
@@ -99,7 +135,7 @@ Finding lifecycle (state machine `SM-FINDING`): `OPEN` → `ACKNOWLEDGED` | `RES
 | `PER_TASK_RESTORE` | [05](05-toolchains-caches.md) §7 | info | Suggest removing the override; cleanup plan (approval) |
 | `CACHE_MISS_STORM` | sccache/ccache miss rate > 80% over 50 compilations in a workspace with a warm cache | info | Explain compatibility-key changes; suggest a configuration check |
 | `CACHE_CORRUPT` | Adapter failure classifier | error | Clear affected entries (approval) |
-| `DISK_PRESSURE` | Volume free < 10% or < 5 GiB | warning → error at < 2 GiB | Create a cleanup plan (auto); execute (approval) |
+| `DISK_PRESSURE` | Volume free below twice its LOW threshold (early warning); the volume's level `LOW` or `CRITICAL` ([06](06-storage-workspaces.md) §5) | warning → error at level `LOW` or `CRITICAL` | Create a cleanup plan (auto); execute (approval); at `LOW`, new writers on the volume wait |
 | `QUOTA_EXCEEDED` | [06](06-storage-workspaces.md) §5 | warning | Cleanup plan; quota change |
 | `UNMANAGED_HEAVY` | `BYPASSED` processes in an agent session ([03](03-resource-control.md) §9) | warning | Suggest enabling routing; show coverage |
 | `BYPASSED_COMMAND` | A hook saw a heavy command run without routing (observe mode) | info | Same as above |
