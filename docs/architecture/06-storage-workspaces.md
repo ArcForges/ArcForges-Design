@@ -145,7 +145,7 @@ The disk level of each volume is part of `ResourceSnapshot.volumes` and of the r
   - **Linux:** by systemd's watchdog (`WatchdogSec=30`, active once the node reports ready);
   - **Windows:** by the supervisor, which counts from the node's first heartbeat, so a long store migration at startup is not mistaken for a hang.
 
-  The enforcement loop renews the heartbeat and pings the watchdog only while the cache store answers its own probe, so a hung store also leads to a restart. A hang therefore cannot last, which also bounds how long compiles can wait on the store ([05](05-toolchains-caches.md) §5).
+  The enforcement loop renews the heartbeat and pings the watchdog only while the cache store answers its own probe: an in-memory request to the store's request loop, with a 5 s timeout, that touches no disk. Three probes missed in a row stop the renewals, so a hung store also leads to a restart, while a disk stall under load does not. The store refuses a request it cannot complete within 30 s rather than hold it. A hang therefore cannot last, which also bounds how long compiles can wait on the store ([05](05-toolchains-caches.md) §5).
 - **When a guard is missing.** A Windows holder that crashed, or a Linux guard unit that cannot run, leaves its attempts unguarded until the node returns. The node then records `guard_lost` on those attempts and raises a finding. This is the remaining gap, and it is stated, not hidden.
 
 ## 6. Disk analysis

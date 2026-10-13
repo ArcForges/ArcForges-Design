@@ -350,7 +350,7 @@ CREATE TABLE attempt (
   signal INTEGER,
   core_dumped INTEGER CHECK (core_dumped IS NULL OR core_dumped IN (0, 1)),
   windows_status INTEGER,
-  termination_reason INTEGER CHECK (termination_reason IS NULL OR termination_reason BETWEEN 1 AND 15),  -- 14 OUTPUT_LIMIT, 15 DISK_LIMIT
+  termination_reason INTEGER CHECK (termination_reason IS NULL OR termination_reason BETWEEN 1 AND 16),  -- 14 OUTPUT_LIMIT, 15 DISK_LIMIT, 16 ENDPOINT_TAKEN
   effect INTEGER CHECK (effect IS NULL OR effect BETWEEN 1 AND 3),   -- EffectCertainty
   detail TEXT,
   leftover_count INTEGER NOT NULL DEFAULT 0,

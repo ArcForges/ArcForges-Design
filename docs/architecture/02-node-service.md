@@ -98,7 +98,7 @@ No in-memory state is authoritative. The next start performs the recovery in ste
 
 Executions are unaffected on both platforms: they run in their own containers, not as children of the node process. Their disk limits stay enforced while the node is down: the attempt guards take over after `storage.guard_takeover_ms` ([06](06-storage-workspaces.md) §5).
 
-Once recovery (step 5) is done and each monitor started in step 8 has completed a cycle, the node renews its heartbeat, `run/node-heartbeat`, every second from its enforcement loop: its instance ID and an increasing sequence number. The guards read it ([06](06-storage-workspaces.md) §5). On Linux the same loop pings systemd's watchdog once the node is ready. On Windows the supervisor restarts a node whose heartbeat stalls for 30 s, counting from its first heartbeat. Both stop when the cache store no longer answers its probe.
+Once recovery (step 5) is done and each monitor started in step 8 has completed a cycle, the node renews its heartbeat, `run/node-heartbeat`, every second from its enforcement loop: its instance ID and an increasing sequence number. The guards read it ([06](06-storage-workspaces.md) §5). On Linux the same loop pings systemd's watchdog once the node is ready. On Windows the supervisor restarts a node whose heartbeat stalls for 30 s, counting from its first heartbeat. Both stop when the cache store misses three in-memory probes in a row (06 §5).
 
 ## 3. Endpoint discovery and auto-start (clients)
 
