@@ -72,7 +72,7 @@ Hosted CI builds each release `<v>` from a tagged commit of the ArcForges reposi
 
 ### 3.3 Debian package
 
-- **Files:** `/opt/arcforges/<v>/…`, `/usr/bin/arcforges` → `/opt/arcforges/current/arcforges`, and the units of §3.4 under `/usr/lib/systemd/user/`, with `ExecStart=/usr/bin/arcforges node run --systemd`.
+- **Files:** `/opt/arcforges/<v>/…`, `/usr/bin/arcforges` → `/opt/arcforges/current/arcforges`, and the units of §3.4 under `/usr/lib/systemd/user/`, with `ExecStart=/usr/bin/arcforges node run --systemd` for the node and `ExecStart=/usr/bin/arcforges node guard` for the guard.
 - **Maintainer scripts:** limited to `systemctl --global enable arcforges-node.service arcforges-guard.service` (postinst) and its reverse. They use no network ([11](11-security-privacy.md) §6).
 - **Updates:** through apt (repository signed with GPG). The node's self-updater disables itself when it detects a package-managed install (`/opt/arcforges` owned by root), and reports "updates are managed by apt".
 
@@ -91,6 +91,7 @@ StartLimitBurst=5
 [Service]
 Type=notify
 NotifyAccess=main
+WatchdogSec=30
 ExecStart=%h/.local/share/arcforges/app/current/arcforges node run --systemd
 Restart=on-failure
 RestartSec=2
@@ -142,6 +143,7 @@ ExecStart=%h/.local/share/arcforges/app/previous/arcforges node update-rollback 
 - **Executions are not in the node unit.** They are transient units in `arcforges.slice` ([AD-0005](../decisions/AD-0005-resource-enforcement.md) Linux §2). Stopping or restarting `arcforges-node.service` kills only the node and its own short-lived helpers (the default `KillMode=control-group`). Executions keep running, except `kill_with_node` tasks, which are bound to the node unit with `BindsTo=`.
 - **Slice limits.** The slice's limits are runtime properties set by the node, so the unit file carries none.
 - **Readiness.** `Type=notify` with `sd_notify("READY=1")` after startup step 9 ([02](02-node-service.md) §2).
+- **Watchdog.** `WatchdogSec=30`: the node's enforcement loop sends `WATCHDOG=1` with each heartbeat, so a hung node is killed and restarted ([06](06-storage-workspaces.md) §5).
 - **Restart after an update.** Exit code 75 means "restart me": `RestartForceExitStatus` restarts the node, and `SuccessExitStatus` keeps the exit from being logged as a failure (§5.3).
 - **Guard.** `arcforges-guard.service` is independent of the node unit, so it keeps guarding executions while the node is stopped, failed or restarting. After an update switch the node restarts it from the new `current` while the node itself is up.
 

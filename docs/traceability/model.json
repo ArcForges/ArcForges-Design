@@ -382,7 +382,7 @@
       "tasks": [
         "AF-WSL-01"
       ],
-      "verification": "host plus guest closed loop through the real wsl.exe bridge: saturating load with overcommitted demand, acknowledged allocations, link loss with an idle and a busy guest, a guest that goes idle during the outage and then resumes CPU-heavy work, a stopped distribution, and node restarts (F-L01)"
+      "verification": "host plus guest closed loop through the real wsl.exe bridge: saturating load with overcommitted demand, acknowledged allocations, link loss with an idle and a busy guest, a guest that goes idle during the outage and then resumes CPU-heavy work, a host restart with an unacknowledged decrease, a terminated and restarted distribution, and node restarts (F-L01, F-L05)"
     },
     {
       "id": "R-RES-011",
@@ -395,7 +395,7 @@
       "tasks": [
         "AF-WSL-01"
       ],
-      "verification": "host plus guest closed loop through the real wsl.exe bridge: saturating load with overcommitted demand, acknowledged allocations, link loss with an idle and a busy guest, a guest that goes idle during the outage and then resumes CPU-heavy work, a stopped distribution, and node restarts (F-L01)"
+      "verification": "host plus guest closed loop through the real wsl.exe bridge: saturating load with overcommitted demand, acknowledged allocations, link loss with an idle and a busy guest, a guest that goes idle during the outage and then resumes CPU-heavy work, a host restart with an unacknowledged decrease, a terminated and restarted distribution, and node restarts (F-L01, F-L05)"
     },
     {
       "id": "R-RES-012",
@@ -498,7 +498,7 @@
         "AF-TOOL-01",
         "AF-TOOL-02"
       ],
-      "verification": "cache-miss compile through a per-attempt sccache server inside the attempt container, accounted to it and ended on cancellation (L-20 Windows; F-T05 Linux); no MSBuild node, MSBuild server or VBCSCompiler outlives a managed .NET build"
+      "verification": "two concurrent attempts: every compiler process in the container of the attempt that asked for it, also through a wrapper the user configured, and nothing on sccache's default shared server; a cache-miss compile accounted to its attempt and ended on cancellation (L-20 Windows; F-T05 Linux); per-attempt MSVC PDB server (F-T06); no MSBuild node, MSBuild server or VBCSCompiler outlives a managed .NET build"
     },
     {
       "id": "R-TOOL-006",
@@ -589,7 +589,7 @@
       "tasks": [
         "AF-LAN-03"
       ],
-      "verification": "LAN cache proxy with real sccache WebDAV client (multi-node on one machine); physical LAN AR-03"
+      "verification": "the node's compiler-cache store reading through to a peer with a real sccache client, and the ccache helper endpoint (multi-node on one machine); physical LAN AR-03"
     },
     {
       "id": "R-CACHE-008",
@@ -711,7 +711,7 @@
         "AF-EXEC-02",
         "AF-STOR-01"
       ],
-      "verification": "output flood, temporary-space flood and nearly-full-volume tests on both platforms, also with the node killed and (Linux) failed after repeated crashes, enforced by the guards; immediate limit stops; DEGRADED and recovery"
+      "verification": "output flood, temporary-space flood and nearly-full-volume tests on both platforms, also with the node killed, restarting faster than the takeover threshold and (Linux) failed after repeated crashes, enforced by the guards; a temporary file growing in place; immediate limit stops; DEGRADED and recovery"
     },
     {
       "id": "R-REC-001",

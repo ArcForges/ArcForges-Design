@@ -385,7 +385,8 @@ message StoragePolicy {
   optional uint64 critical_free_bytes = 13 [json_name = "criticalFreeBytes"]; // default 512 MiB per volume holding managed roots
   optional DiskLimitAction disk_limit_action = 14 [json_name = "diskLimitAction"]; // default TERMINATE
   optional uint64 low_free_cap_bytes = 15 [json_name = "lowFreeCapBytes"]; // default 20 GiB: the LOW threshold is max(min_free_bytes, min(5 % of the volume, this cap))
-  optional uint32 guard_takeover_ms = 16 [json_name = "guardTakeoverMs"]; // default 5000: attempt guards enforce the runtime disk limits while the node's heartbeat is older than this (06 section 5)
+  optional uint32 guard_takeover_ms = 16 [json_name = "guardTakeoverMs"]; // 2000..60000, default 5000: attempt guards enforce the runtime disk limits while the node's heartbeat has not changed for this long, on the guard's monotonic clock (06 section 5)
+  optional uint64 max_attempt_tmp_entries = 17 [json_name = "maxAttemptTmpEntries"]; // default 1,000,000: entries a pass over an attempt's temporary directory reads; beyond that the attempt counts as over its limit (06 section 5)
 }
 
 message CleanupPolicy {

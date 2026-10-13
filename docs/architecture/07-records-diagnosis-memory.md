@@ -97,10 +97,11 @@ Every attempt's record links the evidence that explains delay and waste (R-REC-0
   - **Compiler caches:** each attempt has its own sccache server ([05](05-toolchains-caches.md) §5), whose final statistics are the attempt's hits, misses and cache writes. ccache writes a per-attempt statistics log. These counters stay exact while other attempts use the same cache.
   - **The sccache store** is served by the node, which counts the bytes each attempt writes to it (`bytes_added` with attribution `COUNTED`). These are exact even while attempts share the cache.
   - **Package managers:** packages installed and reused are parsed from the attempt's own output.
-  - **Downloads** are recorded only when the tool reports their size (Cargo's "Downloaded … (N MB)", pip's download lines). Otherwise they are unknown. Cache growth is never reported as downloads, because it also counts extracted and compiled entries and is reduced by eviction.
-- **Cache growth measured by the node (`added_bytes`).** The size cache ([06](06-storage-workspaces.md) §6) walks a managed cache in the background after each attempt that bound it, within policy `caches.usage_scan_budget_ms` (default 2,000 ms), and again in housekeeping.
+  - **Downloads** are recorded only when the tool reports their size (Cargo's "Downloaded … (N MB)", pip's download lines). Otherwise they are unknown. `Attempt.downloaded_bytes` is present only when every download-cache binding of the attempt reported a size, so it is never a partial sum. Cache growth is never reported as downloads, because it also counts extracted and compiled entries and is reduced by eviction.
+- **Cache growth measured by the node (`added_bytes`).** The size cache ([06](06-storage-workspaces.md) §6) walks each managed cache except the sccache store, whose ledger counts its bytes ([05](05-toolchains-caches.md) §5). It walks in the background after each attempt that bound the cache, within policy `caches.usage_scan_budget_ms` (default 2,000 ms), and again in housekeeping.
   - **Attributed by the file system's own times.** A file seen for the first time is attributed to the interval that contains its birth time (Windows creation time; Linux `statx` birth time, or the change time where the file system records none). A known file whose size changed is attributed, by the difference, to the interval that contains its change time. When a walk runs therefore never moves bytes between attempts: if attempt B starts before the walk for attempt A, that walk still gives A only the files born during A's run, and B only its own.
   - **The binding interval** of an attempt runs from its container's start to the exit of its last process.
+  - **Never counted twice.** A file born before the start of the previous complete walk of its cache is never attributed as new: it was present then, so a file that drops out of the size cache's bounded rows (06 §6) and is seen again is not counted again. Growth of a known file is attributed only while the size cache still holds its previous size; after that the growth is left out. Values can therefore be low, but are never counted twice.
   - **Attribution per attempt and cache:**
     - `COUNTED`: the node served the writes and counted them per attempt (the sccache store). Exact.
     - `SOLE_BINDER`: no other managed attempt bound the cache during the interval. `added_bytes` counts every writer in that interval. Managed caches are written by managed tasks in normal use, but a writer outside ArcForges is not excluded, and the record says the writer is not verified.
@@ -109,14 +110,14 @@ Every attempt's record links the evidence that explains delay and waste (R-REC-0
   - **Provisional until measured.** An entry is final once a walk that started after its interval ended has completed (`measured_at`). The attempt's result never waits for it.
 - **Removals.** A walk also finds the files that disappeared since the previous walk: eviction by the tool or by the node. Their bytes are recorded per cache and walk (`cache_walk.removed_bytes`), never per attempt, because deletion times are unknown. Eviction therefore never reduces an attempt's `added_bytes`.
 - **Growth outside any attempt.** Files born while no managed attempt bound the cache are recorded per cache and walk as `unattributed_added_bytes`: writers outside ArcForges, made visible instead of being charged to an attempt.
-- **Windows of shared use.** A window is a maximal interval in which two or more attempts bind a cache at overlapping times; an attempt that was the only binder during its run belongs to no window. When a window closes, its `added_bytes` (files born or grown during it) and the sum of its attempts' tool counters are recorded once in `cache_usage_window`.
-- **Aggregation.** Every byte of a new or grown file is counted exactly once: in one `SOLE_BINDER` attempt, in one window, or in its cache's unattributed growth.
-  - Node-wide period totals add those three.
-  - Session and workspace totals add their `SOLE_BINDER` values and list the windows they took part in separately, labelled shared.
+- **Windows of shared use** (walked caches only). A window is a maximal interval in which two or more attempts bind a cache at overlapping times; an attempt that was the only binder during its run belongs to no window. When a window closes, its `added_bytes` (files born or grown during it) and the sum of its attempts' tool counters are recorded once in `cache_usage_window`.
+- **Aggregation.** Every byte is counted exactly once: in one `COUNTED` attempt (the store's ledger), in one `SOLE_BINDER` attempt, in one window, or in its cache's unattributed growth.
+  - Node-wide period totals add those four.
+  - Session and workspace totals add their `COUNTED` and `SOLE_BINDER` values and list the windows they took part in separately, labelled shared.
   - Tool counters belong to single attempts and add up without double counting.
 - **Stated limits.**
   - A file born and deleted between two walks is never seen.
-  - A file rewritten in place does not change its directory, so it is seen at the next full walk (cache maintenance).
+  - A file rewritten in place does not change its directory, so its growth is seen at the next full walk (cache maintenance), and only while its previous size is known.
   - On NTFS, a file re-created under a name deleted moments before can inherit the old creation time (file-system tunnelling); it then counts as a changed file.
   - Records label node-measured values as measured cache growth, never as the attempt's own writes.
 - **Bounds.** Collection stays within the node's overhead targets ([15](15-performance-targets.md) §2) and the store's size budget ([node store](../data/node-store.md) §4); evidence follows record retention (`record_retention_days`, default 90) and sample downsampling (R-REC-005).
@@ -159,7 +160,7 @@ Finding lifecycle (state machine `SM-FINDING`): `OPEN` → `ACKNOWLEDGED` | `RES
 | `SERVICE_UNREADY` | Service readiness lost for 30 s | warning | Notify; restart (approval) |
 | `ENFORCEMENT_DEGRADED` | Capabilities changed for the worse | error | Notify; show the reason and remedy (for example enable systemd) |
 | `INTEGRATION_DEGRADED` | Hooks disabled or untrusted, probe failed, MCP server not configured | warning | Notify; re-run probe; open the integration page |
-| `GUEST_LINK_LOST` | WSL link down for 30 s | warning | Re-link (auto, bounded backoff); notify |
+| `GUEST_LINK_LOST` | WSL link down for 30 s; the host keeps the guest's reserved allocation until the guest acknowledges a smaller one or its distribution stops ([03](03-resource-control.md) §6) | warning | Re-link (auto, bounded backoff); notify; show the reserved allocation and how to release it (restore the link, or stop the distribution) |
 | `PEER_UNREACHABLE` | Paired peer offline while it holds attempts | warning | Wait for the lease; mark LOST at lease end (auto) |
 | `UPDATE_FAILED` | Health check failed and rolled back | error | Notify; keep the previous version |
 

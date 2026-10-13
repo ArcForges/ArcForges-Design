@@ -35,7 +35,7 @@ service ResourceService {
   // locality: node
   rpc WatchResources(ResourceServiceWatchResourcesRequest) returns (stream ResourceServiceWatchResourcesFrame);
 
-  // List classified processes (managed, adopted, escaped, bypassed, unmanaged, guest VM, shared services).
+  // List classified processes (managed, adopted, escaped, bypassed, unmanaged, guest VM).
   // auth: HUMAN=A SCRIPT=A AGENT=A (own session detail) REMOTE=-
   // idempotency: read
   // deadline: 5 s
@@ -390,4 +390,11 @@ message GuestLinkView {
   arcforges.foundation.v1.Instant linked_at = 7 [json_name = "linkedAt"];
   arcforges.foundation.v1.Instant last_heartbeat = 8 [json_name = "lastHeartbeat"];
   optional bool admission_coordinated = 9 [json_name = "admissionCoordinated"];
+  optional uint32 acked_cpu_millicores = 10 [json_name = "ackedCpuMillicores"]; // the allocation the guest last acknowledged (03 section 6)
+  optional uint64 acked_mem_high_bytes = 11 [json_name = "ackedMemHighBytes"];
+  optional uint32 reserved_cpu_millicores = 12 [json_name = "reservedCpuMillicores"]; // what the host keeps reserved for the guest, also while the link is lost
+  optional uint64 reserved_mem_high_bytes = 13 [json_name = "reservedMemHighBytes"];
+  arcforges.foundation.v1.Instant lease_until = 14 [json_name = "leaseUntil"];
+  optional uint32 standalone_cpu_millicores = 15 [json_name = "standaloneCpuMillicores"]; // the guest's admission limit after the lease lapses
+  optional uint64 standalone_mem_bytes = 16 [json_name = "standaloneMemBytes"];
 }

@@ -469,7 +469,7 @@
           ],
           "to": "LOST",
           "on": "30 s without frames, or bridge exit",
-          "effect": "finding GUEST_LINK_LOST; the guest keeps its last allocation until lease_until, then admits only within the standalone allocation; the host keeps the whole last acknowledged allocation reserved until the guest acknowledges a smaller one after reconnecting, or its distribution is observed stopped (architecture 03 section 6)"
+          "effect": "finding GUEST_LINK_LOST; the guest keeps its last allocation until lease_until, then admits only within the standalone allocation; the host keeps the guest's reserved allocation (the last acknowledged one and any larger unacknowledged push) until the guest acknowledges a smaller one after reconnecting, or its distribution is observed stopped (architecture 03 section 6)"
         },
         {
           "from": [
@@ -487,7 +487,8 @@
             "LOST"
           ],
           "to": "DISABLED",
-          "on": "ResourceService.SetGuestLink enabled=false"
+          "on": "ResourceService.SetGuestLink enabled=false",
+          "effect": "a lost guest's reserved allocation stays until the guest acknowledges a smaller one or its distribution is observed stopped (architecture 03 section 6)"
         },
         {
           "from": [
@@ -503,7 +504,8 @@
             "DISABLED"
           ],
           "to": "NOT_INSTALLED",
-          "on": "distribution or guest binary removed"
+          "on": "distribution or guest binary removed",
+          "effect": "a lost guest's reserved allocation stays until the guest acknowledges a smaller one or its distribution is observed stopped (architecture 03 section 6)"
         }
       ]
     },

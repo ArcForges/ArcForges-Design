@@ -367,7 +367,9 @@ CREATE TABLE attempt (
   output_retained_until INTEGER,
   output_compressed INTEGER NOT NULL DEFAULT 0 CHECK (output_compressed IN (0, 1)),
   output_purged INTEGER NOT NULL DEFAULT 0 CHECK (output_purged IN (0, 1)),
-  downloaded_bytes INTEGER CHECK (downloaded_bytes IS NULL OR downloaded_bytes >= 0),  -- sum of tool-reported download sizes; NULL when no tool reported sizes; never cache growth (07 section 1.5)
+  limit_enforced_by TEXT CHECK (limit_enforced_by IS NULL OR limit_enforced_by IN ('NODE', 'GUARD')),  -- who stopped it for OUTPUT_LIMIT or DISK_LIMIT (06 section 5)
+  guard_lost INTEGER NOT NULL DEFAULT 0 CHECK (guard_lost IN (0, 1)),  -- ran without a disk guard while the node was down
+  downloaded_bytes INTEGER CHECK (downloaded_bytes IS NULL OR downloaded_bytes >= 0),  -- sum of tool-reported download sizes; NULL unless every download-cache binding reported one; never cache growth (07 section 1.5)
   output_base_manifest BLOB CHECK (output_base_manifest IS NULL OR length(output_base_manifest) = 32),  -- REMOTE, origin side: digest or absence of each declared output at submission (09 section 6)
   outputs BLOB,                                 -- OutputApplyResult, once returned outputs are applied
   rev INTEGER NOT NULL CHECK (rev >= 0),
@@ -828,6 +830,12 @@ CREATE TABLE guest_link (
   alloc_cpu_millicores INTEGER,                 -- last allocation pushed with SetGuestBudget (03 section 6)
   alloc_mem_high_bytes INTEGER,
   alloc_mem_max_bytes INTEGER,
+  acked_cpu_millicores INTEGER,                 -- the allocation the guest last acknowledged
+  acked_mem_high_bytes INTEGER,
+  acked_mem_max_bytes INTEGER,
+  reserved_cpu_millicores INTEGER,              -- the larger of the acknowledged allocation and every unacknowledged push; written before each push (03 section 6)
+  reserved_mem_high_bytes INTEGER,
+  reserved_mem_max_bytes INTEGER,
   lease_until INTEGER,
   standalone_cpu_millicores INTEGER,            -- the guest's admission limit after the lease lapses; the host keeps the whole acknowledged allocation reserved (03 section 6)
   standalone_mem_bytes INTEGER,
@@ -850,7 +858,8 @@ CREATE TABLE host_link (
   alloc_mem_max_bytes INTEGER,
   lease_until INTEGER,                          -- after it, only the standalone allocation applies
   standalone_cpu_millicores INTEGER,
-  standalone_mem_bytes INTEGER
+  standalone_mem_bytes INTEGER,
+  distro_boot_marker TEXT                       -- ID of the marker in the distribution's runtime directory when the allocation was applied (03 section 6)
 ) STRICT;
 
 CREATE TABLE guest_grant (

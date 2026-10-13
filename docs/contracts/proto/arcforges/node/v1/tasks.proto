@@ -938,7 +938,7 @@ message Attempt {
   arcforges.foundation.v1.Id remote_attempt_id = 20 [json_name = "remoteAttemptId"]; // REMOTE kind: executor-side ID
   arcforges.foundation.v1.Revision revision = 21 [json_name = "revision"];
   repeated CacheUsage cache_usage = 22 [json_name = "cacheUsage"]; // one entry per cache binding (07 section 1.5)
-  optional uint64 downloaded_bytes = 23 [json_name = "downloadedBytes"]; // the sum of tool-reported download sizes of its cache bindings; absent when no tool reported sizes; cache growth is never counted as downloads (07 section 1.5)
+  optional uint64 downloaded_bytes = 23 [json_name = "downloadedBytes"]; // the sum of tool-reported download sizes of its cache bindings; present only when every download-cache binding reported one, never a partial sum; cache growth is never counted as downloads (07 section 1.5)
   optional string limit_enforced_by = 24 [json_name = "limitEnforcedBy"]; // NODE | GUARD: who stopped the attempt for OUTPUT_LIMIT or DISK_LIMIT; GUARD while the node was down (06 section 5)
   optional bool guard_lost = 25 [json_name = "guardLost"]; // the attempt ran without a disk guard for part of the time the node was down (06 section 5)
 }
@@ -959,6 +959,7 @@ message CacheUsage {
   arcforges.foundation.v1.Instant measured_at = 12 [json_name = "measuredAt"]; // the walk that finalized bytes_added; absent while provisional
   optional uint64 cache_writes = 13 [json_name = "cacheWrites"]; // tool-reported new entries written by this attempt (sccache)
   optional string counters_source = 14 [json_name = "countersSource"]; // e.g. sccache-server, ccache-stats-log, adapter-output; empty when the tool reports no counters
+  optional uint64 peer_filled_bytes = 15 [json_name = "peerFilledBytes"]; // bytes fetched from LAN peers into the node's store for this attempt's reads (05 section 5)
 }
 
 message QueueInfo {
