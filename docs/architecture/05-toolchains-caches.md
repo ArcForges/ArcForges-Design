@@ -194,7 +194,7 @@ Compiler work always runs in the container of the attempt that asked for it, so 
     - **The range.** Ports come from the policy range `caches.sccache_port_first` to `caches.sccache_port_last`. By default it is a 400-port slice of 20000–31999 chosen by a hash of the user's ID, so several users on one machine do not share ports.
       - It lies outside the operating systems' ephemeral ranges, so programs that bind port 0 are never given one of its ports.
       - At startup the node checks it against those ranges (`ip_local_port_range` on Linux; the dynamic port range on Windows) and refuses an overlap with a finding.
-      - Policy validation requires 1024 ≤ first < last ≤ 65535 and at least 64 ports.
+      - Policy validation requires 1024 ≤ first < last ≤ 65535, at least 64 ports, and more ports than the effective `global_max_running`, so the range never limits how many attempts run.
     - **Allocation by owner.** A port is assigned only when no process listens on it. That is decided by its listening process (`GetExtendedTcpTable` on Windows, `/proc/net/tcp` on Linux), never by a failed bind, which `TIME_WAIT` can cause.
       - **Skipped ports:** ports in the operating system's excluded ranges (Windows `excludedportrange`, for example held by Hyper-V or WinNAT), and a port the server then fails to bind. Neither counts as taken.
       - **Exhaustion:** when every port of the range is assigned, new attempts wait with the blocking reason `sccache_port`.
