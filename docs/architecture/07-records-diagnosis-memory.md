@@ -95,7 +95,7 @@ Every attempt's record links the evidence that explains delay and waste (R-REC-0
 
 - **How cache usage is measured.**
   - The size cache ([06](06-storage-workspaces.md) §6) keeps each managed cache's size and when it was measured. It is refreshed when a window closes and by cache maintenance, re-walking only directories whose modification time changed.
-  - A **window** is a maximal interval in which one or more attempts bind a cache. An entry's baseline is the cache's last measured size before its attempt started, and a window's baseline is the last before the window opened (`baseline_at`).
+  - A **window** is a maximal interval in which two or more attempts bind a cache at overlapping times. An attempt that was the only binder during its run belongs to no window. An entry's baseline is the cache's last measured size before its attempt started, and a window's baseline is the last before the window opened (`baseline_at`).
   - When an attempt ends, a background job measures the cache within policy `caches.usage_scan_budget_ms` (default 2,000 ms) and writes the attempt's entry; the attempt's result never waits for it. A measurement that would exceed the budget is skipped, and the entry leaves `bytes_added` empty, never 0.
   - Hits and misses come from the tools' counters over the same interval (sccache and ccache statistics). Package counts come from the attempt's own output (NuGet restore output, npm and pip logs) and are always its own.
 - **Attribution.**

@@ -404,7 +404,7 @@ CREATE TABLE attempt_cache_usage (
   PRIMARY KEY (attempt_id, cache_id)
 ) STRICT, WITHOUT ROWID;
 
--- A window: a maximal interval in which one or more attempts bind a cache. Totals are recorded once, when it closes (07 section 1.5).
+-- A window: a maximal interval in which two or more attempts bind a cache at overlapping times; an attempt alone in its run is EXACT and in no window. Totals are recorded once, when it closes (07 section 1.5).
 CREATE TABLE cache_usage_window (
   window_id BLOB NOT NULL PRIMARY KEY CHECK (length(window_id) = 16),
   cache_id BLOB NOT NULL CHECK (length(cache_id) = 16),
@@ -414,7 +414,7 @@ CREATE TABLE cache_usage_window (
   bytes_added INTEGER CHECK (bytes_added IS NULL OR bytes_added >= 0),  -- NULL when not measured within the budget
   hits INTEGER CHECK (hits IS NULL OR hits >= 0),
   misses INTEGER CHECK (misses IS NULL OR misses >= 0),
-  attempt_count INTEGER NOT NULL DEFAULT 0 CHECK (attempt_count >= 0)
+  attempt_count INTEGER NOT NULL CHECK (attempt_count >= 2)
 ) STRICT, WITHOUT ROWID;
 CREATE INDEX ix_cache_usage_window__cache ON cache_usage_window (cache_id, started_at);
 
