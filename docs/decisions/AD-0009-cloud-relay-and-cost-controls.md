@@ -1,7 +1,7 @@
 # AD-0009 — Cloud relay, remote control, push and cost controls
 
 - Status: Accepted (2026-10-12; revised 2026-10-13 after the findings review: complete billing dimensions, structural bounds, degradation ladder, residual exposure)
-- Evidence: V-C01–V-C04
+- Evidence: V-C01–V-C04, V-C08
 
 ## Decision
 

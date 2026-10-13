@@ -29,7 +29,7 @@ Classify(TaskSpec, ResolvedCommand) -> ToolInvocation?   // null = not this adap
 ToolInvocation {
   tool, operation (e.g. dotnet.build), phase_hints[],
   side_effect_suggestion, assert_class (bool),   // assert only what the adapter can verify
-  exclusive_keys[]     (workspace keys the operation writes, 03 section 4),
+  exclusive_keys[], shared_keys[]   (keys the operation writes or only reads, 03 section 4),
   pausable_default, preemptible_default,
   estimate (cpu_demand, mem_expected, mem_ceiling),
   environment_edits[]  (name, value, mode=SET|PREPEND_PATH, guarantee=HONORED|BEST_EFFORT),
@@ -53,11 +53,15 @@ Adapters are compiled into the node (no runtime plug-ins in this scope). The man
 
 | Operation | Side effect (default; suggestion) | Exclusive keys | Estimate (cpu / mem expected) | Phases |
 |---|---|---|---|---|
-| `restore`, `tool restore`, `workload restore` | UNKNOWN; suggests IDEMPOTENT (MSBuild targets can hook into restore) | `ws:<w>/<project dir>:restore` | 1,000 / 512 MiB | restore (network-bound by default) |
-| `build`, `pack`, `publish`, `msbuild` | UNKNOWN; suggests IDEMPOTENT for `build` and `pack` (custom targets can deploy or call out) | `ws:<w>/<project dir>:build` | 4,000 / 2 GiB | restore → build (per project) → link/package |
-| `test` | UNKNOWN | `ws:<w>/<project dir>:build` | 2,000 / 1.5 GiB | restore → build → test |
-| `format` | UNKNOWN (`--verify-no-changes`; suggests IDEMPOTENT) / SIDE_EFFECTING (writes) | `ws:<w>/<project dir>` when writing | 2,000 / 1 GiB | build |
-| `run`, others | UNKNOWN | none | default | run |
+| `restore` | UNKNOWN; suggests IDEMPOTENT (MSBuild targets can hook into restore) | `ws:<w>:dotnet` | 1,000 / 512 MiB | restore (network-bound by default) |
+| `tool restore`, `workload restore` | UNKNOWN; suggests IDEMPOTENT | none (they write the managed caches, not the workspace) | 1,000 / 512 MiB | restore |
+| `build`, `pack`, `publish`, `msbuild` | UNKNOWN; suggests IDEMPOTENT for `build` and `pack` (custom targets can deploy or call out) | `ws:<w>:dotnet` | 4,000 / 2 GiB | restore → build (per project) → link/package |
+| `test` | UNKNOWN | `ws:<w>:dotnet`; shared with `--no-build` | 2,000 / 1.5 GiB | restore → build → test |
+| `format` | UNKNOWN (`--verify-no-changes`; suggests IDEMPOTENT) / SIDE_EFFECTING (writes) | `ws:<w>:dotnet`; shared with `--verify-no-changes` | 2,000 / 1 GiB | build |
+| `run` | UNKNOWN | `ws:<w>:dotnet` until the program starts (shared with `--no-build`) | default | build → run |
+| others | UNKNOWN | none | default | run |
+
+**Why one key per workspace.** Every build-family operation restores and builds the whole project-reference closure of its entry project, so two of them in one workspace can write the same `obj/` and `bin/` directories even when their entry projects differ. Parallel builds of one repository therefore use separate managed worktrees, or the workspace mode `SHARED` with caller keys for solutions the user knows are independent.
 
 **Environment.**
 
@@ -83,7 +87,7 @@ Adapters are compiled into the node (no runtime plug-ins in this scope). The man
 | `fetch` | IDEMPOTENT (asserted: downloads into the registry cache only) | none | 1,000 / 256 MiB | download |
 | `build`, `check`, `clippy`, `doc` | UNKNOWN; suggests IDEMPOTENT (build scripts and proc macros run project code) | `tool:cargo:<target dir>` | N × 1,000 / min(N,4) × 1.5 GiB | download → compile → link |
 | `test`, `bench` | UNKNOWN | `tool:cargo:<target dir>` | as build | compile → test |
-| `run`, `install` | UNKNOWN / SIDE_EFFECTING | `tool:cargo:<target dir>` | default | run |
+| `run`, `install` | UNKNOWN / SIDE_EFFECTING | `tool:cargo:<target dir>` (`run`: until the program starts) | default | run |
 
 **Environment.**
 - `CARGO_BUILD_JOBS=<N>` when neither `-j` nor `--jobs` is present (HONORED).
@@ -99,7 +103,7 @@ Adapters are compiled into the node (no runtime plug-ins in this scope). The man
 |---|---|---|---|---|
 | `cmake -S/-B` (configure) | UNKNOWN; suggests IDEMPOTENT (CMake code can run any process) | `ws:<w>/<build dir>` | 1,000 / 512 MiB | configure |
 | `cmake --build`, `ninja`, `make` | UNKNOWN; suggests IDEMPOTENT (rules are arbitrary commands) | `ws:<w>/<build dir>` | N × 1,000 / N × 512 MiB | compile → link |
-| `ctest` | UNKNOWN | `ws:<w>/<build dir>` | default | test |
+| `ctest` | UNKNOWN | `ws:<w>/<build dir>`, shared | default | test |
 
 **Environment and concurrency.**
 - `CMAKE_BUILD_PARALLEL_LEVEL=<N>` for `cmake --build`.
@@ -113,13 +117,13 @@ Adapters are compiled into the node (no runtime plug-ins in this scope). The man
 ### 3.4 Node (`npm`, `pnpm`, `yarn`, `npx`)
 
 - `npm ci` and `npm install` run package lifecycle scripts, so they are UNKNOWN and suggest IDEMPOTENT. With `--ignore-scripts` the adapter asserts IDEMPOTENT. `npm run` and `npm test` are UNKNOWN.
-- Exclusive keys: `ws:<w>/<package dir>:deps` for installs (`node_modules` and the lock file); none for `npm run`.
+- Keys: installs (`ci`, `install`, `update`) take `ws:<w>/<package dir>:deps` exclusively (`node_modules` and the lock file); `npm run`, `npm test`, `npm start` and `npx` take it shared, so they never run while dependencies are being replaced (`npm start` releases it once the program runs).
 - Environment: `npm_config_cache=<cache>/npm` (HONORED) and `npm_config_store_dir=<cache>/pnpm-store` for pnpm (BEST_EFFORT).
 - No concurrency injection.
 
 ### 3.5 Python (`python`, `pip`, `pytest`)
 
-`pip install` can build source distributions, which runs project code, so it is UNKNOWN and suggests IDEMPOTENT. `pip download` also prepares the metadata of source distributions by running their build backend, so it is asserted IDEMPOTENT only with `--only-binary=:all:` (wheels only); otherwise it is UNKNOWN and suggests IDEMPOTENT. `PIP_CACHE_DIR=<cache>/pip` (HONORED). `pytest` is UNKNOWN. Installs into a virtual environment take `ws:<w>/<venv dir>`.
+`pip install` can build source distributions, which runs project code, so it is UNKNOWN and suggests IDEMPOTENT. `pip download` also prepares the metadata of source distributions by running their build backend, so it is asserted IDEMPOTENT only with `--only-binary=:all:` (wheels only); otherwise it is UNKNOWN and suggests IDEMPOTENT. `PIP_CACHE_DIR=<cache>/pip` (HONORED). `pytest` is UNKNOWN. Installs into a virtual environment take `ws:<w>/<venv dir>` exclusively; `pytest` and `python` running from that environment take it shared.
 
 ### 3.6 Git
 

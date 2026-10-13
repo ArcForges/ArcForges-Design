@@ -592,7 +592,7 @@ service GuestLinkService {
   // locality: guest
   rpc RevokeGrant(GuestLinkServiceRevokeGrantRequest) returns (GuestLinkServiceRevokeGrantResponse);
 
-  // The host sets the guest slice limits to the granted total, so host and guest caps together never exceed the host budget (03 section 6).
+  // The host pushes the guest's allocation. The guest applies the slice limits before answering, so the answer acknowledges the allocation (03 section 6).
   // auth: HOST: the linked host
   // idempotency: natural: latest values win
   // deadline: 5 s
@@ -681,8 +681,9 @@ message GuestLinkServiceSetGuestBudgetRequest {
   optional uint64 mem_max_bytes = 12 [json_name = "memMaxBytes"]; // validate: <= guest MemTotal
   optional uint32 tasks_max = 13 [json_name = "tasksMax"]; // validate: 64..32768
   arcforges.foundation.v1.Instant lease_until = 14 [json_name = "leaseUntil"]; // validate: now + 30 s..10 min; renewed every 30 s while linked
-  optional uint32 standalone_cpu_millicores = 15 [json_name = "standaloneCpuMillicores"]; // validate: <= cpu_quota_millicores ceiling of the host; used after the lease lapses
-  optional uint64 standalone_mem_bytes = 16 [json_name = "standaloneMemBytes"]; // validate: <= mem_max_bytes; used after the lease lapses
+  optional uint32 standalone_cpu_millicores = 15 [json_name = "standaloneCpuMillicores"]; // validate: <= cpu_quota_millicores of this push; admission limit after the lease lapses
+  optional uint64 standalone_mem_bytes = 16 [json_name = "standaloneMemBytes"]; // validate: <= mem_high_bytes of this push; admission limit after the lease lapses
+  optional uint64 allocation_seq = 17 [json_name = "allocationSeq"]; // validate: strictly increasing per link
 }
 message GuestLinkServiceSetGuestBudgetResponse {
   arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
@@ -694,6 +695,7 @@ message GuestLinkServiceSetGuestBudgetResponse {
 }
 message GuestLinkServiceSetGuestBudgetValue {
   arcforges.foundation.v1.Receipt receipt = 10 [json_name = "receipt"];
+  optional uint64 applied_seq = 11 [json_name = "appliedSeq"]; // the allocation now in force on the guest
 }
 
 message GuestLinkServiceGetGuestStatusRequest {

@@ -36,7 +36,7 @@ service OperatorReadService {
   // locality: cloud
   rpc GetOperatingBudgets(OperatorReadServiceGetOperatingBudgetsRequest) returns (OperatorReadServiceGetOperatingBudgetsResponse);
 
-  // Compute the monthly unit-economics report from budget use and subscriptions (architecture 14 section 7.2).
+  // Compute the monthly unit-economics report from budget use and subscriptions (architecture 14 section 7.5).
   // auth: operator session with step-up
   // idempotency: read (the read itself is audited)
   // deadline: 10 s
@@ -90,6 +90,7 @@ message OperatorReadServiceGetOperatingBudgetsValue {
   arcforges.foundation.v1.Instant evaluated_at = 11 [json_name = "evaluatedAt"];
   ResidualExposure residual = 12 [json_name = "residual"];
   optional bool essential_only = 13 [json_name = "essentialOnly"]; // the essential-only kill switch is active
+  ReconciliationStatus reconciliation = 14 [json_name = "reconciliation"];
 }
 
 message OperatorReadServiceGetMonthlyReportRequest {
@@ -110,7 +111,7 @@ message OperatorReadServiceGetMonthlyReportValue {
   MonthlyReport report = 10 [json_name = "report"];
 }
 
-// Values of the D1 enum platform.operating_dimension: 1..7 exist at Cloud main 92ba1dc9; 8..17 are added
+// Values of the D1 enum platform.operating_dimension: 1..7 exist at Cloud main 92ba1dc9; 8..19 are added
 // by AF-PLAT-01 (data/cloud-store section 3). Architecture 14 section 7.1 maps each Cloudflare billing
 // dimension to one of these, and says whether it is measured or estimated.
 enum OperatingDimension {
@@ -140,7 +141,7 @@ enum BudgetThresholdState {
   BUDGET_THRESHOLD_STATE_UNSPECIFIED = 0;
   BUDGET_THRESHOLD_STATE_NORMAL = 1;
   BUDGET_THRESHOLD_STATE_ALERT = 2; // used + held >= 80 % of the ceiling
-  BUDGET_THRESHOLD_STATE_EXHAUSTED = 3; // >= 100 %: the kill switches apply in order (architecture 14 section 7.2)
+  BUDGET_THRESHOLD_STATE_EXHAUSTED = 3; // >= 100 %: the degradation ladder step for the dimension applies (architecture 14 section 7.3)
 }
 
 message OperatorReadContext {
@@ -179,6 +180,14 @@ message ResidualExposure {
   optional uint64 storage_at_rest_micros = 2 [json_name = "storageAtRestMicros"]; // D1, R2 and Durable Object storage, per day
   optional uint64 essential_requests_micros = 3 [json_name = "essentialRequestsMicros"]; // sign-in, entitlement refresh, webhooks and operator calls at their rate limits
   optional uint64 total_daily_micros = 4 [json_name = "totalDailyMicros"];
+  optional uint64 worker_requests_micros = 5 [json_name = "workerRequestsMicros"]; // requests the Worker still answers or refuses in essential-only mode, at the edge rate limits
+}
+
+// Daily comparison of metered values with provider billing data (architecture 14 section 7.5).
+message ReconciliationStatus {
+  optional string state = 1 [json_name = "state"]; // OFF (no read token, H-21) | OK | DIVERGED
+  arcforges.foundation.v1.Instant last_run_at = 2 [json_name = "lastRunAt"];
+  repeated OperatingDimension diverged = 3 [json_name = "diverged"]; // dimensions more than 20 % apart
 }
 
 message MonthlyDimensionTotal {

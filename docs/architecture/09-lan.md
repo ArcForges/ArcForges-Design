@@ -90,7 +90,7 @@ Placement is re-evaluated only before start. Running attempts never migrate (R-L
 3. Input transfer (§6). The executor starts the attempt automatically when inputs are complete and its admission grants the reservation.
 4. `WatchRemoteAttempt(remote_attempt_id, cursor)` streams states, output chunks, segments, sample summaries and the final result. The origin mirrors them into its task record.
 5. `RenewAttemptLease` every 60 s. `CancelRemoteAttempt` cancels. `ReleaseRemoteAttempt` frees the remote workspace when retention ends.
-6. Output return (§6). The origin materializes declared outputs per `output_conflict` (`OVERWRITE`, `SKIP_EXISTING` or `FAIL`), default `OVERWRITE` inside declared output paths only.
+6. Output return (§6). The origin applies declared outputs inside the declared output paths only, comparing each file with its base recorded at submission. Files changed locally are handled per `output_conflict`: `STAGE` (default), `SKIP_EXISTING`, `FAIL`, or `OVERWRITE` for HUMAN or SCRIPT callers only. Returned outputs never delete local files.
 
 **Environment on the executor.** `inherit=CALLER` becomes `inherit=NODE` on the executor, because origin paths are not portable. Explicit `set` entries are transferred. Path-like values that point inside the origin workspace are rewritten to the remote workspace root, and the record shows each rewrite.
 
@@ -111,7 +111,7 @@ Placement is re-evaluated only before start. Running attempts never migrate (R-L
      - If every slot of the origin workspace is leased, a new slot is created, up to `lan.max_workspace_slots` (default 2). Beyond that, the remote attempt stays `RESERVED` until a slot frees, and the offer's ETA includes the wait.
      - A slot belongs to exactly one remote attempt, from materialization until its outputs have been pulled or the attempt is released. Concurrent attempts from the same origin workspace therefore never share a writable directory.
      - Materialization copies from the CAS, or block-clones where the file system supports it (Windows ReFS/Dev Drive `FSCTL_DUPLICATE_EXTENTS_TO_FILE`, Linux `FICLONE`). It never hardlinks, because builds that write in place would corrupt the stored blob and every workspace sharing it.
-- **Outputs** return in reverse: the executor builds a manifest of the declared outputs, and the origin pulls the blobs into `staging/transfer/`. The origin then applies them while holding the exclusive keys of the output paths ([03](03-resource-control.md) §4), so no local managed task writes them meanwhile. For each file it compares the current local digest with the base recorded at submission:
+- **Outputs** return in reverse: the executor builds a manifest of the declared outputs, and the origin pulls the blobs into `staging/transfer/`. While the attempt runs remotely, the task holds no keys at the origin. To apply the outputs, the origin takes the exclusive keys of the output paths ([03](03-resource-control.md) §4), so no local managed task writes or reads them meanwhile. For each file it compares the current local digest with the base recorded at submission:
   - **unchanged** (or absent both times): atomic replace, through a temporary file and a rename;
   - **changed locally**, per `output_conflict`:
     - `STAGE` (default) writes the returned file to `out/<workspace>/<task>/<attempt>/conflicts/<path>`, keeps the local file and raises `OUTPUT_CONFLICT`;

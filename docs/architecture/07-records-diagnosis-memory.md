@@ -101,7 +101,7 @@ Finding lifecycle (state machine `SM-FINDING`): `OPEN` → `ACKNOWLEDGED` | `RES
 | `PER_TASK_RESTORE` | [05](05-toolchains-caches.md) §7 | info | Suggest removing the override; cleanup plan (approval) |
 | `CACHE_MISS_STORM` | sccache/ccache miss rate > 80% over 50 compilations in a workspace with a warm cache | info | Explain compatibility-key changes; suggest a configuration check |
 | `CACHE_CORRUPT` | Adapter failure classifier | error | Clear affected entries (approval) |
-| `DISK_PRESSURE` | Volume free < 10% or < 5 GiB (early warning); the volume's level `LOW` or `CRITICAL` ([06](06-storage-workspaces.md) §5) | warning → error at level `LOW` or `CRITICAL` | Create a cleanup plan (auto); execute (approval); at `LOW`, new writers on the volume wait |
+| `DISK_PRESSURE` | Volume free below twice its LOW threshold (early warning); the volume's level `LOW` or `CRITICAL` ([06](06-storage-workspaces.md) §5) | warning → error at level `LOW` or `CRITICAL` | Create a cleanup plan (auto); execute (approval); at `LOW`, new writers on the volume wait |
 | `QUOTA_EXCEEDED` | [06](06-storage-workspaces.md) §5 | warning | Cleanup plan; quota change |
 | `UNMANAGED_HEAVY` | `BYPASSED` processes in an agent session ([03](03-resource-control.md) §9) | warning | Suggest enabling routing; show coverage |
 | `BYPASSED_COMMAND` | A hook saw a heavy command run without routing (observe mode) | info | Same as above |

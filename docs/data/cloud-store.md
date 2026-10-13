@@ -50,7 +50,7 @@ The flagship adds one module, `fleet`, and adapts a few reused tables. The new t
 | Device platform values | `device_device.platform` already lists `windows`, `linux` and `android` | None |
 | Push kinds | `notification_*` kind columns (text) | None (data) |
 | Plan features | Entitlement configuration | Configuration revision (data) |
-| Cost and activation switches: `cloud.essential_only`, the ladder steps, `ops.unit_prices`, `flagship.activation` per Cloud surface | `config_revision` | Configuration revision (data); [14](../architecture/14-commercial-operations.md) §7, [10](../architecture/10-cloud.md) §8. The Web switches live in the Web repository's deploy configuration. |
+| Cost switches: `cloud.essential_only`, the ladder steps, `ops.unit_prices` | `config_revision` | Configuration revision (data); [14](../architecture/14-commercial-operations.md) §7. The activation switches are deployment settings, not D1 data: `FLAGSHIP_SURFACES` in `wrangler.json` and the Web deploy configuration ([10](../architecture/10-cloud.md) §8). |
 
 ## 4. Not stored in D1
 

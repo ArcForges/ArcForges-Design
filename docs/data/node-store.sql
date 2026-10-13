@@ -137,6 +137,9 @@ CREATE TABLE worktree_archive (
   worktree_commit TEXT NOT NULL,                -- W: tracked and untracked (not ignored) files, parent I
   bundle_path TEXT NOT NULL,                    -- records/worktree-archives/<archive_id>.bundle
   ignored_archive_path TEXT,                    -- ignored files the user chose to include
+  ignored_decision INTEGER NOT NULL DEFAULT 0 CHECK (ignored_decision IN (0, 1, 2)),  -- IgnoredFilesDecision; 0 = none listed
+  raw_archive_path TEXT,                        -- files kept byte for byte (filters, LFS)
+  intent_to_add_json TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(intent_to_add_json)),  -- paths re-applied with git add -N
   file_count INTEGER NOT NULL CHECK (file_count >= 0),
   size_bytes INTEGER NOT NULL CHECK (size_bytes >= 0),
   created_at INTEGER NOT NULL,
@@ -251,6 +254,7 @@ CREATE TABLE task (
   side_effect_source INTEGER NOT NULL CHECK (side_effect_source BETWEEN 1 AND 4),  -- SideEffectSource (AD-0006 section 4)
   side_effect_suggestion INTEGER CHECK (side_effect_suggestion IS NULL OR side_effect_suggestion BETWEEN 1 AND 4),  -- the adapter's suggestion; display only
   command_fingerprint TEXT NOT NULL,
+  command_digest BLOB NOT NULL CHECK (length(command_digest) = 32),  -- SHA-256 of program and arguments (or the shell string), working directory, environment digest and stdin: the join_existing identity
   input_fingerprint_submit TEXT,
   created_at INTEGER NOT NULL,
   queued_at INTEGER,
@@ -273,20 +277,22 @@ CREATE TABLE task (
   CHECK (reserved_for_large = 0 OR reserved_since IS NOT NULL)
 ) STRICT;
 CREATE INDEX ix_task__queue ON task (state, effective_priority, queued_at) WHERE state IN (1, 2, 3, 6);
-CREATE INDEX ix_task__join ON task (owner_session_id, command_fingerprint) WHERE state BETWEEN 1 AND 6;  -- SubmitTask join_existing
+CREATE INDEX ix_task__join ON task (owner_session_id, command_digest) WHERE state BETWEEN 1 AND 6;  -- SubmitTask join_existing
 CREATE INDEX ix_task__session_created ON task (owner_session_id, created_at);
 CREATE INDEX ix_task__workspace_created ON task (workspace_id, created_at);
 CREATE INDEX ix_task__created ON task (created_at);
 CREATE INDEX ix_task__pool_state ON task (pool, state);
 CREATE INDEX ix_task__fingerprint ON task (command_fingerprint, finished_at);
 
-CREATE TABLE task_exclusive_key (
+CREATE TABLE task_concurrency_key (
   task_id BLOB NOT NULL REFERENCES task (task_id) ON DELETE CASCADE,
-  exclusive_key TEXT NOT NULL CHECK (length(exclusive_key) BETWEEN 1 AND 512),  -- ws:<w>[/<dir>][:purpose], tool:<name>:<scope>, name:<text>
+  concurrency_key TEXT NOT NULL CHECK (length(concurrency_key) BETWEEN 1 AND 512),  -- ws:<w>[/<dir>][:purpose], tool:<name>:<scope>, name:<text>
+  mode INTEGER NOT NULL CHECK (mode IN (1, 2)),         -- 1 exclusive (writer), 2 shared (reader)
   source INTEGER NOT NULL CHECK (source IN (1, 2, 3)),  -- 1 caller, 2 adapter, 3 workspace access or mode
-  PRIMARY KEY (task_id, exclusive_key)
+  released_at INTEGER,                                  -- run operations and ready services release keys early (03 section 4)
+  PRIMARY KEY (task_id, concurrency_key)
 ) STRICT, WITHOUT ROWID;
-CREATE INDEX ix_task_exclusive_key__key ON task_exclusive_key (exclusive_key);
+CREATE INDEX ix_task_concurrency_key__key ON task_concurrency_key (concurrency_key) WHERE released_at IS NULL;
 
 CREATE TABLE task_secret (
   task_id BLOB NOT NULL PRIMARY KEY REFERENCES task (task_id) ON DELETE CASCADE,
@@ -759,6 +765,8 @@ CREATE TABLE guest_link (
   linked_at INTEGER,
   last_heartbeat INTEGER,
   reason TEXT,
+  alloc_seq INTEGER,                            -- last pushed allocation_seq
+  acked_seq INTEGER,                            -- last allocation the guest acknowledged; capacity it gave back is reused only from here
   alloc_cpu_millicores INTEGER,                 -- last allocation pushed with SetGuestBudget (03 section 6)
   alloc_mem_high_bytes INTEGER,
   alloc_mem_max_bytes INTEGER,
@@ -777,7 +785,8 @@ CREATE TABLE host_link (
   refused_host_node_id BLOB CHECK (refused_host_node_id IS NULL OR length(refused_host_node_id) = 16),  -- last link refused: different host
   refused_at INTEGER,
   accept_host_node_id BLOB CHECK (accept_host_node_id IS NULL OR length(accept_host_node_id) = 16),  -- set by TrustHost; its next link is pinned
-  alloc_cpu_millicores INTEGER,                 -- last allocation received (03 section 6)
+  applied_seq INTEGER,                          -- allocation_seq of the allocation in force
+  alloc_cpu_millicores INTEGER,                 -- last allocation received and applied (03 section 6)
   alloc_mem_high_bytes INTEGER,
   alloc_mem_max_bytes INTEGER,
   lease_until INTEGER,                          -- after it, only the standalone allocation applies

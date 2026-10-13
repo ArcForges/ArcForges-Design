@@ -256,7 +256,7 @@
         "AF-TOOL-02",
         "AF-WS-01"
       ],
-      "verification": "real tests: two builds of one project wait for each other; builds of different projects run together; SERIAL mode; adapter key tests"
+      "verification": "real tests: two .NET builds in one workspace run one after the other; npm test waits for npm ci of the same package; work in different build directories runs together; SERIAL mode; key engine and adapter key tests"
     },
     {
       "id": "R-RES-001",
@@ -382,7 +382,7 @@
       "tasks": [
         "AF-WSL-01"
       ],
-      "verification": "host plus guest closed loop through the real wsl.exe bridge: saturating load with overcommitted demand, link loss with lease lapse and node restarts (F-L01)"
+      "verification": "host plus guest closed loop through the real wsl.exe bridge: saturating load with overcommitted demand, acknowledged allocations, link loss with an idle and a busy guest and node restarts (F-L01)"
     },
     {
       "id": "R-RES-011",
@@ -395,7 +395,7 @@
       "tasks": [
         "AF-WSL-01"
       ],
-      "verification": "host plus guest closed loop through the real wsl.exe bridge: saturating load with overcommitted demand, link loss with lease lapse and node restarts (F-L01)"
+      "verification": "host plus guest closed loop through the real wsl.exe bridge: saturating load with overcommitted demand, acknowledged allocations, link loss with an idle and a busy guest and node restarts (F-L01)"
     },
     {
       "id": "R-RES-012",
@@ -635,7 +635,7 @@
       "tasks": [
         "AF-WS-01"
       ],
-      "verification": "real git worktree tests: staged, unstaged, untracked and binary changes archived and verified; forced verification failure removes nothing; restore"
+      "verification": "real git worktree tests: staged deletions and renames, unstaged, untracked, binary and intent-to-add changes archived and verified; ignored-file decision; unmerged index and dirty submodule refused; forced verification failure removes nothing; exact restore (L-19)"
     },
     {
       "id": "R-STOR-004",
@@ -710,7 +710,7 @@
         "AF-EXEC-02",
         "AF-STOR-01"
       ],
-      "verification": "output flood, temporary-space flood and nearly-full-volume tests on both platforms; store reserve and DEGRADED recovery"
+      "verification": "output flood, temporary-space flood and nearly-full-volume tests on both platforms; immediate limit stops; DEGRADED and recovery"
     },
     {
       "id": "R-REC-001",
@@ -960,7 +960,7 @@
         "AF-EXEC-02",
         "AF-AI-01"
       ],
-      "verification": "closed loop with a scripted client timeout, a queued task, a resubmission and an interrupt"
+      "verification": "closed loop with a scripted client timeout, a queued task, an identical resubmission, a resubmission after a file edit, and an interrupt"
     },
     {
       "id": "R-AI-009",
@@ -1645,8 +1645,11 @@
         "docs/decisions/AD-0014-delivery-method.md"
       ],
       "tasks": [
+        "AF-WEB-01",
         "AF-CLD-01",
         "AF-PLAT-01",
+        "AF-WEB-02",
+        "AF-WEB-03",
         "AF-PROD-01"
       ],
       "verification": "a disabled surface answers STATE/not_activated without waking the container; dark deploy without flagship bindings; activation steps reviewed"

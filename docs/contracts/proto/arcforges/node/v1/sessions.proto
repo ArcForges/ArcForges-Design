@@ -364,6 +364,8 @@ message SessionCoverage {
   repeated ClientEventRecord client_events = 16 [json_name = "clientEvents"];
   optional uint32 route_failed = 17 [json_name = "routeFailed"];
   optional uint32 managed_share_permille = 18 [json_name = "managedSharePermille"]; // managed CPU-seconds x 1000 / (managed + bypassed + attributed unmanaged)
+  optional uint32 handoffs = 19 [json_name = "handoffs"]; // rewritten runs that handed off before the client's timeout
+  optional uint32 joined = 20 [json_name = "joined"]; // submissions that joined an existing task
 }
 
 message ProbeObservation {

@@ -120,7 +120,7 @@ enum PressureLevel {
 enum DiskPressureLevel {
   DISK_PRESSURE_LEVEL_UNSPECIFIED = 0;
   DISK_PRESSURE_LEVEL_NORMAL = 1;
-  DISK_PRESSURE_LEVEL_LOW = 2; // free < max(min_free_bytes, 5 %): no new writers on the volume
+  DISK_PRESSURE_LEVEL_LOW = 2; // free < max(min_free_bytes, min(5 %, low_free_cap_bytes)): no new writers on the volume
   DISK_PRESSURE_LEVEL_CRITICAL = 3; // free < critical_free_bytes: writers paused or terminated by policy
 }
 

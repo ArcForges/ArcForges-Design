@@ -1,7 +1,7 @@
 # AD-0005 — Resource enforcement, WSL model and privileges
 
 - Status: Accepted (2026-10-12; revised after the independent review the same day: job handle holders, guest budgets, aligned parameters; revised 2026-10-13 after the findings review: verified console signalling, guest allocation split and lease, stated memory guarantees)
-- Evidence: [platform verification](../verification/platform-capabilities.md) V-W01–V-W06, V-L01–V-L07, L-01–L-16
+- Evidence: [platform verification](../verification/platform-capabilities.md) V-W01–V-W06, V-L01–V-L07, L-01–L-16, L-18
 
 The numeric limits and formulas live in [resource control](../architecture/03-resource-control.md) §2 and §5. The launch, cancellation and recovery sequences live in [execution](../architecture/04-execution.md) §3, §6 and §9. This decision fixes the mechanisms.
 
@@ -89,7 +89,8 @@ Optional privileged features are designed but not part of the current deliverabl
 3. **Coordinated admission and enforcement** (03 §6).
    - **Admission.** While linked, a guest asks the host for a grant before admitting an attempt: a `GrantRequest` on the `GuestLinkService.OpenLink` stream, answered with `AnswerGrant`. One fair queue spans the host and its guests.
    - **Enforcement.** Demand is admitted, allocations are enforced. The host splits its enforceable CPU budget between its own root and the guest slice in proportion to demand, with positive floors on both sides, so the two always sum to `B_cpu`. Memory grants are never overcommitted. The guest's slice limits arrive by `GuestLinkService.SetGuestBudget` with a lease ([03](../architecture/03-resource-control.md) §6).
-   - **Unlinked.** While the lease runs, the guest stays within its last allocation. After the lease lapses, it admits only within the standalone allocation the host last pushed (default 25% of the host budget), and the host keeps that allocation reserved. A lost link therefore never over-commits the machine. `GUEST_LINK_LOST` reports the outage.
+   - **Acknowledged allocations.** The guest applies each pushed allocation before answering, and the host reuses capacity the guest gives back only after that acknowledgement. A grant that raises the allocation is acknowledged before the attempt may start.
+   - **Unlinked.** While the lease runs, the guest admits only within its last acknowledged allocation. After the lease lapses, it admits new attempts only within the standalone allocation, which is never larger than that acknowledged allocation (at most 25% of the host budget by default). It never lowers its slice limits below running work. The host accounts the VM as the larger of its actual use and the standalone allocation. Host and guest admissions together therefore stay within the host budget. `GUEST_LINK_LOST` reports the outage.
 4. **Tasks that cross into WSL.** A Windows task that runs `wsl.exe` is flagged `crosses_vm_boundary`. Its Linux processes are outside the Windows job and are labelled unmanaged unless submitted to the guest node (R-RES-011).
 
 ### Observation versus control

@@ -35,7 +35,8 @@ Decisions: [AD-0014](../decisions/AD-0014-delivery-method.md) (verification resp
 | `ScriptedMcpClient` | Claude Code / Codex as MCP clients | MCP schema for both revisions; transcripts of real client handshakes recorded on the workstation | ArcForges tests |
 | `HookPayloadFixtures` | Client hook invocations | Fixtures captured from real clients on the workstation (F-A01 task) | ArcForges tests |
 | `PeerProcess` | Another LAN machine | A real node process with its own data root and address | ArcForges tests |
-| `TestLoad` | User workloads | Synthetic CPU, memory, output and fork patterns; deterministic | `tools/ArcForges.TestLoad` |
+
+**Synthetic workloads are not fakes.** `TestLoad` (`tools/ArcForges.TestLoad`) generates deterministic CPU, memory, output and fork patterns as the *input* to the behaviour under test (scheduling, enforcement, capture, diagnosis). It replaces no external system, so every task may use it, and evidence names the workload that ran.
 
 A fake is never used for the behaviour under test (R-TEST-001). Results from a fake-backed test are labelled `closed-loop` in evidence and never reported as real-world validation. The real billing flow on a Play-enabled emulator or device stays in the acceptance register (AR-06).
 

@@ -341,11 +341,13 @@ message RoutingPolicy {
   repeated HeavyPattern heavy_patterns = 3 [json_name = "heavyPatterns"]; // defaults in architecture 08 section 4.1
   optional uint32 bypass_cpu_threshold_millicores = 4 [json_name = "bypassCpuThresholdMillicores"]; // default 1,000 for 10 s
   optional uint64 bypass_mem_threshold_bytes = 5 [json_name = "bypassMemThresholdBytes"]; // default 1 GiB
-  optional ClientPermission rewrite_permission = 6 [json_name = "rewritePermission"]; // default ASK; ALLOW is HUMAN-only and pre-approves matched commands
+  optional ClientPermission rewrite_permission = 6 [json_name = "rewritePermission"]; // default ASK; ALLOW is HUMAN-only and pre-approves routed commands
   optional bool guide_when_longer_than_client_timeout = 7 [json_name = "guideWhenLongerThanClientTimeout"]; // default true: expected duration > client timeout -> DENY_WITH_GUIDANCE to MCP run
   repeated string passthrough_patterns = 8 [json_name = "passthroughPatterns"]; // REWRITE_ALL only: commands left unchanged; defaults in architecture 08 section 4.1
   optional uint32 handoff_margin_ms = 9 [json_name = "handoffMarginMs"]; // default 15,000: a rewritten run hands off this long before the client's tool timeout
-  optional bool join_existing_rewrites = 10 [json_name = "joinExistingRewrites"]; // default true: rewritten runs join an identical non-terminal task of the same session
+  optional bool join_existing_rewrites = 10 [json_name = "joinExistingRewrites"]; // default true: rewritten runs join an identical task of the same session (08 section 4.1)
+  optional uint32 light_cpu_millicores = 11 [json_name = "lightCpuMillicores"]; // default 250: estimate for routed commands no adapter or fact describes
+  optional uint64 light_mem_bytes = 12 [json_name = "lightMemBytes"]; // default 128 MiB
 }
 
 message ActionRule {
@@ -382,6 +384,7 @@ message StoragePolicy {
   optional uint64 max_attempt_tmp_bytes = 12 [json_name = "maxAttemptTmpBytes"]; // default 20 GiB per attempt; checked every 15 s
   optional uint64 critical_free_bytes = 13 [json_name = "criticalFreeBytes"]; // default 512 MiB per volume holding managed roots
   optional DiskLimitAction disk_limit_action = 14 [json_name = "diskLimitAction"]; // default TERMINATE
+  optional uint64 low_free_cap_bytes = 15 [json_name = "lowFreeCapBytes"]; // default 20 GiB: the LOW threshold is max(min_free_bytes, min(5 % of the volume, this cap))
 }
 
 message CleanupPolicy {

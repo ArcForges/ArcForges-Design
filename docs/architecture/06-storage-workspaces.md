@@ -43,39 +43,44 @@ A directory found under a managed sub-root without a record is reported as `UNTR
 
 **Managed worktree rules:**
 - Default branch name `af/<owner-short>/<name>`.
-- Git `worktree lock` is held while a task or session uses the worktree. It prevents `git worktree prune` only; it is **not** a file-write lock. Concurrent writers inside a workspace are ordered by exclusive keys ([03](03-resource-control.md) §4), and concurrent agents get separate worktrees.
+- Git `worktree lock` is held while a task or session uses the worktree. It prevents `git worktree prune` only; it is **not** a file-write lock. Concurrent writers and readers inside a workspace are ordered by keys ([03](03-resource-control.md) §4), and concurrent agents get separate worktrees.
 - Each workspace has a **concurrency mode** (`UpdateWorkspaceSettings`): `ADAPTER_KEYS` (default), `SERIAL` or `SHARED`.
 - Creation runs as a node job, using the git toolchain within a managed attempt.
 - One worktree per branch.
 
 ### Archiving a dirty worktree
 
-`RemoveWorktree` with `archive_changes=true` runs as a node job while no task, session or lock uses the worktree (state `ARCHIVING`, SM-WORKTREE). It preserves the staged state, the unstaged state and untracked files, binaries included, and proves it can restore them before removing anything (R-STOR-003):
-1. **Inventory.** `git status --porcelain=v2 -z --ignored` lists staged, unstaged, untracked and ignored paths.
-   - Ignored paths matching the regenerable-output detectors (§6: `bin/`, `obj/`, `target/`, CMake build trees, `node_modules`) are dropped.
-   - Other ignored files (for example `.env`) are listed in the approval request. The user either includes them in the archive or confirms they may be lost. Without that decision, nothing is removed.
-2. **Index snapshot.** `git write-tree` of the worktree's real index, committed with `git commit-tree -p HEAD`, gives commit `I`: exactly the staged state. An index with unmerged entries (a merge or rebase in progress) cannot be written; the job stops, removes nothing and reports it.
-3. **Working-tree snapshot.** A temporary index (`GIT_INDEX_FILE`) is loaded from `I` (`git read-tree I`) and takes `git add -A`: tracked and untracked (not ignored) files, deletions and binaries as git blobs, with modes and symbolic links as git records them, through the repository's own filters. `git write-tree` and `git commit-tree -p I` give commit `W`.
-4. **Keeping and exporting.**
+`RemoveWorktree` with `archive_changes=true` runs as a node job while no task, session or lock uses the worktree (state `ARCHIVING`, SM-WORKTREE). It preserves the staged state, the unstaged state and untracked files, binaries included, and proves it can restore them before removing anything (R-STOR-003). L-19 records a round trip of these steps.
+1. **Plan.** `WorkspaceService.PlanWorktreeRemoval` runs `git status --porcelain=v2 -z --ignored` and reports:
+   - the staged, unstaged and untracked counts;
+   - intent-to-add paths (`git add -N`, status `.A`), which `git write-tree` leaves out; they are recorded and re-applied on restore;
+   - ignored files outside the regenerable-output detectors (§6: `bin/`, `obj/`, `target/`, CMake build trees, `node_modules`), for example `.env`, with a digest of the list;
+   - what blocks archiving: unmerged index entries (a merge or rebase in progress), and submodules or nested repositories with their own uncommitted changes, whose content an archive of this repository cannot hold.
+2. **Decision.** If ignored files are listed, `RemoveWorktree` must carry `ignored_files` (`INCLUDE`, or `DISCARD_CONFIRMED`, which only HUMAN callers may choose) and the list digest; a changed list fails with `CONFLICT/digest_mismatch`. An agent's request goes through approval, and the approval shows the list. Anything listed under `blocking` refuses the removal (`STATE/invalid_state`), and nothing is removed.
+3. **Index snapshot.** `git write-tree` of the worktree's real index, committed with `git commit-tree -p HEAD`, gives commit `I`: exactly the staged state, apart from the intent-to-add entries of step 1.
+4. **Working-tree snapshot.** A temporary index (`GIT_INDEX_FILE`) is loaded from `I` (`git read-tree I`) and takes `git add -A`: tracked and untracked (not ignored) files, deletions and binaries as git blobs, with modes and symbolic links as git records them, through the repository's own filters. `git write-tree` and `git commit-tree -p I` give commit `W`.
+5. **Keeping and exporting.**
    - The refs `refs/arcforges/archive/<archive_id>/index` and `/worktree` in the main repository keep `I` and `W` alive.
    - A bundle `records/worktree-archives/<archive_id>.bundle` holds `I`, `W` and the branch commits not reachable from the base ref. Its prerequisites are base-ref commits, which the repository and its remote keep, so the archive can be restored even if the archive refs are lost.
    - Included ignored files go to `<archive_id>-ignored.tar.zst`.
-5. **Verification.**
+   - Files whose bytes do not survive the repository's filters (for example mixed line endings under `core.autocrlf`), and the content of LFS files, are kept byte for byte in `<archive_id>-raw.tar.zst` (step 6 finds them).
+6. **Verification.**
    - `git bundle verify` confirms that the repository holds the bundle's prerequisites.
    - A temporary bare repository fetches the base ref from the main repository, then the archive refs from the bundle. The fetched commits must have the IDs `I` and `W`, and `git fsck --connectivity-only` must pass, so the bundle alone restores exactly those trees.
-   - The live working tree must still match `W`: the blob IDs and modes of `git ls-tree -r W` against every live file hashed with `git hash-object --path` (the repository's filters apply) and its mode as git records it, tracked and untracked alike, with no path missing or extra.
-   - The live index (`git ls-files -s`) must equal the tree of `I`.
+   - The live working tree must match `W` in git's terms: the blob IDs and modes of `git ls-tree -r W` against every live file hashed with `git hash-object --path` and its mode as git records it, tracked and untracked alike, with no path missing or extra.
+   - It must also match byte for byte: a temporary checkout of `W` with the repository's filter configuration is compared with the live files. Files that differ only through filters, and LFS files, go to the raw archive and are compared by SHA-256.
+   - The live index (`git ls-files -s`, without the intent-to-add entries) must equal the tree of `I`.
    - Included ignored files must match by SHA-256.
    - Any mismatch stops the job: the state returns to `ACTIVE`, nothing is removed, and a finding is raised.
-6. **Removal.** Only after verification: `git worktree remove --force` (safe, because everything is archived), then branch handling as requested. The archive record (`worktree_archive`) stores the commits, paths, counts and verification time.
-7. **Restore.** `WorkspaceService.RestoreWorktree(archive_id)` (CLI `arcforges worktree restore <id>`) runs as a job:
-   - it creates a worktree on the archived branch, or a new branch, at the archived `HEAD`;
-   - `git read-tree I` restores the staged state;
-   - `git restore --source=W --worktree -- .` restores unstaged and untracked files without touching the index;
-   - included ignored files are extracted;
-   - the job ends by re-running the step-5 comparison.
+7. **Removal.** Only after verification: `git worktree remove --force` (safe, because everything is archived), then branch handling as requested. The archive record (`worktree_archive`) stores the commits, the intent-to-add paths, the side archives, counts, the ignored-files decision and the verification time.
+8. **Restore.** `WorkspaceService.RestoreWorktree(archive_id)` (CLI `arcforges worktree restore <id>`) runs as a job:
+   - `git worktree add --no-checkout` at the archived `HEAD`: on the archived branch when it is free and still points there, otherwise on a new branch (`<branch>-restored` by default);
+   - `git read-tree -u --reset W` writes the working-tree state, including staged deletions and renames;
+   - `git read-tree I` restores the staged state without touching files, and `git add -N` re-applies the intent-to-add paths;
+   - the raw archive and the included ignored files are extracted;
+   - the job ends by comparing the restored worktree with the archive: the index with `I` plus the intent-to-add paths, and every file's blob ID and SHA-256 with `W` and the side archives. If that fails, the restored worktree is kept for inspection, the archive is unchanged, and a finding is raised.
 
-Archives are listed by `ListWorktreeArchives` and kept 90 days (refs and bundle). Retention then removes them, with a notice 7 days before.
+Archives are listed by `ListWorktreeArchives` and kept 90 days (refs, bundle and side archives). Retention then removes them, with a notice 7 days before. Included ignored files such as `.env` stay in the side archive for that time, protected only by the data root's permissions; the decision dialog says so.
 
 ## 4. Per-attempt directories
 
@@ -88,7 +93,7 @@ ArcForges runs unprivileged, so **no limit is enforced by the file system**. Per
 | Kind | When it is checked | Effect | Enforced by |
 |---|---|---|---|
 | **Admission threshold** | At allocation: attempt start, worktree creation, transfer receive, export | The allocation is refused (`RESOURCE/quota_exceeded`, `RESOURCE/disk_space`) | ArcForges, before anything is written |
-| **Monitored limit** | At a stated interval while the writer runs | `storage.disk_limit_action`: `TERMINATE` (default) or `NOTIFY`; a finding | ArcForges, after detection. The overshoot is bounded by write rate × interval. |
+| **Monitored limit** | At a stated interval while the writer runs | `storage.disk_limit_action`: `TERMINATE` (default) stops the writer at once, without the graceful phase ([04](04-execution.md) §6); `NOTIFY` raises a finding and lets it continue | ArcForges, after detection. The overshoot is bounded by write rate × (interval + stop latency). |
 | **Tool-enforced limit** | By the tool itself | The tool evicts | sccache (`SCCACHE_CACHE_SIZE`), ccache (`max_size`) |
 | **Report-only** (`WARN` quotas) | Housekeeping (every 10 min) | A finding only | — |
 
@@ -96,8 +101,8 @@ ArcForges runs unprivileged, so **no limit is enforced by the file system**. Per
 
 | Writer | Limit | Interval | Action |
 |---|---|---|---|
-| Attempt output (stdout plus stderr) | `max_attempt_output_bytes` (default 2 GiB) | Every tailer read (100 ms) | `TERMINATE` → `termination_reason=OUTPUT_LIMIT`, or `NOTIFY` ([04](04-execution.md) §4) |
-| Attempt temporary directory | `max_attempt_tmp_bytes` (default 20 GiB) | 15 s (incremental walk of `tmp/<attempt>/` through the size cache) | `TERMINATE` → `DISK_LIMIT`, or `NOTIFY` |
+| Attempt output (stdout plus stderr) | `max_attempt_output_bytes` (default 2 GiB) | Every tailer read (100 ms) | `TERMINATE`: stopped at once, `termination_reason=OUTPUT_LIMIT`; or `NOTIFY`: a finding, and the output is kept ([04](04-execution.md) §4) |
+| Attempt temporary directory | `max_attempt_tmp_bytes` (default 20 GiB) | 15 s (incremental walk of `tmp/<attempt>/` through the size cache) | `TERMINATE`: stopped at once, `DISK_LIMIT`; or `NOTIFY`: a finding |
 | Sub-root totals (`HARD` quotas of §1) | Per sub-root | At allocation, and in housekeeping | New allocations refused; a finding. Running writers are covered by the rows above and by the low-space guard. |
 | Caches | Per cache quota | After write bursts, and in housekeeping | Eviction under the maintenance lease ([05](05-toolchains-caches.md) §4) |
 | Incoming transfers | Manifest size against free space and the `staging` quota | Before pulling, then every 5 s | Refused before, or aborted during, with `RESOURCE/disk_space` |
@@ -106,13 +111,13 @@ ArcForges runs unprivileged, so **no limit is enforced by the file system**. Per
 
 | Level | Condition | Actions |
 |---|---|---|
-| `NORMAL` | Free space ≥ `max(min_free_bytes, 5% of the volume)` | — |
+| `NORMAL` | Free space ≥ the LOW threshold `max(min_free_bytes, min(5% of the volume, low_free_cap_bytes))` (defaults 1 GiB and 20 GiB) | — |
 | `LOW` | Below that | No new attempt whose working directory, temporary directory or output root is on the volume (blocking reason `disk_space`). Housekeeping runs at once (retention, expired quarantine, idle remote slots). Finding `DISK_PRESSURE`. |
-| `CRITICAL` | Free space < `critical_free_bytes` (default 512 MiB) | Running attempts that write to the volume: on Linux, pausable attempts are frozen; the rest follow `disk_limit_action`, preemptible attempts first, then by ascending priority (`DISK_LIMIT`). Node logging drops to warnings. |
+| `CRITICAL` | Free space < `critical_free_bytes` (default 512 MiB) | Running attempts that write to the volume: on Linux, pausable attempts are frozen; the rest are stopped at once (`DISK_LIMIT`), preemptible attempts first, then by ascending priority, unless `disk_limit_action=NOTIFY`, in which case they continue and a finding is raised. Node logging drops to warnings. |
 
 **The node's own store.**
-- The node keeps a preallocated reserve file, `store/reserve.bin` (64 MiB). At `CRITICAL` on the store's volume it deletes the file, so store commits and the event journal can continue. It recreates the file when the level is back to `NORMAL`.
-- If a store write still fails for lack of space, SQLite rolls the transaction back. The node then enters the lifecycle state `DEGRADED` with the reason `store_out_of_space`: it stays readable, refuses mutations with `RESOURCE/disk_space`, and returns to `READY` when space returns. It never continues with unrecorded state.
+- The node keeps a preallocated reserve file, `store/reserve.bin` (64 MiB). At `CRITICAL` on the store's volume, the writers there are frozen or stopped first. The reserve is deleted only when a store write fails for lack of space; the write is then retried once, and the file is recreated when the level is back to `NORMAL`.
+- If the retry also fails (for example because an unmanaged process took the freed space), SQLite rolls the transaction back. The node then enters the lifecycle state `DEGRADED` with the reason `store_out_of_space`: it stays readable, refuses mutations with `RESOURCE/disk_space`, and returns to `READY` when space returns. It never continues with unrecorded state. This, not the reserve, is the guarantee (R-STOR-009).
 
 The disk level of each volume is part of `ResourceSnapshot.volumes` and of the remote status summary (`disk_level`).
 

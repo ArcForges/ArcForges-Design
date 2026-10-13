@@ -113,6 +113,7 @@ Every billable dimension of the products in use (V-C02, V-C08) maps to an operat
 |---|---|---|---|---|
 | Containers (C# host) | Provisioned memory (GiB-s) and disk (GB-s) **for as long as an instance runs**, 10 ms granularity | `CONTAINER_INSTANCE_SECONDS` | Measured: the host records each instance's run interval (start to sleep) and the instance type | `max_instances` and `instance_type` in `wrangler.json`, and the idle `sleepAfter`. Worst case per day = `max_instances × 86,400 s × (memory + disk + vCPU rates of the instance type)`. |
 | Containers | CPU (vCPU-s), active only | `CONTAINER_CPU_SECONDS` | Measured: the host's process CPU time | Bounded by the worst case above |
+| Containers | The container's own Durable Object: requests, and duration while the instance runs (V-C08) | `DO_REQUESTS`, `DO_DURATION_GB_SECONDS` | **Estimated** from the instance run intervals and the requests routed to the container | As the container worst case |
 | Containers | Egress | `EGRESS_BYTES` | Measured: the host's outbound handler counts bytes (FCM, Paddle, Play, e-mail provider) | Allow-listed destinations only |
 | Workers | Requests and CPU time | `WORKER_REQUESTS` | Measured: request counters batched from the Worker to the host | `limits.cpu_ms` per request; edge rate limits. Requests rejected by edge rules never invoke the Worker. |
 | Durable Objects | Requests, including WebSocket opens, incoming messages at 20:1, and alarms | `DO_REQUESTS` | Measured: counters in `FleetHub`, batched to the host | Per-token frame limits, viewer and node limits, the wake guard |
@@ -132,14 +133,15 @@ Every billable dimension of the products in use (V-C02, V-C08) maps to an operat
 - **Daily operating budgets.** One budget per dimension and UTC day in `platform_operating_budget`. Every metered operation reserves against its dimension (`platform_operating_reservation`); estimated dimensions are recorded after the fact.
 - **80%:** an operator alert.
 - **100%:** the degradation ladder (§7.3) applies the step for that dimension. **120%** of any dimension, or the container worst case being reached, enters essential-only mode.
-- **`EMAILS_SENT`** has no ladder step of its own: the product sends only sign-in codes and account security notices, which stay available. It alerts at 80% and 100%, and its rate limits bound it (§7.4).
+- **`EMAILS_SENT`** has no ladder step: the product sends only sign-in codes and account security notices, which stay available. It alerts at 80% and 100%, its rate limits bound it (§7.4), and it is excluded from the 120% rule because essential-only mode would not reduce it.
+- **The job runner** (cron) runs only essential jobs in essential-only mode: Play purchase acknowledgements, webhook inbox processing and account-deletion purges. Retention sweeps, reports and reconciliation pause until the mode ends.
 - **Never affected:** local execution and LAN features. LAN features keep working on cached entitlement tokens.
 
 ### 7.3 Degradation ladder (what actually stops spending)
 
 | Step | Triggered by | What stops | What keeps costing |
 |---|---|---|---|
-| 1. Live streaming off | `DO_REQUESTS`, `DO_DURATION_GB_SECONDS` | Delta frames and the DO wakes they cause; viewers get summaries only | Summary frames (at most 1 per minute per node) |
+| 1. Live streaming off | `DO_REQUESTS`, `DO_DURATION_GB_SECONDS`, `DO_ROWS_WRITTEN` | Delta frames and the DO wakes they cause; viewers get summaries only | Summary frames (at most 1 per minute per node) |
 | 2. Relay closed | Step 1 persisting for 15 min, or `DO_*` at 110% | **Existing** relay sockets are closed (close code 4429 `budget`) and new ones refused. Nodes back off 15 min with jitter; viewers show "Live view paused". | Nodes' daily entitlement refresh |
 | 3. Push batched, then off | `PUSH_SENDS`, `EGRESS_BYTES` | Push is batched hourly; at 120% it stops | — |
 | 4. Uploads refused | `R2_*` | Support uploads | Storage of existing bundles until lifecycle expiry |
@@ -154,15 +156,16 @@ Essential-only mode cannot stop:
 - **container run time** for those requests, at most the structural worst case;
 - **storage at rest** (D1, R2, Durable Object storage), bounded by retention;
 - **Workers Logs** events, bounded by head sampling;
-- **unauthenticated internet traffic** that passes the edge rules, bounded by edge rate limiting and Cloudflare's network-level DDoS protection.
+- **unauthenticated internet traffic** that passes the edge rules, bounded by edge rate limiting and Cloudflare's network-level DDoS protection;
+- **Worker requests** answered or refused in essential-only mode: refusing a request still bills it as a Worker request; they are bounded by the edge rate limits (`ResidualExposure.worker_requests_micros`).
 
-`OperatorReadService.GetOperatingBudgets` returns `residual`: the container bound, storage at rest and essential requests at their rate limits, priced with `ops.unit_prices`, as a **daily worst case**. W-66 shows it.
+`OperatorReadService.GetOperatingBudgets` returns `residual`: the container bound, storage at rest, essential requests and Worker requests at their rate limits, priced with `ops.unit_prices`, as a **daily worst case**. W-66 shows it.
 
 **Monthly ceiling (product-owner input H-09).** The operator sets the daily budgets so that `31 × (Σ daily budgets + residual daily worst case) ≤ monthly ceiling`. Cloudflare budget alerts at 50%, 80% and 100% of the ceiling are a second, notification-only signal (V-C04).
 
 ### 7.5 Reconciliation
 
-A daily job compares the metered values with the providers' billing data. For Cloudflare this uses the GraphQL Analytics API with a read-only token (optional prerequisite H-21). The job raises an operator alert when a dimension diverges by more than 20%, and recalibrates the estimated dimension (`DO_DURATION_GB_SECONDS`). Reconciliation is a check, never enforcement. Without the token, the job reports that reconciliation is off.
+A daily job compares the metered values with the providers' billing data. For Cloudflare this uses the GraphQL Analytics API with a read-only token (optional prerequisite H-21). The job raises an operator alert when a dimension diverges by more than 20%, and recalibrates the estimated dimension (`DO_DURATION_GB_SECONDS`). Reconciliation is a check, never enforcement. Without the token, the job reports that reconciliation is off. `GetOperatingBudgets.reconciliation` carries the state (`OFF`, `OK`, `DIVERGED`), the last run and the diverging dimensions.
 
 **Unit economics check.** The monthly operator report (`OperatorReadService.GetMonthlyReport`, computed on demand from budget use, unit prices and subscriptions) shows the cost per active Pro account, the cost per relay-connected node and the Free-tier cost. It is an input to price decisions.
 

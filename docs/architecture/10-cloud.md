@@ -182,17 +182,27 @@ Runbooks are in [14-commercial-operations.md](14-commercial-operations.md) (R-OP
 
 Implementation delivery and production activation are separate steps ([AD-0014](../decisions/AD-0014-delivery-method.md) §9):
 - **Dark deploys.** The Cloud and Web repositories keep deploying on every main push through their guarded scripts, and flagship features ship **disabled**:
-  - **Cloud:** the configuration flag `flagship.activation` holds one switch per surface (`fleet_api`, `relay`, `push`, `commerce`, `support`), all off by default. A disabled surface is answered by the Worker with `STATE/not_activated`, without waking the container.
+  - **Cloud:** the Worker variable `FLAGSHIP_SURFACES` in `wrangler.json` lists the enabled surfaces (`identity`, `fleet_api`, `relay`, `push`, `support`, `commerce`); it is empty by default. It is a deployment setting, not a D1 configuration revision, because the production D1 binding does not exist until activation, and it changes only through a reviewed main-push deploy. A disabled surface is answered by the Worker with `STATE/not_activated`, without waking the container. While no surface is enabled, the scheduled (cron) handler returns at once, so nothing wakes the container.
   - **Web:** the repository's deploy configuration holds the switches `public_site`, `web_account` and `web_fleet`, all off. While a switch is off, the guarded deploy keeps publishing the current pages and leaves that part out, so nothing new becomes visible.
 - **No production prerequisites at merge.** Implementation tasks are verified on the local cloud stack ([16](16-testing-strategy.md) §3.1). They never need production key material, domains or provisioned resources. Until activation, the production migration step reports "not applicable" (no D1 binding), and readiness lists the flagship modules as "not provisioned".
-- **Activation** (Plan task AF-PROD-01, after the release candidate) needs the user's approval and the prerequisites H-05, H-06, H-09 (the cost ceiling the production budgets derive from), H-16 and H-20, plus H-10 for the public site. Its steps:
+- **Activation** (Plan task AF-PROD-01, after the release candidate) needs the user's approval and these prerequisites:
+
+  | Surface | Prerequisites |
+  |---|---|
+  | Core: provisioning, `identity`, `fleet_api`, `relay` | H-05 (domains), H-06 (account settings), H-09 (the cost ceiling the production budgets derive from), H-16 (key material), H-19 (transactional e-mail for sign-in codes and security notices), H-20 (provisioning) |
+  | `support` | The core, and the R2 credential of H-16 |
+  | `push` | The core, and H-03 (Firebase) |
+  | `commerce` | The core, H-01 (Paddle) and, for Play, H-02, with H-07 (prices) and the published legal pages (H-10) |
+  | `public_site`, `web_account`, `web_fleet` | H-05 and, for the public site, H-10 |
+
+  A surface whose prerequisites are missing stays off and is recorded; it does not hold back the others. The steps:
   1. provision the resources with the repository script;
   2. the user stores the key material;
   3. add the production bindings;
   4. run the migrations;
-  5. set the production operating budgets from the cost ceiling ([14](14-commercial-operations.md) §7.2);
+  5. set the production operating budgets from the cost ceiling ([14](14-commercial-operations.md) §7.2 and §7.4);
   6. enable the surfaces one at a time, each with a production smoke check;
   7. publish the public site and the web profiles after the user approves their content.
 
-  Each step is a main-push deploy or a configuration activation. Turning a surface's switch off again withdraws that surface.
+  Provisioning runs the repository script with the user's approval, and the user stores the key material; every other step is a reviewed main-push deploy or a configuration activation. Removing a surface from the switch list withdraws it.
 - **Real-world acceptance** stays in the acceptance register (AR-05 to AR-09, AR-14).

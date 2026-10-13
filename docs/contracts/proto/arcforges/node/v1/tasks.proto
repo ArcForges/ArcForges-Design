@@ -211,8 +211,8 @@ message TaskServiceSubmitTaskRequest {
   arcforges.foundation.v1.Id session_id = 11 [json_name = "sessionId"]; // validate: optional; must be an active session whose agent root is an ancestor of the caller
   optional string agent_id = 12 [json_name = "agentId"]; // validate: <= 128 chars; requires session_id
   ProcessIdentity caller_process = 13 [json_name = "callerProcess"]; // validate: the calling process; verified by the node
-  optional bool cancel_when_caller_gone = 14 [json_name = "cancelWhenCallerGone"]; // validate: cancel when the submitting client's connection and all its attach streams are gone for 5 s before the task finishes, unless ReleaseCallerBinding ran first (hook-rewritten runs)
-  optional bool join_existing = 15 [json_name = "joinExisting"]; // validate: return the non-terminal task of the same session with the same command fingerprint, working directory and environment digest instead of submitting a duplicate
+  optional bool cancel_when_caller_gone = 14 [json_name = "cancelWhenCallerGone"]; // validate: cancel when the submitting client's connection and all its attach streams are gone for 5 s before the task finishes, unless ReleaseCallerBinding ran first (hook-rewritten runs); a joined submission binds its caller the same way
+  optional bool join_existing = 15 [json_name = "joinExisting"]; // validate: return an existing task of the same session with the same command digest (program and arguments, or the shell string), working directory, environment digest and stdin, instead of a duplicate: a task not yet started, or a running task whose start input fingerprint equals this submission's (08 section 4.1)
 }
 message TaskServiceSubmitTaskResponse {
   arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
@@ -891,6 +891,7 @@ message TaskSpec {
 message ConcurrencySpec {
   repeated string exclusive_keys = 1 [json_name = "exclusiveKeys"]; // validate: <= 16 keys of <= 200 chars: ws:<workspace>[/<relative dir>][:<purpose>], tool:<name>:<scope>, or name:<text>
   optional WorkspaceAccess access = 2 [json_name = "access"]; // validate: default from the adapter, else SHARED
+  repeated string shared_keys = 3 [json_name = "sharedKeys"]; // validate: <= 16 keys, same syntax; readers: conflict only with exclusive holders of an overlapping key (03 section 4)
 }
 
 // Applying a remote attempt's declared outputs on the origin (09 section 6).
@@ -972,6 +973,7 @@ message ManagedTask {
   optional SideEffectSource side_effect_source = 23 [json_name = "sideEffectSource"];
   optional SideEffectClass side_effect_suggestion = 24 [json_name = "sideEffectSuggestion"]; // the adapter's suggestion when it could not assert one
   repeated string exclusive_keys = 25 [json_name = "exclusiveKeys"]; // effective keys, including adapter keys
+  repeated string shared_keys = 26 [json_name = "sharedKeys"]; // effective shared (reader) keys
 }
 
 message TaskFilter {

@@ -9,7 +9,7 @@ Units: CPU in **millicores** (1,000 = one logical processor fully busy), memory 
 | Machine CPU | `GetSystemTimes` | `/proc/stat` | 1 s internal, 5 s published |
 | Machine memory | `GlobalMemoryStatusEx` (total, available, commit total/limit) | `/proc/meminfo` (MemTotal, MemAvailable, SwapTotal/Free, Committed_AS) | 1 s / 5 s |
 | Pressure | n/a | `/proc/pressure/{cpu,memory,io}`; per cgroup `*.pressure` | 5 s |
-| Disk | `GetDiskFreeSpaceExW` per volume of each managed root | `statvfs` | 60 s |
+| Disk | `GetDiskFreeSpaceExW` per volume of each managed root | `statvfs` | 5 s for volumes holding managed roots or a running attempt's working directory (the low-space guard, [06](06-storage-workspaces.md) §5); 60 s otherwise |
 | Process list | `CreateToolhelp32Snapshot` (pid, ppid, exe) | `/proc/[pid]/stat` (ppid, comm, starttime) | 5 s |
 | Process detail (managed trees, agent trees, top 20 CPU and memory) | `GetProcessTimes`, `GetProcessMemoryInfo` (private bytes, working set), `GetProcessIoCounters`; `PROCESS_QUERY_LIMITED_INFORMATION` | `/proc/[pid]/{stat,status,io}` | 1 s (managed), 5 s (others) |
 | Managed execution totals | `QueryInformationJobObject` (`JobObjectBasicAndIoAccountingInformation`, `JobObjectBasicProcessIdList`, extended limit peak commit) | cgroup `cpu.stat`, `memory.current`, `memory.peak`, `memory.events`, `io.stat`, `pids.current`, `cgroup.events` | 1 s |
@@ -55,7 +55,7 @@ Each attempt carries `request = {cpu_demand, mem_expected, mem_ceiling, source}`
 
 **Accounted memory.** Admission counts every running attempt at `accounted_mem = max(mem_expected, peak_observed)`.
 - `peak_observed` is the highest sampled resident use of the attempt container so far, excluding reclaimable page cache: Linux `memory.current` minus `inactive_file` (from `memory.stat`); Windows the sum of the processes' private working sets.
-- It never decreases while the attempt runs, so admission never counts an attempt below what it has actually used. An attempt that grows only stops further admissions; growth itself never kills it below its ceiling.
+- It never decreases while the attempt runs, so admission never counts an attempt below what it has actually used. Growth stops further admissions. The scheduler never stops an attempt for growing below its ceiling, but the OS limits and the pressure response still apply (§5.4, §7): an OOM kill inside the slice on Linux, the commit limit on Windows, and stopping preemptible work.
 - `mem_ceiling` is a per-attempt hard bound (§5). Ceilings are **not** reserved: the sum of ceilings may exceed `B_mem`, and §5.4 states what follows from that.
 
 ## 4. Admission
@@ -83,22 +83,26 @@ The scheduler runs on events (submit, exit, grant release, budget change) and at
 max_share_mem   = C_mem − R_mem                                   (the most managed work may ever use)
 idle_budget_mem = C_mem − R_mem − U_mem − guest_other_mem          (B_mem with no managed work)
 avail_mem = B_mem − Σ accounted_mem(running attempts and outstanding guest grants)
-cpu_load  = Σ cpu_demand(running) ;  cpu_limit = overcommit_cpu × B_cpu      (overcommit_cpu default 1.5)
+cpu_load  = Σ cpu_granted(running) ;  cpu_limit = overcommit_cpu × B_cpu      (overcommit_cpu default 1.5)
 for pool in pools in weighted round-robin order:
   for t in pool.queue ordered as above:
-    if running(pool) ≥ pool.max_parallel or running(all) ≥ global_max_running: break
-    r = request(t)
+    if running(all) ≥ global_max_running: stop
+    if running(pool) ≥ pool.max_parallel and not light(t): continue   # light routed commands skip pool limits (08 §4.1)
+    r = request(t) ;  c = min(r.cpu_demand, B_cpu)                    # CPU is compressible: never wait for more than the budget
     if r.mem_expected > min(max_share_mem, policy.max_task_memory): mark(t, exceeds_capacity); continue
     if r.mem_expected > idle_budget_mem:                          mark(t, exceeds_budget);   continue
     if keys(t) conflict with keys held by running attempts:       mark(t, exclusive_key);    continue
     if reservation active for another task u and admitting t would delay u: continue   # unless t backfills
-    if r.mem_expected > avail_mem or cpu_load + r.cpu_demand > cpu_limit:
-        if waited(t) > large_task_bypass (default 2 min) and no reservation is active: reserve(t)
+    if r.mem_expected > avail_mem:
+        if waited(t) > large_task_bypass (default 2 min) and no reservation is active: reserve(t)   # memory only
         continue
-    grant(t, r); start(t); avail_mem −= r.mem_expected; cpu_load += r.cpu_demand
+    if cpu_load + c > cpu_limit: continue                             # waits for CPU, never reserves
+    grant(t, r, cpu = c); start(t); avail_mem −= r.mem_expected; cpu_load += c
 ```
 
 **Memory is never overcommitted at admission** (`overcommit_mem = 1.0`, R-RES-005): the sum of accounted memory never exceeds `B_mem` when an attempt is admitted. CPU can be overcommitted because weights share it without harming the reserved headroom: the root cap protects that headroom (§5). What holds after admission is stated in §5.4.
+
+**CPU is compressible.** Admission counts a task's CPU at most at `B_cpu` (`c` above), and the grant sets the tool's parallelism (§5.3). A task that asks for more CPU than the node has therefore runs, with less parallelism, instead of waiting forever. For example, on a 4-processor node (`B_cpu` = 2,600 when idle) a `dotnet build` estimated at 4,000 millicores is granted 2,600 and runs with `-m:3`.
 
 ### Feasibility
 
@@ -110,26 +114,37 @@ The scheduler separates capacity that is temporarily unavailable from requests t
 | `exceeds_budget` | `idle_budget_mem < mem_expected ≤ max_share_mem` | Fits only if unmanaged load falls. Never reserves, so it cannot hold back feasible work. Raises `QUEUE_STARVATION` after twice the starvation bound. |
 | `exceeds_capacity` | `mem_expected > max_share_mem` or `> max_task_memory` | Can never run under the current reserve. Never admitted or reserved; raises `TASK_INFEASIBLE` at once. The user lowers the reserve, gives a hint, or cancels. |
 
+Feasibility concerns memory only. CPU never makes a task infeasible, because demand above the budget is clamped (above).
+
 Explicit hints above `max_task_memory` are refused at submission (validation). Estimates from operational memory are not, because they describe past runs; they are classified as above. `QueueService.ExplainTask` returns the class (`feasibility`) and the numbers.
 
 ### Large-task reservation
 
 A feasible task that waited longer than `large_task_bypass` would otherwise be overtaken forever by smaller tasks. The reservation is bounded:
 - **One at a time.** At most one reservation per node; the longest-waiting qualifying task holds it.
-- **Narrow.** It holds back only tasks of its own and lower priority classes that would consume the dimension it is short of (memory or CPU). Higher classes still run.
+- **Memory only.** Only a task short of memory reserves. The reservation holds back only tasks of its own and lower priority classes that would take memory it is waiting for; higher classes still run. A task waiting for CPU never reserves: CPU frees continuously and weights share it.
 - **Backfill.** A held-back task still starts when operational memory gives it an `ACTIVE` `DURATION` p90 that ends before the reservation's estimated start (the drain estimate from the running attempts' own facts). Without facts there is no backfill.
 - **Lapse.** The reservation lapses after `large_task_reservation_max` (default 30 min), or as soon as the task becomes `exceeds_budget` or `exceeds_capacity`. A task whose reservation lapsed cannot take a new one for the same interval.
 
-### Workspace concurrency and exclusive keys
+### Workspace concurrency and keys
 
-Concurrent tasks in one workspace can overwrite each other's files (shared `obj/`, `node_modules`, `target/`, the git index). Admission therefore honours **exclusive keys** (R-EXE-019):
+Concurrent tasks in one workspace can overwrite each other's files (the `obj/` and `bin/` of shared referenced projects, `node_modules`, `target/`, the git index), or read files another task is rewriting. Admission therefore honours **keys** (R-EXE-019):
+- **Modes.** A writer holds an *exclusive* key; a reader holds a *shared* key.
 - **Sources.**
-  - The caller's `TaskSpec.concurrency.exclusive_keys`.
-  - The adapter's keys for the tool and operation ([05](05-toolchains-caches.md) §2), for example `ws:<workspace>/<project dir>:build` for `dotnet build`, `ws:<workspace>/<package dir>:deps` for `npm ci`, `tool:cargo:<target dir>` for Cargo, and `ws:<workspace>:git` for git commands that write the index.
-  - `access = EXCLUSIVE`, or the workspace's concurrency mode `SERIAL`, adds `ws:<workspace>`. Mode `SHARED` ignores adapter keys and keeps only the caller's.
-- **Conflict rule.** Two tasks conflict when they hold the same key, or when one key's directory is the other's directory, an ancestor or a descendant. Purposes (`:build`, `:deps`) separate two uses of one directory only when both keys carry one. `ws:<workspace>` conflicts with every key of that workspace.
-- **Effect.** A task whose keys conflict with running attempts waits with the blocking reason `exclusive_key`. `ExplainTask` lists the keys and the holders. Output application from LAN placements takes the keys of the declared output paths ([09](09-lan.md) §6).
-- **Scope.** Keys order managed tasks only. They do not stop unmanaged processes, and `git worktree lock` only prevents pruning, so agents that need full isolation get their own managed worktrees ([06](06-storage-workspaces.md) §3).
+  - The caller's `TaskSpec.concurrency` (`exclusive_keys`, `shared_keys`).
+  - The adapter's keys for the tool and operation ([05](05-toolchains-caches.md) §2–3). For example:
+    - .NET build-family operations (`restore`, `build`, `test`, `pack`, `publish`, `msbuild`) take `ws:<workspace>:dotnet` exclusively, because each of them restores and builds every referenced project, so any two of them in one workspace can write the same `obj/` and `bin/` directories. `test --no-build` and `run --no-build` take it shared.
+    - `npm ci` and `npm install` take `ws:<workspace>/<package dir>:deps` exclusively; `npm test`, `npm run` and `npx` take it shared.
+    - Cargo takes `tool:cargo:<target dir>`, which Cargo's own build-directory lock also serializes.
+    - git commands that write the index take `ws:<workspace>:git`.
+  - `access = EXCLUSIVE`, or the workspace's concurrency mode `SERIAL`, adds `ws:<workspace>` exclusively. Mode `SHARED` ignores adapter keys and keeps only the caller's.
+- **Conflict rule.** Two keys *overlap* when they are equal, or when one key's directory is the other's directory, an ancestor or a descendant. Purposes (`:deps`, `:git`) separate two uses of one directory only when both keys carry a purpose and the purposes differ. `ws:<workspace>` overlaps every key of that workspace. Overlapping keys conflict unless both are shared.
+- **Effect.** A task whose keys conflict with running attempts waits with the blocking reason `exclusive_key`. `ExplainTask` lists the keys and their holders.
+- **Lifetime.** Keys are held from start to the end of the task, with two exceptions, so that a long-running program does not block other work indefinitely:
+  - run operations (`dotnet run`, `cargo run`, `npm start`) release their keys when the adapter's phase detector sees the program start;
+  - `SERVICE` tasks release `ws:<workspace>` (from `SERIAL` or `access = EXCLUSIVE`) once they are ready.
+- **Remote placement.** A task placed on another node holds no keys at the origin while it runs there; the executor's workspace slot is private to the attempt. Applying its returned outputs takes the exclusive keys of the output paths at the origin ([09](09-lan.md) §6).
+- **Scope.** Keys order managed tasks only. They do not stop unmanaged processes, and `git worktree lock` only prevents pruning. Agents that need full isolation, and parallel builds of one solution, use separate managed worktrees ([06](06-storage-workspaces.md) §3).
 - **Default.** Commands no adapter knows carry no keys and may run side by side. Users who want strict ordering set the workspace to `SERIAL` or a parallelism limit of 1 for the workspace (R-EXE-013).
 
 ## 5. Enforcement mapping
@@ -184,13 +199,16 @@ Consequences stated plainly:
 4. **Release.** The guest releases the grant at completion with a `GrantRelease` frame, which carries the final usage.
 5. **Demand is admitted; allocations are enforced.** Grants are admitted like host attempts, against the host's accounting: CPU demand may be overcommitted up to `overcommit_cpu × B_cpu`, memory never. Enforcement then divides the host's **enforceable** budget, which can never be overcommitted:
    - **CPU split.** With `D_h` the CPU demand of running host attempts and `D_g` the granted guest demand:
-     `G_cpu = clamp(B_cpu × D_g / (D_h + D_g), min_guest_cpu, B_cpu − min_host_cpu)` and `H_cpu = B_cpu − G_cpu`, where `min_guest_cpu = min_host_cpu = 100` millicores. With no grants, `G_cpu = min_guest_cpu`. Both shares are positive and they sum to exactly `B_cpu`, however far demand is overcommitted.
+     `G_cpu = clamp(B_cpu × D_g / (D_h + D_g), min_guest_cpu, min(B_cpu − min_host_cpu, C_guest_cpu − R_guest_cpu))` and `H_cpu = B_cpu − G_cpu`, where `min_guest_cpu = min_host_cpu = 100` millicores. With no grants, `G_cpu = min_guest_cpu`. Both shares are positive, the guest never gets more than its own processors can use, and the two sum to exactly `B_cpu`, however far demand is overcommitted.
    - **Memory.** Admission keeps `Σ granted mem_expected` within the host's available budget. The guest slice gets `MemoryHigh = Σ granted mem_expected` and `MemoryMax = min(Σ granted mem_ceiling, C_guest_mem − R_guest_mem)`. The host's root keeps its own formulas with the granted expected memory subtracted, never below zero: notification limit `max(0, B_mem − Σ granted mem_expected)`, and commit limit `commit_factor × max(1 GiB, C_mem − R_mem − Σ granted mem_expected)`.
-   - **Pushing.** Whenever `G_cpu` or the granted memory changes by more than 5% of guest capacity, at most every 10 s, and at least every 30 s as a lease renewal, the host calls `GuestLinkService.SetGuestBudget` with `CPUQuota = G_cpu`, the memory values, `TasksMax`, the lease end (`lease_until`, now + 120 s) and the **standalone allocation** (below). The host sets its own `CpuRate` from `H_cpu` at the same time.
+   - **Allocations are acknowledged.** The host pushes each allocation with `GuestLinkService.SetGuestBudget` (`CPUQuota = G_cpu`, the memory values, `TasksMax`, the lease end `lease_until` = now + 120 s, the **standalone allocation** below, and an increasing `allocation_seq`). The guest applies the slice limits before it answers, so the answer acknowledges the allocation. The host accounts the guest at the larger of its granted totals and every allocation pushed since the last acknowledged one: capacity the guest releases is reused only after the guest acknowledges the smaller allocation.
+   - **Pushing.** A grant that raises the allocation is pushed and acknowledged before `AnswerGrant`, so a granted attempt never starts under a smaller slice limit. Decreases and CPU rebalancing are pushed when they change by more than 5% of guest capacity, at most every 10 s, and at least every 30 s as a lease renewal. The host sets its own `CpuRate` from `H_cpu` at the same time.
    - **Result.** CPU caps on both sides sum to `B_cpu`; the host's memory notification limit plus the guest's `MemoryHigh` stay within `B_mem`. The closed-loop test runs concurrent saturating host and guest loads (AF-WSL-01).
 6. **Link loss never over-commits the machine.**
-   - **While the lease runs**, the guest keeps admitting only within its last allocation and keeps its slice limits. The host keeps that allocation reserved.
-   - **After the lease lapses**, the guest admits standalone only within the **standalone allocation** the host last pushed: `guest_standalone_fraction × B_host` for CPU and memory (default 25%), never its own `B_guest`. It sets its slice limits to that allocation and reports `link_lost`. The host reserves exactly that allocation for the guest until the link returns. During the outage it accounts the VM as `max(vm_consumer usage, standalone allocation)`, so guest work is not counted twice.
+   - **While the lease runs**, the guest admits only within its last acknowledged allocation and keeps its slice limits. The host keeps that allocation accounted.
+   - **After the lease lapses**, the guest admits new attempts only while its managed usage stays within the **standalone allocation** of its last acknowledged push: `min(that allocation, guest_standalone_fraction × B_host)` for CPU and memory (fraction default 25%), never its own `B_guest`. It does not lower its slice limits, because that could kill or throttle running attempts; they finish normally. It reports `link_lost`.
+   - **The host** accounts the VM as `max(vm_consumer usage, standalone allocation)` until the link returns, so its reservation shrinks only as guest work actually ends. Because the standalone allocation is part of what the host had already accounted, host and guest admissions together stay within the host budget. A guest that was idle when the link failed therefore admits nothing new until the link returns; its tasks wait, and `GUEST_LINK_LOST` explains why.
+   - **Several distributions** share one VM. Each guest's standalone allocation is bounded by its own acknowledged allocation, so their sum stays within what the host accounted.
    - **Restarts.** Both sides persist the last allocation, the lease end and the standalone allocation (`guest_link` and `host_link`), so a node restart during an outage keeps the same limits.
    - **Never linked.** A guest that has never been linked (no pinned host in `host_link`) is an independent Linux node and admits within its own budget inside the VM. Until the first link, the host counts the VM's whole usage as `guest_other`, which lowers the host budget only after the load appears. This window is not coordinated: D-05 shows the guest as `DISCOVERED` or `CONNECTING` with the explanation, and it closes at the first link, which the host starts as soon as it discovers the guest node (SM-GUEST-LINK `DISCOVERED` → `CONNECTING`).
    - `GUEST_LINK_LOST` reports the outage and the allocation in force.
@@ -202,7 +220,7 @@ Consequences stated plainly:
 | Normal | `available_mem ≥ 10% C_mem` and `U_cpu` stable | Normal admission |
 | Tight | `available_mem < 10% C_mem` or `U_cpu` rose by more than 20% of `C_cpu` within 10 s | Admit only `INTERACTIVE`; shrink the root CPU cap (§5) |
 | Pressure | `available_mem < 5% C_mem` or Linux `memory.pressure some avg10 > 20` | Linux: freeze pausable `BACKGROUND`/`LOW` attempts and lower their `MemoryHigh` to current usage to force reclaim. Windows: requeue preemptible `BACKGROUND` attempts (cancel, then requeue only if retryable). Notify. |
-| Critical | `available_mem < 2% C_mem`, or an OOM kill observed | Cancel preemptible attempts from lowest priority up until the level recovers; raise a finding; notify |
+| Critical | `available_mem < 2% C_mem`, or an OOM kill observed | Stop preemptible attempts from lowest priority up, without the graceful phase ([04](04-execution.md) §6), until the level recovers; raise a finding; notify |
 
 Every action is journaled with its trigger and evidence. Frozen attempts thaw in priority order when the level returns to Normal for 30 s (R-RES-009).
 

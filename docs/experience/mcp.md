@@ -110,7 +110,7 @@ Output (`structuredContent`):
 | M-12 | `findings` | `task_id`, `scope` = session\|node (default session), `include_resolved` | Findings with explanations and available actions | `ListFindings` | RO |
 | M-13 | `session_coverage` | — | The current session's coverage, labelled as observed facts | `GetSessionCoverage` | RO |
 | M-14 | `worktree_create` | **workspace** (path or ID), `branch`, `base_ref`, `name` | `{workspace_id, path, state}`; waits up to 55 s for ACTIVE | `CreateWorktree`, `GetJob` | not RO, not destructive |
-| M-15 | `worktree_remove` | **workspace_id**, `archive` (bool) | `{state, approval_id?}` | `RemoveWorktree` | destructive |
+| M-15 | `worktree_remove` | **workspace_id**, `archive` (bool), `include_ignored` (bool; agents can include ignored files such as `.env` in the archive, never discard them) | `{state, approval_id?}` | `RemoveWorktree` | destructive |
 | M-16 | `cleanup_plan` | `classes[]`, `max_risk` (default low), `workspace` | Plan: items, sizes, risks, digest, expiry | `AnalyzeStorage` (if no recent analysis), `PlanCleanup` | not RO, not destructive |
 | M-17 | `cleanup_execute` | **plan_id**, **digest**, `item_ids[]` | `{state, outcomes[], approval_id?}`. Approval is required unless policy `cleanup.agent_execute=LOW_RISK_ONLY` and every item is low risk. | `ExecuteCleanup` | destructive |
 | M-18 | `doctor` | `areas[]` | Checks with status and remedies | `RunDoctor` | RO |

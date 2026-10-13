@@ -397,7 +397,7 @@ stateDiagram-v2
   IDLE --> REMOVING : WorkspaceService.RemoveWorktree
   ACTIVE --> ARCHIVING : WorkspaceService.RemoveWorktree with archive_changes (approv
   IDLE --> ARCHIVING : WorkspaceService.RemoveWorktree with archive_changes (approv
-  ARCHIVING --> REMOVING : archive verified  index and working-tree snapshot commits wr
+  ARCHIVING --> REMOVING : archive verified  snapshot commits I and W written, the bund
   ARCHIVING --> ACTIVE : archive creation or verification failed
   REMOVING --> REMOVED : git worktree remove succeeded
   REMOVING --> ACTIVE : removal failed (in use or git refused)
@@ -412,8 +412,8 @@ stateDiagram-v2
 | ACTIVE | IDLE | no task, session or lock for 14 days |  |  |
 | IDLE | ACTIVE | used by a task or session |  |  |
 | ACTIVE, IDLE | REMOVING | WorkspaceService.RemoveWorktree; approved cleanup item | clean (no staged, unstaged or untracked changes) |  |
-| ACTIVE, IDLE | ARCHIVING | WorkspaceService.RemoveWorktree with archive_changes (approved) | dirty, and no task, session or lock uses the worktree |  |
-| ARCHIVING | REMOVING | archive verified: index and working-tree snapshot commits written, bundle created, bundle restored into a temporary directory and every file digest matched (06 section 3) |  |  |
+| ACTIVE, IDLE | ARCHIVING | WorkspaceService.RemoveWorktree with archive_changes (approved), with the ignored-files decision when the removal plan lists ignored files | dirty; nothing listed as blocking; no task, session or lock uses the worktree |  |
+| ARCHIVING | REMOVING | archive verified: snapshot commits I and W written, the bundle fetched over the base ref into a temporary repository with the same commit IDs, live files matched by blob ID, mode and bytes, the index matched to I (06 section 3) |  |  |
 | ARCHIVING | ACTIVE | archive creation or verification failed; nothing removed; finding raised |  |  |
 | REMOVING | REMOVED | git worktree remove succeeded |  |  |
 | REMOVING | ACTIVE | removal failed (in use or git refused) |  |  |

@@ -827,15 +827,15 @@
             "IDLE"
           ],
           "to": "ARCHIVING",
-          "on": "WorkspaceService.RemoveWorktree with archive_changes (approved)",
-          "guard": "dirty, and no task, session or lock uses the worktree"
+          "on": "WorkspaceService.RemoveWorktree with archive_changes (approved), with the ignored-files decision when the removal plan lists ignored files",
+          "guard": "dirty; nothing listed as blocking; no task, session or lock uses the worktree"
         },
         {
           "from": [
             "ARCHIVING"
           ],
           "to": "REMOVING",
-          "on": "archive verified: index and working-tree snapshot commits written, bundle created, bundle restored into a temporary directory and every file digest matched (06 section 3)"
+          "on": "archive verified: snapshot commits I and W written, the bundle fetched over the base ref into a temporary repository with the same commit IDs, live files matched by blob ID, mode and bytes, the index matched to I (06 section 3)"
         },
         {
           "from": [

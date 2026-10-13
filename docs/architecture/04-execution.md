@@ -81,7 +81,7 @@ On Linux, `exit-record` reads `cpu.stat`, `memory.peak`, `memory.events` and `io
   - The merged, ordered view interleaves the two streams by index order.
 - `ReadTaskOutput(attempt, stream, from_offset, max_bytes ≤ 4 MiB)` returns bytes plus index records. `WatchTaskOutput` streams new chunks (≤64 KiB per frame) after an optional backfill.
 - Throughput target: ≥200 MB/s capture without loss (R-PERF-001). The process writes the files directly, so capture never back-pressures the process.
-- **Output limit.** Because the process writes the files directly, the node cannot cap them at the file system. The tailer compares the two files' size with `storage.max_attempt_output_bytes` (default 2 GiB) on every read (100 ms). On crossing it, `disk_limit_action` applies: `TERMINATE` (default) runs the cancellation sequence (§6) with `termination_reason=OUTPUT_LIMIT`; `NOTIFY` raises a finding only. The overshoot is bounded by the write rate over one tailer interval ([06](06-storage-workspaces.md) §5).
+- **Output limit.** Because the process writes the files directly, the node cannot cap them at the file system. The tailer compares the two files' size with `storage.max_attempt_output_bytes` (default 2 GiB) on every read (100 ms). On crossing it, `disk_limit_action` applies: `TERMINATE` (default) stops the attempt at once, without the graceful phase (§6), with `termination_reason=OUTPUT_LIMIT`; `NOTIFY` raises a finding and lets the attempt continue, and the output is kept, because the process writes the files itself. The overshoot is bounded by the write rate over one tailer interval plus the stop latency ([06](06-storage-workspaces.md) §5).
 - Retention: output is kept for the record retention period (default 14 days or 5 GiB total, oldest first; pinned tasks excepted). Compression with gzip happens after 24 h for files larger than 1 MiB.
 
 ## 5. Attach (`AttachTask`)
@@ -101,6 +101,7 @@ A server stream delivers the state, output chunks, progress, readiness and the f
    - Linux: `KillUnit("all", SIGTERM)` (or the task's `stop_signal`), which signals every process in the unit's cgroup.
 2. **Grace period:** `cancel_grace` (default 10 s, policy maximum 300 s).
 3. **Forced phase:** `TerminateJobObject` / `KillUnit("all", SIGKILL)` (the user manager uses `cgroup.kill` where the kernel supports it).
+4. **Limit stops** (`OUTPUT_LIMIT`, `DISK_LIMIT`, and Critical memory or disk pressure) skip the graceful phase, because the process would keep writing or allocating during the grace period: on Linux the unit is frozen at once and then killed; on Windows the job is terminated at once.
 4. **Escaped descendants:** terminated if same-user and policy `terminate_escaped=true` (default true for cancellation, false for node shutdown).
 5. **Verification:** the container must report zero processes within 5 s. Otherwise the attempt is marked `TERMINATION_INCOMPLETE` with the PIDs left, and a finding is raised (R-EXE-006).
 

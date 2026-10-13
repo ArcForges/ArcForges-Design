@@ -14,7 +14,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 ## Product
 
 - [product-definition.md](product/product-definition.md)
-- [requirements.md](product/requirements.md) (R-EXE … R-TEST, 131 requirements)
+- [requirements.md](product/requirements.md) (R-EXE … R-TEST, 139 requirements)
 
 ## Decisions
 

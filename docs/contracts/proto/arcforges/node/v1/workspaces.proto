@@ -63,14 +63,23 @@ service WorkspaceService {
   // state: SM-WORKTREE: (none) -> CREATING -> ACTIVE | FAILED
   rpc CreateWorktree(WorkspaceServiceCreateWorktreeRequest) returns (WorkspaceServiceCreateWorktreeResponse);
 
+  // Inventory a managed worktree before removal: changes to archive, intent-to-add paths, ignored files that would need a decision, and anything that blocks archiving (06 section 3).
+  // auth: HUMAN=A SCRIPT=A AGENT=A REMOTE=-
+  // idempotency: read
+  // deadline: 30 s
+  // stream: none
+  // errors: STATE/not_found
+  // locality: node
+  rpc PlanWorktreeRemoval(WorkspaceServicePlanWorktreeRemovalRequest) returns (WorkspaceServicePlanWorktreeRemovalResponse);
+
   // Remove a managed worktree. A dirty worktree is refused unless archive_changes is set (approval needed); the archive is verified before anything is removed (06 section 3).
   // auth: HUMAN=A SCRIPT=A AGENT=A (clean) / P (archive) REMOTE=-
   // idempotency: command_id
   // deadline: 10 s (job continues)
   // stream: none
-  // errors: STATE/not_found, STATE/in_use, STATE/dirty_worktree, AUTHORIZATION/approval_required
+  // errors: STATE/not_found, STATE/in_use, STATE/dirty_worktree, STATE/invalid_state, VALIDATION/invalid_argument, CONFLICT/digest_mismatch, AUTHORIZATION/approval_required
   // locality: node
-  // state: SM-WORKTREE: ACTIVE|IDLE -> REMOVING -> REMOVED
+  // state: SM-WORKTREE: ACTIVE|IDLE -> REMOVING -> REMOVED (clean); ACTIVE|IDLE -> ARCHIVING -> REMOVING -> REMOVED (archive_changes)
   rpc RemoveWorktree(WorkspaceServiceRemoveWorktreeRequest) returns (WorkspaceServiceRemoveWorktreeResponse);
 
   // List verified archives of removed worktrees (retention 90 days).
@@ -195,11 +204,30 @@ message WorkspaceServiceCreateWorktreeValue {
   JobView job = 11 [json_name = "job"];
 }
 
+message WorkspaceServicePlanWorktreeRemovalRequest {
+  arcforges.foundation.v1.RequestMeta meta = 1 [json_name = "meta"];
+  reserved 2 to 9;
+  arcforges.foundation.v1.Id workspace_id = 10 [json_name = "workspaceId"]; // validate: MANAGED_WORKTREE
+}
+message WorkspaceServicePlanWorktreeRemovalResponse {
+  arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
+  oneof outcome {
+    WorkspaceServicePlanWorktreeRemovalValue value = 2 [json_name = "value"];
+    arcforges.foundation.v1.ArcError error = 3 [json_name = "error"];
+  }
+  reserved 4 to 9;
+}
+message WorkspaceServicePlanWorktreeRemovalValue {
+  WorktreeRemovalPlan plan = 10 [json_name = "plan"];
+}
+
 message WorkspaceServiceRemoveWorktreeRequest {
   arcforges.foundation.v1.RequestMeta meta = 1 [json_name = "meta"];
   reserved 2 to 9;
   arcforges.foundation.v1.Id workspace_id = 10 [json_name = "workspaceId"]; // validate: MANAGED_WORKTREE
   optional bool archive_changes = 11 [json_name = "archiveChanges"];
+  optional IgnoredFilesDecision ignored_files = 12 [json_name = "ignoredFiles"]; // validate: required when the removal plan lists ignored files; DISCARD_CONFIRMED from HUMAN callers only
+  optional bytes ignored_list_digest = 13 [json_name = "ignoredListDigest"]; // validate: required with ignored_files; equals the current plan's digest
 }
 message WorkspaceServiceRemoveWorktreeResponse {
   arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
@@ -239,7 +267,7 @@ message WorkspaceServiceRestoreWorktreeRequest {
   arcforges.foundation.v1.RequestMeta meta = 1 [json_name = "meta"];
   reserved 2 to 9;
   arcforges.foundation.v1.Id archive_id = 10 [json_name = "archiveId"]; // validate: required; VERIFIED
-  optional string branch = 11 [json_name = "branch"]; // validate: optional new branch name; default the archived branch if free
+  optional string branch = 11 [json_name = "branch"]; // validate: optional new branch name; default: the archived branch if it is free and still points at the archived HEAD, else <branch>-restored
 }
 message WorkspaceServiceRestoreWorktreeResponse {
   arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
@@ -315,6 +343,28 @@ message WorktreeArchive {
   optional uint64 size_bytes = 10 [json_name = "sizeBytes"];
   arcforges.foundation.v1.Instant verified_at = 11 [json_name = "verifiedAt"];
   arcforges.foundation.v1.Instant expires_at = 12 [json_name = "expiresAt"];
+  repeated string intent_to_add_paths = 13 [json_name = "intentToAddPaths"]; // paths staged with git add -N, re-applied on restore
+  optional string raw_archive_path = 14 [json_name = "rawArchivePath"]; // files kept byte for byte: bytes that do not survive the repository's filters, and LFS content
+  optional IgnoredFilesDecision ignored_files = 15 [json_name = "ignoredFiles"];
+}
+
+enum IgnoredFilesDecision {
+  IGNORED_FILES_DECISION_UNSPECIFIED = 0; // no ignored files outside regenerable output
+  IGNORED_FILES_DECISION_INCLUDE = 1; // archived beside the bundle
+  IGNORED_FILES_DECISION_DISCARD_CONFIRMED = 2; // HUMAN only: the listed files may be lost
+}
+
+// What removing a worktree would archive or lose (06 section 3).
+message WorktreeRemovalPlan {
+  optional bool dirty = 1 [json_name = "dirty"];
+  optional uint32 staged = 2 [json_name = "staged"];
+  optional uint32 unstaged = 3 [json_name = "unstaged"];
+  optional uint32 untracked = 4 [json_name = "untracked"];
+  repeated string intent_to_add_paths = 5 [json_name = "intentToAddPaths"];
+  repeated string ignored_paths = 6 [json_name = "ignoredPaths"]; // ignored files outside regenerable output, at most 1,000
+  optional bool ignored_truncated = 7 [json_name = "ignoredTruncated"];
+  optional bytes ignored_list_digest = 8 [json_name = "ignoredListDigest"]; // SHA-256 over the sorted full list
+  repeated string blocking = 9 [json_name = "blocking"]; // reasons the worktree cannot be archived: unmerged entries, submodules or nested repositories with their own changes
 }
 
 message GitStatusSummary {

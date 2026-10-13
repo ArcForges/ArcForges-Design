@@ -327,7 +327,7 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Data:** `FleetService.ListNodes`, then `OpenFleetWatch(SUMMARY)`, then the viewer WebSocket (snapshot plus deltas). `WatchFleet` is the fallback. Each row uses `StatusSummary`: running and queued counts, CPU and memory, the data-root disk use and `disk_level`, findings and approvals, and the active sessions and subagents.
+- **Data:** `FleetService.ListNodes`, then `OpenFleetWatch(SUMMARY)`, then the viewer WebSocket (snapshot plus deltas). `WatchFleet` is the fallback. Each row uses `StatusSummary`: running and queued counts, CPU and memory, findings and approvals, and the active sessions and subagents. **Disk** is the data-root volume's use (`disk_free_bytes`, `disk_total_bytes`); a separate "low space" mark shows when `disk_level` is `LOW` or `CRITICAL` on any volume holding managed roots.
 - **Actions:** open a node (W-41). No commands are sent from this page.
 - **States:** S-OFFLINE (reconnects with cursors); node offline; viewer limit reached; kill switch active ("Live updates paused; showing summaries").
 - **Accessibility.** A polite live region announces state changes only for the focused node, at most every 10 s.
@@ -341,7 +341,7 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
 
 ```
 ┌ workstation ─ online · 1.2.0 · Pressure Normal ──────────── [Refresh] [⋯ Actions] ┐
-│ CPU 74% · Mem 33% · Disk D: 61% (412 GiB free) · managed storage 38 GiB           │
+│ CPU 74% · Mem 33% · Disk 61% (412 GiB free) · managed storage 38 GiB              │
 │ Tasks: dotnet build ● RUNNING 04:12 (build 70%, restore 20%) [Cancel] [Priority]  │
 │        npm test ⏸ QUEUED #2 · budget_memory · ETA 3 min                            │
 │        cargo test ✖ FAILED exit 101 · EXITED [Tail]                               │
@@ -529,7 +529,7 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
 └────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Data:** `OperatorReadService.GetOperatingBudgets(day)` (budgets with `estimated` flags, `residual`, `essential_only`) and `GetMonthlyReport(month)` (new, AF-OPS-01); `GetConfiguration` (kill switches, unit prices, monthly ceiling).
+- **Data:** `OperatorReadService.GetOperatingBudgets(day)` (budgets with `estimated` flags, `residual`, `essential_only`, `reconciliation`) and `GetMonthlyReport(month)` (new, AF-OPS-01); `GetConfiguration` (kill switches, unit prices, monthly ceiling).
 - **Actions:** move the day or month; **Change in Configuration** opens W-62 (kill switches change only there).
 - **States:** no budgets configured (S-EMPTY, with a link to W-62); a dimension at alert or exhausted (the ladder step and the triggered kill switches are named); essential-only mode active (banner); reconciliation off (no H-21 token) or diverging by more than 20%; partial month.
 - **Accessibility.** Bars have the same values in the table. Threshold states are text plus an icon.
