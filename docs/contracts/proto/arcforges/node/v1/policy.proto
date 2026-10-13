@@ -405,8 +405,8 @@ message CachePolicy {
   optional bool dotnet_shared_build_servers = 2 [json_name = "dotnetSharedBuildServers"]; // reserved (roadmap RM-13): policy validation refuses true in release 1, because a shared compiler server runs one attempt's compiles in another attempt's container (05 section 5)
   optional bool redirect_tool_caches = 3 [json_name = "redirectToolCaches"]; // default true
   optional uint32 usage_scan_budget_ms = 4 [json_name = "usageScanBudgetMs"]; // default 2000: background budget for measuring each attempt's cache growth (07 section 1.5); a measurement that would exceed it is skipped
-  optional uint32 sccache_port_first = 5 [json_name = "sccachePortFirst"]; // default 29100: first loopback port for attempts' sccache servers and the node's cache store, outside the OS ephemeral ranges (05 section 5)
-  optional uint32 sccache_port_last = 6 [json_name = "sccachePortLast"]; // default 29499
+  optional uint32 sccache_port_first = 5 [json_name = "sccachePortFirst"]; // default: a 400-port slice of 20000..31999 chosen by a hash of the user's ID; first loopback port for attempts' sccache servers and the node's cache store; validate: 1024 <= first < last <= 65535, at least 64 ports, outside the OS ephemeral ranges (05 section 5)
+  optional uint32 sccache_port_last = 6 [json_name = "sccachePortLast"]; // default: first + 399
 }
 
 message PrivacyPolicy {

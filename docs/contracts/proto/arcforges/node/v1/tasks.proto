@@ -965,7 +965,7 @@ message CacheUsage {
 
 message QueueInfo {
   optional uint32 position = 1 [json_name = "position"]; // 1-based within the pool order
-  optional string blocking_reason = 2 [json_name = "blockingReason"]; // budget_memory, budget_cpu, exceeds_budget, exceeds_capacity, exclusive_key, pool_limit, global_limit, dependency, large_task_reserved, guest_grant, approval, disk_space
+  optional string blocking_reason = 2 [json_name = "blockingReason"]; // budget_memory, budget_cpu, exceeds_budget, exceeds_capacity, exclusive_key, pool_limit, global_limit, dependency, large_task_reserved, guest_grant, approval, disk_space, sccache_port
   arcforges.foundation.v1.Instant eta = 3 [json_name = "eta"]; // estimate, absent when unknown
   optional uint64 waited_ms = 4 [json_name = "waitedMs"];
 }
