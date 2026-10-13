@@ -149,7 +149,6 @@ ArcForges never claims that connecting MCP, or any single route, manages everyth
 - `routes`: MCP connected (yes/no); hooks seen per event kind; rewrite mode active; probe result;
 - `managed_tasks`: count, CPU-seconds, wall time;
 - `managed_share`: managed CPU-seconds as a share of all CPU-seconds attributed to the session (managed, bypassed and attributed unmanaged), so the effect of the chosen mode is visible;
-- the **release coverage statement** ([product definition](../product/product-definition.md) §9) accompanies every coverage view: D-14, `arcforges coverage` and the MCP `session_coverage` tool show it next to the session's facts, so gaps that are not session facts are never hidden;
 - `handoffs` and `joined`: rewritten runs that handed off before the client's timeout, and submissions that joined an existing task;
 - `bypassed`: commands seen through PostToolUse, plus heavy processes by ancestry, with CPU-seconds and peak memory;
 - `unattributed_heavy`: node-wide heavy unmanaged processes with no session ancestry;
@@ -157,6 +156,8 @@ ArcForges never claims that connecting MCP, or any single route, manages everyth
 - `client_events`: the last client-reported events (session start and end, subagent start and stop, stop).
 
 The UI and MCP present coverage as observed facts with these labels, never as completeness (R-AI-007).
+
+**Release coverage statement.** Each release ships the table of the [product definition](../product/product-definition.md) §9 (supported operations and reported gaps) as a resource built into the CLI, the MCP adapter and Desktop, so every surface shows the same text. D-14, `arcforges coverage` and the MCP `session_coverage` tool (as `release_scope`) show it next to the session's facts, so gaps that are not session facts are never hidden (R-AI-011).
 
 ## 6. Configuration management
 
