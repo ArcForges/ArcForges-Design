@@ -45,7 +45,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 | [02](architecture/02-node-service.md) | Node service: structure, lifecycle, endpoint, configuration |
 | [03](architecture/03-resource-control.md) | Observation, budgets, admission, enforcement, WSL coordination, pressure |
 | [04](architecture/04-execution.md) | Task specification, launch, output, attach, cancellation, recovery |
-| [05](architecture/05-toolchains-caches.md) | Toolchains, adapters, caches, shared services, LAN cache sharing |
+| [05](architecture/05-toolchains-caches.md) | Toolchains, adapters, caches, compiler servers, LAN cache sharing |
 | [06](architecture/06-storage-workspaces.md) | Managed storage, workspaces, analysis, two-phase cleanup |
 | [07](architecture/07-records-diagnosis-memory.md) | Records, diagnosis, findings, operational memory |
 | [08](architecture/08-ai-integration.md) | AI clients: MCP adapter, hooks, sessions, routing, coverage |

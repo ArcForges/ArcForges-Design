@@ -112,7 +112,7 @@ Each journey lists its steps across surfaces with the APIs involved, its success
 4. The workstation disconnects mid-run. The build box finishes and retains. On reconnect the origin collects the results.
 
 - **Verification:**
-  - closed-loop `J07_PlacementTests` (multi-node on one machine, real transfers, lease expiry, executor preemption, cache proxy with a real sccache WebDAV client);
+  - closed-loop `J07_PlacementTests` (multi-node on one machine, real transfers, lease expiry, executor preemption, the node's compiler-cache store reading through to a peer, with a real sccache client);
   - a physical LAN: AR-03.
 
 ## J-08 Subscribe

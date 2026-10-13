@@ -24,7 +24,8 @@ Requirement: R-PERF-001. Every target names its measurement. "Workstation" means
 | Idle CPU | ≤ 0.5% of one core (10-minute average) | Process CPU time delta, LAN and cloud off. Timers: monitor 1 s; diagnosis 15 s per running attempt (none while idle) and 60 s for node-wide rules ([07](07-records-diagnosis-memory.md) §2). | Workstation, both OSes |
 | Idle memory | Windows ≤ 60 MB private bytes (node + supervisor); Linux ≤ 70 MB RSS | After 10 minutes idle, with a store of 10,000 attempts | Workstation |
 | Under load: 50 concurrent executions (synthetic `TestLoad` workers) | Node ≤ 2% of one core (excluding the executions), ≤ 150 MB | 10-minute steady state | Workstation |
-| Per-execution helper overhead | Windows `exec-wrap` ≤ 3 MB private each; Linux 0 (`exit-record` runs only at exit) | Private bytes of the helper process | Workstation |
+| Per-execution helper overhead | Windows `exec-wrap` (holder and disk guard) ≤ 3 MB private each; Linux 0 per execution (`exit-record` runs only at exit) | Private bytes of the helper process | Workstation |
+| Disk guard | Linux `arcforges-guard.service` ≤ 8 MB private, one per user, idle while the node's heartbeat is fresh; takeover within `storage.guard_takeover_ms` + 1 s on both platforms | Private bytes; time from the node's stop to the first guard check | Workstation |
 | Admission latency (submit → `STARTED` when capacity exists) | p95 ≤ 150 ms (Windows), ≤ 250 ms (Linux, including the transient-unit job) | 500 submissions | Workstation |
 | Local event latency (state change → client stream) | p95 ≤ 200 ms | Timestamps in the event and the receiver | Workstation |
 | Output capture | ≥ 200 MB/s sustained, no loss | `TestLoad` writer at maximum rate; byte-for-byte digest comparison | Workstation |

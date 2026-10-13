@@ -821,6 +821,11 @@ message GuestHello {
   optional uint32 capacity_cpu_millicores = 5 [json_name = "capacityCpuMillicores"];
   optional uint64 capacity_mem_bytes = 6 [json_name = "capacityMemBytes"];
   arcforges.foundation.v1.Id pinned_host_node_id = 7 [json_name = "pinnedHostNodeId"];
+  optional uint64 applied_seq = 8 [json_name = "appliedSeq"]; // the allocation the guest applies now (03 section 6); the host adds it to the reservation if it is larger
+  optional uint32 applied_cpu_millicores = 9 [json_name = "appliedCpuMillicores"];
+  optional uint64 applied_mem_high_bytes = 10 [json_name = "appliedMemHighBytes"];
+  optional uint64 applied_mem_max_bytes = 11 [json_name = "appliedMemMaxBytes"];
+  optional bool new_distro_boot = 12 [json_name = "newDistroBoot"]; // the guest started without its runtime-directory marker: a new boot of its distribution (03 section 6)
 }
 
 message GrantRequest {
@@ -831,6 +836,7 @@ message GrantRequest {
   optional string pool = 5 [json_name = "pool"];
   arcforges.node.v1.ActorRef owner = 6 [json_name = "owner"];
   optional string title = 7 [json_name = "title"];
+  optional bool already_running = 8 [json_name = "alreadyRunning"]; // the guest admitted this attempt while the link was lost; the host accounts it at once and covers it in the next allocation (03 section 6)
 }
 
 message GrantRelease {

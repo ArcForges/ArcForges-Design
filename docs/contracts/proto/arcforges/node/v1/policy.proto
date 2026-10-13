@@ -385,6 +385,8 @@ message StoragePolicy {
   optional uint64 critical_free_bytes = 13 [json_name = "criticalFreeBytes"]; // default 512 MiB per volume holding managed roots
   optional DiskLimitAction disk_limit_action = 14 [json_name = "diskLimitAction"]; // default TERMINATE
   optional uint64 low_free_cap_bytes = 15 [json_name = "lowFreeCapBytes"]; // default 20 GiB: the LOW threshold is max(min_free_bytes, min(5 % of the volume, this cap))
+  optional uint32 guard_takeover_ms = 16 [json_name = "guardTakeoverMs"]; // 2000..60000, default 5000: attempt guards enforce the runtime disk limits while the node's heartbeat has not changed for this long, on the guard's monotonic clock (06 section 5)
+  optional uint64 max_attempt_tmp_entries = 17 [json_name = "maxAttemptTmpEntries"]; // default 1,000,000: entries a pass over an attempt's temporary directory reads; beyond that the attempt counts as over its limit (06 section 5)
 }
 
 message CleanupPolicy {
@@ -400,9 +402,11 @@ message CacheQuota {
 
 message CachePolicy {
   repeated CacheQuota quotas = 1 [json_name = "quotas"]; // defaults: architecture 05 section 4
-  optional bool dotnet_shared_build_servers = 2 [json_name = "dotnetSharedBuildServers"]; // default false
+  optional bool dotnet_shared_build_servers = 2 [json_name = "dotnetSharedBuildServers"]; // reserved (roadmap RM-13): policy validation refuses true in release 1, because a shared compiler server runs one attempt's compiles in another attempt's container (05 section 5)
   optional bool redirect_tool_caches = 3 [json_name = "redirectToolCaches"]; // default true
   optional uint32 usage_scan_budget_ms = 4 [json_name = "usageScanBudgetMs"]; // default 2000: background budget for measuring each attempt's cache growth (07 section 1.5); a measurement that would exceed it is skipped
+  optional uint32 sccache_port_first = 5 [json_name = "sccachePortFirst"]; // default: a 400-port slice of 20000..31999 chosen by a hash of the user's ID; first loopback port for attempts' sccache servers and the node's cache store; validate: 1024 <= first < last <= 65535, at least 64 ports and more ports than the effective global_max_running, outside the OS ephemeral ranges (05 section 5)
+  optional uint32 sccache_port_last = 6 [json_name = "sccachePortLast"]; // default: first + 399
 }
 
 message PrivacyPolicy {

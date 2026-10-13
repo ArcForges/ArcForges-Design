@@ -243,11 +243,11 @@ stateDiagram-v2
 | CONNECTING | LOST | bridge exited or no hello within 30 s |  |  |
 | LINKED | DEGRADED | guest reports degraded enforcement (no systemd, missing controllers) |  |  |
 | DEGRADED | LINKED | guest capabilities restored |  |  |
-| LINKED, DEGRADED | LOST | 30 s without frames, or bridge exit |  | finding GUEST_LINK_LOST; the guest keeps its last allocation until lease_until, then admits only within the standalone allocation, which the host keeps reserved (architecture 03 section 6) |
+| LINKED, DEGRADED | LOST | 30 s without frames, or bridge exit |  | finding GUEST_LINK_LOST; the guest keeps its last allocation until lease_until, then admits only within the standalone allocation; the host keeps the guest's reserved allocation (the last acknowledged one and any larger unacknowledged push) until the guest acknowledges a smaller one after reconnecting, or its distribution is observed stopped (architecture 03 section 6) |
 | LOST | CONNECTING | bounded backoff retry (1 s to 60 s) |  |  |
-| DISCOVERED, CONNECTING, LINKED, DEGRADED, LOST | DISABLED | ResourceService.SetGuestLink enabled=false |  |  |
+| DISCOVERED, CONNECTING, LINKED, DEGRADED, LOST | DISABLED | ResourceService.SetGuestLink enabled=false |  | the guest's reserved allocation stays, whether the link was up or lost, until the guest acknowledges a smaller one or its distribution is observed stopped (architecture 03 section 6) |
 | DISABLED | CONNECTING | ResourceService.SetGuestLink enabled=true |  |  |
-| DISCOVERED, LOST, DISABLED | NOT_INSTALLED | distribution or guest binary removed |  |  |
+| DISCOVERED, LOST, DISABLED | NOT_INSTALLED | distribution or guest binary removed |  | the guest's reserved allocation stays, whether the link was up or lost, until the guest acknowledges a smaller one or its distribution is observed stopped (architecture 03 section 6) |
 
 <a id="sm-pairing"></a>
 

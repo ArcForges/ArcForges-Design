@@ -350,7 +350,7 @@ CREATE TABLE attempt (
   signal INTEGER,
   core_dumped INTEGER CHECK (core_dumped IS NULL OR core_dumped IN (0, 1)),
   windows_status INTEGER,
-  termination_reason INTEGER CHECK (termination_reason IS NULL OR termination_reason BETWEEN 1 AND 15),  -- 14 OUTPUT_LIMIT, 15 DISK_LIMIT
+  termination_reason INTEGER CHECK (termination_reason IS NULL OR termination_reason BETWEEN 1 AND 16),  -- 14 OUTPUT_LIMIT, 15 DISK_LIMIT, 16 ENDPOINT_TAKEN
   effect INTEGER CHECK (effect IS NULL OR effect BETWEEN 1 AND 3),   -- EffectCertainty
   detail TEXT,
   leftover_count INTEGER NOT NULL DEFAULT 0,
@@ -367,7 +367,9 @@ CREATE TABLE attempt (
   output_retained_until INTEGER,
   output_compressed INTEGER NOT NULL DEFAULT 0 CHECK (output_compressed IN (0, 1)),
   output_purged INTEGER NOT NULL DEFAULT 0 CHECK (output_purged IN (0, 1)),
-  downloaded_bytes INTEGER CHECK (downloaded_bytes IS NULL OR downloaded_bytes >= 0),  -- sum of the attempt's EXACT download entries; NULL when one of them was not measured (07 section 1.5)
+  limit_enforced_by TEXT CHECK (limit_enforced_by IS NULL OR limit_enforced_by IN ('NODE', 'GUARD')),  -- who stopped it for OUTPUT_LIMIT or DISK_LIMIT (06 section 5)
+  guard_lost INTEGER NOT NULL DEFAULT 0 CHECK (guard_lost IN (0, 1)),  -- ran without a disk guard while the node was down
+  downloaded_bytes INTEGER CHECK (downloaded_bytes IS NULL OR downloaded_bytes >= 0),  -- sum of tool-reported download sizes; NULL unless every download-cache binding reported one; never cache growth (07 section 1.5)
   output_base_manifest BLOB CHECK (output_base_manifest IS NULL OR length(output_base_manifest) = 32),  -- REMOTE, origin side: digest or absence of each declared output at submission (09 section 6)
   outputs BLOB,                                 -- OutputApplyResult, once returned outputs are applied
   rev INTEGER NOT NULL CHECK (rev >= 0),
@@ -392,31 +394,59 @@ CREATE TABLE attempt_cache_usage (
   attempt_id BLOB NOT NULL REFERENCES attempt (attempt_id) ON DELETE CASCADE,
   cache_id BLOB NOT NULL CHECK (length(cache_id) = 16),
   kind TEXT NOT NULL,                           -- nuget | npm | pnpm | cargo | pip | sccache | ccache | fastbuild | cas
-  bytes_added INTEGER CHECK (bytes_added IS NULL OR bytes_added >= 0),  -- NULL when the measurement exceeded caches.usage_scan_budget_ms
-  hits INTEGER CHECK (hits IS NULL OR hits >= 0),          -- when the tool reports them
+  bytes_added INTEGER CHECK (bytes_added IS NULL OR bytes_added >= 0),  -- COUNTED: bytes written to the store the node serves; SOLE_BINDER: growth by file birth and change times
+  hits INTEGER CHECK (hits IS NULL OR hits >= 0),          -- the attempt's own tool counters (per-attempt sccache server, ccache stats log)
   misses INTEGER CHECK (misses IS NULL OR misses >= 0),
-  packages_installed INTEGER CHECK (packages_installed IS NULL OR packages_installed >= 0),
+  cache_writes INTEGER CHECK (cache_writes IS NULL OR cache_writes >= 0),
+  packages_installed INTEGER CHECK (packages_installed IS NULL OR packages_installed >= 0),  -- parsed from the attempt's own output
   packages_reused INTEGER CHECK (packages_reused IS NULL OR packages_reused >= 0),
-  attribution INTEGER NOT NULL CHECK (attribution IN (1, 2)),  -- 1 EXACT, 2 SHARED_WINDOW (other binders during the attempt; never summed)
-  window_id BLOB REFERENCES cache_usage_window (window_id),     -- SHARED_WINDOW only
-  baseline_at INTEGER,                          -- when the baseline size was measured
+  downloaded_bytes INTEGER CHECK (downloaded_bytes IS NULL OR downloaded_bytes >= 0),  -- only when the tool reports download sizes
+  peer_filled_bytes INTEGER CHECK (peer_filled_bytes IS NULL OR peer_filled_bytes >= 0),  -- fetched from LAN peers into the node's store for this attempt's reads
+  counters_source TEXT,                         -- e.g. sccache-server, ccache-stats-log, adapter-output; NULL when the tool reports none
+  attribution INTEGER NOT NULL CHECK (attribution IN (1, 2, 3, 4)),  -- of bytes_added: 1 SOLE_BINDER, 2 SHARED, 3 UNKNOWN, 4 COUNTED (07 section 1.5)
+  window_id BLOB REFERENCES cache_usage_window (window_id),     -- SHARED only
+  measured_at INTEGER,                          -- the walk that finalized bytes_added; NULL while provisional
   CHECK ((attribution = 2) = (window_id IS NOT NULL)),
+  CHECK (attribution IN (1, 4) OR bytes_added IS NULL),
   PRIMARY KEY (attempt_id, cache_id)
 ) STRICT, WITHOUT ROWID;
 
--- A window: a maximal interval in which two or more attempts bind a cache at overlapping times; an attempt alone in its run is EXACT and in no window. Totals are recorded once, when it closes (07 section 1.5).
+-- A window: a maximal interval in which two or more attempts bind a cache at overlapping times; an attempt alone in its run is in no window. Totals are recorded once, when it closes (07 section 1.5).
 CREATE TABLE cache_usage_window (
   window_id BLOB NOT NULL PRIMARY KEY CHECK (length(window_id) = 16),
   cache_id BLOB NOT NULL CHECK (length(cache_id) = 16),
   started_at INTEGER NOT NULL,
   ended_at INTEGER,                             -- NULL while open; totals are provisional until then
-  baseline_at INTEGER,
-  bytes_added INTEGER CHECK (bytes_added IS NULL OR bytes_added >= 0),  -- NULL when not measured within the budget
-  hits INTEGER CHECK (hits IS NULL OR hits >= 0),
+  added_bytes INTEGER CHECK (added_bytes IS NULL OR added_bytes >= 0),  -- files born or grown during the window; NULL until measured
+  hits INTEGER CHECK (hits IS NULL OR hits >= 0),   -- sum of its attempts' tool counters
   misses INTEGER CHECK (misses IS NULL OR misses >= 0),
-  attempt_count INTEGER NOT NULL CHECK (attempt_count >= 2)
+  attempt_count INTEGER NOT NULL CHECK (attempt_count >= 2),
+  measured_at INTEGER
 ) STRICT, WITHOUT ROWID;
 CREATE INDEX ix_cache_usage_window__cache ON cache_usage_window (cache_id, started_at);
+
+-- The node-served sccache store's own ledger per period: first-writer bytes, peer fills and evictions. The store is never walked (05 section 5, 07 section 1.5).
+CREATE TABLE cache_store_ledger (
+  cache_id BLOB NOT NULL CHECK (length(cache_id) = 16),
+  period_start INTEGER NOT NULL,
+  period_end INTEGER NOT NULL,
+  written_bytes INTEGER NOT NULL DEFAULT 0 CHECK (written_bytes >= 0),       -- first PUT of each key, also in the writing attempts' COUNTED entries
+  peer_filled_bytes INTEGER NOT NULL DEFAULT 0 CHECK (peer_filled_bytes >= 0),  -- fetched from peers, also in the reading attempts' entries
+  evicted_bytes INTEGER NOT NULL DEFAULT 0 CHECK (evicted_bytes >= 0),
+  PRIMARY KEY (cache_id, period_start)
+) STRICT, WITHOUT ROWID;
+
+-- One walk of a managed cache by the size cache: removals and growth outside any attempt (07 section 1.5). The sccache store is not walked.
+CREATE TABLE cache_walk (
+  cache_id BLOB NOT NULL CHECK (length(cache_id) = 16),
+  started_at INTEGER NOT NULL,
+  ended_at INTEGER NOT NULL,
+  full_walk INTEGER NOT NULL CHECK (full_walk IN (0, 1)),
+  truncated INTEGER NOT NULL CHECK (truncated IN (0, 1)),
+  removed_bytes INTEGER NOT NULL CHECK (removed_bytes >= 0),      -- files gone since the previous walk (eviction)
+  unattributed_added_bytes INTEGER NOT NULL CHECK (unattributed_added_bytes >= 0),  -- born while no managed attempt bound the cache
+  PRIMARY KEY (cache_id, started_at)
+) STRICT, WITHOUT ROWID;
 
 CREATE TABLE timeline_segment (
   attempt_id BLOB NOT NULL REFERENCES attempt (attempt_id) ON DELETE CASCADE,
@@ -812,9 +842,16 @@ CREATE TABLE guest_link (
   alloc_cpu_millicores INTEGER,                 -- last allocation pushed with SetGuestBudget (03 section 6)
   alloc_mem_high_bytes INTEGER,
   alloc_mem_max_bytes INTEGER,
+  acked_cpu_millicores INTEGER,                 -- the allocation the guest last acknowledged
+  acked_mem_high_bytes INTEGER,
+  acked_mem_max_bytes INTEGER,
+  reserved_cpu_millicores INTEGER,              -- the larger of the acknowledged allocation and every unacknowledged push; written before each push (03 section 6)
+  reserved_mem_high_bytes INTEGER,
+  reserved_mem_max_bytes INTEGER,
   lease_until INTEGER,
-  standalone_cpu_millicores INTEGER,            -- reserved for the guest while the link is lost
+  standalone_cpu_millicores INTEGER,            -- the guest's admission limit after the lease lapses; the host keeps the whole acknowledged allocation reserved (03 section 6)
   standalone_mem_bytes INTEGER,
+  reservation_released_at INTEGER,              -- set when the distribution or the VM was observed stopped during an outage
   rev INTEGER NOT NULL CHECK (rev >= 0)
 ) STRICT;
 
@@ -833,7 +870,8 @@ CREATE TABLE host_link (
   alloc_mem_max_bytes INTEGER,
   lease_until INTEGER,                          -- after it, only the standalone allocation applies
   standalone_cpu_millicores INTEGER,
-  standalone_mem_bytes INTEGER
+  standalone_mem_bytes INTEGER,
+  distro_boot_marker TEXT                       -- ID of the marker in the distribution's runtime directory when the allocation was applied (03 section 6)
 ) STRICT;
 
 CREATE TABLE guest_grant (

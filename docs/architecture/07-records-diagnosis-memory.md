@@ -89,24 +89,42 @@ Every attempt's record links the evidence that explains delay and waste (R-REC-0
 | Processes | `process_record` | `(attempt_id, pid, start)` |
 | Queueing | `QUEUED_*` timeline segments, whose evidence names the blocking reason and, for keys, the holders | `attempt_id` |
 | Execution | Timeline segments and adapter phase events | `attempt_id` |
-| Downloads and cache usage | `attempt_cache_usage` (`CacheUsage` per cache binding: bytes added, hits and misses where the tool reports them, packages installed and reused), `cache_usage_window` (shared use) and `Attempt.downloaded_bytes` | `(attempt_id, cache_id)`; `window_id` |
+| Downloads and cache usage | `attempt_cache_usage` (`CacheUsage` per cache binding: the tool's own counters for the attempt, and cache growth measured by the node with its attribution), `cache_usage_window` (shared use), `cache_walk` (removals and growth outside any attempt), `cache_store_ledger` (the sccache store's writes, peer fills and evictions) and `Attempt.downloaded_bytes` | `(attempt_id, cache_id)`; `window_id`; `(cache_id, walk)`; `(cache_id, period)` |
 | Resource consumption | Attempt accounting and `resource_sample` | `attempt_id` |
 | Retries and outcomes | The task's attempts, `termination_reason`, `effect` and findings | `task_id` |
 
-- **How cache usage is measured.**
-  - The size cache ([06](06-storage-workspaces.md) §6) keeps each managed cache's size and when it was measured. It is refreshed when a window closes and by cache maintenance, re-walking only directories whose modification time changed.
-  - A **window** is a maximal interval in which two or more attempts bind a cache at overlapping times. An attempt that was the only binder during its run belongs to no window. An entry's baseline is the cache's last measured size before its attempt started, and a window's baseline is the last before the window opened (`baseline_at`).
-  - When an attempt ends, a background job measures the cache within policy `caches.usage_scan_budget_ms` (default 2,000 ms) and writes the attempt's entry; the attempt's result never waits for it. A measurement that would exceed the budget is skipped, and the entry leaves `bytes_added` empty, never 0.
-  - Hits and misses come from the tools' counters over the same interval (sccache and ccache statistics). Package counts come from the attempt's own output (NuGet restore output, npm and pip logs) and are always its own.
-- **Attribution.**
-  - An attempt that was the only binder during its run gets an `EXACT` entry: its values are its own.
-  - When other attempts bound the cache meanwhile, the entry is `SHARED_WINDOW` and carries the window's ID. Its size growth and counters cover the attempt's interval, including the other binders' activity, so they are never summed or split by guess.
-  - Writes by unmanaged processes since `baseline_at` are included in either case. The entry records `baseline_at`, so a stale baseline is visible.
-- **Downloads.** `Attempt.downloaded_bytes` is the sum of the attempt's `EXACT` download-cache entries. It is empty when one of them has no measured `bytes_added`, never a partial sum. Shared use counts only in its window's totals.
-- **Aggregation.**
-  - When a window closes (its last binder ends), the cache manager records its totals once in `cache_usage_window`, measured from the baseline to the close. A window that is still open counts as provisional.
-  - Node-wide period totals add the `EXACT` entries and the windows, each once.
-  - Session and workspace totals add their `EXACT` entries and list the windows they took part in separately, labelled shared, because a window's totals include other work.
+- **Counters from the tools are exact for the attempt.**
+  - **Compiler caches:** each attempt has its own sccache server ([05](05-toolchains-caches.md) §5), whose final statistics are the attempt's hits, misses and cache writes. ccache writes a per-attempt statistics log. These counters stay exact while other attempts use the same cache.
+  - **The sccache store** is served by the node, which counts the bytes each attempt writes to it (`bytes_added` with attribution `COUNTED`). These are exact even while attempts share the cache.
+  - **Package managers:** packages installed and reused are parsed from the attempt's own output.
+  - **Downloads** are recorded only when the tool reports their size (Cargo's "Downloaded … (N MB)", pip's download lines). Otherwise they are unknown. `Attempt.downloaded_bytes` is present only when every download-cache binding of the attempt reported a size, so it is never a partial sum. Cache growth is never reported as downloads, because it also counts extracted and compiled entries and is reduced by eviction.
+- **Cache growth measured by the node (`added_bytes`).** The size cache ([06](06-storage-workspaces.md) §6) walks each managed cache except the sccache store, whose ledger counts its bytes ([05](05-toolchains-caches.md) §5). It walks in the background after each attempt that bound the cache, within policy `caches.usage_scan_budget_ms` (default 2,000 ms), and again in housekeeping.
+  - **Attributed by the file system's own times.** A file seen for the first time is attributed to the interval that contains its birth time (Windows creation time; Linux `statx` birth time, or the change time where the file system records none). A known file whose size changed is attributed, by the difference, to the interval that contains its change time. When a walk runs therefore never moves bytes between attempts: if attempt B starts before the walk for attempt A, that walk still gives A only the files born during A's run, and B only its own.
+  - **The binding interval** of an attempt runs from its container's start to the exit of its last process.
+  - **Never counted twice.** A file born before the start of the previous complete walk of its cache is never attributed as new: it was present then, so a file that drops out of the size cache's bounded rows (06 §6) and is seen again is not counted again. Growth of a known file is attributed only while the size cache still holds its previous size; after that the growth is left out. Values can therefore be low, but are never counted twice.
+  - **Attribution per attempt and cache:**
+    - `COUNTED`: the node served the writes and counted them per attempt (the sccache store). Exact.
+    - `SOLE_BINDER`: no other managed attempt bound the cache during the interval. `added_bytes` counts every writer in that interval. Managed caches are written by managed tasks in normal use, but a writer outside ArcForges is not excluded, and the record says the writer is not verified.
+    - `SHARED`: other managed attempts bound the cache meanwhile. The attempt has no `added_bytes`; its window (`window_id`) holds the total.
+    - `UNKNOWN`: no walk completed within 24 h after the interval (budget exceeded, walk truncated), or the file system records neither birth nor change times.
+  - **Provisional until measured.** An entry is final once a walk that started after its interval ended has completed (`measured_at`). The attempt's result never waits for it.
+- **Removals.** A walk also finds the files that disappeared since the previous walk: eviction by the tool or by the node. Their bytes are recorded per cache and walk (`cache_walk.removed_bytes`), never per attempt, because deletion times are unknown. The store's evictions are in its ledger (`cache_store_ledger`). Eviction therefore never reduces an attempt's `added_bytes`.
+- **Growth outside any attempt.** Files born while no managed attempt bound the cache are recorded per cache and walk as `unattributed_added_bytes`: writers outside ArcForges, made visible instead of being charged to an attempt.
+- **Windows of shared use** (walked caches only). A window is a maximal interval in which two or more attempts bind a cache at overlapping times; an attempt that was the only binder during its run belongs to no window. When a window closes, its `added_bytes` (files born or grown during it) and the sum of its attempts' tool counters are recorded once in `cache_usage_window`.
+- **Aggregation.** Every byte is counted exactly once, in one of five places:
+  - one `COUNTED` attempt (a first write to the store);
+  - one attempt's peer fill (`peer_filled_bytes`, an entry fetched from a peer into the store for that attempt's read);
+  - one `SOLE_BINDER` attempt;
+  - one window;
+  - its cache's unattributed growth.
+
+  Node-wide period totals add those five. Session and workspace totals add their `COUNTED`, peer-fill and `SOLE_BINDER` values and list the windows they took part in separately, labelled shared.
+  - Tool counters belong to single attempts and add up without double counting.
+- **Stated limits.**
+  - A file born and deleted between two walks is never seen.
+  - A file rewritten in place does not change its directory, so its growth is seen at the next full walk (cache maintenance), and only while its previous size is known.
+  - On NTFS, a file re-created under a name deleted moments before can inherit the old creation time (file-system tunnelling); it then counts as a changed file.
+  - Records label node-measured values as measured cache growth, never as the attempt's own writes.
 - **Bounds.** Collection stays within the node's overhead targets ([15](15-performance-targets.md) §2) and the store's size budget ([node store](../data/node-store.md) §4); evidence follows record retention (`record_retention_days`, default 90) and sample downsampling (R-REC-005).
 - **Sensitive data.** Command lines and environment values are redacted as in R-EXE-017; downloads are recorded as counts and bytes, never as URLs or credentials; exports and support bundles apply the same redaction.
 - **Foundations.** The same records feed operational memory today and later prediction and cache-sharing decisions (roadmap RM-02, RM-08).
@@ -127,6 +145,8 @@ Finding lifecycle (state machine `SM-FINDING`): `OPEN` → `ACKNOWLEDGED` | `RES
 | `QUEUE_STARVATION` | Queued longer than 2 × starvation bound (including tasks classed `exceeds_budget`) | warning | Notify; suggest a priority or pool change, closing applications, or a hint |
 | `TASK_INFEASIBLE` | A queued task's memory request exceeds the managed share or `max_task_memory` ([03](03-resource-control.md) §4) | error | Explain the numbers; suggest lowering the reserve, a hint, or cancelling |
 | `OUTPUT_CONFLICT` | Returned outputs of a remote attempt were staged because local files changed since submission ([09](09-lan.md) §6) | warning | Show the staged files beside the local ones; actions: keep local, take remote |
+| `GUARD_LOST` | Attempts ran without a disk guard while the node was down: a Windows holder had exited, or the Linux guard unit could not run ([06](06-storage-workspaces.md) §5) | warning | Name the attempts and the unguarded interval; on Linux, show the state of `arcforges-guard.service` |
+| `ENDPOINT_COLLISION` | A process outside an attempt's container listened on the attempt's sccache port, while the attempt did not use sccache, so it kept running ([05](05-toolchains-caches.md) §5) | info | Name the process; if it recurs, move the range `caches.sccache_port_first`–`caches.sccache_port_last` |
 | `OVERSUBSCRIBED` | CPU demand > 2 × `B_cpu` for 5 min | info | Suggest lower parallelism (shows the policy edit) |
 | `MEMORY_PRESSURE` | Pressure level ≥ Pressure ([03](03-resource-control.md) §7) | warning | Automatic pressure actions per policy; notify |
 | `OOM_KILLED` | `memory.events` oom_kill increased, or the Windows commit-limit notification with failure | error | Suggest a higher ceiling; retry with more memory (auto for PURE/IDEMPOTENT if policy allows) |
@@ -141,12 +161,12 @@ Finding lifecycle (state machine `SM-FINDING`): `OPEN` → `ACKNOWLEDGED` | `RES
 | `BYPASSED_COMMAND` | A hook saw a heavy command run without routing (observe mode) | info | Same as above |
 | `ESCAPED_PROCESS` | [03](03-resource-control.md) §9 | warning | Terminate (approval) |
 | `TERMINATION_INCOMPLETE` | [04](04-execution.md) §6 | error | Terminate PIDs (approval); notify |
-| `LEFTOVER_PROCESSES` | The same command fingerprint left processes behind after its root exited in 3 of its last 5 attempts ([04](04-execution.md) §3) | info | Explain which processes; suggest a shared service or `kind=SERVICE` |
+| `LEFTOVER_PROCESSES` | The same command fingerprint left processes behind after its root exited in 3 of its last 5 attempts ([04](04-execution.md) §3) | info | Explain which processes; suggest `kind=SERVICE`, or the tool's setting that keeps its server inside the attempt ([05](05-toolchains-caches.md) §5) |
 | `DEAD_EXECUTION` | Attempt running, container empty, no exit captured | error | Finalize as `LOST` (auto) |
 | `SERVICE_UNREADY` | Service readiness lost for 30 s | warning | Notify; restart (approval) |
 | `ENFORCEMENT_DEGRADED` | Capabilities changed for the worse | error | Notify; show the reason and remedy (for example enable systemd) |
 | `INTEGRATION_DEGRADED` | Hooks disabled or untrusted, probe failed, MCP server not configured | warning | Notify; re-run probe; open the integration page |
-| `GUEST_LINK_LOST` | WSL link down for 30 s | warning | Re-link (auto, bounded backoff); notify |
+| `GUEST_LINK_LOST` | WSL link down for 30 s; the host keeps the guest's reserved allocation until the guest acknowledges a smaller one or its distribution stops ([03](03-resource-control.md) §6) | warning | Re-link (auto, bounded backoff); notify; show the reserved allocation and how to release it (restore the link, or stop the distribution) |
 | `PEER_UNREACHABLE` | Paired peer offline while it holds attempts | warning | Wait for the lease; mark LOST at lease end (auto) |
 | `UPDATE_FAILED` | Health check failed and rolled back | error | Notify; keep the previous version |
 

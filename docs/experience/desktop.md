@@ -177,7 +177,8 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
   - "Remote attempt on <peer>" (output streamed from the peer);
   - `TERMINATION_INCOMPLETE` banner with remaining PIDs and **Terminate** (approval for other owners);
   - **Output limit**: "Output passed 2 GiB. The task was stopped (`OUTPUT_LIMIT`)", or with `disk_limit_action=NOTIFY` "Output passed 2 GiB. It is kept, and a finding was raised";
-  - **Disk limit**: "Stopped: temporary files passed 20 GiB", or "Stopped: drive D: critically low" (`DISK_LIMIT`), with a link to D-11;
+  - **Disk limit**: "Stopped: temporary files passed 20 GiB", or "Stopped: drive D: critically low" (`DISK_LIMIT`), with a link to D-11. A stop made while the node was down adds "Stopped by the attempt guard while ArcForges was not running" (`limit_enforced_by=GUARD`), and an attempt that ran unguarded shows "Disk limits were not checked for part of this run" (`guard_lost`);
+  - **Compiler-cache endpoint taken** (`ENDPOINT_TAKEN`): "Stopped: another program was listening on this task's compiler-cache address, so its compiles could have reached it." with a link to the toolchain page;
   - **Outputs staged** (`OUTPUT_CONFLICT`): "2 returned files changed locally since submission and were staged." **Compare**, **Keep local**, **Take remote** (`out/…/conflicts/`);
   - **Handed off**: "The agent's command reached its client timeout at 10:44. The task continues; the agent was told to wait with `arcforges tasks wait`." ([08](../architecture/08-ai-integration.md) §4.1).
 - **Accessibility.**
@@ -244,7 +245,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
   - **Terminate** (`TerminateProcess`): confirmation naming the process and its classification. Only for MANAGED, ESCAPED, BYPASSED and leftover processes.
   - **Guest link** enable, disable and re-link (`SetGuestLink`).
 - **Memory guarantees.** An info panel states what holds on this platform ([03](../architecture/03-resource-control.md) §5.4): admission keeps accounted memory within the budget; Linux enforces hard per-attempt and root limits; Windows bounds commit only; the pressure response defends the reserve but cannot guarantee it.
-- **WSL guests.** Each linked guest shows its current acknowledged allocation, the lease end and the standalone allocation, which is never larger than the acknowledged allocation; a lost link shows `GUEST_LINK_LOST` and the allocation in force ([03](../architecture/03-resource-control.md) §6).
+- **WSL guests.** Each linked guest shows its current acknowledged allocation, the lease end and the standalone allocation, which is never larger than the acknowledged allocation. A lost link shows `GUEST_LINK_LOST`, the allocation still reserved for the guest, and the two ways to release it: restore the link, or stop the distribution ([03](../architecture/03-resource-control.md) §6).
 - **States:** S-EMPTY for a filter; "Observation only" banner when the capability is OBSERVE_ONLY, with the reason.
 - **Accessibility.** The stacked bars have text and table equivalents, and the process table is sortable by keyboard (`Enter` on a column header).
 

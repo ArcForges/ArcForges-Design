@@ -86,7 +86,7 @@ flowchart TB
 ### Shutdown (`arcforges node stop`, OS logoff, or update switch)
 
 1. Stop accepting new API calls with `UNAVAILABLE` + retry advice `AFTER_TIME` (2 s).
-2. Stop admissions. Leave running executions running unless they are `kill_with_node`.
+2. Stop admissions. Leave running executions running unless they are `kill_with_node`; their guards take over the disk limits (06 §5).
 3. Flush the record builder and sampler buffers, checkpoint WAL, write a clean-shutdown marker, release the lock and exit 0.
 4. Shutdown must complete within 10 s; the OS may kill the process afterwards, and the next start recovers.
 
@@ -96,7 +96,9 @@ No in-memory state is authoritative. The next start performs the recovery in ste
 - **Windows:** the supervisor `arcforges-supervisor.exe` ([13](13-distribution-updates.md) §3.1). Backoff 2 s, 5 s, 10 s; after 5 crashes in 10 minutes it stops restarting and records `node_crash_loop` in its log, and the next client auto-start tries again.
 - **Linux:** the systemd unit (`Restart=on-failure`, `RestartSec=2`, start limit 5 in 10 minutes).
 
-Executions are unaffected on both platforms: they run in their own containers, not as children of the node process.
+Executions are unaffected on both platforms: they run in their own containers, not as children of the node process. Their disk limits stay enforced while the node is down: the attempt guards take over after `storage.guard_takeover_ms` ([06](06-storage-workspaces.md) §5).
+
+Once recovery (step 5) is done and each monitor started in step 8 has completed a cycle, the node renews its heartbeat, `run/node-heartbeat`, every second from its enforcement loop: its instance ID and an increasing sequence number. The guards read it ([06](06-storage-workspaces.md) §5). On Linux the same loop pings systemd's watchdog once the node is ready. On Windows the supervisor restarts a node whose heartbeat stalls for 30 s, counting from its first heartbeat. Both stop when the cache store misses three in-memory probes in a row (06 §5).
 
 ## 3. Endpoint discovery and auto-start (clients)
 

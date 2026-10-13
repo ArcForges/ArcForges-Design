@@ -272,6 +272,8 @@ enum FindingKind {
   FINDING_KIND_LEFTOVER_PROCESSES = 24;
   FINDING_KIND_TASK_INFEASIBLE = 25; // request exceeds the managed share even on an idle machine
   FINDING_KIND_OUTPUT_CONFLICT = 26; // remote outputs staged because local files changed
+  FINDING_KIND_GUARD_LOST = 27; // attempts ran without a disk guard while the node was down (06 section 5)
+  FINDING_KIND_ENDPOINT_COLLISION = 28; // a foreign listener on the sccache port of an attempt that did not use sccache (05 section 5)
 }
 
 // SM-FINDING states.
