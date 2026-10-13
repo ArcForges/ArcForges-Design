@@ -144,7 +144,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 │        2.0 GiB exp │                                                            │
 │ Tool   dotnet.build│                                                            │
 │ -m:4 (tool flag)   │                                                            │
-│ Keys ws:arc:dotnet │                                                            │
+│ Keys dotnet (excl) │                                                            │
 │ Retry  UNKNOWN     │                                                            │
 │  (adapter: IDEMP.) │                                                            │
 ├─ Timeline ─────────┴────────────────────────────────────────────────────────────┤

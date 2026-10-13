@@ -330,7 +330,7 @@ CREATE TABLE attempt (
   request_cpu_millicores INTEGER NOT NULL CHECK (request_cpu_millicores > 0),
   request_mem_expected_bytes INTEGER NOT NULL CHECK (request_mem_expected_bytes > 0),
   request_mem_ceiling_bytes INTEGER NOT NULL,
-  request_source INTEGER NOT NULL CHECK (request_source BETWEEN 1 AND 4),
+  request_source INTEGER NOT NULL CHECK (request_source BETWEEN 1 AND 5),  -- EstimateSource (5 LIGHT)
   accounted_mem_bytes INTEGER NOT NULL,         -- max(mem_expected, peak observed without reclaimable cache); never decreases while running (03 section 3)
   cpu_weight INTEGER,
   guest_grant_id BLOB CHECK (guest_grant_id IS NULL OR length(guest_grant_id) = 16),

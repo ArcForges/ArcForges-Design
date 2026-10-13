@@ -53,12 +53,12 @@ Adapters are compiled into the node (no runtime plug-ins in this scope). The man
 
 | Operation | Side effect (default; suggestion) | Exclusive keys | Estimate (cpu / mem expected) | Phases |
 |---|---|---|---|---|
-| `restore` | UNKNOWN; suggests IDEMPOTENT (MSBuild targets can hook into restore) | `ws:<w>:dotnet` | 1,000 / 512 MiB | restore (network-bound by default) |
+| `restore` | UNKNOWN; suggests IDEMPOTENT (MSBuild targets can hook into restore) | `tool:dotnet:<w>` | 1,000 / 512 MiB | restore (network-bound by default) |
 | `tool restore`, `workload restore` | UNKNOWN; suggests IDEMPOTENT | none (they write the managed caches, not the workspace) | 1,000 / 512 MiB | restore |
-| `build`, `pack`, `publish`, `msbuild` | UNKNOWN; suggests IDEMPOTENT for `build` and `pack` (custom targets can deploy or call out) | `ws:<w>:dotnet` | 4,000 / 2 GiB | restore → build (per project) → link/package |
-| `test` | UNKNOWN | `ws:<w>:dotnet`; shared with `--no-build` | 2,000 / 1.5 GiB | restore → build → test |
-| `format` | UNKNOWN (`--verify-no-changes`; suggests IDEMPOTENT) / SIDE_EFFECTING (writes) | `ws:<w>:dotnet`; shared with `--verify-no-changes` | 2,000 / 1 GiB | build |
-| `run` | UNKNOWN | `ws:<w>:dotnet` until the program starts (shared with `--no-build`) | default | build → run |
+| `build`, `pack`, `publish`, `msbuild` | UNKNOWN; suggests IDEMPOTENT for `build` and `pack` (custom targets can deploy or call out) | `tool:dotnet:<w>` | 4,000 / 2 GiB | restore → build (per project) → link/package |
+| `test` | UNKNOWN | `tool:dotnet:<w>`; shared with `--no-build` | 2,000 / 1.5 GiB | restore → build → test |
+| `format` | UNKNOWN (`--verify-no-changes`; suggests IDEMPOTENT) / SIDE_EFFECTING (writes) | `tool:dotnet:<w>`; shared with `--verify-no-changes` | 2,000 / 1 GiB | build |
+| `run` | UNKNOWN | `tool:dotnet:<w>` until the program starts (shared with `--no-build`) | default | build → run |
 | others | UNKNOWN | none | default | run |
 
 **Why one key per workspace.** Every build-family operation restores and builds the whole project-reference closure of its entry project, so two of them in one workspace can write the same `obj/` and `bin/` directories even when their entry projects differ. Parallel builds of one repository therefore use separate managed worktrees, or the workspace mode `SHARED` with caller keys for solutions the user knows are independent.
@@ -127,7 +127,7 @@ Adapters are compiled into the node (no runtime plug-ins in this scope). The man
 
 ### 3.6 Git
 
-`git clone` and `fetch` are network-bound downloads asserted IDEMPOTENT (no environment changes). `pull`, `checkout`, `merge`, `rebase`, `commit` and other commands that write the working tree or index are UNKNOWN and take `ws:<w>:git`. Read-only commands carry no keys.
+`git clone` and `fetch` are network-bound downloads asserted IDEMPOTENT (no environment changes). Commands that rewrite the working tree (`checkout`, `switch`, `pull`, `merge`, `rebase`, `reset --hard`, `restore`, `stash`, `cherry-pick`, `revert`, `clean`) are UNKNOWN and take `ws:<w>` exclusively, so they wait for every build and test in the workspace. Index-only writers (`add`, `commit`, `rm --cached`) are UNKNOWN and take `tool:git:<w>`. Read-only commands carry no keys.
 
 ### 3.7 Generic
 

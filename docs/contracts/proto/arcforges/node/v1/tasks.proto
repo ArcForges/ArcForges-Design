@@ -212,7 +212,7 @@ message TaskServiceSubmitTaskRequest {
   optional string agent_id = 12 [json_name = "agentId"]; // validate: <= 128 chars; requires session_id
   ProcessIdentity caller_process = 13 [json_name = "callerProcess"]; // validate: the calling process; verified by the node
   optional bool cancel_when_caller_gone = 14 [json_name = "cancelWhenCallerGone"]; // validate: cancel when the submitting client's connection and all its attach streams are gone for 5 s before the task finishes, unless ReleaseCallerBinding ran first (hook-rewritten runs); a joined submission binds its caller the same way
-  optional bool join_existing = 15 [json_name = "joinExisting"]; // validate: return an existing task of the same session with the same command digest (program and arguments, or the shell string), working directory, environment digest and stdin, instead of a duplicate: a task not yet started, or a running task whose start input fingerprint equals this submission's (08 section 4.1)
+  optional bool join_existing = 15 [json_name = "joinExisting"]; // validate: return a task of the same session that has not started (QUEUED, WAITING_DEPENDENCY, PLACING or RETRY_WAIT) with the same command digest (program and arguments, or the shell string), working directory, environment digest and stdin, instead of a duplicate (08 section 4.1)
 }
 message TaskServiceSubmitTaskResponse {
   arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];

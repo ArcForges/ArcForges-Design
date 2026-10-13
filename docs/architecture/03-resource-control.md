@@ -49,9 +49,10 @@ Each attempt carries `request = {cpu_demand, mem_expected, mem_ceiling, source}`
 1. **Explicit hint** in the task spec, clamped to policy maximums (`source=HINT`).
 2. **Operational memory:** p90 of peak memory and mean CPU of the last 10 runs with the same scope key, when at least 3 observations exist and the fact is fresh (`source=MEMORY`) ([07](07-records-diagnosis-memory.md)).
 3. **Adapter default** for the classified tool and phase, for example `dotnet build`: cpu 4,000, mem 2 GiB; `cargo build`: cpu = parallelism × 1,000, mem 1.5 GiB × min(parallelism, 4) (`source=ADAPTER`).
-4. **Generic default:** cpu 1,000, mem 512 MiB (`source=DEFAULT`).
+4. **Light estimate** for a command routed by `rewrite-all` that no adapter classifies and no fact describes: cpu 250, mem 128 MiB (`source=LIGHT`, [08](08-ai-integration.md) §4.1).
+5. **Generic default:** cpu 1,000, mem 512 MiB (`source=DEFAULT`).
 
-`mem_ceiling = min(policy.max_task_memory, max(2 × mem_expected, mem_expected + 1 GiB))`, unless the hint gives one.
+**Ceilings.** For `HINT` (unless the hint gives one), `MEMORY` and `ADAPTER` estimates: `mem_ceiling = min(policy.max_task_memory, max(2 × mem_expected, mem_expected + 1 GiB))`. For `LIGHT` and `DEFAULT` estimates nothing is known about the command, so the ceiling does not derive from the guess: `mem_ceiling = min(policy.max_task_memory, max_share_mem / 2)`. Accounted memory, the root bound and the pressure response protect the rest (§5.4), and the first observed peak replaces the guess for admission at once.
 
 **Accounted memory.** Admission counts every running attempt at `accounted_mem = max(mem_expected, peak_observed)`.
 - `peak_observed` is the highest sampled resident use of the attempt container so far, excluding reclaimable page cache: Linux `memory.current` minus `inactive_file` (from `memory.stat`); Windows the sum of the processes' private working sets.
@@ -92,17 +93,16 @@ for pool in pools in weighted round-robin order:
     if r.mem_expected > min(max_share_mem, policy.max_task_memory): mark(t, exceeds_capacity); continue
     if r.mem_expected > idle_budget_mem:                          mark(t, exceeds_budget);   continue
     if keys(t) conflict with keys held by running attempts:       mark(t, exclusive_key);    continue
-    if reservation active for another task u and admitting t would delay u: continue   # unless t backfills
-    if r.mem_expected > avail_mem:
-        if waited(t) > large_task_bypass (default 2 min) and no reservation is active: reserve(t)   # memory only
+    if reservation active for another task u and admitting t would delay u: continue   # unless t backfills or is light
+    if r.mem_expected > avail_mem or cpu_load + c > cpu_limit:
+        if waited(t) > large_task_bypass (default 2 min) and no reservation is active and not light(t): reserve(t)
         continue
-    if cpu_load + c > cpu_limit: continue                             # waits for CPU, never reserves
     grant(t, r, cpu = c); start(t); avail_mem −= r.mem_expected; cpu_load += c
 ```
 
 **Memory is never overcommitted at admission** (`overcommit_mem = 1.0`, R-RES-005): the sum of accounted memory never exceeds `B_mem` when an attempt is admitted. CPU can be overcommitted because weights share it without harming the reserved headroom: the root cap protects that headroom (§5). What holds after admission is stated in §5.4.
 
-**CPU is compressible.** Admission counts a task's CPU at most at `B_cpu` (`c` above), and the grant sets the tool's parallelism (§5.3). A task that asks for more CPU than the node has therefore runs, with less parallelism, instead of waiting forever. For example, on a 4-processor node (`B_cpu` = 2,600 when idle) a `dotnet build` estimated at 4,000 millicores is granted 2,600 and runs with `-m:3`.
+**CPU is compressible.** Admission counts a task's CPU at most at `B_cpu` (`c` above), and the grant sets the tool's parallelism (§5.3). A task that asks for more CPU than the node has therefore runs, with less parallelism, instead of waiting forever. For example, on a 4-processor node (`B_cpu` = 2,600 when idle) a `dotnet build` estimated at 4,000 millicores is granted 2,600 and runs with `-m:3`. On a busy node such a task may take the large-task reservation (below), so a stream of smaller tasks cannot starve it.
 
 ### Feasibility
 
@@ -122,7 +122,7 @@ Explicit hints above `max_task_memory` are refused at submission (validation). E
 
 A feasible task that waited longer than `large_task_bypass` would otherwise be overtaken forever by smaller tasks. The reservation is bounded:
 - **One at a time.** At most one reservation per node; the longest-waiting qualifying task holds it.
-- **Memory only.** Only a task short of memory reserves. The reservation holds back only tasks of its own and lower priority classes that would take memory it is waiting for; higher classes still run. A task waiting for CPU never reserves: CPU frees continuously and weights share it.
+- **Narrow.** Only feasible tasks reserve, so every reservation can be met once running work drains: memory by the feasibility rule, CPU because demand is clamped (above). The reservation holds back only tasks of its own and lower priority classes that would take the resource it is short of. Higher classes and light commands still run.
 - **Backfill.** A held-back task still starts when operational memory gives it an `ACTIVE` `DURATION` p90 that ends before the reservation's estimated start (the drain estimate from the running attempts' own facts). Without facts there is no backfill.
 - **Lapse.** The reservation lapses after `large_task_reservation_max` (default 30 min), or as soon as the task becomes `exceeds_budget` or `exceeds_capacity`. A task whose reservation lapsed cannot take a new one for the same interval.
 
@@ -133,18 +133,22 @@ Concurrent tasks in one workspace can overwrite each other's files (the `obj/` a
 - **Sources.**
   - The caller's `TaskSpec.concurrency` (`exclusive_keys`, `shared_keys`).
   - The adapter's keys for the tool and operation ([05](05-toolchains-caches.md) §2–3). For example:
-    - .NET build-family operations (`restore`, `build`, `test`, `pack`, `publish`, `msbuild`) take `ws:<workspace>:dotnet` exclusively, because each of them restores and builds every referenced project, so any two of them in one workspace can write the same `obj/` and `bin/` directories. `test --no-build` and `run --no-build` take it shared.
+    - .NET build-family operations (`restore`, `build`, `test`, `pack`, `publish`, `msbuild`) take `tool:dotnet:<workspace>` exclusively, because each of them restores and builds every referenced project, so any two of them in one workspace can write the same `obj/` and `bin/` directories. `test --no-build` and `run --no-build` take it shared.
     - `npm ci` and `npm install` take `ws:<workspace>/<package dir>:deps` exclusively; `npm test`, `npm run` and `npx` take it shared.
     - Cargo takes `tool:cargo:<target dir>`, which Cargo's own build-directory lock also serializes.
-    - git commands that write the index take `ws:<workspace>:git`.
+    - git commands that rewrite the working tree (`checkout`, `switch`, `pull`, `merge`, `rebase`, `reset --hard`, `restore`, `stash`, `cherry-pick`, `revert`, `clean`) take `ws:<workspace>` exclusively, so they wait for every build and test in the workspace; index-only writers (`add`, `commit`, `rm --cached`) take `tool:git:<workspace>`.
   - `access = EXCLUSIVE`, or the workspace's concurrency mode `SERIAL`, adds `ws:<workspace>` exclusively. Mode `SHARED` ignores adapter keys and keeps only the caller's.
-- **Conflict rule.** Two keys *overlap* when they are equal, or when one key's directory is the other's directory, an ancestor or a descendant. Purposes (`:deps`, `:git`) separate two uses of one directory only when both keys carry a purpose and the purposes differ. `ws:<workspace>` overlaps every key of that workspace. Overlapping keys conflict unless both are shared.
+- **Conflict rule.** Keys *overlap* as follows, and overlapping keys conflict unless both are shared:
+  - **Directory keys** (`ws:<workspace>/<dir>[:<purpose>]`) overlap when one key's directory is the other's directory, an ancestor or a descendant. Purposes (`:deps`) separate two uses of the same directory only when both keys carry a purpose and the purposes differ.
+  - **Tool keys** (`tool:<name>:<scope>`) cover a tool's own state, not a directory tree, and overlap only the same tool key. A .NET build therefore runs beside npm, CMake or Python work in other directories of the workspace.
+  - **The workspace key** `ws:<workspace>` overlaps every key of that workspace, including tool keys whose scope is the workspace or a directory in it.
+  - **Name keys** (`name:<text>`) overlap only the same name.
 - **Effect.** A task whose keys conflict with running attempts waits with the blocking reason `exclusive_key`. `ExplainTask` lists the keys and their holders.
 - **Lifetime.** Keys are held from start to the end of the task, with two exceptions, so that a long-running program does not block other work indefinitely:
   - run operations (`dotnet run`, `cargo run`, `npm start`) release their keys when the adapter's phase detector sees the program start;
   - `SERVICE` tasks release `ws:<workspace>` (from `SERIAL` or `access = EXCLUSIVE`) once they are ready.
 - **Remote placement.** A task placed on another node holds no keys at the origin while it runs there; the executor's workspace slot is private to the attempt. Applying its returned outputs takes the exclusive keys of the output paths at the origin ([09](09-lan.md) §6).
-- **Scope.** Keys order managed tasks only. They do not stop unmanaged processes, and `git worktree lock` only prevents pruning. Agents that need full isolation, and parallel builds of one solution, use separate managed worktrees ([06](06-storage-workspaces.md) §3).
+- **Scope.** Keys order managed tasks only. They do not stop unmanaged processes, and `git worktree lock` only prevents pruning. Keys also cannot see work that one tool's build scripts start in another tool (for example an MSBuild target that runs `npm install`); repositories that do this use the `SERIAL` mode. Agents that need full isolation, and parallel builds of one solution, use separate managed worktrees ([06](06-storage-workspaces.md) §3).
 - **Default.** Commands no adapter knows carry no keys and may run side by side. Users who want strict ordering set the workspace to `SERIAL` or a parallelism limit of 1 for the workspace (R-EXE-013).
 
 ## 5. Enforcement mapping

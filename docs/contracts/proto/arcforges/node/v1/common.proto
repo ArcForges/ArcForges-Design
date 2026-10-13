@@ -76,6 +76,7 @@ enum EstimateSource {
   ESTIMATE_SOURCE_MEMORY = 2;
   ESTIMATE_SOURCE_ADAPTER = 3;
   ESTIMATE_SOURCE_DEFAULT = 4;
+  ESTIMATE_SOURCE_LIGHT = 5; // a rewrite-all routed command no adapter classifies and no fact describes (architecture 08 section 4.1)
 }
 
 enum Severity {

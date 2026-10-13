@@ -42,6 +42,7 @@
    - **Real-world acceptance** is the acceptance register: real payments, devices, physical LANs, production signing.
 10. **Continuous serial execution once authorized.** A run gate holds until the user authorizes implementation. The authorization is recorded as a Plan ledger note, so every later session can see it; without that record a coordinator only reports status. After that, the coordinator works through eligible tasks one at a time without asking for "continue" after each delivery. It reports each delivery, skips `blocked` tasks, and stops only when:
     - an outward-facing approval is needed;
+    - the authorized scope is complete;
     - no eligible task remains;
     - a decision only the user can make is required;
     - the user says stop.
