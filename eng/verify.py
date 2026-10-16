@@ -40,7 +40,9 @@ WSL_STATE = "$HOME/.cache/arcforges-verify"
 @dataclass(frozen=True)
 class Step:
     """One verification step. `cmd` is an argv list on the 'win' host and a bash command string on the 'wsl' host.
-    The placeholders {sha}, {base} and {range} are replaced. `profiles` names the profiles that include the step;
+    The placeholders {sha}, {base} and {range} are replaced; a step that reads history must use them (never a
+    hard-coded range), because they are what keys its pass to the exact commits. `profiles` names the profiles that
+    include the step;
     `when` (changed paths -> bool) can narrow it further. Exclusive steps run alone after every lane has finished."""
 
     id: str
@@ -483,7 +485,8 @@ def command_pre_push(repo: Repository, remote: str) -> None:
 
 
 def command_install(repo: Repository) -> None:
-    """Copies .githooks/* into the clone's common hooks directory, which every worktree uses. A relative
+    """Copies .githooks/* of this checkout (run it from the main checkout on main) into the clone's common hooks
+    directory, which every worktree uses. A relative
     core.hooksPath would resolve per worktree and silently run no hook in a worktree whose commit lacks .githooks, so it
     is removed; the installed pre-push rejects a push from a worktree without eng/verify.py."""
     source = repo.top / ".githooks"
@@ -495,8 +498,11 @@ def command_install(repo: Repository) -> None:
     target = repo.common / "hooks"
     target.mkdir(exist_ok=True)
     for hook in sorted(p for p in source.iterdir() if p.is_file()):
-        (target / hook.name).write_bytes(normalized(hook.read_bytes()))
-        say(f"installed {hook.name} -> {target / hook.name}")
+        content, destination = normalized(hook.read_bytes()), target / hook.name
+        if destination.exists() and destination.read_bytes() != content:
+            say(f"replacing the existing {destination} (it differed from {hook})")
+        destination.write_bytes(content)
+        say(f"installed {hook.name} -> {destination}")
     say("every worktree of this clone now runs the pre-push verification")
 
 
