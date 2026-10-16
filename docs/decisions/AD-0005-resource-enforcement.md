@@ -58,7 +58,7 @@ Optional privileged features are designed but not part of the current deliverabl
    - **Launch.**
      - The node passes the working directory and the resolved environment (`Environment=`); `exec-launch` keeps only the resolved names, so the result is exact whatever the user manager adds (amended 2026-10-16).
      - stdio is passed as file descriptors over D-Bus (`StandardInputFileDescriptor`, `StandardOutputFileDescriptor`, `StandardErrorFileDescriptor`).
-     - The node's own hard limits are passed as `Limit*=` properties, with the `RLIMIT_NOFILE` soft limit set to min(1024, hard) (amended 2026-10-16).
+     - The node's own limits are passed as `Limit*=` properties (`LimitCORE` and `LimitSTACK` with the node's soft and hard values; `LimitNOFILE` with the node's hard value and a soft value of min(1024, hard)) (amended 2026-10-16).
    - **Parent and exit record.**
      - The user manager is the parent of every execution, so executions never depend on the node process.
      - `ExecStopPost` runs in the unit's cgroup and receives `$EXIT_CODE`, `$EXIT_STATUS` and `$SERVICE_RESULT`. It writes `logs/<attempt>/exit.json` with the cgroup accounting (`cpu.stat`, `memory.peak`, `memory.events`, `io.stat`), so the record is durable even while the node is down (L-13).
@@ -108,5 +108,5 @@ Optional privileged features are designed but not part of the current deliverabl
 
 - No step of core functionality needs elevation, and every enforcement claim is backed by a real test in its environment.
 - Windows pause and memory soft-limits are honestly unavailable.
-- Each Windows attempt costs one small holder process (target ≤ 3 MB private, [15](../architecture/15-performance-targets.md)). That is the price of surviving node restarts.
+- Each Windows attempt costs one holder process (target ≤ 10 MB private, [15](../architecture/15-performance-targets.md) §2; amended 2026-10-16). That is the price of surviving node restarts.
 - Optional privileged features are designed but do not gate development-stage completion.

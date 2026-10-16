@@ -137,7 +137,7 @@ The disk level of each volume is part of `ResourceSnapshot.volumes` and of the r
   - the temporary directory every 15 s, with the same full walk as the node;
   - free space on the attempt's volumes every 5 s.
 - **Actions.** The same as the node's:
-  - `TERMINATE` stops the attempt at once, with `OUTPUT_LIMIT` or `DISK_LIMIT`: Windows `TerminateJobObject`; on Linux the guard freezes the unit, then `KillUnit`, as the node does;
+  - `TERMINATE` stops the attempt at once, with `OUTPUT_LIMIT` or `DISK_LIMIT`: Windows `TerminateJobObject`; on Linux the guard freezes the unit, kills each of its processes and thaws the cgroup directly, as the node does ([04](04-execution.md) §6);
   - at `CRITICAL`, Linux freezes pausable attempts (`FreezeUnit`) and stops the rest. While the node is still down, the guard thaws them once the level has been back to `NORMAL` for 30 s;
   - `NOTIFY` is recorded and leaves the attempt running.
 - **Records.** Each action is appended to `logs/<attempt>/guard-events.jsonl` with its evidence. The guard never writes the node store. When the node returns, it records the stops with `limit_enforced_by=GUARD`, raises the findings the actions call for, and thaws frozen attempts once the level is back to `NORMAL`. Stops are idempotent: a stop that the node and a guard both make is recorded once, and the first recorded reason wins.

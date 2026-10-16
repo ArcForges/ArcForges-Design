@@ -171,7 +171,7 @@ Root limits are updated when `B` changes by more than 5% of capacity, at most ev
 | CPU share | Weight from priority (INTERACTIVE 9, HIGH 7, NORMAL 5, LOW 3, BACKGROUND 1). If the policy sets a per-task CPU cap, the job uses hard-cap mode instead (Windows cannot combine both, V-W04). | `CPUWeight` (→ `cpu.weight`): 400, 200, 100, 50, 10. Optional per-task `CPUQuota`. |
 | Memory | `JobMemoryLimit = commit_factor × mem_ceiling` (commit limit, V-W05); physical usage is watched by the monitor | `MemoryHigh = 1.25 × mem_expected`, `MemoryMax = mem_ceiling`, `OOMPolicy=kill` (whole unit on OOM kill) |
 | Processes | `ActiveProcessLimit` if policy sets one | `TasksMax` (default 4096) |
-| Kill | `TerminateJobObject` | `KillUnit(all, SIGKILL)` |
+| Kill | `TerminateJobObject` | `FreezeUnit`, SIGKILL to each process of the unit's cgroup, direct `cgroup.freeze=0`, `ThawUnit` ([04](04-execution.md) §6) |
 | Pause | unsupported | `FreezeUnit` / `ThawUnit` (→ `cgroup.freeze`) |
 
 ### 5.3 Tool-level concurrency

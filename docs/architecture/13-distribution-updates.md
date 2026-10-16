@@ -145,7 +145,7 @@ ExecStart=%h/.local/share/arcforges/app/previous/arcforges node update-rollback 
 - **Slice limits.** The slice's limits are runtime properties set by the node, so the unit file carries none.
 - **Readiness.** `Type=notify` with `sd_notify("READY=1")` after startup step 9 ([02](02-node-service.md) §2).
 - **Watchdog.** `WatchdogSec=30`: the node's enforcement loop sends `WATCHDOG=1` with each heartbeat, so a hung node is killed and restarted ([06](06-storage-workspaces.md) §5). `TimeoutAbortSec=5s` bounds the abort: the .NET runtime does not always exit promptly on the watchdog's SIGABRT, so systemd sends SIGKILL after 5 s. Measured restart after a hung enforcement loop: about 35 s; after a hung cache-store probe (three missed 5 s probes first), about 49 s (L-25).
-- **Rollback hook.** `OnFailure=` and `arcforges-node-rollback.service` are installed together by the updater task. A unit that references a missing unit fails at every crash, so until then the shipped node unit omits the `OnFailure=` line.
+- **Rollback hook.** `OnFailure=` and `arcforges-node-rollback.service` are installed together by the updater task. Until then the shipped node unit omits the `OnFailure=` line, so a crash does not try to enqueue a missing unit (the node unit's own restart is unaffected either way).
 - **Restart after an update.** Exit code 75 means "restart me": `RestartForceExitStatus` restarts the node, and `SuccessExitStatus` keeps the exit from being logged as a failure (§5.3).
 - **Guard.** `arcforges-guard.service` is independent of the node unit, so it keeps guarding executions while the node is stopped, failed or restarting. After an update switch the node restarts it from the new `current` while the node itself is up.
 
