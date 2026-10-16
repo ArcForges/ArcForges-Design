@@ -1,0 +1,3 @@
+#!/bin/sh
+# Mandatory local verification of the pushed commits (AGENTS.md, Local verification). Never bypass it.
+exec python "$(git rev-parse --show-toplevel)/eng/verify.py" pre-push "$@"

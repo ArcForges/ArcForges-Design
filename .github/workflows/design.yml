@@ -1,8 +1,9 @@
 name: Design checks
 
+# Owner (deku2026) PRs are verified by the local pre-push hook (eng/verify.py, AD-0016), so the job is skipped for
+# them; external PRs, the merge queue and manual dispatch run it. Push to main runs nothing: every main commit arrived
+# through a PR verified one way or the other.
 on:
-  push:
-    branches: [main]
   pull_request:
   merge_group:
   workflow_dispatch:
@@ -23,6 +24,7 @@ env:
 jobs:
   check:
     name: Contracts, schemas, state machines, links, traceability
+    if: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.user.login == 'deku2026') }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
