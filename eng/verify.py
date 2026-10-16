@@ -462,10 +462,11 @@ def command_pre_push(repo: Repository, remote: str) -> None:
     for local_ref, local_sha, _remote_ref, _remote_sha in refs:
         if local_sha == ZERO:
             continue
-        upstream = f"refs/remotes/{remote}/main"
+        repo.load_steps(local_sha)
+        upstream = f"refs/remotes/{remote}/{default_branch(repo)}"
         if git("rev-parse", "--verify", "--quiet", upstream, check=False) and subprocess.run(
                 ["git", "merge-base", "--is-ancestor", local_sha, upstream]).returncode == 0:
-            say(f"{local_ref}: already contained in {remote}/main; nothing to verify")
+            say(f"{local_ref}: already contained in {remote}/{default_branch(repo)}; nothing to verify")
             continue
         verify(repo, local_sha, remote)
 
