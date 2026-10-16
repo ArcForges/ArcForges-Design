@@ -1,6 +1,6 @@
 # 16 — Testing strategy
 
-Decisions: [AD-0014](../decisions/AD-0014-delivery-method.md) (verification responsibilities, fakes only at unavailable boundaries). Requirements: R-TEST-001..003.
+Decisions: [AD-0014](../decisions/AD-0014-delivery-method.md) (verification responsibilities, fakes only at unavailable boundaries), [AD-0016](../decisions/AD-0016-local-first-verification.md) (local-first verification, testing techniques). Requirements: R-TEST-001..003.
 
 **Development-stage target:** complete functionality proven by automated closed-loop tests. Fakes are used only where a real external environment is unavailable. Practical real tests run on the Windows workstation and in WSL2. Final real-world user acceptance comes later, through the Plan's acceptance register.
 
@@ -9,6 +9,7 @@ Decisions: [AD-0014](../decisions/AD-0014-delivery-method.md) (verification resp
 | Layer | Scope | Real or fake | Runs |
 |---|---|---|---|
 | Unit | Pure logic: budget formulas, admission, classifier rules, retry tables, state machines, parsers, redaction, scoring, token and signature handling | Real code, no I/O fakes needed | Author; hosted CI |
+| Property and model-based | The same unit logic as generated properties (CsCheck): invariants, boundary conditions and resource constraints (budget formulas, admission, retry tables, redaction), round trips and malformed input for the parsers ArcForges owns (frames, configuration, CLI arguments); state machines and stateful components checked against a simple reference model; concurrent components checked for linearizability | Real code; generated inputs, shrunk to a minimal failing case | Author; hosted CI (bounded iterations); deep tier for long runs (§4) |
 | Contract | Proto compilation, field-number and reserved-range rules, wire compatibility against the previous published package, JSON mapping golden files, error catalogue | Real generated code | Hosted CI (Contracts repository gates, reused) |
 | Store | Node store migrations (forward from every released schema), expand-only check, queries against real SQLite, crash-consistency (kill during write, then reopen) | Real SQLite | Author; hosted CI |
 | Platform | Windows job objects, pipes, ACLs, console signals; Linux transient units, D-Bus, cgroup reads, freeze | **Real OS only.** Never faked. | Author on the workstation (Windows + WSL2); hosted CI where the runner supports it (§3) |
@@ -19,7 +20,9 @@ Decisions: [AD-0014](../decisions/AD-0014-delivery-method.md) (verification resp
 | Closed loop (cloud) | Node and clients ↔ the local cloud stack (§3.1): the C# Cloud host as a native process, and the Worker, `FleetHub` Durable Object and D1 in local workerd | Real cloud code; **fakes** for Paddle, Google Play Developer API, Pub/Sub OIDC, FCM, the e-mail provider and the system browser (scripted consent) | Author; hosted CI (where the repository's local workerd suite already runs) |
 | UI | Avalonia headless tests for every Desktop page (states, commands, accessibility tree, keyboard order); bUnit for Blazor pages; MAUI view-model tests | Real view models over real clients against a running node or the cloud closed loop | Author; hosted CI (headless only) |
 | Performance | [15](15-performance-targets.md) | Real | Workstation; CI for size and startup |
-| Fault injection | Kill node at each lifecycle point; kill supervisor; disk full; store corruption; network partition between peers; relay disconnects; clock skew; webhook replays | Real processes with controlled faults | Author; hosted CI where possible |
+| Fault injection | Unexpected termination and crashes of the node, supervisor, helpers and executions at each lifecycle point; memory exhaustion and limits (`TestLoad` ramps against job commit limits and cgroup `memory.max`); IPC failures (pipe or socket peer gone mid-call, partial frames, refused connections); timeouts and interrupted operations (deadlines, cancellation during launch, write and cleanup); permission failures (ACLs, read-only directories); disk full; store corruption; network partition between peers; relay disconnects; clock skew; webhook replays. Each test asserts recovery and cleanup: consistent records, no leftover jobs, units, processes or temporary files, and supervisor and node lifecycle states as specified. | Real processes and OS mechanisms with controlled faults; no fault framework | Author; hosted CI where possible; deep tier repeats (§4) |
+
+"Hosted CI" in the table means the CI-equivalent verification: the local pre-push verification for the owner's PRs and hosted CI for external PRs and manual dispatch (§3). Coverage-guided fuzzing and mutation testing are not adopted now; the reasons and the conditions for revisiting them are in [AD-0016](../decisions/AD-0016-local-first-verification.md) §5.
 
 ## 2. Fakes catalogue (the only permitted substitutes)
 
@@ -46,8 +49,9 @@ A fake is never used for the behaviour under test (R-TEST-001). Results from a f
 |---|---|---|
 | Workstation, Windows 11 | All Windows platform and closed-loop tests; WSL bridge tests; performance | The author runs the affected suites for every task |
 | Workstation, WSL2 Debian 13 | All Linux platform tests (systemd user manager, transient units, freeze, OOM); guest-node tests | Installs inside the distribution are done by the user. Tests needing new packages list them as prerequisites. |
-| Hosted CI, Windows runner | Build, unit, contract, store, Windows job-object tests that need no interactive session, closed loop (headless), AOT publish, packaging | No GUI, device, browser, live-service or inference jobs |
-| Hosted CI, Linux runner | Build, unit, contract, store, AOT publish, packaging. Transient-unit tests only if the runner offers a user manager; otherwise they are skipped with an explicit `requires-user-manager` reason. | The workstation's WSL2 run remains the authoritative Linux evidence |
+| Workstation, pre-push verification (owner PRs) | The repository's CI-equivalent profile at the pushed commit, Windows and WSL2 Debian lanes concurrently, exclusive steps afterwards: build, analyzers, format, tests, closed loop on Native AOT, AOT publish x64, size and startup gates, packaging, secret scan | The owner's merge gate ([AD-0016](../decisions/AD-0016-local-first-verification.md)). Fails closed; a pass is reused only for an identical source state (the tree, plus the exact commits when a step reads history), step set, scripts and tool versions. |
+| Hosted CI, Windows runner (external PRs, manual dispatch) | Build, unit, contract, store, Windows job-object tests that need no interactive session, closed loop (headless), AOT publish, packaging | No GUI, device, browser, live-service or inference jobs |
+| Hosted CI, Linux runner (external PRs, manual dispatch) | Build, unit, contract, store, AOT publish, packaging. Transient-unit tests only if the runner offers a user manager; otherwise they are skipped with an explicit `requires-user-manager` reason. | The workstation's WSL2 run remains the authoritative Linux evidence |
 | Emulator (local) | Android UI and billing flows with `FakeBillingClient` against the fake Play backend | Local opt-in. A Play-enabled emulator with a licence-test account (H-17) and a physical device are deferred to AR-06 and AR-08. |
 | Deferred (acceptance register) | Physical LAN machines, real store purchases, real FCM delivery, production signing reputation, second OS accounts, human screen-reader sessions, macOS (out of scope) | Never reported as proven |
 
@@ -61,7 +65,7 @@ The cloud closed loop runs natively on the workstation and needs neither Docker 
 
 Docker is optional (H-18). It enables only the Cloud repository's existing `test:container` diagnostics, which are never a gate. Live Cloudflare deployments are not part of any test.
 
-Verification roles follow [AD-0014](../decisions/AD-0014-delivery-method.md) §4: the author runs targeted and affected suites, the reviewer adds only distinct evidence, hosted CI is the merge gate, and nobody repeats an identical full run on an unchanged head.
+Verification roles follow [AD-0014](../decisions/AD-0014-delivery-method.md) §4: the author runs targeted and affected suites, the reviewer adds only distinct evidence, and nobody repeats an identical full run on an unchanged head. The merge gate is the local pre-push verification for the owner's PRs and hosted CI for external PRs ([AD-0016](../decisions/AD-0016-local-first-verification.md)).
 
 ## 4. Test organisation in the ArcForges repository
 
@@ -81,6 +85,13 @@ tests/
 
 - **Selection.** Traits select suites. `eng/test.ps1` / `eng/test.sh` map task kinds to suites, so authors run exactly the affected set. Tool-dependent tests are skipped with an explicit reason when the tool is missing, and the reason appears in the evidence.
 - **Deterministic time.** Node subsystems take an `IClock`. Tests use a controllable clock except in real-OS timing tests.
+- **Determinism.** Tests assert the guaranteed product contract, never an optional OS notification or a timing assumption the platform does not guarantee (V-W03). Fixed sleeps are condition waits; generous timeouts apply only on the failure path. A flaky test is fixed at its cause, never hidden by retries or weakened assertions.
+- **Parallelism and exclusive phase.** `eng/test.ps1` / `eng/test.sh` run test projects concurrently, bounded by a default chosen from recorded measurements (wall time, CPU, failures over repeated runs). Serial collections remain only where tests share machine-wide state. Timing-, CPU-share- and memory-sensitive tests carry `[Trait("isolation","exclusive")]` and run in a separate phase after the parallel one, alone.
+- **Repeat mode.** The same scripts run selected suites N times, stop at the first failure and report per-iteration timing.
+- **Tiers.**
+  - *Routine (inner loop):* the affected suites, built once, then rerun without rebuilding.
+  - *Pre-push (the hook):* the full CI-equivalent profile on Windows and WSL2 Debian (§3).
+  - *Deep (manual, release preparation, after a flaky failure):* repeat-mode stress runs, `ArcForges.Bench` performance, the `wsl-bridge` suite, long property runs (CsCheck iteration and time settings), and ARM64 through a manual `workflow_dispatch` when wanted.
 - **Isolation.** Each test node gets a temporary data root, a unique pipe or socket name, a unique node ID (so Windows job names cannot collide) and its own transient slice name on Linux (`arcforges-test-<id>.slice`). A fixture cleans up leftover jobs, units and processes and fails the test if any remain.
 
 ## 5. Release-candidate acceptance
@@ -94,7 +105,7 @@ The release candidate (AF-ACC-01) runs every journey J-01 to J-11 end to end wit
 
 Each delivery task's PR records:
 1. the exact commands run, with their results (author);
-2. the environments covered (Windows real, WSL2 real, hosted CI);
+2. the environments covered (Windows real, WSL2 real; for the owner's PRs the local verification record, the hook's `arcforges-verify: PASS` line; for external PRs hosted CI);
 3. which acceptance criteria each test proves, by requirement ID;
 4. benchmarks when a measured path changed;
 5. any acceptance-register entries created or advanced, with the human prerequisite stated.

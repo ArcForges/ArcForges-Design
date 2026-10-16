@@ -3,7 +3,7 @@
 Requirement: R-PERF-001. Every target names its measurement. "Workstation" means the development machine of L-01/L-02 (Windows 11, 18 logical processors, 31.5 GB; WSL2 Debian with 16 GB).
 
 - **Benchmark tool.** Benchmarks run through `tools/ArcForges.Bench` (part of the ArcForges repository). It emits JSON results that tasks attach to their PR evidence.
-- **CI benchmarks** (size, startup) run on hosted runners. They gate only on size, plus startup regressions above 25% against the previous main run, because hosted runners are noisy.
+- **CI benchmarks** (size, startup) run in the CI-equivalent verification: the local pre-push verification for the owner's PRs and hosted runners for external PRs ([AD-0016](../decisions/AD-0016-local-first-verification.md)). They gate only on size, plus startup regressions above 25% against the PR's base commit built on the same machine (the hook: the merge base; external-PR CI: the base commit on the same runner), because the measurements are noisy.
 - **Workstation benchmarks** (footprint, load) run locally and are recorded with their raw data.
 
 ## 1. Executables

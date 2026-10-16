@@ -1754,7 +1754,8 @@
       "id": "R-TEST-001",
       "design": [
         "docs/architecture/16-testing-strategy.md",
-        "docs/decisions/AD-0014-delivery-method.md"
+        "docs/decisions/AD-0014-delivery-method.md",
+        "docs/decisions/AD-0016-local-first-verification.md"
       ],
       "tasks": [
         "AF-REPO-01",
@@ -1767,7 +1768,8 @@
       "id": "R-TEST-002",
       "design": [
         "docs/architecture/16-testing-strategy.md",
-        "docs/decisions/AD-0014-delivery-method.md"
+        "docs/decisions/AD-0014-delivery-method.md",
+        "docs/decisions/AD-0016-local-first-verification.md"
       ],
       "tasks": [
         "AF-REPO-01",

@@ -5,7 +5,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 ## Read in this order
 
 1. [Product definition](product/product-definition.md) and [requirements](product/requirements.md)
-2. [Decisions](#decisions) AD-0001 … AD-0015
+2. [Decisions](#decisions) AD-0001 … AD-0016
 3. [Architecture](#architecture) chapters 01–16
 4. [Contracts](contracts/README.md), [API catalogue](contracts/api-catalogue.md), [errors](contracts/errors.md)
 5. [Data](#data), [state machines](state-machines/README.md), [experience](experience/README.md)
@@ -36,6 +36,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 | [AD-0013](decisions/AD-0013-reuse-and-supersession.md) | Reuse, adaptation, retention and supersession |
 | [AD-0014](decisions/AD-0014-delivery-method.md) | Delivery method: serial, distinct evidence, honest acceptance |
 | [AD-0015](decisions/AD-0015-direction-editions-roadmap.md) | Product direction, editions (local and LAN free) and roadmap governance |
+| [AD-0016](decisions/AD-0016-local-first-verification.md) | Local-first verification, owner-only lightweight CI and testing techniques |
 
 ## Architecture
 
