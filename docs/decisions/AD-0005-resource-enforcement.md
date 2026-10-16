@@ -65,7 +65,7 @@ Optional privileged features are designed but not part of the current deliverabl
    - **Control.**
      - **Pause:** `FreezeUnit` / `ThawUnit`.
      - **Graceful cancellation:** `KillUnit("all", <stop_signal>)`, default SIGTERM.
-     - **Forced cancellation and limit stops:** `FreezeUnit`, SIGKILL to every process of the cgroup (the main process last), then a direct write of `0` to `cgroup.freeze` and `ThawUnit`. `KillUnit("all", SIGKILL)` is not used, because systemd then skips `ExecStop` and `ExecStopPost`, and a frozen cgroup blocks the user manager while it spawns `ExecStop` (L-24; amended 2026-10-16). Releasing a freeze is the only cgroup file the node writes.
+     - **Forced cancellation and limit stops:** `FreezeUnit`, SIGKILL to every process of the cgroup (the main process last), then a direct write of `0` to `cgroup.freeze` and `ThawUnit`. `KillUnit("all", SIGKILL)` is not used, because systemd then skips `ExecStop` and `ExecStopPost`, and the user manager's spawn of `ExecStop` into a frozen cgroup blocks the manager (systemd 257) or leaves the unit deactivating with its exit record pending (systemd 255) until the cgroup is thawed (L-24; amended 2026-10-16). Releasing a freeze is the only cgroup file the node writes.
      - **Limit changes:** `SetUnitProperties(runtime=true)`.
      - **Statistics:** read directly from the unit's cgroup files, which are readable.
      - **Completion:** observed through D-Bus `PropertiesChanged`/`JobRemoved` and `exit.json` (V-L03–V-L05).
