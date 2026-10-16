@@ -27,7 +27,7 @@ python -m unittest discover -s tests -v
 
 `--compile` also builds the generated C#, warning-free under `IsAotCompatible`.
 
-The pre-push hook runs the same checks, with `--compile`, on Windows and WSL Debian for every push: install it once per clone with `python eng/verify.py install` ([AGENTS.md](AGENTS.md), rule 8; [AD-0016](docs/decisions/AD-0016-local-first-verification.md)).
+The pre-push hook runs the same checks, with `--compile`, on Windows and WSL Debian for every push: install it once per clone, for every worktree, with `python eng/verify.py install` ([AGENTS.md](AGENTS.md), rule 8; [AD-0016](docs/decisions/AD-0016-local-first-verification.md)).
 
 ## Licence
 

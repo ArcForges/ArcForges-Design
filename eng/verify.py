@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 """Local pre-push verification (the same file in every ArcForges repository; the steps live in eng/verify_steps.py).
 
-  python eng/verify.py install                    point Git at .githooks (once per clone; all worktrees share it)
+  python eng/verify.py install                    install .githooks/* for every worktree of this clone (once)
   python eng/verify.py run [--rev REV] [--force]  verify a commit now (default HEAD); a pass is reused by the push
   python eng/verify.py list [--rev REV]           show the profile and steps a commit would run
   python eng/verify.py pre-push REMOTE [URL]      the hook entry point (refs on stdin)
@@ -285,6 +285,9 @@ class Runner:
                                            stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL, env=env)
                 with self.lock:
                     self.live[process] = step
+                    stopped = self.stop.is_set()
+                if stopped:
+                    self.abort(process, step)
                 try:
                     code = process.wait(timeout=step.timeout + (90 if step.host == "wsl" else 0))
                     if code == 124 and step.host == "wsl":
@@ -389,12 +392,14 @@ class Lock:
 
 # ------------------------------------------------------------------------------------------------------------- commands
 
-def default_branch(repo: Repository) -> str:
-    return getattr(repo.steps, "DEFAULT_BRANCH", "main")
+def upstream_ref(remote: str) -> str:
+    """The remote's default branch (refs/remotes/<remote>/HEAD when known, else main)."""
+    head = git("symbolic-ref", "--quiet", f"refs/remotes/{remote}/HEAD", check=False)
+    return head or f"refs/remotes/{remote}/main"
 
 
 def plan(repo: Repository, sha: str, remote: str) -> tuple[str, str, list[str], list[Step]]:
-    upstream = f"refs/remotes/{remote}/{default_branch(repo)}"
+    upstream = upstream_ref(remote)
     if not git("rev-parse", "--verify", "--quiet", upstream, check=False):
         raise VerifyError(f"{upstream} is missing; run `git fetch {remote}` first")
     base = git("merge-base", sha, upstream)
@@ -418,10 +423,17 @@ def verify(repo: Repository, rev: str, remote: str, force: bool = False, keep_go
     if os.name != "nt" and "win" in hosts:
         raise VerifyError("verification needs the Windows host; push from Windows, not from WSL")
     tools = fingerprint(repo, hosts)
-    key = hashlib.sha256(json.dumps([tree, profile, repo.digest, tools], sort_keys=True).encode()).hexdigest()
+    # The key is the source state the steps actually see: the tree, plus the exact commits when a step reads history
+    # ({sha}, {base}, {range}, e.g. a secret scan of the pushed commits), and the selected step set.
+    history = any(marker in (s.cmd if isinstance(s.cmd, str) else " ".join(s.cmd))
+                  for s in steps for marker in ("{sha}", "{base}", "{range}"))
+    source = [tree, base, sha] if history else [tree]
+    key = hashlib.sha256(json.dumps([source, profile, sorted(s.id for s in steps), repo.digest, tools],
+                                    sort_keys=True).encode()).hexdigest()
     record = repo.state / f"pass-{key[:32]}.json"
     if record.exists() and not force:
-        say(f"tree {tree[:12]} already passed profile '{profile}' with these scripts and tools ({record.name})")
+        say(f"{'commit' if history else 'tree'} {(sha if history else tree)[:12]} already passed profile '{profile}' "
+            f"with these steps, scripts and tools ({record.name})")
         print(f"arcforges-verify: PASS {sha} tree {tree} profile {profile} reused {record}", flush=True)
         return
     stamp = _dt.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -462,21 +474,30 @@ def command_pre_push(repo: Repository, remote: str) -> None:
     for local_ref, local_sha, _remote_ref, _remote_sha in refs:
         if local_sha == ZERO:
             continue
-        repo.load_steps(local_sha)
-        upstream = f"refs/remotes/{remote}/{default_branch(repo)}"
+        upstream = upstream_ref(remote)
         if git("rev-parse", "--verify", "--quiet", upstream, check=False) and subprocess.run(
                 ["git", "merge-base", "--is-ancestor", local_sha, upstream]).returncode == 0:
-            say(f"{local_ref}: already contained in {remote}/{default_branch(repo)}; nothing to verify")
+            say(f"{local_ref}: already contained in {upstream}; nothing to verify")
             continue
         verify(repo, local_sha, remote)
 
 
 def command_install(repo: Repository) -> None:
-    hook = repo.top / ".githooks" / "pre-push"
-    if not hook.exists():
-        raise VerifyError(f"{hook} is missing")
-    git("config", "core.hooksPath", ".githooks", cwd=repo.top)
-    say("installed: core.hooksPath=.githooks (shared by every worktree of this clone)")
+    """Copies .githooks/* into the clone's common hooks directory, which every worktree uses. A relative
+    core.hooksPath would resolve per worktree and silently run no hook in a worktree whose commit lacks .githooks, so it
+    is removed; the installed pre-push rejects a push from a worktree without eng/verify.py."""
+    source = repo.top / ".githooks"
+    if not (source / "pre-push").exists():
+        raise VerifyError(f"{source / 'pre-push'} is missing")
+    if git("config", "--get", "core.hooksPath", cwd=repo.top, check=False):
+        git("config", "--unset-all", "core.hooksPath", cwd=repo.top)
+        say("removed core.hooksPath (the hooks now live in the common hooks directory)")
+    target = repo.common / "hooks"
+    target.mkdir(exist_ok=True)
+    for hook in sorted(p for p in source.iterdir() if p.is_file()):
+        (target / hook.name).write_bytes(normalized(hook.read_bytes()))
+        say(f"installed {hook.name} -> {target / hook.name}")
+    say("every worktree of this clone now runs the pre-push verification")
 
 
 def main() -> int:
@@ -495,6 +516,11 @@ def main() -> int:
     hook.add_argument("remote")
     hook.add_argument("url", nargs="?")
     args = parser.parse_args()
+    # Git runs hooks with GIT_DIR and related variables set for the pushing worktree; left in place they would make
+    # every git command (and every step) below act on that worktree instead of the verification checkouts.
+    local = subprocess.run(["git", "rev-parse", "--local-env-vars"], capture_output=True, text=True)
+    for name in local.stdout.split():
+        os.environ.pop(name, None)
     try:
         repo = Repository()
         if args.command == "install":

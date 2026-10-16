@@ -17,13 +17,12 @@ This repository is the **design authority** for ArcForges. The delivery plan, le
    - Assumptions name their future-validation owner task.
    - Real-world validation that cannot run now goes to the Plan acceptance register, never reported as proven.
 8. **Local verification** ([AD-0016](docs/decisions/AD-0016-local-first-verification.md)).
-   - Install once per clone, from the main checkout: `python eng/verify.py install` (sets `core.hooksPath` to `.githooks`, shared by every worktree).
+   - Install once per clone: `python eng/verify.py install` copies `.githooks/*` into the clone's common hooks directory, so every worktree runs them. It uses no `core.hooksPath` and removes one if set. Re-run it when `.githooks/` changes. A push from a worktree whose commit has no `eng/verify.py` is rejected; rebase it onto `main`.
    - The pre-push hook verifies each pushed commit, not the working tree, in `.worktree/_verify` (Windows) and a WSL Debian clone, concurrently. It runs what `design.yml` runs: the locked restore of `tools/proto-toolchain/ProtoToolchain.csproj`, `python tools/check_design.py --require-protoc --compile` and `python -m unittest discover -s tests -v`, plus `actionlint` when `.github/workflows/**` changed. Every change runs this full profile.
-   - `python eng/verify.py list` shows the steps; `python eng/verify.py run` verifies `HEAD` before pushing, and the push reuses that pass for the identical tree, scripts and tools.
+   - `python eng/verify.py list` shows the steps; `python eng/verify.py run` verifies `HEAD` before pushing, and the push reuses that pass for the identical tree, step set, scripts and tools.
    - A failure, timeout or missing tool (including WSL Debian) rejects the push and prints the step, the last log lines and the log path. Read the log, fix the cause, push again.
    - Record the hook's `arcforges-verify: PASS` line in the PR. The reviewer re-runs only checks whose inputs they doubt, or whose tooling the PR changed (AD-0014 §4).
-   - AI agents must never use `git push --no-verify` to bypass required validation.
-   - Never disable, remove, modify, or otherwise circumvent the hooks merely to allow a push.
+   - AI agents must never use `git push --no-verify` to bypass required validation. They must also never disable, remove, modify, or otherwise circumvent the hooks merely to allow a push.
    - If validation fails, investigate and fix the underlying issue.
    - If a required local test cannot run, do not silently skip it or claim successful verification.
    - Changing `eng/verify*.py` or `.githooks/` as reviewed engineering work is allowed; changing them to get a push through is not.
