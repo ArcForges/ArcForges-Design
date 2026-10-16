@@ -1,7 +1,7 @@
 # AD-0005 — Resource enforcement, WSL model and privileges
 
-- Status: Accepted (2026-10-12; revised after the independent review the same day: job handle holders, guest budgets, aligned parameters; revised 2026-10-13 after the findings review: verified console signalling, guest allocation split and lease, stated memory guarantees; revised 2026-10-13 after the mechanism review: the guest's reservation kept during link loss, holders as disk guards, compiler servers per attempt)
-- Evidence: [platform verification](../verification/platform-capabilities.md) V-W01–V-W06, V-L01–V-L07, L-01–L-16, L-18
+- Status: Accepted (2026-10-12; revised after the independent review the same day: job handle holders, guest budgets, aligned parameters; revised 2026-10-13 after the findings review: verified console signalling, guest allocation split and lease, stated memory guarantees; revised 2026-10-13 after the mechanism review: the guest's reservation kept during link loss, holders as disk guards, compiler servers per attempt; amended 2026-10-16 from AF-EXEC-02 evidence: Linux forced phase by freeze, per-process kill and direct thaw, exact environment through exec-launch, the node's own rlimits, `CollectMode=inactive`, `TimeoutStopSec` formula)
+- Evidence: [platform verification](../verification/platform-capabilities.md) V-W01–V-W06, V-L01–V-L07, L-01–L-16, L-18, L-24, L-25
 
 The numeric limits and formulas live in [resource control](../architecture/03-resource-control.md) §2 and §5. The launch, cancellation and recovery sequences live in [execution](../architecture/04-execution.md) §3, §6 and §9. This decision fixes the mechanisms.
 
@@ -52,20 +52,20 @@ Optional privileged features are designed but not part of the current deliverabl
      - `CPUWeight` (03 §5), plus an optional per-task `CPUQuota`;
      - `MemoryHigh`, `MemoryMax`, `OOMPolicy=kill` and an optional `MemorySwapMax`;
      - `TasksMax`;
-     - `KillMode=control-group` with `TimeoutStopSec` = `leftover_grace` (default 5 s). This applies only to the stop that follows the root process's exit;
+     - `KillMode=control-group` with `TimeoutStopSec` = the end-step budget (10 s) + `leftover_grace` (default 5 s) + 5 s; `exec-stop` kills the leftovers with SIGKILL after `leftover_grace`. This applies only to the stop that follows the root process's exit (04 §3; amended 2026-10-16);
      - `ExecStopPost=<app>/current/arcforges node exit-record --attempt <id>`;
-     - `CollectMode=inactive-or-failed`.
+     - `CollectMode=inactive`: a failed unit is kept until the node has recorded it from its properties (an OOM kill can skip `ExecStopPost`), then reset (amended 2026-10-16).
    - **Launch.**
-     - The node passes the working directory and an exact environment (`Environment=`, plus `UnsetEnvironment=` for every manager variable outside the resolved set).
+     - The node passes the working directory and the resolved environment (`Environment=`); `exec-launch` keeps only the resolved names, so the result is exact whatever the user manager adds (amended 2026-10-16).
      - stdio is passed as file descriptors over D-Bus (`StandardInputFileDescriptor`, `StandardOutputFileDescriptor`, `StandardErrorFileDescriptor`).
-     - The caller's relevant rlimits are passed as `Limit*=` properties.
+     - The node's own limits are passed as `Limit*=` properties (`LimitCORE` and `LimitSTACK` with the node's soft and hard values; `LimitNOFILE` with the node's hard value and a soft value of min(1024, hard)) (amended 2026-10-16).
    - **Parent and exit record.**
      - The user manager is the parent of every execution, so executions never depend on the node process.
      - `ExecStopPost` runs in the unit's cgroup and receives `$EXIT_CODE`, `$EXIT_STATUS` and `$SERVICE_RESULT`. It writes `logs/<attempt>/exit.json` with the cgroup accounting (`cpu.stat`, `memory.peak`, `memory.events`, `io.stat`), so the record is durable even while the node is down (L-13).
    - **Control.**
      - **Pause:** `FreezeUnit` / `ThawUnit`.
      - **Graceful cancellation:** `KillUnit("all", <stop_signal>)`, default SIGTERM.
-     - **Forced cancellation:** after `cancel_grace`, `KillUnit("all", SIGKILL)`.
+     - **Forced cancellation and limit stops:** `FreezeUnit`, SIGKILL to every process of the cgroup (the main process last), then a direct write of `0` to `cgroup.freeze` and `ThawUnit`. `KillUnit("all", SIGKILL)` is not used, because systemd then skips `ExecStop` and `ExecStopPost`, and the user manager's spawn of `ExecStop` into a frozen cgroup blocks the manager (systemd 257) or leaves the unit deactivating with its exit record pending (systemd 255) until the cgroup is thawed (L-24; amended 2026-10-16). Releasing a freeze is the only cgroup file the node writes.
      - **Limit changes:** `SetUnitProperties(runtime=true)`.
      - **Statistics:** read directly from the unit's cgroup files, which are readable.
      - **Completion:** observed through D-Bus `PropertiesChanged`/`JobRemoved` and `exit.json` (V-L03–V-L05).
@@ -108,5 +108,5 @@ Optional privileged features are designed but not part of the current deliverabl
 
 - No step of core functionality needs elevation, and every enforcement claim is backed by a real test in its environment.
 - Windows pause and memory soft-limits are honestly unavailable.
-- Each Windows attempt costs one small holder process (target ≤ 3 MB private, [15](../architecture/15-performance-targets.md)). That is the price of surviving node restarts.
+- Each Windows attempt costs one holder process (target ≤ 10 MB private, [15](../architecture/15-performance-targets.md) §2; amended 2026-10-16). That is the price of surviving node restarts.
 - Optional privileged features are designed but do not gate development-stage completion.

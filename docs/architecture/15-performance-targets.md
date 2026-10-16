@@ -24,15 +24,17 @@ Requirement: R-PERF-001. Every target names its measurement. "Workstation" means
 | Idle CPU | ≤ 0.5% of one core (10-minute average) | Process CPU time delta, LAN and cloud off. Timers: monitor 1 s; diagnosis 15 s per running attempt (none while idle) and 60 s for node-wide rules ([07](07-records-diagnosis-memory.md) §2). | Workstation, both OSes |
 | Idle memory | Windows ≤ 60 MB private bytes (node + supervisor); Linux ≤ 70 MB RSS | After 10 minutes idle, with a store of 10,000 attempts | Workstation |
 | Under load: 50 concurrent executions (synthetic `TestLoad` workers) | Node ≤ 2% of one core (excluding the executions), ≤ 150 MB | 10-minute steady state | Workstation |
-| Per-execution helper overhead | Windows `exec-wrap` (holder and disk guard) ≤ 3 MB private each; Linux 0 per execution (`exit-record` runs only at exit) | Private bytes of the helper process | Workstation |
-| Disk guard | Linux `arcforges-guard.service` ≤ 8 MB private, one per user, idle while the node's heartbeat is fresh; takeover within `storage.guard_takeover_ms` + 1 s on both platforms | Private bytes; time from the node's stop to the first guard check | Workstation |
+| Per-execution helper overhead | Windows `exec-wrap` (holder and disk guard) ≤ 10 MB private each (measured 6.65 MB, 2026-10-16); Linux 0 per execution (`exit-record` runs only at exit) | Private bytes of the helper process | Workstation |
+| Disk guard | Linux `arcforges-guard.service` ≤ 12 MB private (measured 8.18 MB, 2026-10-16), one per user, idle while the node's heartbeat is fresh; takeover within `storage.guard_takeover_ms` + 1 s on both platforms | Private bytes; time from the node's stop to the first guard check | Workstation |
 | Admission latency (submit → `STARTED` when capacity exists) | p95 ≤ 150 ms (Windows), ≤ 250 ms (Linux, including the transient-unit job) | 500 submissions | Workstation |
 | Local event latency (state change → client stream) | p95 ≤ 200 ms | Timestamps in the event and the receiver | Workstation |
-| Output capture | ≥ 200 MB/s sustained, no loss | `TestLoad` writer at maximum rate; byte-for-byte digest comparison | Workstation |
+| Output capture | ≥ 200 MB/s sustained, no loss. On Linux the node drops each indexed range of the output files from the page cache (`posix_fadvise(POSIX_FADV_DONTNEED)`), because written pages are charged to the attempt's memory and reclaim at its `MemoryHigh` would otherwise throttle the writer (L-25). | `TestLoad` writer at maximum rate; byte-for-byte digest comparison | Workstation |
 | Store growth | ≤ 50 MB per 10,000 attempts (records, timelines, samples, cache usage and result-cache observations; logs excluded) | Database file size after generating attempts | Workstation, CI (smaller scale) |
 | Evidence collection per attempt | Cache-usage measurement ≤ 2 s of background work (policy `caches.usage_scan_budget_ms`), never delaying the attempt's result | Timestamps of the measurement job | Workstation |
 | Node startup to ready (warm, 100 surviving executions to re-attach) | ≤ 3 s | Startup timestamps | Workstation |
 | Guest node idle (WSL2) | ≤ 40 MB RSS, ≤ 0.5% of one core | Guest after 10 minutes idle | Workstation |
+
+**Helper memory (decision of the product owner, 2026-10-16).** The holder and the guard are roles of the one multi-role binary ([AD-0003](../decisions/AD-0003-architecture-and-runtimes.md)), whose `exec-wrap` role measured 5.5 MB private before it had read its specification (AF-EXEC-01 review, Windows), so the earlier 3 MB (holder) and 8 MB (guard) targets could not be met without a separate executable. Keeping one binary is preferred: the targets above are set from measurements with headroom. MB here means 1,000,000 bytes, as in the CI benchmarks. A dedicated lightweight helper executable is accepted future work (roadmap RM-14), revisited only if per-attempt overhead becomes a real constraint.
 
 ## 3. Clients
 
