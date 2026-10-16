@@ -1,6 +1,6 @@
 # AD-0014 — Delivery method: serial development, distinct evidence, honest acceptance
 
-- Status: Accepted (2026-10-12; revised the same day after the independent review: `blocked` state and real dependencies, so one blocked task cannot stall the plan; revised 2026-10-13 after the findings review: production activation separate from delivery; continuous serial execution once authorized)
+- Status: Accepted (2026-10-12; revised the same day after the independent review: `blocked` state and real dependencies, so one blocked task cannot stall the plan; revised 2026-10-13 after the findings review: production activation separate from delivery; continuous serial execution once authorized; amended 2026-10-16 by [AD-0016](AD-0016-local-first-verification.md): the hosted-CI merge gate applies to external PRs)
 - Supersedes for active development:
   - the parallel delivery model of ArcForges-Design-Parallel (P2-018, DLV-25, DLV-31 build slot, DLV-42 coordinator capacity) and of Plan-Parallel `execution-policy.md`, `single-task-command.md` and `arcforges-implementation.md`;
   - the launcher instruction to "use up to 10 concurrent subagents";
@@ -23,6 +23,8 @@
 
    Re-review after changes covers the delta only, unless the delta changes build or test infrastructure.
 5. **Fast local feedback.** Authors run real tests on the workstation (Windows and WSL2) for everyday feedback and do not wait on hosted CI for it. Hosted CI is the merge gate for the platform-independent gates.
+
+   > **Amendment (2026-10-16, [AD-0016](AD-0016-local-first-verification.md)).** The "Hosted CI" row of §4 and "hosted CI is the merge gate" now apply to external PRs (any author other than `deku2026`, Dependabot included). The owner's PRs are gated by the repository-managed pre-push verification at the pushed head plus the independent review, and run no hosted validation.
 6. **Fakes only at unavailable boundaries.** Closed-loop automated tests may fake:
    - other machines;
    - Cloudflare, Paddle, Google Play, FCM and app stores;
