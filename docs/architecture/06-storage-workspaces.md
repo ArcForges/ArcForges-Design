@@ -4,6 +4,8 @@
 
 Default data root: `%LOCALAPPDATA%\ArcForges\data\` (Windows), `~/.local/share/arcforges/data/` (Linux) ([AD-0012](../decisions/AD-0012-distribution-and-updates.md)).
 
+**In-memory file systems.** If the data root, `logs/` or `tmp/` is on tmpfs or ramfs, the node reports the capability fact `data_root_filesystem`, logs the warning `node.data_root_in_memory`, and still starts. On Linux, files written there count as the writing attempt's memory and cannot be reclaimed with `MemorySwapMax=0`, so an attempt's own output can push it to its memory limit (L-25).
+
 | Sub-root | Path | Content | Default quota | Retention |
 |---|---|---|---|---|
 | `store` | `store/node.db` (+ `-wal`, `-shm`) | Node store | guard: 1 GiB free on the volume | n/a |
