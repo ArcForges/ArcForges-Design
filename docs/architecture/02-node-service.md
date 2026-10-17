@@ -123,6 +123,12 @@ The client waits for readiness up to 5 s (CLI) or 15 s (Desktop, MCP adapter), t
 | Store `node_setting` | Node name, root relocations, feature toggles | Node |
 | Environment `ARCFORGES_*` | Test hooks only (endpoint override, fake clock), honoured only by debug builds or with `--test-mode` | Tests |
 
+**OS-wide key and secret stores under `--test-mode`.** A node started with `--test-mode` uses no OS-wide key or secret store unless `ARCFORGES_OS_SECRET_STORE_TESTS=1` is set. This covers the OS secret store (Credential Manager or Secret Service) and the Windows CNG user key store that holds the node key ([09](09-lan.md) §1). Only the OS secret-store integration tier sets the opt-in ([16](16-testing-strategy.md) §1).
+- Without that opt-in, the node keeps every secret it would hold in the OS secret store in an isolated, file-backed test backend scoped to the test data root. This covers the node data key, the node credential and the WSL guest link tokens ([09](09-lan.md) §9). Restart and retry tests of sealed task secrets (R-EXE-017) therefore keep their keys.
+- The node key is held the same way: as a file-backed key scoped to the test data root, not a CNG user key. On Linux the node key is already a 0600 file in the data root. *Note (2026-10-17):* the node key is implemented with the LAN pairing task (AF-LAN-01, not delivered yet), which implements this rule for it.
+- Under `--test-mode`, any other path to these stores fails with the guard's error before any OS call, and never falls back to another backend.
+- Release builds started without `--test-mode` are unchanged: they select the OS secret store as in AD-0011 §4.
+
 ## 5. Logging and telemetry
 
 - Structured logs (JSON Lines) rotate at 10 MB × 5 files in `<data root>/logs/node/`, written through the DesktopPlatform `ArcForges.Observability` redaction processor. Command lines and environment values are logged only at `debug` level, and always through redaction.

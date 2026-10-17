@@ -46,6 +46,8 @@ Defined by `arcforges.node.v1.TaskSpec` ([contracts](../contracts/proto/arcforge
 
      **A lost key fails closed.** If the node data key that sealed the values is missing from the OS secret store or cannot be read, the values are unavailable. The node never launches a task with a partial environment, `RetryTask` fails with `STATE/secrets_unavailable` (without a purge time), and new submissions are sealed under a new key version. The design relies on no consistency guarantee of the OS store under concurrent modification (L-26).
 
+     **Production read-back policy.** Production does not read back a node data key after writing it. The key stays in memory; a lost write surfaces at the next load (node restart) and fails closed as above. Read-back and absence checks are test verification only ([16](16-testing-strategy.md) §1).
+
      Non-secret environment snapshots are content-addressed (`env_snapshot`), so identical environments are stored once.
 
 ## 3. Launch

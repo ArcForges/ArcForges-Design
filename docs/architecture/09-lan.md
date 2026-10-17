@@ -141,6 +141,6 @@ The host–guest link uses the `wsl.exe` bridge and `peer.v1.GuestLinkService` o
 - **Discovery.** The host lists WSL2 distributions (`wsl.exe --list --verbose`). For each running one, it checks for the guest binary at `~/.local/share/arcforges/app/current/arcforges` or `/usr/bin/arcforges`, using `wsl.exe -d <distro> --exec test -x <path>`.
 - **Trust.**
   - **The bridge.** The host launches the bridge as the same Windows user. The guest node accepts the bridge only from its own uid (`SO_PEERCRED`).
-  - **First link (trust on first use).** The host generates a 32-byte link token, stored in the Windows Credential Manager, and sends it with its node ID. The guest pins that host node ID and the token's hash (`host_link`).
+  - **First link (trust on first use).** The host generates a 32-byte link token, stored in the Windows Credential Manager (under `--test-mode` without the OS secret-store opt-in, in the isolated test backend: [02](02-node-service.md) §4), and sends it with its node ID. The guest pins that host node ID and the token's hash (`host_link`).
   - **Later links** must present the same host and token. A link from a different host is refused and recorded (`ResourceService.GetHostLink`). The user accepts the new host inside the guest with `arcforges guests trust-host <host-node-id>` (`TrustHost`, HUMAN and interactive only); its next link is then pinned as on first use.
 - **No pairing.** Guests are never paired as LAN peers.
