@@ -42,7 +42,11 @@ Defined by `arcforges.node.v1.TaskSpec` ([contracts](../contracts/proto/arcforge
      - the values are encrypted with AES-256-GCM under a node data key kept in the OS secret store, and stored in `task_secret`;
      - they are purged when the task reaches a terminal state and `storage.secret_retention_hours` (default 24) has passed, or on `PurgeTaskRecord`.
 
-     A manual `RetryTask` after the purge fails with `STATE/secrets_unavailable` and asks for a new submission. Non-secret environment snapshots are content-addressed (`env_snapshot`), so identical environments are stored once.
+     A manual `RetryTask` after the purge fails with `STATE/secrets_unavailable` and asks for a new submission.
+
+     **A lost key fails closed.** If the node data key that sealed the values is missing from the OS secret store or cannot be read, the values are unavailable. The node never launches a task with a partial environment, `RetryTask` fails with `STATE/secrets_unavailable` (without a purge time), and new submissions are sealed under a new key version. The design relies on no consistency guarantee of the OS store under concurrent modification (L-26).
+
+     Non-secret environment snapshots are content-addressed (`env_snapshot`), so identical environments are stored once.
 
 ## 3. Launch
 

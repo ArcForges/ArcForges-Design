@@ -1,6 +1,6 @@
 # AD-0016 — Local-first verification, owner-only lightweight CI and testing techniques
 
-- Status: Accepted (2026-10-16; the user's instruction of that day, with the coordinator's implementation decisions made under the user's grant to "make implementation decisions independently")
+- Status: Accepted (2026-10-16; the user's instruction of that day, with the coordinator's implementation decisions made under the user's grant to "make implementation decisions independently"; amended 2026-10-17 by the user's decision on secret-store tests: the OS secret-store test tier, §5)
 - Amends: [AD-0014](AD-0014-delivery-method.md) §4 (the "Hosted CI" row) and §5 ("hosted CI is the merge gate"), which now apply to external PRs only
 - Related: [16 testing strategy](../architecture/16-testing-strategy.md), [15 performance targets](../architecture/15-performance-targets.md), [13 distribution](../architecture/13-distribution-updates.md) §2 (release builds stay hosted), [conflicts](../reuse/conflicts.md) C-07
 
@@ -64,6 +64,12 @@ The user also asked for a more effective local testing strategy ("reliable, mean
    - *Deep (manual, release preparation, after a flaky failure):* stress repeats, performance and WSL-bridge suites, long property runs, and ARM64 through a manual `workflow_dispatch` when wanted.
 
    **Parallelism.** Test projects run concurrently with a bounded default chosen from recorded measurements (wall time, CPU, failures over repeated runs). Serial collections remain only where tests share machine-wide state. Timing-, CPU-share- and memory-sensitive tests carry the trait `isolation=exclusive` and run in a separate exclusive phase.
+
+   > **Amendment (2026-10-17, the OS secret-store test tier).** After a Credential Manager incident, the user decided: "routine tests must not stress or modify my real Windows Credential Manager at scale. Move encryption, key lifecycle, failure-injection, and concurrency tests to isolated or mock secret-store backends." On the integration tests the user said: "Keep routine tests and local pre-push verification isolated or mocked. Run minimal, sequential Windows Credential Manager integration tests on disposable GitHub-hosted Windows runners for external PRs, manual dispatch, and weekly checks. Keep real Windows credential tests disabled locally unless explicitly opted in. Use the isolated ArcForgesTest WSL distribution for Linux Secret Service integration tests. Never run stress or load tests against real OS credential stores, including hosted runners. Keep real OS integration tests separate from the default test suite, with strict operation limits, unique names, timeouts, and safe cleanup. Preserve the existing local-first CI policy." Consequences:
+   > - The pre-push hook and the routine and deep tiers stay isolated. They use the in-memory isolated secret-store backend ([16](../architecture/16-testing-strategy.md) §2) and never touch a real OS secret store. The backend is added to the substitutes of [AD-0014](AD-0014-delivery-method.md) §6.
+   > - Real OS secret-store tests form a separate tier ([16](../architecture/16-testing-strategy.md) §1). Windows Credential Manager runs in its own hosted job for external PRs, `workflow_dispatch` and a weekly schedule. This is the one validation job with a schedule; it runs for no owner PR and no push to main. Linux Secret Service runs in `ArcForgesTest`. On the workstation, both run only on explicit opt-in.
+   > - No stress or load test runs against a real OS store, hosted runners included.
+   > - The rest of this decision is unchanged, including the owner-PR merge gate of §1; the scheduled job above is the only addition to the job classes of §2. Known limitation: a Credential Manager regression in an owner PR surfaces only through the weekly run, a manual dispatch or an external PR. Evidence: L-26.
 
 ## Consequences
 

@@ -68,7 +68,7 @@ The current library serves a parent and the helper children it launched. That mo
   - **Storage:** files under `<data root>/run/secrets/` with mode 0600 in a 0700 directory, written atomically (`rename`), each holding one secret.
   - **Reporting:** the backend reports `Protection = FileOwnerOnly`, which the node shows as weaker storage (R-AUTH-003).
 - **Selection.** Secret Service when it is available, otherwise the file fallback. The choice is recorded and shown in `AccountStatus.credential_in_os_store`.
-- **Tests.** Real tests in WSL2 Debian: the file fallback (always available) and Secret Service when the user installs `gnome-keyring` (otherwise skipped with a reason). The Windows Credential Manager backend is unchanged.
+- **Tests.** Real tests in WSL2 Debian: the file fallback (always available). Secret Service tests belong to the OS secret-store integration tier ([16](../architecture/16-testing-strategy.md) §1): they run in the isolated `ArcForgesTest` distribution on explicit opt-in, minimal and sequential, when the user has installed a Secret Service provider such as `gnome-keyring` there (otherwise skipped with a reason). The Windows Credential Manager backend is unchanged; its real tests follow the same tier.
 
 ## 3. Not changed
 

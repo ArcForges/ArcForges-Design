@@ -56,7 +56,7 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 | `STATE/node_stopping` | The node is shutting down or switching versions | `AFTER_TIME` (2 s) | `DID_NOT_HAPPEN` | — |
 | `STATE/pause_unsupported` | Pause is not supported on this platform (Windows) | `NEVER` | `DID_NOT_HAPPEN` | — |
 | `STATE/not_attached` | A stdin call without the caller's current attach | `NEVER` | `DID_NOT_HAPPEN` | — |
-| `STATE/secrets_unavailable` | A retry needs sealed secret environment values that were purged (terminal state + `storage.secret_retention_hours`) | `NEVER` (submit again with the environment) | `DID_NOT_HAPPEN` | `state.reason` = purge time |
+| `STATE/secrets_unavailable` | A retry needs sealed secret environment values that were purged (terminal state + `storage.secret_retention_hours`), or that the node data key can no longer open because the key is missing or unreadable ([04](../architecture/04-execution.md) §2) | `NEVER` (submit again with the environment) | `DID_NOT_HAPPEN` | `state.reason` = purge time (absent when the key cannot open them) |
 | `STATE/in_use` | Referenced by running work, a session or a lease | `AFTER_TIME` | `DID_NOT_HAPPEN` | `state.reason` = holder |
 | `STATE/dirty_worktree` | A worktree has uncommitted changes | `NEVER` (archive or commit) | `DID_NOT_HAPPEN` | — |
 | `STATE/sas_mismatch` | Pairing digits did not match, or the commitment failed | `NEVER` | `DID_NOT_HAPPEN` | — |
