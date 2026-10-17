@@ -1,6 +1,6 @@
 # AD-0014 — Delivery method: serial development, distinct evidence, honest acceptance
 
-- Status: Accepted (2026-10-12; revised the same day after the independent review: `blocked` state and real dependencies, so one blocked task cannot stall the plan; revised 2026-10-13 after the findings review: production activation separate from delivery; continuous serial execution once authorized; amended 2026-10-16 by [AD-0016](AD-0016-local-first-verification.md): the hosted-CI merge gate applies to external PRs)
+- Status: Accepted (2026-10-12; revised the same day after the independent review: `blocked` state and real dependencies, so one blocked task cannot stall the plan; revised 2026-10-13 after the findings review: production activation separate from delivery; continuous serial execution once authorized; amended 2026-10-16 by [AD-0016](AD-0016-local-first-verification.md): the hosted-CI merge gate applies to external PRs; amended 2026-10-17 by AD-0016: the isolated secret-store backend in §6)
 - Supersedes for active development:
   - the parallel delivery model of ArcForges-Design-Parallel (P2-018, DLV-25, DLV-31 build slot, DLV-42 coordinator capacity) and of Plan-Parallel `execution-policy.md`, `single-task-command.md` and `arcforges-implementation.md`;
   - the launcher instruction to "use up to 10 concurrent subagents";
@@ -32,6 +32,8 @@
    - controlled failure scenarios.
 
    They never fake the behaviour under test. Real OS enforcement, deployment and full product acceptance are never claimed from fakes (R-TEST-001).
+
+   > **Amendment (2026-10-17, [AD-0016](AD-0016-local-first-verification.md) §5, amendment).** By the user's decision of that day, routine tests also replace the OS secret store with the isolated secret-store backend, for behaviour above the secret-store adapter. The adapters' own OS integration tests use the real store, in the separate tier of [16](../architecture/16-testing-strategy.md) §1.
 7. **Task states (Plan ledger):** `planned`, `active`, `blocked` (waiting on named human prerequisites or register entries; not counted as the active task), `delivered` (merged and published or deployed, own acceptance met at development stage), `complete` (also all completion prerequisites and recorded real-environment evidence that is possible now) and `superseded`.
 
    Deferred real-world validation (acceptance register) does not block `complete` for development-stage scope. It is tracked to its own register entry with prerequisites, trigger and owner.

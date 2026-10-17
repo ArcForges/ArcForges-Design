@@ -63,6 +63,7 @@ Default permission matrix (policy `permissions`, editable only by `HUMAN`).
 |---|---|---|---|
 | Node key (ECDSA P-256) | Each node | Windows CNG non-exportable user key; Linux 0600 file | On demand (re-pair); on compromise, revoke |
 | Node credential (refresh token, scope `node`) | Each node | OS secret store (AD-0011 §4) | 90-day sliding; revocable |
+| Node data key (AES-256; seals task secrets, [04](04-execution.md) §2) | Each node | OS secret store (AD-0011 §4) | A new version when the current key is missing or the backend changed; values sealed under a lost key are unavailable (`STATE/secrets_unavailable`, L-26) |
 | Relay token HMAC key | Cloud (Worker + container secrets) | Platform secrets | 90 days, two active `kid`s |
 | Command signing key (ECDSA P-256, ES256) | Cloud container | Platform secret | Yearly; public key distributed by enrollment and releases |
 | Entitlement token key (ECDSA P-256, ES256) | Cloud container | Platform secret | Yearly; 2 active keys |
