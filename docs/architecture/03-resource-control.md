@@ -33,7 +33,7 @@ B_cpu  = max(min_managed_cpu, C_cpu − R_cpu − U_cpu − guest_other_cpu)    
 B_mem  = max(0, C_mem − R_mem − U_mem − guest_other_mem)
 ```
 
-On the 18-thread, 31.5 GiB workstation (L-01) the defaults give `R_cpu = 2800`, `R_mem ≈ 5.15 GiB`.
+For example, on a host with 16 logical processors and 32 GiB the defaults give `R_cpu = 2600` and `R_mem = 5.2 GiB`.
 
 **Smoothing.** Smoothing is asymmetric so the user's own load is respected quickly and released slowly. `x_t = x_{t−1} + α·(sample − x_{t−1})` with `α_up = 0.5` when the sample rises and `α_down = 0.1` when it falls, evaluated every 1 s.
 
