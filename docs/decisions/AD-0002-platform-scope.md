@@ -24,7 +24,7 @@
 
 *The list above is kept as history. It is superseded as a description of the code by the dated revision of 2026-10-19 below.* The scope sentence above still binds release 1 (see Direction, item 1).
 
-**Dated revision (2026-10-19, recorded with the macOS amendment of [AD-0017](AD-0017-delegated-execution-direction.md); Direction, item 2).** The node does not implement the eight interfaces listed above. The delivered execution-platform seam is `IExecutionPlatform` with `IAttemptHandle` (`src/ArcForges.Node.Platform/ExecutionPlatform.cs` in ArcForges/ArcForges at `b22d2ec`), which keeps the execution mechanisms behind one interface, with Windows and Linux implementations. It is the successor of the list above, and a macOS node would be its third implementation. This revises the text to match the delivered code; it is not a correction of any claim, and no scope changes.
+**Dated revision (2026-10-19, recorded with the macOS amendment of [AD-0017](AD-0017-delegated-execution-direction.md); Direction, item 2).** The node does not implement the eight interfaces listed above. The delivered execution-platform seam is `IExecutionPlatform` with `IAttemptHandle` (`src/ArcForges.Node.Platform/ExecutionPlatform.cs` in ArcForges/ArcForges at `b22d2ec`), which keeps the execution mechanisms behind one interface, with Windows and Linux implementations. It is the successor of the list above for the execution mechanisms; the other mechanisms are reached through DesktopPlatform ([AD-0013](AD-0013-reuse-and-supersession.md)), so a macOS node would be the seam's third implementation plus macOS backends there. This revises the text to match the delivered code; it is not a correction of any claim, and no scope changes.
 
 ## Validation venues
 

@@ -39,7 +39,7 @@ Added 2026-10-19 ([AD-0017](../decisions/AD-0017-delegated-execution-direction.m
 
 "Your machine. Your rules." is read in a bounded way:
 - **"Your rules":** the owner writes policy once, and every launch ArcForges performs either obeys it or is refused with a reason. This holds today for resources; for access, lifecycle and evidence it is direction, taking effect row by row as the roadmap rows are promoted.
-- **"Your machine":** ArcForges runs as the user and never elevates at run time, so it cannot control everything on the machine. It observes what a standard user can see and labels it; it controls what it launched, or what the owner explicitly adopted or held; it never claims more than the operating system enforces.
+- **"Your machine":** ArcForges runs as the user and never elevates at run time, so it cannot control everything on the machine. It observes what a standard user can see and labels it; it controls what it launched or what the owner explicitly adopted (and, from EX-15's holds stage and only by the owner's decision, what the owner held); it never claims more than the operating system enforces.
 
 **The end-state sentence:** *For everything it runs, ArcForges will state who asked, what was granted, what the operating system actually enforces, and what happened; for everything else, it observes and says so.*
 
