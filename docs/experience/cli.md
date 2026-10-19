@@ -145,7 +145,7 @@ Each row lists the command, its main options, the RPCs it calls and its notes. A
 |---|---|
 | `toolchain list [--kind k]` / `detect` / `adapters` / `preview -- <cmd>` | `ListToolchains` / `DetectToolchains` / `ListAdapters` / `PreviewInvocation` |
 | `session list` / `show <id>` / `coverage <id>` / `end <id>` | `ListSessions` / `GetSession` / `GetSessionCoverage` / `EndSession` |
-| `coverage [--session <id>]` | `GetReleaseScope`, then `GetSessionCoverage` when a session is given: the release coverage statement (product definition §9), followed by the session's facts. `session coverage <id>` ends with a pointer to it. |
+| `coverage [--session <id>]` | `GetReleaseScope`, then `GetSessionCoverage` when a session is given: the release coverage statement (product definition §9), whose routing rows carry each client's routing statement and, when a session is given, mark the row of the session's client (added 2026-10-19), followed by the session's facts. `session coverage <id>` ends with a pointer to it. |
 | `findings list` / `show <id>` / `ack <id>` / `mute <id> [--for 7d]` / `remedy <id> <action>` | `ListFindings` / `GetFinding` / `AcknowledgeFinding` / `MuteFinding` / `ApplyRemedy` |
 | `approvals list` / `show <id>` / `approve <id>` / `deny <id> [--comment c]` / `withdraw <id>` | `ListApprovals` / `GetApproval` / `DecideApproval` / `CancelApproval` |
 | `memory list` / `show <id>` / `query -- <cmd>` / `forget <id>... \| --project p` | `ListFacts` / `GetFact` / `QueryFacts` / `ForgetFacts` |
@@ -176,7 +176,7 @@ Each row lists the command, its main options, the RPCs it calls and its notes. A
 | `lan incoming` / `lan accept <pairing>` / `lan reject <pairing>` | `RespondToPairing` | — |
 | `lan policy <peer> [--place-to] [--accept-from] [--cache-read] [--cache-write] [--cpu-share x] [--mem-share x] [--data-out source,outputs,logs] [--require-approval]` | `UpdatePeerPolicy` | — |
 | `lan remove <peer> [--block]` | `RemovePeer` | — |
-| `integrate <claude-code\|codex> [--scope user\|project\|local] [--project <dir>] [--mcp] [--hooks] [--routing observe\|guide\|rewrite]` | `PlanIntegration` | Prints the plan diff (default: plan only), with the routing statement for the client when the plan enables an MCP or hook route ([AD-0007](../decisions/AD-0007-ai-integration.md) §4; added 2026-10-19) |
+| `integrate <claude-code\|codex> [--scope user\|project\|local] [--project <dir>] [--mcp] [--hooks] [--routing observe\|guide\|rewrite]` | `PlanIntegration` | Prints the plan diff (default: plan only), with the client's routing statement (the Stated limit text of its routing row, product definition §9) when the plan enables an MCP or hook route ([AD-0007](../decisions/AD-0007-ai-integration.md) §4; added 2026-10-19) |
 | `integrate <client> --apply` | `PlanIntegration`, `ApplyIntegration` | HUMAN only; shows the diff and prompts |
 | `integrate <client> --remove [--apply]` | `PlanRemoval`, `ApplyIntegration` | — |
 | `integrate <client> --probe` / `integrate status` / `integrate <client> --snippet` | `StartProbe`, `ListProbeResults` / `ListClients` / `GetInstructionSnippet` | — |

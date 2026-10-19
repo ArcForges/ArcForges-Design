@@ -403,13 +403,14 @@
         "docs/architecture/03-resource-control.md",
         "docs/decisions/AD-0005-resource-enforcement.md",
         "docs/contracts/proto/arcforges/node/v1/resources.proto",
-        "docs/architecture/04-execution.md"
+        "docs/architecture/04-execution.md",
+        "docs/architecture/11-security-privacy.md"
       ],
       "tasks": [
         "AF-EXEC-01",
         "AF-SEC-01"
       ],
-      "verification": "real WMI-escape detection test (T-18)"
+      "verification": "real test: a descendant whose recorded ancestry passes through a job member is detected and terminated (T-18); real Windows test: a WMI-created child is not detected and the scan reports nothing (T-23, A-W04)"
     },
     {
       "id": "R-RES-013",
