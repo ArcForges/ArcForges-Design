@@ -62,7 +62,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 ## Contracts
 
 - [README](contracts/README.md): conventions, annotations, compatibility
-- [api-catalogue.md](contracts/api-catalogue.md): generated, 28 services
+- [api-catalogue.md](contracts/api-catalogue.md): generated, 30 services, 225 methods
 - [errors.md](contracts/errors.md)
 - [reuse-map.md](contracts/reuse-map.md)
 - [proto/](contracts/proto/): `node/v1` (20 files), `peer/v1`, `fleet/v1`, `relay/v1`

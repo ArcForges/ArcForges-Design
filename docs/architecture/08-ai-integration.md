@@ -13,6 +13,8 @@ Decision: [AD-0007](../decisions/AD-0007-ai-integration.md). Tool catalogue and 
 
 **What connecting does.** Adding the MCP server only *offers* tools; it intercepts nothing. Shell commands an agent runs are managed only when hooks route them (`rewrite` or `rewrite-all`, §4.1) or when the agent chooses the `run` tool. §4.4 lists what each route covers, and coverage (§5) measures the rest.
 
+**What routing does not do** (added 2026-10-19; [AD-0007](../decisions/AD-0007-ai-integration.md) §4). Commands routed through ArcForges (MCP `run`, hook rewrites) gain resource control and records, but run outside the client's own sandbox: the node, not the client, launches them. The client's own process, with its hooks, its MCP servers and, for Claude Code, its file tools, keeps the user's full access (V-A03, V-A06; A-A03; [11](11-security-privacy.md) §1, T-24). The routing statement is static per client: it is the Stated limit text of the client's routing row in the [product definition](../product/product-definition.md) §9 (`routing:claude-code`, `routing:codex`). Integration plans show it with their diff (§6.1), and D-14's integration consent panel, `arcforges coverage` and the MCP `session_coverage` tool show it, each from the client's routing row of `GetReleaseScope`; D-07 and `arcforges session coverage` link to the release coverage statement (§5). The MCP `run` tool's description states it in general terms ([experience/mcp.md](../experience/mcp.md) M-01).
+
 ## 2. MCP adapter
 
 ### 2.1 Protocol handling
@@ -135,9 +137,10 @@ PostToolUse hooks record executed heavy commands that were not routed (`BYPASSED
 | Long, queued or unknown-duration work | `run` with `async`; rewritten runs hand off (§4.1) | — |
 | Worktrees | `worktree_create` / `worktree_remove` (MCP), `arcforges worktree` (CLI): managed, with locks and archives | Worktrees the client creates itself (Claude Code `--worktree`, subagent isolation): observed through the session's `cwd` and `git worktree list`, registered as workspaces when `auto_register` is on |
 | Directories | Every session's working directory inside a git repository is registered as a workspace (`auto_register`), so keys, caches and records apply to routed work there | Writes by unmanaged processes |
-| Client-internal tools (file read, edit, search, web fetch) | Not processes; outside ArcForges' scope | Not counted as bypass |
+| Client-internal tools (file read, edit, search, web fetch) | Not processes; outside ArcForges' scope. They run in the client's own process; Claude Code's file tools run with the user's full access (§1; V-A06) | Not counted as bypass |
 | Processes the client starts itself (MCP servers, IDE tasks, language servers) | Not routed | Observed as unmanaged descendants of the agent root; heavy ones are flagged |
-| Processes started inside a managed task | Managed (same container) | Escapes through WMI or breakaway are detected (`ESCAPED`) |
+| Processes started inside a managed task | Managed (same container) | Descendants outside the container whose recorded ancestry passes through a member are detected (`ESCAPED`). Work launched through WMI, a broker, a service, a scheduled task or a spoofed parent is not detected and appears as `UNMANAGED` ([03](03-resource-control.md) §9, T-23; corrected 2026-10-19) |
+| Routed commands and the client's sandbox | Every route in this table runs managed work outside the client's own sandbox (§1) | The client's own process keeps the user's full access (T-24) |
 
 **Non-shell operation adapters** are the MCP tools of [mcp.md](../experience/mcp.md) (M-01 to M-19): `run` in argv form (no shell), task status, waits, output, cancellation and retries, queue explanations, operational-memory queries, worktree creation and removal, cleanup plans and the doctor. Each calls the same node services as the CLI, so permissions, keys and records apply equally.
 
@@ -155,13 +158,15 @@ ArcForges never claims that connecting MCP, or any single route, manages everyth
 - `unknowns`: subagent attribution of MCP work, model and thinking state (never available), hooks failed or disabled;
 - `client_events`: the last client-reported events (session start and end, subagent start and stop, stop).
 
-The UI and MCP present coverage as observed facts with these labels, never as completeness (R-AI-007).
+The UI and MCP present coverage as observed facts with these labels, never as completeness (R-AI-007). The routing statement for the session's client (§1) is static per client, not a session fact: D-14's integration consent panel, `arcforges coverage` and the MCP `session_coverage` tool show it, each from the client's routing row of `GetReleaseScope`; D-07 and `arcforges session coverage` link to the release coverage statement (added 2026-10-19). A view selects the client's row by its fixed `operation` string, `routing:claude-code` or `routing:codex`.
 
-**Release coverage statement.** The node serves the table of the [product definition](../product/product-definition.md) §9 for its release (supported operations, reported gaps and the journeys that verify them) through `SessionService.GetReleaseScope`, so every surface shows the same rows. D-14, `arcforges coverage` and the MCP `session_coverage` tool (as `release_scope`) show it next to the session's facts, so gaps that are not session facts are never hidden. The other coverage views, D-07 and `arcforges session coverage`, link to it (R-AI-011).
+**Release coverage statement.** The node serves the tables of the [product definition](../product/product-definition.md) §9 for its release (supported operations, reported gaps, the stated limits and the journeys that verify them) through `SessionService.GetReleaseScope`, so every surface shows the same rows. The statement carries no host-posture fact and no user path, because AGENT callers read it. D-14, `arcforges coverage` and the MCP `session_coverage` tool (as `release_scope`) show it next to the session's facts, so gaps that are not session facts are never hidden. The other coverage views, D-07 and `arcforges session coverage`, link to it (R-AI-011).
 
 ## 6. Configuration management
 
 ### 6.1 Files written (with consent; R-AI-008)
+
+Every plan that enables an MCP or hook route shows, with its diff, the client's routing statement (§1): the Stated limit text of its routing row, verbatim. Applying the plan records the consent ([AD-0007](../decisions/AD-0007-ai-integration.md) §6; added 2026-10-19).
 
 **Claude Code**
 - *MCP server:* user scope via `claude mcp add --scope user arcforges -- arcforges mcp serve` when the CLI is available; otherwise the user-scope configuration file entry. Project scope (`.mcp.json`) only when the user selects it.
@@ -195,6 +200,8 @@ The integration offers an optional snippet for the user to add to project instru
   > Commands in this repository run through ArcForges: the hooks route every shell command except simple reads. If a command reports that its task continues, wait for it with `arcforges tasks wait <id>` or the MCP `task_wait` tool; never start it again. For long work, use the MCP `run` tool with `async`. Do not modify ArcForges itself.
 - **MCP only (hooks unavailable):**
   > Run builds, tests, scripts and other heavy commands with the `arcforges` MCP `run` tool instead of the shell. ArcForges cannot see commands started directly.
+
+The integration offers each snippet together with the routing statement of §1, because the commands a snippet directs to ArcForges run outside the client's own sandbox (added 2026-10-19).
 
 ## 7. Non-goals and limits
 
