@@ -3,7 +3,7 @@
 - **Study date:** 2026-10-19. **Curated for publication:** 2026-10-19.
 - **What this folder is:** the research evidence and the lab plans behind the corrected long-term direction recorded in AD-0017 as amended on 2026-10-19 and in Design chapters 17 (`docs/architecture/17-delegated-execution.md`) and 18 (`docs/architecture/18-application-workload-control.md`). Its rows support roadmap rows: the exploratory rows, the widened RM-09 and RM-16 … RM-18, not release-1 work.
 - **What it is not:**
-  - It holds no release-1 facts. Release-1 behaviour is stated by the Design chapters, the contracts and the delivered code. Observations the study made about delivered or planned release-1 tasks were reported to the owning tasks' reviewers and are not published here.
+  - It holds no release-1 facts. Release-1 behaviour is stated by the Design chapters, the contracts and the delivered code. Observations the study made about delivered or planned release-1 tasks are recorded outside this record, for the product owner and the owning tasks' reviewers, and are not published here.
   - It is not the verification register. Verification facts are cited by verification ID from [platform-capabilities.md](https://github.com/ArcForges/ArcForges-Design/blob/main/docs/verification/platform-capabilities.md); nothing in this folder adds, changes or proves a verification entry.
   - Nothing here has been run as a lab experiment, and nothing here is a decision. Values are attainable values under stated conditions, never realized guarantees.
 - **Scope.** Process-level confinement, resource control, lifecycle, cooperation and failure diagnosis of applications and other workloads. GUI display, window, keyboard, mouse and clipboard isolation, screen protection, secure desktops, secure display surfaces, anti-overlay systems and separate-device approval mechanisms are not researched or proposed by this study (the scope correction of 2026-10-19); facts the study gathered about them are not published, except where a display, bus or input channel decides a process-level guarantee as a launcher cell, a named gap or a disclosed dependency.
@@ -43,7 +43,11 @@
 
 The labels and terms are the [2026-10-18 record](../2026-10-18-delegated-execution/README.md)'s (E1, E1-DP, E2 … E6; SPECIFIED; "E4 → E2 (lab)"; "Analysis, no primary source"), with one addition: the strength HINT (a setting the operating system may not honour, or that the workload can undo; it holds against no adversary class), proposed in chapter 17 §3.2.
 
+Source markers: **pointer** (a single post, issue or forum report; weaker than E3 and never decisive alone) and **vendor-tracker** (an issue in a vendor's public tracker).
+
 ## How to read the files
+
+A `gfNN-` prefix is part of a file's stable name and carries no other meaning.
 
 **Evidence files.** Each file has a header, a fact table and a closing "Review corrections" section, as in the 2026-10-18 record.
 - **ID** is `D2-<file>-<n>`, stable within its file; the Design cites facts by this ID. Numbers are not reassigned; a fact not published leaves a gap in the numbering.

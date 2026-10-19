@@ -6,7 +6,7 @@
 - **Status:** the release-1 baseline below is SPECIFIED (Design-specified, release-1 planned, not demonstrated: AF-CLD-05, AF-CLD-06, AF-WEB-03, AF-AND-01 and AF-AND-02 are planned), so nothing here is E1. A **PROPOSAL** is the report's design proposal, E4 at best. No new roadmap row; release 1 untouched.
 - **Bottom line:** *remote clients view node-computed projections, receive best-effort notifications, and may narrow or toggle within bounds a local HUMAN authored; they never author, raise or attach.* The remote interactive toggle is MEDIUM with step-up and never freezes.
 - **Publication:** curated for the public ArcForges-Design repository. No row describes a particular host.
-- **Not published:** two observations about planned release-1 client and contract tasks, reported to the owning tasks' reviewers (they carry no fact ID).
+- **Not published:** two observations about planned release-1 client and contract tasks, recorded outside this record, for the product owner and the owning tasks' reviewers (they carry no fact ID).
 - **Columns:** **ID** `D2-gf15-control-clients-<n>` is stable; numbers are not reassigned. **Claim** states the fact; the text after "For ArcForges:" is the study's roadmap-level consequence, never a decision. **Evidence** gives the label(s), then the integration levels, whether the application must cooperate, and the platform. **Report section** is provenance only (the section of report 3b).
 - **Reading notes:**
   - Integration levels: L1 observe; L2 apply resource controls to a running process; L3 launch and supervise; L4 launch with an OS-enforced access sandbox; L5 voluntary SDK or local API. A **surface** shows node-computed values and sends node-verified commands; it holds no level.

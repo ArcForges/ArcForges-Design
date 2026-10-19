@@ -54,4 +54,4 @@ No ruling of the study's independent review of 2026-10-19 corrected a fact of th
 | Fact | Correction and its source | Earlier form (claim history) |
 |---|---|---|
 | D2-gf10-clients-25, -26 | **No internal task ID**: the recorded rule "C# NuGet is the only first-party SDK channel" is quoted instead of the Plan task that recorded it | "Licences and CON.40"; "Conflicts: CON.40, and AD-0003 §1" |
-| D2-gf10-clients-16 | **Release-1 note not published**: the observation that the delivered contract makes the field a burden for applications was reported to the contract's reviewers; the fact keeps the proposal at the row's promotion | "Stage-1 item … (O-2)" |
+| D2-gf10-clients-16 | **Release-1 note not published**: the observation that the delivered contract makes the field a burden for applications is recorded outside this record, for the product owner and the contract's reviewers; the fact keeps the proposal at the row's promotion | "Stage-1 item … (O-2)" |
