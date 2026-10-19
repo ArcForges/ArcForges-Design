@@ -202,7 +202,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 │    ETA ~3 min · ages to HIGH at 10:24 · [Explain] [Priority ▾]                    │
 │    Reservation: holds memory for this task · lapses 10:52                        │
 │ #2 npm ci  default  exclusive_key ws:web/app:deps (held by npm install)          │
-│ #3 link-all  agents  needs 40 GiB > managed share 26 GiB → exceeds_capacity      │
+│ #3 link-all  agents  needs 40 GiB > managed share 26.8 GiB → exceeds_capacity    │
 │    Cannot start on this machine. [Explain] [Cancel]                              │
 │ Parallelism: [Global: AUTO ▾]  Disable parallel execution for: [scope ▾] [Apply] │
 └──────────────────────────────────────────────────────────────────────────────────┘
@@ -472,7 +472,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 - **Permissions.** HUMAN only. Everything on this page is free and needs no account: pairing, status, placement and cache sharing.
 
 ```
-┌ LAN ─ Listener ON :47820 · 192.168.1.99 · fingerprint 3F9A…  [Disable]          │
+┌ LAN ─ Listener ON :47820 · 192.168.1.20 · fingerprint 3F9A…  [Disable]          │
 │ Peers                                                                            │
 │ buildbox   PAIRED (pinned)  online  8 cores budget · queue 0  [Policy] [Remove]  │
 │ laptop     DISCOVERED       untrusted                          [Pair]            │
@@ -529,7 +529,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 ┌ Policy ─ revision 14 · changed 09:20 by you ─ [Revisions] [Reset section] ──────┐
 │ Resources                                                                        │
 │  Reserved CPU: 1.0 cores + 10 %  (= 2.6 cores)      Reserved memory: 2 GiB + 10 %│
-│  CPU overcommit ×1.5   Memory overcommit ×1.0 (fixed)   Max task memory 26 GiB   │
+│  CPU overcommit ×1.5   Memory overcommit ×1.0 (fixed)   Max task memory 26.8 GiB │
 │  ☑ Allow unenforced execution when enforcement is unavailable                    │
 │                                     [Validate] [Discard] [Apply revision 15]     │
 └──────────────────────────────────────────────────────────────────────────────────┘
