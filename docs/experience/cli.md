@@ -145,7 +145,7 @@ Each row lists the command, its main options, the RPCs it calls and its notes. A
 |---|---|
 | `toolchain list [--kind k]` / `detect` / `adapters` / `preview -- <cmd>` | `ListToolchains` / `DetectToolchains` / `ListAdapters` / `PreviewInvocation` |
 | `session list` / `show <id>` / `coverage <id>` / `end <id>` | `ListSessions` / `GetSession` / `GetSessionCoverage` / `EndSession` |
-| `coverage [--session <id>]` | `GetReleaseScope`, then `GetSessionCoverage` when a session is given: the release coverage statement (product definition §9), whose routing rows carry each client's routing statement and, when a session is given, mark the row of the session's client (added 2026-10-19), followed by the session's facts. `session coverage <id>` ends with a pointer to it. |
+| `coverage [--session <id>]` | `GetReleaseScope`, then `GetSession` and `GetSessionCoverage` when a session is given (`GetSession` names the session's client): the release coverage statement (product definition §9), whose routing rows carry each client's routing statement and, when a session is given, mark the row of the session's client (added 2026-10-19), followed by the session's facts. `session coverage <id>` ends with a pointer to it. |
 | `findings list` / `show <id>` / `ack <id>` / `mute <id> [--for 7d]` / `remedy <id> <action>` | `ListFindings` / `GetFinding` / `AcknowledgeFinding` / `MuteFinding` / `ApplyRemedy` |
 | `approvals list` / `show <id>` / `approve <id>` / `deny <id> [--comment c]` / `withdraw <id>` | `ListApprovals` / `GetApproval` / `DecideApproval` / `CancelApproval` |
 | `memory list` / `show <id>` / `query -- <cmd>` / `forget <id>... \| --project p` | `ListFacts` / `GetFact` / `QueryFacts` / `ForgetFacts` |
