@@ -154,6 +154,8 @@ Concurrent tasks in one workspace can overwrite each other's files (the `obj/` a
 
 ## 5. Enforcement mapping
 
+**Same-user qualifier** (added 2026-10-19). Every resource guarantee in this section, and every enforcement value of §8, is **ENFORCED against accidental and over-privileged workloads, and a GUARDRAIL against workloads that target ArcForges' objects**. The containers belong to the signed-in user: on Windows, other processes of the same user can open ArcForges' named jobs (V-W11); on Linux, the attempt units and their cgroups belong to the user's own user manager (V-L01, V-L05). Same-user code can therefore change limits or end other attempts (T-22), and work launched outside the recorded ancestry never joins a container (§9, T-23). Release 1 confines no workload, so no workload is kept from these objects ([11](11-security-privacy.md) §1).
+
 ### 5.1 Root container (protects headroom)
 
 | | Windows root job | Linux `arcforges.slice` (runtime unit properties) |
@@ -174,13 +176,15 @@ Root limits are updated when `B` changes by more than 5% of capacity, at most ev
 | Kill | `TerminateJobObject` | `FreezeUnit`, SIGKILL to each process of the unit's cgroup, direct `cgroup.freeze=0`, `ThawUnit` ([04](04-execution.md) §6) |
 | Pause | unsupported | `FreezeUnit` / `ThawUnit` (→ `cgroup.freeze`) |
 
+**Windows jobs and UI limits** (added 2026-10-19). No ArcForges job, root or attempt, sets UI limits, because jobs that set UI restrictions do not nest (V-W01; [AD-0005](../decisions/AD-0005-resource-enforcement.md) Windows §3). For the same reason, a workload that sets UI limits on jobs for its own children may fail to nest them inside its attempt job. Chromium-family programs set such limits for their sandboxed child processes, so browser-automation MCP servers and other Chromium-based tools run as tasks carry a known compatibility risk. Whether they degrade or fail inside an attempt job is unverified, and the design relies on no outcome.
+
 ### 5.3 Tool-level concurrency
 
 The adapter sets the tool's parallelism to `clamp(ceil(cpu_grant/1000), 1, adapter_max)`, unless the caller already passed an explicit flag; the caller's flag is respected and recorded. Records show both the tool-level setting and the OS enforcement, and never call the tool flag a limit (R-TOOL-003).
 
 ### 5.4 What the memory controls guarantee
 
-The reserve `R_mem` is protected in four layers. Each states exactly what it guarantees (R-RES-014):
+The reserve `R_mem` is protected in four layers. Each states exactly what it guarantees (R-RES-014), with the same-user qualifier of §5: every guarantee holds against accidental and over-privileged workloads, and is a guardrail against workloads that target ArcForges' objects or launch work outside the recorded ancestry (T-22, T-23):
 
 | Layer | Guarantee | Linux | Windows |
 |---|---|---|---|
@@ -258,7 +262,7 @@ Every action is journaled with its trigger and evidence. Frozen attempts thaw in
 | `kill_tree` | `GUARANTEED`, `BEST_EFFORT` |
 | `adopt` | `SUPPORTED`, `LIMITED`, `UNSUPPORTED` |
 
-Each value carries the reason (for example "user manager has no cpu delegation"). A task spec can require enforcement (`require_enforcement = {cpu, memory}`). Such a task is refused with `ERROR_CATEGORY_RESOURCE`, code `enforcement_unavailable`, when the capability is missing. Otherwise it runs with the record flag `unenforced=true` if the policy `allow_unenforced` is true (default true for `OBSERVE_ONLY` nodes, with a visible banner) (R-RES-008).
+Each value carries the reason (for example "user manager has no cpu delegation"). The `kill_tree` reasons carry the same-user qualifier of §5 (amended 2026-10-19). The Linux reason "every process of an attempt is in its unit's cgroup, which the node freezes and kills; no process can leave it without the user manager" and the Windows reason "TerminateJobObject ends every process of the attempt's job; jobs allow no breakaway" each end with "; same-user code can change or end ArcForges' containers (T-22), and work launched outside the recorded ancestry never joins them (T-23)". A task spec can require enforcement (`require_enforcement = {cpu, memory}`). Such a task is refused with `ERROR_CATEGORY_RESOURCE`, code `enforcement_unavailable`, when the capability is missing. Otherwise it runs with the record flag `unenforced=true` if the policy `allow_unenforced` is true (default true for `OBSERVE_ONLY` nodes, with a visible banner) (R-RES-008).
 
 ## 9. Unmanaged, escaped and bypassed processes
 
@@ -266,9 +270,11 @@ Each value carries the reason (for example "user manager has no cpu delegation")
 |---|---|---|
 | `MANAGED` | In an attempt container | Container membership |
 | `ADOPTED` | Explicitly adopted by the user | Adoption record |
-| `ESCAPED` | Descendant of a managed process by ancestry but outside its container (WMI, breakaway, service broker) | Ancestry scan of exited and running processes |
+| `ESCAPED` | A process outside an attempt's container whose recorded ancestry passes through a member of that container | Ancestry scan of exited and running processes |
 | `BYPASSED` | Descendant of a registered agent process, not managed, above the policy thresholds (`routing.bypass_cpu_threshold_millicores`, default 1,000 for 10 s, or `routing.bypass_mem_threshold_bytes`, default 1 GiB) | Session process roots ([08](08-ai-integration.md)) |
 | `UNMANAGED` | Everything else | — |
 | `GUEST_VM` | The WSL VM consumer on the host | VM worker identification |
 
 Only `MANAGED` and `ADOPTED` processes are ever controlled (R-RES-002).
+
+**What the ancestry scan detects** (corrected 2026-10-19; the `ESCAPED` row previously named WMI, breakaway and service brokers as detected causes). On Windows the scan detects only escapes whose recorded ancestry still passes through a job member. Attempt jobs allow no breakaway ([AD-0005](../decisions/AD-0005-resource-enforcement.md) Windows §2). Launches through WMI, a broker, a service, a scheduled task or a spoofed parent leave no such ancestry (V-W01, V-W10): they are not detected and appear as `UNMANAGED`. This is a documented gap ([11](11-security-privacy.md) §1, T-23; A-W04), not a detection.

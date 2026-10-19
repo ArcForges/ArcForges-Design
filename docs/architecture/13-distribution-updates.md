@@ -57,7 +57,9 @@ Hosted CI builds each release `<v>` from a tagged commit of the ArcForges reposi
     2. Stop the supervisor and the Desktop app, which also run from `app\current`.
     3. The setup program copies itself to `%TEMP%`, relaunches from there and exits, so no running image remains under `app\`.
     4. The copy removes **every** `app\*` version directory, both junctions, the PATH entry, the Run key, `InstallSource` and the uninstall entry. The copy stays in `%TEMP%`, where the system's temporary-file cleanup (Storage Sense) removes it. A reboot-time delete (`MOVEFILE_DELAY_UNTIL_REBOOT`) is not used, because it needs administrator rights.
-  - **Data:** the data root is kept unless the user ticks **Remove ArcForges data**, which runs `arcforges node wipe --all --yes` first.
+    5. *Added 2026-10-19 (step 4 omitted them):* it also removes the Start menu shortcut, the optional Desktop shortcut and the toast notification registration (AUMID); replays the recorded integration writes in reverse ([AD-0007](../decisions/AD-0007-ai-integration.md) §6), so no AI-client entry ArcForges wrote remains; and deletes the node's own Credential Manager entries by exact name, one at a time.
+  - **Data:** the data root is kept unless the user ticks **Remove ArcForges data**, which runs `arcforges node wipe --all --yes` first. The node's own credentials are removed in either case (step 5).
+  - **Test tier:** uninstall tests use the isolated secret-store backend; one real-store check of the exact-name deletion runs in the separate, sequential OS secret-store tier ([AD-0016](../decisions/AD-0016-local-first-verification.md) §5 and its 2026-10-17 amendment; [16](16-testing-strategy.md) §1).
 - **Test isolation.** For automated tests, `--test-root <dir> --test-registry-key HKCU\Software\ArcForges-Test` installs under a temporary root and registry key, never touching the user's real Run key, PATH or uninstall entry. The real logon start of the supervisor is a human-attended check (H-15).
 - **Machine-wide service mode** is out of the current scope (AR-16). It would be a separate per-machine installer.
 
@@ -68,12 +70,13 @@ Hosted CI builds each release `<v>` from a tagged commit of the ArcForges reposi
 3. **Extract:** into `~/.local/share/arcforges/app/<v>/`, then create `app/current` and `~/.local/bin/arcforges`.
 4. **Install the units:** write the units of §3.4 to `~/.config/systemd/user/`, then run `systemctl --user daemon-reload` and `systemctl --user enable --now arcforges-node.service arcforges-guard.service`.
 5. **Confirm:** run `arcforges node wait-ready --timeout 30`, then print the status, the capability summary and the `loginctl enable-linger` guidance for headless use.
-6. **Uninstall:** `install.sh --uninstall [--remove-data]` reverses the steps.
+6. **Uninstall:** `install.sh --uninstall [--remove-data]` reverses the steps. It also removes the node's own Secret Service items, or its 0600 fallback file, by exact name (added 2026-10-19), under the test tier of §3.1.
 
 ### 3.3 Debian package
 
 - **Files:** `/opt/arcforges/<v>/…`, `/usr/bin/arcforges` → `/opt/arcforges/current/arcforges`, and the units of §3.4 under `/usr/lib/systemd/user/`, with `ExecStart=/usr/bin/arcforges node run --systemd` for the node and `ExecStart=/usr/bin/arcforges node guard` for the guard.
 - **Maintainer scripts:** limited to `systemctl --global enable arcforges-node.service arcforges-guard.service` (postinst) and its reverse. They use no network ([11](11-security-privacy.md) §6).
+- **Removal:** removing the package also removes the node's own Secret Service items, or its 0600 fallback file, by exact name (added 2026-10-19), under the test tier of §3.1.
 - **Updates:** through apt (repository signed with GPG). The node's self-updater disables itself when it detects a package-managed install (`/opt/arcforges` owned by root), and reports "updates are managed by apt".
 
 ### 3.4 systemd user units
@@ -279,8 +282,9 @@ ExecStart=%h/.local/share/arcforges/app/previous/arcforges node update-rollback 
 
 | Test | Kind |
 |---|---|
-| Setup program install, upgrade (as a self-update and as a newer setup) and uninstall, under `--test-root` and a test registry key on the workstation; a clean machine is deferred (AR-01); the real logon start needs a human logoff and logon (H-15) | Real, workstation |
-| `install.sh` and `.deb` in a clean systemd-enabled WSL2 Debian environment | Real |
+| Setup program install, upgrade (as a self-update and as a newer setup) and uninstall, under `--test-root` and a test registry key on the workstation; a clean machine is deferred (AR-01); the real logon start needs a human logoff and logon (H-15). Uninstall leaves no shortcut, AUMID registration or recorded integration write, and deletes the node's own credentials by exact name, against the isolated secret-store backend (§3.1, test tier; added 2026-10-19) | Real, workstation |
+| `install.sh` and `.deb` in a clean systemd-enabled WSL2 Debian environment; their uninstall removes the node's own Secret Service items or 0600 fallback file by exact name, against the isolated backend (added 2026-10-19) | Real |
+| One real-store check of the uninstall's exact-name deletion per platform (added 2026-10-19) | OS secret-store tier ([16](16-testing-strategy.md) §1) |
 | Update switch with running executions on both platforms; crash injection at each phase of `update-switch.json`; junction retarget recovery; health-check failure; crash-loop rollback; the recent-switch guard refusing rollback of a healthy version; ownership rules per install source (Scoop and apt disable the updater) | Real |
 | Manifest signature, expiry, freeze and rollback protection, revocation | Unit, plus closed-loop tests with a local HTTP server |
 | Expand-only migration check: a schema diff tool fails on any drop or rename in a release | CI |

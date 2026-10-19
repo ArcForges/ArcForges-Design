@@ -1,6 +1,6 @@
 # AD-0011 — Identity, sign-in, pairing and credentials
 
-- Status: Accepted (2026-10-12; revised after the independent review the same day: honest reuse statement, scoped phone sessions)
+- Status: Accepted (2026-10-12; revised after the independent review the same day: honest reuse statement, scoped phone sessions; amended 2026-10-19 by the current-design corrections: the same-user qualifier for credentials at rest, §4)
 - Reuses: the `arcforges.publicapi.v1` IdentityService and DeviceService contracts, the D1 identity and device schema, and the Cloud Identity domain store (main `92ba1dc9`). The endpoints are new work (AF-ID-01, AF-ID-02), because the baseline serves only `HelloService` (10 §2). Also reuses the native authorization tables `identity_native_authorization` and `identity_browser_auth_flow`, and the historical system-browser PKCE design (ArcForges-Design-Parallel `08-security-architecture.md`, main `64173614`).
 
 ## Decision
@@ -23,6 +23,7 @@
    - **Windows:** Windows Credential Manager through DesktopPlatform `ArcForges.Security.Secrets` (reused).
    - **Android:** Keystore-wrapped storage (reused Mobile security module).
    - **Linux:** the Secret Service (libsecret over D-Bus) when available. Otherwise a 0600 file in the node data root, and the node reports the weaker `FILE_PERMISSIONS_ONLY` protection (R-AUTH-003).
+   - **Same-user qualifier** (amended 2026-10-19). The Windows and Linux stores protect the node's credentials and data key from other users, not from processes of the signed-in user. Unsandboxed managed processes can read every credential the signed-in user can read, the node's own included; the 0600 file is no exception ([11](../architecture/11-security-privacy.md) §3, T-25). The decision is unchanged; only the protection it claims is stated exactly.
 5. **Scopes and revocation.**
    - Scopes: `account` (user session, interactive), `mobile.limited` (QR-paired phone before step-up), `node` (node uplink, relay token issuance, entitlement refresh, phone-pairing creation and confirmation), `push` (push registration) and `automation` (personal access tokens for CI, never the normal path).
    - Any device, session or node can be revoked from web, Desktop or Android. Revocation stops token refresh, and relay sockets close within one token lifetime (≤15 min).

@@ -1,7 +1,7 @@
 # AD-0005 — Resource enforcement, WSL model and privileges
 
-- Status: Accepted (2026-10-12; revised after the independent review the same day: job handle holders, guest budgets, aligned parameters; revised 2026-10-13 after the findings review: verified console signalling, guest allocation split and lease, stated memory guarantees; revised 2026-10-13 after the mechanism review: the guest's reservation kept during link loss, holders as disk guards, compiler servers per attempt; amended 2026-10-16 from AF-EXEC-02 evidence: Linux forced phase by freeze, per-process kill and direct thaw, exact environment through exec-launch, the node's own rlimits, `CollectMode=inactive`, `TimeoutStopSec` formula)
-- Evidence: [platform verification](../verification/platform-capabilities.md) V-W01–V-W06, V-L01–V-L07, L-01–L-16, L-18, L-24, L-25
+- Status: Accepted (2026-10-12; revised after the independent review the same day: job handle holders, guest budgets, aligned parameters; revised 2026-10-13 after the findings review: verified console signalling, guest allocation split and lease, stated memory guarantees; revised 2026-10-13 after the mechanism review: the guest's reservation kept during link loss, holders as disk guards, compiler servers per attempt; amended 2026-10-16 from AF-EXEC-02 evidence: Linux forced phase by freeze, per-process kill and direct thaw, exact environment through exec-launch, the node's own rlimits, `CollectMode=inactive`, `TimeoutStopSec` formula; amended 2026-10-19 by the current-design corrections, which remove overstatements and change no mechanism: never elevating is not never causing a privileged change (Process model), the same-user qualifier on every resource guarantee (Windows and Linux), no ArcForges job sets UI limits (Windows §3, reinforced), and escape detection limited to the recorded ancestry (Windows §7))
+- Evidence: [platform verification](../verification/platform-capabilities.md) V-W01–V-W11, V-L01–V-L08, L-01–L-16, L-18, L-24, L-25
 
 The numeric limits and formulas live in [resource control](../architecture/03-resource-control.md) §2 and §5. The launch, cancellation and recovery sequences live in [execution](../architecture/04-execution.md) §3, §6 and §9. This decision fixes the mechanisms.
 
@@ -10,6 +10,14 @@ The numeric limits and formulas live in [resource control](../architecture/03-re
 ### Process model
 
 The node runs **as the signed-in user, without elevation**. It launches managed processes as that user and never elevates them. Core features need no administrator or root rights.
+
+> **Amendment (2026-10-19): never elevating is not never causing a privileged change.** ArcForges never elevates, but an unconfined managed process can still obtain privileged changes through channels the OS offers the user ([11](../architecture/11-security-privacy.md) §1, T-26):
+> - **Linux:** requests over the system bus that polkit authorizes; no-new-privileges does not stop them, and distribution rules can authorize installs for active administrator-group users without a prompt (V-L08).
+> - **Windows:** sudo in inline mode, which Microsoft documents as a potential escalation vector (V-W09); and, generically: **on an administrator account without Administrator protection, UAC is not a security boundary; unconfined workloads may obtain administrator rights silently** (V-W07, V-W08).
+>
+> The release coverage statement carries that generic sentence ([product definition](../product/product-definition.md) §9). The host's own account type and Administrator protection state are host posture: only the doctor's HUMAN-only host-posture check reports them ([07](../architecture/07-records-diagnosis-memory.md) §2.4), never the release coverage statement. The decision above is unchanged; only the claim it supports is narrowed.
+
+> **Amendment (2026-10-19): the same-user qualifier.** The managed processes and ArcForges' containers belong to the same user. Every resource guarantee of this decision, on Windows and on Linux, is **ENFORCED against accidental and over-privileged workloads, and a GUARDRAIL against workloads that target ArcForges' objects**: same-user code can change or end ArcForges' containers (V-W11; T-22), and work launched outside the recorded ancestry never joins them (V-W01, V-W10; T-23). The mechanisms are unchanged ([03](../architecture/03-resource-control.md) §5).
 
 Optional privileged features are designed but not part of the current deliverables: a machine-wide Windows service mode (a separate per-machine installer, AR-16), and Linux I/O control. They are never required for development-stage acceptance.
 
@@ -28,7 +36,7 @@ Optional privileged features are designed but not part of the current deliverabl
    - no breakaway allowed.
 3. **Handle holders keep jobs alive across node restarts.** A named job disappears from the namespace as soon as its last handle closes, even while processes still run inside it (L-14). So every attempt has a holder: the launcher role `arcforges node exec-wrap`.
    - **Where it runs.** The holder runs *outside* the job (it is not assigned to it). It inherits handles to the child job and the root job, with `JOB_OBJECT_ASSIGN_PROCESS`, `JOB_OBJECT_QUERY` and `JOB_OBJECT_TERMINATE`, and to the output files.
-   - **What it does.** It creates the target process suspended, assigns it to the **root job first and then to the child job**, resumes it and waits for it. Assigning a process that is already in the root job to the child job is what nests the child under the root (V-W01); assigning it to the child alone would leave the child a top-level job outside the root caps. Where available, `PROC_THREAD_ATTRIBUTE_JOB_LIST` with `[root, child]` does the same at creation. No ArcForges job sets UI restrictions, because those prevent nesting. F-W01 verifies the resulting hierarchy.
+   - **What it does.** It creates the target process suspended, assigns it to the **root job first and then to the child job**, resumes it and waits for it. Assigning a process that is already in the root job to the child job is what nests the child under the root (V-W01); assigning it to the child alone would leave the child a top-level job outside the root caps. Where available, `PROC_THREAD_ATTRIBUTE_JOB_LIST` with `[root, child]` does the same at creation. No ArcForges job sets UI restrictions, because those prevent nesting. F-W01 verifies the resulting hierarchy. *Reinforced 2026-10-19:* no ArcForges job, root or attempt, sets UI limits. A workload that sets UI limits on jobs for its own children, as Chromium-family programs do for their sandboxed child processes, may fail to nest them inside its attempt job; this is a known compatibility risk, and whether such workloads degrade or fail is unverified ([03](../architecture/03-resource-control.md) §5.2).
    - **Exit record.** It writes the durable exit record with job accounting ([04](../architecture/04-execution.md) §3).
    - **Disk guard.** While the node's heartbeat is stale, it enforces the attempt's output, temporary-space and low-space limits, because it holds the job handles and the output files ([06](../architecture/06-storage-workspaces.md) §5).
    - **Lifetime.** It keeps both job handles until the node acknowledges the record, through the named event `Local\ArcForges.<node_id>.<attempt_id>.ack`.
@@ -40,7 +48,8 @@ Optional privileged features are designed but not part of the current deliverabl
 7. **Termination.**
    - **Graceful:** cancellation sends `CTRL_BREAK_EVENT` to the attempt's console process group. The root process starts with `CREATE_NO_WINDOW | CREATE_NEW_PROCESS_GROUP`: a windowless console and its own group. The `arcforges node signal` helper frees its own console, attaches to the root process's console and signals the group; this works on Windows 11 (L-18). Descendants with their own console, GUI processes and failed attaches fall back to `WM_CLOSE` and the forced phase ([04](../architecture/04-execution.md) §6).
    - **Forced:** after the grace period, `TerminateJobObject`.
-   - **Escaped processes:** an ancestry scan finds processes that escaped (WMI-created, broker-launched) and reports them as `ESCAPED` (R-RES-012). It terminates them only if they are same-user descendants by ancestry and policy permits.
+   - **Escaped processes** (amended 2026-10-19): an ancestry scan finds processes outside the attempt job whose recorded ancestry passes through a job member, reports them as `ESCAPED` (R-RES-012) and terminates them if they are same-user and policy permits. Attempt jobs allow no breakaway (item 2). Launches through WMI, a broker, a service, a scheduled task or a spoofed parent leave no such ancestry (V-W01, V-W10): they are not detected and appear as `UNMANAGED`, a documented gap ([11](../architecture/11-security-privacy.md) §1, T-23; A-W04).
+     *Superseded text (until 2026-10-19):* "an ancestry scan finds processes that escaped (WMI-created, broker-launched) and reports them as `ESCAPED` (R-RES-012). It terminates them only if they are same-user descendants by ancestry and policy permits." It overstated the scan: WMI-created and broker-launched processes do not descend from the job's members, so the scan cannot find them. Successor: the text above.
 8. **No pause or soft limit.** Windows has no `memory.high` equivalent and no supported job-wide freeze, so the node reports `pause=UNSUPPORTED` on Windows. Commit-limit exhaustion fails allocations, and the node records `memory_limit_hit` from the notification limit and limit-violation queries.
 
 ### Linux (including WSL2 guests)
@@ -106,7 +115,7 @@ Optional privileged features are designed but not part of the current deliverabl
 
 ## Consequences
 
-- No step of core functionality needs elevation, and every enforcement claim is backed by a real test in its environment.
+- No step of core functionality needs elevation, and every enforcement claim is backed by a real test in its environment. Each claim holds against accidental and over-privileged workloads; against workloads that target ArcForges' objects it is a guardrail (amended 2026-10-19).
 - Windows pause and memory soft-limits are honestly unavailable.
 - Each Windows attempt costs one holder process (target ≤ 10 MB private, [15](../architecture/15-performance-targets.md) §2; amended 2026-10-16). That is the price of surviving node restarts.
 - Optional privileged features are designed but do not gate development-stage completion.

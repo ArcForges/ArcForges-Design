@@ -62,12 +62,16 @@ flowchart LR
 
 | Boundary | Crossing | Protection |
 |---|---|---|
+| B0 Node ↔ its own workload objects (added 2026-10-19) | Same-user access to the jobs, ack events, cgroup files and records ArcForges creates for workloads | **GUARDRAIL** for every workload: same-user code can reach these objects ([11](11-security-privacy.md) §1, T-22; V-W11). Release 1 confines no workload, so no workload is kept from them |
 | B1 Local user ↔ node | Named pipe / UDS | Same-user ACL / mode 0700 + peer credential; client hello |
 | B2 Host ↔ guest | `wsl.exe` stdio bridge → guest UDS | Launched by the same Windows user; guest checks uid; link token |
 | B3 Node ↔ node | TCP | mTLS 1.3 with pinned certificates from pairing (account-issued certificates are roadmap RM-01); per-peer policy |
 | B4 Node ↔ cloud | HTTPS gRPC-Web; WSS relay | Device credential; short-lived relay token; signed commands verified by the node |
 | B5 Browser/phone ↔ cloud | HTTPS gRPC-Web | Account session (cookie + CSRF for web; bearer for native) |
 | B6 Cloud ↔ providers | HTTPS | Provider-specific verification (Paddle HMAC, Pub/Sub push auth, Google OAuth service account) |
+| B11 AI client ↔ node routes (added 2026-10-19) | MCP adapter, hook handler, CLI calls from agent shells | Origin classification only: a **GUARDRAIL** until the caller's identity is OS-enforced, which it is not in release 1 ([11](11-security-privacy.md) §1). Routed commands run outside the client's own sandbox; the client's own process keeps the user's access (T-24; V-A03) |
+
+There is no boundary between the node and an unconfined workload: every managed process runs as the signed-in user (B0; [11](11-security-privacy.md) §1–§2).
 
 | Data class | Examples | Leaves the node? |
 |---|---|---|

@@ -33,7 +33,7 @@ Architecture: [08](../architecture/08-ai-integration.md) §2; decision [AD-0007]
 
 ### M-01 `run`
 
-Submit a command and wait (bounded) for its completion.
+Submit a command and wait (bounded) for its completion. The tool's description says that commands it runs execute outside the client's own sandbox, with resource control and records ([08](../architecture/08-ai-integration.md) §1; added 2026-10-19).
 
 Input schema:
 
@@ -108,12 +108,12 @@ Output (`structuredContent`):
 | M-10 | `resources` | — | Capacity, budgets, pressure, enforcement capabilities with reasons | `GetResourceSnapshot` | RO |
 | M-11 | `memory_query` | **command** or **argv**, **cwd** | Facts (duration, peak memory, failure signatures) and the admission estimate | `QueryFacts` | RO |
 | M-12 | `findings` | `task_id`, `scope` = session\|node (default session), `include_resolved` | Findings with explanations and available actions | `ListFindings` | RO |
-| M-13 | `session_coverage` | — | The current session's coverage, labelled as observed facts, plus `release_scope`: the release coverage statement (product definition §9) | `GetSessionCoverage`, `GetReleaseScope` | RO |
+| M-13 | `session_coverage` | — | The current session's coverage, labelled as observed facts, plus `release_scope`: the release coverage statement (product definition §9), whose rows include the routing statement for the session's client: commands routed through ArcForges execute outside the client's own sandbox, with resource control and records (added 2026-10-19) | `GetSessionCoverage`, `GetReleaseScope` | RO |
 | M-14 | `worktree_create` | **workspace** (path or ID), `branch`, `base_ref`, `name` | `{workspace_id, path, state}`; waits up to 55 s for ACTIVE | `CreateWorktree`, `GetJob` | not RO, not destructive |
 | M-15 | `worktree_remove` | **workspace_id**, `archive` (bool), `include_ignored` (bool; agents can include ignored files such as `.env` in the archive, never discard them) | `{state, approval_id?}` | `RemoveWorktree` | destructive |
 | M-16 | `cleanup_plan` | `classes[]`, `max_risk` (default low), `workspace` | Plan: items, sizes, risks, digest, expiry | `AnalyzeStorage` (if no recent analysis), `PlanCleanup` | not RO, not destructive |
 | M-17 | `cleanup_execute` | **plan_id**, **digest**, `item_ids[]` | `{state, outcomes[], approval_id?}`. Approval is required unless policy `cleanup.agent_execute=LOW_RISK_ONLY` and every item is low risk. | `ExecuteCleanup` | destructive |
-| M-18 | `doctor` | `areas[]` | Checks with status and remedies | `RunDoctor` | RO |
+| M-18 | `doctor` | `areas[]` | Checks with status and remedies. The HUMAN-only host-posture check is listed without status or values ([07](../architecture/07-records-diagnosis-memory.md) §2.4): the tool returns no host-posture value (added 2026-10-19) | `RunDoctor` | RO |
 | M-19 | `approval_status` | **approval_id**, `wait_seconds` ≤ 55 | `{state, outcome?}` | `GetApproval` (polled within the bound) | RO |
 
 The adapter exposes **no** tools for policy changes, integration changes, pairing, account, update or adoption. Those operations are HUMAN-only or approval-gated and remain in the Desktop and CLI. This keeps agent capabilities explicit (R-AI-009).

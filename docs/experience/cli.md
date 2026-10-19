@@ -176,7 +176,7 @@ Each row lists the command, its main options, the RPCs it calls and its notes. A
 | `lan incoming` / `lan accept <pairing>` / `lan reject <pairing>` | `RespondToPairing` | — |
 | `lan policy <peer> [--place-to] [--accept-from] [--cache-read] [--cache-write] [--cpu-share x] [--mem-share x] [--data-out source,outputs,logs] [--require-approval]` | `UpdatePeerPolicy` | — |
 | `lan remove <peer> [--block]` | `RemovePeer` | — |
-| `integrate <claude-code\|codex> [--scope user\|project\|local] [--project <dir>] [--mcp] [--hooks] [--routing observe\|guide\|rewrite]` | `PlanIntegration` | Prints the plan diff (default: plan only) |
+| `integrate <claude-code\|codex> [--scope user\|project\|local] [--project <dir>] [--mcp] [--hooks] [--routing observe\|guide\|rewrite]` | `PlanIntegration` | Prints the plan diff (default: plan only), with the routing statement for the client when the plan enables an MCP or hook route ([AD-0007](../decisions/AD-0007-ai-integration.md) §4; added 2026-10-19) |
 | `integrate <client> --apply` | `PlanIntegration`, `ApplyIntegration` | HUMAN only; shows the diff and prompts |
 | `integrate <client> --remove [--apply]` | `PlanRemoval`, `ApplyIntegration` | — |
 | `integrate <client> --probe` / `integrate status` / `integrate <client> --snippet` | `StartProbe`, `ListProbeResults` / `ListClients` / `GetInstructionSnippet` | — |

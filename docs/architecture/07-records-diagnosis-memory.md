@@ -187,7 +187,10 @@ Policy `diagnosis.actions` maps each `(finding kind, action)` to `AUTO`, `APPROV
 - integrations (configuration present, hooks trusted or enabled, probe result per client);
 - account and entitlement state;
 - update state;
-- LAN (listener, certificate validity, peers).
+- LAN (listener, certificate validity, peers);
+- **host posture (HUMAN-only; Windows; added 2026-10-19):** the account type (standard or administrator) and the Administrator protection state, read without elevation (A-W05). On an administrator account without Administrator protection the check warns with the generic statement that UAC is not a security boundary there and unconfined workloads may obtain administrator rights silently (V-W07, V-W08; [11](11-security-privacy.md) §1, T-26).
+
+**HUMAN-only checks.** Host-posture values are D2 host posture ([11](11-security-privacy.md) §5), effectively a vulnerability inventory of the machine, and `RunDoctor` is callable by AGENT and SCRIPT callers and through the MCP `doctor` tool ([experience/mcp.md](../experience/mcp.md) M-18). The node therefore returns the check's status, summary and details only to local callers of HUMAN origin. Every other caller receives the check only as its `check_id` and area with the summary "HUMAN-only check", with no status and no details, and the check does not count towards `overall`, because a status alone would disclose the posture. Support bundles leave the values out unless the owner includes them. Origins are guardrails ([11](11-security-privacy.md) §1), so this keeps host posture out of AI clients and their model context; it does not stop same-user code that presents itself as HUMAN. The release coverage statement never carries these values ([product definition](../product/product-definition.md) §9).
 
 ## 3. Operational memory
 

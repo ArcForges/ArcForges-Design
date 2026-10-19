@@ -48,6 +48,8 @@ Defined by `arcforges.node.v1.TaskSpec` ([contracts](../contracts/proto/arcforge
 
      **Production read-back policy.** Production does not read back a node data key after writing it. The key stays in memory; a lost write surfaces at the next load (node restart) and fails closed as above. Read-back and absence checks are test verification only ([16](16-testing-strategy.md) §1).
 
+     **Same-user qualifier** (added 2026-10-19). Sealing protects the values at rest from other users and keeps them out of records. It does not protect them from the signed-in user's own processes: the OS secret store, like the Linux 0600-file fallback ([AD-0011](../decisions/AD-0011-identity-and-login.md) §4), protects the data key from other users, not from processes of the same user, and a running task's environment holds the values in clear (§3, environment visibility). Managed tasks run as that user ([11](11-security-privacy.md) §3, T-25).
+
      Non-secret environment snapshots are content-addressed (`env_snapshot`), so identical environments are stored once.
 
 ## 3. Launch
@@ -65,7 +67,7 @@ Defined by `arcforges.node.v1.TaskSpec` ([contracts](../contracts/proto/arcforge
 
 **Environment visibility (Linux).** The resolved environment, values included, is part of the transient unit while it is loaded: `systemctl --user show` and the transient unit file under `$XDG_RUNTIME_DIR/systemd/transient/` show it to the same user, as `/proc/<pid>/environ` does. Other users cannot read it. Records, exports and the per-attempt `steps.json` (names only) carry no values (§2).
 
-**Process tree tracking.** Container membership is authoritative (`JobObjectBasicProcessIdList` / the unit's `cgroup.procs`). An ancestry scan every 5 s detects `ESCAPED` descendants ([03](03-resource-control.md) §9).
+**Process tree tracking.** Container membership is authoritative (`JobObjectBasicProcessIdList` / the unit's `cgroup.procs`). An ancestry scan every 5 s detects `ESCAPED` descendants: processes outside the container whose recorded ancestry passes through a member. Launches through WMI, a broker, a service, a scheduled task or a spoofed parent are not detected and appear as `UNMANAGED` ([03](03-resource-control.md) §9; T-23; corrected 2026-10-19).
 
 **Root exit and leftover processes.** The attempt's result is fixed when its root process exits. Processes still in the container after that are terminated with the forced phase of §6 after `leftover_grace` (default 5 s).
 - **Linux:** the unit's own stop, with `KillMode=control-group`: `exec-stop` kills the leftovers with SIGKILL after `leftover_grace`, and `TimeoutStopSec` = the end-step budget + `leftover_grace` + 5 s.

@@ -9,7 +9,7 @@ Each journey lists its steps across surfaces with the APIs involved, its success
 
 1. The user downloads the setup program from W-04 and installs it per user. The node starts (13 §3.1). Linux and WSL users use `install.sh`.
 2. Desktop D-00 shows the capabilities. In WSL Debian, the guest node is installed by `install.sh` (user action) and linked automatically: SM-GUEST-LINK DISCOVERED → LINKED.
-3. In D-14, the user plans the Claude Code integration at user scope (`PlanIntegration`), reviews the diff and applies it (`ApplyIntegration`).
+3. In D-14, the user plans the Claude Code integration at user scope (`PlanIntegration`), reviews the diff with the routing statement (routed commands run outside Claude Code's own sandbox; [AD-0007](../decisions/AD-0007-ai-integration.md) §4) and applies it (`ApplyIntegration`).
 4. The user runs the probe (`StartProbe`) and pastes the instruction into Claude Code. `arcforges probe` reports PASS (`ReportProbe`).
 5. The user selects routing `rewrite` (heavy commands) or `rewrite-all` (every shell command except passthrough patterns) for the workspace (policy). D-14 states that connecting MCP alone routes nothing. A new Claude Code session raises SessionStart (`ReportHookEvent`) and the session appears in D-06.
 
@@ -17,7 +17,8 @@ Each journey lists its steps across surfaces with the APIs involved, its success
   - MCP connected;
   - hooks seen;
   - rewrite active only where the probe passed;
-  - coverage visible, with the managed share and what stays unmanaged ([08](../architecture/08-ai-integration.md) §4.4).
+  - coverage visible, with the managed share and what stays unmanaged ([08](../architecture/08-ai-integration.md) §4.4);
+  - the release coverage statement on D-14, including its stated limits ([product definition](../product/product-definition.md) §9; added 2026-10-19).
 - **Failures:**
   - hooks disabled by managed settings (DEGRADED, conflict shown, MCP-only);
   - the probe fails (rewrite stays off; guide or MCP);

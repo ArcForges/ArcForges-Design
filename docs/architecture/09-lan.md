@@ -56,6 +56,8 @@ Account-based trust between nodes of one account (`PAIRED (ACCOUNT)`) is accepte
 
 The default for a new pairing is status only. `PeerStatusService.WatchStatus` streams the peer's capabilities, toolchains, enforcement state, budget summary and queue length (D0/D1 data) (R-LAN-004).
 
+**What placement rights mean** (added 2026-10-19; [11](11-security-privacy.md) §1, T-27). A paired peer allowed to place work here executes code as the local user, with that user's access. `allowed_command_patterns` and `allowed_toolchains` are filters on the argument vector, which are guardrails: they restrict which commands are started, not what the started programs do. Placement therefore stays opt-in per peer ([AD-0008](../decisions/AD-0008-lan-trust-and-placement.md) §5).
+
 ## 5. Placement
 
 ### 5.1 Scoring

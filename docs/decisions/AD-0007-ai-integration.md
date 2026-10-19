@@ -1,12 +1,13 @@
 # AD-0007 — AI client integration: MCP first, hooks for identity and routing, honest coverage
 
-- Status: Accepted (2026-10-12; revised after the independent review the same day: no worktree hooks, exec-form hooks, `ask` for rewrites, caller-bound rewritten runs, guardrail wording; revised 2026-10-13 after the findings review: managed-command mode, hand-off before client timeouts, coverage map)
-- Evidence: V-A01–V-A05, A-A01 ([platform verification](../verification/platform-capabilities.md))
+- Status: Accepted (2026-10-12; revised after the independent review the same day: no worktree hooks, exec-form hooks, `ask` for rewrites, caller-bound rewritten runs, guardrail wording; revised 2026-10-13 after the findings review: managed-command mode, hand-off before client timeouts, coverage map; amended 2026-10-19 by the current-design corrections, which change no route: routed commands run outside the client's own sandbox (§1, §4), and the optional Linux hardening is read back and reported (§8))
+- Evidence: V-A01–V-A06, A-A01, A-A03, A-L04 ([platform verification](../verification/platform-capabilities.md))
 
 ## Decision
 
 1. **Primary route: MCP.**
    - `arcforges mcp serve` (stdio) is configured in each AI client and translates MCP tool calls into node gRPC calls ([experience/mcp.md](../experience/mcp.md)). AI clients run MCP servers outside their command sandboxes (V-A03, and Codex's MCP launch), so this route reaches the node even when shell commands cannot.
+   - *Amended 2026-10-19.* The same fact has a consequence the decision did not state: a command the node runs for the `run` tool, or for a hook rewrite (§3), runs outside the client's own sandbox. It gains resource control and records, not confinement (§4; V-A06, A-A03).
    - It supports MCP revisions **2025-11-25** (initialize handshake) and **2026-07-28** (stateless, `server/discover`), chosen per request by the client's declared version. Task handles are explicit, server-minted tool arguments.
    - Long work returns within a bounded wait (default 45 s, maximum 55 s) with state, an output tail and the handle. Where a client declares the `io.modelcontextprotocol/tasks` extension, the adapter returns task handles as the extension defines.
 2. **Identity through hooks.** The `arcforges hook <client> <event>` handler is configured for:
@@ -35,10 +36,12 @@
    - Codex hooks fail open, and Claude Code hooks can be disabled by managed settings. The node therefore reports routing as **guardrails**, never as enforcement.
    - Per session it reports which routes were active, the managed and bypassed counts, and unknowns.
    - It never claims the model, thinking state or internal completion status. It shows only client-reported events (session start and end, subagent start and stop, stop events) and its own observations.
+   - **Routing out of a client sandbox** (amended 2026-10-19; [11](../architecture/11-security-privacy.md) §1, T-24). The node states, per supported client: "Commands routed through ArcForges (MCP `run`, hook rewrites) gain resource control and records, but run outside <client>'s own sandbox. The client's own process, with its file tools, hooks and MCP servers, keeps the user's full access." The statement is static per client. It appears in every integration plan that enables an MCP or hook route (the consent diff, §6), in the coverage views next to the session's facts, in the release coverage statement (`GetReleaseScope`; [product definition](../product/product-definition.md) §9), and in the MCP `run` tool's description ([experience/mcp.md](../experience/mcp.md) M-01). Detecting a client's sandbox per run is not part of this decision (V-A03, V-A06; A-A03).
 5. **Bypass detection.** The node watches descendants of registered agent processes. Heavy unmanaged processes (CPU or memory above the policy threshold, or matching heavy-command patterns) are recorded as `BYPASSED`, with resource usage, as a diagnosis finding. Processes with no attributable ancestry are reported as unattributed.
 6. **Configuration consent.**
    - `arcforges integrate <client>` shows the exact file diff before writing. It writes only user-level, project-level or local-level settings that the user selects, never managed or enterprise settings.
    - It preserves unrelated settings and records what it wrote, so it can remove it.
+   - A plan that enables an MCP or hook route shows the routing statement of §4 with the diff, and applying it records the consent (amended 2026-10-19).
    - It reports conflicts: hooks disabled (`disableAllHooks`, `allowManagedHooksOnly`, `allow_managed_hooks_only`), hooks untrusted (Codex `/hooks`), a sandbox denying IPC, or project instructions that prescribe other build entry points.
    - It never edits a repository's instruction files (AGENTS.md, CLAUDE.md). It offers a snippet the user may add.
 7. **Packaging.** Claude Code and Codex plugin packages bundle the MCP configuration, hooks and skills. Installing a plugin never installs or authorizes the native node. The plugin's SessionStart hook detects a missing node and prints install guidance (R-DIST-004).
@@ -46,6 +49,6 @@
    - **Read-only versions.** Version directories are installed read-only, and the node verifies their digests at startup (with a finding on mismatch).
    - **Approvals.** Policy and configuration changes requested through MCP go through `PolicyService` with approval where policy demands it.
    - **Tamper detection.** A file watcher reports out-of-band edits of `node.json` and the store directory by other processes (finding `ENFORCEMENT_DEGRADED`).
-   - **Optional Linux hardening.** Managed transient units get `ReadOnlyPaths=` for the installation and `InaccessiblePaths=` for the node store and secrets, where the user manager supports it (A-L04).
+   - **Optional Linux hardening.** Managed transient units get `ReadOnlyPaths=` for the installation and `InaccessiblePaths=` for the node store and secrets, where the user manager supports it (A-L04). *Amended 2026-10-19:* where the user manager cannot apply them, the unit may start without them, so the node reads the hardening back after the unit starts and reports it as applied or not applied; a hardening that did not apply is never reported as applied. It is GUARDRAIL hardening of ArcForges' own files, never reported as workload isolation.
 
    Documented bypasses include direct same-user writes and spawning a pseudo-terminal to look interactive (R-AI-009, [11](../architecture/11-security-privacy.md) §1).
