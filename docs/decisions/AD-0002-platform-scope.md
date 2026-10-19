@@ -1,6 +1,6 @@
 # AD-0002 — Platform scope: Windows and Linux/WSL now; macOS later
 
-- Status: Accepted (2026-10-12; revised 2026-10-13 after the findings review: Windows 11 floor for TLS 1.3; revised 2026-10-13 by the product owner's decisions (AD-0015): Windows 11 floor confirmed; no Windows 10 support; amended 2026-10-19 by AD-0017: macOS becomes an accepted future execution target by the product owner's decision of 2026-10-18, outside the current implementation and acceptance scope until roadmap RM-15 is promoted; the platform-interface list revised to the delivered execution-platform seam; research venues added)
+- Status: Accepted (2026-10-12; revised 2026-10-13 after the findings review: Windows 11 floor for TLS 1.3; revised 2026-10-13 by the product owner's decisions (AD-0015): Windows 11 floor confirmed; no Windows 10 support; amended 2026-10-19 by AD-0017: macOS becomes an accepted future execution target by the product owner's decision of 2026-10-18, outside the current implementation and acceptance scope until roadmap RM-15 is promoted; the platform-interface list revised, for the execution mechanisms, to the delivered execution-platform seam; research venues added)
 
 ## Decision
 
