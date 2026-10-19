@@ -70,6 +70,8 @@ Default permission matrix (policy `permissions`, editable only by `HUMAN`).
   - Guest nodes additionally accept only the bridge (uid match) and the link token.
 - **Bound to the user.** Any same-user process can reach the node, as with any user-level service. Malware running as the user is out of scope, and the node never extends the user's privileges (R-SEC-001).
 
+*Direction (roadmap; not release 1; [AD-0017](../decisions/AD-0017-delegated-execution-direction.md)):* a tiered threat scope keeps the statement above as its unconfined row, in force now, and adds confined and STRONG-backend rows that apply only when their roadmap rows are promoted ([17](17-delegated-execution.md) §4.1).
+
 ## 3. Keys and secrets inventory
 
 | Key / secret | Holder | Protection | Rotation |
@@ -124,6 +126,8 @@ Secrets are never logged. Records and exports apply secret-name redaction ([04](
 | T-25 | B1, B5 | Same-user secret reach: the data key's OS-store entry, sealed task secrets in running environments, the Linux 0600 fallback (added 2026-10-19; amends T-19 and T-20) | The same-user qualifier (§3; [04](04-execution.md) §2) and the release-scope credential sentence | Release-scope text |
 | T-26 | B1 | Privileged changes without ArcForges elevating: polkit-authorized system-bus requests on Linux; Windows sudo in some configurations, such as the inline mode; UAC is not a security boundary on an administrator account without Administrator protection (added 2026-10-19) | The system bus and the other channels in the channel catalogue (§1); the generic UAC sentence in the release coverage statement; the host's account type and Administrator protection state reported by the doctor's HUMAN-only host-posture check ([07](07-records-diagnosis-memory.md) §2.4), never through the release coverage statement or MCP | Catalogue review; release-scope text (AF-AI-01); the doctor check on a standard and an administrator account, with the values withheld from AGENT, SCRIPT and MCP callers (AF-DIAG-01; A-W05) |
 | T-27 | B3 | A paired peer with placement rights executes code as the local user; per-peer command patterns are argument-vector filters, which are guardrails (added 2026-10-19) | Stated; placement stays opt-in per peer ([AD-0008](../decisions/AD-0008-lan-trust-and-placement.md) §5; [09](09-lan.md) §4) | Release-scope text |
+
+*Direction (roadmap; not release 1; [AD-0017](../decisions/AD-0017-delegated-execution-direction.md)):* threat rows T-28 … T-42, which apply only when their roadmap rows are promoted, are proposed in [17](17-delegated-execution.md) §4.4; none is in force, and none enters this table before its row is promoted.
 
 ## 5. Privacy
 

@@ -73,6 +73,8 @@ flowchart LR
 
 There is no boundary between the node and an unconfined workload: every managed process runs as the signed-in user (B0; [11](11-security-privacy.md) §1–§2).
 
+*Direction (roadmap; not release 1; [AD-0017](../decisions/AD-0017-delegated-execution-direction.md)):* boundaries B7 … B10 (the node and a confined attempt; sibling attempts; acquired content being parsed; an acquired artifact and the node) apply only when their roadmap rows are promoted; they are proposed in [17](17-delegated-execution.md) §4.2.
+
 | Data class | Examples | Leaves the node? |
 |---|---|---|
 | D0 Public | Version, OS family, capability flags | Yes (relay summary) |

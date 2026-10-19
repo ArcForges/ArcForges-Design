@@ -1,6 +1,6 @@
 # AD-0016 — Local-first verification, owner-only lightweight CI and testing techniques
 
-- Status: Accepted (2026-10-16; the user's instruction of that day, with the coordinator's implementation decisions made under the user's grant to "make implementation decisions independently"; amended 2026-10-17 by the user's decision on secret-store tests: the OS secret-store test tier, §5)
+- Status: Accepted (2026-10-16; the user's instruction of that day, with the coordinator's implementation decisions made under the user's grant to "make implementation decisions independently"; amended 2026-10-17 by the user's decision on secret-store tests: the OS secret-store test tier, §5; amended 2026-10-19 by AD-0017: direction only for §5: the macOS Keychain named in the OS-store rule at RM-15, and a test-residue discipline for confinement objects at the first confined-backend promotion)
 - Amends: [AD-0014](AD-0014-delivery-method.md) §4 (the "Hosted CI" row) and §5 ("hosted CI is the merge gate"), which now apply to external PRs only
 - Related: [16 testing strategy](../architecture/16-testing-strategy.md), [15 performance targets](../architecture/15-performance-targets.md), [13 distribution](../architecture/13-distribution-updates.md) §2 (release builds stay hosted), [conflicts](../reuse/conflicts.md) C-07
 
@@ -77,6 +77,10 @@ The user also asked for a more effective local testing strategy ("reliable, mean
    > - The production read-back policy is separate from test verification ([04](../architecture/04-execution.md) §2). Production does not read back a node data key after writing it; read-back and absence checks belong to the tier.
    > - No stress or load test runs against a real OS store, hosted runners included.
    > - The rest of this decision is unchanged, including the owner-PR merge gate of §1; the scheduled job above is the only addition to the job classes of §2. Known limitation: a Credential Manager regression in an owner PR surfaces only through the weekly run, a manual dispatch or an external PR. Evidence: L-26.
+
+   **Direction (roadmap; not release 1).** Amended 2026-10-19 by [AD-0017](AD-0017-delegated-execution-direction.md). The rules above bind every current test unchanged.
+   - **The macOS Keychain** (effective when RM-15 is promoted) will be one of the real OS secret stores the 2026-10-17 rule covers: routine and pre-push tests never touch it, real-store tests run only in the separate, sequential tier with exact names and strict limits, Keychain behaviour is studied only on throwaway guests (LAB-MAC-11), and no stress or load test runs against it.
+   - **A test-residue discipline for confinement objects** (effective when the first confined backend row, EX-10 or EX-11, is promoted) will apply the same approach to the OS objects confinement tests create: leased AppContainer profiles and their ACEs on Windows, transient units and slices on Linux. Tests create them with bounded churn and unique exact names, remove them by exact name, never at scale and never machine-wide, and verify the residue (for example, that a re-leased AppContainer identity has no access to the prior lessee's grants; [17](../architecture/17-delegated-execution.md) §14.1).
 
 ## Consequences
 

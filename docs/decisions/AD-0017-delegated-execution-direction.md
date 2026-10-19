@@ -1,0 +1,111 @@
+# AD-0017 — Long-term direction: delegated execution with verified contracts
+
+- Status: Accepted (2026-10-19; principles only, recorded under the product owner's request of 2026-10-18 after the study's independent review, re-review and confirmation pass; each principle states its basis and when it takes effect; the model it points to is proposed, chapter 17)
+- Amends (direction only; every amended text keeps its release-1 meaning): [AD-0002](AD-0002-platform-scope.md) (macOS as an accepted future execution target; the delivered execution-platform seam; research venues), [AD-0003](AD-0003-architecture-and-runtimes.md) §6, [AD-0005](AD-0005-resource-enforcement.md), [AD-0012](AD-0012-distribution-and-updates.md), [AD-0015](AD-0015-direction-editions-roadmap.md) §1, §2 and §7, [AD-0016](AD-0016-local-first-verification.md) §5, and the [product definition](../product/product-definition.md) §2; pointers in [01](../architecture/01-system-overview.md) §4, [05](../architecture/05-toolchains-caches.md) §1, [11](../architecture/11-security-privacy.md) §2 and §4 and [15](../architecture/15-performance-targets.md) §2
+- Related: [17 delegated execution](../architecture/17-delegated-execution.md) (the proposed model, the fourteen fields per roadmap row, the rejected alternatives, the owner decisions and the amendment texts recorded there); the [research record](../research/2026-10-18-delegated-execution/README.md) of 2026-10-18; the roadmap rows RM-15 and EX-07 … EX-23 in [`roadmap.md` in ArcForges/Plan](https://github.com/ArcForges/Plan/blob/main/roadmap.md); [AD-0011](AD-0011-identity-and-login.md) §6 (aligned, unchanged)
+
+## Context
+
+On 2026-10-18 the product owner asked for a study of how far ArcForges can evolve beyond process execution and resource control while staying faithful to its philosophy, "Your machine. Your rules." The request was for research, architecture, an independent review and roadmap and documentation changes only, with no implementation. It authorized recording validated, non-implementation proposals in the authoritative design and roadmap without another confirmation (request §10).
+
+The study produced a research record with a lab register, three concepts and their judgements, a synthesis, an independent review round, a re-review and, on 2026-10-19, an independent confirmation pass. The review history stays in the study's working files and is not part of the Design. Its outcome is recorded in two Design-then-Plan PR pairs:
+- **Pair 1** corrected overstatements in today's Design (merged 2026-10-19, Design PR #8): escape detection, same-user tampering with ArcForges' containers, routing out of a client's own sandbox, UAC on administrator accounts, the cloud command key's reach, and related threat rows T-22 … T-27 and boundaries B0 and B11.
+- **Pair 2** records the direction: this decision, the amendments it lists, [chapter 17](../architecture/17-delegated-execution.md), the [research record](../research/2026-10-18-delegated-execution/README.md), and then the roadmap rows in the Plan.
+
+The study found the direction viable and coherent under three conditions: it stays bounded by the design rules M1–M5 (principle 8), with "concept" defined and every concept showing two uses; truthfulness is treated as the product, so attainable values are never shown as realized and nothing falls back silently; and confinement is promoted only through the lab gates, one backend at a time, after the owner's decisions. No confinement lab has run, so every new capability is at most "feasible but needs a prototype" (E4) until its lab runs.
+
+This decision holds **principles only**. The concepts, the strength ladder, the inheritance rules and the contract sketch are a **proposed** model in chapter 17. Each element of that model is accepted by an ADR amendment when the first roadmap row that needs it is promoted.
+
+## Decision
+
+AD-0017's study-derived principles are recorded as accepted design rules. **The product owner may object to any of them.** An objection is recorded verbatim in this decision and changes the principle by amendment. The question is also listed in chapter 17's owner decisions table (§17, decision 22).
+
+Each principle states its **basis** (text quoted from the owner's request, an existing accepted Design position, or a study-validated design rule recorded under request §10) and its **effective** clause: either it is true of release 1 today, or it takes effect when a named roadmap row is promoted.
+
+1. **The framing, and the bounded reading of "Your machine. Your rules."** As a Design description, never a product name, ArcForges' long-term direction is *the local authority for delegated execution, with verified contracts*. "Authority" has the sense of [AD-0004](AD-0004-contracts-and-state.md): the only writer of execution state. When the owner hands work to a delegate (an AI agent, an MCP server, a tool, a script, a portable application, a LAN peer), ArcForges will state what that work may use, realize it with operating-system mechanisms, read the realization back, refuse when a requirement cannot be met, own or honestly label the lifecycle of what the delegate brought onto the machine, record what happened, and let the owner revoke it from any surface, a phone included. Everything ArcForges did not launch, it observes and labels. The phrase is read in a bounded way:
+   - **"Your rules":** the owner writes policy once, and every launch ArcForges performs either obeys it or is refused with a reason.
+   - **"Your machine":** ArcForges runs as the user and never elevates at run time ([AD-0005](AD-0005-resource-enforcement.md), Process model), so it cannot control everything on the machine. It observes what a standard user can see and labels it; it controls what it launched, or what the owner explicitly adopted or held; it never claims more than the operating system enforces.
+   - **Basis:** a study-validated design rule; the phrase itself is the owner's (the ArcForges repository README).
+   - **Effective:** now, as a description. "Your rules" holds today for resources only (delivered: `require_enforcement` and refusal, R-RES-008). For access, lifecycle and evidence it is direction, effective per row as each is promoted.
+2. **The wording rules**, for every surface:
+   - never "sandboxed", "contained", "protected" or "secure" alone, and never a single yes/no bit;
+   - never "authority" alone: it is paired with the end-state sentence of the [product definition](../product/product-definition.md) §2;
+   - a tier name is a basis field, never a guarantee;
+   - "controls" always carries "what it launched or what the owner explicitly adopted or held";
+   - a persistence hold is "held", never "blocked".
+   - **Basis:** a study-validated design rule.
+   - **Effective:** now, for every surface text, release-1 text included. The 2026-10-19 corrections already follow them.
+3. **The boundaries.**
+   1. **Control** covers only what ArcForges launched or the owner explicitly adopted. A future adoption kind, persistence holds, would be recorded, reversible and done through the operating system's own mechanism, and it needs its own owner decision (EX-15). Machine-wide software is never controlled.
+   2. **ArcForges never performs an OS-level change silently; an optional privileged step is either the owner's own action or, where [AD-0011](AD-0011-identity-and-login.md) §6 applies, an explicit OS prompt with a journal entry and exact removal.** AD-0011 §6 says that the optional privileged features, "when built, … install through explicit OS prompts (UAC, sudo)", labelled as OS-level changes. This boundary aligns with it, so the designed optional privileged features AR-16 (machine-wide service mode) and A-L02 (Linux I/O control) stay as [AD-0005](AD-0005-resource-enforcement.md) designs them. At run time ArcForges never elevates.
+   3. **No kernel component, driver, system extension or code injection.**
+   4. **Not a package manager, registry proxy or application launcher.** A small store of tool versions acquired on explicit request is the most it would own, and even that is weighed against delegating to an established manager (EX-13 stage b). It is never an apt or rpm frontend.
+   5. **Not a VM or container manager.** STRONG backends are orchestrated OS facilities or established projects, each accounted as one consumer like the WSL VM ([AD-0005](AD-0005-resource-enforcement.md), WSL2 model). ArcForges never manages images, registries, volumes or networks (EX-18).
+   6. **Not an endpoint-security agent (EDR).** Observation stays at standard-user privilege by default; privileged observation is an opt-in the owner grants (EX-20).
+   7. **Local and LAN stay free** ([AD-0015](AD-0015-direction-editions-roadmap.md) §2), every capability of this direction included. No local default may depend in practice on a Pro remote decision.
+   8. **The execution targets are Windows, Linux and macOS; Android, iOS and the Web are control clients.** macOS execution takes effect with RM-15 (principle 10).
+   9. **ArcForges never changes machine-wide security policy**, except as an optional privileged step under boundary 2.
+   10. **ArcForges' own privileges stay minimal:** no administrator rights at run time and no new OS group membership, except opt-in integrations (EX-20), each reported as a privilege increase of the owner's account.
+   - **Basis:** boundary 8 is the request, section 3: "The execution targets are: Windows, Linux, and macOS. Android, iOS, and the Web are control clients, not local application sandbox or execution targets. That distinction is final." Boundary 7 is [AD-0015](AD-0015-direction-editions-roadmap.md) §2 (existing). Boundary 2 is [AD-0011](AD-0011-identity-and-login.md) §6 (existing), with the study's journal and exact-removal clause. The others are study-validated design rules.
+   - **Effective:** now: each describes what release 1 already does or never does. The parts that name future work take effect with their rows: persistence holds (boundary 1) at EX-15's holds stage; the journal entry of boundary 2 at EX-08; the opt-in privilege increases of boundary 10 at EX-20; macOS execution (boundary 8) at RM-15.
+4. **Require → refuse, with no silent fallback.** A task's requirements are REQUIRED or PREFERRED. When a REQUIRED requirement cannot be met, ArcForges refuses, with a reason and before any workload code runs; it never falls back to a weaker mode, and it never merely warns. A PREFERRED shortfall is recorded and shown on every surface.
+   - **Basis:** the request, section 7: "If a requested security property cannot be enforced, do not silently downgrade to a weaker execution mode while continuing to claim the stronger guarantee."; R-RES-008 (existing, delivered for resources).
+   - **Effective:** now for resource requirements (R-RES-008). For access dimensions, effective when EX-07 stage b is promoted with the first confined backend.
+5. **The tiered threat scope.** The threat scope is stated per workload state, one row each: unconfined (today, and the default); confined, per realized dimension; STRONG backend, per backend; privileged installers and system software. The unconfined row is the statement of [11](../architecture/11-security-privacy.md) §2, unchanged and not weakened: any same-user process can reach the node, and malware running as the user is out of scope. The table is in [17](../architecture/17-delegated-execution.md) §4.1.
+   - **Basis:** [11](../architecture/11-security-privacy.md) §2 (existing) for the unconfined row; a study-validated design rule for the others.
+   - **Effective:** the unconfined row now; each other row when its row is promoted (EX-10, EX-11 or EX-22 for the confined row; EX-18 for STRONG backends).
+6. **The scope's invariant, now-part:** "The node never extends the privileges of any caller."
+   - **Basis:** a study-validated design rule, true of release 1 ([11](../architecture/11-security-privacy.md) §2; R-SEC-001).
+   - **Effective:** now.
+7. **The scope's invariant, direction-part:** "When confined attempts exist, the node never relaxes the confinement of a caller it confined. Today it cannot see a client's own sandbox, and commands routed through it run outside that sandbox (T-24, B11)."
+   - **Basis:** a study-validated design rule.
+   - **Effective:** when EX-09 is promoted.
+8. **The definition of "concept" and the design rules M1–M5.** A **concept** is a new persistent entity, a new state machine, or a new contract service or message family. Roles of the one binary, enum values and record kinds inside an existing family are not concepts.
+   - **M1. One execution lifecycle.** Everything that runs is a task with attempts (SM-TASK, SM-ATTEMPT): an installer run, an MCP server, a confined agent command, an inference server, and later the AI client itself. They differ in profile, kind (`COMMAND`, `SERVICE`) and the records they feed, never in a new runtime.
+   - **M2. A dimension exists only if a grant or a resource request can target it on at least one OS.** Facts nobody grants or requests are basis attributes of a reported value. A seccomp rule that implements a denied grant is a policy filter and counts toward its dimension; surface hardening stays basis only.
+   - **M3. Lifecycle and isolation stay independent facts.** Lifecycle facts never raise an isolation strength, and isolation facts never raise a lifecycle level, except through the weakest-run rule of uninstall. The intended couplings are one-directional and recorded ([17](../architecture/17-delegated-execution.md) §2.1).
+   - **M4. The node is the only writer.** Grants are node-held records referenced by ID, never bearer tokens.
+   - **M5. No new concept without two uses.** Every concept names two capabilities it serves and why no existing primitive can carry it. A new theme needs the same test.
+   - **Basis:** a study-validated design rule; it answers the request's demand for a coherent model rather than a collection of features (request §1 and §6).
+   - **Effective:** now, as a rule for every future Design change. It changes nothing in release 1.
+9. **The mission-level rule.** Where a verified contract and completion time conflict, the owner's profile decides per task. ArcForges never trades a REQUIRED dimension for speed. A CONFINED **default** for an origin may cost at most **X %** in median completion time on the adapters' reference workloads; the study proposes X = 10, and **the owner sets X**. This keeps [AD-0015](AD-0015-direction-editions-roadmap.md) §1's objective, useful completion time and reliability, in force.
+   - **Basis:** a study-validated design rule; X by the owner ([17](../architecture/17-delegated-execution.md) §17, decision 5).
+   - **Effective:** "never trades a REQUIRED dimension for speed": now, for resource requirements. The X % ceiling: when the first CONFINED default for an origin is proposed.
+10. **The platform roles.** Windows, Linux and macOS execute; Android, iOS and the Web are control clients.
+    - **Basis:** the request, section 3: "The execution targets are: Windows, Linux, and macOS." and "That distinction is final."
+    - **Effective:** now, as recorded direction. macOS execution takes effect when RM-15 is promoted ([AD-0002](AD-0002-platform-scope.md), amendment (1)); until then release-1 scope is unchanged.
+11. **"Release 1 is unchanged; confinement is optional, and UNCONFINED stays the default until the compatibility, overhead and editions gates pass."**
+    - **Basis:** a study-validated design rule; the request, section 11: "This work is limited to research, architecture, review, and roadmap/documentation changes."
+    - **Effective:** now.
+
+**What this decision does not do.**
+- It freezes no entity names. The five concepts, the state sketches, the strength ladder and `holds_against` rules, `api_status` promotion, the inheritance rules R1–R7, the contract sketch, the future boundaries B7–B10 and threat rows T-28 … T-42 are proposed in [chapter 17](../architecture/17-delegated-execution.md).
+- It adds no requirement, state machine, contract element, task or verification entry, and marks nothing delivered. Future work is named by roadmap row ID and lab ID only.
+- It changes no row of the delivery sequence. Nothing of the direction is promoted before AF-ACC-01 is delivered.
+
+**Amendments made with this decision.** Each states its effective clause. Future capability is written in the future tense under a heading "Direction (roadmap; not release 1)"; superseded text stays as history and names its successor.
+
+| Decision or chapter | Amendment | Effective |
+|---|---|---|
+| [AD-0002](AD-0002-platform-scope.md) | (1) macOS becomes an accepted future execution target (node only; local-only first stage) by the owner's decision of 2026-10-18; it stays outside the current implementation and acceptance scope until RM-15 is promoted. (2) The eight-interface list is replaced by the delivered seam (`IExecutionPlatform`, `IAttemptHandle`), as a dated revision. (3) A research venue: a disposable lab VM or wipeable lab hardware, for roadmap evidence only. (4) Fedora and Ubuntu 26.04 are research venues, not supported targets; Apple silicon only is a study proposal for the owner, not an existing floor | (1) now, as recorded direction that changes no release-1 scope; (2) now, as a dated revision, not a correction; (3), (4) now |
+| [AD-0003](AD-0003-architecture-and-runtimes.md) §6 | (a) no first-party native component in the node; (b) tools an isolation backend or helper role depends on are orchestrated, never installed, and listed in a Design inventory; (c) an ADR per shipped third-party native unit; and a note on RM-14 in the future tense. The current text is unchanged | (a), (b) at the first backend row's promotion; (c) with the first EX row that would ship a native unit |
+| [AD-0005](AD-0005-resource-enforcement.md) | Confined profiles will be P0 features when promoted; optional privileged steps follow boundary 2 | At the first backend promotion |
+| [AD-0011](AD-0011-identity-and-login.md) | None: boundary 2 aligns with §6 | — |
+| [AD-0012](AD-0012-distribution-and-updates.md) | `install_source` becomes `update_owner`; probe reference data travels as signed release-manifest data; the macOS stable-bundle-path rule | `update_owner` at EX-13 stage b; manifest data at EX-11; macOS at RM-15 |
+| [AD-0015](AD-0015-direction-editions-roadmap.md) | §1, §2 and §7 gain future-tense direction; §8 unchanged | Now, as future-tense direction |
+| [AD-0016](AD-0016-local-first-verification.md) §5 | The Keychain named in the OS-store rule; a test-residue discipline for leased AppContainer profiles, transient units and slices | Keychain at RM-15; residue discipline at the first backend promotion |
+| [05](../architecture/05-toolchains-caches.md) §1 | A pointer to the no-install amendment, whose text is recorded in [17](../architecture/17-delegated-execution.md) §15.1; `requirements.md` unchanged | Text recorded now; effective at EX-13 stage b |
+| [15](../architecture/15-performance-targets.md) §2 | A pointer: the Linux per-confined-attempt overhead, measured in LAB-LNX-19 | At EX-11 |
+| [Product definition](../product/product-definition.md) | §2: the "Your machine. Your rules." direction paragraph, its bounded reading, the end-state sentence and the release-1 statement. The §7 holds amendment and the §9 network row per tier are recorded in [17](../architecture/17-delegated-execution.md) §15.2 only | §2 now; §7 only at EX-15's holds stage, by owner decision; §9 network at EX-12 |
+| [11](../architecture/11-security-privacy.md) | Pointers to the tiered threat scope and the future threat rows | Pointers now; rows with their roadmap rows |
+| [01](../architecture/01-system-overview.md) §4 | A pointer to the future boundaries B7–B10 | Pointer now; boundaries with their roadmap rows |
+| SM-ATTEMPT (`machines.json`) | None now; the proposal lives in [17](../architecture/17-delegated-execution.md) §2.3 | At EX-11 |
+
+## Consequences
+
+- Release 1 is unchanged. Every origin's default profile stays UNCONFINED, and every access dimension of today's workloads stays not restricted (same-user tier).
+- The macOS scope position of [AD-0002](AD-0002-platform-scope.md), recorded after the product owner's 2026-10-08 decision that macOS was not required for that delivery, is reversed as direction: macOS becomes an accepted future execution target (RM-15), and release-1 scope stays unchanged until RM-15 is promoted.
+- The roadmap gains one accepted row (RM-15, from EX-05) and seventeen exploratory rows (EX-07 … EX-23) in six themes, with changes to RM-02, RM-04, RM-05, RM-12, RM-13, EX-01 and EX-03 … EX-06, through the Plan PR that follows this decision. The owner is asked which rows to accept as RM ([17](../architecture/17-delegated-execution.md) §17, decision 1).
+- Cross-row order lives only in the rows' Prerequisites cells, and "Revisit when" is each row's single trigger. There is no stage diagram.
+- Roadmap-level assumptions cite lab IDs and the row ID, never A or F IDs of the verification register, until promotion creates owner tasks ([17](../architecture/17-delegated-execution.md) §1.2).
+- Every future Design change of this direction is checked against M1–M5 (principle 8), and every surface text against the wording rules (principle 2).

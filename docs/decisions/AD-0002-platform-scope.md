@@ -1,6 +1,6 @@
 # AD-0002 — Platform scope: Windows and Linux/WSL now; macOS later
 
-- Status: Accepted (2026-10-12; revised 2026-10-13 after the findings review: Windows 11 floor for TLS 1.3; revised 2026-10-13 by the product owner's decisions (AD-0015): Windows 11 floor confirmed; no Windows 10 support)
+- Status: Accepted (2026-10-12; revised 2026-10-13 after the findings review: Windows 11 floor for TLS 1.3; revised 2026-10-13 by the product owner's decisions (AD-0015): Windows 11 floor confirmed; no Windows 10 support; amended 2026-10-19 by AD-0017: macOS becomes an accepted future execution target by the product owner's decision of 2026-10-18, outside the current implementation and acceptance scope until roadmap RM-15 is promoted; the platform-interface list revised to the delivered execution-platform seam; research venues added)
 
 ## Decision
 
@@ -22,9 +22,32 @@
 - `IPeerCredentialCheck`
 - `IFileSystemInfo`
 
+*The list above is kept as history. It is superseded as a description of the code by the dated revision of 2026-10-19 below.* The scope sentence above still binds release 1 (see Direction, item 1).
+
+**Dated revision (2026-10-19, recorded with the macOS amendment of [AD-0017](AD-0017-delegated-execution-direction.md); Direction, item 2).** The node does not implement the eight interfaces listed above. The delivered execution-platform seam is `IExecutionPlatform` with `IAttemptHandle` (`src/ArcForges.Node.Platform/ExecutionPlatform.cs` in ArcForges/ArcForges at `b22d2ec`), which keeps the execution mechanisms behind one interface, with Windows and Linux implementations. It is the successor of the list above, and a macOS node would be its third implementation. This revises the text to match the delivered code; it is not a correction of any claim, and no scope changes.
+
 ## Validation venues
 
 - **Windows:** the developer workstation (L-01). Real process-control tests run there.
 - **Linux:** the local WSL2 Debian 13 distribution (L-02 to L-09). Tests that execute real Linux processes and cgroup controls there are **real tests of WSL2**. They are recorded as evidence for WSL2 on that kernel and systemd version, not as proof for every Linux distribution or kernel.
 - **arm64:** binaries are produced by cross-compilation. Execution on real arm64 hardware is deferred validation, listed in the acceptance register.
 - **Bare-metal Linux:** systemd lingering for headless operation (`loginctl enable-linger`) is a documented user step, validated when such a machine is available (acceptance register).
+- **Research venue** (amended 2026-10-19 by AD-0017; Direction, item 3): a disposable lab VM or wipeable lab hardware: research evidence for roadmap rows, for that build only; not a validation venue for release-1 tasks. Its lab entries are in the [research record](../research/2026-10-18-delegated-execution/lab-register.md).
+- **Research distributions** (amended 2026-10-19 by AD-0017; Direction, item 4): Fedora and Ubuntu 26.04 are research venues, not supported targets. Whether Fedora becomes a supported target is an owner decision ([17](../architecture/17-delegated-execution.md) §17, decision 18).
+
+## Direction (roadmap; not release 1)
+
+Amended 2026-10-19 by [AD-0017](AD-0017-delegated-execution-direction.md). The decision table and the scope sentence above bind release 1 unchanged.
+
+1. **macOS as an accepted future execution target.** On 2026-10-18 the product owner decided, in section 3 of the request for the long-term evolution study:
+
+   > The execution targets are:
+   > Windows, Linux, and macOS.
+   > Android, iOS, and the Web are control clients, not local application sandbox or execution targets.
+   > That distinction is final.
+
+   macOS will therefore be an execution target for the node only, local-only in its first stage, as roadmap row RM-15 (the monitored local node). It stays outside the current implementation and acceptance scope until RM-15 is promoted: no macOS code, CI, packaging or claim is produced before then. This reverses, as direction, the scope position recorded above, which followed the product owner's decision of 2026-10-08 that macOS was not required for that delivery. **Apple silicon only** is a study proposal for the owner to confirm, not an existing floor: this decision defines no macOS floor ([17](../architecture/17-delegated-execution.md) §17, decision 21). The node's macOS design (a signed, notarized LaunchAgent; monitored resources; the TCC rules) is in [17](../architecture/17-delegated-execution.md) §5.3 and §14.6.
+   - **Effective:** now, as recorded direction that changes no release-1 scope; macOS execution takes effect when RM-15 is promoted.
+2. **The delivered execution-platform seam** replaces the interface list, as the dated revision above. **Effective:** now, as a dated revision, not a correction.
+3. **The research venue** above. **Effective:** now.
+4. **The research distributions** above. **Effective:** now.
