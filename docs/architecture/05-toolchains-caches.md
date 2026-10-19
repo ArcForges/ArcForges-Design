@@ -20,6 +20,8 @@ The toolchain registry (`ArcForges.Node.Toolchains`) scans at startup, daily, on
 
 Missing tools are reported, never installed by the node (R-TOOL-001).
 
+*Direction (roadmap; not release 1; [AD-0017](../decisions/AD-0017-delegated-execution-direction.md)):* a no-install amendment of this section, effective only when EX-13 stage b is promoted, is recorded in [17](17-delegated-execution.md) §15.1; until then the sentence above is unchanged.
+
 ## 2. Adapter contract
 
 Every adapter implements:

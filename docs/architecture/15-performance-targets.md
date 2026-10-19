@@ -36,6 +36,8 @@ Requirement: R-PERF-001. Every target names its measurement. "Workstation" means
 
 **Helper memory (decision of the product owner, 2026-10-16).** The holder and the guard are roles of the one multi-role binary ([AD-0003](../decisions/AD-0003-architecture-and-runtimes.md)), whose `exec-wrap` role measured 5.5 MB private before it had read its specification (AF-EXEC-01 review, Windows), so the earlier 3 MB (holder) and 8 MB (guard) targets could not be met without a separate executable. Keeping one binary is preferred: the targets above are set from measurements with headroom. MB here means 1,000,000 bytes, as in the CI benchmarks. A dedicated lightweight helper executable is accepted future work (roadmap RM-14), revisited only if per-attempt overhead becomes a real constraint.
 
+*Direction (roadmap; not release 1; [AD-0017](../decisions/AD-0017-delegated-execution-direction.md)):* when EX-11 is promoted, the per-execution helper row above will record the Linux per-confined-attempt overhead of `exec-init`, measured in LAB-LNX-19 ([17](17-delegated-execution.md) §15.4); until then "Linux 0 per execution" is unchanged.
+
 ## 3. Clients
 
 | Target | Value | Measurement |

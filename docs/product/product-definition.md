@@ -33,6 +33,18 @@ ArcForges is not a command queue, an MCP server, a coding-agent wrapper, a cache
 
 The platform is general-purpose. Programming workloads are first, but nothing in the node is specific to source code, and future products (ArcSlate, ArcScope) can use its execution, resource and fleet capabilities through the same contracts ([AD-0013](../decisions/AD-0013-reuse-and-supersession.md)).
 
+### Direction (roadmap; not release 1): "Your machine. Your rules."
+
+Added 2026-10-19 ([AD-0017](../decisions/AD-0017-delegated-execution-direction.md); proposed model in [17](../architecture/17-delegated-execution.md)). As a Design description, not a product name, ArcForges' long-term direction is *the local authority for delegated execution, with verified contracts*. When the owner hands work to a delegate (an AI agent, an MCP server, a tool, a script, a portable application, a LAN peer), ArcForges will state what that work may use, realize it with operating-system mechanisms, read the realization back, refuse when a requirement cannot be met, own or honestly label the lifecycle of what the delegate brought onto the machine, record what happened, and let the owner revoke it from any surface. This extends the direction above; it does not replace it.
+
+"Your machine. Your rules." is read in a bounded way:
+- **"Your rules":** the owner writes policy once, and every launch ArcForges performs either obeys it or is refused with a reason. This holds today for resources; for access, lifecycle and evidence it is direction, taking effect row by row as the roadmap rows are promoted.
+- **"Your machine":** ArcForges runs as the user and never elevates at run time, so it cannot control everything on the machine. It observes what a standard user can see and labels it; it controls what it launched or what the owner explicitly adopted (and, from EX-15's holds stage and only by the owner's decision, what the owner held); it never claims more than the operating system enforces.
+
+**The end-state sentence:** *For everything it runs, ArcForges will state who asked, what was granted, what the operating system actually enforces, and what happened; for everything else, it observes and says so.*
+
+**What release 1 says:** release 1 reports access as NONE (same-user) where it reports it at all. It confines no workload, and its stated limits are in §9.
+
 ## 3. Users and primary journeys
 
 | User | Needs | Primary journeys |

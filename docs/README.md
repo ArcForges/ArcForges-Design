@@ -5,11 +5,11 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 ## Read in this order
 
 1. [Product definition](product/product-definition.md) and [requirements](product/requirements.md)
-2. [Decisions](#decisions) AD-0001 … AD-0016
-3. [Architecture](#architecture) chapters 01–16
+2. [Decisions](#decisions) AD-0001 … AD-0017
+3. [Architecture](#architecture) chapters 01–17
 4. [Contracts](contracts/README.md), [API catalogue](contracts/api-catalogue.md), [errors](contracts/errors.md)
 5. [Data](#data), [state machines](state-machines/README.md), [experience](experience/README.md)
-6. [Reuse and conflicts](#reuse), [verification register](verification/platform-capabilities.md), [traceability](traceability/model.json)
+6. [Reuse and conflicts](#reuse), [verification register](verification/platform-capabilities.md), [traceability](traceability/model.json), [research records](#research)
 
 ## Product
 
@@ -22,7 +22,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 | ID | Decision |
 |---|---|
 | [AD-0001](decisions/AD-0001-flagship-pivot.md) | ArcForges becomes the flagship; new authoritative repositories |
-| [AD-0002](decisions/AD-0002-platform-scope.md) | Platform scope: Windows and Linux/WSL2; macOS out of scope |
+| [AD-0002](decisions/AD-0002-platform-scope.md) | Platform scope: Windows and Linux/WSL2 now; macOS an accepted future execution target (AD-0017, roadmap RM-15), outside the current scope until RM-15 is promoted |
 | [AD-0003](decisions/AD-0003-architecture-and-runtimes.md) | Components, runtimes and binaries (C#-first) |
 | [AD-0004](decisions/AD-0004-contracts-and-state.md) | Contracts and authoritative state |
 | [AD-0005](decisions/AD-0005-resource-enforcement.md) | Resource enforcement, WSL model and privileges |
@@ -37,6 +37,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 | [AD-0014](decisions/AD-0014-delivery-method.md) | Delivery method: serial, distinct evidence, honest acceptance |
 | [AD-0015](decisions/AD-0015-direction-editions-roadmap.md) | Product direction, editions (local and LAN free) and roadmap governance |
 | [AD-0016](decisions/AD-0016-local-first-verification.md) | Local-first verification, owner-only lightweight CI and testing techniques |
+| [AD-0017](decisions/AD-0017-delegated-execution-direction.md) | Long-term direction: delegated execution with verified contracts (principles only; the model is proposed in chapter 17) |
 
 ## Architecture
 
@@ -58,6 +59,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 | [14](architecture/14-commercial-operations.md) | Commercial operations: plans, lifecycle, support, costs, legal |
 | [15](architecture/15-performance-targets.md) | Performance and footprint targets |
 | [16](architecture/16-testing-strategy.md) | Testing strategy |
+| [17](architecture/17-delegated-execution.md) | Delegated execution with verified contracts (ROADMAP, proposed): the proposed model, the fourteen fields per roadmap row, rejected alternatives, owner decisions |
 
 ## Contracts
 
@@ -87,6 +89,10 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 - [inventory-and-classification.md](reuse/inventory-and-classification.md)
 - [conflicts.md](reuse/conflicts.md)
 - [desktopplatform-refactor.md](reuse/desktopplatform-refactor.md)
+
+## Research
+
+- [research/2026-10-18-delegated-execution/](research/2026-10-18-delegated-execution/README.md): the curated evidence record and lab register of the 2026-10-18 delegated-execution study, behind AD-0017 and chapter 17; roadmap evidence only, not verification-register facts
 
 ## Verification and traceability
 
