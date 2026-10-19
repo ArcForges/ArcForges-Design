@@ -1,12 +1,12 @@
 # ArcForges Desktop
 
-Architecture: [12](../architecture/12-client-applications.md) §2. Template and standard states: [README](README.md). Every Desktop page runs with origin `HUMAN`. Every page applies S-LOADING, S-NODE-STOPPED, S-RECONNECTING, S-INCOMPATIBLE and S-FAILED unless stated otherwise.
+Architecture: [12](../architecture/12-client-applications.md) §2. Template and standard states: [README](README.md). Every Desktop page runs with origin `HUMAN`. Every page applies S-LOADING, S-NODE-STOPPED, S-RECONNECTING, S-INCOMPATIBLE and S-FAILED unless stated otherwise. Figures in the mockups are illustrative: an example host with 16 logical processors and 32 GiB.
 
 ## Shell
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ArcForges  ● Node ready  CPU 6.2/15.2 cores  Mem 9.8/19.6 GiB  ◐ Normal  🔔 3 ☺ │ status bar
+│ ArcForges  ● Node ready  CPU 6.2/13.4 cores  Mem 9.8/19.6 GiB  ◐ Normal  🔔 3 ☺ │ status bar
 ├────────────┬─────────────────────────────────────────────────────────────────┤
 │ Overview   │                                                                 │
 │ Tasks      │                         content area                            │
@@ -49,8 +49,8 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 
 ```
 ┌ Welcome to ArcForges ───────────────────────────────── Step 2 of 5 ┐
-│ This machine: Windows 11 · 18 logical CPUs · 31.5 GiB             │
-│ Reserved for you: 2.8 cores, 5.2 GiB (change later in Policy)      │
+│ This machine: Windows 11 · 16 logical CPUs · 32 GiB               │
+│ Reserved for you: 2.6 cores, 5.2 GiB (change later in Policy)      │
 │ Enforcement:  CPU ✔ shares and cap   Memory ✔ commit limit         │
 │               Pause ✖ not supported on Windows (why?)              │
 │ WSL: Debian ✔ guest node linked                                    │
@@ -202,7 +202,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 │    ETA ~3 min · ages to HIGH at 10:24 · [Explain] [Priority ▾]                    │
 │    Reservation: holds memory for this task · lapses 10:52                        │
 │ #2 npm ci  default  exclusive_key ws:web/app:deps (held by npm install)          │
-│ #3 link-all  agents  needs 40 GiB > managed share 26 GiB → exceeds_capacity      │
+│ #3 link-all  agents  needs 40 GiB > managed share 26.8 GiB → exceeds_capacity    │
 │    Cannot start on this machine. [Explain] [Cancel]                              │
 │ Parallelism: [Global: AUTO ▾]  Disable parallel execution for: [scope ▾] [Apply] │
 └──────────────────────────────────────────────────────────────────────────────────┘
@@ -224,9 +224,9 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 - **Permissions.** HUMAN (adoption is HUMAN only).
 
 ```
-┌ Resources ─ Capacity 18.0 cores · 31.5 GiB ──────────── Pressure: Normal ───────┐
-│ CPU  [reserve 2.8][unmanaged 3.1][managed 9.1][free 3.0]                          │
-│ Mem  [reserve 5.2][unmanaged 8.7][managed 7.2][guest other 1.0][free 9.4]         │
+┌ Resources ─ Capacity 16.0 cores · 32.0 GiB ──────────── Pressure: Normal ───────┐
+│ CPU  [reserve 2.6][unmanaged 3.1][managed 9.1][free 1.2]                          │
+│ Mem  [reserve 5.2][unmanaged 8.7][managed 7.2][guest other 1.0][free 9.9]         │
 │ Enforcement: CPU shares+cap ✔  Memory commit ✔  PIDs –  I/O observe  Pause ✖     │
 ├ Processes [Managed ▾ Escaped Bypassed Unmanaged Guest VM Shared] [Top 50 ▾] ──────┤
 │ PID   Image          Label      CPU   Mem    Task / Session        Actions       │
@@ -472,7 +472,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 - **Permissions.** HUMAN only. Everything on this page is free and needs no account: pairing, status, placement and cache sharing.
 
 ```
-┌ LAN ─ Listener ON :47820 · 192.168.1.99 · fingerprint 3F9A…  [Disable]          │
+┌ LAN ─ Listener ON :47820 · 192.168.1.20 · fingerprint 3F9A…  [Disable]          │
 │ Peers                                                                            │
 │ buildbox   PAIRED (pinned)  online  8 cores budget · queue 0  [Policy] [Remove]  │
 │ laptop     DISCOVERED       untrusted                          [Pair]            │
@@ -528,8 +528,8 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 ```
 ┌ Policy ─ revision 14 · changed 09:20 by you ─ [Revisions] [Reset section] ──────┐
 │ Resources                                                                        │
-│  Reserved CPU: 1.0 cores + 10 %  (= 2.8 cores)      Reserved memory: 2 GiB + 10 %│
-│  CPU overcommit ×1.5   Memory overcommit ×1.0 (fixed)   Max task memory 26 GiB   │
+│  Reserved CPU: 1.0 cores + 10 %  (= 2.6 cores)      Reserved memory: 2 GiB + 10 %│
+│  CPU overcommit ×1.5   Memory overcommit ×1.0 (fixed)   Max task memory 26.8 GiB │
 │  ☑ Allow unenforced execution when enforcement is unavailable                    │
 │                                     [Validate] [Discard] [Apply revision 15]     │
 └──────────────────────────────────────────────────────────────────────────────────┘

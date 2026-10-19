@@ -11,7 +11,7 @@ AI agents and automation can request operations, but nothing coordinates the ope
 - no reliable execution state: a process that "exists" is assumed to be progressing, and work is lost or repeated when an agent turn ends;
 - no evidence of where time goes. Waiting, contention, retries, repeated verification and stalled commands look identical to useful work.
 
-The 2026-10-11 waiting audit of the previous ArcForges delivery run measured this directly. 56% of agent time was queueing for a single workstation lock, and a third of locked time was duplicated verification. Some checks waited eight minutes of queue for each minute of work, and dead locks held the machine idle for hours in earlier sessions. Details are in ArcForges-Design-Parallel and `C:\MyFile\Projects\ArcForges\.claude\coordinator\waiting-audit-2026-10-11.md`.
+The 2026-10-11 waiting audit of the previous ArcForges delivery run measured this directly. 56% of agent time was queueing for a single workstation lock, and a third of locked time was duplicated verification. Some checks waited eight minutes of queue for each minute of work, and dead locks held the machine idle for hours in earlier sessions. Details are in ArcForges-Design-Parallel; the audit's working notes are not published.
 
 ## 2. Product
 
