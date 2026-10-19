@@ -224,3 +224,57 @@ Restore-related facts add `input_key`, the digest of lock files (`packages.lock.
   - Stale facts are shown with a stale label and are never used silently (R-MEM-002).
   - The first observation after staleness revalidates: the fact resets to the new reservoir if the values differ by more than 50%.
 - **Control.** `MemoryService.ListFacts`, `GetFact`, `ForgetFact` (one fact or a scope prefix) and `QueryFacts` (MCP `memory_query`) (R-MEM-003).
+
+## 4. Direction (roadmap; not release 1): failure diagnosis
+
+Added 2026-10-19 ([AD-0017](../decisions/AD-0017-delegated-execution-direction.md) principle 13; RM-17 and EX-24; [18](18-application-workload-control.md)). §1–§3 bind release 1 unchanged; the delivered termination reasons and their conditions stay. **Effective:** stage a (managed attempts) at RM-17's promotion; owner-placed applications at EX-24 stage b, with RM-18; access denials at EX-24 stage c, with EX-27 stage b and the first confined backend. Every CONFIRMED rule is E4 until gate G44 (LAB2-WIN-07, LAB2-LNX-12, LAB2-X-02, LAB2-X-13); a lab's wrong CONFIRMED withdraws its rule.
+
+**Three axes, never mixed.** A **strength** says how a policy is enforced ([17](17-delegated-execution.md) §3.2). A **verdict** says how strongly evidence ties a failure to a limit ArcForges configured. An **evidence label** says how well a claim is established. "CONFIRMED" is never a strength; "ENFORCED" is never a verdict: an ArcForges stop on a measured storage budget is a GUARDRAIL limit whose diagnosis can be CONFIRMED.
+
+**One schema** (fields of existing record families; no new record family):
+- `verdict` ∈ {CONFIRMED, PROBABLE, CORRELATED, UNRELATED, UNDETERMINED}, defined against **configured** limits. A suspected correlation is PROBABLE ("probably") or CORRELATED ("possibly"); missing evidence is UNDETERMINED, never silently "unrelated".
+- `cause`: configured (`OWN_LIMIT`, `GROUP_LIMIT`, `MANAGED_SHARE`, `NODE_ACTION`, `RUNTIME_DERIVED`, `ACCESS_DENIAL`) or not (`EXTERNAL_LIMIT`, which also covers a limit changed outside ArcForges and a heap the application set itself from a value ArcForges did not give it; `OS_POLICY`; `SYSTEM_EXHAUSTION`), else `NONE_FOUND` or `UNKNOWN`.
+- `resource`; the limit's behaviour; the subject `(pid, start_time)`; `evidence[]` by source class: node-trusted (`NODE_JOURNAL`, `KERNEL_EVENT`, `KERNEL_COUNTER`, `SERVICE_MANAGER`, `PROCESS_HANDLE`), `SAMPLED`, unauthenticated (`OS_LOG`, `APP_OUTPUT`, `APP_REPORT`), and `BASELINE` (it only lowers a verdict); `completeness` COMPLETE or INCOMPLETE(reason); a reference to the realized limit value; a node-computed summary that leads with the cause.
+
+**The limit's behaviour sets the verdict ceiling:**
+
+| Behaviour | Highest verdict, and what it needs |
+|---|---|
+| KILL (Linux `memory.max`; job time limits; signal-delivering rlimits) | CONFIRMED, on a node-trusted record naming the acting level (Linux: the unit's own `oom_kill` with its own `memory.events.local` `oom`; a slice-level kill is CONFIRMED with cause `MANAGED_SHARE`) |
+| REFUSE (Windows commit; `pids.max`; capacity; refusal-type access denials) | CONFIRMED only with three things: a refusal record at the enforced value, a resource-specific exit status read through a held handle, and machine headroom; otherwise PROBABLE |
+| THROTTLE (CPU caps, `MemoryHigh`, bandwidth) and runtime-derived limits | PROBABLE at most: the OS produces no failure, only the program's reaction. An oomd kill after the owner's own `memory.high` is PROBABLE with cause `OS_POLICY`; otherwise UNRELATED |
+| NOTIFY (notification thresholds, trial limits, coordination-only grants, cooperative budgets) | CORRELATED at most |
+| STOP, REFUSE_LAUNCH (ArcForges' own actions) | CONFIRMED from the node's journal, with "node-measured; overshoot possible" |
+| PREFERENCE (weights) | No failure of its own; UNRELATED unless starvation is shown, then CORRELATED at most |
+
+**The rules that can confirm** (the verdict-ceiling rules per OS; their full sets are D2-gf02-vocabulary-22 … -26 and D2-gf05-access-denial-33 in the research record):
+
+| Rule | OS | What it needs |
+|---|---|---|
+| A unit-level kernel kill | Linux | The unit's own `oom_kill` with its own `memory.events.local` `oom` (cause `OWN_LIMIT`); a kill at a group or share level names that level (`GROUP_LIMIT`, `MANAGED_SHARE`) |
+| A signal-delivering rlimit | Linux (macOS as a capability statement) | `SIGXFSZ` or `SIGXCPU`, or `SIGKILL` at the `RLIMIT_CPU` hard limit |
+| The job-limit violation record with the exit evidence | Windows | A refusal record naming the subject at the enforced value, an out-of-memory exit status read through a held handle, and machine headroom; or a job time limit |
+| ArcForges' own action, a storage stop included | All | A node stop or a launch refusal from the node's journal, with the overshoot |
+
+**Cooperative budgets.** A heap limit a cooperating application set from its ArcForges budget or grant, reported over its endpoint with the owner's number or the grant sequence, is a cooperative budget: cause `OWN_LIMIT` (or the grant's level) with `limit_ref` to the owner's realized value, mechanism `self_applied`, shown as application-asserted. Under a soft limit (NOTIFY, THROTTLE) the ceiling is CORRELATED; under a hard limit or an enforced grant, the runtime-derived rule applies (RUNTIME_DERIVED, PROBABLE). An application's report that it called `GC.RefreshMemoryLimit()` after a limit change lifts the runtime-derived rule's condition that the process started under the limit, at PROBABLE (a runtime otherwise keeps the values it read at start).
+
+**Three rules carry most of the honesty.** An application's own report never confirms, alone or combined; a report is content the application sends over an endpoint, writes to its output or writes to a log (`APP_REPORT`, `APP_OUTPUT`, `OS_LOG`). It can support PROBABLE together with a node-trusted item and is shown as "application-asserted". An exit status read through a held handle is a program-chosen signature that counts only together with a kernel refusal record at the enforced value and machine headroom. Missing evidence never becomes "unrelated": a source is required if its absence could hide a configured limit's action or switch the cause between a configured and an unconfigured actor (the completeness principle). A control run or history only lowers a verdict. The Windows Application log is never decisive alone: its access rules are checked per build, and where user or AppContainer code can write it, an entry proves nothing.
+
+**Access denials** use the same schema, with `cause = ACCESS_DENIAL`, `resource = access:<dimension>`, and a per-dimension denial visibility recorded with the realization. **A record proves the denial, not the failure,** so the practical ceiling is PROBABLE; a seccomp `SIGSYS` is PROBABLE at P0, because the workload's own filters kill identically. Confined GUI applications mostly degrade silently, so the honest P0 default is UNDETERMINED, with a static explanation ("this profile denies X") always available and ArcForges' own mediator and launch-refusal records as authoritative sources. Kernel denial records are opt-ins that need privilege (EX-20), with their account-wide exposure stated. **Remedies are never automatic:** the narrowest grant, a mediated channel, or an unconfined run labelled as such, each with its exposure change, decided by a local HUMAN. Learning modes that allow access are rejected.
+
+**Records and findings** (additive): an optional limit diagnosis on the attempt result and on process records, beside the delivered termination reason; a limit-event record kind, with per-member events for services whose helpers fail while the root survives; **compatibility memory**, one local observation per confined attempt keyed by Installation, version anchor, profile digest and backend, shown as derived text ("worked (n runs; escape not excluded)", "denials not visible"), never exported without consent and never a catalogue; finding kinds `FAILURE_DIAGNOSED` (severity by verdict), `LIMIT_REFUSED`, `SANDBOX_DENIED`, `HANDED_OFF_TO_UNMANAGED_INSTANCE`, `RESTART_LOOP` and `APPLICATION_OUTSIDE_PROFILE`; the release-1 finding kind `ENFORCEMENT_DEGRADED` (contract value delivered; the finding specified by AF-DIAG-01) reused with reason `limit_changed_outside`. An automatic "retry with more memory" only for an own-limit failure at CONFIRMED or PROBABLE.
+
+**The read-back cycle.** A limit value is read back at four moments, each recorded: plan (attainable only), verify (after creation and before the workload's first instruction for a launch; after assignment and the descendant sweep for an attach), change (after every resize) and exit. Between them, a mismatch found by sampling raises `ENFORCEMENT_DEGRADED` (`limit_changed_outside`), and the diagnosis treats the outside value as `EXTERNAL_LIMIT`. Against an application working against the owner this detection is itself a GUARDRAIL: same-user code can change and restore a value between samples, which the record states as a gap.
+
+**The diagnosability preview** (a projection of existing fields, not a concept). When the owner confirms a limit, the dialog shows the best verdict that limit can ever yield. The preview is computed per verb, platform, realization (launch or adoption in place) and host; a runtime is named only where already known:
+
+| Verb and platform | Preview line |
+|---|---|
+| "Hard limit at 256 MiB", Linux | "If the system ends the app at this limit, ArcForges can confirm it. Apps whose runtime sizes itself to the limit (.NET, Java) often fail below it, and an app slowed near the limit (from 90 %) or closed by the system's memory-pressure killer reads 'probably' at most." |
+| "Hard limit at 256 MiB", Windows | "Rarely confirmable: only when Windows refused an allocation at this limit, the app then exited with an out-of-memory status, and the machine had memory to spare. Most failures will read 'probably'." |
+| "Slow it down above 256 MiB", Linux | "ArcForges can say 'probably' at most; on this host the system's memory-pressure killer may also close the app." |
+| "Tell me above 256 MiB", either | "This limit never stops the app; ArcForges can only say the app was near it." |
+| "Cap at 0.5 CPU", either | "A CPU cap never ends the app by itself; if the app hangs, times out or its own watchdog ends it, ArcForges can say 'probably' at most ('possibly' on kernels before 6.6). Not available where the CPU controller is not delegated." |
+| A storage stop, either | "ArcForges stops it on its own measurement; it can confirm that it did, and by how much the app overshot." |
+
+Before the labs, the product copy says: *"Most failures will read 'possibly related' or 'cannot tell'; ArcForges says 'confirmed' only when an operating-system record shows the limit acting."* After the labs, the measured share that reads UNDETERMINED is reported per class, never a verdict rate. Verdict sentences lead with the cause: "Messenger closed at its memory limit (confirmed)"; "Not caused by a limit you set in ArcForges: the system ran out of memory".

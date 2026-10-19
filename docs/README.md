@@ -6,7 +6,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 
 1. [Product definition](product/product-definition.md) and [requirements](product/requirements.md)
 2. [Decisions](#decisions) AD-0001 … AD-0017
-3. [Architecture](#architecture) chapters 01–17
+3. [Architecture](#architecture) chapters 01–18
 4. [Contracts](contracts/README.md), [API catalogue](contracts/api-catalogue.md), [errors](contracts/errors.md)
 5. [Data](#data), [state machines](state-machines/README.md), [experience](experience/README.md)
 6. [Reuse and conflicts](#reuse), [verification register](verification/platform-capabilities.md), [traceability](traceability/model.json), [research records](#research)
@@ -37,7 +37,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 | [AD-0014](decisions/AD-0014-delivery-method.md) | Delivery method: serial, distinct evidence, honest acceptance |
 | [AD-0015](decisions/AD-0015-direction-editions-roadmap.md) | Product direction, editions (local and LAN free) and roadmap governance |
 | [AD-0016](decisions/AD-0016-local-first-verification.md) | Local-first verification, owner-only lightweight CI and testing techniques |
-| [AD-0017](decisions/AD-0017-delegated-execution-direction.md) | Long-term direction: delegated execution with verified contracts (principles only; the model is proposed in chapter 17) |
+| [AD-0017](decisions/AD-0017-delegated-execution-direction.md) | Long-term direction: application and workload control with verified contracts (principles only; the model is proposed in chapters 17 and 18) |
 
 ## Architecture
 
@@ -59,7 +59,8 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 | [14](architecture/14-commercial-operations.md) | Commercial operations: plans, lifecycle, support, costs, legal |
 | [15](architecture/15-performance-targets.md) | Performance and footprint targets |
 | [16](architecture/16-testing-strategy.md) | Testing strategy |
-| [17](architecture/17-delegated-execution.md) | Delegated execution with verified contracts (ROADMAP, proposed): the proposed model, the fourteen fields per roadmap row, rejected alternatives, owner decisions |
+| [17](architecture/17-delegated-execution.md) | Verified contracts: access, confinement and lifecycle (ROADMAP, proposed): the access and confinement model, the single truth model, the fourteen fields of its rows, rejected alternatives, owner decisions |
+| [18](architecture/18-application-workload-control.md) | Application and workload control (ROADMAP, proposed): the positioning in the owner's words, owner-directed and cooperative resource control, placement, the per-application record, third-party and first-party applications, the interactive guard, the fourteen fields of EX-24, EX-25, EX-26 and RM-09, owner decisions |
 
 ## Contracts
 
@@ -93,6 +94,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 ## Research
 
 - [research/2026-10-18-delegated-execution/](research/2026-10-18-delegated-execution/README.md): the curated evidence record and lab register of the 2026-10-18 delegated-execution study, behind AD-0017 and chapter 17; roadmap evidence only, not verification-register facts
+- [research/2026-10-19-application-workload-control/](research/2026-10-19-application-workload-control/README.md): the curated evidence record and lab register of the 2026-10-19 vision-correction study, behind AD-0017 as amended and chapters 17 and 18; roadmap evidence only, not verification-register facts
 
 ## Verification and traceability
 

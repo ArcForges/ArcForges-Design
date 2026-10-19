@@ -38,6 +38,8 @@ Requirement: R-PERF-001. Every target names its measurement. "Workstation" means
 
 *Direction (roadmap; not release 1; [AD-0017](../decisions/AD-0017-delegated-execution-direction.md)):* when EX-11 is promoted, the per-execution helper row above will record the Linux per-confined-attempt overhead of `exec-init`, measured in LAB-LNX-19 ([17](17-delegated-execution.md) §15.4); until then "Linux 0 per execution" is unchanged.
 
+*Direction (roadmap; not release 1; [AD-0017](../decisions/AD-0017-delegated-execution-direction.md) principle 9, amended 2026-10-19):* an application-class default will be proposed only within the owner's interactive cost ceilings (`Y-start`, `Y-input`, `Y-frame`, `Y-hang`) on the class's reference applications, measured by the interactive cost measure of [18](18-application-workload-control.md) §15; helpers outside an application stay within 10 MB per application, as the holder row above; each long-lived Windows owner job needs a holder of the size measured above. Until a class default is proposed, this chapter is unchanged.
+
 ## 3. Clients
 
 | Target | Value | Measurement |

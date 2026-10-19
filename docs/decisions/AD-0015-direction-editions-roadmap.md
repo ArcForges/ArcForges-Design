@@ -1,6 +1,6 @@
 # AD-0015 — Product direction, editions and roadmap governance
 
-- Status: Accepted (2026-10-13; the product owner's decisions of that day; amended 2026-10-19 by AD-0017: §1, §2 and §7 gain future-tense direction for delegated execution with verified contracts; §8 and every release-1 statement unchanged)
+- Status: Accepted (2026-10-13; the product owner's decisions of that day; amended 2026-10-19 by AD-0017: §1, §2 and §7 gain future-tense direction for delegated execution with verified contracts; amended 2026-10-19 by AD-0017 as amended: §1, §2 and §7 gain direction for application and workload control; §8 and every release-1 statement unchanged)
 - Amends: [AD-0010](AD-0010-commerce-and-entitlements.md) (feature gating), [AD-0008](AD-0008-lan-trust-and-placement.md) (account trust deferred), [AD-0002](AD-0002-platform-scope.md) (Windows 11 floor confirmed)
 - Related: [product definition](../product/product-definition.md) §5 and §9; the canonical roadmap is [`roadmap.md` in ArcForges/Plan](https://github.com/ArcForges/Plan/blob/main/roadmap.md)
 
@@ -40,6 +40,12 @@ Amended 2026-10-19 by [AD-0017](AD-0017-delegated-execution-direction.md). Each 
 - **§2 gains:** the local and LAN capabilities of this direction will be free, confinement included, and no local default may depend in practice on a Pro remote decision; their remote views and actions stay the cloud offering of §2 ([17](../architecture/17-delegated-execution.md) §5.4, §7.6).
 - **§7 gains:** for this direction, the only release-1 foundations are the release coverage statement's stated limits of 2026-10-19 (the per-client routing statements, the credential sentence, the same-user qualifier and the generic UAC sentence served by `GetReleaseScope`, AF-AI-01; [product definition](../product/product-definition.md) §9). No other interface or data is added to release 1 for it.
 - **§8 is unchanged.**
+
+Amended 2026-10-19 by [AD-0017](AD-0017-delegated-execution-direction.md) as amended. Each item extends the section it names; none replaces it, and none changes release 1. **Effective:** now, as future-tense direction; each capability only when its roadmap row is promoted.
+- **§1 gains:** the long-term direction widens to application and workload control ([AD-0017](AD-0017-delegated-execution-direction.md) principle 1 as amended); the execution side of AI-driven work stated in §1 stays its first workload family, the one release 1 is built for, and no longer defines the product; it covers compatible native application workloads of every kind, owner-directed and cooperative, with per-limit enforcement statements and failure diagnosis ([AD-0017](AD-0017-delegated-execution-direction.md) principle 1; the goals in the owner's words in [18](../architecture/18-application-workload-control.md) §2.4). The objective of §1, useful completion time and reliability, keeps its force for batch work; for interactive work the measure is the interactive cost measure of AD-0017 principle 9 as amended.
+- **§2 gains:** owner-directed application control, the cooperative resource API and its SDK, failure diagnosis and the interactive guard are local capabilities and therefore free; their remote views and leased remote commands are the cloud offering.
+- **§7 gains** (the product owner's decision of 2026-10-19, [18](../architecture/18-application-workload-control.md) §19, decision 26: "None now (Recommended)". The option text read: "Release 1 stays exactly as committed. The fields are considered when application control (EX-25) is promoted."): for this direction no release-1 foundation is added. Optional fields stay additive after an RPC is served, so "cheaper while unserved" does not justify adding adoption resource fields or a per-task CPU cap field to release 1. RM-09's recorded foundations stay as they are; its widening is the owner's decision on an accepted row.
+- **§8 and §9 are unchanged.** An application that uses the cooperative API is not a plugin; nothing of this direction bypasses the core mechanisms.
 
 ## Consequences
 

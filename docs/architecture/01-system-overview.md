@@ -75,6 +75,8 @@ There is no boundary between the node and an unconfined workload: every managed 
 
 *Direction (roadmap; not release 1; [AD-0017](../decisions/AD-0017-delegated-execution-direction.md)):* boundaries B7 … B10 (the node and a confined attempt; sibling attempts; acquired content being parsed; an acquired artifact and the node) apply only when their roadmap rows are promoted; they are proposed in [17](17-delegated-execution.md) §4.2.
 
+*Direction (roadmap; not release 1; [AD-0017](../decisions/AD-0017-delegated-execution-direction.md), amended 2026-10-19):* the application and workload control direction ([18](18-application-workload-control.md)) adds no trust boundary: owner-placed applications and cooperating applications are unconfined same-user workloads, so B0 and the statement above apply to them unchanged; confined applications fall under B7 … B10. AD-0017 boundaries 3.11 … 3.13 (not a secure desktop; not an optimizer; no third-party profile catalogue) bound the direction.
+
 | Data class | Examples | Leaves the node? |
 |---|---|---|
 | D0 Public | Version, OS family, capability flags | Yes (relay summary) |
