@@ -59,6 +59,20 @@ Default permission matrix (policy `permissions`, editable only by `HUMAN`).
 
 **Approvers** must be `HUMAN` (Desktop, interactive CLI), or `REMOTE` through `decide_approval` with step-up and the node policy `remote.allow_approvals=true`. Every privileged or remote action is audited (R-SEC-002).
 
+*Direction (roadmap; not release 1; [AD-0017](../decisions/AD-0017-delegated-execution-direction.md), amended 2026-10-19; [18](18-application-workload-control.md) §7.5, §9):* an application origin and an application client kind (two enum values) carry callers of the cooperative resource API; their classification depends on the connection's client kind being verified against the peer (AF-SEC-01; §1's documented bypasses apply). The proposed rows, additive to the matrix above, take effect with RM-09 stage 1 (cooperative rows), RM-18 (per-application entries and placement) and EX-26 (the interactive mode):
+
+| Operation | HUMAN | SCRIPT | AGENT | APPLICATION (new) | REMOTE | PEER |
+|---|---|---|---|---|---|---|
+| Write a per-application entry; set its placement; set maximums, ceilings, designations, minimum identity strengths; adopt | A | D | D | D | D (view only) | D |
+| Launch an application whose profile asks for owner placement | A | runs in managed placement or is refused | runs in managed placement or is refused | D | `run_task` (high), always managed placement | D |
+| Request, watch, renew, release its **own** grants; declare activity | A | A | A (own session; MCP leg) | A, clamped by the derived identity's policy | D | D |
+| Submit **own** tasks | A | A | A | A, only to pools the owner assigned; priority clamped to the class ceiling | `run_task` (high) | per peer policy |
+| Pause pools, change other policy, decide approvals, clean up, stop the node | as above | as above | as above | **D** | as above | as above |
+| Interactive mode, leased | A | — | — | effects through an owner designation only | a leased toggle (medium, step-up); never freezes | D |
+| Stop a controlled application gracefully | A | P | P | own tasks only | `cancel_task` (medium, step-up), with "unsaved work may be lost" | D |
+
+Every HUMAN-only row stays a GUARDRAIL against same-user code that presents itself as HUMAN or drives the ArcForges Desktop, as this section already says. A remote client may narrow within bounds a local HUMAN authored, for example by revoking a cooperative grant (a `revoke_grant` command kind, medium, with step-up). Every remote change of an owner maximum or placement is denied; remote adoption approval is refused; no remote freeze of an interactive application; terminating a process stays REMOTE D. The new remote command kinds are additive within `v1` at promotion; none is reserved now.
+
 ## 2. Local IPC
 
 - **Windows.**
