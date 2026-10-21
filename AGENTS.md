@@ -45,4 +45,4 @@ This repository is the **design authority** for ArcForges. The delivery plan, le
     - A PRP (`PRP-0001`, …) holds a complete prompt for research that will be performed later.
     - PRP research has higher consideration priority than ordinary `RM-*` and `EX-*` roadmap research: when the owner requests a future research topic, check the PRPs before beginning ordinary roadmap exploration.
     - Saving a PRP does not authorize executing it. A PRP is researched only when the owner explicitly requests it.
-    - A PRP does not supersede delivery authorization (serial delivery, the Plan's delivery graph), accepted decisions, or the canonical roadmap in `ArcForges/Plan` and its governance (AD-0015 §9).
+    - A PRP does not supersede delivery authorization (serial delivery, [AD-0014](docs/decisions/AD-0014-delivery-method.md); the Plan's delivery graph), accepted decisions, or the canonical roadmap in `ArcForges/Plan` and its governance ([AD-0015](docs/decisions/AD-0015-direction-editions-roadmap.md) §9).

@@ -1,10 +1,10 @@
-# PRP-0001 — Network management, plugins and platform positioning
+# PRP-0001 — Network management, plugins and product positioning
 
 - **ID:** PRP-0001
 - **Status:** Saved, not researched
 - **Saved:** 2026-10-21, at the product owner's request
 - **Kind:** architectural research and feasibility study; no implementation and no roadmap promotion
-- **Related:** [AD-0015](../decisions/AD-0015-direction-editions-roadmap.md) (§7 adapters and plugins, §8 extensions, §9 roadmap governance), [AD-0017](../decisions/AD-0017-delegated-execution-direction.md), [AD-0012](../decisions/AD-0012-distribution-and-updates.md), [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md), chapters [17](../architecture/17-delegated-execution.md) and [18](../architecture/18-application-workload-control.md), the canonical [roadmap](https://github.com/ArcForges/Plan/blob/main/roadmap.md)
+- **Related:** [AD-0015](../decisions/AD-0015-direction-editions-roadmap.md) (§7 adapter and plugin foundations (RM-11, EX-01), §8 extensions, §9 roadmap governance), [AD-0017](../decisions/AD-0017-delegated-execution-direction.md), [AD-0012](../decisions/AD-0012-distribution-and-updates.md), [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md), chapters [17](../architecture/17-delegated-execution.md) and [18](../architecture/18-application-workload-control.md), the canonical [roadmap](https://github.com/ArcForges/Plan/blob/main/roadmap.md)
 - **Use:** only when the owner explicitly requests PRP-0001; see [README](README.md). Saving it authorizes neither the research nor any implementation.
 
 ## Prompt

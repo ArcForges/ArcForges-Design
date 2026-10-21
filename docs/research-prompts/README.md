@@ -6,7 +6,7 @@ A Priority Research Prompt is a complete, ready-to-use prompt for research that 
 
 - **Consideration priority.** When the owner asks for future research, the PRPs here are considered before ordinary deferred roadmap research (the `RM-*` and `EX-*` rows of the canonical [roadmap](https://github.com/ArcForges/Plan/blob/main/roadmap.md)).
 - **Saving is not authorization.** A PRP is researched only when the owner explicitly requests it. Saving one authorizes neither its research nor any implementation.
-- **No override.** A PRP does not supersede delivery authorization (the Plan's delivery graph and serial delivery, [AD-0014](../decisions/AD-0014-delivery-method.md)), accepted decisions, or the canonical roadmap and its governance ([AD-0015](../decisions/AD-0015-direction-editions-roadmap.md) §9). It never displaces active implementation work.
+- **No override.** A PRP does not supersede delivery authorization (the Plan's delivery graph and serial delivery, [AD-0014](../decisions/AD-0014-delivery-method.md)), accepted decisions, or the canonical roadmap and its governance ([AD-0015](../decisions/AD-0015-direction-editions-roadmap.md) §9). Saving a PRP does not by itself displace active implementation work.
 - **Outcomes take the normal route.** Research results are recorded like any other study (a record under [research/](../README.md#research)); design changes, new decisions and roadmap changes go through reviewed Design and Plan PRs. Running a PRP never promotes a roadmap item.
 
 ## Naming
@@ -28,6 +28,6 @@ The prompt is not edited after it is saved. A revised prompt is a new PRP that n
 
 ## Index
 
-| ID | Topic | Status |
-|---|---|---|
-| [PRP-0001](PRP-0001-network-plugins-and-platform-positioning.md) | Network management, a general-purpose plugin ecosystem and product positioning | Saved, not researched |
+| ID | Topic |
+|---|---|
+| [PRP-0001](PRP-0001-network-plugins-and-platform-positioning.md) | Network management, a general-purpose plugin ecosystem and product positioning |
