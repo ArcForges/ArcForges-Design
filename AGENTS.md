@@ -23,6 +23,7 @@ This repository is the **design authority** for ArcForges. The delivery plan, le
    - A failure, timeout, missing tool or missing leg record rejects the push and prints the step, the last log lines and the log path. Read the log, fix the cause, push again.
    - Record each leg's `arcforges-verify: LEG PASS` line and the hook's `arcforges-verify: PASS` line in the PR. The reviewer re-runs only checks whose inputs they doubt, or whose tooling the PR changed (AD-0014 §4).
    - AI agents must never use `git push --no-verify` to bypass required validation. They must also never disable, remove, modify, or otherwise circumvent the hooks merely to allow a push.
+   - Only `python eng/verify.py import` brings in another machine's leg, and only the record that `python eng/verify.py run` wrote on that machine at the exact commit: writing, editing or reusing a pass record by hand is circumventing the hooks.
    - If validation fails, investigate and fix the underlying issue.
    - If a required local test cannot run, do not silently skip it or claim successful verification.
    - Changing `eng/verify*.py` or `.githooks/` as reviewed engineering work is allowed; changing them to get a push through is not.
