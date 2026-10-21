@@ -3,8 +3,9 @@
 
 The steps are exactly what .github/workflows/design.yml runs for external PRs: the locked restore of the pinned proto
 toolchain, the design checks with protoc and the warning-free build of the generated C#, and the tool tests. Markdown is
-this repository's source, so every change runs the full profile, on Windows and WSL Debian concurrently (Windows is
-where authors run the checks; Debian matches the Ubuntu runner). actionlint runs only when a workflow changed.
+this repository's source, so every change runs the full profile: the Windows leg on native Windows (where authors run
+the checks) and the Linux leg on native Linux (as the Ubuntu runner), each on its own machine (eng/verify.py; AGENTS.md
+rule 8). actionlint runs only when a workflow changed.
 """
 
 REPOSITORY = "ArcForges-Design"
@@ -12,7 +13,7 @@ REPOSITORY = "ArcForges-Design"
 # Tool versions that key a reusable pass (the python running eng/verify.py is added by the core).
 FINGERPRINT = {
     "win": {"python": ["python", "--version"], "dotnet": ["dotnet", "--version"]},
-    "wsl": {"python": "python --version", "dotnet": "dotnet --version"},
+    "linux": {"python": "python --version", "dotnet": "dotnet --version"},
 }
 
 # The environment of design.yml.
@@ -22,7 +23,8 @@ RESTORE = "dotnet restore tools/proto-toolchain/ProtoToolchain.csproj --locked-m
 CHECK = "python tools/check_design.py --require-protoc --compile"
 TESTS = "python -m unittest discover -s tests -v"
 
-# actionlint as pinned in the product repositories' CI, cached once in WSL; the archive is checked on every run.
+# actionlint as pinned in the product repositories' CI, cached once on the Linux host; the archive is checked on every
+# run.
 ACTIONLINT = (
     "set -euo pipefail; v=1.7.12; "
     "sum=8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8; "
@@ -49,8 +51,8 @@ STEPS = [
     Step("win-restore", "win", RESTORE.split(), timeout=600, env=ENV),
     Step("win-design-check", "win", CHECK.split(), timeout=1200, env=ENV),
     Step("win-tool-tests", "win", TESTS.split(), timeout=600, env=ENV),
-    Step("wsl-restore", "wsl", RESTORE, timeout=600, env=ENV),
-    Step("wsl-design-check", "wsl", CHECK, timeout=1200, env=ENV),
-    Step("wsl-tool-tests", "wsl", TESTS, timeout=600, env=ENV),
-    Step("actionlint", "wsl", ACTIONLINT, timeout=300, lane="actionlint", when=workflows_changed),
+    Step("linux-restore", "linux", RESTORE, timeout=600, env=ENV),
+    Step("linux-design-check", "linux", CHECK, timeout=1200, env=ENV),
+    Step("linux-tool-tests", "linux", TESTS, timeout=600, env=ENV),
+    Step("actionlint", "linux", ACTIONLINT, timeout=300, lane="actionlint", when=workflows_changed),
 ]
