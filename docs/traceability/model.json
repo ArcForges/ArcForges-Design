@@ -28,7 +28,7 @@
         "AF-EXEC-01",
         "AF-EXEC-02"
       ],
-      "verification": "real Windows and WSL2 launch tests (argv, shell, environment, stdin, quoting corpus)"
+      "verification": "real Windows and native Linux launch tests (argv, shell, environment, stdin, quoting corpus)"
     },
     {
       "id": "R-EXE-003",
@@ -41,7 +41,7 @@
         "AF-EXEC-01",
         "AF-EXEC-02"
       ],
-      "verification": "real Windows and WSL2 launch tests (argv, shell, environment, stdin, quoting corpus)"
+      "verification": "real Windows and native Linux launch tests (argv, shell, environment, stdin, quoting corpus)"
     },
     {
       "id": "R-EXE-004",
@@ -53,7 +53,7 @@
       "tasks": [
         "AF-EXEC-01"
       ],
-      "verification": "real Windows and WSL2 launch tests (argv, shell, environment, stdin, quoting corpus)"
+      "verification": "real Windows and native Linux launch tests (argv, shell, environment, stdin, quoting corpus)"
     },
     {
       "id": "R-EXE-005",
@@ -224,7 +224,7 @@
         "AF-NODE-02",
         "AF-EXEC-01"
       ],
-      "verification": "real Windows and WSL2 launch tests (argv, shell, environment, stdin, quoting corpus)"
+      "verification": "real Windows and native Linux launch tests (argv, shell, environment, stdin, quoting corpus)"
     },
     {
       "id": "R-EXE-018",
@@ -275,12 +275,13 @@
       "design": [
         "docs/architecture/03-resource-control.md",
         "docs/decisions/AD-0005-resource-enforcement.md",
+        "docs/decisions/AD-0018-native-platforms-without-wsl-integration.md",
         "docs/contracts/proto/arcforges/node/v1/resources.proto"
       ],
       "tasks": [
         "AF-RES-01"
       ],
-      "verification": "sampler tests against real processes on both platforms"
+      "verification": "sampler tests against real processes on both platforms; test that a Windows-side task invoking wsl.exe is flagged crosses_vm_boundary"
     },
     {
       "id": "R-RES-003",
@@ -343,7 +344,7 @@
         "AF-EXEC-02",
         "AF-SCHED-01"
       ],
-      "verification": "real WSL2 transient-unit limit tests (L-07, L-13, F-L03)"
+      "verification": "real native Linux transient-unit limit tests (L-07, L-13, F-L03)"
     },
     {
       "id": "R-RES-008",
@@ -377,12 +378,13 @@
         "docs/architecture/03-resource-control.md",
         "docs/decisions/AD-0005-resource-enforcement.md",
         "docs/contracts/proto/arcforges/node/v1/resources.proto",
-        "docs/data/node-store.md"
+        "docs/data/node-store.md",
+        "docs/decisions/AD-0018-native-platforms-without-wsl-integration.md"
       ],
       "tasks": [
         "AF-WSL-01"
       ],
-      "verification": "host plus guest closed loop through the real wsl.exe bridge: saturating load with overcommitted demand, acknowledged allocations, link loss with an idle and a busy guest, a guest that goes idle during the outage and then resumes CPU-heavy work, a host restart with an unacknowledged decrease, a terminated and restarted distribution, and node restarts (F-L01, F-L05)"
+      "verification": "Retired by AD-0018; no verification."
     },
     {
       "id": "R-RES-011",
@@ -390,12 +392,13 @@
         "docs/architecture/03-resource-control.md",
         "docs/decisions/AD-0005-resource-enforcement.md",
         "docs/contracts/proto/arcforges/node/v1/resources.proto",
-        "docs/data/node-store.md"
+        "docs/data/node-store.md",
+        "docs/decisions/AD-0018-native-platforms-without-wsl-integration.md"
       ],
       "tasks": [
         "AF-WSL-01"
       ],
-      "verification": "host plus guest closed loop through the real wsl.exe bridge: saturating load with overcommitted demand, acknowledged allocations, link loss with an idle and a busy guest, a guest that goes idle during the outage and then resumes CPU-heavy work, a host restart with an unacknowledged decrease, a terminated and restarted distribution, and node restarts (F-L01, F-L05)"
+      "verification": "Retired by AD-0018; no verification."
     },
     {
       "id": "R-RES-012",

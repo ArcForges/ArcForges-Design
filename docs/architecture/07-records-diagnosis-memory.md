@@ -166,7 +166,7 @@ Finding lifecycle (state machine `SM-FINDING`): `OPEN` → `ACKNOWLEDGED` | `RES
 | `SERVICE_UNREADY` | Service readiness lost for 30 s | warning | Notify; restart (approval) |
 | `ENFORCEMENT_DEGRADED` | Capabilities changed for the worse | error | Notify; show the reason and remedy (for example enable systemd) |
 | `INTEGRATION_DEGRADED` | Hooks disabled or untrusted, probe failed, MCP server not configured | warning | Notify; re-run probe; open the integration page |
-| `GUEST_LINK_LOST` | WSL link down for 30 s; the host keeps the guest's reserved allocation until the guest acknowledges a smaller one or its distribution stops ([03](03-resource-control.md) §6) | warning | Re-link (auto, bounded backoff); notify; show the reserved allocation and how to release it (restore the link, or stop the distribution) |
+| `GUEST_LINK_LOST` (*retired 2026-10-21 by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md): no guest links exist, so this finding is never raised; kept as history*) | WSL link down for 30 s; the host keeps the guest's reserved allocation until the guest acknowledges a smaller one or its distribution stops ([03](03-resource-control.md) §6) | warning | Re-link (auto, bounded backoff); notify; show the reserved allocation and how to release it (restore the link, or stop the distribution) |
 | `PEER_UNREACHABLE` | Paired peer offline while it holds attempts | warning | Wait for the lease; mark LOST at lease end (auto) |
 | `UPDATE_FAILED` | Health check failed and rolled back | error | Notify; keep the previous version |
 
@@ -181,7 +181,6 @@ Policy `diagnosis.actions` maps each `(finding kind, action)` to `AUTO`, `APPROV
 `DiagnosisService.RunDoctor` and `arcforges doctor` run the following checks and return pass, warn or fail with remedies (R-DIAG-004):
 - node health (store integrity, lock, endpoint);
 - enforcement self-test per resource;
-- guest links (WSL: systemd present, user delegation, controllers, bridge reachable);
 - storage (free space, quotas, untracked directories);
 - caches (sizes, configuration);
 - integrations (configuration present, hooks trusted or enabled, probe result per client);

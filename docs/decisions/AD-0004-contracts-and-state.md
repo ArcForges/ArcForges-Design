@@ -1,6 +1,6 @@
 # AD-0004 — Contracts, transports and authoritative state
 
-- Status: Accepted (2026-10-12)
+- Status: Accepted (2026-10-12; amended 2026-10-21 by AD-0018: the host–guest transport and the WSL bridge as a package user are superseded; their v1 wire declarations stay, retired)
 
 ## Decision
 
@@ -14,8 +14,8 @@
 
 | Package | Proto package | Access | Used by |
 |---|---|---|---|
-| `ArcForges.Contracts.Node` | `arcforges.node.v1` | public | node, CLI, Desktop, MCP adapter, WSL bridge, future products |
-| `ArcForges.Contracts.Peer` | `arcforges.peer.v1` | internal | node-to-node (LAN mTLS) and host-to-guest (bridge) |
+| `ArcForges.Contracts.Node` | `arcforges.node.v1` | public | node, CLI, Desktop, MCP adapter, future products (the WSL bridge, listed here until 2026-10-21, is superseded by [AD-0018](AD-0018-native-platforms-without-wsl-integration.md)) |
+| `ArcForges.Contracts.Peer` | `arcforges.peer.v1` | internal | node-to-node (LAN mTLS); host-to-guest (bridge) superseded 2026-10-21 by [AD-0018](AD-0018-native-platforms-without-wsl-integration.md): `GuestLinkService` stays declared but retired |
 | `ArcForges.Contracts.Fleet` | `arcforges.fleet.v1` | public | cloud API for web, Android and nodes (gRPC-Web) |
 | `ArcForges.Contracts.Relay` | `arcforges.relay.v1` | internal | node ↔ relay Durable Object frames, and relay ↔ C# host envelopes |
 
@@ -31,7 +31,7 @@
 | Path | Transport | Authentication |
 |---|---|---|
 | Desktop, CLI, MCP adapter → local node | gRPC over HTTP/2 on a Windows named pipe or a Unix domain socket (DesktopPlatform LocalRpc, adapted) | Same-user peer check (pipe DACL; socket directory mode 0700 and SO_PEERCRED) plus a per-connection client hello naming the client kind |
-| Host node ↔ WSL guest node | gRPC over HTTP/2 on the byte stream of `arcforges bridge wsl` (wsl.exe stdio) → guest Unix socket | Bridge launched by the host user; guest checks the peer uid; link token exchanged at link creation |
+| Host node ↔ WSL guest node (*Superseded 2026-10-21 by [AD-0018](AD-0018-native-platforms-without-wsl-integration.md) (kept as history):* no such path exists; [AD-0018](AD-0018-native-platforms-without-wsl-integration.md) §1) | gRPC over HTTP/2 on the byte stream of `arcforges bridge wsl` (wsl.exe stdio) → guest Unix socket | Bridge launched by the host user; guest checks the peer uid; link token exchanged at link creation |
 | Node ↔ node (LAN) | gRPC over HTTP/2 with mutual TLS 1.3 on TCP | Node certificates pinned by pairing (AD-0008; account-issued certificates are roadmap RM-01) |
 | Web, Android, nodes → cloud API | gRPC-Web over HTTPS through the Worker ingress (existing) | Account session (native bearer or browser cookie with CSRF) or node credential |
 | Node ↔ cloud relay | WebSocket carrying `arcforges.relay.v1` frames to a hibernating Durable Object | Short-lived signed node token (AD-0009) |

@@ -5,7 +5,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 ## Read in this order
 
 1. [Product definition](product/product-definition.md) and [requirements](product/requirements.md)
-2. [Decisions](#decisions) AD-0001 … AD-0017
+2. [Decisions](#decisions) AD-0001 … AD-0018
 3. [Architecture](#architecture) chapters 01–18
 4. [Contracts](contracts/README.md), [API catalogue](contracts/api-catalogue.md), [errors](contracts/errors.md)
 5. [Data](#data), [state machines](state-machines/README.md), [experience](experience/README.md)
@@ -22,10 +22,10 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 | ID | Decision |
 |---|---|
 | [AD-0001](decisions/AD-0001-flagship-pivot.md) | ArcForges becomes the flagship; new authoritative repositories |
-| [AD-0002](decisions/AD-0002-platform-scope.md) | Platform scope: Windows and Linux/WSL2 now; macOS an accepted future execution target (AD-0017, roadmap RM-15), outside the current scope until RM-15 is promoted |
+| [AD-0002](decisions/AD-0002-platform-scope.md) | Platform scope: Windows and Linux now; macOS an accepted future execution target (AD-0017, roadmap RM-15), outside the current scope until RM-15 is promoted |
 | [AD-0003](decisions/AD-0003-architecture-and-runtimes.md) | Components, runtimes and binaries (C#-first) |
 | [AD-0004](decisions/AD-0004-contracts-and-state.md) | Contracts and authoritative state |
-| [AD-0005](decisions/AD-0005-resource-enforcement.md) | Resource enforcement, WSL model and privileges |
+| [AD-0005](decisions/AD-0005-resource-enforcement.md) | Resource enforcement and privileges (WSL model superseded by AD-0018) |
 | [AD-0006](decisions/AD-0006-execution-semantics.md) | Execution semantics: durability, retries, pause, caching |
 | [AD-0007](decisions/AD-0007-ai-integration.md) | AI client integration |
 | [AD-0008](decisions/AD-0008-lan-trust-and-placement.md) | LAN trust and placement |
@@ -38,6 +38,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 | [AD-0015](decisions/AD-0015-direction-editions-roadmap.md) | Product direction, editions (local and LAN free) and roadmap governance |
 | [AD-0016](decisions/AD-0016-local-first-verification.md) | Local-first verification, owner-only lightweight CI and testing techniques |
 | [AD-0017](decisions/AD-0017-delegated-execution-direction.md) | Long-term direction: application and workload control with verified contracts (principles only; the model is proposed in chapters 17 and 18) |
+| [AD-0018](decisions/AD-0018-native-platforms-without-wsl-integration.md) | Native Windows and native Linux, without dedicated WSL integration; local-first verification on native legs |
 
 ## Architecture
 
@@ -45,7 +46,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 |---|---|
 | [01](architecture/01-system-overview.md) | System overview, topologies, boundaries, repository map |
 | [02](architecture/02-node-service.md) | Node service: structure, lifecycle, endpoint, configuration |
-| [03](architecture/03-resource-control.md) | Observation, budgets, admission, enforcement, WSL coordination, pressure |
+| [03](architecture/03-resource-control.md) | Observation, budgets, admission, enforcement, pressure |
 | [04](architecture/04-execution.md) | Task specification, launch, output, attach, cancellation, recovery |
 | [05](architecture/05-toolchains-caches.md) | Toolchains, adapters, caches, compiler servers, LAN cache sharing |
 | [06](architecture/06-storage-workspaces.md) | Managed storage, workspaces, analysis, two-phase cleanup |
@@ -78,7 +79,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 
 ## State machines
 
-- [README](state-machines/README.md) (generated) from [machines.json](state-machines/machines.json): 19 machines
+- [README](state-machines/README.md) (generated) from [machines.json](state-machines/machines.json): 19 machines, one of them (the WSL guest link) retired by AD-0018 and kept as history
 
 ## Experience
 

@@ -1,6 +1,6 @@
 # AD-0003 — Components, runtimes and binaries (C#-first)
 
-- Status: Accepted (2026-10-12; amended 2026-10-19 by AD-0017: direction for §6, effective only when the first roadmap backend row is promoted or an EX row would ship a native unit, and a future-tense note on RM-14 for §1; the current text of §1 and §6 is unchanged)
+- Status: Accepted (2026-10-12; amended 2026-10-19 by AD-0017: direction for §6, effective only when the first roadmap backend row is promoted or an EX row would ship a native unit, and a future-tense note on RM-14 for §1; the current text of §1 and §6 is unchanged; amended 2026-10-21 by AD-0018: the `bridge wsl` role of §1 is superseded, no dedicated Windows–WSL integration)
 - Reaffirms: the C#-first stack of ArcForges-Design-Parallel P2-021 (main `64173614`, `docs/decisions/phase-2-specification-decisions.md#rule-p2-021`) for the new product.
 
 ## Decision
@@ -10,7 +10,7 @@
    - `arcforges <command>`: the CLI ([experience/cli.md](../experience/cli.md)).
    - `arcforges mcp serve`: the MCP adapter (stdio; a local HTTP transport is roadmap RM-05).
    - `arcforges hook <client> <event>`: the AI-client hook handler.
-   - `arcforges bridge wsl`: the host-to-guest byte relay launched through `wsl.exe` (AD-0005).
+   - *Superseded 2026-10-21 by [AD-0018](AD-0018-native-platforms-without-wsl-integration.md) (kept as history):* `arcforges bridge wsl`: the host-to-guest byte relay launched through `wsl.exe` (AD-0005). The role does not exist: there is no guest node to relay to ([AD-0018](AD-0018-native-platforms-without-wsl-integration.md) §1).
    - Internal helper roles, never invoked by users:
      - `arcforges node exec-wrap` (Windows): the attempt's holder outside the job; launches the root process into the job, keeps the job handles until the node acknowledges, and writes the durable exit record with accounting;
      - `arcforges node signal` (Windows): attaches to an attempt's windowless console and sends `CTRL_BREAK_EVENT` (L-18);
@@ -50,7 +50,7 @@
 
 Amended 2026-10-19 by [AD-0017](AD-0017-delegated-execution-direction.md). **§6 is unchanged until the first backend row is promoted:** its current text, "No C/C++ component is required for the node in this scope", binds release 1. The direction for §6, each part with its effective clause:
 - **(a) No first-party native component in the node.** A Native AOT binary links the .NET native runtime, so "ships no non-C# code" would not be literally true; the rule is about components ArcForges writes. **Effective:** when the first backend row (EX-10, EX-11, EX-22 or EX-18) is promoted.
-- **(b) Tools that an isolation backend or helper role depends on** (bwrap, `sandbox-exec`, STRONG backends) will be orchestrated by absolute, probed path, fix-gated where relevant, reported and **never installed**, and each will be listed in the Design inventory of [17](../architecture/17-delegated-execution.md) §9.2. Release-1 orchestration (`wsl.exe`, the per-attempt sccache server, `dotnet` found on PATH) is outside this clause, so no release-1 task gains an obligation from it. Under (b), depending on the distribution's bwrap fits §6. **Effective:** when the first backend row (EX-10, EX-11, EX-22 or EX-18) is promoted.
+- **(b) Tools that an isolation backend or helper role depends on** (bwrap, `sandbox-exec`, STRONG backends) will be orchestrated by absolute, probed path, fix-gated where relevant, reported and **never installed**, and each will be listed in the Design inventory of [17](../architecture/17-delegated-execution.md) §9.2. Release-1 orchestration (the per-attempt sccache server, `dotnet` found on PATH; `wsl.exe` was listed here for the bridge, which is superseded 2026-10-21 by [AD-0018](AD-0018-native-platforms-without-wsl-integration.md)) is outside this clause, so no release-1 task gains an obligation from it. Under (b), depending on the distribution's bwrap fits §6. **Effective:** when the first backend row (EX-10, EX-11, EX-22 or EX-18) is promoted.
 - **(c) An ADR per shipped third-party native unit** will be recorded with the first EX row that would ship one (EX-17's MXC, a WASI host for EX-01, or an RM-14 helper), not now. **Effective:** with that row.
 
 **A note on §1 and RM-14, in the future tense.** §1 (one multi-role binary) stays. The new stages of the direction would be roles of that binary (`exec-init`, `exec-final`, `recover`, `mcp-wrap`, proxy, relay, broker and extractor roles). They will stay roles if `exec-init` fits its measured target in LAB-LNX-19 and the G20 cost legs hold; otherwise RM-14's trigger will be met, before any bwrap-init fallback is considered. macOS helper isolation would need a second signed executable, which §1's one-binary rule for helper roles does not provide for and which RM-14 does not cover today: it would need RM-14's Item widened, or its own row ([17](../architecture/17-delegated-execution.md) §9.1). **Effective:** with EX-11 (the `exec-init` target) and RM-15 (macOS).

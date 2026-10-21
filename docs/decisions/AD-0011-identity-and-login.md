@@ -1,6 +1,6 @@
 # AD-0011 — Identity, sign-in, pairing and credentials
 
-- Status: Accepted (2026-10-12; revised after the independent review the same day: honest reuse statement, scoped phone sessions; amended 2026-10-19 by the current-design corrections: the same-user qualifier for credentials at rest, §4)
+- Status: Accepted (2026-10-12; revised after the independent review the same day: honest reuse statement, scoped phone sessions; amended 2026-10-19 by the current-design corrections: the same-user qualifier for credentials at rest, §4; amended 2026-10-21 by AD-0018: no WSL guest nodes)
 - Reuses: the `arcforges.publicapi.v1` IdentityService and DeviceService contracts, the D1 identity and device schema, and the Cloud Identity domain store (main `92ba1dc9`). The endpoints are new work (AF-ID-01, AF-ID-02), because the baseline serves only `HelloService` (10 §2). Also reuses the native authorization tables `identity_native_authorization` and `identity_browser_auth_flow`, and the historical system-browser PKCE design (ArcForges-Design-Parallel `08-security-architecture.md`, main `64173614`).
 
 ## Decision
@@ -9,7 +9,7 @@
 2. **Desktop and CLI sign-in.**
    - **Default: system browser with PKCE (S256) and a loopback redirect** on `127.0.0.1:<ephemeral>` (RFC 8252 pattern). The node opens the browser, receives the one-use authorization code, and exchanges it for a session plus a device enrollment in one call (`NodeEnrollmentService.CompleteNodeSignIn`).
    - **Fallback: the device authorization grant** (RFC 8628 pattern). The node shows a code, a URL (`arcforges.com/activate`) and a QR. The user approves on any signed-in browser or phone, and the node polls with backoff at the advertised interval.
-   - Both flows end with the node enrolled as a **device installation with product `arcforges-node`**. Each node, including each WSL guest node, is its own device record. The node receives a refresh-capable device credential (scope `node`) and an initial entitlement token.
+   - Both flows end with the node enrolled as a **device installation with product `arcforges-node`**. Each node is its own device record (a Linux node a user runs in WSL2 is an ordinary node; *superseded 2026-10-21 by [AD-0018](AD-0018-native-platforms-without-wsl-integration.md):* "including each WSL guest node"). The node receives a refresh-capable device credential (scope `node`) and an initial entitlement token.
 3. **Android sign-in.** A Custom Tab with PKCE and a verified app link. Alternatively, **QR from a signed-in desktop node**:
    1. The desktop shows a short-lived (120 s), single-use pairing QR.
    2. The phone scans it and requests sign-in.

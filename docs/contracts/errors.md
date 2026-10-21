@@ -63,7 +63,7 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 | `STATE/peer_incompatible` | The peer's protocol range does not overlap | `NEVER` | `DID_NOT_HAPPEN` | `upgrade` |
 | `STATE/peer_unreachable` | The peer did not answer | `AFTER_TIME` | `DID_NOT_HAPPEN` or `UNKNOWN` | — |
 | `STATE/peer_blocked` | Pairing from this node identity is blocked or rate limited | `AFTER_TIME` (1 h) | `DID_NOT_HAPPEN` | — |
-| `STATE/link_down` | The WSL guest link is not connected | `AFTER_TIME` | `DID_NOT_HAPPEN` | — |
+| `STATE/link_down` | (retired, [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md)) The WSL guest link is not connected; never returned | `AFTER_TIME` | `DID_NOT_HAPPEN` | — |
 | `STATE/update_in_progress` | An update switch is running | `AFTER_TIME` | `DID_NOT_HAPPEN` | — |
 | `STATE/managed_externally` | Updates are managed by a package manager | `NEVER` | `DID_NOT_HAPPEN` | — |
 | `STATE/not_activated` | The feature is deployed but not yet activated in production ([10](../architecture/10-cloud.md) §8) | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = surface |

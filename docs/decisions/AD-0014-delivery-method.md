@@ -1,6 +1,6 @@
 # AD-0014 — Delivery method: serial development, distinct evidence, honest acceptance
 
-- Status: Accepted (2026-10-12; revised the same day after the independent review: `blocked` state and real dependencies, so one blocked task cannot stall the plan; revised 2026-10-13 after the findings review: production activation separate from delivery; continuous serial execution once authorized; amended 2026-10-16 by [AD-0016](AD-0016-local-first-verification.md): the hosted-CI merge gate applies to external PRs; amended 2026-10-17 by AD-0016: the isolated secret-store backend in §6)
+- Status: Accepted (2026-10-12; revised the same day after the independent review: `blocked` state and real dependencies, so one blocked task cannot stall the plan; revised 2026-10-13 after the findings review: production activation separate from delivery; continuous serial execution once authorized; amended 2026-10-16 by [AD-0016](AD-0016-local-first-verification.md): the hosted-CI merge gate applies to external PRs; amended 2026-10-17 by AD-0016: the isolated secret-store backend in §6; amended 2026-10-21 by AD-0018: real Linux tests run on a native Linux host, not WSL2)
 - Supersedes for active development:
   - the parallel delivery model of ArcForges-Design-Parallel (P2-018, DLV-25, DLV-31 build slot, DLV-42 coordinator capacity) and of Plan-Parallel `execution-policy.md`, `single-task-command.md` and `arcforges-implementation.md`;
   - the launcher instruction to "use up to 10 concurrent subagents";
@@ -16,13 +16,13 @@
 
 | Role | Runs | Never |
 |---|---|---|
-| Author | Targeted unit and integration tests for the change, the affected real Windows/WSL2 tests, build and AOT publish of the affected components, format and analyzers. It records exact commands and results in the PR. | Skips tests it changed or that cover changed code |
+| Author | Targeted unit and integration tests for the change, the affected real Windows and Linux tests, build and AOT publish of the affected components, format and analyzers. It records exact commands and results in the PR. | Skips tests it changed or that cover changed code |
 | Independent reviewer (one session, after the author) | Reads the complete diff at the exact head and checks it against the task's design references and acceptance criteria. Re-runs locally only what gives **distinct** evidence: a test the reviewer doubts, a check whose script or workflow the PR changed, or a real-environment test the author could not run. | Re-runs the author's identical full suite on the same unchanged head |
 | Hosted CI | Full build, unit and contract tests, AOT publish per RID, packaging, security scans | GUI, device, browser-E2E, live-service and inference jobs (local opt-in only) |
 | Coordinator | Push, PR, review record, CI watch, merge at the reviewed head, publication or deployment check, ledger | Duplicates any of the above |
 
    Re-review after changes covers the delta only, unless the delta changes build or test infrastructure.
-5. **Fast local feedback.** Authors run real tests on the workstation (Windows and WSL2) for everyday feedback and do not wait on hosted CI for it. Hosted CI is the merge gate for the platform-independent gates.
+5. **Fast local feedback.** Authors run real Windows tests on the workstation and real Linux tests on a native Linux host ([AD-0018](AD-0018-native-platforms-without-wsl-integration.md) §5) for everyday feedback and do not wait on hosted CI for it. Hosted CI is the merge gate for the platform-independent gates.
 
    > **Amendment (2026-10-16, [AD-0016](AD-0016-local-first-verification.md)).** The "Hosted CI" row of §4 and "hosted CI is the merge gate" now apply to external PRs (any author other than `deku2026`, Dependabot included). The owner's PRs are gated by the repository-managed pre-push verification at the pushed head plus the independent review, and run no hosted validation.
 6. **Fakes only at unavailable boundaries.** Closed-loop automated tests may fake:

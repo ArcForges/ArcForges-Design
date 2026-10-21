@@ -53,12 +53,11 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 │ Reserved for you: 2.6 cores, 5.2 GiB (change later in Policy)      │
 │ Enforcement:  CPU ✔ shares and cap   Memory ✔ commit limit         │
 │               Pause ✖ not supported on Windows (why?)              │
-│ WSL: Debian ✔ guest node linked                                    │
 │                                    [Back]  [Skip setup]  [Next]  │
 └────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Data:** `NodeService.GetCapabilities`, `ResourceService.GetResourceSnapshot`, `ResourceService.ListGuestLinks`, `IntegrationService.ListClients`, `AccountService.GetAccountStatus`.
+- **Data:** `NodeService.GetCapabilities`, `ResourceService.GetResourceSnapshot`, `IntegrationService.ListClients`, `AccountService.GetAccountStatus`.
 - **Actions:**
   - Account step → **Sign in** (`AccountService.BeginSignIn`) or Skip.
   - AI clients step → **Plan** (`IntegrationService.PlanIntegration`), which shows the diff, then **Apply** (`ApplyIntegration`; the user must review the diff first).
@@ -220,32 +219,29 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 
 ## D-05 Resources
 
-- **Purpose.** Capacity, reservations, unmanaged load, budgets, pressure, process classification, guests and adoption.
+- **Purpose.** Capacity, reservations, unmanaged load, budgets, pressure, process classification and adoption.
 - **Permissions.** HUMAN (adoption is HUMAN only).
 
 ```
 ┌ Resources ─ Capacity 16.0 cores · 32.0 GiB ──────────── Pressure: Normal ───────┐
 │ CPU  [reserve 2.6][unmanaged 3.1][managed 9.1][free 1.2]                          │
-│ Mem  [reserve 5.2][unmanaged 8.7][managed 7.2][guest other 1.0][free 9.9]         │
+│ Mem  [reserve 5.2][unmanaged 9.7][managed 7.2][free 9.9]                          │
 │ Enforcement: CPU shares+cap ✔  Memory commit ✔  PIDs –  I/O observe  Pause ✖     │
 ├ Processes [Managed ▾ Escaped Bypassed Unmanaged Guest VM Shared] [Top 50 ▾] ──────┤
 │ PID   Image          Label      CPU   Mem    Task / Session        Actions       │
 │ 9921  cl.exe         MANAGED    1.0   0.3G   dotnet build · a1                  │
 │ 7720  node.exe       BYPASSED   2.2   1.1G   session Codex·7f      [Terminate]  │
-│ 5512  vmmemWSL       GUEST_VM   1.5   4.0G   Debian (linked)                    │
+│ 5512  vmmemWSL       GUEST_VM   1.5   4.0G   WSL VM (unmanaged)                 │
 │ 1200  Code.exe       UNMANAGED  0.4   0.8G   –                     [Adopt]      │
-├ WSL guests ─ Debian: LINKED · CPU 3.1 cores · Mem 6.0 GiB · lease 10:46 ────────┤
-│ Standalone if the link is lost: 3.1 cores · 5.4 GiB (≤ allocation; ≤ 25% budget) │
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Data:** `ResourceService.GetResourceSnapshot`, `WatchResources` (5 s), `ListProcesses(filter)`, `ListGuestLinks`; topics RESOURCES and GUESTS.
+- **Data:** `ResourceService.GetResourceSnapshot`, `WatchResources` (5 s), `ListProcesses(filter)`; topic RESOURCES.
 - **Actions:**
   - **Adopt** (`AdoptProcess`): confirmation "Place <image> (PID) and its children under ArcForges control in pool default?"
   - **Terminate** (`TerminateProcess`): confirmation naming the process and its classification. Only for MANAGED, ESCAPED, BYPASSED and leftover processes.
-  - **Guest link** enable, disable and re-link (`SetGuestLink`).
 - **Memory guarantees.** An info panel states what holds on this platform ([03](../architecture/03-resource-control.md) §5.4): admission keeps accounted memory within the budget; Linux enforces hard per-attempt and root limits; Windows bounds commit only; the pressure response defends the reserve but cannot guarantee it.
-- **WSL guests.** Each linked guest shows its current acknowledged allocation, the lease end and the standalone allocation, which is never larger than the acknowledged allocation. A lost link shows `GUEST_LINK_LOST`, the allocation still reserved for the guest, and the two ways to release it: restore the link, or stop the distribution ([03](../architecture/03-resource-control.md) §6).
+- **WSL VM.** On Windows the WSL VM is one `GUEST_VM` consumer, counted in unmanaged load and never shown as controlled; a task that runs `wsl.exe` is marked as crossing the VM boundary, and the Linux processes it starts are not presented as controlled ([AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) §2). There is no WSL guest panel: a Linux node a user runs in WSL2 is a separate node.
 - **States:** S-EMPTY for a filter; "Observation only" banner when the capability is OBSERVE_ONLY, with the reason.
 - **Accessibility.** The stacked bars have text and table equivalents, and the process table is sortable by keyboard (`Enter` on a column header).
 
@@ -440,7 +436,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 ```
 ┌ Integrations ───────────────────────────────────────────────────────────────────┐
 │ Claude Code 2.x  ✔ detected   State: CONFIGURED (user scope)  Routing: rewrite   │
-│   Probe: windows/git-bash PASS · wsl:Debian PASS     [Run probe] [Remove]        │
+│   Probe: windows/git-bash PASS     [Run probe] [Remove]                          │
 │ Codex 0.x        ✔ detected   State: DEGRADED — hooks untrusted                  │
 │   Fix: run /hooks in Codex and trust ArcForges hooks   [Re-check]                │
 ├ Plan (Claude Code, user scope) ──────────────────────────────────────────────────┤
@@ -578,7 +574,7 @@ Architecture: [12](../architecture/12-client-applications.md) §2. Template and 
 
 ```
 ┌ Diagnostics ─ [Run doctor] ─ Overall: WARN ──────────────────────────────────────┐
-│ ✔ node.store  ✔ enforcement.cpu  ⚠ guest.debian.systemd lingering off (remedy…)  │
+│ ✔ node.store  ✔ enforcement.cpu  ⚠ integrations.codex probe not run (remedy…)    │
 │ Reports: [Waste ▾ last 7 days] [Capacity] [Cache] [Disk]    [Export records…]    │
 ├ Support bundle ──────────────────────────────────────────────────────────────────┤
 │ [Create bundle]  bundle 2c… READY 3.4 MiB · 14 files · 212 redactions [Review]   │

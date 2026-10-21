@@ -13,31 +13,33 @@ Units: CPU in **millicores** (1,000 = one logical processor fully busy), memory 
 | Process list | `CreateToolhelp32Snapshot` (pid, ppid, exe) | `/proc/[pid]/stat` (ppid, comm, starttime) | 5 s |
 | Process detail (managed trees, agent trees, top 20 CPU and memory) | `GetProcessTimes`, `GetProcessMemoryInfo` (private bytes, working set), `GetProcessIoCounters`; `PROCESS_QUERY_LIMITED_INFORMATION` | `/proc/[pid]/{stat,status,io}` | 1 s (managed), 5 s (others) |
 | Managed execution totals | `QueryInformationJobObject` (`JobObjectBasicAndIoAccountingInformation`, `JobObjectBasicProcessIdList`, extended limit peak commit) | cgroup `cpu.stat`, `memory.current`, `memory.peak`, `memory.events`, `io.stat`, `pids.current`, `cgroup.events` | 1 s |
-| WSL VM consumer (host only) | The VM worker process (vmmem/vmmemWSL; A-L01): CPU time and private working set | n/a | 5 s |
+| WSL VM consumer (Windows node) | The VM worker process (vmmem/vmmemWSL; A-L01): CPU time and private working set; one `GUEST_VM` consumer, part of unmanaged load (§2, §9) | n/a | 5 s |
 
 Process identity is `(pid, start_time)`, never pid alone. Samples are stored per execution at 1 s resolution for its lifetime and downsampled to 10 s after completion. Machine samples are kept at 5 s for 24 h, then 1 min for 30 days, then dropped (R-RES-001, R-REC-005).
 
 ## 2. Capacity, headroom and budgets
 
-For each node (host or guest):
+For each node:
 
 ```
-C_cpu  = logical processors × 1000                      (guest: nproc inside the VM)
-C_mem  = physical memory                                (guest: MemTotal)
+C_cpu  = logical processors × 1000
+C_mem  = physical memory
 R_cpu  = reserve_cpu_fixed + reserve_cpu_fraction × C_cpu      default 1000 + 0.10 × C_cpu
 R_mem  = reserve_mem_fixed + reserve_mem_fraction × C_mem      default 2 GiB + 0.10 × C_mem
-U_cpu  = smoothed(total_cpu − managed_cpu − node_self_cpu − vm_consumer_cpu)
-U_mem  = smoothed(used_mem − managed_mem − node_self_mem − vm_consumer_mem)
+U_cpu  = smoothed(total_cpu − managed_cpu − node_self_cpu)
+U_mem  = smoothed(used_mem − managed_mem − node_self_mem)
          where used_mem = C_mem − available_mem
-B_cpu  = max(min_managed_cpu, C_cpu − R_cpu − U_cpu − guest_other_cpu)    min_managed_cpu default 1000
-B_mem  = max(0, C_mem − R_mem − U_mem − guest_other_mem)
+B_cpu  = max(min_managed_cpu, C_cpu − R_cpu − U_cpu)    min_managed_cpu default 1000
+B_mem  = max(0, C_mem − R_mem − U_mem)
 ```
 
 For example, on a host with 16 logical processors and 32 GiB the defaults give `R_cpu = 2600` and `R_mem = 5.2 GiB`. The workstation's own capacity is in L-01.
 
 **Smoothing.** Smoothing is asymmetric so the user's own load is respected quickly and released slowly. `x_t = x_{t−1} + α·(sample − x_{t−1})` with `α_up = 0.5` when the sample rises and `α_down = 0.1` when it falls, evaluated every 1 s.
 
-**Guest terms (host only).**
+**The WSL VM** (amended 2026-10-21 by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) §2). On a Windows node the WSL VM is observed like any other virtual machine: its worker process (§1) is one consumer labelled `GUEST_VM` (§9) and is part of `U`, never summed from guest-internal processes. A Linux node a user runs inside a WSL2 distribution computes its own capacity and budgets from what the VM exposes, like any Linux node, independently of the Windows node.
+
+*Superseded 2026-10-21 by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) (kept as history):* the formulas above carried guest terms: a guest's `C_cpu` and `C_mem` were `nproc` and `MemTotal` inside the VM, `U_*` subtracted `vm_consumer_*`, and `B_*` subtracted `guest_other_*`. The former **guest terms (host only)** were:
 - `vm_consumer_*` is the measured usage of the WSL VM.
 - `guest_other_* = max(0, vm_consumer_* − Σ guest-reported managed usage)` is in-VM load that no guest manages.
 - While a link is lost, guest-reported usage is unknown. The host then uses `guest_other_* = max(0, vm_consumer_* − reserved guest allocation)` (§6), so the reservation and the measured VM load are never counted twice.
@@ -79,12 +81,12 @@ Each attempt carries `request = {cpu_demand, mem_expected, mem_ceiling, source}`
 
 ### Algorithm
 
-The scheduler runs on events (submit, exit, grant release, budget change) and at least every 2 s.
+The scheduler runs on events (submit, exit, budget change) and at least every 2 s.
 
 ```
 max_share_mem   = C_mem − R_mem                                   (the most managed work may ever use)
-idle_budget_mem = C_mem − R_mem − U_mem − guest_other_mem          (B_mem with no managed work)
-avail_mem = B_mem − Σ accounted_mem(running attempts and outstanding guest grants)
+idle_budget_mem = C_mem − R_mem − U_mem                            (B_mem with no managed work)
+avail_mem = B_mem − Σ accounted_mem(running attempts)
 cpu_load  = Σ cpu_granted(running) ;  cpu_limit = overcommit_cpu × B_cpu      (overcommit_cpu default 1.5)
 for pool in pools in weighted round-robin order:
   for t in pool.queue ordered as above:
@@ -100,6 +102,8 @@ for pool in pools in weighted round-robin order:
         continue
     grant(t, r, cpu = c); start(t); avail_mem −= r.mem_expected; cpu_load += c
 ```
+
+*Amended 2026-10-21 by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md):* the guest terms are removed from the algorithm. Until then `idle_budget_mem` subtracted `guest_other_mem`, `avail_mem` also counted outstanding guest grants, and a guest grant release was a scheduler event.
 
 **Memory is never overcommitted at admission** (`overcommit_mem = 1.0`, R-RES-005): the sum of accounted memory never exceeds `B_mem` when an attempt is admitted. CPU can be overcommitted because weights share it without harming the reserved headroom: the root cap protects that headroom (§5). What holds after admission is stated in §5.4.
 
@@ -164,7 +168,7 @@ Concurrent tasks in one workspace can overwrite each other's files (the `obj/` a
 | Memory | `JobMemoryLimit = commit_factor × (C_mem − R_mem)` (commit_factor default 1.5; a bound on committed virtual memory, V-W05); notification limit at `B_mem` | `MemoryHigh = B_mem` (soft: reclaim and throttling), `MemoryMax = C_mem − R_mem` (hard), `MemorySwapMax = swap_allowance` (default 0) |
 | Processes | none | `TasksMax = 32768` |
 
-Root limits are updated when `B` changes by more than 5% of capacity, at most every 10 s (hysteresis). While WSL guests are linked, the host's root CPU cap is its share `H_cpu` of the enforceable budget and its memory limits exclude the memory granted to guests (§6). On Linux every limit is set through the user manager's D-Bus API (`SetUnitProperties`, runtime only), never by writing cgroup files the manager owns. Statistics are read directly from the unit cgroups ([AD-0005](../decisions/AD-0005-resource-enforcement.md) Linux §2; L-13).
+Root limits are updated when `B` changes by more than 5% of capacity, at most every 10 s (hysteresis). *Superseded 2026-10-21 by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) (kept as history):* "While WSL guests are linked, the host's root CPU cap is its share `H_cpu` of the enforceable budget and its memory limits exclude the memory granted to guests (§6)." There are no guest links; the root limits follow `B` alone. On Linux every limit is set through the user manager's D-Bus API (`SetUnitProperties`, runtime only), never by writing cgroup files the manager owns. Statistics are read directly from the unit cgroups ([AD-0005](../decisions/AD-0005-resource-enforcement.md) Linux §2; L-13).
 
 ### 5.2 Attempt containers
 
@@ -188,7 +192,7 @@ The reserve `R_mem` is protected in four layers. Each states exactly what it gua
 
 | Layer | Guarantee | Linux | Windows |
 |---|---|---|---|
-| Admission | When an attempt starts, the accounted memory of all running attempts and guest grants is at most `B_mem`. | Same | Same |
+| Admission | When an attempt starts, the accounted memory of all running attempts is at most `B_mem` (guest grants, formerly counted here, are retired by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md)). | Same | Same |
 | Hard containment of managed work | Managed work can never use more than the managed share. | **Hard:** the slice's `MemoryMax = C_mem − R_mem` covers resident memory including page cache, and `MemorySwapMax` (default 0) stops managed work from pushing into swap. Exceeding it means reclaim, then an OOM kill inside the slice only. | **Commit bound only:** the root job's commit limit bounds committed virtual memory at `commit_factor × (C_mem − R_mem)`. Windows offers no unprivileged hard cap on a job's physical memory (V-W05), so physical use is defended by the monitor layer. |
 | Per-attempt ceilings | One runaway attempt is stopped at its own ceiling. | `MemoryMax = mem_ceiling` | Commit limit `commit_factor × mem_ceiling` |
 | Pressure response | Unmanaged growth after admission, and managed growth below the hard bounds, are **defended, not guaranteed**: they are detected within 1 s sampling plus 5 s persistence, and acted on at once (§7). | `MemoryHigh = B_mem` shrinks with `B_mem` and forces reclaim; freezing and cancellation of preemptible attempts | Cancellation of preemptible attempts; admission stops |
@@ -201,6 +205,8 @@ Consequences stated plainly:
 - The tests cover the Linux hard bound under saturating managed load (AF-EXEC-02), the Windows commit bound (AF-EXEC-01), the pressure response to a synthetic unmanaged allocator on both platforms (AF-RES-01), and admission under the standard load (AF-SCHED-01).
 
 ## 6. WSL host–guest coordination
+
+**Superseded 2026-10-21 by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md)** (kept as history; its successor is [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) §1–§2). Nothing in this section is designed, implemented or claimed: there is no guest node, guest link, grant, shared queue, lease, reservation or boot marker. A Windows node and a Linux node a user runs in a WSL2 distribution budget independently; the Windows node counts the WSL VM as one `GUEST_VM` consumer in unmanaged load (§2, §9). The wire surfaces named below stay declared in v1 but are retired ([AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) §3), the node-store tables `guest_link` and `host_link` are never written, and the state machine SM-GUEST-LINK is retired. The former text follows.
 
 1. **Grant request.** While a guest link is up, the guest asks for a grant before admitting each attempt. It sends a `GrantRequest` frame on the link stream the host opened (`GuestLinkService.OpenLink`), because the host is the gRPC client of the guest over the bridge.
 2. **Fair queueing.** The host enqueues the request as a **guest proxy task** in its own scheduler, so it competes fairly with host tasks.
@@ -273,7 +279,7 @@ Each value carries the reason (for example "user manager has no cpu delegation")
 | `ESCAPED` | A process outside an attempt's container whose recorded ancestry passes through a member of that container | Ancestry scan of exited and running processes |
 | `BYPASSED` | Descendant of a registered agent process, not managed, above the policy thresholds (`routing.bypass_cpu_threshold_millicores`, default 1,000 for 10 s, or `routing.bypass_mem_threshold_bytes`, default 1 GiB) | Session process roots ([08](08-ai-integration.md)) |
 | `UNMANAGED` | Everything else | — |
-| `GUEST_VM` | The WSL VM consumer on the host | VM worker identification |
+| `GUEST_VM` | The WSL VM (or another VM) worker on a Windows node: one unmanaged consumer, never controlled. A Windows task that runs `wsl.exe` or another launcher into a VM is flagged `crosses_vm_boundary`; the Linux processes it starts are never presented as controlled ([AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) §2) | VM worker identification |
 
 Only `MANAGED` and `ADOPTED` processes are ever controlled (R-RES-002).
 
@@ -288,15 +294,17 @@ Added 2026-10-19 ([AD-0017](../decisions/AD-0017-delegated-execution-direction.m
 
   ```
   managed_* = Σ usage of managed-placement attempts                                    (scope narrowed)
-  U_*       = smoothed(total − managed − node_self − vm_consumer − Σ_r u_r)           (requesters leave U inside the smoothing)
+  U_*       = smoothed(total − managed − node_self − Σ_r u_r)                        (requesters leave U inside the smoothing)
   U_owner_* = smoothed(Σ owner-placed containers, launched or adopted, without a live grant)  (a reported part of U, not removed from it)
   K_mem     = presence_mem + Σ_r max(granted_mem_r, peak_observed_mem_r)              (r = live grants outside managed placement)
   K_cpu     = presence_cpu + Σ_r max(granted_cpu_r, ũ_cpu_r)
-  B_*       = max(floor, C − R − U − guest_other − K)
+  B_*       = max(floor, C − R − U − K)
   ```
 
-  `K` is the hold term. `peak_observed_mem_r` is the requester's peak (§3's measure) held while the grant lives, whose duration is clamped by policy; `ũ_cpu_r` is the requester's CPU smoothed with §2's asymmetric alpha, never a peak. `granted_r` is the amount of the grant itself, never the owner's cap; for an owner-placed requester its base is the owner's own values. Adopted release-1 containers stay in `managed_*` (root-first adoption, §9). Owner applications count once, in `U`; their caps are shown, never reserved (§3). `R_mem` is unchanged. The presence term is the largest live presence cap, never a sum. **With WSL guests linked, §6's host share is still `H_cpu = B_cpu − G_cpu`, computed from the `B_cpu` that already subtracts `K_cpu`; `K` and `H_cpu` are different quantities.** `K` lowers admission, the root CPU cap through `B_cpu`, `MemoryHigh` and the Windows root notification limit; it never lowers the slice's `MemoryMax` or the root's hard commit limit, which follow `C − R` (§5.1, §5.4), so a presence or a grant never causes an OOM kill or a commit failure at ArcForges' own hard bounds. It can slow running work, and a wall-clock timeout may then fire. On Linux hosts where systemd-oomd watches user units (Ubuntu 22.04 and 24.04 desktops: `user@` at 50 % for 20 s; Fedora: every user slice, `arcforges.slice` included, at 80 %), lowering the slice's `MemoryHigh` below managed use raises memory pressure that may lead oomd to end an attempt regardless of its limits (E4; D2-lnx-resource-16; LAB2-LNX-06). A grant to an attempt in managed placement needs no hold: it resizes that attempt's request and enters `accounted_mem` as today. **Grant transients:** at a grant's start the requester's current usage moves from `U`'s smoothed state into `K`, and at its end back (a state transfer), so the same memory is neither counted twice at the start nor missed at the end. A form that subtracts a separately smoothed usage from each grant is rejected: §2's smoothing is asymmetric, so that form under-counts in the unsafe direction. LAB2-X-04's crossover leg (gate G43), with its CPU leg and both grant ends, tests that `K` never under-counts beyond §2's accepted rise lag.
-- **Admission.** The cooperative clamp `granted ≤ min(request, per-application maximum, aggregate cap left, B)` is the owner-maximum bound; admission is a separate rule. *Memory:* a grant, a resize or a hold is admitted only if, afterwards, the accounted memory of running attempts and outstanding guest grants (the requester's own usage moved out of `U` inside the smoothing, so that it is counted once) is at most `B_mem`, computed with every live hold, the new one included, in `K_mem` (so `avail_mem ≥ 0`, and a hold is counted once); otherwise the answer is DEFERRED, `exceeds_budget` or `exceeds_capacity` (§4). A resize that raises `mem_expected` is an admission event. Memory is granted in part only within `avail_mem`. *CPU:* clamped to `B_cpu` and counted in `cpu_load ≤ overcommit_cpu × B_cpu`; a partial grant is allowed. `idle_budget_mem = C_mem − R_mem − U_mem − guest_other_mem − K_mem`; a task that fits only without `K` is `exceeds_budget`, never reserves, and a reservation lapses when `K` makes its task `exceeds_budget`. A no-wait request and a resize of a running attempt are decided in one pass of §4's loop at the entry's effective class and owner key, under §7's admission restrictions (Tight admits only INTERACTIVE). They are granted only if such an entry would be admitted now and would not delay an active large-task reservation; otherwise the answer is DEFERRED. **The aggregate cap** is `coop_fraction × B_pre-hold`, where the owner sets `coop_fraction` and `B_pre-hold` is `B` computed without cooperative holds.
+  *Amended 2026-10-21 by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md):* the guest terms are removed from this accounting (formerly `− vm_consumer` in `U_*`, `− guest_other` in `B_*` and `idle_budget_mem`, and outstanding guest grants in admission); the WSL VM is part of `U`.
+
+  `K` is the hold term. `peak_observed_mem_r` is the requester's peak (§3's measure) held while the grant lives, whose duration is clamped by policy; `ũ_cpu_r` is the requester's CPU smoothed with §2's asymmetric alpha, never a peak. `granted_r` is the amount of the grant itself, never the owner's cap; for an owner-placed requester its base is the owner's own values. Adopted release-1 containers stay in `managed_*` (root-first adoption, §9). Owner applications count once, in `U`; their caps are shown, never reserved (§3). `R_mem` is unchanged. The presence term is the largest live presence cap, never a sum. *Superseded 2026-10-21 by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) (kept as history):* "With WSL guests linked, §6's host share is still `H_cpu = B_cpu − G_cpu`, computed from the `B_cpu` that already subtracts `K_cpu`; `K` and `H_cpu` are different quantities." `K` lowers admission, the root CPU cap through `B_cpu`, `MemoryHigh` and the Windows root notification limit; it never lowers the slice's `MemoryMax` or the root's hard commit limit, which follow `C − R` (§5.1, §5.4), so a presence or a grant never causes an OOM kill or a commit failure at ArcForges' own hard bounds. It can slow running work, and a wall-clock timeout may then fire. On Linux hosts where systemd-oomd watches user units (Ubuntu 22.04 and 24.04 desktops: `user@` at 50 % for 20 s; Fedora: every user slice, `arcforges.slice` included, at 80 %), lowering the slice's `MemoryHigh` below managed use raises memory pressure that may lead oomd to end an attempt regardless of its limits (E4; D2-lnx-resource-16; LAB2-LNX-06). A grant to an attempt in managed placement needs no hold: it resizes that attempt's request and enters `accounted_mem` as today. **Grant transients:** at a grant's start the requester's current usage moves from `U`'s smoothed state into `K`, and at its end back (a state transfer), so the same memory is neither counted twice at the start nor missed at the end. A form that subtracts a separately smoothed usage from each grant is rejected: §2's smoothing is asymmetric, so that form under-counts in the unsafe direction. LAB2-X-04's crossover leg (gate G43), with its CPU leg and both grant ends, tests that `K` never under-counts beyond §2's accepted rise lag.
+- **Admission.** The cooperative clamp `granted ≤ min(request, per-application maximum, aggregate cap left, B)` is the owner-maximum bound; admission is a separate rule. *Memory:* a grant, a resize or a hold is admitted only if, afterwards, the accounted memory of running attempts (the requester's own usage moved out of `U` inside the smoothing, so that it is counted once) is at most `B_mem`, computed with every live hold, the new one included, in `K_mem` (so `avail_mem ≥ 0`, and a hold is counted once); otherwise the answer is DEFERRED, `exceeds_budget` or `exceeds_capacity` (§4). A resize that raises `mem_expected` is an admission event. Memory is granted in part only within `avail_mem`. *CPU:* clamped to `B_cpu` and counted in `cpu_load ≤ overcommit_cpu × B_cpu`; a partial grant is allowed. `idle_budget_mem = C_mem − R_mem − U_mem − K_mem`; a task that fits only without `K` is `exceeds_budget`, never reserves, and a reservation lapses when `K` makes its task `exceeds_budget`. A no-wait request and a resize of a running attempt are decided in one pass of §4's loop at the entry's effective class and owner key, under §7's admission restrictions (Tight admits only INTERACTIVE). They are granted only if such an entry would be admitted now and would not delay an active large-task reservation; otherwise the answer is DEFERRED. **The aggregate cap** is `coop_fraction × B_pre-hold`, where the owner sets `coop_fraction` and `B_pre-hold` is `B` computed without cooperative holds.
 - **The presence term.** At EX-26's promotion, a rise of the presence term updates the root limits at once, outside §5.1's 10 s rate limit; its fall follows the hysteresis (LAB2-X-06).
 - **Reactions.** The pressure ladder (§7) and the interactive guard act on managed placement only. An owner-placed application never reaches Tight, Pressure or Critical and is never a guard target. The one exception: a cooperative grant that an owner-placed application asked for can be withdrawn (by lease end, release, a budget fall, revocation in its intent order, or starvation revocation) only back to the base the owner set, never below it, and nothing is killed. Nothing else of the ladder or the guard reaches owner placement. A kill at an owner application's own limit is not machine pressure and does not trigger Critical: Critical reacts only to causes that indicate shared pressure.
 - **Explanation.** `ExplainTask` gains the projection "owner applications could grow by up to X under their caps", and `U_owner` is reported.

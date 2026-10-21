@@ -11,7 +11,7 @@ The node classifies every API call by **origin**. The connection's client kind i
 | `SCRIPT` | CLI not under an agent root and without a terminal (CI, scheduled scripts) |
 | `REMOTE` | Signed relay commands (§3) |
 | `PEER` | LAN peers (mTLS identity) |
-| `GUEST` / `HOST` | Guest link counterparts |
+| `GUEST` / `HOST` | Retired 2026-10-21 by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) (formerly the guest link counterparts); never assigned |
 
 **Origins are guardrails, not a security boundary** ([AD-0007](../decisions/AD-0007-ai-integration.md) §8). Every local client runs as the same user as the node, so a determined same-user process can present itself as another origin. Documented bypasses:
 - **Looking interactive.** A process can allocate a pseudo-terminal (or console) so that the CLI reports an interactive terminal.
@@ -81,7 +81,7 @@ Every HUMAN-only row stays a GUARDRAIL against same-user code that presents itse
 - **Linux.**
   - The socket directory is mode `0700`, owned by the user.
   - Every connection checks `SO_PEERCRED` uid = node uid.
-  - Guest nodes additionally accept only the bridge (uid match) and the link token.
+  - *Superseded 2026-10-21 by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) (kept as history):* "Guest nodes additionally accept only the bridge (uid match) and the link token." There are no guest nodes.
 - **Bound to the user.** Any same-user process can reach the node, as with any user-level service. Malware running as the user is out of scope, and the node never extends the user's privileges (R-SEC-001).
 
 *Direction (roadmap; not release 1; [AD-0017](../decisions/AD-0017-delegated-execution-direction.md)):* a tiered threat scope keeps the statement above as its unconfined row, in force now, and adds confined and STRONG-backend rows that apply only when their roadmap rows are promoted ([17](17-delegated-execution.md) §4.1).
@@ -118,7 +118,7 @@ Secrets are never logged. Records and exports apply secret-name redaction ([04](
 | T-03 | B1 | Batch-file argument injection | [04](04-execution.md) §2 refusal | Unit (CVE-class corpus) |
 | T-04 | B1 | Cleanup deletes user data through symlinks or junctions | Reparse points never followed; validation re-check before acting; quarantine | Real tests with junctions and symlinks |
 | T-05 | B1 | Managed task rewrites the ArcForges installation | Guardrail: read-only version directories with digest checks at startup, and optional Linux unit hardening (`ReadOnlyPaths=`, [AD-0007](../decisions/AD-0007-ai-integration.md) §8), read back after start and reported as applied or not applied, never as workload isolation (amended 2026-10-19). Same-user bypass is documented. | Real test of the read-only attribute, digest check and finding; Linux hardening read-back test, applied where supported and reported as not applied otherwise (A-L04) |
-| T-06 | B2 | Fake guest link | Bridge launched by host user; uid check; link token | Unit |
+| T-06 | B2 | Fake guest link (*retired 2026-10-21 by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md): B2 and the guest link do not exist; not applicable*) | Bridge launched by host user; uid check; link token | Unit |
 | T-07 | B3 | Rogue LAN node | Discovery ≠ trust. TLS accepts any well-formed client certificate. A gRPC interceptor limits unpaired identities to `Hello` and `Pairing`, and blocked identities reach nothing ([AD-0008](../decisions/AD-0008-lan-trust-and-placement.md) §4). | Closed-loop: an unpaired peer reaches only Hello and Pairing; a blocked peer reaches nothing |
 | T-08 | B3 | MITM during local pairing | Commitment-based SAS over both certificate fingerprints. Each side checks that the fingerprints equal the certificates presented in the TLS session (no exporter, V-N05). | Unit (protocol), closed-loop with an interposed relay |
 | T-09 | B3 | Peer exfiltrates source | Per-peer `data_out` policy; default status-only | Closed-loop |

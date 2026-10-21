@@ -9,7 +9,7 @@ States equal the named proto enum values (without the enum prefix); pseudo-state
 | [SM-ATTEMPT](#sm-attempt) | Attempt | `arcforges.node.v1.AttemptState` | node store attempt.state | Supervisor |
 | [SM-FINDING](#sm-finding) | Finding | `arcforges.node.v1.FindingState` | node store finding.state | Diagnosis |
 | [SM-NODE](#sm-node) | Node lifecycle | `arcforges.node.v1.NodeLifecycleState` | in memory; journaled as NodeStatusChanged events | Host |
-| [SM-GUEST-LINK](#sm-guest-link) | WSL guest link (host side) | `arcforges.node.v1.GuestLinkState` | node store guest_link.state | Guest manager |
+| [SM-GUEST-LINK](#sm-guest-link) | WSL guest link (host side): retired 2026-10-21 by AD-0018, never entered; kept as history | `arcforges.node.v1.GuestLinkState` | node store guest_link.state (retired table, never written) | none (the guest manager is retired by AD-0018) |
 | [SM-PAIRING](#sm-pairing) | LAN pairing (local confirmation) | `arcforges.node.v1.PairingState` | node store pairing.state (secrets in memory) | Peer manager |
 | [SM-REMOTE-ATTEMPT](#sm-remote-attempt) | Remote attempt (executor side) | `arcforges.peer.v1.RemoteAttemptState` | executor node store remote_attempt.state; origin mirrors as ATTEMPT_KIND_REMOTE | Placement |
 | [SM-CLEANUP-PLAN](#sm-cleanup-plan) | Cleanup plan | `arcforges.node.v1.CleanupPlanState` | node store cleanup_plan.state | Cleanup executor |
@@ -206,9 +206,9 @@ stateDiagram-v2
 
 <a id="sm-guest-link"></a>
 
-## SM-GUEST-LINK — WSL guest link (host side)
+## SM-GUEST-LINK — WSL guest link (host side): retired 2026-10-21 by AD-0018, never entered; kept as history
 
-- Enum: `arcforges.node.v1.GuestLinkState`; persisted: node store guest_link.state; owner: Guest manager.
+- Enum: `arcforges.node.v1.GuestLinkState`; persisted: node store guest_link.state (retired table, never written); owner: none (the guest manager is retired by AD-0018).
 - Initial: `NOT_INSTALLED`, `DISCOVERED`. Terminal: none (long-lived).
 
 ```mermaid

@@ -23,7 +23,7 @@ Schema: [node-store.sql](node-store.sql). It is checked by `tools/check_design.p
 
 | Table | Purpose | Key / indexes | Owner | Retention |
 |---|---|---|---|---|
-| `store_meta` | Schema versions, node identity and role, boot identity, clean-shutdown marker, journal generation | singleton | Store | Permanent |
+| `store_meta` | Schema versions, node identity and role (always HOST; the guest role is retired by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) §4), boot identity, clean-shutdown marker, journal generation | singleton | Store | Permanent |
 | `node_setting` | Node name, feature toggles, UI-facing node settings | `name` | Node | Permanent |
 | `root_location` | Current path of each relocatable sub-root | `root_class` | Storage | Permanent |
 | `policy_document` | Revisioned `PolicyDocument`; exactly one current revision | `revision`; partial unique `is_current` | Policy engine | Last 200 revisions |
@@ -82,7 +82,7 @@ Schema: [node-store.sql](node-store.sql). It is checked by `tools/check_design.p
 | `cas_blob`, `manifest` | Content-addressed store index and transfer manifests: inputs, outputs and output bases (pages stored as CAS blobs) | `sha256`; `(ref_count, last_used_at)`; `digest` | Transfer | LRU within the CAS quota; manifests expire with their attempts |
 | `toolchain` | Detected toolchains | `(kind, path)` | Toolchain registry | Replaced on each scan |
 
-### LAN, guests, account, updates, integrations, support
+### LAN, account, updates, integrations, support (and the retired guest tables)
 
 | Table | Purpose | Key / indexes | Owner | Retention |
 |---|---|---|---|---|
@@ -90,9 +90,9 @@ Schema: [node-store.sql](node-store.sql). It is checked by `tools/check_design.p
 | `pairing` | Pairing state (SM-PAIRING); nonces, commitments and SAS stay in memory | `pairing_id`; `(peer_node_id, created_at)` (rate limit) | Peer manager | 7 days |
 | `offer` | Placement offers in both directions | `offer_id` | Placement | 7 days |
 | `remote_attempt` | Executor-side remote attempts (SM-REMOTE-ATTEMPT), linked to the local `REMOTE` task | `remote_attempt_id`; `(state, lease_expires_at)` | Placement | With the local task |
-| `guest_link` | Host-side links per WSL distribution (SM-GUEST-LINK); link token in the OS secret store; the last pushed, acknowledged and reserved allocations (the reservation is written before each push), lease end and standalone allocation ([03](../architecture/03-resource-control.md) §6) | `distro`; unique `guest_node_id` | Guest manager (host) | Permanent |
-| `host_link` | Guest-side pinned host and token hash, the last refused host, a host accepted by `TrustHost` for its next link, the last received allocation, lease end and standalone allocation, and the distribution's boot marker, so a restart during an outage keeps the same limits | singleton | Guest link (guest) | Permanent |
-| `guest_grant` | Grants for guest attempts, with the host-side proxy task | `grant_id`; unique `request_id`; `state` | Scheduler (host) | 7 days after release |
+| `guest_link` | **Retired by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md); kept by the expand-only rule; never written.** Formerly: host-side links per WSL distribution (SM-GUEST-LINK, retired); link token in the OS secret store; the last pushed, acknowledged and reserved allocations (the reservation is written before each push), lease end and standalone allocation ([03](../architecture/03-resource-control.md) §6) | `distro`; unique `guest_node_id` | Guest manager (host) | Permanent |
+| `host_link` | **Retired by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md); kept by the expand-only rule; never written.** Formerly: guest-side pinned host and token hash, the last refused host, a host accepted by `TrustHost` for its next link, the last received allocation, lease end and standalone allocation, and the distribution's boot marker, so a restart during an outage keeps the same limits | singleton | Guest link (guest) | Permanent |
+| `guest_grant` | **Retired by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md); kept by the expand-only rule; never written.** Formerly: grants for guest attempts, with the host-side proxy task | `grant_id`; unique `request_id`; `state` | Scheduler (host) | 7 days after release |
 | `account_link` | Account link: installation, credential reference, entitlement token, certificates, key sets | singleton | Cloud link | Until sign-out (deleted) |
 | `sign_in_flow`, `phone_pairing` | Flow state without secrets | IDs | Cloud link | 1 day |
 | `remote_command_log` | Every received remote command with its signature key ID and decision | `command_id`; `received_at` | Cloud link | 1 year |
@@ -100,6 +100,8 @@ Schema: [node-store.sql](node-store.sql). It is checked by `tools/check_design.p
 | `update_state` | Updater state, rollback protection timestamp, bad versions (SM-UPDATE) | singleton | Updater | Permanent |
 | `integration_plan`, `integration_write` | Integration plans and recorded writes, for exact removal (SM-INTEGRATION) | `plan_id`; `write_id`; `(client, path)` | Integration service | Writes: until removed plus 30 days |
 | `support_bundle` | Local bundles and consent records | `bundle_id` | Support | 30 days |
+
+**Retired guest data** ([AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) §4). The tables `guest_link`, `host_link` and `guest_grant`, the column `attempt.guest_grant_id` and the guest value of `store_meta.node_role` stay in schema v1 because the schema is expand-only ([13](../architecture/13-distribution-updates.md) §9). No node writes them; a future major schema may drop them.
 
 ## 3. Data that is never stored
 

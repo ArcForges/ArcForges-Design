@@ -13,7 +13,7 @@ The files compile with the protoc bundled in Grpc.Tools 2.84.0 (libprotoc 35.1) 
 | Package | Files | C# namespace / package | Transport | Locality | Callers |
 |---|---|---|---|---|---|
 | `arcforges.node.v1` | 20 files, 19 services | `ArcForges.Contracts.Node.V1` / `ArcForges.Contracts.Node` | gRPC over HTTP/2 on a named pipe or Unix socket (DesktopPlatform LocalRpc service-endpoint mode) | One node | CLI, Desktop, MCP adapter, hook handler, probe; relay commands mapped internally |
-| `arcforges.peer.v1` | `peer.proto`, 6 services | `ArcForges.Contracts.Peer.V1` / `ArcForges.Contracts.Peer` (internal) | gRPC over HTTP/2 with TLS 1.3 mTLS on TCP 47820; `GuestLinkService` over the WSL bridge byte stream | Node ↔ node | Paired peers, host ↔ guest |
+| `arcforges.peer.v1` | `peer.proto`, 6 services | `ArcForges.Contracts.Peer.V1` / `ArcForges.Contracts.Peer` (internal) | gRPC over HTTP/2 with TLS 1.3 mTLS on TCP 47820 (`GuestLinkService`, formerly carried over the WSL bridge byte stream, is retired: §7) | Node ↔ node | Paired peers |
 | `arcforges.fleet.v1` | `fleet.proto`, 3 services | `ArcForges.Contracts.Fleet.V1` / `ArcForges.Contracts.Fleet` | Binary gRPC-Web through the Worker ingress to the C# host; `WatchFleet` as gRPC-Web text streaming | Cloud | Nodes (node credential), web and Android (account session), unauthenticated flow endpoints |
 | `arcforges.relay.v1` | `relay.proto`, messages only | `ArcForges.Contracts.Relay.V1` / `ArcForges.Contracts.Relay` (internal) | Protobuf binary WebSocket messages; the DO ↔ C# internal container route | Relay | Nodes, viewers, `FleetHub`, C# host |
 | `arcforges.publicapi.v1` (additive) | `support_access.proto`, 1 new service (`SupportAccessService`); the reused services are unchanged | `ArcForges.Contracts.PublicApi.V1` (the package's existing namespace) | Binary gRPC-Web through the Worker ingress to the C# host | Cloud | Web Account profile (account session) |
@@ -79,7 +79,7 @@ Every RPC carries structured comments, which `tools/check_design.py` verifies an
 | `deadline:` | Default server bound. For streams: lifetime, heartbeat and idle limits. |
 | `stream:` | `none`, or `server: <Frame>` with end conditions |
 | `errors:` | `CATEGORY/code` list from [errors.md](errors.md), excluding the implicit codes |
-| `locality:` | Where the call executes: `node`, `node -> cloud`, `peer`, `guest`, `cloud`, `cloud -> relay -> node` |
+| `locality:` | Where the call executes: `node`, `node -> cloud`, `peer`, `cloud`, `cloud -> relay -> node`; `guest` appears only on the retired surfaces of §7 |
 | `state:` | Optional state-machine transitions caused ([state-machines](../state-machines/README.md)) |
 
 **Field validation** appears as a trailing `// validate:` comment on request and input fields. A violation returns `VALIDATION/invalid_argument`, with the field path in `details.state.reason`.
@@ -87,7 +87,7 @@ Every RPC carries structured comments, which `tools/check_design.py` verifies an
 ## 5. Authorization and identity
 
 - **Local node API.** The node assigns the origin at `NodeService.Hello` from the connection (the verified peer process, its client kind and process ancestry) and applies the permission matrix. Caller-supplied identity is never trusted ([11](../architecture/11-security-privacy.md) §1).
-- **Peer API.** Identity comes from the TLS client certificate (pinned fingerprint or account SAN). Origin `PEER`, or `HOST`/`GUEST` on the bridge.
+- **Peer API.** Identity comes from the TLS client certificate (pinned fingerprint or account SAN). Origin `PEER`. The origins `HOST` and `GUEST` (formerly the bridge's) are retired (§7).
 - **Fleet API.** The credential decides access: an account session from the Identity service (reused contract; endpoints AF-ID-01), or a node credential. Step-up uses the reused Identity step-up. Entitlement checks use the reused Entitlement module.
 
 ## 6. Idempotency
@@ -108,6 +108,7 @@ Every RPC carries structured comments, which `tools/check_design.py` verifies an
 - **From when.** These rules apply from the first cohort that AF-CON-01 publishes. Until then the design protos are specifications and may still change; each change is listed in the design PR.
 - **Clients** feature-detect with the `features` lists in `NodeService.Hello` and `PeerHandshakeService.Hello`. The Contracts repository's wire-compatibility gate compares each change with the last published package.
 - **Error codes** are additive. Clients treat an unknown code by its category.
+- **Retired v1 surfaces** ([AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) §3). The dedicated Windows–WSL integration was dropped on 2026-10-21. Its declarations stay in the v1 packages for wire compatibility, but no node serves, calls, sets or relies on them, no client shows them, and no later change extends them; a future major version may drop them. They are `peer.v1.GuestLinkService` and its messages (`GuestHello`, `GrantRequest`, `GrantRelease`, `GuestUsageReport`, `GrantDecision`); `ResourceService.ListGuestLinks`, `SetGuestLink`, `GetHostLink` and `TrustHost`, with `GuestLinkView` and `GuestLinkState`; `NODE_ROLE_GUEST` (every node is `NODE_ROLE_HOST`), `NodeRef.host_node_id`, `ORIGIN_GUEST` and `ORIGIN_HOST`, `ResourceSnapshot.guests` and `GuestConsumer`, `NodeInfo.guest_links`, `EVENT_TOPIC_GUESTS` and `NodeEvent.guest_link`, `FINDING_KIND_GUEST_LINK_LOST`, `ResourcePolicy.guest_standalone_fraction`, `ProbeObservation.wsl_distro`, the fleet's `role` and `host_node_id` for guests, and the error `STATE/link_down`. Still in use: `PROCESS_LABEL_GUEST_VM` and `ProcessView.crosses_vm_boundary`. The generated [API catalogue](api-catalogue.md) still lists the retired methods, as the protos declare them.
 
 ## 8. JSON mapping
 

@@ -2,7 +2,7 @@
 
 ## 1. Toolchain detection
 
-The toolchain registry (`ArcForges.Node.Toolchains`) scans at startup, daily, on demand (`ToolchainService.DetectToolchains`), and when a task names an unknown tool. Guest nodes scan their own environment.
+The toolchain registry (`ArcForges.Node.Toolchains`) scans at startup, daily, on demand (`ToolchainService.DetectToolchains`), and when a task names an unknown tool. Each node scans its own machine (Windows or Linux).
 
 | Kind | Detection | Identity recorded |
 |---|---|---|
