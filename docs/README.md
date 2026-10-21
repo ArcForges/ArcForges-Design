@@ -97,6 +97,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 
 - [research/2026-10-18-delegated-execution/](research/2026-10-18-delegated-execution/README.md): the curated evidence record and lab register of the 2026-10-18 delegated-execution study, behind AD-0017 and chapter 17; roadmap evidence only, not verification-register facts
 - [research/2026-10-19-application-workload-control/](research/2026-10-19-application-workload-control/README.md): the curated evidence record and lab register of the 2026-10-19 vision-correction study, behind AD-0017 as amended and chapters 17 and 18; roadmap evidence only, not verification-register facts
+- [research-prompts/](research-prompts/README.md): Priority Research Prompts (PRP), complete prompts saved for research the owner may request later; stored instructions, not authorization to research or implement
 
 ## Verification and traceability
 
