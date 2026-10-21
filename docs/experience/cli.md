@@ -98,8 +98,6 @@ Each row lists the command, its main options, the RPCs it calls and its notes. A
 | `samples [--attempt id] [--range 1h]` | `GetSamples` |
 | `adopt <pid> [--title t] [--pool p]` | `AdoptProcess` (HUMAN only) |
 | `terminate <pid> [--reason r]` | `TerminateProcess` |
-| `guests` / `guests link <distro> [--disable]` | `ListGuestLinks` / `SetGuestLink` (host) |
-| `guests host` / `guests trust-host <host-node-id>` | `GetHostLink` / `TrustHost` (inside a WSL guest; interactive only). The node refuses a link from a host other than the pinned one; `trust-host` accepts that host, and its next link is pinned as on first use (09 §9). |
 
 ### C-04 Policy
 
@@ -198,7 +196,7 @@ Each row lists the command, its main options, the RPCs it calls and its notes. A
 | `completion bash\|zsh\|fish\|pwsh` | Prints a completion script |
 | `version` | Client and node versions, contract versions |
 
-**Internal roles**, hidden from help: `mcp serve`, `hook <client> <event>`, `bridge wsl`, `node exec-wrap`, `node signal`, `node exit-record`, `node update-rollback`.
+**Internal roles**, hidden from help: `mcp serve`, `hook <client> <event>`, `node exec-wrap`, `node signal`, `node exit-record`, `node update-rollback`.
 
 ## 5. Behaviour details
 

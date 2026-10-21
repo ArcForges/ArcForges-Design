@@ -59,7 +59,7 @@ Its workloads are every compatible native workload: AI agents and their commands
 |---|---|---|
 | Developer using AI coding agents | Many agents building and testing in parallel without freezing the machine; no repeated restores; knowing why work is slow | J-01 install and connect an AI client; J-02 agent runs builds through ArcForges; J-04 diagnose slow or stuck work; J-05 reclaim disk |
 | Developer or automation author without AI | A reliable queue for long commands, resource limits, logs and history | J-03 run, queue and limit commands from the CLI or GUI |
-| Owner of several machines (desktop, laptop, build box, WSL) | Use idle machines and shared caches on the LAN | J-06 pair a machine; J-07 place work on another node |
+| Owner of several machines (desktop, laptop, build box) | Use idle machines and shared caches on the LAN | J-06 pair a machine; J-07 place work on another node |
 | Subscriber away from the desk | See status, get notified, take a confirmed action | J-08 subscribe; J-09 remote status and actions from web or Android |
 | ArcForges operator (the vendor) | Keep the service affordable, safe, supportable and lawful | J-10 operate, support and enforce limits |
 
@@ -69,8 +69,8 @@ Journeys are specified in [experience/journeys.md](../experience/journeys.md).
 
 | Surface | Technology | Role |
 |---|---|---|
-| ArcForges node (service) | C# .NET 10 Native AOT, one per user per machine; a guest node inside each managed WSL distribution | Authority for execution and resource state; local gRPC API; LAN peer; cloud uplink |
-| `arcforges` CLI | Same Native AOT executable as the node (multi-role binary) | Direct use and automation; MCP adapter role; hook handler role; WSL bridge role |
+| ArcForges node (service) | C# .NET 10 Native AOT, one per user per machine (a Linux node a user runs in a WSL2 distribution is an ordinary Linux node, without integration; [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md)) | Authority for execution and resource state; local gRPC API; LAN peer; cloud uplink |
+| `arcforges` CLI | Same Native AOT executable as the node (multi-role binary) | Direct use and automation; MCP adapter role; hook handler role |
 | ArcForges Desktop | Avalonia, Native AOT, optional | Visual control centre; tray presence on Windows |
 | MCP adapter | `arcforges mcp serve` (stdio; a local HTTP transport is roadmap RM-05) | AI-client interface translating MCP tool calls to node gRPC |
 | arcforges.com | C# static site plus Blazor WebAssembly account and fleet profiles behind Cloudflare | Product presentation, downloads, account, devices, subscription, remote status |
@@ -85,7 +85,6 @@ Journeys are specified in [experience/journeys.md](../experience/journeys.md).
 |---|---|---|
 | Local node, CLI, Desktop, MCP and AI-client integration | Yes | Yes |
 | Resource control, queueing, records, diagnosis, operational memory | Yes | Yes |
-| WSL guest node on the same machine | Yes | Yes |
 | Managed storage, caches, disk analysis and cleanup | Yes | Yes |
 | LAN pairing, peer status, placement with file transfer, and compiler-cache sharing | Yes | Yes |
 | Remote access through ArcForges Cloud, from anywhere: live status and confirmed actions from arcforges.com and Android | No | Yes |
@@ -100,7 +99,7 @@ Journeys are specified in [experience/journeys.md](../experience/journeys.md).
 
 ## 6. Platform scope
 
-The active scope is **Windows 11 (x64, arm64)** (the minimum Windows version, confirmed by the product owner on 2026-10-13; no effort goes into Windows 10) and **Linux, including WSL2 on Windows (x64, arm64)** for the node, CLI, MCP adapter and Desktop. It also covers **Android 8.0+** for the mobile app and **current evergreen browsers** for the web. macOS is outside the current implementation and acceptance scope ([AD-0002](../decisions/AD-0002-platform-scope.md)). Platform boundaries are kept clean so a macOS backend can be added later without redesign. Nothing for macOS is built or claimed now.
+The active scope is **Windows 11 (x64, arm64)** (the minimum Windows version, confirmed by the product owner on 2026-10-13; no effort goes into Windows 10) and **Linux (x64, arm64)** for the node, CLI, MCP adapter and Desktop. It also covers **Android 8.0+** for the mobile app and **current evergreen browsers** for the web. macOS is outside the current implementation and acceptance scope ([AD-0002](../decisions/AD-0002-platform-scope.md)). Platform boundaries are kept clean so a macOS backend can be added later without redesign. Nothing for macOS is built or claimed now. A user may run the Linux node in a compatible WSL2 distribution, without integration: it is an ordinary Linux node with no WSL-specific behaviour or acceptance guarantee ([AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md)).
 
 ## 7. Non-goals
 
@@ -118,7 +117,7 @@ The active scope is **Windows 11 (x64, arm64)** (the minimum Windows version, co
 | Measure | Target | Evidence |
 |---|---|---|
 | Agent time spent waiting in client-side retry loops for capacity | 0 (submissions queue in the node) | Execution records |
-| Machine responsiveness under heavy managed load | User-reserved headroom held (see [performance targets](../architecture/15-performance-targets.md)) | Automated load tests on Windows and WSL2 |
+| Machine responsiveness under heavy managed load | User-reserved headroom held (see [performance targets](../architecture/15-performance-targets.md)) | Automated load tests on Windows and native Linux |
 | Duplicate dependency downloads across managed tasks on one node | Visible per toolchain, and avoided where caches are shared | Cache statistics |
 | Idle node footprint | Within [performance targets](../architecture/15-performance-targets.md) | Benchmarks |
 | Integration honesty | Every managed or bypassed operation an integration can observe is attributed; unobservable state is labelled unknown | Coverage reports |
@@ -126,7 +125,7 @@ The active scope is **Windows 11 (x64, arm64)** (the minimum Windows version, co
 
 ## 9. Release 1: supported operations and coverage
 
-Release 1 manages the operations below end to end on Windows 11 and Linux, including WSL2 (R-AI-011). Everything else is observed where possible and reported as a coverage gap. A prompt that asks an AI client to use ArcForges is never counted as interception.
+Release 1 manages the operations below end to end on Windows 11 and Linux (R-AI-011). Everything else is observed where possible and reported as a coverage gap. A prompt that asks an AI client to use ArcForges is never counted as interception.
 
 | Operation | Managed in release 1 (route) | Reported as a gap | Verified by |
 |---|---|---|---|
@@ -137,7 +136,7 @@ Release 1 manages the operations below end to end on Windows 11 and Linux, inclu
 | Disk space | Managed roots, limits by kind, runtime limits, the low-space guard, analysis and two-phase cleanup with quarantine | Writes by unmanaged processes | J-05 |
 | Caches | Managed NuGet, npm, Cargo, pip, sccache, ccache and FASTBuild caches, redirected where the tool honours it; compiler work behind a cache runs inside the requesting attempt (one sccache server per attempt); compiler-cache sharing on the LAN | Dependency-cache sharing on the LAN (RM-02); redirection the tool may ignore is labelled `BEST_EFFORT`; downloads outside managed caches (for example a script's own download) are not counted | J-02, J-07 |
 | Scheduling and task lifecycle | Queue, pools, priorities, dependencies, services, retries by assertion, cancellation, hand-off before client timeouts, joins | — | J-02, J-03, J-04 |
-| Machines | The WSL guest node with coordinated admission; LAN placement with content-addressed transfer between paired nodes | Managed FASTBuild workers (RM-03) | J-01, J-06, J-07 |
+| Machines | LAN placement with content-addressed transfer between paired nodes | Managed FASTBuild workers (RM-03) | J-01, J-06, J-07 |
 | Evidence | Correlated records per attempt ([07](../architecture/07-records-diagnosis-memory.md) §1.5) | Network use per process (inferred only) | J-04 |
 
 **Stated limits** (added 2026-10-19). Release 1 confines no workload: every managed process runs as the signed-in user, with that user's access. The rows below state what follows, in the same columns; they are part of the release coverage statement. Their Verified by column names the journey that shows them, and `GetReleaseScope` is checked against this text (R-AI-011).

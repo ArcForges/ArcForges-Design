@@ -409,10 +409,10 @@
     },
     {
       "id": "SM-GUEST-LINK",
-      "title": "WSL guest link (host side)",
+      "title": "WSL guest link (host side): retired 2026-10-21 by AD-0018, never entered; kept as history",
       "enum": "arcforges.node.v1.GuestLinkState",
-      "persisted": "node store guest_link.state",
-      "owner": "Guest manager",
+      "persisted": "node store guest_link.state (retired table, never written)",
+      "owner": "none (the guest manager is retired by AD-0018)",
       "initial": [
         "NOT_INSTALLED",
         "DISCOVERED"

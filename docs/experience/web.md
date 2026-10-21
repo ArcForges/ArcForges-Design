@@ -30,7 +30,7 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
 ┌ ArcForges   Features  Pricing  Download  Docs                     [Sign in] ┐
 │                                                                             │
 │  One authority for every build, test and agent command on your machines.   │
-│  [Download for Windows]  [Linux / WSL]          See how it works ↓         │
+│  [Download for Windows]  [Linux]                See how it works ↓         │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ footer: Security · Privacy · Terms · Status · Releases                      │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -131,14 +131,13 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
 
 - **Purpose.** See every node and phone on the account, rename nodes, and revoke anything lost or retired.
 - **Permissions.** Account session; step-up for revocation.
-- **Layout.** The node table (guests indented under their host), then phones and browsers.
+- **Layout.** The node table, then phones and browsers.
 - **Wireframe:**
 
 ```
 ┌ Devices & nodes ────────────────────────────────────────────────────────────────┐
 │ Node        OS       Role   Version  Last seen   Relay   Actions                 │
 │ workstation Windows  host   1.2.0    online      ✔       [Rename] [Revoke]       │
-│  └ Debian   Linux    guest  1.2.0    online      ✔                               │
 │ buildbox    Linux    host   1.1.4    2 h ago     ✔       [Rename] [Revoke]       │
 │ Phone Pixel 9 · Android 16 · ArcForges 1.2.0 · last active today      [Revoke]   │
 └──────────────────────────────────────────────────────────────────────────────────┘
@@ -150,7 +149,7 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
   - Revoke a node (`FleetService.RevokeNode`, step-up). Confirmation: "The node can no longer reach the cloud. Local and LAN work is unaffected. If the machine is lost, also remove or block it on your other machines (LAN pairing is not revoked from here)."
   - Revoke a phone (`DeviceService.Revoke`, step-up).
 - **States:** S-LOADING, S-OFFLINE and S-FAILED; S-EMPTY ("No nodes yet"); a node revoked (kept greyed out for 30 days, with the revocation time); plan node limit reached (S-NOT-ENTITLED on the next sign-in).
-- **Accessibility.** The table has row headers (node names). Guest rows state "guest of workstation" in text, not only by indentation.
+- **Accessibility.** The table has row headers (node names).
 
 ### W-24 Subscription and billing
 
@@ -315,7 +314,7 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
 
 - **Purpose.** See every node's live state and open one for detail or control.
 - **Permissions.** Account session; entitlement `remote.view`.
-- **Layout.** The live indicator; one row per node (guests under their host) with counts, load and attention badges.
+- **Layout.** The live indicator; one row per node with counts, load and attention badges.
 - **Wireframe:**
 
 ```

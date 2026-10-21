@@ -94,7 +94,7 @@
 
 - **Purpose.** See every node at a glance and open one.
 - **Permissions.** Session of either scope; live data needs `remote.view`.
-- **Layout.** The live indicator; one card per node (guests inside their host's card).
+- **Layout.** The live indicator; one card per node.
 - **Data:** `FleetService.ListNodes`, then the viewer socket (SUMMARY): `StatusSummary` counts, CPU, memory, disk (`disk_free_bytes`, `disk_total_bytes`, `disk_level`), findings, approvals, `sessions_active` and `subagents_active`.
 - **Actions:** open a node (A-04); pull to refresh re-reads `ListNodes`.
 - **Accessibility.** Each card reads as one sentence ("workstation, online, 6 running, 4 queued, CPU 74 percent, memory 33 percent, disk 61 percent, 2 agents, 1 finding, 1 approval"). A low-space disk says "low space" in text.

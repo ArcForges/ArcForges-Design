@@ -120,7 +120,7 @@ Decision: [AD-0007](../decisions/AD-0007-ai-integration.md). Tool catalogue and 
 `arcforges integrate <client> --probe` and Desktop "Test integration":
 1. Write a one-shot probe instruction file, then ask the user to run, inside the client, the documented probe prompt "Run `arcforges probe --token <t>` and report the output". Alternatively, run the client non-interactively where it supports it, with the user's consent.
 2. `arcforges probe` connects to the node and reports the sandbox signals it observes (environment markers, a failed connection with its errno).
-3. The node stores `probe_result{client, environment (OS, WSL distro, sandbox mode), result PASS|FAIL_CONNECT|FAIL_NOT_FOUND, at}`.
+3. The node stores `probe_result{client, environment (OS, for example `windows` or `linux`, and sandbox mode), result PASS|FAIL_CONNECT|FAIL_NOT_FOUND, at}`.
 
 Rewrite is enabled only for environments with `PASS`, and the probe is re-run after client version changes or settings changes detected by `IntegrationService` (file watchers on the client's settings files).
 

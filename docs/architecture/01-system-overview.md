@@ -11,7 +11,6 @@ flowchart LR
   desk -- gRPC over named pipe / UDS --> node[(ArcForges node\nWindows host)]
   cli -- gRPC over named pipe / UDS --> node
   mcp -- gRPC over named pipe / UDS --> node
-  node -- gRPC over wsl.exe bridge --> guest[(ArcForges guest node\nWSL2 distro)]
   node -- gRPC mTLS (LAN) --> peer[(ArcForges node\nother machine)]
   node -- WebSocket relay frames --> hub[[FleetHub Durable Object]]
   node -- gRPC-Web --> worker[Cloud Worker ingress]
@@ -34,11 +33,9 @@ flowchart LR
 | Component | Repository / project | Responsibility | Authority |
 |---|---|---|---|
 | Node service | ArcForges `ArcForges.Host` (role `node run`) with `ArcForges.Node.*` | Execution, admission, enforcement, records, diagnosis, memory, storage, caches, toolchains, sessions, policy, LAN peer, cloud link, updates | Execution and resource state of its machine/environment |
-| Guest node | Same binary inside a WSL2 distro, systemd user unit | Linux execution and enforcement for that distro; linked to the host node | State of executions in that distro |
 | CLI | ArcForges `ArcForges.CommandLine` (role default) | Human and script access; auto-starts the node | None (client) |
 | MCP adapter | ArcForges `ArcForges.Mcp` (role `mcp serve`) | MCP protocol to node gRPC translation | None (client) |
 | Hook handler | ArcForges `ArcForges.Integrations` (role `hook`) | Client hook payloads → session registry and routing decisions | None (client) |
-| WSL bridge | ArcForges (role `bridge wsl`) | Byte relay between `wsl.exe` stdio and the guest socket | None |
 | Desktop | ArcForges `ArcForges.Desktop` | Visual control centre and tray | None (client) |
 | Shared client library | ArcForges `ArcForges.Client` | Connection, auto-start, compatibility handshake and stream reconciliation cache used by the CLI, Desktop and MCP adapter | None |
 | Cloud host | Cloud `ArcForges.Cloud` with modules | Identity, devices and nodes, fleet, commands, entitlement, commerce, notification, support, audit, configuration | Account, registry, entitlement, commerce, remote commands, push |
@@ -48,14 +45,16 @@ flowchart LR
 | Contracts | Contracts `public/proto/arcforges/{node,fleet}/v1`, `internal/proto/arcforges/{peer,relay}/v1` | Canonical wire definitions and generated C# packages | Wire meaning |
 | Platform building blocks | DesktopPlatform `ArcForges.LocalRpc`, `.Persistence.Sqlite`, `.Security*`, `.Observability`, `.Foundation`, `.DesignSystem`, `.Desktop.Shell` | Local gRPC transport, SQLite store mechanics, secrets, audit, telemetry primitives, design tokens and shell models | Mechanisms only |
 
+*Superseded 2026-10-21 by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) (kept as history):* the table also listed a **Guest node** ("Same binary inside a WSL2 distro, systemd user unit | Linux execution and enforcement for that distro; linked to the host node | State of executions in that distro") and a **WSL bridge** ("ArcForges (role `bridge wsl`) | Byte relay between `wsl.exe` stdio and the guest socket"), and the context diagram an edge "gRPC over wsl.exe bridge" from the Windows node to the guest node. Neither component exists: a Linux node a user runs in a WSL2 distribution is an ordinary node (T3), with no link to the Windows node.
+
 ## 3. Deployment topologies
 
 | Topology | Nodes | Notes |
 |---|---|---|
 | T1 Single machine (Windows) | One host node | Free tier; no cloud needed |
-| T2 Windows + WSL | Host node + one guest node per linked distro | Free tier. The guest link runs over the `wsl.exe` bridge, and one fair queue spans host and guests (AD-0005) |
+| T2 Windows + WSL (*superseded 2026-10-21 by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md); kept as history*) | Host node + one guest node per linked distro | Free tier. The guest link runs over the `wsl.exe` bridge, and one fair queue spans host and guests (AD-0005). Successor: a Windows node (T1) and, if the user runs one, an independent Linux node in a WSL2 distribution (T3); they budget independently, and the Windows node sees the WSL VM as one unmanaged `GUEST_VM` consumer |
 | T3 Single machine (Linux) | One node (systemd user unit) | Free tier |
-| T4 LAN | Several nodes (each possibly with guests), paired | Free: pairing, status, placement and compiler-cache sharing need no account |
+| T4 LAN | Several nodes, paired | Free: pairing, status, placement and compiler-cache sharing need no account |
 | T5 Remote | Any of the above + cloud relay; web and Android viewers | Pro (cloud services) |
 
 ## 4. Trust boundaries and data classes
@@ -64,7 +63,7 @@ flowchart LR
 |---|---|---|
 | B0 Node ↔ its own workload objects (added 2026-10-19) | Same-user access to the jobs, ack events, cgroup files and records ArcForges creates for workloads | **GUARDRAIL** for every workload: same-user code can reach these objects ([11](11-security-privacy.md) §1, T-22; V-W11). Release 1 confines no workload, so no workload is kept from them |
 | B1 Local user ↔ node | Named pipe / UDS | Same-user ACL / mode 0700 + peer credential; client hello |
-| B2 Host ↔ guest | `wsl.exe` stdio bridge → guest UDS | Launched by the same Windows user; guest checks uid; link token |
+| B2 Host ↔ guest (*superseded 2026-10-21 by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md); kept as history: no such crossing exists*) | `wsl.exe` stdio bridge → guest UDS | Launched by the same Windows user; guest checks uid; link token |
 | B3 Node ↔ node | TCP | mTLS 1.3 with pinned certificates from pairing (account-issued certificates are roadmap RM-01); per-peer policy |
 | B4 Node ↔ cloud | HTTPS gRPC-Web; WSS relay | Device credential; short-lived relay token; signed commands verified by the node |
 | B5 Browser/phone ↔ cloud | HTTPS gRPC-Web | Account session (cookie + CSRF for web; bearer for native) |

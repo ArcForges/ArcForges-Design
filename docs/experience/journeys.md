@@ -4,11 +4,11 @@ Each journey lists its steps across surfaces with the APIs involved, its success
 
 ## J-01 Install and connect an AI client
 
-- **Actor.** A developer on Windows with Claude Code (WSL Debian also present).
+- **Actor.** A developer on Windows with Claude Code.
 - **Preconditions.** None.
 
-1. The user downloads the setup program from W-04 and installs it per user. The node starts (13 §3.1). Linux and WSL users use `install.sh`.
-2. Desktop D-00 shows the capabilities. In WSL Debian, the guest node is installed by `install.sh` (user action) and linked automatically: SM-GUEST-LINK DISCOVERED → LINKED.
+1. The user downloads the setup program from W-04 and installs it per user. The node starts (13 §3.1). Linux users, including those who run the Linux node in a WSL2 distribution (an ordinary Linux node; [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md)), use `install.sh`.
+2. Desktop D-00 shows the capabilities.
 3. In D-14, the user plans the Claude Code integration at user scope (`PlanIntegration`), reviews the diff with the routing statement (routed commands run outside Claude Code's own sandbox; [AD-0007](../decisions/AD-0007-ai-integration.md) §4) and applies it (`ApplyIntegration`).
 4. The user runs the probe (`StartProbe`) and pastes the instruction into Claude Code. `arcforges probe` reports PASS (`ReportProbe`).
 5. The user selects routing `rewrite` (heavy commands) or `rewrite-all` (every shell command except passthrough patterns) for the workspace (policy). D-14 states that connecting MCP alone routes nothing. A new Claude Code session raises SessionStart (`ReportHookEvent`) and the session appears in D-06.
@@ -22,7 +22,7 @@ Each journey lists its steps across surfaces with the APIs involved, its success
 - **Failures:**
   - hooks disabled by managed settings (DEGRADED, conflict shown, MCP-only);
   - the probe fails (rewrite stays off; guide or MCP);
-  - no WSL systemd (guest DEGRADED with the remedy).
+  - on Linux, no systemd user manager or delegation (enforcement `OBSERVE_ONLY` with the remedy).
 - **Verification:**
   - closed-loop `J01_IntegrationInstallTests`, using `ScriptedMcpClient` and hook fixtures against real config files in a temporary home directory;
   - real setup-program and `install.sh` tests (13 §9);
@@ -50,7 +50,7 @@ Each journey lists its steps across surfaces with the APIs involved, its success
   - a stall finding;
   - the node down: MCP reports `effect` honestly and the CLI exits 75.
 - **Verification:**
-  - closed-loop `J02_AgentBuildTests` (ScriptedMcpClient plus real `dotnet` and `cargo` builds on Windows and WSL);
+  - closed-loop `J02_AgentBuildTests` (ScriptedMcpClient plus real `dotnet` and `cargo` builds on Windows and Linux);
   - real enforcement tests (F-W01, F-W02, F-L03);
   - performance tests (15 §4).
 
@@ -67,7 +67,7 @@ Each journey lists its steps across surfaces with the APIs involved, its success
   - limits are enforced (or labelled unenforced with the reason);
   - the cancellation tree is cleaned up within the grace period;
   - the exit codes of §3 in [cli.md](cli.md) hold.
-- **Verification:** closed-loop `J03_CliQueueTests` (real processes, Windows and WSL); `TestLoad` scenarios.
+- **Verification:** closed-loop `J03_CliQueueTests` (real processes, Windows and Linux); `TestLoad` scenarios.
 
 ## J-04 Diagnose slow or stuck work
 
@@ -173,5 +173,5 @@ Each journey lists its steps across surfaces with the APIs involved, its success
   - archiving is refused while a merge or rebase is in progress;
   - ignored files such as `.env` are archived only when included, never discarded.
 - **Verification:**
-  - closed-loop `J11_WorktreeSubagentTests` (`HookPayloadFixtures` for subagent events, real git worktrees on Windows and WSL);
+  - closed-loop `J11_WorktreeSubagentTests` (`HookPayloadFixtures` for subagent events, real git worktrees on Windows and Linux);
   - the archive round trip (L-19).

@@ -1,6 +1,6 @@
 # AD-0013 — Reuse, adaptation, retention and supersession
 
-- Status: Accepted (2026-10-12)
+- Status: Accepted (2026-10-12; amended 2026-10-21 by AD-0018: WSL linking leaves item 3)
 
 ## Decision
 
@@ -14,7 +14,7 @@
 | **Superseded** | Replaced for active development by a decision named in the inventory | Historical record kept; active documents no longer cite it as authority |
 
 2. **Conflicts resolve in favour of the new direction** for active development. Each conflict, its resolution and its decision are listed in [reuse/conflicts.md](../reuse/conflicts.md), with historical traceability (repository, commit, path).
-3. **Ownership of OS resource control.** Process launching, job objects, cgroups, WSL linking and resource sampling live in the **ArcForges repository**, in projects `ArcForges.Node.Platform.Windows` and `ArcForges.Node.Platform.Linux`. They are the product's core and evolve with it. Future products use these capabilities through the node API, not by linking the controller. This keeps DesktopPlatform's change minimal.
+3. **Ownership of OS resource control.** Process launching, job objects, cgroups and resource sampling live (WSL linking, listed here until 2026-10-21, is superseded by [AD-0018](AD-0018-native-platforms-without-wsl-integration.md)) in the **ArcForges repository**, in projects `ArcForges.Node.Platform.Windows` and `ArcForges.Node.Platform.Linux`. They are the product's core and evolve with it. Future products use these capabilities through the node API, not by linking the controller. This keeps DesktopPlatform's change minimal.
 4. **Smallest coherent DesktopPlatform refactor** ([reuse/desktopplatform-refactor.md](../reuse/desktopplatform-refactor.md)):
    - `ArcForges.LocalRpc`: a **service endpoint mode** for a long-lived per-user service with several client kinds. It needs a **stream lane** for long-lived server streams with heartbeats, which the current 10–30 s deadline caps prevent. It also needs **per-method limit profiles** and a **peer identity provider** returning client process id, user and start time.
    - `ArcForges.Security.Secrets`: Linux backends (Secret Service through D-Bus, and the documented 0600-file fallback), behind the existing abstraction.

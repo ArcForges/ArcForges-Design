@@ -1,6 +1,6 @@
 # 15 — Performance and footprint targets
 
-Requirement: R-PERF-001. Every target names its measurement. "Workstation" means the development machine and its WSL2 distribution described by L-01 … L-03 of the [verification register](../verification/platform-capabilities.md).
+Requirement: R-PERF-001. Every target names its measurement. "Workstation" means, for Windows measurements, the development machine described by L-01 of the [verification register](../verification/platform-capabilities.md), and, for Linux measurements, the native Linux host of [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) §5 (a real Linux host with a systemd user manager and cgroups v2 delegation). Linux figures recorded before 2026-10-21 were measured in the workstation's WSL2 distribution (L-02, L-03).
 
 - **Benchmark tool.** Benchmarks run through `tools/ArcForges.Bench` (part of the ArcForges repository). It emits JSON results that tasks attach to their PR evidence.
 - **CI benchmarks** (size, startup) run in the CI-equivalent verification: the local pre-push verification for the owner's PRs and hosted runners for external PRs ([AD-0016](../decisions/AD-0016-local-first-verification.md)). They gate only on size, plus startup regressions above 25% against the PR's base commit built on the same machine (the hook: the merge base; external-PR CI: the base commit on the same runner), because the measurements are noisy.
@@ -32,7 +32,8 @@ Requirement: R-PERF-001. Every target names its measurement. "Workstation" means
 | Store growth | ≤ 50 MB per 10,000 attempts (records, timelines, samples, cache usage and result-cache observations; logs excluded) | Database file size after generating attempts | Workstation, CI (smaller scale) |
 | Evidence collection per attempt | Cache-usage measurement ≤ 2 s of background work (policy `caches.usage_scan_budget_ms`), never delaying the attempt's result | Timestamps of the measurement job | Workstation |
 | Node startup to ready (warm, 100 surviving executions to re-attach) | ≤ 3 s | Startup timestamps | Workstation |
-| Guest node idle (WSL2) | ≤ 40 MB RSS, ≤ 0.5% of one core | Guest after 10 minutes idle | Workstation |
+
+*Retired 2026-10-21 by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) (kept as history):* the table also had the row "Guest node idle (WSL2) | ≤ 40 MB RSS, ≤ 0.5% of one core | Guest after 10 minutes idle | Workstation". There is no guest node.
 
 **Helper memory (decision of the product owner, 2026-10-16).** The holder and the guard are roles of the one multi-role binary ([AD-0003](../decisions/AD-0003-architecture-and-runtimes.md)), whose `exec-wrap` role measured 5.5 MB private before it had read its specification (AF-EXEC-01 review, Windows), so the earlier 3 MB (holder) and 8 MB (guard) targets could not be met without a separate executable. Keeping one binary is preferred: the targets above are set from measurements with headroom. MB here means 1,000,000 bytes, as in the CI benchmarks. A dedicated lightweight helper executable is accepted future work (roadmap RM-14), revisited only if per-attempt overhead becomes a real constraint.
 
