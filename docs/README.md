@@ -39,6 +39,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 | [AD-0016](decisions/AD-0016-local-first-verification.md) | Local-first verification, owner-only lightweight CI and testing techniques |
 | [AD-0017](decisions/AD-0017-delegated-execution-direction.md) | Long-term direction: application and workload control with verified contracts (principles only; the model is proposed in chapters 17 and 18) |
 | [AD-0018](decisions/AD-0018-native-platforms-without-wsl-integration.md) | Native Windows and native Linux, without dedicated WSL integration; local-first verification on native legs |
+| [AD-0019](decisions/AD-0019-mcp-first-verification.md) | MCP-first development and verification: the Windows leg through the Windows MCP server, the Linux leg through an independent Linux MCP server, no local WSL |
 
 ## Architecture
 
