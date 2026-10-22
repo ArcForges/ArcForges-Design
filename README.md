@@ -32,3 +32,5 @@ After every push, each verification host runs the same checks, with `--compile`,
 ## Licence
 
 Documentation © ArcForges. Proto specifications are Apache-2.0, as in the Contracts repository.
+
+<!-- gate test (throwaway PR, never merged) -->
