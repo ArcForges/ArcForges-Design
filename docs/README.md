@@ -104,3 +104,5 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 
 - [verification/platform-capabilities.md](verification/platform-capabilities.md): verified facts, local probes, assumptions and future validations
 - [traceability/model.json](traceability/model.json): requirement → design → task → verification
+
+Gate test: AD-9999 is an unknown decision, so the design check fails.
