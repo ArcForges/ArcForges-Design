@@ -25,7 +25,8 @@ This repository is the **design authority** for ArcForges. The delivery plan, le
      git worktree add --detach .worktree/verify-<sha> <sha>
      cd .worktree/verify-<sha>
      python eng/verify.py run-and-report
-     cd ../.. && git worktree remove --force .worktree/verify-<sha>
+     cd ../..
+     git worktree remove --force .worktree/verify-<sha>
      ```
 
      Fetch `refs/pull/<n>/head` for a pull request from a fork, and only after reading its diff (the host runs its code).

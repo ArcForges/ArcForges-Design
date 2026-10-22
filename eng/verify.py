@@ -165,7 +165,9 @@ def this_host() -> str:
 
 
 def bash_argv(command: str) -> list[str]:
-    return ["bash", "-lc", command]
+    # A login shell reads the host's profile, which may export a credential again; it is unset after the profile, so no
+    # Linux command of the step table (steps and tool probes) sees one.
+    return ["bash", "-lc", f"unset {' '.join(CREDENTIALS)}; {command}"]
 
 
 def bash_run(command: str, timeout: int = 600) -> str:
@@ -290,8 +292,7 @@ class Runner:
         if step.host != "linux" or not isinstance(step.cmd, str):
             raise VerifyError(f"step {step.id}: a linux step needs a bash command string")
         exports = "".join(f"export {key}={shlex.quote(value)}; " for key, value in step.env.items())
-        # A login shell reads the host's profile, which may export a credential again; it is unset after the profile.
-        inner = f"unset {' '.join(CREDENTIALS)}; export ARCFORGES_VERIFY=1; {exports}{self.expand(step.cmd)}"
+        inner = f"export ARCFORGES_VERIFY=1; {exports}{self.expand(step.cmd)}"
         # The step runs in its own session, recorded until it ends so that an abort can stop all of it (ending the bash
         # that started it does not stop its other processes); timeout(1) signals its process group when the step runs too
         # long.
@@ -371,8 +372,11 @@ class Runner:
                     return
 
     def fail_fast(self) -> None:
-        if self.keep_going:
-            return
+        if not self.keep_going:
+            self.stop_all()
+
+    def stop_all(self) -> None:
+        """Starts no further step and stops every running one (a failure without --keep-going, or an interruption)."""
         self.stop.set()
         with self.lock:
             running = list(self.live.items())
@@ -552,7 +556,11 @@ def run_leg(repo: Repository, t: Target, host: str, keep_going: bool) -> dict:
     with Lock(repo.state / "lock"), HostLock(repo) if host == "linux" else contextlib.nullcontext():
         workdir = prepare_windows(repo, t.sha) if host == "win" else prepare_linux(repo, t.sha, t.base)
         runner = Runner(repo, logs, t.sha, t.base, workdir, keep_going)
-        ok = runner.execute(steps)
+        try:
+            ok = runner.execute(steps)
+        except BaseException:
+            runner.stop_all()  # an interruption leaves no step running
+            raise
     seconds = time.monotonic() - started
     results = [{"step": o.step.id, "ok": o.ok, "seconds": round(o.seconds, 1), "reason": o.reason,
                 "log_sha256": log_digest(o.log)} for o in runner.outcomes]

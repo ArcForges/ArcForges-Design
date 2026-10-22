@@ -23,7 +23,7 @@ from unittest import mock
 CORE = Path(__file__).resolve().parent.parent / "eng" / "verify.py"
 
 TABLE = '''REPOSITORY = "CoreTest-{name}"
-FINGERPRINT = {{"linux": {{"bash": "bash --version | head -n 1"}}}}
+FINGERPRINT = {{"linux": {{"bash": "bash --version | head -n 1", "token": "echo [$ARCFORGES_STATUS_TOKEN]"}}}}
 def select_profile(changed): {profile}
 STEPS = [
 {steps}
@@ -195,6 +195,8 @@ class VerifyCore(unittest.TestCase):
         text = log.read_text(encoding="utf-8")
         self.assertIn("\n[][][]\n", text)
         self.assertNotIn(secret, text)
+        [summary] = log.parent.glob("summary.json")
+        self.assertEqual(json.loads(summary.read_text(encoding="utf-8"))["tools"]["linux:token"], "[]")
         self.assertIn("token-match", self.gh_log.read_text(encoding="utf-8"))
 
     def test_an_ambient_github_token_reaches_gh_but_no_step(self) -> None:
@@ -207,7 +209,9 @@ class VerifyCore(unittest.TestCase):
 
     def test_a_terminated_run_reports_error(self) -> None:
         started = self.root / "started"
-        work = self.repository(f'Step("linux-slow", "linux", "touch {started}; sleep 60", timeout=120)')
+        marker = self.root / "slow.pid"
+        work = self.repository(f'Step("linux-slow", "linux", "sleep 60 & echo $! > {marker}; touch {started}; wait", '
+                               'timeout=120)')
         running = subprocess.Popen([sys.executable, "eng/verify.py", "run-and-report"], cwd=work, stdout=subprocess.PIPE,
                                    stderr=subprocess.STDOUT, text=True, env=dict(os.environ, **self.env))
         deadline = time.monotonic() + 120
@@ -217,6 +221,10 @@ class VerifyCore(unittest.TestCase):
         output, _ = running.communicate(timeout=120)
         self.assertEqual(running.returncode, 2, output)
         self.assertEqual([s["state"] for s in self.statuses()], ["pending", "error"])
+        child = int(marker.read_text().strip())
+        time.sleep(1)
+        self.assertFalse(Path(f"/proc/{child}").exists() and "sleep" in Path(f"/proc/{child}/cmdline").read_text(errors="replace"),
+                         "the interrupted step's process is still running")
 
     def test_a_success_that_cannot_be_reported_fails_the_command(self) -> None:
         work = self.repository('Step("linux-a", "linux", "true", timeout=60)')

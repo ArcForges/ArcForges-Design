@@ -1,8 +1,8 @@
 name: Design checks
 
 # Every PR is verified after the push on the Windows and Linux hosts (eng/verify.py run-and-report, AD-0020), whose
-# statuses main requires, so the job is skipped for owner (deku2026) PRs; external PRs, the merge queue and manual dispatch run it. Push to main runs nothing: every main commit arrived
-# through a PR verified one way or the other.
+# statuses main requires, so the job is skipped for owner (deku2026) PRs; external PRs, the merge queue and manual
+# dispatch run it. Push to main runs nothing: every main commit arrived through a PR verified one way or the other.
 # merge_group runs the check for every author, but only matters if a merge queue is configured (none is today).
 on:
   pull_request:
