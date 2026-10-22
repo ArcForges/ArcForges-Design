@@ -6,7 +6,7 @@ This repository is the **design authority** for ArcForges. The delivery plan, le
 
 1. **Scope.** Design only: product, decisions, architecture, contracts (protos as specifications), data models, state machines, experience, reuse, verification and traceability. No implementation code; tools are the exception.
 2. **Branches and worktrees.** Work in a git worktree under `.worktree/` (ignored), never in the main checkout. Branch names: `design/<topic>`. One PR per coherent change.
-3. **Serial delivery** ([AD-0014](docs/decisions/AD-0014-delivery-method.md), [AD-0016](docs/decisions/AD-0016-local-first-verification.md)). One active task at a time. Delegation is allowed to one worker or reviewer at a time, on Opus 5.5 only (never Haiku). There is no build slot. The owner's (`deku2026`) PRs are gated by the local verification below plus the independent review; external PRs by the hosted `Design checks` workflow plus review.
+3. **Serial delivery** ([AD-0014](docs/decisions/AD-0014-delivery-method.md), [AD-0016](docs/decisions/AD-0016-local-first-verification.md)). One active task at a time. Delegation is allowed to one worker or reviewer at a time, on Opus 5.5 only (never Haiku). There is no build slot. The owner's (`deku2026`) PRs are gated by the required host statuses of rule 8 plus the independent review; external PRs by the hosted `Design checks` workflow plus review.
 4. **Generated files.**
    - `docs/contracts/api-catalogue.md` and `docs/state-machines/README.md` are generated. Edit the protos or `machines.json` instead, then run `python tools/check_design.py --write`.
    - The protos under `docs/contracts/proto/` are hand-maintained specifications that follow [docs/contracts/README.md](docs/contracts/README.md).
@@ -16,21 +16,46 @@ This repository is the **design authority** for ArcForges. The delivery plan, le
    - Facts are cited by verification ID (V/L/A/F) in [docs/verification/platform-capabilities.md](docs/verification/platform-capabilities.md).
    - Assumptions name their future-validation owner task.
    - Real-world validation that cannot run now goes to the Plan acceptance register, never reported as proven.
-8. **Local verification** ([AD-0016](docs/decisions/AD-0016-local-first-verification.md); topology [AD-0018](docs/decisions/AD-0018-native-platforms-without-wsl-integration.md) §5, as amended by [AD-0019](docs/decisions/AD-0019-mcp-first-verification.md)).
-   - Install once per clone, from the main checkout on `main`: `python eng/verify.py install` copies `.githooks/*` into the clone's common hooks directory and makes them executable (Git skips a non-executable hook with only a hint), so every worktree runs them. It uses no `core.hooksPath`: it removes any, including per-worktree values left by older scripts, and refuses while one remains elsewhere. Re-run it when `.githooks/` changes, and once in a Linux or macOS clone installed before this was fixed, whose hook is not executable. A push from a worktree whose commit has no `eng/verify.py` is rejected; rebase it onto `main`.
-   - The pre-push hook verifies each pushed commit, not the working tree, in two legs on two machines: the Windows leg on native Windows in `.worktree/_verify`, reached through the Windows MCP server, and the Linux leg on the Linux MCP host in a Linux-native clone, reached through the Linux MCP server (both standard MCP servers, the same for Claude Code and Codex; AD-0019). `eng/verify.py` runs only the leg of the machine's own operating system, never through WSL or a remote shell. Local WSL is never used, not even as a fallback. If the Linux MCP server is unavailable, stop and report it: the Linux leg has no record, so the push stays rejected; never skip a step, use another host (an agent's own sandbox included) or bypass the hook (AD-0019 §5, §8). Each leg runs what `design.yml` runs: the locked restore of `tools/proto-toolchain/ProtoToolchain.csproj`, `python tools/check_design.py --require-protoc --compile` and `python -m unittest discover -s tests -v`, plus `actionlint` when `.github/workflows/**` changed. Every change runs this full profile.
-   - `python eng/verify.py list` shows the steps and each leg's state; `python eng/verify.py run` verifies this machine's leg of `HEAD` and records it (keyed by the tree, the merge base, the step set and the scripts). On the other machine, check out the exact commit in a worktree (a commit not yet on GitHub travels as a bundle: `git bundle create <file> HEAD --not origin/main`, then `git fetch <file> HEAD` there), run `python eng/verify.py run` there, and accept its record here with `python eng/verify.py import <record>`, which refuses any mismatch. A push needs a passed or imported record of both legs.
-   - A failure, timeout, missing tool or missing leg record rejects the push and prints the step, the last log lines and the log path. Read the log, fix the cause, push again.
-   - Record each leg's `arcforges-verify: LEG PASS` line and the hook's `arcforges-verify: PASS` line in the PR. The reviewer re-runs only checks whose inputs they doubt, or whose tooling the PR changed (AD-0014 §4).
-   - AI agents must never use `git push --no-verify` to bypass required validation. They must also never disable, remove, modify, or otherwise circumvent the hooks merely to allow a push.
-   - Only `python eng/verify.py import` brings in another machine's leg, and only the record that `python eng/verify.py run` wrote on that machine at the exact commit: writing, editing or reusing a pass record by hand is circumventing the hooks.
+8. **Verification** ([AD-0016](docs/decisions/AD-0016-local-first-verification.md) as amended by [AD-0020](docs/decisions/AD-0020-post-push-verification-and-required-checks.md); hosts [AD-0019](docs/decisions/AD-0019-mcp-first-verification.md)). Push → Fetch → Local verification → Report status → Required checks → Review → Merge.
+   - **Push** the branch to GitHub; nothing is verified before a push. There is no pre-push hook: `python eng/verify.py install`, run once per clone from the main checkout on `main`, removes the retired one that an earlier `eng/verify.py` installed (and any `core.hooksPath`).
+   - **Fetch and verify on each host.** Reach the Windows host through the Windows MCP server and the Linux host through the Linux MCP server (both standard MCP servers, the same for Claude Code and Codex). In that host's clone of this repository, fetch the pushed commit from GitHub and run the command in a worktree at it:
+
+     ```
+     git fetch origin <branch>
+     git worktree add --detach .worktree/verify-<sha> <sha>
+     cd .worktree/verify-<sha>
+     python eng/verify.py run-and-report
+     cd ../..
+     git worktree remove --force .worktree/verify-<sha>
+     ```
+
+     Fetch `refs/pull/<n>/head` for a pull request from a fork, and only after reading its diff (the host runs its code).
+   - **What runs.** The command runs this host's leg of the commit, exactly what `design.yml` runs:
+     - the locked restore of `tools/proto-toolchain/ProtoToolchain.csproj`;
+     - `python tools/check_design.py --require-protoc --compile`;
+     - `python -m unittest discover -s tests -v`;
+     - `actionlint` on Linux when `.github/workflows/**` changed.
+
+     Every change runs this full profile. The Windows leg runs on native Windows in `.worktree/_verify`, the Linux leg in a Linux-native clone; `eng/verify.py` runs only the leg of the host's own operating system, never through WSL or a remote shell, and local WSL is never used. `python eng/verify.py list` shows each host's steps; `python eng/verify.py run` runs the leg without reporting.
+   - **Report status.** The command reports the commit status `arcforges/windows` or `arcforges/linux` on that exact commit:
+     - `pending` when it starts;
+     - `success` only when every step of the leg ran and passed;
+     - `failure` when a step failed, `error` when the leg could not complete.
+
+     It exits 0 after reporting success, 1 when a step failed and 2 when the leg could not complete or be reported. A failure prints the step, the last log lines and the log path, and the logs and a `summary.json` stay on the host. Read the log, fix the cause, push, verify again.
+   - **Credentials.** The host reports with `ARCFORGES_STATUS_TOKEN` when set (a token limited to commit statuses), otherwise with its own `gh` login. Never print or copy either.
+   - **Required checks.** The `main` ruleset requires both statuses for every PR, with no bypass actors, and the branch must be up to date with `main`. A missing, pending or failed status blocks the merge, and every new push needs verifying again on both hosts.
+   - **Review.** The independent review looks at the head that carries both successful statuses, and the PR names them. The reviewer re-runs only checks whose inputs they doubt, or whose tooling the PR changed (AD-0014 §4).
+   - **If a host's MCP server is unavailable,** stop and report it: its status stays missing and the PR cannot merge. Never skip a step, run the leg on another host (an agent's own sandbox included) or weaken it (AD-0019 §5).
+   - **Statuses and rulesets.** A status is reported only by `python eng/verify.py run-and-report` on the host it names, at the commit it verified. Never post, edit or copy an `arcforges/*` status by hand (for example with `gh api …/statuses`). Never change a ruleset, branch protection or required check to get a PR merged.
+   - AI agents must never use `git push --no-verify` to bypass required validation. They must also never disable, remove, modify, or otherwise circumvent the hooks or required checks merely to get a change through.
    - If validation fails, investigate and fix the underlying issue.
    - If a required local test cannot run, do not silently skip it or claim successful verification.
-   - Changing `eng/verify*.py` or `.githooks/` as reviewed engineering work is allowed; changing them to get a push through is not.
+   - Changing `eng/verify*.py`, `.githooks/` or the rulesets as reviewed engineering work is allowed; changing them to get a change through is not.
 9. **Efficient execution.** The cross-repository rules are in the Plan's [`AGENTS.md`](https://github.com/ArcForges/Plan/blob/main/AGENTS.md); here:
    - Run long commands in the background and wait for their completion notification; no sleep loops or fixed delays.
    - Restore once; builds stay incremental (never clean without cause).
-   - While iterating, run `python tools/check_design.py --require-protoc` (add `--compile` when protos changed) and the tool tests; the full profile runs once, in the hook.
+   - While iterating, run `python tools/check_design.py --require-protoc` (add `--compile` when protos changed) and the tool tests; the full profile runs once per pushed head, on each host (rule 8).
    - Reviewers add a worktree to the existing clone (`git worktree add`) instead of cloning, and re-run only distinct evidence.
    - Measure before restricting parallelism or resources.
 10. **Standing constraints.**

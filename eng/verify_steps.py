@@ -4,13 +4,14 @@
 The steps are exactly what .github/workflows/design.yml runs for external PRs: the locked restore of the pinned proto
 toolchain, the design checks with protoc and the warning-free build of the generated C#, and the tool tests. Markdown is
 this repository's source, so every change runs the full profile: the Windows leg on native Windows (where authors run
-the checks) and the Linux leg on native Linux (as the Ubuntu runner), each on its own machine (eng/verify.py; AGENTS.md
-rule 8). actionlint runs only when a workflow changed.
+the checks) and the Linux leg on native Linux (as the Ubuntu runner), each on its own host after the push and reported
+to GitHub as the commit statuses arcforges/windows and arcforges/linux (eng/verify.py; AGENTS.md rule 8). actionlint
+runs only when a workflow changed.
 """
 
 REPOSITORY = "ArcForges-Design"
 
-# Tool versions that key a reusable pass (the python running eng/verify.py is added by the core).
+# Tool versions recorded in each leg's summary (the python running eng/verify.py is added by the core).
 FINGERPRINT = {
     "win": {"python": ["python", "--version"], "dotnet": ["dotnet", "--version"]},
     "linux": {"python": "python --version", "dotnet": "dotnet --version"},
