@@ -31,6 +31,7 @@ The owner also asked that the existing verification requirements stay intact ("O
    - `.githooks/pre-push` is removed from every repository.
    - `python eng/verify.py install` removes a pre-push hook that an earlier `eng/verify.py` installed, and keeps any other.
    - A retired hook that is still installed calls `eng/verify.py pre-push`, which now lets the push through and says how to remove the hook.
+   - A worktree still at a commit from before this decision has the old `eng/verify.py`, whose gate the retired hook would still run. Running `install` once per clone removes the hook, and with it that case.
    - Lightweight hooks stay where a repository has them (the `pre-commit` whitespace check).
 3. **Fetch.** Each verification host fetches the exact pushed commit from GitHub into its own clone of the repository:
    - `git fetch origin <branch>`, or `refs/pull/<n>/head` for a pull request from a fork;
@@ -50,14 +51,15 @@ The owner also asked that the existing verification requirements stay intact ("O
    | `pending` | The leg starts. It is reported before any step runs, so a commit that is not on GitHub, or credentials that cannot write statuses, stop the leg at once. |
    | `success` | Every step of the leg ran and passed. A host whose leg has no steps for the commit reports success with a description saying so, for example "no Windows steps apply (profile 'docs')"; the step table decides that, not the agent. |
    | `failure` | A step failed, timed out or could not run. The description names the step. |
-   | `error` | The leg could not complete, for example a broken step table, a shallow clone or an interruption. |
+   | `error` | The leg could not complete, for example a broken step table, a shallow clone, or an interruption (Ctrl+C, SIGTERM, SIGHUP). |
 
-   The command exits 0 only after reporting success. A `pending` left by a host that stopped answering keeps the merge blocked.
+   The command exits 0 after reporting success, 1 when a step failed, and 2 when the leg could not complete or its status could not be reported. A `pending` left by a host that stopped answering keeps the merge blocked.
 
    **Credentials.** The status is posted with the GitHub CLI:
    - It uses `ARCFORGES_STATUS_TOKEN` when that is set: a fine-grained token limited to *Commit statuses: write* on the ArcForges repositories, which the owner provisions on each host outside every repository.
    - Otherwise it uses the host's own `gh` login.
-   - The script removes the token from the environment before any step runs, passes it only to `gh`, and never prints it.
+   - The script removes that token and the other GitHub tokens of the environment (`GH_TOKEN`, `GITHUB_TOKEN` and their enterprise forms) from the environment of every step. It unsets them again inside each Linux step, after the login profile has run, passes them only to `gh`, and never prints them.
+   - The remote must be a github.com URL; statuses are posted to github.com only.
 6. **Required checks.** Each repository's `main` ruleset requires the status of every host whose steps the repository's step table defines:
    - it applies to all pull requests targeting `main`, whatever their author;
    - it has no bypass actors, administrators included;
@@ -78,7 +80,7 @@ The owner also asked that the existing verification requirements stay intact ("O
 
    The hosted `Verify` check stays required where it already was. It is the external-PR gate of [AD-0016](AD-0016-local-first-verification.md) §2 and reports a skipped job for the owner's PRs. No other hosted job is added for the owner's PRs: the host statuses are the evidence, and the native builds and tests are not repeated on GitHub's runners.
 7. **Review and merge.** The independent review is unchanged: it reviews the head commit that carries both successful statuses, and the PR is merged only once the review is done and the required checks pass. The statuses are the PR's verification evidence, and the host log directory named in the command's output is the diagnostic record. The PR no longer quotes `LEG PASS` lines.
-8. **External PRs.** Hosted CI runs for them as before ([AD-0016](AD-0016-local-first-verification.md) §2). The required statuses apply to them too. Because a host executes the contributor's code, a maintainer reads the diff before any host verifies `refs/pull/<n>/head`.
+8. **External PRs.** Hosted CI runs for them as before ([AD-0016](AD-0016-local-first-verification.md) §2). The required statuses apply to them too. Because a host executes the contributor's code as the host's user, who holds the reporting credential, a maintainer reads the diff before any host verifies `refs/pull/<n>/head`.
 9. **Rules for agents.**
    - A status is reported only by `python eng/verify.py run-and-report` on the host whose operating system it names, at the commit it verified. Agents never post, edit or copy a status by hand.
    - Agents never change a ruleset, branch protection or required check to get a PR merged. They never add bypass actors.
@@ -109,7 +111,7 @@ The owner also asked that the existing verification requirements stay intact ("O
     - and keeping that access to the owner's hosts.
 
     A GitHub App posting the statuses would close this; it is not set up.
-  - **Fallback credential.** Until the owner provisions `ARCFORGES_STATUS_TOKEN` on a host, that host reports with its `gh` login. That login carries the owner's broader `repo` scope; it never leaves the host.
+  - **Fallback credential.** Until the owner provisions `ARCFORGES_STATUS_TOKEN` on a host, that host reports with its `gh` login, which carries the owner's broader `repo` scope. Steps never receive it through the environment. It stays on the host, but the code under verification runs as the same user and could read it from the host's `gh` configuration. This is why §8 applies to external PRs, and why a token limited to commit statuses is the intended setup.
   - **Unverified branches.** Pushing no longer waits for verification, so a branch on GitHub can hold unverified commits. Only `main` is protected, and only by the required statuses.
   - **Strict policy.** Merging one PR makes the others out of date, so they need updating and verifying again before they can merge. Delivery is serial ([AD-0014](AD-0014-delivery-method.md)), so this costs little.
   - **History.** Earlier PRs' `LEG PASS` lines and imported records stay as history and are not rewritten ([AD-0013](AD-0013-reuse-and-supersession.md)).

@@ -25,6 +25,7 @@ This repository is the **design authority** for ArcForges. The delivery plan, le
      git worktree add --detach .worktree/verify-<sha> <sha>
      cd .worktree/verify-<sha>
      python eng/verify.py run-and-report
+     cd ../.. && git worktree remove --force .worktree/verify-<sha>
      ```
 
      Fetch `refs/pull/<n>/head` for a pull request from a fork, and only after reading its diff (the host runs its code).
@@ -40,7 +41,7 @@ This repository is the **design authority** for ArcForges. The delivery plan, le
      - `success` only when every step of the leg ran and passed;
      - `failure` when a step failed, `error` when the leg could not complete.
 
-     It exits non-zero unless it reported success. A failure prints the step, the last log lines and the log path, and the logs and a `summary.json` stay on the host. Read the log, fix the cause, push, verify again.
+     It exits 0 after reporting success, 1 when a step failed and 2 when the leg could not complete or be reported. A failure prints the step, the last log lines and the log path, and the logs and a `summary.json` stay on the host. Read the log, fix the cause, push, verify again.
    - **Credentials.** The host reports with `ARCFORGES_STATUS_TOKEN` when set (a token limited to commit statuses), otherwise with its own `gh` login. Never print or copy either.
    - **Required checks.** The `main` ruleset requires both statuses for every PR, with no bypass actors, and the branch must be up to date with `main`. A missing, pending or failed status blocks the merge, and every new push needs verifying again on both hosts.
    - **Review.** The independent review looks at the head that carries both successful statuses, and the PR names them. The reviewer re-runs only checks whose inputs they doubt, or whose tooling the PR changed (AD-0014 §4).

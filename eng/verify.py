@@ -28,9 +28,13 @@ the leg (fail closed). A host whose leg has no steps for the commit (the step ta
 reports success saying so. The step logs and a summary.json of each leg stay on the host under
 <git common dir>/arcforges-verify/logs.
 
-The status is posted with the GitHub CLI (`gh api`), authenticated by ARCFORGES_STATUS_TOKEN when it is set (a token
-limited to commit statuses is enough) and otherwise by the host's own `gh` login. The token is removed from the
-environment before any step runs and is never printed.
+The status is posted to github.com with the GitHub CLI (`gh api`), authenticated by ARCFORGES_STATUS_TOKEN when it is
+set (a token limited to commit statuses is enough) and otherwise by the host's own `gh` login. That token and the other
+GitHub tokens of the environment (GH_TOKEN, GITHUB_TOKEN and their enterprise forms) are removed from the environment of
+every step, again inside each Linux step after its login profile has run, and are never printed. The remote must be a
+github.com URL (https, ssh://git@github.com/ or git@github.com:). The exit code is 0 after success, 1 when a step
+failed and 2 when the leg could not complete or could not be reported. An interruption (Ctrl+C, SIGTERM, SIGHUP)
+reports `error`; a process killed outright leaves `pending`, which keeps the merge blocked.
 
 Agents reach each host through its standard MCP server (ArcForges-Design AD-0019): the Windows leg through the Windows
 MCP server on the workstation, the Linux leg through the Linux MCP server on an independent Linux host. This script
@@ -48,6 +52,7 @@ import os
 import platform
 import re
 import shlex
+import signal
 import subprocess
 import sys
 import threading
@@ -62,6 +67,8 @@ HOSTS = {"win": "Windows", "linux": "Linux"}
 # The commit status context each host reports; the required status checks of `main` name exactly these.
 CONTEXTS = {"win": "arcforges/windows", "linux": "arcforges/linux"}
 STATUS_TOKEN = "ARCFORGES_STATUS_TOKEN"
+# Credentials no step may see: the reporting token and any GitHub token of the environment.
+CREDENTIALS = (STATUS_TOKEN, "GH_TOKEN", "GITHUB_TOKEN", "GH_ENTERPRISE_TOKEN", "GITHUB_ENTERPRISE_TOKEN")
 # What an earlier eng/verify.py installed as the pre-push hook; `install` removes it (verification is after the push).
 RETIRED_HOOK = "eng/verify.py\" pre-push"
 
@@ -283,7 +290,8 @@ class Runner:
         if step.host != "linux" or not isinstance(step.cmd, str):
             raise VerifyError(f"step {step.id}: a linux step needs a bash command string")
         exports = "".join(f"export {key}={shlex.quote(value)}; " for key, value in step.env.items())
-        inner = f"export ARCFORGES_VERIFY=1; {exports}{self.expand(step.cmd)}"
+        # A login shell reads the host's profile, which may export a credential again; it is unset after the profile.
+        inner = f"unset {' '.join(CREDENTIALS)}; export ARCFORGES_VERIFY=1; {exports}{self.expand(step.cmd)}"
         # The step runs in its own session, recorded until it ends so that an abort can stop all of it (ending the bash
         # that started it does not stop its other processes); timeout(1) signals its process group when the step runs too
         # long.
@@ -578,23 +586,27 @@ def github_repository(remote: str) -> str:
     url = git("config", "--get", f"remote.{remote}.url")
     match = re.fullmatch(r"(?:https://(?:[^@/]+@)?github\.com/|ssh://git@github\.com/|git@github\.com:)"
                          r"([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+?)(?:\.git)?/?", url)
-    if not match:
-        raise VerifyError(f"the remote {remote} ({url}) is not a github.com repository, so there is nowhere to report to")
+    if not match or {match.group(1), match.group(2)} & {".", ".."}:
+        shown = re.sub(r"//[^@/]+@", "//<credentials>@", url)  # never print a credential embedded in the URL
+        raise VerifyError(f"the remote {remote} ({shown}) is not a github.com repository, so there is nowhere to report "
+                          "to (an SSH host alias is not recognised; use https://github.com/<owner>/<repo>.git)")
     return f"{match.group(1)}/{match.group(2)}"
 
 
 class Reporter:
     """Posts this host's commit status for one commit through `gh api` (repos/{owner}/{repo}/statuses/{sha})."""
 
-    def __init__(self, slug: str, sha: str, host: str, token: str) -> None:
+    def __init__(self, slug: str, sha: str, host: str, credentials: dict[str, str]) -> None:
         self.slug, self.sha, self.context = slug, sha, CONTEXTS[host]
-        self.env = dict(os.environ)
-        if token:
-            self.env["GH_TOKEN"] = token
+        # gh gets back the GitHub tokens taken from the environment; the reporting token, when set, wins.
+        self.env = dict(os.environ, **{k: v for k, v in credentials.items() if k != STATUS_TOKEN})
+        if credentials.get(STATUS_TOKEN):
+            self.env["GH_TOKEN"] = credentials[STATUS_TOKEN]
 
     def post(self, state: str, description: str) -> None:
         description = description if len(description) <= 140 else description[:137] + "..."
-        argv = ["gh", "api", "--method", "POST", f"repos/{self.slug}/statuses/{self.sha}", "--silent",
+        argv = ["gh", "api", "--hostname", "github.com", "--method", "POST", f"repos/{self.slug}/statuses/{self.sha}",
+                "--silent",
                 "-f", f"state={state}", "-f", f"context={self.context}", "-f", f"description={description}"]
         error = ""
         for attempt in range(3):
@@ -618,11 +630,12 @@ class Reporter:
                           "commit pushed to GitHub, and may this host's credentials write commit statuses?")
 
 
-def verify_here(repo: Repository, rev: str, remote: str, keep_going: bool, report: bool, token: str = "") -> None:
+def verify_here(repo: Repository, rev: str, remote: str, keep_going: bool, report: bool,
+                credentials: dict[str, str] | None = None) -> None:
     """Runs this host's leg of the commit; with report, posts its status around the run. Raises unless it passed."""
     sha = git("rev-parse", "--verify", f"{rev}^{{commit}}")
     host = this_host()
-    reporter = Reporter(github_repository(remote), sha, host, token) if report else None
+    reporter = Reporter(github_repository(remote), sha, host, credentials or {}) if report else None
     if reporter:
         reporter.post("pending", f"verifying on {platform.node()}")
     try:
@@ -637,7 +650,10 @@ def verify_here(repo: Repository, rev: str, remote: str, keep_going: bool, repor
         summary = run_leg(repo, t, host, keep_going)
     except StepsFailed as error:
         if reporter:
-            reporter.post("failure", f"{platform.node()}: {error}")
+            try:
+                reporter.post("failure", f"{platform.node()}: {error}")
+            except VerifyError as unreported:  # the status stays pending, which still blocks the merge
+                raise VerifyError(f"{error}; {unreported}") from error
         raise
     except BaseException as error:
         if reporter:
@@ -720,8 +736,12 @@ def main() -> int:
     retired.add_argument("remote")
     retired.add_argument("url", nargs="?")
     args = parser.parse_args()
-    # The reporting token never reaches a step (whose output is logged) or a child process other than gh.
-    token = os.environ.pop(STATUS_TOKEN, "")
+    # No credential reaches a step (whose output is logged) or a child process other than gh.
+    credentials = {name: os.environ.pop(name) for name in CREDENTIALS if name in os.environ}
+    # A terminated or hung-up run reports `error` like Ctrl+C, instead of leaving `pending` behind.
+    for name in ("SIGTERM", "SIGHUP"):
+        if hasattr(signal, name):
+            signal.signal(getattr(signal, name), interrupted)
     # Step logs carry arbitrary text (e.g. test-runner symbols); a console or pipe without UTF-8 must not turn printing a
     # failure into a second failure that hides it.
     for stream in (sys.stdout, sys.stderr):
@@ -751,14 +771,21 @@ def main() -> int:
                     print(f"  {step.id:30} lane={step.lane_name:12} timeout={step.timeout}s"
                           f"{' exclusive' if step.exclusive else ''}")
         else:
-            verify_here(repo, args.rev, args.remote, args.keep_going, args.command == "run-and-report", token)
+            verify_here(repo, args.rev, args.remote, args.keep_going, args.command == "run-and-report", credentials)
     except VerifyError as error:
         print(f"arcforges-verify: FAIL {error}", file=sys.stderr, flush=True)
-        return 1
+        return 1 if isinstance(error, StepsFailed) else 2
     except KeyboardInterrupt:
         print("arcforges-verify: FAIL interrupted", file=sys.stderr, flush=True)
-        return 1
+        return 2
+    except Exception as error:  # noqa: BLE001 - a broken step table must still end as a reported, non-zero error
+        print(f"arcforges-verify: FAIL {type(error).__name__}: {error}", file=sys.stderr, flush=True)
+        return 2
     return 0
+
+
+def interrupted(signum: int, _frame: object) -> None:
+    raise KeyboardInterrupt(f"signal {signum}")
 
 
 if __name__ == "__main__":
