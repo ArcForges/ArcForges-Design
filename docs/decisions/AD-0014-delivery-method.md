@@ -24,7 +24,7 @@
    Re-review after changes covers the delta only, unless the delta changes build or test infrastructure.
 5. **Fast local feedback.** Authors run real Windows tests on the workstation and real Linux tests on a native Linux host ([AD-0018](AD-0018-native-platforms-without-wsl-integration.md) §5) for everyday feedback and do not wait on hosted CI for it. Hosted CI is the merge gate for the platform-independent gates.
 
-   > **Amendment (2026-10-16, [AD-0016](AD-0016-local-first-verification.md)).** The "Hosted CI" row of §4 and "hosted CI is the merge gate" now apply to external PRs (any author other than `deku2026`, Dependabot included). The owner's PRs are gated by the repository-managed pre-push verification at the pushed head plus the independent review, and run no hosted validation.
+   > **Amendment (2026-10-16, [AD-0016](AD-0016-local-first-verification.md)).** The "Hosted CI" row of §4 and "hosted CI is the merge gate" now apply to external PRs (any author other than `deku2026`, Dependabot included). The owner's PRs are gated by the repository-managed pre-push verification at the pushed head plus the independent review, and run no hosted validation. *Amended 2026-10-22 by [AD-0020](AD-0020-post-push-verification-and-required-checks.md): the owner's verification runs after the push on each host and is enforced by the required commit statuses `arcforges/windows` and `arcforges/linux` on `main`.*
 6. **Fakes only at unavailable boundaries.** Closed-loop automated tests may fake:
    - other machines;
    - Cloudflare, Paddle, Google Play, FCM and app stores;

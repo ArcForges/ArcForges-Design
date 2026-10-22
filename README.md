@@ -27,7 +27,7 @@ python -m unittest discover -s tests -v
 
 `--compile` also builds the generated C#, warning-free under `IsAotCompatible`.
 
-The pre-push hook runs the same checks, with `--compile`, for every push, as native Windows and native Linux legs: each leg runs on its own operating system, and a leg that passed on another machine is imported with `python eng/verify.py import` ([AD-0018](docs/decisions/AD-0018-native-platforms-without-wsl-integration.md) §5). Agents reach the Windows leg through the Windows MCP server and the Linux leg through the Linux MCP server, never through local WSL ([AD-0019](docs/decisions/AD-0019-mcp-first-verification.md)). Install the hook once per clone, for every worktree, with `python eng/verify.py install` ([AGENTS.md](AGENTS.md), rule 8; [AD-0016](docs/decisions/AD-0016-local-first-verification.md)).
+After every push, each verification host runs the same checks, with `--compile`, as its native leg and reports the result to GitHub as a commit status (`arcforges/windows`, `arcforges/linux`). The `main` ruleset requires both before a PR can merge ([AD-0020](docs/decisions/AD-0020-post-push-verification-and-required-checks.md)). Agents reach the Windows host through the Windows MCP server and the Linux host through the Linux MCP server, never through local WSL ([AD-0019](docs/decisions/AD-0019-mcp-first-verification.md)). On a host, in a worktree at the pushed commit: `python eng/verify.py run-and-report` ([AGENTS.md](AGENTS.md), rule 8).
 
 ## Licence
 
