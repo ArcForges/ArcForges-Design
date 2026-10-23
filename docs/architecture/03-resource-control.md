@@ -177,7 +177,7 @@ Root limits are updated when `B` changes by more than 5% of capacity, at most ev
 | | Windows child job | Linux transient unit `arcforges-a-<attempt>.service` |
 |---|---|---|
 | CPU share | Weight from priority (INTERACTIVE 9, HIGH 7, NORMAL 5, LOW 3, BACKGROUND 1). If the policy sets a per-task CPU cap, the job uses hard-cap mode instead (Windows cannot combine both, V-W04). | `CPUWeight` (→ `cpu.weight`): 400, 200, 100, 50, 10. Optional per-task `CPUQuota`. |
-| Memory | `JobMemoryLimit = commit_factor × mem_ceiling` (commit limit, V-W05); physical usage is watched by the monitor | `MemoryHigh = 1.25 × mem_expected`, `MemoryMax = mem_ceiling`, `OOMPolicy=kill` (whole unit on OOM kill) |
+| Memory | `JobMemoryLimit = commit_factor × mem_ceiling` (commit limit, V-W05); physical usage is watched by the monitor | `MemoryHigh = 1.25 × mem_expected`, `MemoryMax = mem_ceiling`, `OOMPolicy=stop` (the whole unit is stopped after an OOM kill; no `memory.oom.group`, [L-27](../verification/platform-capabilities.md); amended 2026-10-23, formerly `OOMPolicy=kill`) |
 | Processes | `ActiveProcessLimit` if policy sets one | `TasksMax` (default 4096) |
 | Kill | `TerminateJobObject` | `FreezeUnit`, SIGKILL to each process of the unit's cgroup, direct `cgroup.freeze=0`, `ThawUnit` ([04](04-execution.md) §6) |
 | Pause | unsupported | `FreezeUnit` / `ThawUnit` (→ `cgroup.freeze`) |
