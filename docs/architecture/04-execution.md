@@ -150,10 +150,14 @@ See [02](02-node-service.md) §2 step 5.
 
 `ResourceService.AdoptProcess(pid, start_time)`:
 1. Same-user check.
-2. Windows: a process already in any job (`IsProcessInJob`) is refused with `adopt_not_permitted`, because joining it would attach the ArcForges hierarchy to a foreign job. Otherwise the node assigns it to the root job and then to a new adoption job, which nests the adoption job under the root (V-W01). Linux: `StartTransientUnit("arcforges-x-<id>.scope", PIDs=[pid])` in `arcforges.slice`. The user manager can move only processes inside its own subtree (V-L01), so processes elsewhere (login-session scopes, WSL `/non-systemd`) are refused with `adopt_not_permitted`.
+2. Windows: a process already in any job (`IsProcessInJob`) is refused with `adopt_not_permitted`, because joining it would attach the ArcForges hierarchy to a foreign job. Otherwise the node assigns it to the root job and then to a new adoption job, which nests the adoption job under the root (V-W01). Linux: `StartTransientUnit("arcforges-x-<id>.scope", PIDs=[pid])` in `arcforges.slice`. The user manager can move only processes inside its own subtree (V-L01), so processes elsewhere (login-session scopes, WSL `/non-systemd`) are refused with `adopt_not_permitted`. *Corrected 2026-10-23 (AF-SEC-01, L-29):* on systemd 257 the user manager moves any process of the same user into the scope, through the system manager, wherever it runs; another user's process is refused with `adopt_not_permitted` before systemd is called. Whether WSL's `/non-systemd` processes can be moved is not observed.
 3. Children existing at adoption time are adopted individually (best effort, with each result recorded). Later children follow the container.
 
 Adoption creates a synthetic task (`kind=ADOPTED`) so the process appears in all surfaces (R-RES-013).
+
+*Added 2026-10-23 (AF-SEC-01, L-30):* on the Windows workstation every user process is already in a job, so step 2 refuses every candidate there; the capability `adopt` reports `LIMITED` with that reason on Windows. A successful Windows adoption is deferred to a machine with a process outside every job (Plan acceptance register).
+
+*Added 2026-10-23 (AF-SEC-01):* the node is not an adopted process's parent and captures no exit status, so an adopted task whose container empties ends `LOST` with the reason "no exit status: the node is not the adopted process's parent". After a node restart, an adoption container the node cannot re-open (a Windows adoption job has no holder, so it leaves the namespace with the node's last handle, L-14) takes SM-TASK's recovery rule "container missing": the task ends `LOST`; the process keeps running and is no longer controlled as a task.
 
 ## 11. Result caching (opt-in)
 

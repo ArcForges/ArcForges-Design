@@ -59,6 +59,39 @@ Default permission matrix (policy `permissions`, editable only by `HUMAN`).
 
 **Approvers** must be `HUMAN` (Desktop, interactive CLI), or `REMOTE` through `decide_approval` with step-up and the node policy `remote.allow_approvals=true`. Every privileged or remote action is audited (R-SEC-002).
 
+**Operation names** (added 2026-10-23, AF-SEC-01). The policy `permissions` overrides and `ExplainPermission` name operations by these keys. Rows marked *annotation* are not in the matrix above; their defaults come from the RPC annotations of the contract. *Fixed* operations cannot be overridden.
+
+| Operation | Matrix row | HUMAN | SCRIPT | AGENT | Fixed |
+|---|---|---|---|---|---|
+| `task.submit` | Submit task (own) | A | A | A | |
+| `task.read` | Read tasks, records, resources | A | A | A | |
+| `task.read_output` | Read an output tail | A | A | A | |
+| `task.cancel_own` | Cancel own task | A | A | A | |
+| `task.cancel_others` | Cancel others' tasks | A | P | P | |
+| `task.set_priority` | Change a task's priority | A | A | P | |
+| `task.pause` | Pause a running task (*annotation*: `PauseTask`) | A | A | P | |
+| `task.purge` | Purge a task record (*annotation*: `PurgeTask`) | A | D | D | |
+| `pool.pause` | Pause or resume a pool | A | A | P | |
+| `parallelism.change` | Change parallelism | A | P | P | |
+| `parallelism.lower_own_session` | Change parallelism: lowering the caller's own session's limit | A | P | A | |
+| `policy.change` | Change other policy, create or delete pools | A | P | P | |
+| `policy.retry_safety` | `retry_safety` rules (HUMAN-edited, AD-0006 §4) | A | D | D | yes |
+| `policy.permissions` | The `permissions` overrides (HUMAN-edited) | A | D | D | yes |
+| `approval.decide` | Decide an approval | A | D | D | yes |
+| `cleanup.plan` | Plan cleanup | A | A | A | |
+| `cleanup.execute` | Execute cleanup | A | P | P | |
+| `process.adopt` | Adopt or terminate a process: adopt | A | D | D | |
+| `process.terminate` | Adopt or terminate a process: terminate (also cancelling an `ADOPTED` task) | A | P | P | |
+| `integration.change` | Integrations, pairing, account sign-in | A | D | D | yes |
+| `node.stop` | Stop the node | A | A | D | |
+| `node.update` | Apply an update | A | A | D | |
+| `node.rollback` | Roll back an update | A | D | D | yes |
+| `node.settings` | Change node settings (*annotation*: `UpdateNodeSettings`) | A | P | D | |
+| `node.rename` | Rename the node (*annotation*: `RenameNode`) | A | A | D | |
+| `notifications.mark_read` | Mark notifications read (*annotation*: `MarkNotificationsRead`) | A | D | D | |
+
+Overrides for `REMOTE` can only narrow (deny); remote enforcement is AF-CLD-05's.
+
 *Direction (roadmap; not release 1; [AD-0017](../decisions/AD-0017-delegated-execution-direction.md), amended 2026-10-19; [18](18-application-workload-control.md) §7.5, §9):* an application origin and an application client kind (two enum values) carry callers of the cooperative resource API; their classification depends on the connection's client kind being verified against the peer (AF-SEC-01; §1's documented bypasses apply). The proposed rows, additive to the matrix above, take effect with RM-09 stage 1 (cooperative rows), RM-18 (per-application entries and placement) and EX-26 (the interactive mode):
 
 | Operation | HUMAN | SCRIPT | AGENT | APPLICATION (new) | REMOTE | PEER |
