@@ -63,7 +63,7 @@ Optional privileged features are designed but not part of the current deliverabl
      - `CPUWeight` (03 §5), plus an optional per-task `CPUQuota`;
      - `MemoryHigh`, `MemoryMax`, `OOMPolicy=stop` and an optional `MemorySwapMax`. After the kernel kills a process at the unit's `MemoryMax`, systemd stops the whole unit through its ordinary stop (`ExecStop`, then the stop signals within `TimeoutStopSec`), and the unit's result is `oom-kill`. No ArcForges unit sets `memory.oom.group`: its group kill also signals the user manager's spawn child while it still shares the manager's address space, and the kernel then kills the user manager itself (amended 2026-10-23, L-27; formerly `OOMPolicy=kill`);
      - `TasksMax`;
-     - `KillMode=control-group` with `TimeoutStopSec` = the end-step budget (10 s) + `leftover_grace` (default 5 s) + 5 s; `exec-stop` kills the leftovers with SIGKILL after `leftover_grace`. This applies only to the stop that follows the root process's exit (04 §3; amended 2026-10-16);
+     - `KillMode=control-group` with `TimeoutStopSec` = the end-step budget (10 s) + `leftover_grace` (default 5 s) + 5 s; `exec-stop` kills the leftovers with SIGKILL after `leftover_grace`. This applies only to the stop that follows the root process's exit (04 §3; amended 2026-10-16), and to the stop systemd starts after an OOM kill, when the root may still be running and is then ended with the leftovers (04 §3; amended 2026-10-23, L-27);
      - `ExecStopPost=<app>/current/arcforges node exit-record --attempt <id>`;
      - `CollectMode=inactive`: a failed unit is kept until the node has recorded it from its properties (an OOM kill can skip `ExecStopPost`), then reset (amended 2026-10-16).
    - **Launch.**
