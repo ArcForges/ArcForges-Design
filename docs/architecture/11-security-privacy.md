@@ -70,7 +70,8 @@ Default permission matrix (policy `permissions`, editable only by `HUMAN`).
 | `task.cancel_others` | Cancel others' tasks | A | P | P | |
 | `task.set_priority` | Change a task's priority | A | A | P | |
 | `task.pause` | Pause a running task (*annotation*: `PauseTask`) | A | A | P | |
-| `task.purge` | Purge a task record (*annotation*: `PurgeTask`) | A | D | D | |
+| `task.purge` | Purge a task record (*annotation*: `PurgeTaskRecord`) | A | D | D | |
+| `task.retry` | Retry a finished task (*annotation*: `RetryTask`) | A | A | A (P for a `SIDE_EFFECTING` or `UNKNOWN` task) | |
 | `pool.pause` | Pause or resume a pool | A | A | P | |
 | `parallelism.change` | Change parallelism | A | P | P | |
 | `parallelism.lower_own_session` | Change parallelism: lowering the caller's own session's limit | A | P | A | |
