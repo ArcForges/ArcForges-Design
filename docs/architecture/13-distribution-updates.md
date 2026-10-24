@@ -30,6 +30,7 @@ Hosted CI builds each release `<v>` from a tagged commit of the ArcForges reposi
 
 - **Windows version directory:** `arcforges.exe`, `arcforges-supervisor.exe`, `arcforges-setup.exe` (uninstall and repair), and `arcforges-desktop.exe` with its native Avalonia/Skia libraries.
 - **Linux version directory:** `arcforges` and `arcforges-desktop` with its native libraries.
+- **Both:** `digests.json`, written by the packaging step: `{"version": "<v>", "files": {"<relative path, / separators>": "<SHA-256 hex>", …}}` for every file of the version directory except itself. The node checks its version directory against it ([AD-0007](../decisions/AD-0007-ai-integration.md) §8; added 2026-10-23, AF-SEC-01).
 - **Android:** released separately through Google Play (§8).
 
 ## 3. Installation
