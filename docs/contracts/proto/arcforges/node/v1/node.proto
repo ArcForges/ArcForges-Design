@@ -81,11 +81,12 @@ service NodeService {
   rpc UpdateNodeSettings(NodeServiceUpdateNodeSettingsRequest) returns (NodeServiceUpdateNodeSettingsResponse);
 
   // Stop the node. Running executions continue unless cancel_running (or kill_with_node tasks).
+  // STARTING or RECOVERING: STATE/invalid_state (DID_NOT_HAPPEN, NEVER); no deferred stop. Issue a new command after readiness.
   // auth: HUMAN=A SCRIPT=A AGENT=D REMOTE=high
   // idempotency: command_id
   // deadline: 10 s (returns when the stop is recorded; the node then stops within timeout_ms)
   // stream: none
-  // errors: AUTHORIZATION/permission_denied, STATE/update_in_progress
+  // errors: AUTHORIZATION/permission_denied, STATE/update_in_progress, STATE/invalid_state
   // locality: node
   // state: SM-NODE: READY|DEGRADED -> STOPPING
   rpc StopNode(NodeServiceStopNodeRequest) returns (NodeServiceStopNodeResponse);

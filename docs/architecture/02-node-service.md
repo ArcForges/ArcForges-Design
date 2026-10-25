@@ -85,6 +85,8 @@ flowchart TB
 
 ### Shutdown (`arcforges node stop`, OS logoff, or update switch)
 
+`StopNode` accepts `READY` or `DEGRADED` (SM-NODE). In `STARTING` or `RECOVERING`, a reachable API returns `STATE/invalid_state`, `effect=DID_NOT_HAPPEN` and `retry.mode=NEVER`, with `state.state` naming the current lifecycle state and `state.reason` explaining the readiness requirement. No stop is deferred: startup continues, and after `node wait-ready` the caller may issue a new stop command.
+
 1. Stop accepting new API calls with `UNAVAILABLE` + retry advice `AFTER_TIME` (2 s).
 2. Stop admissions. Leave running executions running unless they are `kill_with_node`; their guards take over the disk limits (06 §5).
 3. Flush the record builder and sampler buffers, checkpoint WAL, write a clean-shutdown marker, release the lock and exit 0.
