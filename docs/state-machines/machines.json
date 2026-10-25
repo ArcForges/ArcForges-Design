@@ -222,6 +222,14 @@
         },
         {
           "from": [
+            "STARTING"
+          ],
+          "to": "STOPPING",
+          "on": "cancel or preemption while the attempt is being launched",
+          "effect": "the stop sequence of architecture 04 section 6, applied to the container once it exists; STOPPING is persisted, so a node restart continues the stop (architecture 02 section 2 step 5, 04 section 9)"
+        },
+        {
+          "from": [
             "RUNNING"
           ],
           "to": "FINALIZING",
