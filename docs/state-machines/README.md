@@ -102,6 +102,7 @@ stateDiagram-v2
   RUNNING --> STOPPING : cancel, timeout, CPU limit, preemption
   PAUSING --> STOPPING : cancel, timeout, CPU limit, preemption
   PAUSED --> STOPPING : cancel, timeout, CPU limit, preemption
+  STARTING --> STOPPING : cancel or preemption while the attempt is being launched
   RUNNING --> FINALIZING : root process exited
   STOPPING --> FINALIZING : container empty, or verification window (5 s) elapsed
   CREATED --> FINALIZING : result-cache hit (CACHE_RESTORE attempt
@@ -128,6 +129,7 @@ stateDiagram-v2
 | PAUSING | PAUSED | freeze confirmed (cgroup.events frozen 1) |  |  |
 | PAUSED | RUNNING | thaw |  |  |
 | RUNNING, PAUSING, PAUSED | STOPPING | cancel, timeout, CPU limit, preemption |  |  |
+| STARTING | STOPPING | cancel or preemption while the attempt is being launched |  | the stop sequence of architecture 04 section 6, applied to the container once it exists; STOPPING is persisted, so a node restart continues the stop (architecture 02 section 2 step 5, 04 section 9) |
 | RUNNING | FINALIZING | root process exited |  | leftover processes terminated after leftover_grace |
 | STOPPING | FINALIZING | container empty, or verification window (5 s) elapsed |  | TERMINATION_INCOMPLETE when processes remain |
 | CREATED | FINALIZING | result-cache hit (CACHE_RESTORE attempt; RESTORE mode is roadmap RM-04, not in release 1) |  |  |
