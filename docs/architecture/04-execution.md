@@ -129,6 +129,8 @@ Timeouts and CPU-time limits run the same sequence with the reason `TIMED_OUT` /
 - `termination_reason`: `EXITED`, `CANCELLED`, `TIMED_OUT`, `CPU_TIME_EXCEEDED`, `OOM_KILLED` (Linux: `memory.events` oom_kill increased, or `SERVICE_RESULT=oom-kill`), `MEMORY_LIMIT` (Windows commit-limit notification observed and exit ≠ 0), `PREEMPTED`, `LOST`, `SPAWN_FAILED`, `NODE_SHUTDOWN`, `POLICY_DENIED`, `TERMINATION_INCOMPLETE`, `CACHE_RESTORED` (result-cache restore; never an execution), `OUTPUT_LIMIT` (§4), `DISK_LIMIT` (per-attempt temporary space, or critical free space on a written volume; [06](06-storage-workspaces.md) §5) or `ENDPOINT_TAKEN` (another process listened on the attempt's own sccache endpoint, or took the cache store's port; [05](05-toolchains-caches.md) §5);
 - `effect`: `DID_NOT_HAPPEN` only for `SPAWN_FAILED` and `POLICY_DENIED`; `HAPPENED` for completed processes; `UNKNOWN` for `LOST`.
 
+When an attempt's result records a stop during a running launch step (§3), its `effect` is `HAPPENED`, including when the command never started. Launch steps are part of the task's execution. This does not assert that the command ran or that effects of the step were rolled back.
+
 ## 8. Dependencies, services, retries
 
 - **Dependencies:** a task with unmet dependencies is `WAITING_DEPENDENCY`. If a `SUCCEEDED`-condition dependency fails or is cancelled, the dependent becomes `CANCELLED` with reason `dependency_failed`.
