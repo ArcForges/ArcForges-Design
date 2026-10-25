@@ -75,7 +75,7 @@ Defined by `arcforges.node.v1.TaskSpec` ([contracts](../contracts/proto/arcforge
 
 The record lists the terminated leftovers (image names and counts). Repeated leftovers raise the finding `LEFTOVER_PROCESSES`. Long-lived helpers belong in `kind=SERVICE` tasks. Compiler servers run per attempt and stop with it ([05](05-toolchains-caches.md) §5).
 
-**Compatibility of the helper roles.** `exit-record`, `exec-wrap`, `exec-launch`, `exec-stop` and `node guard` are invoked by path through `app/current`, so after an update they may run a newer binary than the node that launched the attempt. Their arguments and the formats of `exit.json`, `launch.json`, `guard.json`, `guard-events.jsonl` and the heartbeat are therefore a stable internal contract, with additive changes only. The format (schema 1):
+**Compatibility of the helper roles.** `exit-record`, `exec-wrap`, `exec-launch`, `exec-stop` and `node guard` are invoked by path through `app/current`, so after an update they may run a newer binary than the node that launched the attempt. Their arguments and the formats of `exit.json`, `launch.json`, `started.json`, `guard.json`, `guard-events.jsonl` and the heartbeat are therefore a stable internal contract, with additive changes only. The exit-record format (schema 1):
 
 ```json
 {"schema": 1, "attempt_id": "<base32>", "exit_code_kind": "exited|killed|dumped", "exit_status": 0,
@@ -85,6 +85,20 @@ The record lists the terminated leftovers (image names and counts). Repeated lef
 ```
 
 On Linux, `exit-record` reads `cpu.stat`, `memory.peak`, `memory.events` and `io.stat` of its own unit cgroup, in which `ExecStopPost` runs.
+
+**Root-start evidence (MR-95).** After resuming the command root, the Windows holder atomically writes `logs/<attempt>/started.json`
+through a flushed temporary file and rename, before its best-effort pipe report. Launch steps never write this record. It contains only
+the attempt ID, the root's PID and creation FILETIME (the process identity), and the UTC time at which the root was resumed:
+
+```json
+{"schema": 1, "attempt_id": "<base32>", "root_pid": 123, "root_start_file_time": 1, "started_at": "<RFC 3339>"}
+```
+
+This is an additive file: older nodes ignore it; absence, an incomplete/invalid record or a different attempt ID is unknown start
+evidence, never permission to name a launch step as the command root. A future cross-version update must preserve or settle the start
+and limit evidence of an older holder that cannot write this file before claiming transparent recovery (AF-DIST-02); this maintenance
+repair does not claim that older-holder upgrade case as verified. No command line, environment or secret value belongs in the record.
+
 
 ## 4. Output capture and streaming
 
@@ -144,6 +158,13 @@ When an attempt's result records a stop during a running launch step (§3), its 
 See [02](02-node-service.md) §2 step 5.
 - **Windows.** The attempt's holder keeps the child and root jobs open, so the restarted node re-opens them by name. It re-associates its completion port (clear, then attach; L-15), reads accounting and limit violations, and can cancel, limit or account the attempt as before. After the node records a finished attempt, it sets the attempt's ack event and the holder exits.
 - **Linux.** The node finds the unit by name, reads its state and cgroup files, and reads `exit.json` for attempts that finished while it was down.
+- **A start completed across the restart (MR-95).** A recovered STARTING attempt whose command starts while the node is down, or
+  after it has recovered, must resume the existing timeout and CPU-time-limit checks as soon as its root start is known. On Windows the
+  node reads the holder's `started.json`, not an arbitrary process entering the job. On Linux it observes the unit's main-process
+  identity and start time (the existing `exec-launch` main process becomes the command). It records the root and start in the existing
+  attempt fields and advances STARTING to RUNNING. The timeout uses the recovered start time, including elapsed node downtime; a
+  restart never grants a fresh timeout budget. CPU time remains the container's cumulative accounting. This restores node-side checks
+  after recovery; it does not claim that a stopped node enforces a polling-only limit during its absence.
 - Attempts recovered after a node restart get a `node_gap` timeline segment.
 - Attempts whose container vanished, or whose boot identity changed, become `LOST` with evidence `{boot_id_old, boot_id_new}` or `{container_missing}`.
 - A `LOST` attempt of a retryable task schedules a retry. Others wait for a user or agent decision (`RetryTask`).
