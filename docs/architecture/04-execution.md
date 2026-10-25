@@ -165,6 +165,13 @@ See [02](02-node-service.md) §2 step 5.
   attempt fields and advances STARTING to RUNNING. The timeout uses the recovered start time, including elapsed node downtime; a
   restart never grants a fresh timeout budget. CPU time remains the container's cumulative accounting. This restores node-side checks
   after recovery; it does not claim that a stopped node enforces a polling-only limit during its absence.
+- A stop that persists `STOPPING` stores its cause and redacted detail in the same transaction as that transition. The existing
+  `attempt.termination_reason` and `attempt.detail` columns carry this pending stop intent; it is not yet a final `AttemptResult`.
+  Recovery continues the forced stop with that stored cause and detail, including `PREEMPTED`, so the normal side-effect/retry rules
+  of section 8 still apply after a node restart. A pending reason never makes a live STOPPING attempt already finished, and the public
+  result is populated only at FINISHED. Finalization writes the final outcome, which may instead be `TERMINATION_INCOMPLETE`.
+  A legacy STOPPING row without a stored cause keeps the previous cancellation fallback; the node does not infer a preemption from
+  human-readable detail or invent retry permission for an unknown cause. No schema migration or backfill is required.
 - Attempts recovered after a node restart get a `node_gap` timeline segment.
 - Attempts whose container vanished, or whose boot identity changed, become `LOST` with evidence `{boot_id_old, boot_id_new}` or `{container_missing}`.
 - A `LOST` attempt of a retryable task schedules a retry. Others wait for a user or agent decision (`RetryTask`).

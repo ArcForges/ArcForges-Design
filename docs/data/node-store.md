@@ -68,6 +68,11 @@ Schema: [node-store.sql](node-store.sql). It is checked by `tools/check_design.p
 | `approval` | Approvals with the captured request and outcome (SM-APPROVAL) | `approval_id`; unique `command_id`; `(state, expires_at)` | Approval service | 90 days after decision |
 | `fact` | Operational memory facts, one active fact per scope | `fact_id`; partial unique active scope; `(state, last_observed)` | Memory | Stale: 30 days unobserved, then deleted after another 60 days; superseded: 30 days |
 
+While an attempt is STOPPING, its existing `termination_reason` and `detail` fields store the pending stop intent atomically with
+that state (04 section 9). They do not constitute a final result: the contract view publishes `Attempt.result` only when the attempt
+is FINISHED, after finalization writes the final reason/effect/detail. A missing reason on a legacy STOPPING row retains the cancellation
+fallback. The SQL schema and version are unchanged.
+
 ### Storage, caches and toolchains
 
 | Table | Purpose | Key / indexes | Owner | Retention |
