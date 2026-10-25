@@ -1,6 +1,6 @@
 # AD-0004 — Contracts, transports and authoritative state
 
-- Status: Accepted (2026-10-12; amended 2026-10-21 by AD-0018: the host–guest transport and the WSL bridge as a package user are superseded; their v1 wire declarations stay, retired)
+- Status: Accepted (2026-10-12; amended 2026-10-21 by AD-0018: the host–guest transport and the WSL bridge as a package user are superseded; their v1 wire declarations stay, retired; amended 2026-10-25 by MR-99: durable local attempt phases)
 
 ## Decision
 
@@ -45,3 +45,5 @@
 4. Clients keep caches only. They reconcile from snapshot-then-incremental streams (`NodeEventService.Subscribe`) ordered by a per-node `event_seq`, within a `stream_generation` that changes when the journal is reset or restored. A client resumes from its last cursor, or receives `reset` plus a fresh snapshot.
 5. Commands carry `RequestMeta.command_id` for idempotency (replay returns the stored receipt for 24 h), and `expected_rev` where a resource is revisioned (policies, pool definitions, workspace settings).
 6. Errors use `ArcError`. `EffectCertainty` is mandatory on execution-affecting failures, so a caller can tell "did not start" from "may have run".
+
+7. **Local attempt phases (MR-99, 2026-10-25).** SM-ATTEMPT permits local admission directly into STARTING as a durable launch intent before OS container creation. A first event names no fictional prior state. Node stops commit STOPPING with their cause before platform action; completion commits recoverable FINALIZING before the final record. Direct FINISHED shortcuts require their declared spawn/policy or recovery LOST evidence and effect. See [04 execution](../architecture/04-execution.md) sections 3 and 9. Existing enum values and store columns suffice; no schema or wire migration is introduced.

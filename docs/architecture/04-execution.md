@@ -54,6 +54,19 @@ Defined by `arcforges.node.v1.TaskSpec` ([contracts](../contracts/proto/arcforge
 
 ## 3. Launch
 
+**Durable attempt phases (MR-99, 2026-10-25).** Local admission inserts the attempt directly in STARTING, reserving its
+container name and grants in the same transaction as the task's RUNNING transition. STARTING means committed launch intent; it does
+not assert that the OS container already exists. The first attempt event has no previous state. CREATED remains the preparation
+state for the future placement/cache paths, without enabling either feature. Failure before container creation is SPAWN_FAILED
+(effect DID_NOT_HAPPEN); recovery of an abandoned intent without a container or exit evidence is LOST (effect UNKNOWN).
+
+Completion evidence (the durable exit record or the platform's completion/verification outcome) advances a live attempt to
+FINALIZING in a separate committed transaction before final output, accounting and result recording. End steps and leftover rundown
+may precede that evidence under the holder/unit. A fast root can finish before RUNNING was published; STARTING, RUNNING, PAUSING and
+PAUSED may therefore enter FINALIZING on that evidence. FINALIZING is recoverable and never exposes a final AttemptResult.
+FINISHED follows only after result recording. Direct transitions to FINISHED are restricted to spawn/policy refusal before execution
+and recovery LOST; the termination reason and effect must match the stated trigger.
+
 | Step | Windows | Linux |
 |---|---|---|
 | Container | The node creates the named child job under the root job ([03](03-resource-control.md) §5) and starts the holder `arcforges node exec-wrap` **outside** the job, passing inheritable handles to the child job, the root job, the output files and the ack event ([AD-0005](../decisions/AD-0005-resource-enforcement.md) Windows §3) | `StartTransientUnit("arcforges-a-<attempt>.service", "fail", properties)` in `arcforges.slice`, with the limits of [03](03-resource-control.md) §5. The node waits for the job's `JobRemoved` signal (result `done`) before recording `STARTED`. |
@@ -166,13 +179,15 @@ See [02](02-node-service.md) §2 step 5.
   attempt fields and advances STARTING to RUNNING. The timeout uses the recovered start time, including elapsed node downtime; a
   restart never grants a fresh timeout budget. CPU time remains the container's cumulative accounting. This restores node-side checks
   after recovery; it does not claim that a stopped node enforces a polling-only limit during its absence.
-- A stop that persists `STOPPING` stores its cause and redacted detail in the same transaction as that transition. The existing
-  `attempt.termination_reason` and `attempt.detail` columns carry this pending stop intent; it is not yet a final `AttemptResult`.
+- Every node-initiated stop (including timeout, CPU/output/disk limits and kill_with_node shutdown) commits `STOPPING` before
+  applying its platform stop, and stores its cause and redacted detail in the same transaction as that transition. The existing
+  `attempt.termination_reason` and `attempt.detail` columns carry this pending stop intent through STOPPING and FINALIZING; it is not yet a final `AttemptResult`.
   Recovery continues the forced stop with that stored cause and detail, including `PREEMPTED`, so the normal side-effect/retry rules
-  of section 8 still apply after a node restart. A pending reason never makes a live STOPPING attempt already finished, and the public
+  of section 8 still apply after a node restart. A pending reason never makes a live STOPPING or FINALIZING attempt already finished, and the public
   result is populated only at FINISHED. Finalization writes the final outcome, which may instead be `TERMINATION_INCOMPLETE`.
   A legacy STOPPING row without a stored cause keeps the previous cancellation fallback; the node does not infer a preemption from
-  human-readable detail or invent retry permission for an unknown cause. No schema migration or backfill is required.
+  human-readable detail or invent retry permission for an unknown cause. FINALIZING without a pending reason is normal completion,
+  never an implicit cancellation. No schema migration or backfill is required.
 - Attempts recovered after a node restart get a `node_gap` timeline segment.
 - Attempts whose container vanished, or whose boot identity changed, become `LOST` with evidence `{boot_id_old, boot_id_new}` or `{container_missing}`.
 - A `LOST` attempt of a retryable task schedules a retry. Others wait for a user or agent decision (`RetryTask`).

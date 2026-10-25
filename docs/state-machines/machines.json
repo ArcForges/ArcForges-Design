@@ -148,7 +148,8 @@
       "persisted": "node store attempt.state",
       "owner": "Supervisor",
       "initial": [
-        "CREATED"
+        "CREATED",
+        "STARTING"
       ],
       "terminal": [
         "FINISHED"
@@ -166,7 +167,7 @@
             "CREATED"
           ],
           "to": "STARTING",
-          "on": "container created (job or transient unit)"
+          "on": "local admission commits launch intent and reserves the container name (also the initial local state); before creating the OS container"
         },
         {
           "from": [
@@ -218,23 +219,27 @@
             "PAUSED"
           ],
           "to": "STOPPING",
-          "on": "cancel, timeout, CPU limit, preemption"
+          "on": "cancel, timeout, CPU/output/disk limit, preemption or kill_with_node shutdown",
+          "effect": "commit STOPPING with the pending cause and redacted detail before applying the platform stop; a restart continues that stop (architecture 04 sections 6 and 9)"
         },
         {
           "from": [
             "STARTING"
           ],
           "to": "STOPPING",
-          "on": "cancel or preemption while the attempt is being launched",
-          "effect": "the stop sequence of architecture 04 section 6, applied to the container once it exists; STOPPING is persisted, so a node restart continues the stop (architecture 02 section 2 step 5, 04 section 9)"
+          "on": "cancel, timeout, CPU/output/disk limit, preemption or kill_with_node shutdown while launch is pending",
+          "effect": "commit STOPPING with the pending cause and redacted detail before applying the platform stop; a restart continues that stop (architecture 04 sections 6 and 9)"
         },
         {
           "from": [
-            "RUNNING"
+            "STARTING",
+            "RUNNING",
+            "PAUSING",
+            "PAUSED"
           ],
           "to": "FINALIZING",
-          "on": "root process exited",
-          "effect": "leftover processes terminated after leftover_grace"
+          "on": "completion evidence is available (exit record or platform completion); a fast root can exit before RUNNING is published",
+          "effect": "end steps and leftover rundown precede the exit evidence; persist FINALIZING before final output/accounting/result recording"
         },
         {
           "from": [
@@ -242,7 +247,7 @@
           ],
           "to": "FINALIZING",
           "on": "container empty, or verification window (5 s) elapsed",
-          "effect": "TERMINATION_INCOMPLETE when processes remain"
+          "effect": "retain the pending stop cause and detail; TERMINATION_INCOMPLETE when processes remain; persist before final result recording"
         },
         {
           "from": [
