@@ -183,6 +183,25 @@ class MachineChecks(unittest.TestCase):
         cd.check_machines(rep, self.model, data)
         self.assertEqual(rep.errors, [])
 
+    def test_initial_guards_are_rendered_and_cover_the_initial_states(self):
+        data = self.machine(initial_guards={"NEW": "kind = synthetic"})
+        rep = cd.Report()
+        cd.check_machines(rep, self.model, data)
+        self.assertEqual(rep.errors, [])
+        self.assertIn("Initial guard for `NEW`: kind = synthetic", cd.render_machines(data))
+
+    def test_missing_or_extra_initial_guard_is_rejected(self):
+        for guards in ({}, {"DONE": "not initial"}, {"NEW": "ok", "DONE": "extra"}):
+            with self.subTest(guards=guards):
+                rep = cd.Report()
+                cd.check_machines(rep, self.model, self.machine(initial_guards=guards))
+                self.assertTrue(any("cover exactly" in e for e in rep.errors), rep.errors)
+
+    def test_empty_initial_guard_is_rejected(self):
+        rep = cd.Report()
+        cd.check_machines(rep, self.model, self.machine(initial_guards={"NEW": " "}))
+        self.assertTrue(any("nonempty text" in e for e in rep.errors), rep.errors)
+
     def test_render_is_deterministic(self):
         data = self.machine()
         self.assertEqual(cd.render_machines(data), cd.render_machines(data))

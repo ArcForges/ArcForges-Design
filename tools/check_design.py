@@ -402,6 +402,8 @@ def render_machines(data: dict) -> str:
         out += ["", f'<a id="{m["id"].lower()}"></a>', "", f"## {m['id']} — {m['title']}", ""]
         out.append(f"- Enum: `{m['enum']}`; persisted: {m['persisted']}; owner: {m['owner']}.")
         out.append(f"- Initial: {', '.join('`' + s + '`' for s in m['initial'])}. Terminal: {', '.join('`' + s + '`' for s in m['terminal']) or 'none (long-lived)'}.")
+        for state, guard in m.get("initial_guards", {}).items():
+            out.append(f"- Initial guard for `{state}`: {guard}.")
         if m.get("pseudo_states"):
             out.append(f"- Pseudo-states (not in the enum): {', '.join(m['pseudo_states'])}.")
         if m.get("response_only"):
@@ -449,6 +451,11 @@ def check_machines(rep: Report, model: ProtoModel, data: dict) -> None:
             rep.error(f"{mid}: enum states never used: {sorted(missing)}")
         if extra:
             rep.error(f"{mid}: states not in {m['enum']}: {sorted(extra)}")
+        initial_guards = m.get("initial_guards", {})
+        if "initial_guards" in m and set(initial_guards) != set(m["initial"]):
+            rep.error(f"{mid}: initial_guards must cover exactly the initial states")
+        if any(not isinstance(guard, str) or not guard.strip() for guard in initial_guards.values()):
+            rep.error(f"{mid}: initial guard must be nonempty text")
         reach = set(m["initial"])
         changed = True
         while changed:
