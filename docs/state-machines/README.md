@@ -30,12 +30,16 @@ States equal the named proto enum values (without the enum prefix); pseudo-state
 ## SM-TASK — Task
 
 - Enum: `arcforges.node.v1.TaskState`; persisted: node store task.state; owner: Scheduler.
-- Initial: `QUEUED`, `WAITING_DEPENDENCY`. Terminal: `SUCCEEDED`, `FAILED`, `CANCELLED`, `LOST`.
+- Initial: `QUEUED`, `WAITING_DEPENDENCY`, `RUNNING`. Terminal: `SUCCEEDED`, `FAILED`, `CANCELLED`, `LOST`.
+- Initial guard for `QUEUED`: kind != ADOPTED; ordinary submission.
+- Initial guard for `WAITING_DEPENDENCY`: kind != ADOPTED; submission with unmet dependencies.
+- Initial guard for `RUNNING`: kind = ADOPTED; successful explicit HUMAN adoption records the synthetic task and its one ADOPTED attempt together.
 
 ```mermaid
 stateDiagram-v2
   [*] --> QUEUED
   [*] --> WAITING_DEPENDENCY
+  [*] --> RUNNING
   WAITING_DEPENDENCY --> QUEUED : dependencies satisfied
   WAITING_DEPENDENCY --> CANCELLED : dependency failed or cancelled (condition SUCCEEDED)
   QUEUED --> RUNNING : admitted locally
@@ -57,6 +61,8 @@ stateDiagram-v2
   FAILED --> QUEUED : TaskService.RetryTask
   CANCELLED --> QUEUED : TaskService.RetryTask
   LOST --> QUEUED : TaskService.RetryTask
+  RUNNING --> CANCELLED : explicit cancellation of the adopted container completed
+  RUNNING --> LOST : adoption container emptied without cancellation
   SUCCEEDED --> [*]
   FAILED --> [*]
   CANCELLED --> [*]
@@ -65,33 +71,39 @@ stateDiagram-v2
 
 | From | To | Trigger | Guard | Effect |
 |---|---|---|---|---|
-| WAITING_DEPENDENCY | QUEUED | dependencies satisfied |  |  |
-| WAITING_DEPENDENCY | CANCELLED | dependency failed or cancelled (condition SUCCEEDED); TaskService.CancelTask |  |  |
-| QUEUED | RUNNING | admitted locally; attempt created | budget, pool, global limits (03 section 4) |  |
-| QUEUED | PLACING | placement chose a peer (placement ANY or SPECIFIC_NODE) | peer policy (no entitlement: LAN is free, AD-0015) |  |
-| PLACING | RUNNING | remote attempt started |  |  |
-| PLACING | QUEUED | offer declined or expired; transfer failed before start |  | re-placement; any side-effect class |
-| RUNNING | PAUSED | TaskService.PauseTask; pressure freeze | pause SUPPORTED and task pausable |  |
-| PAUSED | RUNNING | TaskService.ResumeTask; pressure recovered |  |  |
-| RUNNING | SUCCEEDED | attempt finished with exit code 0 |  |  |
-| RUNNING | RETRY_WAIT | attempt failed, LOST or PREEMPTED | retry rules allow (AD-0006 section 4) and attempts remain |  |
-| RETRY_WAIT | QUEUED | backoff elapsed |  |  |
-| RUNNING | FAILED | attempt finished non-zero, timed out, OOM, CPU limit or termination incomplete | no retry applies |  |
-| RUNNING | LOST | attempt LOST (boot changed, container missing, peer lease ended) | not retryable |  |
-| QUEUED, PLACING, RUNNING, PAUSED, RETRY_WAIT | CANCELLED | TaskService.CancelTask; session ended (stop_with_session); node shutdown for kill_with_node |  |  |
-| FAILED, CANCELLED, LOST | QUEUED (reopen) | TaskService.RetryTask |  | new attempt number |
+| WAITING_DEPENDENCY | QUEUED | dependencies satisfied | kind != ADOPTED |  |
+| WAITING_DEPENDENCY | CANCELLED | dependency failed or cancelled (condition SUCCEEDED); TaskService.CancelTask | kind != ADOPTED |  |
+| QUEUED | RUNNING | admitted locally; attempt created | budget, pool, global limits (03 section 4); kind != ADOPTED |  |
+| QUEUED | PLACING | placement chose a peer (placement ANY or SPECIFIC_NODE) | peer policy (no entitlement: LAN is free, AD-0015); kind != ADOPTED |  |
+| PLACING | RUNNING | remote attempt started | kind != ADOPTED |  |
+| PLACING | QUEUED | offer declined or expired; transfer failed before start | kind != ADOPTED | re-placement; any side-effect class |
+| RUNNING | PAUSED | TaskService.PauseTask; pressure freeze | pause SUPPORTED and task pausable; kind != ADOPTED |  |
+| PAUSED | RUNNING | TaskService.ResumeTask; pressure recovered | kind != ADOPTED |  |
+| RUNNING | SUCCEEDED | attempt finished with exit code 0 | kind != ADOPTED |  |
+| RUNNING | RETRY_WAIT | attempt failed, LOST or PREEMPTED | retry rules allow (AD-0006 section 4) and attempts remain; kind != ADOPTED |  |
+| RETRY_WAIT | QUEUED | backoff elapsed | kind != ADOPTED |  |
+| RUNNING | FAILED | attempt finished non-zero, timed out, OOM, CPU limit or termination incomplete | no retry applies; kind != ADOPTED |  |
+| RUNNING | LOST | attempt LOST (boot changed, container missing, peer lease ended) | not retryable; for ADOPTED, its attempt is RUNNING or STOPPING and the boot changed or adoption container cannot be reopened |  |
+| QUEUED, PLACING, RUNNING, PAUSED, RETRY_WAIT | CANCELLED | TaskService.CancelTask; session ended (stop_with_session); node shutdown for kill_with_node | kind != ADOPTED |  |
+| FAILED, CANCELLED, LOST | QUEUED (reopen) | TaskService.RetryTask | kind != ADOPTED | new attempt number |
+| RUNNING | CANCELLED | explicit cancellation of the adopted container completed | kind = ADOPTED; adoption container is empty | one attempt FINISHED with CANCELLED/HAPPENED; no retry |
+| RUNNING | LOST | adoption container emptied without cancellation | kind = ADOPTED | one attempt FINISHED with LOST/UNKNOWN; no exit status and no retry |
 
 <a id="sm-attempt"></a>
 
 ## SM-ATTEMPT — Attempt
 
 - Enum: `arcforges.node.v1.AttemptState`; persisted: node store attempt.state; owner: Supervisor.
-- Initial: `CREATED`, `STARTING`. Terminal: `FINISHED`.
+- Initial: `CREATED`, `STARTING`, `RUNNING`. Terminal: `FINISHED`.
+- Initial guard for `CREATED`: kind != ADOPTED; remote placement or cache restore.
+- Initial guard for `STARTING`: kind = LOCAL; durable local launch intent.
+- Initial guard for `RUNNING`: kind = ADOPTED; successful explicit HUMAN adoption, with no command launch.
 
 ```mermaid
 stateDiagram-v2
   [*] --> CREATED
   [*] --> STARTING
+  [*] --> RUNNING
   CREATED --> TRANSFERRING : remote placement  inputs transferring
   CREATED --> STARTING : local admission commits launch intent and reserves the conta
   TRANSFERRING --> STARTING : inputs complete on the executor
@@ -119,26 +131,32 @@ stateDiagram-v2
   PAUSED --> FINISHED : recovery  container missing, boot changed, or peer lease end
   STOPPING --> FINISHED : recovery  container missing, boot changed, or peer lease end
   FINALIZING --> FINISHED : recovery  container missing, boot changed, or peer lease end
+  RUNNING --> STOPPING : TaskService.CancelTask requests termination of the adopted c
+  STOPPING --> FINISHED : cancelled adoption container is empty
+  RUNNING --> FINISHED : adoption container emptied without cancellation
   FINISHED --> [*]
 ```
 
 | From | To | Trigger | Guard | Effect |
 |---|---|---|---|---|
-| CREATED | TRANSFERRING | remote placement: inputs transferring |  |  |
-| CREATED | STARTING | local admission commits launch intent and reserves the container name (also the initial local state); before creating the OS container |  |  |
-| TRANSFERRING | STARTING | inputs complete on the executor |  |  |
-| STARTING | RUNNING | process started (job resumed or unit job done) |  |  |
-| STARTING | FINISHED | spawn failed or policy denied |  | termination SPAWN_FAILED or POLICY_DENIED; effect DID_NOT_HAPPEN |
-| RUNNING | PAUSING | freeze requested |  |  |
-| PAUSING | PAUSED | freeze confirmed (cgroup.events frozen 1) |  |  |
-| PAUSED | RUNNING | thaw |  |  |
-| RUNNING, PAUSING, PAUSED | STOPPING | cancel, timeout, CPU/output/disk limit, preemption or kill_with_node shutdown |  | commit STOPPING with the pending cause and redacted detail before applying the platform stop; a restart continues that stop (architecture 04 sections 6 and 9) |
-| STARTING | STOPPING | cancel, timeout, CPU/output/disk limit, preemption or kill_with_node shutdown while launch is pending |  | commit STOPPING with the pending cause and redacted detail before applying the platform stop; a restart continues that stop (architecture 04 sections 6 and 9) |
-| STARTING, RUNNING, PAUSING, PAUSED | FINALIZING | completion evidence is available (exit record or platform completion); a fast root can exit before RUNNING is published |  | end steps and leftover rundown precede the exit evidence; persist FINALIZING before final output/accounting/result recording |
-| STOPPING | FINALIZING | container empty, or verification window (5 s) elapsed |  | retain the pending stop cause and detail; TERMINATION_INCOMPLETE when processes remain; persist before final result recording |
-| CREATED | FINALIZING | result-cache hit (CACHE_RESTORE attempt; RESTORE mode is roadmap RM-04, not in release 1) |  |  |
-| FINALIZING | FINISHED | output, accounting and records finalized |  |  |
-| CREATED, TRANSFERRING, STARTING, RUNNING, PAUSING, PAUSED, STOPPING, FINALIZING | FINISHED | recovery: container missing, boot changed, or peer lease ended |  | termination LOST; effect UNKNOWN |
+| CREATED | TRANSFERRING | remote placement: inputs transferring | kind != ADOPTED |  |
+| CREATED | STARTING | local admission commits launch intent and reserves the container name (also the initial local state); before creating the OS container | kind != ADOPTED |  |
+| TRANSFERRING | STARTING | inputs complete on the executor | kind != ADOPTED |  |
+| STARTING | RUNNING | process started (job resumed or unit job done) | kind != ADOPTED |  |
+| STARTING | FINISHED | spawn failed or policy denied | kind != ADOPTED | termination SPAWN_FAILED or POLICY_DENIED; effect DID_NOT_HAPPEN |
+| RUNNING | PAUSING | freeze requested | kind != ADOPTED |  |
+| PAUSING | PAUSED | freeze confirmed (cgroup.events frozen 1) | kind != ADOPTED |  |
+| PAUSED | RUNNING | thaw | kind != ADOPTED |  |
+| RUNNING, PAUSING, PAUSED | STOPPING | cancel, timeout, CPU/output/disk limit, preemption or kill_with_node shutdown | kind != ADOPTED | commit STOPPING with the pending cause and redacted detail before applying the platform stop; a restart continues that stop (architecture 04 sections 6 and 9) |
+| STARTING | STOPPING | cancel, timeout, CPU/output/disk limit, preemption or kill_with_node shutdown while launch is pending | kind != ADOPTED | commit STOPPING with the pending cause and redacted detail before applying the platform stop; a restart continues that stop (architecture 04 sections 6 and 9) |
+| STARTING, RUNNING, PAUSING, PAUSED | FINALIZING | completion evidence is available (exit record or platform completion); a fast root can exit before RUNNING is published | kind != ADOPTED | end steps and leftover rundown precede the exit evidence; persist FINALIZING before final output/accounting/result recording |
+| STOPPING | FINALIZING | container empty, or verification window (5 s) elapsed | kind != ADOPTED | retain the pending stop cause and detail; TERMINATION_INCOMPLETE when processes remain; persist before final result recording |
+| CREATED | FINALIZING | result-cache hit (CACHE_RESTORE attempt; RESTORE mode is roadmap RM-04, not in release 1) | kind != ADOPTED |  |
+| FINALIZING | FINISHED | output, accounting and records finalized | kind != ADOPTED |  |
+| CREATED, TRANSFERRING, STARTING, RUNNING, PAUSING, PAUSED, STOPPING, FINALIZING | FINISHED | recovery: container missing, boot changed, or peer lease ended | for ADOPTED, only RUNNING or STOPPING; boot changed or adoption container cannot be reopened | termination LOST; effect UNKNOWN |
+| RUNNING | STOPPING | TaskService.CancelTask requests termination of the adopted container | kind = ADOPTED | record and journal STOPPING in the cancel command; no command launch or managed end steps |
+| STOPPING | FINISHED | cancelled adoption container is empty | kind = ADOPTED | termination CANCELLED; effect HAPPENED; no captured exit code, output or managed FINALIZING phase |
+| RUNNING | FINISHED | adoption container emptied without cancellation | kind = ADOPTED | termination LOST; effect UNKNOWN; node is not the parent and has no exit status |
 
 <a id="sm-finding"></a>
 

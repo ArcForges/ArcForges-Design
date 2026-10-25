@@ -10,8 +10,14 @@
       "owner": "Scheduler",
       "initial": [
         "QUEUED",
-        "WAITING_DEPENDENCY"
+        "WAITING_DEPENDENCY",
+        "RUNNING"
       ],
+      "initial_guards": {
+        "QUEUED": "kind != ADOPTED; ordinary submission",
+        "WAITING_DEPENDENCY": "kind != ADOPTED; submission with unmet dependencies",
+        "RUNNING": "kind = ADOPTED; successful explicit HUMAN adoption records the synthetic task and its one ADOPTED attempt together"
+      },
       "terminal": [
         "SUCCEEDED",
         "FAILED",
@@ -24,14 +30,16 @@
             "WAITING_DEPENDENCY"
           ],
           "to": "QUEUED",
-          "on": "dependencies satisfied"
+          "on": "dependencies satisfied",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
             "WAITING_DEPENDENCY"
           ],
           "to": "CANCELLED",
-          "on": "dependency failed or cancelled (condition SUCCEEDED); TaskService.CancelTask"
+          "on": "dependency failed or cancelled (condition SUCCEEDED); TaskService.CancelTask",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
@@ -39,7 +47,7 @@
           ],
           "to": "RUNNING",
           "on": "admitted locally; attempt created",
-          "guard": "budget, pool, global limits (03 section 4)"
+          "guard": "budget, pool, global limits (03 section 4); kind != ADOPTED"
         },
         {
           "from": [
@@ -47,14 +55,15 @@
           ],
           "to": "PLACING",
           "on": "placement chose a peer (placement ANY or SPECIFIC_NODE)",
-          "guard": "peer policy (no entitlement: LAN is free, AD-0015)"
+          "guard": "peer policy (no entitlement: LAN is free, AD-0015); kind != ADOPTED"
         },
         {
           "from": [
             "PLACING"
           ],
           "to": "RUNNING",
-          "on": "remote attempt started"
+          "on": "remote attempt started",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
@@ -62,7 +71,8 @@
           ],
           "to": "QUEUED",
           "on": "offer declined or expired; transfer failed before start",
-          "effect": "re-placement; any side-effect class"
+          "effect": "re-placement; any side-effect class",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
@@ -70,21 +80,23 @@
           ],
           "to": "PAUSED",
           "on": "TaskService.PauseTask; pressure freeze",
-          "guard": "pause SUPPORTED and task pausable"
+          "guard": "pause SUPPORTED and task pausable; kind != ADOPTED"
         },
         {
           "from": [
             "PAUSED"
           ],
           "to": "RUNNING",
-          "on": "TaskService.ResumeTask; pressure recovered"
+          "on": "TaskService.ResumeTask; pressure recovered",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
             "RUNNING"
           ],
           "to": "SUCCEEDED",
-          "on": "attempt finished with exit code 0"
+          "on": "attempt finished with exit code 0",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
@@ -92,14 +104,15 @@
           ],
           "to": "RETRY_WAIT",
           "on": "attempt failed, LOST or PREEMPTED",
-          "guard": "retry rules allow (AD-0006 section 4) and attempts remain"
+          "guard": "retry rules allow (AD-0006 section 4) and attempts remain; kind != ADOPTED"
         },
         {
           "from": [
             "RETRY_WAIT"
           ],
           "to": "QUEUED",
-          "on": "backoff elapsed"
+          "on": "backoff elapsed",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
@@ -107,7 +120,7 @@
           ],
           "to": "FAILED",
           "on": "attempt finished non-zero, timed out, OOM, CPU limit or termination incomplete",
-          "guard": "no retry applies"
+          "guard": "no retry applies; kind != ADOPTED"
         },
         {
           "from": [
@@ -115,7 +128,7 @@
           ],
           "to": "LOST",
           "on": "attempt LOST (boot changed, container missing, peer lease ended)",
-          "guard": "not retryable"
+          "guard": "not retryable; for ADOPTED, its attempt is RUNNING or STOPPING and the boot changed or adoption container cannot be reopened"
         },
         {
           "from": [
@@ -126,7 +139,8 @@
             "RETRY_WAIT"
           ],
           "to": "CANCELLED",
-          "on": "TaskService.CancelTask; session ended (stop_with_session); node shutdown for kill_with_node"
+          "on": "TaskService.CancelTask; session ended (stop_with_session); node shutdown for kill_with_node",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
@@ -137,7 +151,26 @@
           "to": "QUEUED",
           "on": "TaskService.RetryTask",
           "effect": "new attempt number",
-          "reopen": true
+          "reopen": true,
+          "guard": "kind != ADOPTED"
+        },
+        {
+          "from": [
+            "RUNNING"
+          ],
+          "to": "CANCELLED",
+          "on": "explicit cancellation of the adopted container completed",
+          "guard": "kind = ADOPTED; adoption container is empty",
+          "effect": "one attempt FINISHED with CANCELLED/HAPPENED; no retry"
+        },
+        {
+          "from": [
+            "RUNNING"
+          ],
+          "to": "LOST",
+          "on": "adoption container emptied without cancellation",
+          "guard": "kind = ADOPTED",
+          "effect": "one attempt FINISHED with LOST/UNKNOWN; no exit status and no retry"
         }
       ]
     },
@@ -149,8 +182,14 @@
       "owner": "Supervisor",
       "initial": [
         "CREATED",
-        "STARTING"
+        "STARTING",
+        "RUNNING"
       ],
+      "initial_guards": {
+        "CREATED": "kind != ADOPTED; remote placement or cache restore",
+        "STARTING": "kind = LOCAL; durable local launch intent",
+        "RUNNING": "kind = ADOPTED; successful explicit HUMAN adoption, with no command launch"
+      },
       "terminal": [
         "FINISHED"
       ],
@@ -160,28 +199,32 @@
             "CREATED"
           ],
           "to": "TRANSFERRING",
-          "on": "remote placement: inputs transferring"
+          "on": "remote placement: inputs transferring",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
             "CREATED"
           ],
           "to": "STARTING",
-          "on": "local admission commits launch intent and reserves the container name (also the initial local state); before creating the OS container"
+          "on": "local admission commits launch intent and reserves the container name (also the initial local state); before creating the OS container",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
             "TRANSFERRING"
           ],
           "to": "STARTING",
-          "on": "inputs complete on the executor"
+          "on": "inputs complete on the executor",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
             "STARTING"
           ],
           "to": "RUNNING",
-          "on": "process started (job resumed or unit job done)"
+          "on": "process started (job resumed or unit job done)",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
@@ -189,28 +232,32 @@
           ],
           "to": "FINISHED",
           "on": "spawn failed or policy denied",
-          "effect": "termination SPAWN_FAILED or POLICY_DENIED; effect DID_NOT_HAPPEN"
+          "effect": "termination SPAWN_FAILED or POLICY_DENIED; effect DID_NOT_HAPPEN",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
             "RUNNING"
           ],
           "to": "PAUSING",
-          "on": "freeze requested"
+          "on": "freeze requested",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
             "PAUSING"
           ],
           "to": "PAUSED",
-          "on": "freeze confirmed (cgroup.events frozen 1)"
+          "on": "freeze confirmed (cgroup.events frozen 1)",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
             "PAUSED"
           ],
           "to": "RUNNING",
-          "on": "thaw"
+          "on": "thaw",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
@@ -220,7 +267,8 @@
           ],
           "to": "STOPPING",
           "on": "cancel, timeout, CPU/output/disk limit, preemption or kill_with_node shutdown",
-          "effect": "commit STOPPING with the pending cause and redacted detail before applying the platform stop; a restart continues that stop (architecture 04 sections 6 and 9)"
+          "effect": "commit STOPPING with the pending cause and redacted detail before applying the platform stop; a restart continues that stop (architecture 04 sections 6 and 9)",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
@@ -228,7 +276,8 @@
           ],
           "to": "STOPPING",
           "on": "cancel, timeout, CPU/output/disk limit, preemption or kill_with_node shutdown while launch is pending",
-          "effect": "commit STOPPING with the pending cause and redacted detail before applying the platform stop; a restart continues that stop (architecture 04 sections 6 and 9)"
+          "effect": "commit STOPPING with the pending cause and redacted detail before applying the platform stop; a restart continues that stop (architecture 04 sections 6 and 9)",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
@@ -239,7 +288,8 @@
           ],
           "to": "FINALIZING",
           "on": "completion evidence is available (exit record or platform completion); a fast root can exit before RUNNING is published",
-          "effect": "end steps and leftover rundown precede the exit evidence; persist FINALIZING before final output/accounting/result recording"
+          "effect": "end steps and leftover rundown precede the exit evidence; persist FINALIZING before final output/accounting/result recording",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
@@ -247,21 +297,24 @@
           ],
           "to": "FINALIZING",
           "on": "container empty, or verification window (5 s) elapsed",
-          "effect": "retain the pending stop cause and detail; TERMINATION_INCOMPLETE when processes remain; persist before final result recording"
+          "effect": "retain the pending stop cause and detail; TERMINATION_INCOMPLETE when processes remain; persist before final result recording",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
             "CREATED"
           ],
           "to": "FINALIZING",
-          "on": "result-cache hit (CACHE_RESTORE attempt; RESTORE mode is roadmap RM-04, not in release 1)"
+          "on": "result-cache hit (CACHE_RESTORE attempt; RESTORE mode is roadmap RM-04, not in release 1)",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
             "FINALIZING"
           ],
           "to": "FINISHED",
-          "on": "output, accounting and records finalized"
+          "on": "output, accounting and records finalized",
+          "guard": "kind != ADOPTED"
         },
         {
           "from": [
@@ -276,7 +329,35 @@
           ],
           "to": "FINISHED",
           "on": "recovery: container missing, boot changed, or peer lease ended",
-          "effect": "termination LOST; effect UNKNOWN"
+          "effect": "termination LOST; effect UNKNOWN",
+          "guard": "for ADOPTED, only RUNNING or STOPPING; boot changed or adoption container cannot be reopened"
+        },
+        {
+          "from": [
+            "RUNNING"
+          ],
+          "to": "STOPPING",
+          "on": "TaskService.CancelTask requests termination of the adopted container",
+          "guard": "kind = ADOPTED",
+          "effect": "record and journal STOPPING in the cancel command; no command launch or managed end steps"
+        },
+        {
+          "from": [
+            "STOPPING"
+          ],
+          "to": "FINISHED",
+          "on": "cancelled adoption container is empty",
+          "guard": "kind = ADOPTED",
+          "effect": "termination CANCELLED; effect HAPPENED; no captured exit code, output or managed FINALIZING phase"
+        },
+        {
+          "from": [
+            "RUNNING"
+          ],
+          "to": "FINISHED",
+          "on": "adoption container emptied without cancellation",
+          "guard": "kind = ADOPTED",
+          "effect": "termination LOST; effect UNKNOWN; node is not the parent and has no exit status"
         }
       ]
     },

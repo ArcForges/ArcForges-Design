@@ -201,6 +201,17 @@ See [02](02-node-service.md) §2 step 5.
 
 Adoption creates a synthetic task (`kind=ADOPTED`) so the process appears in all surfaces (R-RES-013).
 
+*Amended 2026-10-25 (MR-105):* successful adoption records both the synthetic task and its one ADOPTED attempt directly in
+`RUNNING`, with no previous state in their first journal events. These initial states are guarded by kind in SM-TASK and
+SM-ATTEMPT; ordinary submissions and local launch intents keep their existing initial states. Adoption is never queued,
+placed, paused, preempted or retried. Explicit `CancelTask` requests container termination and records/journals the attempt's
+`RUNNING -> STOPPING`; when the container is empty it commits `STOPPING -> FINISHED` with `CANCELLED/HAPPENED` and the task
+`RUNNING -> CANCELLED`. Repeated cancellation does not invent another state change. Natural disappearance commits
+`RUNNING -> FINISHED` with `LOST/UNKNOWN` and task `RUNNING -> LOST`. Recovery of a missing container or changed boot may
+finish either live adopted state `LOST/UNKNOWN`. There is no captured exit code, managed command output/end-step work or
+`FINALIZING` phase for an adoption; those execution phases in sections 3 and 9 apply to launched attempts. Cancellation
+and loss keep their existing meanings and do not acquire a fabricated exit status.
+
 *Added 2026-10-23 (AF-SEC-01, L-30):* on the Windows workstation every user process is already in a job, so step 2 refuses every candidate there; the capability `adopt` reports `LIMITED` with that reason on Windows. A successful Windows adoption is deferred to a machine with a process outside every job (Plan acceptance register).
 
 *Added 2026-10-23 (AF-SEC-01):* the node is not an adopted process's parent and captures no exit status, so an adopted task whose container empties ends `LOST` with the reason "no exit status: the node is not the adopted process's parent". After a node restart, an adoption container the node cannot re-open (a Windows adoption job has no holder, so it leaves the namespace with the node's last handle, L-14) takes SM-TASK's recovery rule "container missing": the task ends `LOST`; the process keeps running and is no longer controlled as a task.
