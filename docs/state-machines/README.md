@@ -86,24 +86,28 @@ stateDiagram-v2
 ## SM-ATTEMPT — Attempt
 
 - Enum: `arcforges.node.v1.AttemptState`; persisted: node store attempt.state; owner: Supervisor.
-- Initial: `CREATED`. Terminal: `FINISHED`.
+- Initial: `CREATED`, `STARTING`. Terminal: `FINISHED`.
 
 ```mermaid
 stateDiagram-v2
   [*] --> CREATED
+  [*] --> STARTING
   CREATED --> TRANSFERRING : remote placement  inputs transferring
-  CREATED --> STARTING : container created (job or transient unit)
+  CREATED --> STARTING : local admission commits launch intent and reserves the conta
   TRANSFERRING --> STARTING : inputs complete on the executor
   STARTING --> RUNNING : process started (job resumed or unit job done)
   STARTING --> FINISHED : spawn failed or policy denied
   RUNNING --> PAUSING : freeze requested
   PAUSING --> PAUSED : freeze confirmed (cgroup.events frozen 1)
   PAUSED --> RUNNING : thaw
-  RUNNING --> STOPPING : cancel, timeout, CPU limit, preemption
-  PAUSING --> STOPPING : cancel, timeout, CPU limit, preemption
-  PAUSED --> STOPPING : cancel, timeout, CPU limit, preemption
-  STARTING --> STOPPING : cancel or preemption while the attempt is being launched
-  RUNNING --> FINALIZING : root process exited
+  RUNNING --> STOPPING : cancel, timeout, CPU/output/disk limit, preemption or kill_w
+  PAUSING --> STOPPING : cancel, timeout, CPU/output/disk limit, preemption or kill_w
+  PAUSED --> STOPPING : cancel, timeout, CPU/output/disk limit, preemption or kill_w
+  STARTING --> STOPPING : cancel, timeout, CPU/output/disk limit, preemption or kill_w
+  STARTING --> FINALIZING : completion evidence is available (exit record or platform co
+  RUNNING --> FINALIZING : completion evidence is available (exit record or platform co
+  PAUSING --> FINALIZING : completion evidence is available (exit record or platform co
+  PAUSED --> FINALIZING : completion evidence is available (exit record or platform co
   STOPPING --> FINALIZING : container empty, or verification window (5 s) elapsed
   CREATED --> FINALIZING : result-cache hit (CACHE_RESTORE attempt
   FINALIZING --> FINISHED : output, accounting and records finalized
@@ -121,17 +125,17 @@ stateDiagram-v2
 | From | To | Trigger | Guard | Effect |
 |---|---|---|---|---|
 | CREATED | TRANSFERRING | remote placement: inputs transferring |  |  |
-| CREATED | STARTING | container created (job or transient unit) |  |  |
+| CREATED | STARTING | local admission commits launch intent and reserves the container name (also the initial local state); before creating the OS container |  |  |
 | TRANSFERRING | STARTING | inputs complete on the executor |  |  |
 | STARTING | RUNNING | process started (job resumed or unit job done) |  |  |
 | STARTING | FINISHED | spawn failed or policy denied |  | termination SPAWN_FAILED or POLICY_DENIED; effect DID_NOT_HAPPEN |
 | RUNNING | PAUSING | freeze requested |  |  |
 | PAUSING | PAUSED | freeze confirmed (cgroup.events frozen 1) |  |  |
 | PAUSED | RUNNING | thaw |  |  |
-| RUNNING, PAUSING, PAUSED | STOPPING | cancel, timeout, CPU limit, preemption |  |  |
-| STARTING | STOPPING | cancel or preemption while the attempt is being launched |  | the stop sequence of architecture 04 section 6, applied to the container once it exists; STOPPING is persisted, so a node restart continues the stop (architecture 02 section 2 step 5, 04 section 9) |
-| RUNNING | FINALIZING | root process exited |  | leftover processes terminated after leftover_grace |
-| STOPPING | FINALIZING | container empty, or verification window (5 s) elapsed |  | TERMINATION_INCOMPLETE when processes remain |
+| RUNNING, PAUSING, PAUSED | STOPPING | cancel, timeout, CPU/output/disk limit, preemption or kill_with_node shutdown |  | commit STOPPING with the pending cause and redacted detail before applying the platform stop; a restart continues that stop (architecture 04 sections 6 and 9) |
+| STARTING | STOPPING | cancel, timeout, CPU/output/disk limit, preemption or kill_with_node shutdown while launch is pending |  | commit STOPPING with the pending cause and redacted detail before applying the platform stop; a restart continues that stop (architecture 04 sections 6 and 9) |
+| STARTING, RUNNING, PAUSING, PAUSED | FINALIZING | completion evidence is available (exit record or platform completion); a fast root can exit before RUNNING is published |  | end steps and leftover rundown precede the exit evidence; persist FINALIZING before final output/accounting/result recording |
+| STOPPING | FINALIZING | container empty, or verification window (5 s) elapsed |  | retain the pending stop cause and detail; TERMINATION_INCOMPLETE when processes remain; persist before final result recording |
 | CREATED | FINALIZING | result-cache hit (CACHE_RESTORE attempt; RESTORE mode is roadmap RM-04, not in release 1) |  |  |
 | FINALIZING | FINISHED | output, accounting and records finalized |  |  |
 | CREATED, TRANSFERRING, STARTING, RUNNING, PAUSING, PAUSED, STOPPING, FINALIZING | FINISHED | recovery: container missing, boot changed, or peer lease ended |  | termination LOST; effect UNKNOWN |
