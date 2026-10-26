@@ -48,6 +48,8 @@ Defined by `arcforges.node.v1.TaskSpec` ([contracts](../contracts/proto/arcforge
        for any task needing sealed input, even when that input is still available in the live store; `STATE/secrets_unavailable`
        fails closed. The live task's retention and its node data key are unchanged. See [13](13-distribution-updates.md) section 6.
 
+     The live store zeroes overwritten/deleted content with `secure_delete=ON` and checkpoints/truncates WAL after purge (MR-14; [node-store](../data/node-store.md) section 1). A successful `PurgeTaskRecord` includes that checkpoint. If a reader or SQLite failure prevents completion after the deletion commits, the response is `INTERNAL/internal` with effect `HAPPENED`; retry the identical command to reattempt the checkpoint. Housekeeping also retries on later passes even with no newly due values. Older snapshots/pages may retain sealed bytes until the checkpoint completes; this is no device-level secure-erase guarantee.
+
      A manual `RetryTask` after the purge fails with `STATE/secrets_unavailable` and asks for a new submission.
 
      **A lost key fails closed.** If the node data key that sealed the values is missing from the OS secret store or cannot be read, the values are unavailable. The node never launches a task with a partial environment, `RetryTask` fails with `STATE/secrets_unavailable` (without a purge time), and new submissions are sealed under a new key version. The design relies on no consistency guarantee of the OS store under concurrent modification (L-26).
