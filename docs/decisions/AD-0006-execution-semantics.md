@@ -1,6 +1,6 @@
 # AD-0006 — Execution semantics: durability, retries, pause and caching
 
-- Status: Accepted (2026-10-12; revised 2026-10-13 after the findings review: retry-safety assertion sources, caller hand-off and joined resubmissions; revised 2026-10-13 by the product owner's decisions (AD-0015): result-cache restore deferred to the roadmap)
+- Status: Accepted (2026-10-12; revised 2026-10-13 after the findings review: retry-safety assertion sources, caller hand-off and joined resubmissions; revised 2026-10-13 by the product owner's decisions (AD-0015): result-cache restore deferred to the roadmap; amended 2026-10-26 by MR-13: backup secret exclusion)
 - References: Pueue design (V-T05) for queue and persisted-log patterns; independent C# implementation.
 
 ## Decision
@@ -9,6 +9,11 @@
    - The full execution input persists with it, including the values of secret-shaped environment variables.
    - Those values are sealed with AES-256-GCM under a node data key held in the OS secret store, and purged after the task is terminal and the retry window has passed ([04](../architecture/04-execution.md) §2).
    - Records only ever show them as present (R-EXE-017).
+   - **Backups (MR-13).** Retained pre-migration SQLite copies exclude those sealed values; older retained copies are sanitized
+     on store open, and new copies before publish. A failure refuses the open. Restored tasks requiring sealed input fail
+     `secrets_unavailable` and require a new submission, including inputs still usable in the live store. Nonsecret records,
+     names and schema versions remain; no new schema migration or credential-store/key cleanup is introduced
+     ([13](../architecture/13-distribution-updates.md) section 6).
 2. **Survive node restarts.**
    - Managed processes write stdout and stderr to node-owned files under `logs/<attempt_id>/`, never to pipes held by the node.
    - Process containers are named Windows jobs, or transient systemd user units on Linux whose processes are children of the user manager, not of the node (AD-0005).

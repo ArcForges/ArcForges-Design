@@ -262,6 +262,14 @@ ExecStart=%h/.local/share/arcforges/app/previous/arcforges node update-rollback 
 - **Expand–contract.** Store migrations are forward-only SQL scripts, and each release's migrations are **expand-only**: new tables, new nullable columns, new indexes. Contract steps (drop or rename) happen only in a later release, once `min_reader` excludes every version still eligible as a rollback target.
 - **Reader check.** `store_meta` records `schema_version` (written) and `min_reader_version`. A binary refuses to open a store whose `min_reader_version` is above its own supported schema, so a rolled-back binary never misreads a contracted store.
 - **Backups.** Before migrating, the node checkpoints SQLite (`wal_checkpoint(TRUNCATE)`) and copies the database to `records/backups/store-<from>-<to>-<timestamp>.db`, keeping the last three ([02](02-node-service.md) §2 step 3).
+  **Amended 2026-10-26 (MR-13):** retained backups never carry sealed environment values. The temporary SQLite copy replaces all
+  live `task_secret` payloads with purged tombstones, zeros overwritten content, compacts the copy and checks integrity before
+  rename/publish. Existing retained copies from older binaries are sanitized on store open before any migration or node startup;
+  their nonsecret records and schema versions stay intact. If a retained copy is corrupt, locked or cannot be sanitized, opening
+  fails with a backup error instead of silently retaining recoverable values. A task requiring sealed input after a backup
+  restore fails closed with `secrets_unavailable` and needs a new submission; backups preserve records, not a second lifetime
+  for the sealed input. This is a retention repair using existing tables and tombstones, not a new schema migration. It does
+  not delete or rotate the node data key or access credential-store/orphan-credential files.
 
 ## 7. Package-manager and AI-client routes (R-DIST-005)
 
