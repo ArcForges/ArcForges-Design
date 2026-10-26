@@ -1,6 +1,6 @@
 # AD-0004 — Contracts, transports and authoritative state
 
-- Status: Accepted (2026-10-12; amended 2026-10-21 by AD-0018: the host–guest transport and the WSL bridge as a package user are superseded; their v1 wire declarations stay, retired; amended 2026-10-25 by MR-99: durable local attempt phases; amended 2026-10-25 by MR-105: kind-guarded synthetic adoption phases)
+- Status: Accepted (2026-10-12; amended 2026-10-21 by AD-0018: the host–guest transport and the WSL bridge as a package user are superseded; their v1 wire declarations stay, retired; amended 2026-10-25 by MR-99: durable local attempt phases; amended 2026-10-25 by MR-105: kind-guarded synthetic adoption phases; amended 2026-10-26 by MR-14: logical idempotent outcome and post-commit checkpoint retry)
 
 ## Decision
 
@@ -43,7 +43,7 @@
 2. A task belongs to its **origin node**. An attempt belongs to its **executing node**, and the origin mirrors remote attempts from the executor's stream.
 3. The cloud is the only writer of account, device registry, entitlement, commerce, relay routing, remote-command and push state. It holds node status only as an expiring cache for remote viewing.
 4. Clients keep caches only. They reconcile from snapshot-then-incremental streams (`NodeEventService.Subscribe`) ordered by a per-node `event_seq`, within a `stream_generation` that changes when the journal is reset or restored. A client resumes from its last cursor, or receives `reset` plus a fresh snapshot.
-5. Commands carry `RequestMeta.command_id` for idempotency (replay returns the stored receipt for 24 h), and `expected_rev` where a resource is revisioned (policies, pool definitions, workspace settings).
+5. Commands carry `RequestMeta.command_id` for idempotency (the stored logical outcome is retained for 24 h), and `expected_rev` where a resource is revisioned (policies, pool definitions, workspace settings). For `PurgeTaskRecord`, replay also reattempts the post-commit WAL checkpoint; a busy/failed checkpoint returns a transient `INTERNAL/internal` error with known effect `HAPPENED` without replacing the stored logical outcome or repeating deletion (MR-14; [node-store](../data/node-store.md) section 1 and [contracts](../contracts/README.md) section 6).
 6. Errors use `ArcError`. `EffectCertainty` is mandatory on execution-affecting failures, so a caller can tell "did not start" from "may have run".
 
 7. **Local attempt phases (MR-99, 2026-10-25).** SM-ATTEMPT permits local admission directly into STARTING as a durable launch intent before OS container creation. A first event names no fictional prior state. Stops of launched attempts commit STOPPING with their cause before platform action; completion commits recoverable FINALIZING before the final record. Direct FINISHED shortcuts require their declared spawn/policy or recovery LOST evidence and effect. See [04 execution](../architecture/04-execution.md) sections 3 and 9. Existing enum values and store columns suffice; no schema or wire migration is introduced.
