@@ -93,7 +93,7 @@ Every RPC carries structured comments, which `tools/check_design.py` verifies an
 ## 6. Idempotency
 
 - **Mutations** deduplicate by `meta.command_id` for 24 hours. The node stores `(command_id, payload_digest, outcome)`.
-  - Same ID and same payload: the stored outcome is returned.
+  - Same ID and same payload: the stored logical outcome is returned. For `PurgeTaskRecord`, its post-commit WAL checkpoint is also attempted on replay (MR-14; [node-store](../data/node-store.md) section 1). A busy or failed checkpoint returns the transient `INTERNAL/internal` error with known effect `HAPPENED` instead of success; it does not replace the stored logical outcome. Replaying identical bytes retries the checkpoint without deleting the task record again.
   - Same ID and a different payload: `CONFLICT/command_id_reused`.
 - **Approvals** keep the original `command_id`, so an agent that retries after approval receives the executed outcome.
 - **Cloud mutations** use the reused platform command-dedup table.
