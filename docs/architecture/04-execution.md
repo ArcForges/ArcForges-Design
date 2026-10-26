@@ -41,6 +41,12 @@ Defined by `arcforges.node.v1.TaskSpec` ([contracts](../contracts/proto/arcforge
    - **Execution state** keeps their values **sealed** until they are no longer needed, so queued tasks, restarts and retries run with the submitted environment:
      - the values are encrypted with AES-256-GCM under a node data key kept in the OS secret store, and stored in `task_secret`;
      - they are purged when the task reaches a terminal state and `storage.secret_retention_hours` (default 24) has passed, or on `PurgeTaskRecord`.
+     - **Retained backups exclude sealed values (MR-13, 2026-10-26).** Before publishing a pre-migration backup, the node replaces every
+       `task_secret` value with its existing purged tombstone, retaining task records and variable names (presence only). Opening the
+       node store also sanitizes every older retained backup before proceeding; failure to sanitize any retained backup refuses the
+       open. Copies cannot restore values that the live store later purges. Restoring a backup therefore requires a new submission
+       for any task needing sealed input, even when that input is still available in the live store; `STATE/secrets_unavailable`
+       fails closed. The live task's retention and its node data key are unchanged. See [13](13-distribution-updates.md) section 6.
 
      A manual `RetryTask` after the purge fails with `STATE/secrets_unavailable` and asks for a new submission.
 

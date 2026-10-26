@@ -62,7 +62,7 @@ flowchart TB
    - Linux: `flock` on `<data root>/node.lock`.
 
    If another instance holds it, exit with code 3 (`ALREADY_RUNNING`) after printing its endpoint.
-3. Open the store, take a pre-migration backup when the schema version changes (`records/backups/store-<from>-<to>-<timestamp>.db`, last 3 kept; [13](13-distribution-updates.md) §6), run forward-only migrations, and verify `PRAGMA integrity_check` (quick mode) on startup after an unclean shutdown.
+3. Open the store, sanitize older retained backups and exclude sealed task values from new pre-migration copies (MR-13; failure refuses the open), take a pre-migration backup when the schema version changes (`records/backups/store-<from>-<to>-<timestamp>.db`, last 3 kept; [13](13-distribution-updates.md) §6), run forward-only migrations, and verify `PRAGMA integrity_check` (quick mode) on startup after an unclean shutdown.
 4. Read the boot identity and compare it with the stored one ([AD-0006](../decisions/AD-0006-execution-semantics.md) §3).
 5. **Recovery.** For each attempt in `STARTING`, `RUNNING`, `PAUSING`, `PAUSED` or `STOPPING`, re-open its container (Windows named job; Linux transient unit `arcforges-a-<attempt>.service`):
    - Container present with live processes → re-attach: tail logs from stored offsets, record a `node_gap` segment.
