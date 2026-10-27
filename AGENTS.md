@@ -6,7 +6,7 @@ This repository is the **design authority** for ArcForges. The delivery plan, le
 
 1. **Scope.** Design only: product, decisions, architecture, contracts (protos as specifications), data models, state machines, experience, reuse, verification and traceability. No implementation code; tools are the exception.
 2. **Branches and worktrees.** Work in a git worktree under `.worktree/` (ignored), never in the main checkout. Branch names: `design/<topic>`. One PR per coherent change.
-3. **Serial delivery** ([AD-0014](docs/decisions/AD-0014-delivery-method.md), [AD-0016](docs/decisions/AD-0016-local-first-verification.md)). One active task at a time. Delegation is allowed to one worker or reviewer at a time, on Opus 5.5 only (never Haiku). There is no build slot. The owner's (`deku2026`) PRs are gated by the required host statuses of rule 8 plus the independent review; external PRs by the hosted `Design checks` workflow plus review.
+3. **Serial delivery** ([AD-0014](docs/decisions/AD-0014-delivery-method.md), [AD-0016](docs/decisions/AD-0016-local-first-verification.md)). One active task at a time. Delegation is allowed to one worker or reviewer at a time, without a required provider or model. There is no build slot. The owner's (`deku2026`) PRs are gated by the required host statuses of rule 8 plus the independent review; external PRs by the hosted `Design checks` workflow plus review.
 4. **Generated files.**
    - `docs/contracts/api-catalogue.md` and `docs/state-machines/README.md` are generated. Edit the protos or `machines.json` instead, then run `python tools/check_design.py --write`.
    - The protos under `docs/contracts/proto/` are hand-maintained specifications that follow [docs/contracts/README.md](docs/contracts/README.md).
@@ -65,7 +65,7 @@ This repository is the **design authority** for ArcForges. The delivery plan, le
     - Never unpublish, deprecate or delete a published version.
     - Leave Dependabot PRs untouched.
     - Never change repository security settings.
-11. **Commits and PRs.** Commit messages end with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. PR bodies end with `🤖 Generated with [Claude Code](https://claude.com/claude-code)`.
+11. **Commits and PRs.** Any commit co-author trailer or PR footer must identify the actual contributors and tools used.
 12. **Priority Research Prompts** ([docs/research-prompts/](docs/research-prompts/README.md)).
     - A PRP (`PRP-0001`, …) holds a complete prompt for research that will be performed later.
     - PRP research has higher consideration priority than ordinary `RM-*` and `EX-*` roadmap research: when the owner requests a future research topic, check the PRPs before beginning ordinary roadmap exploration.
