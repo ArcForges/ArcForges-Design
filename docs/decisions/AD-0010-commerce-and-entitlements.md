@@ -1,6 +1,6 @@
 # AD-0010 — Commerce and entitlements: Paddle on the web, Google Play on Android
 
-- Status: Accepted (2026-10-12; revised 2026-10-13 after the findings review: LAN gating stated as a launch decision; revised 2026-10-13 by the product owner's decisions (AD-0015): local and LAN free; entitlement tokens describe cloud features only)
+- Status: Accepted (2026-10-12; revised 2026-10-13 after the findings review: LAN gating stated as a launch decision; revised 2026-10-13 by the product owner's decisions (AD-0015): local and LAN free; entitlement tokens describe cloud features only; amended 2026-10-28 by [AD-0021](AD-0021-central-access-go-center.md): implemented in the Go center on PostgreSQL; no price or limit decided (AD-0021 §13, §14))
 - Reuses: ArcForges-Design-Parallel BC-01 (Paddle as sole Merchant of Record, main `64173614`); the existing Cloud Entitlement module (2,439 lines at main `92ba1dc9`) and the commerce/entitlement D1 tables.
 - Supersedes for the active product: the historical Mobile position that "the Play channel is out of scope" (Mobile README, main `6702e281`). Android distribution and in-app subscription now use Google Play, as the product owner requires; direct APK prereleases remain a development channel.
 

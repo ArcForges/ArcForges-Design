@@ -605,7 +605,7 @@
     },
     {
       "id": "SM-PAIRING",
-      "title": "LAN pairing (local confirmation)",
+      "title": "LAN pairing (local confirmation): out of current delivery since 2026-10-28 (AD-0021 §12); kept as history",
       "enum": "arcforges.node.v1.PairingState",
       "persisted": "node store pairing.state (secrets in memory)",
       "owner": "Peer manager",
@@ -715,7 +715,7 @@
     },
     {
       "id": "SM-REMOTE-ATTEMPT",
-      "title": "Remote attempt (executor side)",
+      "title": "Remote attempt (executor side): out of current delivery since 2026-10-28 (AD-0021 §12); kept as history",
       "enum": "arcforges.peer.v1.RemoteAttemptState",
       "persisted": "executor node store remote_attempt.state; origin mirrors as ATTEMPT_KIND_REMOTE",
       "owner": "Placement",
@@ -1232,7 +1232,7 @@
     },
     {
       "id": "SM-RELAY",
-      "title": "Relay connection (node side)",
+      "title": "Relay connection (node side) (since 2026-10-28 the node's connection to the Go center, AD-0021 §9)",
       "enum": "arcforges.node.v1.RelayState",
       "persisted": "in memory; reported in AccountStatus",
       "owner": "Cloud link",
@@ -1299,7 +1299,7 @@
     },
     {
       "id": "SM-REMOTE-COMMAND",
-      "title": "Remote command",
+      "title": "Remote command (since 2026-10-28 center-routed signed calls, AD-0021 §10)",
       "enum": "arcforges.fleet.v1.RemoteCommandState",
       "persisted": "cloud fleet_remote_command.state; node remote_command_log",
       "owner": "Fleet module",

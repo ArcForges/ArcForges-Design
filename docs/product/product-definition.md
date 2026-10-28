@@ -1,5 +1,7 @@
 # ArcForges product definition
 
+**Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target until each AF-CTR task is delivered).** Ordinary use goes through a configured center, official or self-hosted: clients use its business API, cloud AI its MCP endpoint, local AI the stdio adapter to the same center, each naming an explicitly selected node; the node keeps execution authority. The center is a Go service on Neon/PostgreSQL, not the C# Native AOT host and Durable Object adapters described below. LAN ("local and across a LAN", the LAN persona, the node as a LAN peer, LAN rows and parts of §5 and §9) is out of current delivery (roadmap RM-19). "Pro … through ArcForges Cloud" and the editions of §5 are the earlier launch configuration; plan contents under center access are an open owner question (AD-0021).
+
 Status: authoritative for active development from 2026-10-12 ([AD-0001](../decisions/AD-0001-flagship-pivot.md)).
 
 ## 1. Problem
@@ -97,6 +99,8 @@ Journeys are specified in [experience/journeys.md](../experience/journeys.md).
 - **Plan definitions are data.** Plans are defined in the existing Entitlement module and can change without code changes. The table above is the launch configuration.
 - **Later cloud services.** Hosted history and team administration are accepted future work (roadmap RM-06, RM-07).
 
+*Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) §2, §13.* The promise of account-free, center-free normal operation above is withdrawn: ordinary use goes through a configured center, official or self-hosted, while node-accepted work never depends on the center's availability. User-owned compute and the open-source software are distinct from the official hosted center, which is a service; a self-hosted center needs no official service. The LAN row and the "no cloud dependency for local or LAN work" bullet are out of current delivery (LAN is roadmap RM-19). No price, free allowance, device limit or package is decided by this amendment; the table is the earlier launch configuration, to be re-decided by the owner (H-07).
+
 ## 6. Platform scope
 
 The active scope is **Windows 11 (x64, arm64)** (the minimum Windows version, confirmed by the product owner on 2026-10-13; no effort goes into Windows 10) and **Linux (x64, arm64)** for the node, CLI, MCP adapter and Desktop. It also covers **Android 8.0+** for the mobile app and **current evergreen browsers** for the web. macOS is outside the current implementation and acceptance scope ([AD-0002](../decisions/AD-0002-platform-scope.md)). Platform boundaries are kept clean so a macOS backend can be added later without redesign. Nothing for macOS is built or claimed now. A user may run the Linux node in a compatible WSL2 distribution, without integration: it is an ordinary Linux node with no WSL-specific behaviour or acceptance guarantee ([AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md)).
@@ -156,6 +160,8 @@ Release 1 manages the operations below end to end on Windows 11 and Linux (R-AI-
 The release coverage statement is the same on every node of a release. It carries no host-posture fact and no user path, because AGENT callers and the MCP `session_coverage` tool read it: the host's account type and Administrator protection state are reported only by the doctor's HUMAN-only host-posture check ([07](../architecture/07-records-diagnosis-memory.md) §2.4).
 
 **Where gaps are reported.** Gaps that belong to a session (bypassed commands, route failures, unknown attribution) appear in its coverage report ([08](../architecture/08-ai-integration.md) §5). The node serves both tables above, in order, as the product's **release coverage statement** (`SessionService.GetReleaseScope`). D-14, `arcforges coverage` and the MCP `session_coverage` tool show it next to the session's facts, and D-07 and `arcforges session coverage` link to it, so no surface implies broader coverage.
+
+*Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) §12.* The LAN parts of the tables above (compiler-cache sharing on the LAN in Caches, LAN placement in Machines, and the Paired LAN peers row) are out of current delivery. When AF-AI-01 builds `GetReleaseScope`, it serves this statement without them.
 
 **Pro in release 1** is the cloud offering of §5: remote access through ArcForges Cloud, mobile monitoring and control, and push notifications.
 

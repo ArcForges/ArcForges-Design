@@ -2,6 +2,8 @@
 
 Page and screen specifications are in [experience/](../experience/README.md). This chapter fixes the client architectures.
 
+**Amended 2026-10-28 (target; AF-CTR-04, AF-CTR-05) by [AD-0021](../decisions/AD-0021-central-access-go-center.md) §2, §5.** Ordinary client operations go through the configured center to an explicitly selected node; the shared client library's local connection serves node management, sign-in, diagnostics and recovery.
+
 ## 1. Shared client library (`ArcForges.Client`)
 
 Used by the CLI, the Desktop and the MCP adapter.

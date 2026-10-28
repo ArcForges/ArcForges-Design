@@ -2,6 +2,8 @@
 
 Decision: [AD-0004](../decisions/AD-0004-contracts-and-state.md). Protobuf is canonical. First-party transports are gRPC; browsers and Android use binary gRPC-Web; live relay traffic uses protobuf frames over WebSockets.
 
+**Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target until each AF-CTR task is delivered).** Business decisions are made by the Go center (not the C# host), which consumes Go bindings generated from these protos in the Contracts repository (AF-CTR-01); node connections terminate in the Go center instead of `FleetHub`. `arcforges.peer.v1` stays in `v1`, compatible and not served.
+
 The `.proto` files under [proto/](proto/) are the **specification**. Task AF-CON-01 adopts them into the Contracts repository unchanged, apart from placement:
 - `node`, `fleet` → `public/proto`;
 - `peer`, `relay` → `internal/proto`.

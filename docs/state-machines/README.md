@@ -10,8 +10,8 @@ States equal the named proto enum values (without the enum prefix); pseudo-state
 | [SM-FINDING](#sm-finding) | Finding | `arcforges.node.v1.FindingState` | node store finding.state | Diagnosis |
 | [SM-NODE](#sm-node) | Node lifecycle | `arcforges.node.v1.NodeLifecycleState` | in memory; journaled as NodeStatusChanged events | Host |
 | [SM-GUEST-LINK](#sm-guest-link) | WSL guest link (host side): retired 2026-10-21 by AD-0018, never entered; kept as history | `arcforges.node.v1.GuestLinkState` | node store guest_link.state (retired table, never written) | none (the guest manager is retired by AD-0018) |
-| [SM-PAIRING](#sm-pairing) | LAN pairing (local confirmation) | `arcforges.node.v1.PairingState` | node store pairing.state (secrets in memory) | Peer manager |
-| [SM-REMOTE-ATTEMPT](#sm-remote-attempt) | Remote attempt (executor side) | `arcforges.peer.v1.RemoteAttemptState` | executor node store remote_attempt.state; origin mirrors as ATTEMPT_KIND_REMOTE | Placement |
+| [SM-PAIRING](#sm-pairing) | LAN pairing (local confirmation): out of current delivery since 2026-10-28 (AD-0021 §12); kept as history | `arcforges.node.v1.PairingState` | node store pairing.state (secrets in memory) | Peer manager |
+| [SM-REMOTE-ATTEMPT](#sm-remote-attempt) | Remote attempt (executor side): out of current delivery since 2026-10-28 (AD-0021 §12); kept as history | `arcforges.peer.v1.RemoteAttemptState` | executor node store remote_attempt.state; origin mirrors as ATTEMPT_KIND_REMOTE | Placement |
 | [SM-CLEANUP-PLAN](#sm-cleanup-plan) | Cleanup plan | `arcforges.node.v1.CleanupPlanState` | node store cleanup_plan.state | Cleanup executor |
 | [SM-WORKTREE](#sm-worktree) | Managed worktree | `arcforges.node.v1.WorkspaceState` | node store workspace.state (kind MANAGED_WORKTREE) | Workspace manager |
 | [SM-SESSION](#sm-session) | AI client session | `arcforges.node.v1.SessionState` | node store session.state | Session service |
@@ -19,8 +19,8 @@ States equal the named proto enum values (without the enum prefix); pseudo-state
 | [SM-SIGN-IN](#sm-sign-in) | Node browser sign-in (cloud side) | `arcforges.fleet.v1.NodeSignInState` | cloud fleet_node_sign_in.state; node mirrors as SignInFlowState | Fleet module |
 | [SM-DEVICE-AUTH](#sm-device-auth) | Device authorization (headless sign-in) | `arcforges.fleet.v1.DeviceAuthorizationState` | cloud fleet_device_authorization.state | Fleet module |
 | [SM-PHONE-PAIRING](#sm-phone-pairing) | Phone sign-in by QR | `arcforges.fleet.v1.PhonePairingCloudState` | cloud fleet_phone_pairing.state; node mirrors as PhonePairingState | Fleet module |
-| [SM-RELAY](#sm-relay) | Relay connection (node side) | `arcforges.node.v1.RelayState` | in memory; reported in AccountStatus | Cloud link |
-| [SM-REMOTE-COMMAND](#sm-remote-command) | Remote command | `arcforges.fleet.v1.RemoteCommandState` | cloud fleet_remote_command.state; node remote_command_log | Fleet module |
+| [SM-RELAY](#sm-relay) | Relay connection (node side) (since 2026-10-28 the node's connection to the Go center, AD-0021 §9) | `arcforges.node.v1.RelayState` | in memory; reported in AccountStatus | Cloud link |
+| [SM-REMOTE-COMMAND](#sm-remote-command) | Remote command (since 2026-10-28 center-routed signed calls, AD-0021 §10) | `arcforges.fleet.v1.RemoteCommandState` | cloud fleet_remote_command.state; node remote_command_log | Fleet module |
 | [SM-SUBSCRIPTION](#sm-subscription) | Subscription (normalized across Paddle and Google Play) | `arcforges.fleet.v1.SubscriptionState` | cloud commerce_subscription (reused) with provider state; fleet_play_purchase.play_state | Commerce module |
 | [SM-UPDATE](#sm-update) | Node update | `arcforges.node.v1.UpdateState` | node store update_state.state; run/update-switch.json during a switch | Updater |
 | [SM-INTEGRATION](#sm-integration) | AI client integration | `arcforges.node.v1.IntegrationState` | derived from integration_write, client settings and probes (re-evaluated by file watchers) | Integration service |
@@ -275,7 +275,7 @@ stateDiagram-v2
 
 <a id="sm-pairing"></a>
 
-## SM-PAIRING — LAN pairing (local confirmation)
+## SM-PAIRING — LAN pairing (local confirmation): out of current delivery since 2026-10-28 (AD-0021 §12); kept as history
 
 - Enum: `arcforges.node.v1.PairingState`; persisted: node store pairing.state (secrets in memory); owner: Peer manager.
 - Initial: `REQUESTED`, `INCOMING`. Terminal: `PAIRED`, `REJECTED`, `MISMATCH`, `EXPIRED`, `CANCELLED`, `BLOCKED`.
@@ -330,7 +330,7 @@ stateDiagram-v2
 
 <a id="sm-remote-attempt"></a>
 
-## SM-REMOTE-ATTEMPT — Remote attempt (executor side)
+## SM-REMOTE-ATTEMPT — Remote attempt (executor side): out of current delivery since 2026-10-28 (AD-0021 §12); kept as history
 
 - Enum: `arcforges.peer.v1.RemoteAttemptState`; persisted: executor node store remote_attempt.state; origin mirrors as ATTEMPT_KIND_REMOTE; owner: Placement.
 - Initial: `RESERVED`. Terminal: `RELEASED`, `CANCELLED`, `PREEMPTED`.
@@ -591,7 +591,7 @@ stateDiagram-v2
 
 <a id="sm-relay"></a>
 
-## SM-RELAY — Relay connection (node side)
+## SM-RELAY — Relay connection (node side) (since 2026-10-28 the node's connection to the Go center, AD-0021 §9)
 
 - Enum: `arcforges.node.v1.RelayState`; persisted: in memory; reported in AccountStatus; owner: Cloud link.
 - Initial: `DISABLED`. Terminal: none (long-lived).
@@ -625,7 +625,7 @@ stateDiagram-v2
 
 <a id="sm-remote-command"></a>
 
-## SM-REMOTE-COMMAND — Remote command
+## SM-REMOTE-COMMAND — Remote command (since 2026-10-28 center-routed signed calls, AD-0021 §10)
 
 - Enum: `arcforges.fleet.v1.RemoteCommandState`; persisted: cloud fleet_remote_command.state; node remote_command_log; owner: Fleet module.
 - Initial: `ACCEPTED`. Terminal: `SUCCEEDED`, `FAILED`, `REJECTED_BY_NODE`, `EXPIRED`, `CANCELLED`.

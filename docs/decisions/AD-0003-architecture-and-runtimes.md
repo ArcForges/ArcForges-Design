@@ -1,6 +1,6 @@
 # AD-0003 — Components, runtimes and binaries (C#-first)
 
-- Status: Accepted (2026-10-12; amended 2026-10-19 by AD-0017: direction for §6, effective only when the first roadmap backend row is promoted or an EX row would ship a native unit, and a future-tense note on RM-14 for §1; the current text of §1 and §6 is unchanged; amended 2026-10-21 by AD-0018: the `bridge wsl` role of §1 is superseded, no dedicated Windows–WSL integration)
+- Status: Accepted (2026-10-12; amended 2026-10-19 by AD-0017: direction for §6, effective only when the first roadmap backend row is promoted or an EX row would ship a native unit, and a future-tense note on RM-14 for §1; the current text of §1 and §6 is unchanged; amended 2026-10-21 by AD-0018: the `bridge wsl` role of §1 is superseded, no dedicated Windows–WSL integration; amended 2026-10-28 by [AD-0021](AD-0021-central-access-go-center.md): §3, the cloud runtime is the Go center (AD-0021 §8, §9))
 - Reaffirms: the C#-first stack of ArcForges-Design-Parallel P2-021 (main `64173614`, `docs/decisions/phase-2-specification-decisions.md#rule-p2-021`) for the new product.
 
 ## Decision

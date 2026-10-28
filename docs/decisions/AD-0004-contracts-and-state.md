@@ -1,6 +1,6 @@
 # AD-0004 — Contracts, transports and authoritative state
 
-- Status: Accepted (2026-10-12; amended 2026-10-21 by AD-0018: the host–guest transport and the WSL bridge as a package user are superseded; their v1 wire declarations stay, retired; amended 2026-10-25 by MR-99: durable local attempt phases; amended 2026-10-25 by MR-105: kind-guarded synthetic adoption phases; amended 2026-10-26 by MR-14: logical idempotent outcome and post-commit checkpoint retry)
+- Status: Accepted (2026-10-12; amended 2026-10-21 by AD-0018: the host–guest transport and the WSL bridge as a package user are superseded; their v1 wire declarations stay, retired; amended 2026-10-25 by MR-99: durable local attempt phases; amended 2026-10-25 by MR-105: kind-guarded synthetic adoption phases; amended 2026-10-26 by MR-14: logical idempotent outcome and post-commit checkpoint retry; amended 2026-10-28 by [AD-0021](AD-0021-central-access-go-center.md): the Go center joins as a transport participant through Go bindings of the same protos; the center is authoritative for account, device, grant and routing records, the node for execution state)
 
 ## Decision
 

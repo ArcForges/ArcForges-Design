@@ -2,6 +2,8 @@
 
 Architecture: [12](../architecture/12-client-applications.md) §5, [10](../architecture/10-cloud.md), [14](../architecture/14-commercial-operations.md). Template: [README](README.md).
 
+**Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target until each AF-CTR task is delivered).** W-03's statement that everything local and on the LAN is free is withdrawn: the page states the editions and hosting distinction of AD-0021 §13, with plan contents from the owner's decision (H-07). The center serves its own sign-in, `/connect` and `/activate` pages so that self-hosted centers need no Web deployment; the official site's profiles use the same API. LAN mentions are out of current delivery.
+
 | Part | Technology | Origin and session |
 |---|---|---|
 | Public site | Static, generated in C#, no JavaScript | Anonymous |

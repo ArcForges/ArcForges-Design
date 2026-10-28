@@ -1,6 +1,6 @@
 # AD-0011 — Identity, sign-in, pairing and credentials
 
-- Status: Accepted (2026-10-12; revised after the independent review the same day: honest reuse statement, scoped phone sessions; amended 2026-10-19 by the current-design corrections: the same-user qualifier for credentials at rest, §4; amended 2026-10-21 by AD-0018: no WSL guest nodes)
+- Status: Accepted (2026-10-12; revised after the independent review the same day: honest reuse statement, scoped phone sessions; amended 2026-10-19 by the current-design corrections: the same-user qualifier for credentials at rest, §4; amended 2026-10-21 by AD-0018: no WSL guest nodes; amended 2026-10-28 by [AD-0021](AD-0021-central-access-go-center.md): endpoints implemented in the Go center; a third credential kind, the agent grant (AD-0021 §7))
 - Reuses: the `arcforges.publicapi.v1` IdentityService and DeviceService contracts, the D1 identity and device schema, and the Cloud Identity domain store (main `92ba1dc9`). The endpoints are new work (AF-ID-01, AF-ID-02), because the baseline serves only `HelloService` (10 §2). Also reuses the native authorization tables `identity_native_authorization` and `identity_browser_auth_flow`, and the historical system-browser PKCE design (ArcForges-Design-Parallel `08-security-architecture.md`, main `64173614`).
 
 ## Decision

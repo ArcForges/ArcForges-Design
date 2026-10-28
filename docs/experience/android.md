@@ -5,6 +5,8 @@
 - **Origin:** `REMOTE` through a session on the phone's own installation (product `arcforges-mobile`). A browser sign-in gives an `account` session. A QR pairing gives a `mobile.limited` session (fleet view, push and low-risk commands) until the first step-up upgrades it ([AD-0011](../decisions/AD-0011-identity-and-login.md) §3).
 - **Entitlements:** live views need `remote.view`, actions need `remote.control`, push needs `push`.
 
+**Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target until each AF-CTR task is delivered).** The app reaches nodes through the Go center; viewer frames come from the center's node channel. LAN mentions are out of current delivery.
+
 ## Global behaviour
 
 | Topic | Behaviour |

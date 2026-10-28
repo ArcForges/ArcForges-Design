@@ -1,5 +1,7 @@
 # Cloud store (Cloudflare D1)
 
+**Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) §8.** The center's store is PostgreSQL (Neon in the official deployment), not D1. The model below is the D1 baseline the PostgreSQL model is derived from; §6 states the derivation rules, and the PostgreSQL migrations of the Cloud repository are its implementation (AF-CTR-02, AF-CTR-03, AF-CTR-04, AF-CTR-09).
+
 Baseline: Cloud main `92ba1dc9`. Its D1 physical model is generated from `src/ArcForges.Cloud.Storage.D1/Physical/manifest/*.json` (Design D1 profile section 2), which fixes:
 - module-prefixed table names;
 - `STRICT` tables;
@@ -65,3 +67,22 @@ Account deletion follows the reused contract's flow, built by AF-ID-02: request,
 - **Purge** cascades through `identity_user` to `fleet_node`, phone pairings and commands.
 - **Revocation** revokes certificates and closes relay sockets through `HostEnvelope.kill_switches`, scoped to the account.
 - **Kept records:** `fleet_play_purchase` and commerce records stay for the statutory billing retention, keyed by hashed references with personal fields cleared ([11](../architecture/11-security-privacy.md) §5).
+
+## 6. PostgreSQL model (AD-0021)
+
+Added 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) §8. The D1 model above is mapped to PostgreSQL by these rules; the Cloud repository's migrations under `center/` are the implementation, and each rule's delivery is named.
+
+| D1 baseline | PostgreSQL | Delivered by |
+|---|---|---|
+| Module-prefixed tables (`identity_user`) in one database | One schema per module (`identity.user`), owned by the migration role; the runtime role receives only the grants its module needs | AF-CTR-02 (platform), AF-CTR-03, AF-CTR-04, AF-CTR-09 |
+| `STRICT` tables, canonical UUID text IDs | `uuid` columns; `text` with length checks where the contract bounds a string | AF-CTR-02 |
+| Instants as UTC microseconds (`INTEGER`) | `timestamptz` (microsecond precision) | AF-CTR-02 |
+| Enums as registered numbers with `CHECK (x IN (…))` | `smallint` with named `CHECK` constraints; a new value is an ordinary `ALTER TABLE … DROP/ADD CONSTRAINT` migration | AF-CTR-02 |
+| Table-rebuild migrations (create, copy, swap) for changed checks | Ordinary `ALTER TABLE` in a transaction; expand and contract for changes the running revision must survive | AF-CTR-02 |
+| Named storage plans, guarded batches and the commit tail | Native multi-statement transactions with row locks or `SERIALIZABLE` where invariants span rows, serialization-failure retry, receipts and outbox rows written in the same transaction | AF-CTR-02 |
+| Command receipts and the command guard | `platform.command_receipt` unique per principal and command ID, with the request digest; a replay returns the stored result, a different digest is refused | AF-CTR-02 |
+| Inbox and outbox with purge plans | `platform.inbox` (unique by provider message ID), `platform.outbox` with a publisher that marks delivery; retention sweeps (AF-PLAT-01) | AF-CTR-02, AF-PLAT-01 |
+| Job lease (`lease` guard: holder and fence) | `platform.job_lease` with `SELECT … FOR UPDATE` and a monotonically increasing fence | AF-CTR-02 |
+| Migration runner and plan-manifest hashes | Versioned SQL files with SHA-256 checksums in `platform.schema_migration`, applied under `pg_advisory_lock`; an edited applied file is refused | AF-CTR-02 |
+
+What the center does not store is unchanged (§4) and widened by AD-0021 §10: task specifications, output and file contents pass through the center transiently and are never persisted.
