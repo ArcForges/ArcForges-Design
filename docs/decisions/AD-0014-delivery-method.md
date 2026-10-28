@@ -1,6 +1,6 @@
 # AD-0014 — Delivery method: serial development, distinct evidence, honest acceptance
 
-- Status: Accepted (2026-10-12; revised the same day after the independent review: `blocked` state and real dependencies, so one blocked task cannot stall the plan; revised 2026-10-13 after the findings review: production activation separate from delivery; continuous serial execution once authorized; amended 2026-10-16 by [AD-0016](AD-0016-local-first-verification.md): the hosted-CI merge gate applies to external PRs; amended 2026-10-17 by AD-0016: the isolated secret-store backend in §6; amended 2026-10-21 by AD-0018: real Linux tests run on a native Linux host, not WSL2; amended 2026-10-22 by [AD-0020](AD-0020-post-push-verification-and-required-checks.md): the owner's verification runs after the push and the required host statuses gate the merge)
+- Status: Accepted (2026-10-12; revised the same day after the independent review: `blocked` state and real dependencies, so one blocked task cannot stall the plan; revised 2026-10-13 after the findings review: production activation separate from delivery; continuous serial execution once authorized; amended 2026-10-16 by [AD-0016](AD-0016-local-first-verification.md): the hosted-CI merge gate applies to external PRs; amended 2026-10-17 by AD-0016: the isolated secret-store backend in §6; amended 2026-10-21 by AD-0018: real Linux tests run on a native Linux host, not WSL2; amended 2026-10-22 by [AD-0020](AD-0020-post-push-verification-and-required-checks.md): the owner's verification runs after the push and the required host statuses gate the merge; amended 2026-10-27 by the user: provider-neutral delegation and accurate attribution)
 - Supersedes for active development:
   - the parallel delivery model of ArcForges-Design-Parallel (P2-018, DLV-25, DLV-31 build slot, DLV-42 coordinator capacity) and of Plan-Parallel `execution-policy.md`, `single-task-command.md` and `arcforges-implementation.md`;
   - the launcher instruction to "use up to 10 concurrent subagents";
@@ -9,7 +9,10 @@
 
 ## Decision
 
-1. **Development is strictly serial.** One implementation task is active at a time. Delegation is allowed to one worker or reviewer at a time, on Opus 5.5, never Haiku. This governs how the product is built. The product itself supports and tests parallel execution.
+1. **Development is strictly serial.** One implementation task is active at a time. Delegation is allowed to one worker or reviewer at a time, without a required provider or model. This governs how the product is built. The product itself supports and tests parallel execution.
+
+   > **Amendment (2026-10-27).** The user removed the model-specific delegation and attribution requirements. Use available agents without requiring a separate client login. Independent exact-head review, serial delivery and the required verification checks remain. Any commit co-author trailer or PR footer must identify the actual contributors and tools used.
+
 2. **No build slot.** With serial development there is no competing local build, so the workstation lock (`delivery.py build-slot`) and every retry-for-a-slot instruction are retired. Once the ArcForges node delivers its execution increment (Plan milestone M2), the development workflow may run its own heavy commands through ArcForges as dogfooding. This is recorded evidence, not a precondition.
 3. **Vertical increments.** Every milestone connects a real user action to working behaviour end to end (contract, node, CLI or GUI, persistence, tests). No milestone delivers disconnected interface shells awaiting a final integration.
 4. **Verification responsibilities (distinct evidence only):**

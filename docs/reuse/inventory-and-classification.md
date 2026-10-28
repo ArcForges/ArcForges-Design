@@ -113,5 +113,5 @@ Decision: [AD-0013](../decisions/AD-0013-reuse-and-supersession.md). Classes: **
 | Item | Class | Notes |
 |---|---|---|
 | `C:\MyFile\Projects\ArcForges - Final.md` launcher | Superseded and rewritten | The new single objective; the old text is archived in Plan `history/` |
-| `haiku-worker` agent definitions (project-level and user-level) | Superseded | The user directives are "no Haiku" and no build slot. On 2026-10-12 both definitions, and the user-level backup, were moved to `ArcForges/.claude/coordinator/retired-agents/` and archived in Plan `history/legacy-agents/` (conflict C-14). |
+| `haiku-worker` agent definitions (project-level and user-level) | Superseded | The legacy build-slot workflow is retired; current delegation follows AD-0014 without a required provider or model. On 2026-10-12 both definitions, and the user-level backup, were moved to `ArcForges/.claude/coordinator/retired-agents/` and archived in Plan `history/legacy-agents/` (conflict C-14). |
 | Coordinator notes (`.claude/coordinator/`) | Retain (history) | Waiting audit and scope status kept as evidence |
