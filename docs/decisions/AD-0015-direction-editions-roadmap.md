@@ -1,6 +1,6 @@
 # AD-0015 — Product direction, editions and roadmap governance
 
-- Status: Accepted (2026-10-13; the product owner's decisions of that day; amended 2026-10-19 by AD-0017: §1, §2 and §7 gain future-tense direction for delegated execution with verified contracts; amended 2026-10-19 by AD-0017 as amended: §1, §2 and §7 gain direction for application and workload control; §8 and every release-1 statement unchanged)
+- Status: Accepted (2026-10-13; the product owner's decisions of that day; amended 2026-10-19 by AD-0017: §1, §2 and §7 gain future-tense direction for delegated execution with verified contracts; amended 2026-10-19 by AD-0017 as amended: §1, §2 and §7 gain direction for application and workload control; §8 and every release-1 statement unchanged; amended 2026-10-28 by [AD-0021](AD-0021-central-access-go-center.md): §2, the promise of account-free, center-free normal operation is withdrawn; §4, LAN leaves current delivery (AD-0021 §12, §13))
 - Amends: [AD-0010](AD-0010-commerce-and-entitlements.md) (feature gating), [AD-0008](AD-0008-lan-trust-and-placement.md) (account trust deferred), [AD-0002](AD-0002-platform-scope.md) (Windows 11 floor confirmed)
 - Related: [product definition](../product/product-definition.md) §5 and §9; the canonical roadmap is [`roadmap.md` in ArcForges/Plan](https://github.com/ArcForges/Plan/blob/main/roadmap.md)
 

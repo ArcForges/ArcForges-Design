@@ -1,6 +1,6 @@
 # AD-0007 — AI client integration: MCP first, hooks for identity and routing, honest coverage
 
-- Status: Accepted (2026-10-12; revised after the independent review the same day: no worktree hooks, exec-form hooks, `ask` for rewrites, caller-bound rewritten runs, guardrail wording; revised 2026-10-13 after the findings review: managed-command mode, hand-off before client timeouts, coverage map; amended 2026-10-19 by the current-design corrections, which change no route: routed commands run outside the client's own sandbox (§1, §4), and the optional Linux hardening is read back and reported (§8))
+- Status: Accepted (2026-10-12; revised after the independent review the same day: no worktree hooks, exec-form hooks, `ask` for rewrites, caller-bound rewritten runs, guardrail wording; revised 2026-10-13 after the findings review: managed-command mode, hand-off before client timeouts, coverage map; amended 2026-10-19 by the current-design corrections, which change no route: routed commands run outside the client's own sandbox (§1, §4), and the optional Linux hardening is read back and reported (§8); amended 2026-10-28 by [AD-0021](AD-0021-central-access-go-center.md): §1, the MCP route goes through the center's MCP endpoint; the stdio adapter forwards to it (AD-0021 §6))
 - Evidence: V-A01–V-A06, A-A01, A-A03, A-L04 ([platform verification](../verification/platform-capabilities.md))
 
 ## Decision

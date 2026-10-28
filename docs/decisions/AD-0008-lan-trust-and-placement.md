@@ -1,6 +1,7 @@
 # AD-0008 — LAN: discovery, trust, placement, transfer and caches
 
 - Status: Accepted (2026-10-12; revised after the independent review the same day: SAS bound to certificate fingerprints, listener access rule, copy or reflink for remote workspaces; revised 2026-10-13 after the findings review: per-attempt workspace slots, output conflict detection, TLS 1.3 platform floor; revised 2026-10-13 by the product owner's decisions (AD-0015): LAN free; account-based trust and hints deferred (RM-01); amended 2026-10-21 by AD-0018: the WSL guest sentence of item 1 is superseded)
+- **Superseded for current delivery 2026-10-28 by [AD-0021](AD-0021-central-access-go-center.md) §12.** LAN discovery, pairing, placement, transfer and inter-node cache sharing are not built; this record is kept as history and as the starting point of roadmap RM-19.
 
 ## Decision
 

@@ -1,5 +1,7 @@
 # 01 — System overview
 
+**Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (current architecture; target until each AF-CTR task is delivered, see its Delivery state).** Ordinary use goes through a configured center (official or self-hosted): Desktop, CLI, Web and Android use the center's business API, cloud AI uses the center's MCP endpoint, and local AI uses the stdio adapter, which forwards to the same center; each call names an explicitly selected node. Nodes keep an outbound connection to the center and expose no inbound port; the local endpoint (named pipe or UDS) serves node management, sign-in, diagnostics and recovery. The center is a Go service on Neon/PostgreSQL (the C# host and D1 below are history once AF-CTR-09 retires them), and node connections terminate in the Go center instead of a `FleetHub` Durable Object. LAN (topology T4, boundary B3, data class D4's LAN peers, flow 5 and the `PeerService` edges) is out of current delivery. In the context diagram below, read the CLI, Desktop and MCP edges to the node as management edges, and the cloud host as the Go center.
+
 ## 1. Context
 
 ```mermaid

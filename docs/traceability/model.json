@@ -879,6 +879,8 @@
         "docs/experience/mcp.md"
       ],
       "tasks": [
+        "AF-CTR-07",
+        "AF-CTR-08",
         "AF-MCP-01"
       ],
       "verification": "ScriptedMcpClient tests for both protocol revisions; bounded waits"
@@ -891,6 +893,7 @@
         "docs/experience/mcp.md"
       ],
       "tasks": [
+        "AF-CTR-07",
         "AF-MCP-01"
       ],
       "verification": "ScriptedMcpClient tests for both protocol revisions; bounded waits"
@@ -1020,7 +1023,8 @@
         "docs/decisions/AD-0004-contracts-and-state.md"
       ],
       "tasks": [
-        "AF-CON-01"
+        "AF-CON-01",
+        "AF-CTR-01"
       ],
       "verification": "Contracts repository compile and wire-compatibility gates"
     },
@@ -1275,6 +1279,7 @@
         "docs/contracts/proto/arcforges/relay/v1/relay.proto"
       ],
       "tasks": [
+        "AF-CTR-05",
         "AF-CLD-01",
         "AF-CLD-04"
       ],
@@ -1301,6 +1306,7 @@
         "docs/contracts/proto/arcforges/fleet/v1/fleet.proto"
       ],
       "tasks": [
+        "AF-CTR-05",
         "AF-CLD-05"
       ],
       "verification": "signature, expiry and node policy tests; never-late execution"
@@ -1433,7 +1439,7 @@
         "docs/contracts/proto/arcforges/node/v1/account.proto"
       ],
       "tasks": [
-        "AF-CLD-02"
+        "AF-CTR-04"
       ],
       "verification": "ScriptedBrowser PKCE and device-code closed loop"
     },
@@ -1459,7 +1465,7 @@
       ],
       "tasks": [
         "AF-DP-02",
-        "AF-CLD-02"
+        "AF-CTR-04"
       ],
       "verification": "secret store backend tests on both platforms"
     },
@@ -1470,6 +1476,7 @@
         "docs/architecture/10-cloud.md"
       ],
       "tasks": [
+        "AF-CTR-03",
         "AF-ID-01",
         "AF-ID-02",
         "AF-CLD-02",
@@ -1485,9 +1492,9 @@
         "docs/architecture/11-security-privacy.md"
       ],
       "tasks": [
+        "AF-CTR-03",
         "AF-DIST-01",
-        "AF-ID-01",
-        "AF-CLD-02"
+        "AF-ID-01"
       ],
       "verification": "review of labels; no elevation paths"
     },
@@ -1608,9 +1615,10 @@
         "docs/contracts/reuse-map.md"
       ],
       "tasks": [
+        "AF-CTR-03",
+        "AF-CTR-04",
         "AF-ID-01",
         "AF-ID-02",
-        "AF-CLD-02",
         "AF-WEB-02"
       ],
       "verification": "identity endpoints on the reused contracts and schema: ScriptedBrowser and FakeMailSender closed loops"
@@ -1622,6 +1630,7 @@
         "docs/architecture/11-security-privacy.md"
       ],
       "tasks": [
+        "AF-CTR-03",
         "AF-PLAT-01",
         "AF-CLD-04",
         "AF-OPS-01"
@@ -1636,6 +1645,7 @@
         "docs/architecture/10-cloud.md"
       ],
       "tasks": [
+        "AF-CTR-05",
         "AF-REC-01",
         "AF-CLD-04"
       ],
@@ -1727,6 +1737,10 @@
       ],
       "tasks": [
         "AF-SEC-01",
+        "AF-CTR-03",
+        "AF-CTR-05",
+        "AF-CTR-06",
+        "AF-CTR-07",
         "AF-PLAT-01",
         "AF-CLD-05"
       ],
@@ -1739,6 +1753,7 @@
       ],
       "tasks": [
         "AF-NODE-01",
+        "AF-CTR-06",
         "AF-REC-01",
         "AF-SUP-01"
       ],
@@ -1764,6 +1779,7 @@
       "tasks": [
         "AF-REPO-01",
         "AF-DOCS-01",
+        "AF-CTR-10",
         "AF-ACC-01"
       ],
       "verification": "review of each task's evidence"
@@ -1777,6 +1793,8 @@
       ],
       "tasks": [
         "AF-REPO-01",
+        "AF-CTR-05",
+        "AF-CTR-10",
         "AF-ACC-01"
       ],
       "verification": "review of each task's evidence"
@@ -1788,9 +1806,207 @@
         "docs/verification/platform-capabilities.md"
       ],
       "tasks": [
+        "AF-CTR-10",
         "AF-ACC-01"
       ],
       "verification": "acceptance register maintained; never reported as proven"
+    },
+    {
+      "id": "R-CTR-001",
+      "design": [
+        "docs/decisions/AD-0021-central-access-go-center.md",
+        "docs/architecture/01-system-overview.md",
+        "docs/experience/cli.md"
+      ],
+      "tasks": [
+        "AF-CTR-05",
+        "AF-CTR-08"
+      ],
+      "verification": "Closed-loop and real tests: the CLI and the stdio adapter submit through the center; no integration calls the local task API."
+    },
+    {
+      "id": "R-CTR-002",
+      "design": [
+        "docs/decisions/AD-0021-central-access-go-center.md",
+        "docs/decisions/AD-0011-identity-and-login.md",
+        "docs/architecture/10-cloud.md"
+      ],
+      "tasks": [
+        "AF-CTR-04",
+        "AF-CTR-05"
+      ],
+      "verification": "Real Windows and Linux nodes sign in and connect; port inspection shows no node listener beyond the local endpoint."
+    },
+    {
+      "id": "R-CTR-003",
+      "design": [
+        "docs/decisions/AD-0021-central-access-go-center.md",
+        "docs/architecture/10-cloud.md"
+      ],
+      "tasks": [
+        "AF-CTR-02",
+        "AF-CTR-04"
+      ],
+      "verification": "Tests with a self-hosted center URL: no request reaches the official endpoint."
+    },
+    {
+      "id": "R-CTR-004",
+      "design": [
+        "docs/decisions/AD-0021-central-access-go-center.md",
+        "docs/experience/mcp.md"
+      ],
+      "tasks": [
+        "AF-CTR-07"
+      ],
+      "verification": "Measurement recorded by AF-CTR-07."
+    },
+    {
+      "id": "R-CTR-005",
+      "design": [
+        "docs/decisions/AD-0021-central-access-go-center.md",
+        "docs/experience/mcp.md",
+        "docs/architecture/08-ai-integration.md"
+      ],
+      "tasks": [
+        "AF-CTR-07",
+        "AF-CTR-08"
+      ],
+      "verification": "Real MCP client tests against the center: OAuth, device selection, reconnection, follow-up by ID."
+    },
+    {
+      "id": "R-CTR-006",
+      "design": [
+        "docs/decisions/AD-0021-central-access-go-center.md",
+        "docs/decisions/AD-0006-execution-semantics.md",
+        "docs/architecture/10-cloud.md"
+      ],
+      "tasks": [
+        "AF-CTR-05"
+      ],
+      "verification": "Fault-injection tests: center killed mid-submission, node disconnected, retries."
+    },
+    {
+      "id": "R-CTR-007",
+      "design": [
+        "docs/decisions/AD-0021-central-access-go-center.md",
+        "docs/architecture/11-security-privacy.md",
+        "docs/data/cloud-store.md"
+      ],
+      "tasks": [
+        "AF-CTR-05",
+        "AF-CTR-06"
+      ],
+      "verification": "Database inspection tests after the suites; data-flow review."
+    },
+    {
+      "id": "R-CTR-008",
+      "design": [
+        "docs/decisions/AD-0021-central-access-go-center.md",
+        "docs/decisions/AD-0011-identity-and-login.md"
+      ],
+      "tasks": [
+        "AF-CTR-03",
+        "AF-CTR-05",
+        "AF-CTR-07"
+      ],
+      "verification": "Tests per credential kind and revocation path."
+    },
+    {
+      "id": "R-CTR-009",
+      "design": [
+        "docs/decisions/AD-0021-central-access-go-center.md",
+        "docs/data/cloud-store.md",
+        "docs/architecture/10-cloud.md"
+      ],
+      "tasks": [
+        "AF-CTR-02",
+        "AF-CTR-09"
+      ],
+      "verification": "Real PostgreSQL tests; deployment migration evidence; restore drill."
+    },
+    {
+      "id": "R-CTR-010",
+      "design": [
+        "docs/decisions/AD-0021-central-access-go-center.md",
+        "docs/contracts/README.md"
+      ],
+      "tasks": [
+        "AF-CTR-01"
+      ],
+      "verification": "Contracts host verification: drift check and Go/C# fixture round trips."
+    },
+    {
+      "id": "R-CTR-011",
+      "design": [
+        "docs/decisions/AD-0021-central-access-go-center.md",
+        "docs/architecture/06-storage-workspaces.md",
+        "docs/architecture/11-security-privacy.md"
+      ],
+      "tasks": [
+        "AF-CTR-06"
+      ],
+      "verification": "Real Windows and Linux file-system tests including link and traversal escapes."
+    },
+    {
+      "id": "R-CTR-012",
+      "design": [
+        "docs/decisions/AD-0021-central-access-go-center.md",
+        "docs/decisions/AD-0007-ai-integration.md",
+        "docs/architecture/11-security-privacy.md"
+      ],
+      "tasks": [
+        "AF-CTR-05",
+        "AF-CTR-06",
+        "AF-CTR-07"
+      ],
+      "verification": "Tests on the routed path for each origin."
+    },
+    {
+      "id": "R-CTR-013",
+      "design": [
+        "docs/decisions/AD-0021-central-access-go-center.md",
+        "docs/architecture/03-resource-control.md"
+      ],
+      "tasks": [
+        "AF-CTR-05"
+      ],
+      "verification": "Real tests with two callers on one node."
+    },
+    {
+      "id": "R-CTR-014",
+      "design": [
+        "docs/decisions/AD-0021-central-access-go-center.md",
+        "docs/architecture/16-testing-strategy.md"
+      ],
+      "tasks": [
+        "AF-CTR-01",
+        "AF-CTR-02",
+        "AF-CTR-11"
+      ],
+      "verification": "The control mapping and host verification evidence."
+    },
+    {
+      "id": "R-CTR-015",
+      "design": [
+        "docs/decisions/AD-0021-central-access-go-center.md",
+        "docs/architecture/10-cloud.md",
+        "docs/data/cloud-store.md"
+      ],
+      "tasks": [
+        "AF-CTR-09"
+      ],
+      "verification": "Migration inventory; parity tests; deployed image contents."
+    },
+    {
+      "id": "R-CTR-016",
+      "design": [
+        "docs/decisions/AD-0021-central-access-go-center.md",
+        "docs/architecture/16-testing-strategy.md"
+      ],
+      "tasks": [
+        "AF-CTR-10"
+      ],
+      "verification": "The AF-CTR-10 acceptance record."
     }
   ]
 }

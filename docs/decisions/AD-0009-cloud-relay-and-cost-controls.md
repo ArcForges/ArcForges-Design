@@ -1,6 +1,6 @@
 # AD-0009 — Cloud relay, remote control, push and cost controls
 
-- Status: Accepted (2026-10-12; revised 2026-10-13 after the findings review: complete billing dimensions, structural bounds, degradation ladder, residual exposure)
+- Status: Accepted (2026-10-12; revised 2026-10-13 after the findings review: complete billing dimensions, structural bounds, degradation ladder, residual exposure; amended 2026-10-28 by [AD-0021](AD-0021-central-access-go-center.md): §1 and §2, node connections terminate in the Go center, not in a FleetHub Durable Object; §5, center-routed run is a normal operation under node policy; §8, PostgreSQL replaces D1 (AD-0021 §7–§9))
 - Evidence: V-C01–V-C04, V-C08
 
 ## Decision

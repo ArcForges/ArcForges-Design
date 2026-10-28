@@ -115,6 +115,8 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 
 ## R-AI — AI client integration
 
+*Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md).* The MCP tools of R-AI-001 and R-AI-002 are served by the center's MCP endpoint (R-CTR-005); the stdio adapter forwards to the center instead of the local node.
+
 | ID | Requirement | Acceptance |
 |---|---|---|
 | R-AI-001 | The MCP adapter exposes managed execution and inspection tools over stdio. It supports MCP revisions 2025-11-25 and 2026-07-28, uses explicit server-minted task handles, and offers the official tasks extension where the client supports it (V-A01). | MCP conformance tests for both revisions. |
@@ -131,6 +133,8 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 
 ## R-API — Contracts and state
 
+*Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md).* In R-API-002 the GUI, the CLI and the MCP adapter use the local endpoint for node management, sign-in, diagnostics and recovery; their ordinary operations go through the center (R-CTR-001).
+
 | ID | Requirement | Acceptance |
 |---|---|---|
 | R-API-001 | `.proto` files are the canonical first-party contracts, published from the Contracts repository. | Contracts CI; spec check. |
@@ -143,6 +147,8 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 | R-API-008 | Errors use `arcforges.foundation.v1.ArcError` with category, retry advice and effect certainty. | Contract check. |
 
 ## R-LAN — LAN
+
+*Out of current delivery since 2026-10-28 ([AD-0021](../decisions/AD-0021-central-access-go-center.md) §12).* The requirements below are kept as history and for roadmap RM-19; their tasks AF-LAN-01, AF-LAN-02 and AF-LAN-03 are superseded, and no current task delivers them.
 
 | ID | Requirement | Acceptance |
 |---|---|---|
@@ -160,6 +166,8 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 
 ## R-CLOUD — Cloud
 
+*Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md).* R-CLOUD-001's "local and LAN operation never requires an account or cloud connectivity" is withdrawn for normal operation: ordinary operations go through a configured center, official or self-hosted (R-CTR-001), while node-accepted work never depends on the center's availability (R-CTR-006). In R-CLOUD-002 node connections terminate in the Go center instead of hibernating Durable Objects, and business decisions are made in Go. In R-CLOUD-004 the center authorizes in Go, and center-routed execution is a normal operation under the node's local policy (R-CTR-012).
+
 | ID | Requirement | Acceptance |
 |---|---|---|
 | R-CLOUD-001 | Local and LAN operation never requires an account or cloud connectivity. Cloud-feature entitlements are cached as signed tokens with an offline grace period (default 14 days), and only cloud features consult them. | Tests with no account and with the cloud unreachable. |
@@ -169,6 +177,29 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 | R-CLOUD-005 | Push notifications (FCM HTTP v1) are sent for user-selected events, deduplicated and rate-limited. | Closed-loop test with an FCM fake; physical device deferred. |
 | R-CLOUD-006 | Application-enforced quotas and operating budgets cover every billable dimension of the cloud products in use, including duration-based charges (container instance time, Durable Object active duration). Structural limits bound what metering cannot, a degradation ladder stops new and ongoing billable activity, and the residual exposure is computed and shown. Budget alerts and subscription gating are never counted as enforcement (V-C04). | Tests that exceed each budget and walk the ladder, including closing existing relay sockets and essential-only mode. |
 | R-CLOUD-007 | Remote status on the web and Android shows each node's CPU, memory, disk, tasks (state, queue position and reason, time breakdown, result) and observable agent activity (sessions, subagents, last events, managed share). Information no client reports is labelled unknown; information the node has is never omitted from the remote contracts. | Contract review against the pages; closed-loop viewer tests. |
+
+## R-CTR — Center access (AD-0021)
+
+Added 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md).
+
+| ID | Requirement | Acceptance |
+|---|---|---|
+| R-CTR-001 | Ordinary operations (task submission, status, output, cancellation, file and workspace operations) reach a node only through a configured center, on an explicitly selected device of the caller's account. The node's local endpoint serves node lifecycle and management, sign-in, diagnostics, stop and recovery; it is not an official route for ordinary task submission, and `arcforges run --local` is a labelled diagnostic. | Closed-loop and real tests: the CLI and the stdio adapter submit through the center; no integration calls the local task API. |
+| R-CTR-002 | A node installs as a background service, is associated with an account by browser sign-in (PKCE loopback) or a device code, and keeps an outbound authenticated connection to its center. Normal use exposes no inbound node port. | Real Windows and Linux nodes sign in and connect; port inspection shows no node listener beyond the local endpoint. |
+| R-CTR-003 | The center is configuration. Official installations default to the official center; self-hosted installations use their configured center. No code path depends on a hard-coded official endpoint, and the center derives the URLs it issues from its configured public base URL. | Tests with a self-hosted center URL: no request reaches the official endpoint. |
+| R-CTR-004 | The business API and MCP are separate entry points that share the center's services; whether they run in one process is validated by measurement, not fixed. | Measurement recorded by AF-CTR-07. |
+| R-CTR-005 | Central MCP authorizes with OAuth 2.1 as the current MCP specification defines it, names the target device on every call, checks the caller's identity, scoped permissions and the stored MCP session on every call, keeps task IDs, bounded waits and follow-up by ID, and never depends on a client or adapter process ID. | Real MCP client tests against the center: OAuth, device selection, reconnection, follow-up by ID. |
+| R-CTR-006 | Node-accepted work survives network loss and center restarts. A retry with the same command ID never executes a task twice; output resumes by offset; a new command for an offline node fails with `UNAVAILABLE/node_offline` and is not queued by the center. | Fault-injection tests: center killed mid-submission, node disconnected, retries. |
+| R-CTR-007 | The center persists no command line, environment, output or file content. Task specifications, output and file contents pass through it transiently and bounded; audit keeps identifiers, sizes and hashes only. Workspaces and local caches are never uploaded. | Database inspection tests after the suites; data-flow review. |
+| R-CTR-008 | Account sessions, node credentials and agent grants are distinct credential kinds. Revocation of any of them is checked on the next call; a revoked node's connection is closed; accepted tasks continue at the node; entitlement changes affect only new center-routed calls. | Tests per credential kind and revocation path. |
+| R-CTR-009 | The center is implemented in Go with relational persistence in PostgreSQL (Neon in the official deployment): versioned, checksummed migrations under an exclusive lock, safe repetition, separate migration and runtime privileges, a recorded backup and restore path and an application, schema, protocol and data-compatible rollback. | Real PostgreSQL tests; deployment migration evidence; restore drill. |
+| R-CTR-010 | Go bindings are generated from the single `.proto` source in the Contracts repository, drift-checked, wire-compatible with the C# bindings and published at the cohort version; no wire code is written by hand. | Contracts host verification: drift check and Go/C# fixture round trips. |
+| R-CTR-011 | Center-routed callers read, write, edit, search and list files only inside registered workspace roots of the selected node, within per-call limits, under the node's permissions by origin, and every operation is audited without content. | Real Windows and Linux file-system tests including link and traversal escapes. |
+| R-CTR-012 | Central authorization never bypasses node policy. A caller with an agent grant has origin AGENT at the node, never becomes HUMAN through account sign-in, never reaches HUMAN-only operations and never approves its own requests. | Tests on the routed path for each origin. |
+| R-CTR-013 | Work submitted to one node by different callers (clients and AI sessions) shares that node's admission, scheduling and budgets, and each task records its caller identity and origin. | Real tests with two callers on one node. |
+| R-CTR-014 | The Go code carries the effective engineering controls of the C# projects with a recorded disposition for each (toolchain and dependency pinning, formatting and analysis, tests including race and real PostgreSQL, contract drift, hooks, Dependabot, supply-chain checks, sealed candidates), verified on both native legs. | The control mapping and host verification evidence. |
+| R-CTR-015 | The server migration is complete: every C#, D1 and Worker behaviour has a recorded Go and PostgreSQL implementation or disposition, implemented retained domain logic is ported with parity tests, and the C# center's active paths are retired after their replacement and recovery are proven, keeping released artifacts and history. | Migration inventory; parity tests; deployed image contents. |
+| R-CTR-016 | The delivered center architecture is accepted end to end on the real deployment with real Windows and Linux nodes, real clients and a real MCP session, and missing evidence is recorded, never reported as passed. | The AF-CTR-10 acceptance record. |
 
 ## R-UX — User surfaces
 

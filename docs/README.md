@@ -5,7 +5,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 ## Read in this order
 
 1. [Product definition](product/product-definition.md) and [requirements](product/requirements.md)
-2. [Decisions](#decisions) AD-0001 … AD-0018
+2. [Decisions](#decisions) AD-0001 … AD-0021
 3. [Architecture](#architecture) chapters 01–18
 4. [Contracts](contracts/README.md), [API catalogue](contracts/api-catalogue.md), [errors](contracts/errors.md)
 5. [Data](#data), [state machines](state-machines/README.md), [experience](experience/README.md)
@@ -41,6 +41,7 @@ Authoritative design of ArcForges, the flagship product: a cross-platform resour
 | [AD-0018](decisions/AD-0018-native-platforms-without-wsl-integration.md) | Native Windows and native Linux, without dedicated WSL integration; local-first verification on native legs |
 | [AD-0019](decisions/AD-0019-mcp-first-verification.md) | MCP-first development and verification: the Windows leg through the Windows MCP server, the Linux leg through an independent Linux MCP server, no local WSL |
 | [AD-0020](decisions/AD-0020-post-push-verification-and-required-checks.md) | Post-push host verification: each MCP host fetches the pushed commit from GitHub, verifies it and reports `arcforges/windows` or `arcforges/linux`; GitHub's required status checks gate the merge into `main` |
+| [AD-0021](decisions/AD-0021-central-access-go-center.md) | Central access through a configured center (official or self-hosted); the center in Go on Neon/PostgreSQL; LAN out of current delivery |
 
 ## Architecture
 

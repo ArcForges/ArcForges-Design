@@ -2,6 +2,8 @@
 
 Decision: [AD-0008](../decisions/AD-0008-lan-trust-and-placement.md). Contracts: `arcforges.peer.v1` ([contracts](../contracts/proto/arcforges/peer/v1/peer.proto)).
 
+**Superseded for current delivery 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) §12.** Nothing in this chapter is built: AF-LAN-01, AF-LAN-02 and AF-LAN-03 are superseded and LAN distribution is roadmap RM-19. The chapter is kept as history; the published `arcforges.peer.v1` contracts stay compatible and are not served.
+
 ## 1. Listener and identity
 
 - The listener is TCP `0.0.0.0:47820` (configurable; IPv6 dual-stack where available). Kestrel HTTPS uses TLS 1.3 only and requires a client certificate. TLS 1.3 is available on every supported platform: Windows 11, whose Schannel supports TLS 1.3 (Windows 10 does not, V-N06; [AD-0002](../decisions/AD-0002-platform-scope.md)), and Linux with OpenSSL. It is enabled when the user turns on LAN features. The TLS layer accepts any well-formed client certificate. A gRPC interceptor then limits unpaired identities to `PeerHandshakeService.Hello` and `PairingService`, and every other service requires a pinned (paired) identity (AD-0008 §4). WSL2 mirrored networking exposes the distribution on the LAN (L-12); a Linux node a user runs in a WSL2 distribution is an ordinary Linux node and opens its listener like any other ([AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) §1). *Superseded 2026-10-21 by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) (kept as history):* "guest nodes do **not** open a LAN listener by default: their LAN presence is through the host node."
