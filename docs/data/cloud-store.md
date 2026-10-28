@@ -70,7 +70,7 @@ Account deletion follows the reused contract's flow, built by AF-ID-02: request,
 
 ## 6. PostgreSQL model (AD-0021)
 
-Added 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) §8. The D1 model above is mapped to PostgreSQL by these rules; the Cloud repository's migrations under `center/` are the implementation, and each rule's delivery is named.
+Added 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) §8. The D1 model above is mapped to PostgreSQL by these rules; the Cloud repository's migrations under `center/` are the implementation, and each rule's delivery is named. The AF-CTR-02 rows are delivered (Cloud #116 at `ec596f2`, migration `0001_platform_store.sql`, applied to production on 2026-10-28); the module rows follow with their tasks.
 
 | D1 baseline | PostgreSQL | Delivered by |
 |---|---|---|
@@ -84,5 +84,14 @@ Added 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) 
 | Inbox and outbox with purge plans | `platform.inbox` (unique by provider message ID), `platform.outbox` with a publisher that marks delivery; retention sweeps (AF-PLAT-01) | AF-CTR-02, AF-PLAT-01 |
 | Job lease (`lease` guard: holder and fence) | `platform.job_lease` with `SELECT … FOR UPDATE` and a monotonically increasing fence | AF-CTR-02 |
 | Migration runner and plan-manifest hashes | Versioned SQL files with SHA-256 checksums in `platform.schema_migration`, applied under `pg_advisory_lock`; an edited applied file is refused | AF-CTR-02 |
+
+**Roles and the runtime credential (delivered by AF-CTR-02).**
+
+- **Migration role.** The database owner, used only through the direct (unpooled) connection by the migration step of the protected deployment, before promotion. It owns the module schemas and reconciles the runtime grants on every run.
+- **Runtime role.** A `NOLOGIN` group with exactly the declared table privileges of each module: no `DELETE`, `TRUNCATE` or DDL, no update of the audit chain, no write of signing keys or of the migration record, and no read of an ungranted table. Two login roles (`<group>_a`, `<group>_b`), each `INHERIT` and `CONNECTION LIMIT 16`, are its only members and connect through the pooled connection.
+- **Database privileges.** `CONNECT` and `TEMPORARY` are revoked from `PUBLIC` on the center's database, and the runtime group alone receives `CONNECT`, so one environment's runtime credential cannot connect to another environment's database.
+- **Rotation.** Each deployment sets a new random password on the login role of the slot other than the live one, proves it through the pooled and an unpooled connection, and hands it to the new Worker version as a secret; the slot is recorded as promoted only after that version is live, and the version is labelled with its slot, so a failed or retried deployment never rotates the credential of the running revision.
+- **Secret handling.** The password never appears in a statement text, a bind parameter or an error: it reaches the server as COPY data and is applied by a nested statement whose known log paths are switched off, and the rotation refuses a server configured to record nested statements. Neon receives the plaintext (it does not support pre-hashed passwords); a self-hosted PostgreSQL receives a SCRAM-SHA-256 verifier computed by the center.
+- **Recovery.** A logical-backup restore drill on an isolated PostgreSQL runs on every Linux verification; Neon's history window bounds point-in-time restore of the whole branch (production and acceptance share it), and its recorded value is an owner action of the acceptance register.
 
 What the center does not store is unchanged (§4) and widened by AD-0021 §10: task specifications, output and file contents pass through the center transiently and are never persisted.
