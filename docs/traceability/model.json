@@ -2020,7 +2020,10 @@
         "AF-CTR-03",
         "AF-CTR-05",
         "AF-CTR-07",
-        "AF-CLD-03"
+        "AF-ID-02",
+        "AF-CLD-03",
+        "AF-CLD-04",
+        "AF-COM-01"
       ],
       "verification": "Tests per center mode and gate (official-hosted, self-hosted, invalid configuration)."
     }

@@ -225,7 +225,7 @@ Added 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md).
 
 ## R-COM — Commerce
 
-*Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target).* In R-COM-003 entitlement changes reach connected nodes over the node channel of the Go center. In R-COM-004 tokens describe center features; expiry never stops node-local execution or running tasks. Which features are gated is an open owner question (AD-0021, Open questions).
+*Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target).* In R-COM-003 entitlement changes reach connected nodes over the node channel of the Go center. In R-COM-004 tokens describe center features; expiry never stops node-local execution or running tasks. Which features are gated is decided by AD-0021 §13a; their values (prices, trials, limits and allowances) remain open (H-07).
 
 | ID | Requirement | Acceptance |
 |---|---|---|
