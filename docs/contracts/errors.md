@@ -84,3 +84,17 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 | `EXECUTION/provider_error` | A provider API (Google Play, Paddle) failed | `AFTER_TIME` | `UNKNOWN` | — |
 | `INTERNAL/internal` | Unexpected failure; the correlation ID is in the node or cloud log. For `PurgeTaskRecord`, a failed or busy post-commit WAL checkpoint reports `HAPPENED`; the logical purge is committed, and identical-command replay reattempts the checkpoint (node-store section 1, MR-14) | `AFTER_TIME` once | `UNKNOWN` unless known | — |
 | `INTERNAL/store_corrupt` | The node store failed its integrity check | `NEVER` (doctor; restore from backup) | `DID_NOT_HAPPEN` | — |
+
+## Center ingress transport statuses (added 2026-10-28, AF-CTR-02)
+
+The center's ingress pipeline refuses some calls before any handler runs. Those refusals are transport statuses, sent trailers-only (`grpc-status`, a percent-encoded `grpc-message`), with the same bytes as the C# Cloud host's `IngressPipeline` they are ported from (Cloud `docs/center.md`). Every other ArcError is a domain refusal: the call completes with gRPC status 0 and carries the ArcError and the correlation ID in its reply. Signatures and digests cover the transmitted bytes, never a re-encoding ([AD-0021](../decisions/AD-0021-central-access-go-center.md) §10, V-N07).
+
+| Ingress refusal | gRPC status | ArcError category |
+|---|---|---|
+| Unregistered method | 12 `UNIMPLEMENTED` | — (no ArcError) |
+| `auth.unauthenticated` | 16 `UNAUTHENTICATED` | `AUTHENTICATION` |
+| `perm.resource_denied` | 7 `PERMISSION_DENIED` | `AUTHORIZATION` |
+| `validation.invalid_request` (malformed request or metadata) | 3 `INVALID_ARGUMENT` | `VALIDATION` |
+| `validation.invalid_request` (body over the method's bound) | 8 `RESOURCE_EXHAUSTED` | `VALIDATION` |
+| `state.stale_generation` | 9 `FAILED_PRECONDITION` | `STATE` |
+| `dependency.unavailable` | 14 `UNAVAILABLE` | `EXECUTION` |
