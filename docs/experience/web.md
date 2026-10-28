@@ -131,7 +131,7 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
 
 ### W-23 Devices and nodes
 
-- **Purpose.** See every node and phone on the account, rename nodes, and revoke anything lost or retired.
+- **Purpose.** See every node, phone and signed-in browser on the account, rename nodes, and revoke anything lost or retired.
 - **Permissions.** Account session; step-up for revocation.
 - **Layout.** The node table, then phones and browsers.
 - **Wireframe:**

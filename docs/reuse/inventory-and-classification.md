@@ -25,7 +25,7 @@ Decision: [AD-0013](../decisions/AD-0013-reuse-and-supersession.md). Classes: **
 |---|---|---|---|
 | `arcforges.foundation.v1` | Reuse | Envelope, error, ID and paging types for every new package | AF-CON-01 (pins) |
 | `publicapi.v1` Identity, Entitlement, Commerce, Support, Notification, Data | Reuse (contracts unchanged; endpoints are new work, §3) | Account, plan, checkout, support, push and export ([contracts/reuse-map.md](../contracts/reuse-map.md)) | AF-ID-01, AF-ID-02, AF-CLD-03, AF-COM-01, AF-SUP-01, AF-CLD-06 |
-| `publicapi.v1` Device | Reuse (no schema change) | Product values `arcforges-node` and `arcforges-mobile` are data; one device per node and per phone | AF-ID-02 |
+| `publicapi.v1` Device | Reuse (no schema change) | Product values `arcforges-node`, `arcforges-mobile` and `arcforges-web` are data; one device per node, per phone and per browser installation ([AD-0021](../decisions/AD-0021-central-access-go-center.md) §7) | AF-ID-02 |
 | `publicapi.v1` `SupportAccessService` (new file `support_access.proto`) | New, additive | The owner reads an operator's access request before deciding it | AF-CON-01, AF-SUP-01 |
 | `operator.v1.OperatorService` | Reuse (contract unchanged; implementation new) | Operations profile | AF-OPS-01 |
 | `operator.v1` `OperatorReadService` (new file `operator_read.proto`) | New, additive | Audit events, operating budgets and the monthly report for W-66 and W-67 | AF-CON-01, AF-OPS-01 |
