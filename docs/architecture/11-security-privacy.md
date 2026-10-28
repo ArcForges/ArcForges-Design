@@ -198,7 +198,7 @@ Secrets are never logged. Records and exports apply secret-name redaction ([04](
 | Push registrations | Cloud | — | Until unregistered or invalid |
 | Host posture: the account type and the Administrator protection state (D2; added 2026-10-19) | Node, read by the doctor's host-posture check ([07](07-records-diagnosis-memory.md) §2.4) | Never. Returned only to local callers of HUMAN origin: not to AGENT or SCRIPT callers, not through the MCP adapter, the relay or `GetReleaseScope`; left out of support bundles unless the owner includes it | Latest only |
 
-- **Deletion.** Account deletion (the reused contract's flow with a grace period, built by AF-ID-02) revokes every node and phone. Nodes receive the notice through the relay or the next enrollment call, and offer local wipe (`arcforges node wipe`, HUMAN only). Exports: account data export through the reused `DataService`, and node records export through `ExportRecords` (R-OPS-004).
+- **Deletion.** Account deletion (the reused contract's flow with a grace period, built by AF-ID-02) revokes every node, phone and browser. Nodes receive the notice through the relay or the next enrollment call, and offer local wipe (`arcforges node wipe`, HUMAN only). Exports: account data export through the reused `DataService`, and node records export through `ExportRecords` (R-OPS-004).
 - **Telemetry.** Off by default. Opt-in sends daily anonymous counters only (R-OPS-003).
 - **Support bundles.** Generated locally: node logs, capability report, policies, recent findings and redacted records, all with the redactions of §3. Host-posture values are left out unless the owner includes them. The user reviews the file list before an optional upload (R-OPS-005).
 

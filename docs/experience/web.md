@@ -131,7 +131,7 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
 
 ### W-23 Devices and nodes
 
-- **Purpose.** See every node and phone on the account, rename nodes, and revoke anything lost or retired.
+- **Purpose.** See every node, phone and signed-in browser on the account, rename nodes, and revoke anything lost or retired.
 - **Permissions.** Account session; step-up for revocation.
 - **Layout.** The node table, then phones and browsers.
 - **Wireframe:**
@@ -227,7 +227,7 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
 │ Export your data                                                                  │
 │  Last export: 2 Oct · ready · expires 9 Oct   [Download ↓]   [Request new export] │
 │ Delete your account                                                               │
-│  Deletion revokes every node and phone, cancels a web subscription immediately    │
+│  Deletion revokes every node, phone and browser, cancels a web subscription immediately    │
 │  and erases your data after 30 days. Billing records are kept for 7 years.        │
 │  ⚠ You have an active Google Play subscription. Cancel it in Google Play first.   │
 │                                                        [Delete my account…]       │
