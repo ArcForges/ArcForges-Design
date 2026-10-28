@@ -2007,6 +2007,25 @@
         "AF-CTR-10"
       ],
       "verification": "The AF-CTR-10 acceptance record."
+    },
+    {
+      "id": "R-CTR-017",
+      "design": [
+        "docs/decisions/AD-0021-central-access-go-center.md",
+        "docs/decisions/AD-0010-commerce-and-entitlements.md",
+        "docs/architecture/14-commercial-operations.md"
+      ],
+      "tasks": [
+        "AF-CTR-02",
+        "AF-CTR-03",
+        "AF-CTR-05",
+        "AF-CTR-07",
+        "AF-ID-02",
+        "AF-CLD-03",
+        "AF-CLD-04",
+        "AF-COM-01"
+      ],
+      "verification": "Tests per center mode and gate (official-hosted, self-hosted, invalid configuration)."
     }
   ]
 }

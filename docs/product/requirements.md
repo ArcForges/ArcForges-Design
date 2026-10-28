@@ -200,6 +200,7 @@ Added 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md).
 | R-CTR-014 | The Go code carries the effective engineering controls of the C# projects with a recorded disposition for each (toolchain and dependency pinning, formatting and analysis, tests including race and real PostgreSQL, contract drift, hooks, Dependabot, supply-chain checks, sealed candidates), verified on both native legs. | The control mapping and host verification evidence. |
 | R-CTR-015 | The server migration is complete: every C#, D1 and Worker behaviour has a recorded Go and PostgreSQL implementation or disposition, implemented retained domain logic is ported with parity tests, and the C# center's active paths are retired after their replacement and recovery are proven, keeping released artifacts and history. | Migration inventory; parity tests; deployed image contents. |
 | R-CTR-016 | The delivered center architecture is accepted end to end on the real deployment with real Windows and Linux nodes, real clients and a real MCP session, and missing evidence is recorded, never reported as passed. | The AF-CTR-10 acceptance record. |
+| R-CTR-017 | The center's mode is explicit configuration. In official-hosted mode, center-mediated node connectivity, execution, monitoring and control, and MCP access need an active subscription entitlement, with no permanent free hosted-node allowance, while sign-in, account, billing, security and recovery operations need none; missing or invalid configuration never enables a gated feature. In self-hosted mode no official subscription is required: a built-in default enables the available self-hostable capabilities, with optional operator-configured feature and resource limits. Feature availability is checked after, never instead of, authentication, device ownership, authorization, AGENT/HUMAN separation, audit and resource controls. Plan values are configuration, with development fixtures distinct from production settings. | Tests per mode: a subscription-less official-mode account keeps essential operations and is refused gated ones; missing or invalid official configuration enables nothing gated; self-hosted defaults and operator limits apply without any official subscription; gating never admits an unauthenticated, foreign-device, AGENT-for-HUMAN or unaudited call. |
 
 ## R-UX — User surfaces
 
@@ -224,7 +225,7 @@ Added 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md).
 
 ## R-COM — Commerce
 
-*Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target).* In R-COM-003 entitlement changes reach connected nodes over the node channel of the Go center. In R-COM-004 tokens describe center features; expiry never stops node-local execution or running tasks. Which features are gated is an open owner question (AD-0021, Open questions).
+*Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target).* In R-COM-003 entitlement changes reach connected nodes over the node channel of the Go center. In R-COM-004 tokens describe center features; expiry never stops node-local execution or running tasks. Which features are gated is decided by AD-0021 §13a; their values (prices, trials, limits and allowances) remain open (H-07).
 
 | ID | Requirement | Acceptance |
 |---|---|---|
