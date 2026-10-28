@@ -1280,8 +1280,7 @@
       ],
       "tasks": [
         "AF-CTR-05",
-        "AF-CLD-01",
-        "AF-CLD-04"
+        "AF-CLD-01"
       ],
       "verification": "local workerd relay closed loop; hibernation-safe frame handling"
     },
@@ -1907,7 +1906,8 @@
       "tasks": [
         "AF-CTR-03",
         "AF-CTR-05",
-        "AF-CTR-07"
+        "AF-CTR-07",
+        "AF-CLD-03"
       ],
       "verification": "Tests per credential kind and revocation path."
     },

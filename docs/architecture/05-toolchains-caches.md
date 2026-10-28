@@ -2,6 +2,8 @@
 
 ## 1. Toolchain detection
 
+**Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target until each AF-CTR task is delivered).** LAN cache sharing (the LAN sections, including the release-1 owner decision on it) is out of current delivery (roadmap RM-19); same-machine cache reuse across worktrees stays.
+
 The toolchain registry (`ArcForges.Node.Toolchains`) scans at startup, daily, on demand (`ToolchainService.DetectToolchains`), and when a task names an unknown tool. Each node scans its own machine (Windows or Linux).
 
 | Kind | Detection | Identity recorded |

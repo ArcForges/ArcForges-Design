@@ -2,7 +2,7 @@
 
 Architecture: [08](../architecture/08-ai-integration.md) §2; decision [AD-0007](../decisions/AD-0007-ai-integration.md).
 
-**Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) §6.** The server is the center's MCP endpoint (Streamable HTTP, OAuth agent grants), reached directly by cloud AI or through `arcforges mcp serve`, a stdio adapter that forwards to it. Every tool that acts on a node takes a required `device` (a node ID of the caller's account), added tools cover device listing and bounded file and workspace operations (AF-CTR-06, AF-CTR-07), and the session is the center's stored `Mcp-Session-Id`. Origin stays AGENT. The `placement`, `inputs`, `outputs` and `output_conflict` fields of M-01 concern LAN placement and are not served. The tool list below is updated as AF-CTR-07 delivers.
+**Amended 2026-10-28 (target; AF-CTR-07, AF-CTR-08) by [AD-0021](../decisions/AD-0021-central-access-go-center.md) §6.** The server is the center's MCP endpoint (Streamable HTTP, OAuth agent grants), reached directly by cloud AI or through `arcforges mcp serve`, a stdio adapter that forwards to it. Every tool that acts on a node takes a required `device` (a node ID of the caller's account), added tools cover device listing and bounded file and workspace operations (AF-CTR-06, AF-CTR-07), and the session is the center's stored `Mcp-Session-Id`. Origin stays AGENT. The `placement`, `inputs`, `outputs` and `output_conflict` fields of M-01 concern LAN placement and are not served. The tool list below is updated as AF-CTR-07 delivers.
 
 - **Server.** `arcforges mcp serve` (stdio), server name `arcforges` (or `arcforges-node` on a name conflict).
 - **Protocol revisions.** 2025-11-25 and 2026-07-28.

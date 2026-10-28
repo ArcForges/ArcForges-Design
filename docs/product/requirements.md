@@ -22,7 +22,7 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 | R-EXE-012 | Tasks may depend on other tasks (after success, after completion). A cycle or a dependency on an unknown task is rejected. | Unit and real tests. |
 | R-EXE-013 | Pools (named queues) have a parallelism limit (auto or fixed) and a share weight. A policy can disable parallelism (limit 1) globally, per pool, per workspace or per session. | Real test: with parallelism disabled, at most one task in the scope runs at a time. |
 | R-EXE-014 | Ordering inside a pool is priority first, then fair share across owners, then submission time. No waiting task starves longer than the configured starvation bound (default 10 min) while lower-priority tasks are admitted in the same pool. | Simulation and real tests of starvation bounds. |
-| R-EXE-015 | Every task and attempt has one authoritative owner node. Remote attempts are owned by the executing node, and the task by the origin node. | Contract and state machine; LAN closed-loop test. |
+| R-EXE-015 | Every task and attempt has one authoritative owner node. Remote attempts are owned by the executing node, and the task by the origin node. *(The remote-attempt part is LAN, out of current delivery since 2026-10-28, AD-0021 §12; a center-routed task is owned by the node that runs it.)* | Contract and state machine; LAN closed-loop test. |
 | R-EXE-016 | Operations (submit, cancel, retry, priority change) are idempotent by caller-supplied command id within a 24 h window. | Unit test returns the original receipt on replay. |
 | R-EXE-017 | The working directory and environment captured at submission are recorded with secrets redacted by policy: in records, exports and bundles, variables matching secret patterns appear as presence only. For execution, their values are kept sealed (encrypted under a key in the OS secret store) until the task is terminal and the retry window has passed, so queued tasks, restarts and retries run with the submitted environment. | Unit tests of redaction; record inspection; sealed-store tests (restart and retry keep values; purge after the window; `secrets_unavailable` afterwards). |
 | R-EXE-018 | Output capture survives restarts because processes write to node-owned files. Callers read history and live tails through the API. | Real test reads output written while the service was down. |
@@ -68,7 +68,7 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 | R-CACHE-004 | sccache and ccache are integrated as optional compiler caches with managed directories and size limits. Their hit and miss statistics are collected per attempt: from each attempt's own sccache server, and from ccache's per-attempt statistics log. | Real tests where the tools are installed (sccache on Windows L-10, L-20, L-21). |
 | R-CACHE-005 | Quotas and eviction (LRU by last use) keep each cache within its limit without evicting entries in use by running executions. | Unit and real tests. |
 | R-CACHE-006 | Integrity: content-addressed stores verify digests on read. Tool caches are verified with the tool's own verification where one exists. A corrupt entry is quarantined and rebuilt. | Corruption-injection test. |
-| R-CACHE-007 | A node can serve its compiler caches to trusted LAN peers through an authenticated WebDAV-compatible endpoint (sccache WebDAV; ccache through the node's helper endpoint), with read-only or read-write per peer policy and quota enforcement. Dependency caches (NuGet, npm, Cargo, pip) are not shared over the LAN at launch, and FASTBuild remote workers are observed, not managed. | Closed-loop LAN test with two nodes on one machine (separate users or ports); real cross-machine run is deferred validation. |
+| R-CACHE-007 | *(Out of current delivery since 2026-10-28, AD-0021 §12; roadmap RM-19.)* A node can serve its compiler caches to trusted LAN peers through an authenticated WebDAV-compatible endpoint (sccache WebDAV; ccache through the node's helper endpoint), with read-only or read-write per peer policy and quota enforcement. Dependency caches (NuGet, npm, Cargo, pip) are not shared over the LAN at launch, and FASTBuild remote workers are observed, not managed. | Closed-loop LAN test with two nodes on one machine (separate users or ports); real cross-machine run is deferred validation. |
 | R-CACHE-008 | Cache effectiveness is reported: hits, misses, bytes saved, duplicate downloads and duplicate cache copies. | Report test with seeded statistics. |
 
 ## R-STOR — Storage, workspaces and cleanup
@@ -115,7 +115,7 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 
 ## R-AI — AI client integration
 
-*Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md).* The MCP tools of R-AI-001 and R-AI-002 are served by the center's MCP endpoint (R-CTR-005); the stdio adapter forwards to the center instead of the local node.
+*Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target; AF-CTR-07, AF-CTR-08).* The MCP tools of R-AI-001 and R-AI-002 are served by the center's MCP endpoint (R-CTR-005); the stdio adapter forwards to the center instead of the local node.
 
 | ID | Requirement | Acceptance |
 |---|---|---|
@@ -133,7 +133,7 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 
 ## R-API — Contracts and state
 
-*Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md).* In R-API-002 the GUI, the CLI and the MCP adapter use the local endpoint for node management, sign-in, diagnostics and recovery; their ordinary operations go through the center (R-CTR-001).
+*Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target; AF-CTR-04, AF-CTR-05).* In R-API-002 the GUI, the CLI and the MCP adapter use the local endpoint for node management, sign-in, diagnostics and recovery; their ordinary operations go through the center (R-CTR-001).
 
 | ID | Requirement | Acceptance |
 |---|---|---|
@@ -166,7 +166,7 @@ The keywords MUST and MUST NOT are binding. "Real test" means a test that runs r
 
 ## R-CLOUD — Cloud
 
-*Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md).* R-CLOUD-001's "local and LAN operation never requires an account or cloud connectivity" is withdrawn for normal operation: ordinary operations go through a configured center, official or self-hosted (R-CTR-001), while node-accepted work never depends on the center's availability (R-CTR-006). In R-CLOUD-002 node connections terminate in the Go center instead of hibernating Durable Objects, and business decisions are made in Go. In R-CLOUD-004 the center authorizes in Go, and center-routed execution is a normal operation under the node's local policy (R-CTR-012).
+*Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target; AF-CTR-05).* R-CLOUD-001's "local and LAN operation never requires an account or cloud connectivity" is withdrawn for normal operation: ordinary operations go through a configured center, official or self-hosted (R-CTR-001), while node-accepted work never depends on the center's availability (R-CTR-006). In R-CLOUD-002 node connections terminate in the Go center instead of hibernating Durable Objects, and business decisions are made in Go. In R-CLOUD-004 the center authorizes in Go, routed calls stay signed and checked again by the node, and center-routed execution is a normal operation under the node's local policy (R-CTR-012); a high-risk call from a HUMAN client is confirmed on the requesting device where policy asks for it.
 
 | ID | Requirement | Acceptance |
 |---|---|---|
@@ -223,6 +223,8 @@ Added 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md).
 | R-AUTH-005 | Account authentication is separate from OS privileges. No account action grants OS privileges, and privileged installation steps are explicit OS prompts. | Review; UI labels. |
 
 ## R-COM — Commerce
+
+*Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target).* In R-COM-003 entitlement changes reach connected nodes over the node channel of the Go center. In R-COM-004 tokens describe center features; expiry never stops node-local execution or running tasks. Which features are gated is an open owner question (AD-0021, Open questions).
 
 | ID | Requirement | Acceptance |
 |---|---|---|

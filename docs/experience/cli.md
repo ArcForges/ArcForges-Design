@@ -5,7 +5,7 @@ Architecture: [12](../architecture/12-client-applications.md) §3. Origin:
 - `AGENT` under an agent root or with `ARCFORGES_SESSION`;
 - `SCRIPT` otherwise ([11](../architecture/11-security-privacy.md) §1).
 
-**Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) §4–§5.** `arcforges run`, `tasks`, `wait`, `output` and `cancel` go through the configured center to the selected node (`--node`, default this installation's node); `arcforges run --local` is a labelled diagnostic for recovery. New commands: `arcforges center set <url>`, `arcforges login [--device-code]`, `arcforges logout`, `arcforges account status` (AF-CTR-04, AF-CTR-05). LAN commands are out of current delivery.
+**Amended 2026-10-28 (target; AF-CTR-04, AF-CTR-05) by [AD-0021](../decisions/AD-0021-central-access-go-center.md) §4–§5.** `arcforges run`, `tasks`, `wait`, `output` and `cancel` go through the configured center to the selected node (`--node`, default this installation's node); `arcforges run --local` is a labelled diagnostic for recovery. New commands: `arcforges center set <url>`, `arcforges login [--device-code]`, `arcforges logout`, `arcforges account status` (AF-CTR-04, AF-CTR-05). LAN commands are out of current delivery.
 
 ## 1. Grammar and global options
 

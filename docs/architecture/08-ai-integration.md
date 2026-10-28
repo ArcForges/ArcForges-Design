@@ -2,7 +2,7 @@
 
 Decision: [AD-0007](../decisions/AD-0007-ai-integration.md). Tool catalogue and schemas: [experience/mcp.md](../experience/mcp.md).
 
-**Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) §6–§7.** The MCP tools are served by the center's MCP endpoint over Streamable HTTP with OAuth agent grants (AF-CTR-07); `arcforges mcp serve` is a stdio adapter that forwards to that endpoint (AF-CTR-08) instead of calling the local node. Every tool call names its target device, and the MCP session is the center's stored `Mcp-Session-Id`, so session correlation by the adapter's parent process applies only to hook-reported sessions. Callers with an agent grant have origin AGENT at the node. Hooks and routing (§3–§4) are unchanged in meaning; `arcforges run`, which rewrites target, submits through the center.
+**Amended 2026-10-28 (target; AF-CTR-07, AF-CTR-08) by [AD-0021](../decisions/AD-0021-central-access-go-center.md) §6–§7.** The MCP tools are served by the center's MCP endpoint over Streamable HTTP with OAuth agent grants (AF-CTR-07); `arcforges mcp serve` is a stdio adapter that forwards to that endpoint (AF-CTR-08) instead of calling the local node. Every tool call names its target device, and the MCP session is the center's stored `Mcp-Session-Id`, so session correlation by the adapter's parent process applies only to hook-reported sessions. Callers with an agent grant have origin AGENT at the node. Hooks and routing (§3–§4) are unchanged in meaning; `arcforges run`, which rewrites target, submits through the center.
 
 ## 1. Components
 

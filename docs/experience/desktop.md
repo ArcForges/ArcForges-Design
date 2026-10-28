@@ -2,6 +2,8 @@
 
 Architecture: [12](../architecture/12-client-applications.md) §2. Template and standard states: [README](README.md). Every Desktop page runs with origin `HUMAN`. Every page applies S-LOADING, S-NODE-STOPPED, S-RECONNECTING, S-INCOMPATIBLE and S-FAILED unless stated otherwise. Figures in the mockups are illustrative: an example host with 16 logical processors and 32 GiB.
 
+**Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target until each AF-CTR task is delivered).** The Desktop's ordinary operations go through the configured center to the selected node; the local endpoint serves node management, sign-in, diagnostics and recovery. The LAN parts (the LAN cache column, D-15 LAN page and LAN peer views) are out of current delivery.
+
 ## Shell
 
 ```

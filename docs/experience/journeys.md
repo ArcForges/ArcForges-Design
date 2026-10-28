@@ -2,6 +2,8 @@
 
 Each journey lists its steps across surfaces with the APIs involved, its success criteria, its main failure branches and how it is verified. **Verification** names the closed-loop test that proves the journey at development stage and, where real-world validation is deferred, the acceptance-register entry (AR-…).
 
+**Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target until each AF-CTR task is delivered).** Journeys now start with a node signed in to a configured center (AF-CTR-04); J-01's precondition gains that sign-in, and its MCP route is the center's MCP endpoint or the stdio adapter to it. J-06 and J-07 (LAN) are out of current delivery and kept as history. Verification against D1, the C# host and Durable Objects reads: a local or deployed Go center with PostgreSQL.
+
 ## J-01 Install and connect an AI client
 
 - **Actor.** A developer on Windows with Claude Code.

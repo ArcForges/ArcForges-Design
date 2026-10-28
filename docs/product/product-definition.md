@@ -1,5 +1,7 @@
 # ArcForges product definition
 
+**Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target until each AF-CTR task is delivered).** Ordinary use goes through a configured center, official or self-hosted: clients use its business API, cloud AI its MCP endpoint, local AI the stdio adapter to the same center, each naming an explicitly selected node; the node keeps execution authority. The center is a Go service on Neon/PostgreSQL, not the C# Native AOT host and Durable Object adapters described below. LAN ("local and across a LAN", the LAN persona, the node as a LAN peer, LAN rows and parts of §5 and §9) is out of current delivery (roadmap RM-19). "Pro … through ArcForges Cloud" and the editions of §5 are the earlier launch configuration; plan contents under center access are an open owner question (AD-0021).
+
 Status: authoritative for active development from 2026-10-12 ([AD-0001](../decisions/AD-0001-flagship-pivot.md)).
 
 ## 1. Problem
@@ -158,6 +160,8 @@ Release 1 manages the operations below end to end on Windows 11 and Linux (R-AI-
 The release coverage statement is the same on every node of a release. It carries no host-posture fact and no user path, because AGENT callers and the MCP `session_coverage` tool read it: the host's account type and Administrator protection state are reported only by the doctor's HUMAN-only host-posture check ([07](../architecture/07-records-diagnosis-memory.md) §2.4).
 
 **Where gaps are reported.** Gaps that belong to a session (bypassed commands, route failures, unknown attribution) appear in its coverage report ([08](../architecture/08-ai-integration.md) §5). The node serves both tables above, in order, as the product's **release coverage statement** (`SessionService.GetReleaseScope`). D-14, `arcforges coverage` and the MCP `session_coverage` tool show it next to the session's facts, and D-07 and `arcforges session coverage` link to it, so no surface implies broader coverage.
+
+*Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) §12.* The LAN parts of the tables above (compiler-cache sharing on the LAN in Caches, LAN placement in Machines, and the Paired LAN peers row) are out of current delivery. When AF-AI-01 builds `GetReleaseScope`, it serves this statement without them.
 
 **Pro in release 1** is the cloud offering of §5: remote access through ArcForges Cloud, mobile monitoring and control, and push notifications.
 
