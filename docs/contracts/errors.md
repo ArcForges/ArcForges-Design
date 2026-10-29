@@ -32,7 +32,7 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 | `VALIDATION/code_invalid` | Unknown device user code | `NEVER` | `DID_NOT_HAPPEN` | Remaining attempts in `limit` |
 | `VALIDATION/purchase_invalid` | Google Play rejected the purchase token | `NEVER` | `DID_NOT_HAPPEN` | — |
 | `AUTHENTICATION/unauthenticated` | Missing or invalid credential | `NEVER` (sign in again) | `DID_NOT_HAPPEN` | — |
-| `AUTHENTICATION/token_expired` | Access, relay or refresh token expired | `SAME_COMMAND` after refresh | `DID_NOT_HAPPEN` | — |
+| `AUTHENTICATION/token_expired` | Access, relay or refresh token expired. Answered by a refresh call itself (`RefreshSession`, later `RefreshNodeSession`), it means the refresh credential expired: refreshing cannot succeed, so the client signs in again (a node re-enrolls) | `SAME_COMMAND` after refresh | `DID_NOT_HAPPEN` | — |
 | `AUTHENTICATION/credential_revoked` | The device, node or session was revoked | `NEVER` | `DID_NOT_HAPPEN` | — |
 | `AUTHENTICATION/step_up_required` | The operation needs a recent strong authentication | `SAME_COMMAND` after step-up | `DID_NOT_HAPPEN` | — |
 | `AUTHENTICATION/signature_invalid` | A manifest, token or command signature failed verification | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = what failed |
@@ -93,8 +93,12 @@ The C# Cloud host's ingress pipeline (delivered; Cloud `faaffea`, `src/ArcForges
 |---|---|---|
 | Unregistered method (`grpc-message` `unimplemented`) | 12 `UNIMPLEMENTED` | — |
 | `auth.unauthenticated` | 16 `UNAUTHENTICATED` | `AUTHENTICATION` |
+| `auth.token_expired` (a known native bearer whose access token, or whose session's absolute lifetime, has expired; the client refreshes, and signs in again when the refresh is refused) | 16 `UNAUTHENTICATED` | `AUTHENTICATION` |
+| `auth.credential_revoked` (a known native bearer whose session, device or installation is revoked; the client signs in again) | 16 `UNAUTHENTICATED` | `AUTHENTICATION` |
 | `perm.resource_denied` | 7 `PERMISSION_DENIED` | `AUTHORIZATION` |
 | `validation.invalid_request` (malformed request or metadata) | 3 `INVALID_ARGUMENT` | `VALIDATION` |
 | `validation.invalid_request` (body over the method's bound) | 8 `RESOURCE_EXHAUSTED` | `VALIDATION` |
 | `state.stale_generation` | 9 `FAILED_PRECONDITION` | `STATE` |
 | `dependency.unavailable` | 14 `UNAVAILABLE` | `EXECUTION` |
+
+The `auth.token_expired` and `auth.credential_revoked` rows were added on 2026-10-29 with AF-CTR-03 part A1a (Cloud #118 at `d4e1110`); only the Go center produces them, while the C# host answers every credential failure `auth.unauthenticated`. On every call of a method that requires a session, the center verifies the native bearer or browser cookie against its store before any handler runs; an anonymous method (for example `RefreshSession`) reads no credential. A native bearer that is known but expired or revoked gets its own code; a browser cookie session that is expired, idle past its limit or revoked is answered like an unknown credential (`auth.unauthenticated`), because a browser signs in again in either case.
