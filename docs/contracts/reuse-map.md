@@ -43,6 +43,8 @@ These **contracts** are reused unchanged. At Cloud main `92ba1dc9` most of their
 - **Status.** Their published packages stay published and immutable (never unpublished or deprecated by this plan).
 - **Changes.** No change is planned. A later product decision may supersede them.
 
+The version-1 native token documents (`public/http/v1/native-auth.schema.json`) are retained the same way, but the Go center does not serve them (AF-CTR-03 part A1a, Cloud #118): their `NativeTokenResponse` cannot list `arcforges-*` installations. Native account sign-in on the center is `IdentityService`; the node and mobile native flows bring their own versioned documents with AF-CTR-04 and AF-CLD-02. Browser sessions use the WebBrowserSession document (`public/http/v1/web-browser.schema.json`, routes `/session/v1/web/*`).
+
 ## 5. Conflicts
 
 | ID | Conflict | Resolution |
