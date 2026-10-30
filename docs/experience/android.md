@@ -43,7 +43,7 @@
 
 - **Actions:**
   - QR leads to A-02.
-  - Browser opens a Custom Tab on the center's own authorization page with PKCE and returns through the verified app link `https://arcforges.com/app/callback`. The center serves this through the mobile native authorization that AF-CTR-04 delivers (an additive Contracts document that admits `arcforges-mobile`; the version-1 native authorization document is not served and is not reused; [reuse map](../contracts/reuse-map.md) §4). AF-AND-01 depends on AF-CTR-04.
+  - Browser opens a Custom Tab on the center's own authorization page with PKCE and returns through the verified app link `https://arcforges.com/app/callback`. The center serves this through the mobile native authorization that AF-CTR-04 delivers (an additive Contracts document that admits `arcforges-mobile`; the version-1 native authorization document is not served and is not reused; [reuse map](../contracts/reuse-map.md) §4). AF-AND-01 depends on AF-CTR-04. Serving `/app/callback` and `/.well-known/assetlinks.json` at arcforges.com (the Worker's route is `arcforges.com/api/*` only) is not yet assigned to a task; the AF-CTR-03 Plan record assigns it.
 - **States:** cancelled in browser; network error; account pending deletion.
 - **Data:** none until sign-in.
 - **Accessibility.** The two sign-in buttons are the first two focus stops, and the QR button's name says it uses the camera.
