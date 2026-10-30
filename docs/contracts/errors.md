@@ -17,6 +17,10 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 
 **Effect rule.** A mutation that fails before any durable change returns `DID_NOT_HAPPEN`. When the outcome is uncertain (for example a peer or cloud call timed out after sending), the method returns `UNKNOWN` with `retry.mode = RECONCILE` and the read operation to call. A retry with the same `command_id` is always safe (AD-0004).
 
+**UNKNOWN never pairs with AFTER_TIME** (amended 2026-10-30, AF-CTR-03). The Contracts rule `arcError` (cohort `1.0.0-ci.416.1` and every generated validator) rejects an `ArcError` whose `effect` is `UNKNOWN` and whose `retry.mode` is `AFTER_TIME`. A row whose effect can be `UNKNOWN` therefore advises `AFTER_TIME` only together with `DID_NOT_HAPPEN`; together with `UNKNOWN` it advises `RECONCILE` (and names the read operation), or `NEVER` where no read operation exists. The caller may still resend the same command with the same `command_id` (AD-0004). `effect` describes this delivery, not the command: a duplicate delivery of a command whose first delivery is still running, or already committed, is answered `RESOURCE/overloaded` (`DID_NOT_HAPPEN`, with `retry_at`), and the retry, with the same bytes and `command_id`, replays the stored receipt.
+
+**Reply rules** (amended 2026-10-30, AF-CTR-03). Every refusal carries valid foundation messages as its details: `state` and `reason` are always set where a row names `state.reason`; a resource is named only with a real 16-byte, non-zero ID, and only the ID the caller named; every `AFTER_TIME` refusal carries `retry_at` (an instant, one second plus jitter when the center has no better time). A refusal never carries an e-mail address or any other personal data of a command's receipt.
+
 | Category / code | Meaning | Retry advice | Effect | Details |
 |---|---|---|---|---|
 | `VALIDATION/invalid_argument` | A field violates its `validate:` rule | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = field path and rule |
@@ -61,14 +65,14 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 | `STATE/dirty_worktree` | A worktree has uncommitted changes | `NEVER` (archive or commit) | `DID_NOT_HAPPEN` | — |
 | `STATE/sas_mismatch` | Pairing digits did not match, or the commitment failed | `NEVER` | `DID_NOT_HAPPEN` | — |
 | `STATE/peer_incompatible` | The peer's protocol range does not overlap | `NEVER` | `DID_NOT_HAPPEN` | `upgrade` |
-| `STATE/peer_unreachable` | The peer did not answer | `AFTER_TIME` | `DID_NOT_HAPPEN` or `UNKNOWN` | — |
+| `STATE/peer_unreachable` | The peer did not answer | `AFTER_TIME` with `DID_NOT_HAPPEN`; `RECONCILE` with `UNKNOWN` | `DID_NOT_HAPPEN` or `UNKNOWN` | — |
 | `STATE/peer_blocked` | Pairing from this node identity is blocked or rate limited | `AFTER_TIME` (1 h) | `DID_NOT_HAPPEN` | — |
 | `STATE/link_down` | (retired, [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md)) The WSL guest link is not connected; never returned | `AFTER_TIME` | `DID_NOT_HAPPEN` | — |
 | `STATE/update_in_progress` | An update switch is running | `AFTER_TIME` | `DID_NOT_HAPPEN` | — |
 | `STATE/managed_externally` | Updates are managed by a package manager | `NEVER` | `DID_NOT_HAPPEN` | — |
 | `STATE/not_activated` | The feature is deployed but not yet activated in production ([10](../architecture/10-cloud.md) §8) | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = surface |
 | `STATE/not_signed_in` | The node has no account link | `NEVER` (sign in) | `DID_NOT_HAPPEN` | — |
-| `STATE/cloud_unreachable` | The node could not reach the cloud | `AFTER_TIME` | `DID_NOT_HAPPEN` or `UNKNOWN` | — |
+| `STATE/cloud_unreachable` | The node could not reach the cloud | `AFTER_TIME` with `DID_NOT_HAPPEN`; `RECONCILE` with `UNKNOWN` | `DID_NOT_HAPPEN` or `UNKNOWN` | — |
 | `STATE/purchase_pending` | A Play purchase is `PENDING` and not granted | `AFTER_TIME` | `DID_NOT_HAPPEN` | — |
 | `RESOURCE/queue_full` | The admission queue or offer capacity is full (policy limit) | `AFTER_TIME` | `DID_NOT_HAPPEN` | `limit` |
 | `RESOURCE/disk_space` | The data volume is below the free-space guard | `AFTER_TIME` | `DID_NOT_HAPPEN` | `limit` |
@@ -77,12 +81,12 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 | `RESOURCE/rate_limited` | A rate limit applies | `AFTER_TIME` (`retry_at`) | `DID_NOT_HAPPEN` | `limit` |
 | `RESOURCE/too_large` | A payload, manifest, plan or transfer exceeds its bound | `NEVER` | `DID_NOT_HAPPEN` | `limit` |
 | `RESOURCE/kill_switch_active` | A cloud kill switch disables the feature | `AFTER_TIME` | `DID_NOT_HAPPEN` | `state.reason` = switch |
-| `RESOURCE/overloaded` | Temporary overload (D1 overloaded, node command queue full) | `AFTER_TIME` with jitter | `DID_NOT_HAPPEN` | — |
+| `RESOURCE/overloaded` | Temporary overload (database or queue pressure, node command queue full), and the answer to a duplicate delivery of a command whose first delivery is still running or already committed: the retry replays the stored receipt (effect describes this delivery, not the command) | `AFTER_TIME` with jitter | `DID_NOT_HAPPEN` | — |
 | `EXECUTION/adopt_not_permitted` | The OS refused to place the process under management | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` |
 | `EXECUTION/operation_failed` | A node job or OS operation failed | Depends on `effect` | `HAPPENED` or `UNKNOWN` | `state.reason` |
 | `EXECUTION/integration_write_failed` | Writing a client configuration file failed; earlier files of the plan were restored | `SAME_COMMAND` | `DID_NOT_HAPPEN` | `state.reason` = path |
-| `EXECUTION/provider_error` | A provider API (Google Play, Paddle) failed | `AFTER_TIME` | `UNKNOWN` | — |
-| `INTERNAL/internal` | Unexpected failure; the correlation ID is in the node or cloud log. For `PurgeTaskRecord`, a failed or busy post-commit WAL checkpoint reports `HAPPENED`; the logical purge is committed, and identical-command replay reattempts the checkpoint (node-store section 1, MR-14) | `AFTER_TIME` once | `UNKNOWN` unless known | — |
+| `EXECUTION/provider_error` | A provider API (Google Play, Paddle) failed | `RECONCILE` (read the provider state: the purchase or subscription status) | `UNKNOWN` | — |
+| `INTERNAL/internal` | Unexpected failure; the correlation ID is in the node or cloud log. For `PurgeTaskRecord`, a failed or busy post-commit WAL checkpoint reports `HAPPENED`; the logical purge is committed, and identical-command replay reattempts the checkpoint (node-store section 1, MR-14) | `NEVER` when the effect is `UNKNOWN`; `AFTER_TIME` once when it is `DID_NOT_HAPPEN` | `UNKNOWN` unless known | — |
 | `INTERNAL/store_corrupt` | The node store failed its integrity check | `NEVER` (doctor; restore from backup) | `DID_NOT_HAPPEN` | — |
 
 ## Center ingress transport statuses (added 2026-10-28, AF-CTR-02)
