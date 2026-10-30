@@ -13,6 +13,23 @@ Architecture: [12](../architecture/12-client-applications.md) §5, [10](../archi
 
 The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to every profile page. A missing session redirects to sign-in with a return URL.
 
+## Center pages (AD-0021; delivered by AF-CTR-03 part A2, Cloud #121)
+
+The center serves its own minimal account pages, so that a self-hosted or acceptance center works without any Web deployment. They are not the Account profile above (the Blazor pages W-20 to W-29 stay the product's web UI); they decide nothing the API does not, and every change goes through the same operation table, step-up evidence, rate limits and audit events as the API method it stands for.
+
+| Page (below the public base URL) | Purpose | Credential |
+|---|---|---|
+| `/account/sign-in`, `/account/bootstrap` | Passkey sign-in; the owner bootstrap of an acceptance or self-hosted center | none |
+| `/account/passkeys`, `/account/sessions`, `/account/devices`, `/account/sign-out` | List, add, rename and remove passkeys; end sessions; rename and revoke devices; sign out | cookie session |
+| `/connect`, `/activate` | Node sign-in consent and device code (W-27, W-28; AF-CTR-04) | cookie session |
+
+- **Browser sessions.** The pages' JSON calls use the WebBrowserSession document (`public/http/v1/web-browser.schema.json`, routes `/session/v1/web/*`), which admits the product `arcforges-web`. The cookie is `__Host-af_session` (Secure, HttpOnly, SameSite=Strict, no Domain), idle 30 minutes and absolute 12 hours, renewed only by a page load or the bootstrap read. CSRF is derived from the cookie handle (never stored); before a session exists the sign-in steps use a public constant of the origin and rest on the flow, the challenge, the WebAuthn origin binding and the rate limits. Every POST needs exactly one `Origin` equal to the public origin; a query string is refused; a return path travels in the URL fragment and is followed only when it is a path of the page's own origin.
+- **Constraints.** No external asset; one script (`account.js`, text only through `textContent`, so Trusted Types can be required); exactly seven security headers on every reply of the center (CSP with `default-src 'none'` and `trusted-types 'none'`, `X-Frame-Options`, `Referrer-Policy: same-origin`, COOP, Permissions-Policy for publickey credentials, `Cache-Control: no-store`, `nosniff`); a page that needs its script says so. A page lists at most 30 items and says when there are more. The hosted Worker forwards only the exact paths and rejects a reply that lacks a header.
+- **Passkeys only for now.** E-mail sign-in is `not_offered` on the browser channel until the live mail sender (the last AF-CTR-03 PR).
+- **Contract gap.** The WebBrowserSession document defines no error body. The center answers a refusal of a JSON route with the ArcError as JSON (`{"error": {category, code, messageKey, retry, effect, correlationId, details}}`) and a page with a fixed text of its code. Routed to the next Contracts window.
+- **Dark in production.** The `pages` surface needs `identity`; production enables none (`center.surfaces` `none`, the Worker answers every page path 404 without waking the Container); the acceptance environment enables `identity,pages`. Activation is AF-PROD-01.
+- **Evidence.** The real-browser acceptance (Chromium 153 with a virtual authenticator, MOCKED hardware in a real browser) enrolls the owner through the bootstrap, signs in, steps up, registers a second passkey, lists sessions and devices, ends a second browser's session, removes the second passkey and signs out. The AR-23 procedure (a real Windows Hello passkey) is the owner's.
+
 ## Public site
 
 | ID | Page | Content | Data |
