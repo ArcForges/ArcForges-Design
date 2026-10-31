@@ -7,11 +7,29 @@ Architecture: [12](../architecture/12-client-applications.md) §5, [10](../archi
 | Part | Technology | Origin and session |
 |---|---|---|
 | Public site | Static, generated in C#, no JavaScript | Anonymous |
-| Account profile | Blazor WebAssembly; cookie session with CSRF and Origin checks (AF-ID-01); binary gRPC-Web | `account` session (Identity) |
+| Account profile | Blazor WebAssembly; cookie session with CSRF and Origin checks (AF-CTR-03); binary gRPC-Web | `account` session (Identity) |
 | Fleet profile | Blazor WebAssembly; viewer WebSocket (`relay.v1.ViewerFrame`) plus gRPC-Web | `account` session; entitlements `remote.view` and `remote.control` |
 | Operations profile | Blazor WebAssembly on its own origin (existing skeleton) | Operator session with step-up (AF-OPS-01) |
 
 The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to every profile page. A missing session redirects to sign-in with a return URL.
+
+## Center pages (AD-0021; delivered by AF-CTR-03 part A2, Cloud #121)
+
+The center serves its own minimal account pages, so that a self-hosted or acceptance center works without any Web deployment. They are not the Account profile above (the Blazor pages W-20 to W-29 stay the product's web UI); they decide nothing the API does not, and every change goes through the same operation table, step-up evidence, rate limits and audit events as the API method it stands for.
+
+| Page (below the public base URL) | Purpose | Credential |
+|---|---|---|
+| `/account/sign-in`, `/account/bootstrap` | Passkey sign-in; the owner bootstrap of an acceptance or self-hosted center | none |
+| `/account/passkeys`, `/account/sessions`, `/account/devices`, `/account/sign-out` | List, add, rename and remove passkeys; end sessions; rename and revoke devices; sign out | cookie session |
+
+- **Not served yet.** `/connect` and `/activate` (node sign-in consent and device code, W-27 and W-28) belong to AF-CTR-04: the center serves neither, and the hosted Worker answers 404.
+- **Browser sessions.** The pages' JSON calls use the WebBrowserSession document (`public/http/v1/web-browser.schema.json`, routes `/session/v1/web/*`; seven are served: bootstrap, authentication begin and complete, enrollment complete, step-up begin and complete, and logout; recovery begin and complete and the provider callback stay unserved until AF-ID-02), which admits the product `arcforges-web`. The cookie is `__Host-af_session` (Secure, HttpOnly, SameSite=Strict, no Domain), by default idle 30 minutes and absolute 12 hours (the policy bounds them: idle 1 minute to 24 hours, absolute 10 minutes to 7 days), renewed only by a page load or the bootstrap read. CSRF is derived from the cookie handle (never stored); before a session exists the sign-in steps use a public constant of the origin and rest on the flow, the challenge, the WebAuthn origin binding and the rate limits. Every POST needs exactly one `Origin` equal to the public origin; a query string is refused; a return path travels in the URL fragment and is followed only when it is a path of the page's own origin.
+- **Constraints.** No external asset; one script (`account.js`, text only through `textContent`, so Trusted Types can be required); exactly seven security headers on every reply of a page route (CSP with `default-src 'none'` and `trusted-types 'none'`, `X-Frame-Options`, `Referrer-Policy: same-origin`, COOP, Permissions-Policy for publickey credentials, `Cache-Control: no-store, no-transform`, `nosniff`; exact values: Cloud `docs/center-identity.md`, "Security headers"); a page that needs its script says so. The hosted Worker's own plain-text refusals (a wrong Origin, a query string, a cookie or media type it does not admit, the edge rate limit, a timeout) carry none of the seven except `Cache-Control: no-store` (they also carry `Content-Type: text/plain`, and the edge-limit 429 a `Retry-After`). A page lists at most 30 items and says when there are more. The hosted Worker forwards only the exact paths and rejects a reply that lacks a header.
+- **Hosted-only findings (Cloud #122).** `no-transform` is there because the Cloudflare edge injects its Web Analytics beacon into the HTML of a zone with the automatic setup on, unless a reply forbids transformation of its payload; the policy blocks the script, but a third-party script injected by the edge contradicts "nothing external". The Worker's requests to the Container must not follow redirects (`redirect: "manual"`): a Durable Object stub follows a 303 by default, which turned every protected page without a session into the Worker's own 503. Neither can be seen by a center on a machine without the edge; the first hosted real-browser run found both.
+- **Passkeys only for now.** E-mail sign-in is `not_offered` on the browser channel until the live mail sender (the last AF-CTR-03 PR).
+- **Contract gap.** The WebBrowserSession document defines no error body. The center answers a refusal of a JSON route with the ArcError as JSON (`{"error": {category, code, messageKey, retry, effect, correlationId, details}}`) and a page with a fixed text of its code. The JSON has `retry` as `{mode, retryAt}`, `details` as `{state, limit, revision}` (omitted when empty), 64-bit integers as strings and instants in RFC 3339; the HTTP status is 403 for authentication, authorization and entitlement, 400 for validation (413 for a body over the route's bound and 415 for a media type or encoding it does not admit), conflict and state, 404 for `not_found` and `not_activated`, 429 for `rate_limited` and 503 otherwise. On a hosted center the Worker answers some requests to the same routes itself, in plain text: 400, 403, 405, 408, 413, 415 and 429 before the Container, and 499, 503 and 504 that can follow a call the Container has begun or finished (so they never mean that the center did not see the request); a disabled surface is its 404 (Cloud `docs/center-identity.md`, "Request rules"). Routed to the next Contracts window.
+- **Dark in production.** The `pages` surface needs `identity`; production enables none (`center.surfaces` `none`, the Worker answers every page path 404 without waking the Container); the acceptance environment enables `identity,pages`. Activation is AF-PROD-01.
+- **Evidence.** The real-browser acceptance (Chromium 153 with a virtual authenticator, MOCKED hardware in a real browser) enrolls the owner through the bootstrap on its first run; every run signs in, steps up, registers a second passkey, lists sessions and devices, ends a second browser's session, removes the second passkey and signs out. The AR-23 procedure (a real Windows Hello passkey) is the owner's.
 
 ## Public site
 
@@ -45,7 +63,7 @@ The standard states S-LOADING, S-OFFLINE, S-FAILED and S-NOT-ENTITLED apply to e
 ### W-20 Sign in
 
 - **Purpose.** Sign in with a passkey or an e-mail code, create an account, or cancel a pending account deletion.
-- **Permissions.** Anonymous. Success creates an `account` cookie session (AF-ID-01). Rate limits apply per IP and per account.
+- **Permissions.** Anonymous. Success creates an `account` cookie session (AF-CTR-03). Rate limits apply per IP and per account.
 - **Layout.** A centred card: heading; the passkey button; the e-mail code form (e-mail, then code); the create-account link; footer links.
 - **Wireframe:**
 

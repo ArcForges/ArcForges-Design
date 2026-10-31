@@ -191,6 +191,8 @@ Secrets are never logged. Records and exports apply secret-name redaction ([04](
 | Devices and nodes | Cloud | — | Until revoked + 30 days |
 | Node status cache | DO storage | — | Until node revoked or 30 days stale |
 | Remote commands | Cloud | — | 90 days |
+| Account command receipts (results hold the display name, locale and time zone, a credential summary and a device view) | Cloud | — | 90 days; purged with the account |
+| Sign-in flows and rate-limit buckets (unsalted digests of e-mail addresses and client prefixes) | Cloud | — | 7 days (flows); one window (buckets) |
 | Audit events | Cloud | — | 1 year |
 | Commerce references (Paddle or Play IDs, states) | Cloud | — | 7 years (billing records) |
 | Support cases | Cloud | — | 2 years |
