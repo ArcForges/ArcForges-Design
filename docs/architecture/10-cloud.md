@@ -92,7 +92,7 @@ Each secret is single-use. A wrong secret consumes the pairing.
    - authenticates the session;
    - checks entitlement `remote.control`;
    - classifies risk (AD-0009 §5);
-   - requires a proved step-up (single-use evidence; authentication time is never evidence) for `MEDIUM` and `HIGH` (the `fleet.proto` header's gloss "passkey or recent authentication" is superseded by this rule; its comment is corrected in the next Contracts change of `fleet.proto`, and the Design copy follows);
+   - requires a proved step-up (single-use evidence; authentication time is never evidence) for `MEDIUM` and `HIGH` (the `fleet.proto` header's gloss "passkey or recent authentication" is superseded by this rule; its comment is corrected by Contracts #125 (`a5bc52f`), and the Design copy follows it);
    - writes `fleet_remote_command` (`ACCEPTED`, `expires_at` = now + 5 min);
    - audits;
    - signs the `NodeCommand` payload (`fleet.v1`) with the ES256 **command signing key** (ECDSA P-256; `kid`; V-N05).
