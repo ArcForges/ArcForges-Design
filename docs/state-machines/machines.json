@@ -1098,6 +1098,14 @@
           "from": [
             "APPROVED"
           ],
+          "to": "DENIED",
+          "on": "NodeEnrollmentService.ApproveNodeSignIn deny by the approving account, before the one-use code is redeemed",
+          "effect": "the unredeemed code is void"
+        },
+        {
+          "from": [
+            "APPROVED"
+          ],
           "to": "COMPLETED",
           "on": "NodeEnrollmentService.CompleteNodeSignIn with a valid code and verifier",
           "effect": "installation registered; credentials issued"
@@ -1107,7 +1115,7 @@
             "APPROVED"
           ],
           "to": "REVOKED",
-          "on": "code presented twice"
+          "on": "a correct code presented again (reuse), or a correct code with a wrong verifier or node key proof"
         },
         {
           "from": [
@@ -1149,7 +1157,14 @@
             "PENDING"
           ],
           "to": "DENIED",
-          "on": "NodeEnrollmentService.ApproveDeviceCode deny; 5 failed code entries"
+          "on": "NodeEnrollmentService.ApproveDeviceCode deny"
+        },
+        {
+          "from": [
+            "APPROVED"
+          ],
+          "to": "DENIED",
+          "on": "NodeEnrollmentService.ApproveDeviceCode deny by the approving account, before the credentials are delivered"
         },
         {
           "from": [

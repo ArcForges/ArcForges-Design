@@ -510,8 +510,9 @@ stateDiagram-v2
   [*] --> PENDING
   PENDING --> APPROVED : NodeEnrollmentService.ApproveNodeSignIn approve
   PENDING --> DENIED : NodeEnrollmentService.ApproveNodeSignIn deny
+  APPROVED --> DENIED : NodeEnrollmentService.ApproveNodeSignIn deny by the approvin
   APPROVED --> COMPLETED : NodeEnrollmentService.CompleteNodeSignIn with a valid code a
-  APPROVED --> REVOKED : code presented twice
+  APPROVED --> REVOKED : a correct code presented again (reuse), or a correct code wi
   PENDING --> EXPIRED : 10 minutes elapsed
   APPROVED --> EXPIRED : 10 minutes elapsed
   COMPLETED --> [*]
@@ -524,8 +525,9 @@ stateDiagram-v2
 |---|---|---|---|---|
 | PENDING | APPROVED | NodeEnrollmentService.ApproveNodeSignIn approve |  | one-use code issued; browser redirected to the loopback URI |
 | PENDING | DENIED | NodeEnrollmentService.ApproveNodeSignIn deny |  |  |
+| APPROVED | DENIED | NodeEnrollmentService.ApproveNodeSignIn deny by the approving account, before the one-use code is redeemed |  | the unredeemed code is void |
 | APPROVED | COMPLETED | NodeEnrollmentService.CompleteNodeSignIn with a valid code and verifier |  | installation registered; credentials issued |
-| APPROVED | REVOKED | code presented twice |  |  |
+| APPROVED | REVOKED | a correct code presented again (reuse), or a correct code with a wrong verifier or node key proof |  |  |
 | PENDING, APPROVED | EXPIRED | 10 minutes elapsed |  |  |
 
 <a id="sm-device-auth"></a>
@@ -541,6 +543,7 @@ stateDiagram-v2
   [*] --> PENDING
   PENDING --> APPROVED : NodeEnrollmentService.ApproveDeviceCode approve
   PENDING --> DENIED : NodeEnrollmentService.ApproveDeviceCode deny
+  APPROVED --> DENIED : NodeEnrollmentService.ApproveDeviceCode deny by the approvin
   APPROVED --> COMPLETED : PollDeviceAuthorization delivered credentials
   PENDING --> EXPIRED : 600 s elapsed
   APPROVED --> EXPIRED : 600 s elapsed
@@ -552,7 +555,8 @@ stateDiagram-v2
 | From | To | Trigger | Guard | Effect |
 |---|---|---|---|---|
 | PENDING | APPROVED | NodeEnrollmentService.ApproveDeviceCode approve |  |  |
-| PENDING | DENIED | NodeEnrollmentService.ApproveDeviceCode deny; 5 failed code entries |  |  |
+| PENDING | DENIED | NodeEnrollmentService.ApproveDeviceCode deny |  |  |
+| APPROVED | DENIED | NodeEnrollmentService.ApproveDeviceCode deny by the approving account, before the credentials are delivered |  |  |
 | APPROVED | COMPLETED | PollDeviceAuthorization delivered credentials |  |  |
 | PENDING, APPROVED | EXPIRED | 600 s elapsed |  |  |
 
