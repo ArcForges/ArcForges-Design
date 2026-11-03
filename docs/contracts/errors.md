@@ -50,7 +50,7 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 | `ENTITLEMENT/feature_not_entitled` | The plan lacks the cloud feature (`remote.*`, `push`); local and LAN features are never gated | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = feature |
 | `ENTITLEMENT/plan_limit_reached` | A per-plan count (nodes, viewers) is exhausted | `NEVER` | `DID_NOT_HAPPEN` | `limit` |
 | `CONFLICT/revision_conflict` | `meta.expected_rev` differs from the current revision | `NEVER` (re-read, merge) | `DID_NOT_HAPPEN` | `revision` |
-| `CONFLICT/already_exists` | The named object already exists | `NEVER` | `DID_NOT_HAPPEN` | `state.resource` |
+| `CONFLICT/already_exists` | The named object already exists | `NEVER` | `DID_NOT_HAPPEN` | `state.resource`; or, for a node key or node ID held by an installation (`BeginNodeSignIn`, `StartDeviceAuthorization`, `CompleteNodeSignIn`, `PollDeviceAuthorization`), `state.state` = `node_key` (key registered) or `node` (node ID live under another account) with `state.reason` = `already_registered` for the key, and no resource |
 | `CONFLICT/command_id_reused` | The same `command_id` arrived with a different payload digest | `NEVER` | `DID_NOT_HAPPEN` | — |
 | `CONFLICT/digest_mismatch` | A plan digest differs from the presented one | `NEVER` (re-plan) | `DID_NOT_HAPPEN` | — |
 | `CONFLICT/code_reused` | A sign-in code was presented twice; the flow is revoked | `NEVER` | `DID_NOT_HAPPEN` | — |
