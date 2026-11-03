@@ -149,6 +149,69 @@ class ProtoChecks(unittest.TestCase):
         self.assertTrue(any("numbered below 10" in e for e in rep.errors))
 
 
+class ErrorPairChecks(unittest.TestCase):
+    HEADER = "| Category / code | Meaning | Retry advice | Effect | Details |\n|---|---|---|---|---|\n"
+
+    def run_rows(self, rows: str) -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "errors.md"
+            path.write_text(self.HEADER + rows, encoding="utf-8")
+            old = cd.ERRORS_MD
+            cd.ERRORS_MD = path
+            try:
+                rep = cd.Report()
+                cd.check_error_pairs(rep)
+            finally:
+                cd.ERRORS_MD = old
+            return rep.errors
+
+    def test_the_catalogue_passes(self):
+        rep = cd.Report()
+        cd.check_error_pairs(rep)
+        self.assertEqual(rep.errors, [])
+
+    def test_conditional_rows_pass(self):
+        rows = (
+            "| `STATE/peer_unreachable` | x | `AFTER_TIME` with `DID_NOT_HAPPEN`; with `UNKNOWN`, `RECONCILE` reading `PeerService.ListPeers` | `DID_NOT_HAPPEN` or `UNKNOWN` | — |\n"
+            "| `INTERNAL/internal` | x | `NEVER` when the effect is `UNKNOWN`; `AFTER_TIME` once when it is `DID_NOT_HAPPEN` or `HAPPENED` | `UNKNOWN` unless known | — |\n"
+            "| `STATE/in_use` | x | `AFTER_TIME` | `DID_NOT_HAPPEN` | — |\n"
+        )
+        self.assertEqual(self.run_rows(rows), [])
+
+    def test_the_rows_before_the_amendment_fail(self):
+        # The four rows of the catalogue at ArcForges-Design 44a86a9, which paired UNKNOWN with AFTER_TIME.
+        for row in (
+            "| `STATE/peer_unreachable` | x | `AFTER_TIME` | `DID_NOT_HAPPEN` or `UNKNOWN` | — |\n",
+            "| `STATE/cloud_unreachable` | x | `AFTER_TIME` | `DID_NOT_HAPPEN` or `UNKNOWN` | — |\n",
+            "| `EXECUTION/provider_error` | x | `AFTER_TIME` | `UNKNOWN` | — |\n",
+            "| `INTERNAL/internal` | x | `AFTER_TIME` once | `UNKNOWN` unless known | — |\n",
+        ):
+            with self.subTest(row=row):
+                errors = self.run_rows(row)
+                self.assertEqual(len(errors), 1, errors)
+                self.assertIn("advises AFTER_TIME", errors[0])
+
+    def test_a_clause_naming_unknown_with_after_time_fails(self):
+        row = "| `STATE/peer_unreachable` | x | `AFTER_TIME` with `DID_NOT_HAPPEN` or `UNKNOWN` | `DID_NOT_HAPPEN` or `UNKNOWN` | — |\n"
+        self.assertEqual(len(self.run_rows(row)), 1)
+
+    def test_a_qualified_first_cell_is_still_checked(self):
+        row = "| `EXECUTION/provider_error` (Play) | x | `AFTER_TIME` | `UNKNOWN` | — |\n"
+        self.assertTrue(any("advises AFTER_TIME" in e for e in self.run_rows(row)), self.run_rows(row))
+
+    def test_names_without_backticks_are_still_checked(self):
+        row = "| `EXECUTION/provider_error` | x | AFTER_TIME | unknown (the call may have committed) | — |\n"
+        self.assertTrue(any("advises AFTER_TIME" in e for e in self.run_rows(row)), self.run_rows(row))
+
+    def test_a_row_without_a_code_fails(self):
+        row = "| EXECUTION/provider_error | x | `AFTER_TIME` | `UNKNOWN` | — |\n"
+        self.assertTrue(any("does not start with" in e for e in self.run_rows(row)), self.run_rows(row))
+
+    def test_a_row_with_another_cell_count_fails(self):
+        row = "| `STATE/peer_unreachable` | x | `AFTER_TIME` with `DID_NOT_HAPPEN` | `UNKNOWN` |\n"
+        self.assertTrue(any("expected 5" in e for e in self.run_rows(row)))
+
+
 class MachineChecks(unittest.TestCase):
     def setUp(self):
         fx = ProtoFixture(GOOD)
