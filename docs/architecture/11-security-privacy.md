@@ -93,7 +93,7 @@ Default permission matrix (policy `permissions`, editable only by `HUMAN`).
 | `node.rename` | Rename the node (*annotation*: `RenameNode`) | A | A | D | |
 | `notifications.mark_read` | Mark notifications read (*annotation*: `MarkNotificationsRead`) | A | D | D | |
 
-Overrides for `REMOTE` can only narrow (deny); remote enforcement is AF-CLD-05's.
+Overrides for `REMOTE` can only narrow (deny); remote enforcement is AF-CTR-05's (AF-CLD-05 is superseded, [AD-0021](../decisions/AD-0021-central-access-go-center.md)).
 
 *Direction (roadmap; not release 1; [AD-0017](../decisions/AD-0017-delegated-execution-direction.md), amended 2026-10-19; [18](18-application-workload-control.md) §7.5, §9):* an application origin and an application client kind (two enum values) carry callers of the cooperative resource API; their classification depends on the connection's client kind being verified against the peer (AF-SEC-01; §1's documented bypasses apply). The proposed rows, additive to the matrix above, take effect with RM-09 stage 1 (cooperative rows), RM-18 (per-application entries and placement) and EX-26 (the interactive mode):
 
@@ -136,10 +136,13 @@ Every HUMAN-only row stays a GUARDRAIL against same-user code that presents itse
 | Release signing (ES256 manifest key, Authenticode certificate, GPG apt key) | Release engineering | Offline / HSM / signing service (human prerequisite) | Per policy |
 | Google service accounts (Play Developer API, FCM) | Cloud container | Platform secrets, least privilege | Yearly |
 | Paddle webhook secret | Cloud container | Platform secret | On rotation in Paddle |
+| Transactional e-mail credential (a Postmark Server token, or the SMTP user name and password of an IAM user allowed `ses:SendRawEmail`) | Cloud container, only while a provider is configured (the Worker passes the named provider's variables) | Platform secret, from GitHub environment secrets; the acceptance names are `MAIL_POSTMARK_TOKEN_ACCEPTANCE`, `MAIL_SMTP_USERNAME_ACCEPTANCE` and `MAIL_SMTP_PASSWORD_ACCEPTANCE` (none is created: e-mail is disabled in every environment); production naming is decided at AF-PROD-01 | At the provider; a changed value restarts the center before its next request |
 | Compiler-cache store tokens (the sccache store; the ccache HTTP fallback) | Per attempt | Node memory; passed in the attempt's environment | Issued at attempt start, revoked at its end |
 | MCP HTTP bearer | Reserved for the local HTTP transport (roadmap RM-05); not created in release 1 | — | — |
 
 **Same-user qualifier** (added 2026-10-19; T-25). The OS secret stores, and the Linux 0600-file fallback, protect the node's secrets from other users, not from processes of the signed-in user. Any same-user process, managed tasks included, can read the node credential and the node data key, and so the task secrets sealed under it; a running task's environment holds its secret values in clear ([04](04-execution.md) §2–3). The release coverage statement says: "Unsandboxed managed processes can read every credential the signed-in user can read. ArcForges does not read or record them." ([product definition](../product/product-definition.md) §9).
+
+**Transactional e-mail credential** (added 2026-11-03; AF-CTR-03, Cloud #127). A Postmark sender signature or domain belongs to the Postmark account, not to a Server: a token of the acceptance Server can send as any confirmed sender of the same account, a production domain included. One Server per environment separates streams, statistics, suppression lists and tokens, not senders; isolating the production sender needs a separate Postmark account (or accepting that exposure), which the owner decides at H-19 and AF-PROD-01. The token lets the center send any mail as the product's signed domain, and the Container's egress is open (`enableInternet`, which the database connection needs), so whether mail leaves instead through an outbound handler that fixes the destination is decided again before the production environment gets a provider. No production e-mail secret exists before AF-PROD-01 chooses between a separate GitHub environment with a reviewer and a suffix convention inside the one shared environment.
 
 **Command signing key** (added 2026-10-19; T-11). The node verifies every remote command with this key, then applies its local remote-control policy ([AD-0009](../decisions/AD-0009-cloud-relay-and-cost-controls.md) §5). A compromised cloud command key can therefore issue any command the node's local remote-control policy permits; that policy, not the signature, bounds the exposure.
 
@@ -161,7 +164,7 @@ Secrets are never logged. Records and exports apply secret-name redaction ([04](
 | T-10 | B3 | Cache poisoning through a writable LAN cache | `cache_write` off by default, explicit per trusted peer; documented risk | Policy tests |
 | T-11 | B4 | Forged remote command | ES256 signature, expiry and target checks, then local remote-control policy. Stated exposure (amended 2026-10-19): a compromised cloud command key can issue any command the node's local remote-control policy permits (§3) | Unit, closed-loop |
 | T-12 | B4 | Stolen relay token | 15-minute lifetime; scope; device revocation stops refresh | Unit |
-| T-13 | B5 | Account takeover | Passkeys, step-up for medium and high risk, session revocation (reused contracts; endpoints built by AF-ID-01) | Closed-loop tests of the identity endpoints, including the step-up gates |
+| T-13 | B5 | Account takeover | Passkeys, step-up for medium and high risk, session revocation (reused contracts; endpoints built by AF-CTR-03, which superseded AF-ID-01) | Closed-loop tests of the identity endpoints, including the step-up gates |
 | T-14 | B6 | Spoofed Paddle or RTDN webhook | HMAC raw-body / Pub/Sub OIDC verification; inbox dedup | Closed-loop with fixtures |
 | T-15 | B6 | Play token replay to another account | Token-to-account uniqueness; `obfuscatedAccountId` check | Unit |
 | T-16 | Cloud | Cost amplification (alarm loops, viewer floods) | Quotas, DO wake guard, kill switches | Closed-loop |
