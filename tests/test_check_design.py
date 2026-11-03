@@ -207,6 +207,32 @@ class ErrorPairChecks(unittest.TestCase):
         row = "| EXECUTION/provider_error | x | `AFTER_TIME` | `UNKNOWN` | — |\n"
         self.assertTrue(any("does not start with" in e for e in self.run_rows(row)), self.run_rows(row))
 
+    def test_after_time_in_another_case_or_with_a_space_is_still_checked(self):
+        for retry in ("after_time", "After_Time", "AFTER TIME"):
+            with self.subTest(retry=retry):
+                row = f"| `EXECUTION/provider_error` | x | {retry} | `UNKNOWN` | — |\n"
+                self.assertTrue(any("advises AFTER_TIME" in e for e in self.run_rows(row)), self.run_rows(row))
+
+    def test_the_full_run_fails_on_a_pre_amendment_row(self):
+        # The provider_error row of ArcForges-Design 44a86a9 inside a copy of the real catalogue: main() must exit 1, so removing
+        # the gate's call from main() fails this test.
+        old_row = "| `EXECUTION/provider_error` | A provider API (Google Play, Paddle) failed | `AFTER_TIME` | `UNKNOWN` | — |"
+        text = cd.read(cd.ERRORS_MD)
+        current = next(line for line in text.split("\n") if line.startswith("| `EXECUTION/provider_error` |"))
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "errors.md"
+            path.write_text(text.replace(current, old_row), encoding="utf-8")
+            saved = cd.ERRORS_MD
+            cd.ERRORS_MD = path
+            out = io.StringIO()
+            try:
+                with redirect_stdout(out):
+                    status = cd.main([])
+            finally:
+                cd.ERRORS_MD = saved
+        self.assertEqual(status, 1, out.getvalue())
+        self.assertIn("EXECUTION/provider_error advises AFTER_TIME", out.getvalue())
+
     def test_a_row_with_another_cell_count_fails(self):
         row = "| `STATE/peer_unreachable` | x | `AFTER_TIME` with `DID_NOT_HAPPEN` | `UNKNOWN` |\n"
         self.assertTrue(any("expected 5" in e for e in self.run_rows(row)))

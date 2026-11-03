@@ -223,7 +223,8 @@ def check_error_pairs(rep: Report) -> None:
     The Contracts rule `arcError` rejects an ArcError with effect UNKNOWN and retry AFTER_TIME (errors.md, "UNKNOWN never pairs
     with AFTER_TIME"). Every row of the catalogue table is read (a row that cannot be read is an error, never skipped); the retry
     cell is read clause by clause (split at ';'): a clause that names AFTER_TIME must name DID_NOT_HAPPEN or HAPPENED and must not
-    name UNKNOWN. Names are matched as words, with or without backticks.
+    name UNKNOWN. Names are matched as words, with or without backticks; AFTER_TIME and UNKNOWN in any case (AFTER_TIME also with a
+    space), the known effects only as the enum names.
     """
     lines = read(ERRORS_MD).split("\n")
     if lines.count(CATALOGUE_HEADER) != 1:
@@ -248,7 +249,7 @@ def check_error_pairs(rep: Report) -> None:
             continue
         for clause in retry.split(";"):
             known = re.search(r"\b(DID_NOT_HAPPEN|HAPPENED)\b", clause)
-            if re.search(r"\bAFTER_TIME\b", clause) and (re.search(r"\bUNKNOWN\b", clause, re.I) or not known):
+            if re.search(r"\bAFTER[ _]TIME\b", clause, re.I) and (re.search(r"\bUNKNOWN\b", clause, re.I) or not known):
                 rep.error(f"errors.md: {m.group(1)} advises AFTER_TIME in a clause that does not name a known effect, "
                           "while its effect can be UNKNOWN (Contracts rule arcError)")
     missed = error_catalogue() - checked
