@@ -218,7 +218,7 @@ Added 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md).
 | ID | Requirement | Acceptance |
 |---|---|---|
 | R-AUTH-001 | Desktop and CLI sign in through the system browser with PKCE and a loopback redirect. Headless contexts use the device authorization grant (code plus URL plus QR). Token copy-paste is never the normal path. | Closed-loop tests against the cloud identity service with a scripted browser fake. |
-| R-AUTH-002 | Android signs in through a Custom Tab with PKCE, or by scanning a QR shown by a signed-in desktop node and confirming on that desktop. | Closed-loop tests. |
+| R-AUTH-002 | Android signs in through a Custom Tab with PKCE on the center's own authorization page, returning through the verified app link in release builds (debug builds against a local stack use a private-use scheme; the center's mobile native authorization, AF-CTR-04), or by scanning a QR shown by a signed-in desktop node and confirming on that desktop. | Closed-loop tests. |
 | R-AUTH-003 | Device and node credentials are stored in the OS secret store (Windows Credential Manager, Android Keystore). Linux uses a 0600 file in the node data root when no secret service exists, and reports that weaker protection. | Tests. |
 | R-AUTH-004 | Credentials are scoped (node uplink, user session, push) and revocable per device and session from web, desktop and mobile. | Tests. |
 | R-AUTH-005 | Account authentication is separate from OS privileges. No account action grants OS privileges, and privileged installation steps are explicit OS prompts. | Review; UI labels. |
@@ -248,7 +248,7 @@ Added 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md).
 
 | ID | Requirement | Acceptance |
 |---|---|---|
-| R-OPS-001 | Onboarding, account recovery, device enrollment and revocation reuse the existing identity and device contracts, D1 schema and domain stores. Their service endpoints and flows are implemented for the flagship (AF-ID-01, AF-ID-02). | Tests. |
+| R-OPS-001 | Onboarding, account recovery, device enrollment and revocation reuse the existing identity and device contracts, D1 schema and domain stores. Their service endpoints and flows are implemented for the flagship (AF-CTR-03 and AF-CTR-04 on the Go center, and AF-ID-02; AF-ID-01 is superseded). | Tests. |
 | R-OPS-002 | Usage limits and abuse prevention cover sign-in, pairing, relay connections, viewers, commands, push and support, with rate limits and anomaly flags. | Tests. |
 | R-OPS-003 | Privacy: command lines, environment values and output never leave a node unless a user explicitly requests them for a remote view or a support bundle. Telemetry is opt-in. | Tests and data-flow review. |
 | R-OPS-004 | Retention and deletion: account deletion removes cloud data per the retention schedule. Nodes provide a local data wipe. Exports are available. | Tests. |

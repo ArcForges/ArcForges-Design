@@ -74,7 +74,7 @@ Plans live in the Entitlement module's configuration revision ([AD-0010](../deci
 | Purchase confirmed | Paddle receipt e-mail (MoR) or Google Play receipt | Provider-owned |
 | Payment failed, grace, hold | In-app banner (Desktop status bar, web, Android); Paddle dunning e-mails | Fix-payment link |
 | Entitlement ended | In-app banner; nodes show which features stopped for new work | Running local work is unaffected (R-COM-004) |
-| Node revoked, new device sign-in | Account security e-mail through the Identity e-mail adapter (AF-ID-01, AF-ID-02) | Device and time |
+| Node revoked, new device sign-in | Account security e-mail through the Identity e-mail adapter (target, AF-ID-02, once an account can hold an e-mail identity; the adapter AF-CTR-03 delivered sends only sign-in and step-up codes) | Device and time |
 | Incident affecting cloud features | Status page (`status.arcforges.com`, static R2 page updated by the operator) | Affected features; local work unaffected |
 
 The product sends no marketing e-mail. Transactional e-mail goes through the Identity e-mail adapter (Postmark, with Amazon SES as fallback; [10](10-cloud.md) §2). Its live delivery is deferred validation (acceptance register AR-14).
@@ -93,7 +93,7 @@ The product sends no marketing e-mail. Transactional e-mail goes through the Ide
 
 | Surface | Limit (default; configuration) | Anomaly flag |
 |---|---|---|
-| Sign-in (Identity, AF-ID-01) | Rate limits per IP and per account | Repeated failures from one IP or against one account |
+| Sign-in (Identity, AF-CTR-03) | Rate limits per IP and per account | Repeated failures from one IP or against one account |
 | Node sign-in flows and device codes | 10 flows per account per hour; 5 code-entry attempts per user code | More than 3 denied flows in an hour |
 | Phone pairings | 10 per account per hour; single-use secrets | Repeated wrong secrets |
 | Node enrollment | Plan node limit; 20 enrollments per account per day | Enrollment churn above 5 revoke-and-re-enroll cycles per day |
@@ -117,7 +117,7 @@ Every billable dimension of the products in use (V-C02, V-C08) maps to an operat
 | Containers (C# host) | Provisioned memory (GiB-s) and disk (GB-s) **for as long as an instance runs**, 10 ms granularity | `CONTAINER_INSTANCE_SECONDS` | Measured: the host records each instance's run interval (start to sleep) and the instance type | `max_instances` and `instance_type` in `wrangler.json`, and the idle `sleepAfter`. Worst case per day = `max_instances × 86,400 s × (memory + disk + vCPU rates of the instance type)`. |
 | Containers | CPU (vCPU-s), active only | `CONTAINER_CPU_SECONDS` | Measured: the host's process CPU time | Bounded by the worst case above |
 | Containers | The container's own Durable Object: requests, and duration while the instance runs (V-C08) | `DO_REQUESTS`, `DO_DURATION_GB_SECONDS` | **Estimated** from the instance run intervals and the requests routed to the container | As the container worst case |
-| Containers | Egress | `EGRESS_BYTES` | Measured: the host's outbound handler counts bytes (FCM, Paddle, Play, e-mail provider) | Allow-listed destinations only |
+| Containers | Egress | `EGRESS_BYTES` | Measured: the host's outbound handler counts bytes (FCM, Paddle, Play, e-mail provider) | Allow-listed destinations only (target: the delivered center's Container has open egress for its database connection, and its mail adapters reach the provider directly; how production mail leaves is decided again before AF-PROD-01, [11](11-security-privacy.md) §3) |
 | Workers | Requests and CPU time | `WORKER_REQUESTS` | Measured: request counters batched from the Worker to the host | `limits.cpu_ms` per request; edge rate limits. Requests rejected by edge rules never invoke the Worker. |
 | Durable Objects | Requests, including WebSocket opens, incoming messages at 20:1, and alarms | `DO_REQUESTS` | Measured: counters in `FleetHub`, batched to the host | Per-token frame limits, viewer and node limits, the wake guard |
 | Durable Objects | Duration: 128 MB × wall time while active and not eligible to hibernate | `DO_DURATION_GB_SECONDS` | **Estimated**: `FleetHub` measures each awake interval (first event to last handler completion) and multiplies by 0.125 GB. Reconciled daily (§7.5). | Hibernation API only (no non-hibernating `accept()`); the alarm-loop guard |
@@ -126,7 +126,7 @@ Every billable dimension of the products in use (V-C02, V-C08) maps to an operat
 | R2 | Class A and class B operations, storage (egress free) | `R2_CLASS_A`, `R2_CLASS_B`, `R2_BYTES` | Measured: counted per operation by the host; storage from object sizes | Per-account upload limits; lifecycle rules |
 | Queues | Operations | `QUEUE_OPERATIONS` | Measured | One wake message per batch |
 | FCM | Free | `PUSH_SENDS` | Measured | Per-account push limits |
-| E-mail provider (Postmark, SES) | Messages | `EMAILS_SENT` | Measured by the Identity e-mail adapter | Rate limits on codes and notices |
+| E-mail provider (Postmark, SES) | Messages | `EMAILS_SENT` | Measured where the center sends (target, AF-PLAT-01; Cloud's delivery function `center/internal/identity/deliver.go` is the one place it hooks in). The per-outcome counter AF-CTR-03 delivered resets at every restart and is not this meter | Rate limits on codes and notices |
 | Workers Logs | Log events | — (residual) | Not metered | Head sampling 0.1 |
 
 **Unit prices** per dimension are configuration data (`ops.unit_prices`), maintained by the operator from the providers' price lists. They feed the monthly report and the residual-exposure figure.
@@ -136,7 +136,7 @@ Every billable dimension of the products in use (V-C02, V-C08) maps to an operat
 - **Daily operating budgets.** One budget per dimension and UTC day in `platform_operating_budget`. Every metered operation reserves against its dimension (`platform_operating_reservation`); estimated dimensions are recorded after the fact.
 - **80%:** an operator alert.
 - **100%:** the degradation ladder (§7.3) applies the step for that dimension. **120%** of any dimension, or the container worst case being reached, enters essential-only mode.
-- **`EMAILS_SENT`** has no ladder step: the product sends only sign-in codes and account security notices, which stay available. It alerts at 80% and 100%, its rate limits bound it (§7.4), and it is excluded from the 120% rule because essential-only mode would not reduce it.
+- **`EMAILS_SENT`** has no ladder step: the product sends only sign-in and step-up codes and, once AF-ID-02 sends them (target), account security notices, which stay available. It alerts at 80% and 100%, its rate limits bound it (§7.4), and it is excluded from the 120% rule because essential-only mode would not reduce it.
 - **The job runner** (cron) runs only essential jobs in essential-only mode: Play purchase acknowledgements, webhook inbox processing and account-deletion purges. Retention sweeps, reports and reconciliation pause until the mode ends.
 - **Never affected:** local execution and LAN features. LAN features keep working on cached entitlement tokens.
 

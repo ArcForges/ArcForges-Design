@@ -90,7 +90,7 @@ Every RPC carries structured comments, which `tools/check_design.py` verifies an
 
 - **Local node API.** The node assigns the origin at `NodeService.Hello` from the connection (the verified peer process, its client kind and process ancestry) and applies the permission matrix. Caller-supplied identity is never trusted ([11](../architecture/11-security-privacy.md) §1).
 - **Peer API.** Identity comes from the TLS client certificate (pinned fingerprint or account SAN). Origin `PEER`. The origins `HOST` and `GUEST` (formerly the bridge's) are retired (§7).
-- **Fleet API.** The credential decides access: an account session from the Identity service (reused contract; endpoints AF-ID-01), or a node credential. Step-up uses the reused Identity step-up. Entitlement checks use the reused Entitlement module.
+- **Fleet API.** The credential decides access: an account session from the Identity service (reused contract; endpoints AF-CTR-03, which superseded AF-ID-01), or a node credential. Step-up uses the reused Identity step-up. Entitlement checks use the reused Entitlement module.
 
 ## 6. Idempotency
 

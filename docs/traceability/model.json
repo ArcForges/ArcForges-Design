@@ -1447,13 +1447,15 @@
       "design": [
         "docs/decisions/AD-0011-identity-and-login.md",
         "docs/architecture/10-cloud.md",
-        "docs/experience/android.md"
+        "docs/experience/android.md",
+        "docs/contracts/reuse-map.md"
       ],
       "tasks": [
+        "AF-CTR-04",
         "AF-CLD-02",
         "AF-AND-01"
       ],
-      "verification": "phone pairing closed loop; emulator QR test; physical phone AR-08"
+      "verification": "mobile native authorization closed loop on the center; phone pairing closed loop; emulator Custom Tab and QR tests; physical phone AR-08"
     },
     {
       "id": "R-AUTH-003",
@@ -1702,7 +1704,7 @@
         "AF-WEB-03",
         "AF-PROD-01"
       ],
-      "verification": "a disabled surface answers STATE/not_activated without waking the container; dark deploy without flagship bindings; activation steps reviewed"
+      "verification": "a disabled surface is answered without waking the container (STATE/not_activated for the method surfaces, the Worker's plain-text 404 for the page surfaces); dark deploy without flagship bindings; activation steps reviewed"
     },
     {
       "id": "R-PERF-001",
@@ -2018,6 +2020,7 @@
       "tasks": [
         "AF-CTR-02",
         "AF-CTR-03",
+        "AF-CTR-04",
         "AF-CTR-05",
         "AF-CTR-07",
         "AF-ID-02",

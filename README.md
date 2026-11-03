@@ -18,6 +18,7 @@ python -m unittest discover -s tests -v
 
 `tools/check_design.py` verifies:
 - the protos compile and follow the Contracts conventions (envelopes, `json_name`, explicit presence, method annotations, error codes against [errors.md](docs/contracts/errors.md));
+- every row of the error-catalogue table is read, and a row whose effect can be `UNKNOWN` fails when a clause of its retry advice (split at `;`) names `AFTER_TIME` without naming `DID_NOT_HAPPEN` or `HAPPENED`, or names `UNKNOWN` (a word-level check of the Contracts rule `arcError`: it cannot tell which effect such a clause pairs `AFTER_TIME` with);
 - the generated [API catalogue](docs/contracts/api-catalogue.md) and [state-machine pages](docs/state-machines/README.md) are current (`--write` regenerates them);
 - state machines match their proto enums and are reachable;
 - both SQL schemas load in SQLite;

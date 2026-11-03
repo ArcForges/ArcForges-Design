@@ -214,6 +214,49 @@ def error_catalogue() -> set[str]:
     return codes
 
 
+CATALOGUE_HEADER = "| Category / code | Meaning | Retry advice | Effect | Details |"
+
+
+def check_error_pairs(rep: Report) -> None:
+    """A catalogue row whose effect can be UNKNOWN advises AFTER_TIME only in a clause that names a known effect.
+
+    The Contracts rule `arcError` rejects an ArcError with effect UNKNOWN and retry AFTER_TIME (errors.md, "UNKNOWN never pairs
+    with AFTER_TIME"). Every row of the catalogue table is read (a row that cannot be read is an error, never skipped); the retry
+    cell is read clause by clause (split at ';'): a clause that names AFTER_TIME must name DID_NOT_HAPPEN or HAPPENED and must not
+    name UNKNOWN. Names are matched as words, with or without backticks; AFTER_TIME and UNKNOWN in any case (AFTER_TIME also with a
+    space), the known effects only as the enum names.
+    """
+    lines = read(ERRORS_MD).split("\n")
+    if lines.count(CATALOGUE_HEADER) != 1:
+        rep.error("errors.md: the error catalogue table header is missing or repeated")
+        return
+    start = lines.index(CATALOGUE_HEADER) + 2
+    checked = set()
+    for line in lines[start:]:
+        if not line.startswith("|"):
+            break
+        m = re.match(r"^\|\s*`([A-Z]+/[a-z_]+)`", line)
+        if not m:
+            rep.error(f"errors.md: a catalogue row does not start with a `CATEGORY/code` cell: {line[:60]!r}")
+            continue
+        checked.add(m.group(1))
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) != 5:
+            rep.error(f"errors.md: {m.group(1)} has {len(cells)} cells, expected 5")
+            continue
+        retry, effect = cells[2], cells[3]
+        if not re.search(r"\bUNKNOWN\b", effect, re.I):
+            continue
+        for clause in retry.split(";"):
+            known = re.search(r"\b(DID_NOT_HAPPEN|HAPPENED)\b", clause)
+            if re.search(r"\bAFTER[ _]TIME\b", clause, re.I) and (re.search(r"\bUNKNOWN\b", clause, re.I) or not known):
+                rep.error(f"errors.md: {m.group(1)} advises AFTER_TIME in a clause that does not name a known effect, "
+                          "while its effect can be UNKNOWN (Contracts rule arcError)")
+    missed = error_catalogue() - checked
+    if missed:
+        rep.error(f"errors.md: catalogue codes outside the catalogue table were not checked: {sorted(missed)}")
+
+
 def check_protos(rep: Report, model: ProtoModel, files: list[Path]) -> None:
     sha = hashlib.sha256(read(FOUNDATION).encode("utf-8")).hexdigest()
     if sha != FOUNDATION_SHA256:
@@ -636,6 +679,7 @@ def main(argv: list[str]) -> int:
         elif not path.exists() or read(path) != content:
             rep.error(f"{path.relative_to(ROOT).as_posix()} is out of date (run --write)")
     check_protos(rep, model, files)
+    check_error_pairs(rep)
     run_protoc(rep, files, args.require_protoc)
     if args.compile:
         compile_csharp(rep, files)
