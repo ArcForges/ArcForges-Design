@@ -1119,7 +1119,7 @@
           ],
           "to": "COMPLETED",
           "on": "NodeEnrollmentService.CompleteNodeSignIn with the correct code, verifier and node key proof",
-          "guard": "the code is compared first, in constant time; the approval has not lapsed and Enroll admits the node",
+          "guard": "the code is compared first, in constant time; the one-use code has not expired (a correct code presented after its lifetime is STATE/expired, consumes nothing and leaves the flow APPROVED); the approval has not lapsed and Enroll admits the node",
           "effect": "installation registered (Enroll); node credentials issued"
         },
         {
@@ -1143,14 +1143,14 @@
             "PENDING"
           ],
           "to": "EXPIRED",
-          "on": "10 minutes elapsed; or a newer BeginNodeSignIn of the same node ID and the same node key"
+          "on": "10 minutes elapsed (derived when the row is read, not written); or a newer BeginNodeSignIn of the same node ID and the same node key"
         },
         {
           "from": [
             "APPROVED"
           ],
           "to": "EXPIRED",
-          "on": "10 minutes elapsed; or CompleteNodeSignIn with the correct code, verifier and proof finds the approval lapsed (the approving session revoked by the account, with its device or by an operator, an epoch of it moved, or the account not Active; a sign-out or an expiry of that session does not lapse it)",
+          "on": "10 minutes elapsed (derived when the row is read, not written); or CompleteNodeSignIn with the correct code, verifier and proof finds the approval lapsed (the approving session revoked by the account, with its device or by an operator, an epoch of it moved, or the account not Active; a sign-out or an expiry of that session does not lapse it)",
           "effect": "nothing of the enrollment remains; the reply is STATE/expired"
         }
       ]
@@ -1179,7 +1179,7 @@
           ],
           "to": "APPROVED",
           "on": "NodeEnrollmentService.ApproveDeviceCode approve",
-          "guard": "this account looked the code up (LookupDeviceCode) within the last 10 minutes, else STATE/invalid_state not_reviewed; a proved step-up of class fleet.approveDeviceCode bound to the normalized user code; the node cap admits one more node, else RESOURCE/quota_exceeded max_nodes_per_account; an absent approve is refused (approve: required, a center rule)",
+          "guard": "this account looked the code up (LookupDeviceCode) within the last 10 minutes, else STATE/invalid_state not_reviewed; a proved step-up of class fleet.approveDeviceCode bound to the normalized user code; the node cap admits one more node, else RESOURCE/quota_exceeded max_nodes_per_account; an absent approve is refused (approve: required, a center rule); on the /activate page the typed last group of the node key's fingerprint matches, checked before any step-up evidence is consumed (else VALIDATION/invalid_argument fingerprint_tail: mismatch)",
           "effect": "the approving session and its epochs stored"
         },
         {
@@ -1203,7 +1203,7 @@
           ],
           "to": "COMPLETED",
           "on": "PollDeviceAuthorization with the device code and a valid node key proof delivered credentials",
-          "guard": "the approval has not lapsed and Enroll admits the node",
+          "guard": "the poll is not early (a poll sooner than its interval less 500 ms is answered SLOW_DOWN and delivers nothing); the approval has not lapsed and Enroll admits the node",
           "effect": "installation registered (Enroll); node credentials issued. A later poll with the device code and a valid proof is a reuse: the authorization stays COMPLETED, reused_at is set once, the delivered credential family is revoked, and the reply is COMPLETED without credentials"
         },
         {

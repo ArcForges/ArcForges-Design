@@ -515,8 +515,8 @@ stateDiagram-v2
   APPROVED --> COMPLETED : NodeEnrollmentService.CompleteNodeSignIn with the correct co
   APPROVED --> REVOKED : NodeEnrollmentService.CompleteNodeSignIn with the correct co
   COMPLETED --> REVOKED : NodeEnrollmentService.CompleteNodeSignIn with the correct co
-  PENDING --> EXPIRED : 10 minutes elapsed
-  APPROVED --> EXPIRED : 10 minutes elapsed
+  PENDING --> EXPIRED : 10 minutes elapsed (derived when the row is read, not writte
+  APPROVED --> EXPIRED : 10 minutes elapsed (derived when the row is read, not writte
   DENIED --> [*]
   EXPIRED --> [*]
   REVOKED --> [*]
@@ -528,11 +528,11 @@ stateDiagram-v2
 | APPROVED | APPROVED | NodeEnrollmentService.ApproveNodeSignIn approve again by the approving account, before the one-use code is redeemed | as for the first approval | a new one-use code replaces the unredeemed one |
 | PENDING | DENIED | NodeEnrollmentService.ApproveNodeSignIn deny | this account reviewed the flow within the last 10 minutes; no step-up | the reply is the redirect to the stored loopback URI with error=access_denied and state |
 | APPROVED | DENIED | NodeEnrollmentService.ApproveNodeSignIn deny by the approving account, before the one-use code is redeemed; or the approving account's IdentityService.RevokeAllSessions or RemoveAuthIdentity |  | the unredeemed code is void |
-| APPROVED | COMPLETED | NodeEnrollmentService.CompleteNodeSignIn with the correct code, verifier and node key proof | the code is compared first, in constant time; the approval has not lapsed and Enroll admits the node | installation registered (Enroll); node credentials issued |
+| APPROVED | COMPLETED | NodeEnrollmentService.CompleteNodeSignIn with the correct code, verifier and node key proof | the code is compared first, in constant time; the one-use code has not expired (a correct code presented after its lifetime is STATE/expired, consumes nothing and leaves the flow APPROVED); the approval has not lapsed and Enroll admits the node | installation registered (Enroll); node credentials issued |
 | APPROVED | REVOKED | NodeEnrollmentService.CompleteNodeSignIn with the correct code and a wrong verifier or node key proof |  | the code is redeemed; the reply is AUTHENTICATION/unauthenticated |
 | COMPLETED | REVOKED | NodeEnrollmentService.CompleteNodeSignIn with the correct code presented again (reuse) |  | the credential family the flow delivered is revoked; the reply is CONFLICT/code_reused (also for any later presentation) |
-| PENDING | EXPIRED | 10 minutes elapsed; or a newer BeginNodeSignIn of the same node ID and the same node key |  |  |
-| APPROVED | EXPIRED | 10 minutes elapsed; or CompleteNodeSignIn with the correct code, verifier and proof finds the approval lapsed (the approving session revoked by the account, with its device or by an operator, an epoch of it moved, or the account not Active; a sign-out or an expiry of that session does not lapse it) |  | nothing of the enrollment remains; the reply is STATE/expired |
+| PENDING | EXPIRED | 10 minutes elapsed (derived when the row is read, not written); or a newer BeginNodeSignIn of the same node ID and the same node key |  |  |
+| APPROVED | EXPIRED | 10 minutes elapsed (derived when the row is read, not written); or CompleteNodeSignIn with the correct code, verifier and proof finds the approval lapsed (the approving session revoked by the account, with its device or by an operator, an epoch of it moved, or the account not Active; a sign-out or an expiry of that session does not lapse it) |  | nothing of the enrollment remains; the reply is STATE/expired |
 
 <a id="sm-device-auth"></a>
 
@@ -558,10 +558,10 @@ stateDiagram-v2
 
 | From | To | Trigger | Guard | Effect |
 |---|---|---|---|---|
-| PENDING | APPROVED | NodeEnrollmentService.ApproveDeviceCode approve | this account looked the code up (LookupDeviceCode) within the last 10 minutes, else STATE/invalid_state not_reviewed; a proved step-up of class fleet.approveDeviceCode bound to the normalized user code; the node cap admits one more node, else RESOURCE/quota_exceeded max_nodes_per_account; an absent approve is refused (approve: required, a center rule) | the approving session and its epochs stored |
+| PENDING | APPROVED | NodeEnrollmentService.ApproveDeviceCode approve | this account looked the code up (LookupDeviceCode) within the last 10 minutes, else STATE/invalid_state not_reviewed; a proved step-up of class fleet.approveDeviceCode bound to the normalized user code; the node cap admits one more node, else RESOURCE/quota_exceeded max_nodes_per_account; an absent approve is refused (approve: required, a center rule); on the /activate page the typed last group of the node key's fingerprint matches, checked before any step-up evidence is consumed (else VALIDATION/invalid_argument fingerprint_tail: mismatch) | the approving session and its epochs stored |
 | PENDING | DENIED | NodeEnrollmentService.ApproveDeviceCode deny | this account looked the code up within the last 10 minutes; no step-up |  |
 | APPROVED | DENIED | NodeEnrollmentService.ApproveDeviceCode deny by the approving account, before the credentials are delivered; or the approving account's IdentityService.RevokeAllSessions or RemoveAuthIdentity |  |  |
-| APPROVED | COMPLETED | PollDeviceAuthorization with the device code and a valid node key proof delivered credentials | the approval has not lapsed and Enroll admits the node | installation registered (Enroll); node credentials issued. A later poll with the device code and a valid proof is a reuse: the authorization stays COMPLETED, reused_at is set once, the delivered credential family is revoked, and the reply is COMPLETED without credentials |
+| APPROVED | COMPLETED | PollDeviceAuthorization with the device code and a valid node key proof delivered credentials | the poll is not early (a poll sooner than its interval less 500 ms is answered SLOW_DOWN and delivers nothing); the approval has not lapsed and Enroll admits the node | installation registered (Enroll); node credentials issued. A later poll with the device code and a valid proof is a reuse: the authorization stays COMPLETED, reused_at is set once, the delivered credential family is revoked, and the reply is COMPLETED without credentials |
 | PENDING | EXPIRED | 600 s elapsed (a poll records it); or a newer StartDeviceAuthorization of the same node ID and the same node key |  |  |
 | APPROVED | EXPIRED | 600 s elapsed (a poll records it); or the delivering poll finds the approval lapsed (the approving session revoked by the account, with its device or by an operator, an epoch of it moved, or the account not Active; a sign-out or an expiry of that session does not lapse it) |  | nothing was issued |
 
