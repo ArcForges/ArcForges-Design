@@ -116,6 +116,8 @@ If the connection fails with not-found or refused, the client starts the node de
 
 The client waits for readiness up to 5 s (CLI) or 15 s (Desktop, MCP adapter), then performs the **client hello** (`NodeService.Hello`): client kind, version, contract version, process ID and, for the MCP adapter and hooks, the agent process hints.
 
+**Feature tokens.** The node lists the optional features it serves in `NodeInfo.features`, and clients feature-detect with them ([contracts](../contracts/README.md) §7). Delivered: `account.sign_in.v1` (AF-CTR-04 part N2, ArcForges #69): the node serves the sign-in methods `AccountService.BeginSignIn`, `GetSignInFlow` and `CancelSignIn`.
+
 ## 4. Configuration
 
 | Source | Content | Owner |

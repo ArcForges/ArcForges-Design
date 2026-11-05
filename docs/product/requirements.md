@@ -217,7 +217,7 @@ Added 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md).
 
 | ID | Requirement | Acceptance |
 |---|---|---|
-| R-AUTH-001 | Desktop and CLI sign in through the system browser with PKCE and a loopback redirect. Headless contexts use the device authorization grant (code plus URL plus QR). Token copy-paste is never the normal path. | Closed-loop tests against the cloud identity service with a scripted browser fake. |
+| R-AUTH-001 | Desktop and CLI sign in through the system browser with PKCE and a loopback redirect. Headless contexts use the device authorization grant (code plus URL; the CLI prints no terminal QR, amended 2026-11-05, AF-CTR-04 decision Q19). Token copy-paste is never the normal path. | Closed-loop tests against the cloud identity service with a scripted browser fake. |
 | R-AUTH-002 | Android signs in through a Custom Tab with PKCE on the center's own authorization page, returning through the verified app link in release builds (debug builds against a local stack use a private-use scheme; the center's mobile native authorization, AF-CTR-04), or by scanning a QR shown by a signed-in desktop node and confirming on that desktop. | Closed-loop tests. |
 | R-AUTH-003 | Device and node credentials are stored in the OS secret store (Windows Credential Manager, Android Keystore). Linux uses a 0600 file in the node data root when no secret service exists, and reports that weaker protection. | Tests. |
 | R-AUTH-004 | Credentials are scoped (node uplink, user session, push) and revocable per device and session from web, desktop and mobile. | Tests. |

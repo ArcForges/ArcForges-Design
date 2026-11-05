@@ -86,6 +86,7 @@ Default permission matrix (policy `permissions`, editable only by `HUMAN`).
 | `process.adopt` | Adopt or terminate a process: adopt | A | D | D | |
 | `process.terminate` | Adopt or terminate a process: terminate (also cancelling an `ADOPTED` task) | A | P | P | |
 | `integration.change` | Integrations, pairing, account sign-in | A | D | D | yes |
+| `account.sign_in.read` | Read the node's sign-in flow (*annotation*: `AccountService.GetSignInFlow`; added 2026-11-05, AF-CTR-04, ArcForges #69) | A | A | D | yes |
 | `node.stop` | Stop the node | A | A | D | |
 | `node.update` | Apply an update | A | A | D | |
 | `node.rollback` | Roll back an update | A | D | D | yes |
@@ -126,8 +127,8 @@ Every HUMAN-only row stays a GUARDRAIL against same-user code that presents itse
 
 | Key / secret | Holder | Protection | Rotation |
 |---|---|---|---|
-| Node key (ECDSA P-256) | Each node | Windows CNG non-exportable user key; Linux 0600 file | On demand (re-pair); on compromise, revoke |
-| Node credential (refresh token, scope `node`) | Each node | OS secret store (AD-0011 §4) | 90-day sliding; revocable |
+| Node key (ECDSA P-256) | Each node | Windows CNG non-exportable user key; Linux owner-only (0600) PKCS#8 file; under `--test-mode` a file-backed key on both systems (ArcForges #63) | A new key for every sign-in after the credential ended: the key is deleted when its credential ends (sign-out, revocation, expiry) and on a center change, and the center refuses a key an installation holds or held (AF-CTR-04); on compromise, revoke the node's device |
+| Node credential (refresh token, scope `node`) | Each node | OS secret store (AD-0011 §4), bound to the node ID and the full center URL, and used only while that center is the configured one (ArcForges #63) | Strict rotation at every refresh (the node refreshes at two thirds of the access lifetime, 60 minutes by default); the refresh token's idle limit is 90 days, within the family's absolute end of 365 days by default, which a refresh never extends (center policy keys, Cloud #130); revocable (sign-out, the device's revocation) |
 | Node data key (AES-256; seals task secrets, [04](04-execution.md) §2) | Each node | OS secret store (AD-0011 §4) | A new version when the current key is missing or the backend changed; values sealed under a lost key are unavailable (`STATE/secrets_unavailable`, L-26) |
 | Relay token HMAC key | Cloud (Worker + container secrets) | Platform secrets | 90 days, two active `kid`s |
 | Command signing key (ECDSA P-256, ES256) | Cloud container | Platform secret | Yearly; public key distributed by enrollment and releases |

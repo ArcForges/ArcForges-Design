@@ -11,7 +11,7 @@ Used by the CLI, the Desktop and the MCP adapter.
 | Component | Responsibility |
 |---|---|
 | `NodeEndpointResolver` | Endpoint descriptor, defaults and auto-start ([02](02-node-service.md) §3) |
-| `NodeChannel` | LocalRpc client channel. `Hello` handshake with client kind, version and process hints. Compatibility check: a contract major mismatch → `INCOMPATIBLE` with guidance. |
+| `NodeChannel` | LocalRpc client channel. `Hello` handshake with client kind, version and process hints. Compatibility check: a contract major mismatch → `INCOMPATIBLE` with guidance. Optional features are detected by the tokens of `NodeInfo.features`, for example `account.sign_in.v1` for the node's sign-in methods ([02](02-node-service.md) §3). |
 | `NodeStreamCache` | Subscribes with `NodeEventService.Subscribe(topics, cursor)`. Applies the snapshot then events by `event_seq`. Detects gaps (sequence jump or generation change) → resubscribe without cursor (reset). Drops duplicates (seq ≤ last applied). Exposes observable collections per entity type. **Holds no authoritative state; every mutation goes through RPCs** (R-API-003). |
 | `CommandIds` | UUIDv7 command IDs per user action. The same ID is reused on retry, so retries are idempotent (R-EXE-016). |
 | `ConnectionState` | `CONNECTING`, `CONNECTED`, `RECONNECTING` (backoff 0.5 s → 10 s, jittered), `NODE_STOPPED`, `INCOMPATIBLE`, `ACCESS_DENIED` |
@@ -65,7 +65,7 @@ See [08](08-ai-integration.md) §2 and [experience/mcp.md](../experience/mcp.md)
 
 | Service | Implementation |
 |---|---|
-| `AuthService` | Custom Tabs with PKCE and a verified app link (`https://arcforges.com/app/callback`); QR pairing ([10](10-cloud.md) §3.3); refresh-token storage in the Keystore (reused `ArcForges.Mobile.Security`) |
+| `AuthService` | Custom Tabs with PKCE under the closed document `MobileNativeAuth` v1 (Contracts #127; [android](../experience/android.md) A-01): the authorization URL derived from the configured center and required byte-equal, `state` and `iss` checked on the callback without a network call, the verified App Link (`https://arcforges.com/app/callback` for the official center) in release builds and a private-use scheme in debug builds; QR pairing ([10](10-cloud.md) §3.3); refresh-token storage in the Keystore (reused `ArcForges.Mobile.Security`) |
 | `FleetClient` | gRPC-Web `FleetService` and `NodeEnrollmentService` |
 | `ViewerSocket` | `ClientWebSocket` to the relay, decoding `ViewerFrame`s. Foreground only. Reconnect backoff 1 s → 30 s. Resume by cursors. |
 | `PushService` | Firebase Messaging binding (existing design). Data messages → local notifications with deep links; token registration through the reused `NotificationService.RegisterPush` |

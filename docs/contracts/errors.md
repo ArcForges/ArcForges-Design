@@ -13,7 +13,8 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 - `INTERNAL/internal`;
 - `RESOURCE/overloaded`;
 - for local node methods: `STATE/node_stopping`;
-- for cloud methods: `AUTHENTICATION/unauthenticated`, `RESOURCE/rate_limited`, and `STATE/not_activated` while the method's surface is not activated in production ([10](../architecture/10-cloud.md) §8).
+- for cloud methods: `AUTHENTICATION/unauthenticated`, `RESOURCE/rate_limited`, and `STATE/not_activated` while the method's surface is not activated in production ([10](../architecture/10-cloud.md) §8);
+- for a mutation deduplicated under a command receipt: `CONFLICT/command_id_reused` ([README](README.md) §6). The Go center answers it for every method it serves under a receipt, among them `ApproveDeviceCode`, `ReportNodeInfo` and `SignOutNode` (AF-CTR-04, Cloud #130 and #134), whose annotations do not name it.
 
 **Effect rule.** A mutation that fails before any durable change returns `DID_NOT_HAPPEN`. When the outcome is uncertain (for example a peer or cloud call timed out after sending), the method returns `UNKNOWN` with `retry.mode = RECONCILE` and the read operation to call (or `SAME_COMMAND`, or `NEVER`, where no read can be made; see below). A retry of a command under a receipt with the same `command_id` is safe (AD-0004).
 
@@ -35,7 +36,7 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 | `VALIDATION/invalid_policy` | The policy document has ERROR issues | `NEVER` | `DID_NOT_HAPPEN` | Issues in the method value |
 | `VALIDATION/invalid_cursor` | A page or stream cursor is malformed or from another generation | `NEVER` (restart listing) | `DID_NOT_HAPPEN` | — |
 | `VALIDATION/incompatible_version` | Contract or protocol major mismatch | `NEVER` | `DID_NOT_HAPPEN` | `upgrade` (`VersionFailure`) |
-| `VALIDATION/code_invalid` | Unknown device user code | `NEVER` | `DID_NOT_HAPPEN` | Remaining attempts in `limit` |
+| `VALIDATION/code_invalid` | A device user code that names no authorization the caller may act on: an unknown code, a code another account decided, or the sixth and later lookup of a live code (the authorization stays `PENDING`) | `NEVER` | `DID_NOT_HAPPEN` | `limit`: for an unknown or decided code `limit_name` `device_entry_account`, `maximum` the account budget's cap and `available` the account's entries left; for a spent live code `limit_name` `device_code_lookups`, `maximum` 5 and `available` 0 |
 | `VALIDATION/purchase_invalid` | Google Play rejected the purchase token | `NEVER` | `DID_NOT_HAPPEN` | — |
 | `AUTHENTICATION/unauthenticated` | Missing or invalid credential | `NEVER` (sign in again) | `DID_NOT_HAPPEN` | — |
 | `AUTHENTICATION/token_expired` | Access, relay or refresh token expired. Answered by a refresh call itself (`RefreshSession`, later `RefreshNodeSession`), it means the refresh credential expired: refreshing cannot succeed, so the client signs in again (a node re-enrolls) | `SAME_COMMAND` after refresh | `DID_NOT_HAPPEN` | — |
@@ -50,7 +51,7 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 | `ENTITLEMENT/feature_not_entitled` | The plan lacks the cloud feature (`remote.*`, `push`); local and LAN features are never gated | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = feature |
 | `ENTITLEMENT/plan_limit_reached` | A per-plan count (nodes, viewers) is exhausted | `NEVER` | `DID_NOT_HAPPEN` | `limit` |
 | `CONFLICT/revision_conflict` | `meta.expected_rev` differs from the current revision | `NEVER` (re-read, merge) | `DID_NOT_HAPPEN` | `revision` |
-| `CONFLICT/already_exists` | The named object already exists | `NEVER` | `DID_NOT_HAPPEN` | `state.resource`; or, for a node key or node ID held by an installation (`BeginNodeSignIn`, `StartDeviceAuthorization`, `CompleteNodeSignIn`, `PollDeviceAuthorization`), `state.state` = `node_key` (key registered) or `node` (node ID live under another account) with `state.reason` = `already_registered` for the key, and no resource |
+| `CONFLICT/already_exists` | The named object already exists | `NEVER` | `DID_NOT_HAPPEN` | `state.resource`; or, without a resource: for a node key an installation holds (`BeginNodeSignIn`, `StartDeviceAuthorization`, `CompleteNodeSignIn`, `PollDeviceAuthorization`) `state.state` = `node_key` and `state.reason` = `already_registered`; for a node ID live under another account (`CompleteNodeSignIn`, `PollDeviceAuthorization` only) `state.state` = `node` and `state.reason` = `already_exists` |
 | `CONFLICT/command_id_reused` | The same `command_id` arrived with a different payload digest | `NEVER` | `DID_NOT_HAPPEN` | — |
 | `CONFLICT/digest_mismatch` | A plan digest differs from the presented one | `NEVER` (re-plan) | `DID_NOT_HAPPEN` | — |
 | `CONFLICT/code_reused` | A sign-in code was presented twice; the flow is revoked | `NEVER` | `DID_NOT_HAPPEN` | — |
@@ -82,7 +83,7 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 | `RESOURCE/enforcement_unavailable` | The task requires enforcement the node cannot provide | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = capability |
 | `RESOURCE/rate_limited` | A rate limit applies | `AFTER_TIME` (`retry_at`) | `DID_NOT_HAPPEN` | `limit` |
 | `RESOURCE/too_large` | A payload, manifest, plan or transfer exceeds its bound | `NEVER` | `DID_NOT_HAPPEN` | `limit` |
-| `RESOURCE/kill_switch_active` | A cloud kill switch disables the feature | `AFTER_TIME` | `DID_NOT_HAPPEN` | `state.reason` = switch |
+| `RESOURCE/kill_switch_active` | A cloud kill switch disables the feature. No kill switch exists yet: the Go center does not produce this code (AF-CTR-04; `BeginNodeSignIn` and `StartDeviceAuthorization` annotate it) | `AFTER_TIME` | `DID_NOT_HAPPEN` | `state.reason` = switch |
 | `RESOURCE/overloaded` | Temporary overload (the store unreachable, timed out or contended before `COMMIT`; the node command queue full), and the answer to a duplicate delivery that cannot be answered yet: a `CompletePasskeyRegistration` whose first execution still holds the flow attempt, or a receipt lookup that failed after the first delivery committed. The retry replays the stored receipt (`effect` describes this delivery, not the command; see above) | `AFTER_TIME` with jitter | `DID_NOT_HAPPEN` | — |
 | `EXECUTION/adopt_not_permitted` | The OS refused to place the process under management | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` |
 | `EXECUTION/operation_failed` | A node job or OS operation failed | Depends on `effect` | `HAPPENED` or `UNKNOWN` | `state.reason` |
@@ -108,5 +109,12 @@ The C# Cloud host's ingress pipeline (delivered; Cloud `faaffea`, `src/ArcForges
 | `dependency.unavailable` | 14 `UNAVAILABLE` | `EXECUTION` |
 
 The `auth.token_expired` and `auth.credential_revoked` rows were added on 2026-10-29 with AF-CTR-03 part A1a (Cloud #118 at `d4e1110`); only the Go center produces them, while the C# host answers every credential failure `auth.unauthenticated`. On every call of a method that requires a session, the center verifies the native bearer or browser cookie against its store before any handler runs; an anonymous method (for example `RefreshSession`) reads no credential. A native bearer that is known but expired or revoked gets its own code; a browser cookie session that is expired, idle past its limit or revoked is answered like an unknown credential (`auth.unauthenticated`), because a browser signs in again in either case.
+
+**Built refusals the annotations do not name yet** (added 2026-11-05, AF-CTR-04; for the Contracts follow-up window, not contract facts until it takes them):
+- `RESOURCE/quota_exceeded` (`limit_name` `max_nodes_per_account`) on `CompleteNodeSignIn` and `PollDeviceAuthorization`: Enroll enforces the node cap there (Cloud #132, #134), and their annotations do not name the code.
+- `STATE/invalid_state` (`state.state` `signed_out`, `state.reason` `credential_store_unavailable`) on the node's `AccountService.SignOut` while its secret store or link file cannot be read; both sign-out forms then change nothing (ArcForges #69). `SignOut` annotates `STATE/not_signed_in` only.
+- `ApproveNodeSignIn` and `ApproveDeviceCode` refuse an absent `approve` (`VALIDATION/invalid_argument`, `approve: required`); the contract has no `validate:` rule on the field (a center rule).
+- `NodeEnrollmentServiceApproveNodeSignInValue.redirect_url` of a denial is `<redirect_uri>?error=access_denied&state=<state>`; the field comment says "with code and state".
+- `CompleteNodeSignIn`'s `state:` annotation names `APPROVED -> COMPLETED | REVOKED`; the center also moves `COMPLETED -> REVOKED` on a reuse, as the `NodeSignInState.REVOKED` comment says ([state machines](../state-machines/README.md) SM-SIGN-IN).
 
 The Worker's own domain replies (`not_activated`, `rate_limited`; Cloud `docs/cloud-ingress.md`) carry `ArcError.correlation_id` but no `ResponseMeta`. A generated validator that checks such a reply as a response rejects it (the validators require `Meta`), although the `ArcError` is valid; a client reads the `ArcError` as the refusal. This is a known exception until the Contracts follow-up window before AF-PROD-01 (AF-CTR-05) decides it.

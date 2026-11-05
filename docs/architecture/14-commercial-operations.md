@@ -94,9 +94,9 @@ The product sends no marketing e-mail. Transactional e-mail goes through the Ide
 | Surface | Limit (default; configuration) | Anomaly flag |
 |---|---|---|
 | Sign-in (Identity, AF-CTR-03) | Rate limits per IP and per account | Repeated failures from one IP or against one account |
-| Node sign-in flows and device codes | 10 flows per account per hour; 5 code-entry attempts per user code | More than 3 denied flows in an hour |
+| Node sign-in flows and device codes | Built by AF-CTR-04 (Cloud #132 and #134): Begin and Start 10 per 10 minutes per client network and 10 per 10 minutes per node ID; Completes that name no flow or match no code 30 per 10 minutes per network; decisions 20 per account per hour; device codes 5 lookups per live code, plus the account's entry budget (5 per 15 minutes) and the network's (20 per 15 minutes); polls that name nothing or fail their proof 120 per 10 minutes per network, proved polls 6 per 10 s per authorization. Every count and window is a policy key except the 5 lookups and the per-authorization poll bucket | More than 3 denied flows in an hour |
 | Phone pairings | 10 per account per hour; single-use secrets | Repeated wrong secrets |
-| Node enrollment | Plan node limit; 20 enrollments per account per day | Enrollment churn above 5 revoke-and-re-enroll cycles per day |
+| Node enrollment | The center's node cap `maxNodesPerAccount` (default 100, bounds 1 to 1000; signed-out nodes count), refused with `RESOURCE/quota_exceeded` (`max_nodes_per_account`), never a plan limit (AF-CTR-04, Cloud #130); 20 enrollments per account per day (target, not built) | Enrollment churn above 5 revoke-and-re-enroll cycles per day |
 | Relay connections | Token-carried limits ([10](10-cloud.md) §5) | Sustained frames above 80% of limit for 1 h |
 | Remote commands | 120 per hour (Pro) | More than 20 high-risk commands per hour |
 | Push | 50 per account per day | — |

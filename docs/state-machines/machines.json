@@ -1073,7 +1073,6 @@
         "PENDING"
       ],
       "terminal": [
-        "COMPLETED",
         "DENIED",
         "EXPIRED",
         "REVOKED"
@@ -1085,21 +1084,33 @@
           ],
           "to": "APPROVED",
           "on": "NodeEnrollmentService.ApproveNodeSignIn approve",
-          "effect": "one-use code issued; browser redirected to the loopback URI"
+          "guard": "this account reviewed the flow (GetNodeSignInFlow) within the last 10 minutes, else STATE/invalid_state not_reviewed; a proved step-up of class fleet.approveNodeSignIn bound to the flow ID, consumed in the approval's transaction; the node cap admits one more node, else RESOURCE/quota_exceeded max_nodes_per_account; an absent approve is refused (approve: required, a center rule)",
+          "effect": "one-use code issued (32 random bytes, stored as a digest, valid 2 minutes by default and never past the flow); the approving session and its epochs stored; the reply is the redirect to the stored loopback URI with code and state"
+        },
+        {
+          "from": [
+            "APPROVED"
+          ],
+          "to": "APPROVED",
+          "on": "NodeEnrollmentService.ApproveNodeSignIn approve again by the approving account, before the one-use code is redeemed",
+          "guard": "as for the first approval",
+          "effect": "a new one-use code replaces the unredeemed one"
         },
         {
           "from": [
             "PENDING"
           ],
           "to": "DENIED",
-          "on": "NodeEnrollmentService.ApproveNodeSignIn deny"
+          "on": "NodeEnrollmentService.ApproveNodeSignIn deny",
+          "guard": "this account reviewed the flow within the last 10 minutes; no step-up",
+          "effect": "the reply is the redirect to the stored loopback URI with error=access_denied and state"
         },
         {
           "from": [
             "APPROVED"
           ],
           "to": "DENIED",
-          "on": "NodeEnrollmentService.ApproveNodeSignIn deny by the approving account, before the one-use code is redeemed",
+          "on": "NodeEnrollmentService.ApproveNodeSignIn deny by the approving account, before the one-use code is redeemed; or the approving account's IdentityService.RevokeAllSessions or RemoveAuthIdentity",
           "effect": "the unredeemed code is void"
         },
         {
@@ -1107,23 +1118,40 @@
             "APPROVED"
           ],
           "to": "COMPLETED",
-          "on": "NodeEnrollmentService.CompleteNodeSignIn with a valid code and verifier",
-          "effect": "installation registered; credentials issued"
+          "on": "NodeEnrollmentService.CompleteNodeSignIn with the correct code, verifier and node key proof",
+          "guard": "the code is compared first, in constant time; the approval has not lapsed and Enroll admits the node",
+          "effect": "installation registered (Enroll); node credentials issued"
         },
         {
           "from": [
             "APPROVED"
           ],
           "to": "REVOKED",
-          "on": "a correct code presented again (reuse), or a correct code with a wrong verifier or node key proof"
+          "on": "NodeEnrollmentService.CompleteNodeSignIn with the correct code and a wrong verifier or node key proof",
+          "effect": "the code is redeemed; the reply is AUTHENTICATION/unauthenticated"
         },
         {
           "from": [
-            "PENDING",
+            "COMPLETED"
+          ],
+          "to": "REVOKED",
+          "on": "NodeEnrollmentService.CompleteNodeSignIn with the correct code presented again (reuse)",
+          "effect": "the credential family the flow delivered is revoked; the reply is CONFLICT/code_reused (also for any later presentation)"
+        },
+        {
+          "from": [
+            "PENDING"
+          ],
+          "to": "EXPIRED",
+          "on": "10 minutes elapsed; or a newer BeginNodeSignIn of the same node ID and the same node key"
+        },
+        {
+          "from": [
             "APPROVED"
           ],
           "to": "EXPIRED",
-          "on": "10 minutes elapsed"
+          "on": "10 minutes elapsed; or CompleteNodeSignIn with the correct code, verifier and proof finds the approval lapsed (the approving session revoked by the account, with its device or by an operator, an epoch of it moved, or the account not Active; a sign-out or an expiry of that session does not lapse it)",
+          "effect": "nothing of the enrollment remains; the reply is STATE/expired"
         }
       ]
     },
@@ -1150,36 +1178,48 @@
             "PENDING"
           ],
           "to": "APPROVED",
-          "on": "NodeEnrollmentService.ApproveDeviceCode approve"
+          "on": "NodeEnrollmentService.ApproveDeviceCode approve",
+          "guard": "this account looked the code up (LookupDeviceCode) within the last 10 minutes, else STATE/invalid_state not_reviewed; a proved step-up of class fleet.approveDeviceCode bound to the normalized user code; the node cap admits one more node, else RESOURCE/quota_exceeded max_nodes_per_account; an absent approve is refused (approve: required, a center rule)",
+          "effect": "the approving session and its epochs stored"
         },
         {
           "from": [
             "PENDING"
           ],
           "to": "DENIED",
-          "on": "NodeEnrollmentService.ApproveDeviceCode deny"
+          "on": "NodeEnrollmentService.ApproveDeviceCode deny",
+          "guard": "this account looked the code up within the last 10 minutes; no step-up"
         },
         {
           "from": [
             "APPROVED"
           ],
           "to": "DENIED",
-          "on": "NodeEnrollmentService.ApproveDeviceCode deny by the approving account, before the credentials are delivered"
+          "on": "NodeEnrollmentService.ApproveDeviceCode deny by the approving account, before the credentials are delivered; or the approving account's IdentityService.RevokeAllSessions or RemoveAuthIdentity"
         },
         {
           "from": [
             "APPROVED"
           ],
           "to": "COMPLETED",
-          "on": "PollDeviceAuthorization delivered credentials"
+          "on": "PollDeviceAuthorization with the device code and a valid node key proof delivered credentials",
+          "guard": "the approval has not lapsed and Enroll admits the node",
+          "effect": "installation registered (Enroll); node credentials issued. A later poll with the device code and a valid proof is a reuse: the authorization stays COMPLETED, reused_at is set once, the delivered credential family is revoked, and the reply is COMPLETED without credentials"
         },
         {
           "from": [
-            "PENDING",
+            "PENDING"
+          ],
+          "to": "EXPIRED",
+          "on": "600 s elapsed (a poll records it); or a newer StartDeviceAuthorization of the same node ID and the same node key"
+        },
+        {
+          "from": [
             "APPROVED"
           ],
           "to": "EXPIRED",
-          "on": "600 s elapsed"
+          "on": "600 s elapsed (a poll records it); or the delivering poll finds the approval lapsed (the approving session revoked by the account, with its device or by an operator, an epoch of it moved, or the account not Active; a sign-out or an expiry of that session does not lapse it)",
+          "effect": "nothing was issued"
         }
       ]
     },
