@@ -1026,8 +1026,9 @@ CREATE TABLE routed_call_log (                  -- center-routed calls; remote_c
   log_id INTEGER NOT NULL PRIMARY KEY,
   received_at INTEGER NOT NULL,
   frame_sha256 BLOB NOT NULL CHECK (length(frame_sha256) = 32),  -- the received call frame; names a refused frame without trusting its IDs
-  decision INTEGER NOT NULL CHECK (decision BETWEEN 1 AND 4),
-                                                -- 1 executed, 2 refused by policy, 3 refused at verification, 4 expired before the effect
+  decision INTEGER NOT NULL CHECK (decision BETWEEN 1 AND 5),
+                                                -- 1 executed, 2 refused by policy, 3 refused at verification, 4 expired before the effect,
+                                                -- 5 verified, outcome pending (written at verification, before any effect)
   refusal_step TEXT CHECK (refusal_step IS NULL OR length(refusal_step) BETWEEN 1 AND 40),  -- decision 3: the failed step (closed vocabulary)
   refusal_code TEXT CHECK (refusal_code IS NULL OR length(refusal_code) BETWEEN 3 AND 80),  -- CATEGORY/code only; never a message or details
   call_id BLOB CHECK (call_id IS NULL OR length(call_id) = 16),  -- verified calls only
@@ -1046,7 +1047,7 @@ CREATE TABLE routed_call_log (                  -- center-routed calls; remote_c
                            AND task_id IS NULL AND risk IS NULL AND request_sha256 IS NULL AND request_size IS NULL
                            AND response_sha256 IS NULL AND response_size IS NULL)),
   CHECK ((decision = 3) = (refusal_step IS NOT NULL)),
-  CHECK (decision = 1 OR refusal_code IS NOT NULL),
+  CHECK (decision IN (1, 5) OR refusal_code IS NOT NULL),
   CHECK (decision = 3 OR (signature_kid IS NOT NULL AND method IS NOT NULL AND caller IS NOT NULL
                           AND request_sha256 IS NOT NULL AND request_size IS NOT NULL))
 ) STRICT;
