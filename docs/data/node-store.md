@@ -101,13 +101,27 @@ fallback. The SQL schema and version are unchanged.
 | `guest_grant` | **Retired by [AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md); kept by the expand-only rule; never written.** Formerly: grants for guest attempts, with the host-side proxy task | `grant_id`; unique `request_id`; `state` | Scheduler (host) | 7 days after release |
 | `account_link` | Account link: installation, credential reference, entitlement token, certificates, key sets | singleton | Cloud link | Until sign-out (deleted) |
 | `sign_in_flow`, `phone_pairing` | Flow state without secrets | IDs | Cloud link | 1 day |
-| `remote_command_log` | Every received remote command with its signature key ID and decision | `command_id`; `received_at` | Cloud link | 1 year |
+| `remote_command_log` | Every received remote command with its signature key ID and decision. AF-CTR-05 target: kept for the unserved command kinds only; routed calls use `routed_call_log` | `command_id`; `received_at` | Cloud link | 1 year |
+| `routed_call_log` | AF-CTR-05 target (schema step 2, §2a): every received center-routed call frame, verified or refused, with its decision, digests and sizes, never a payload | `log_id`; `received_at`; `call_id`; `command_id` | Cloud link | 1 year; executed reads 7 days; at most 10,000 verification refusals |
 | `push_outbox` | Push events waiting for the relay | `outbox_id` | Cloud link | 1 h (older events are dropped) |
 | `update_state` | Updater state, rollback protection timestamp, bad versions (SM-UPDATE) | singleton | Updater | Permanent |
 | `integration_plan`, `integration_write` | Integration plans and recorded writes, for exact removal (SM-INTEGRATION) | `plan_id`; `write_id`; `(client, path)` | Integration service | Writes: until removed plus 30 days |
 | `support_bundle` | Local bundles and consent records | `bundle_id` | Support | 30 days |
 
 **Retired guest data** ([AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) §4). The tables `guest_link`, `host_link` and `guest_grant`, the column `attempt.guest_grant_id` and the guest value of `store_meta.node_role` stay in schema v1 because the schema is expand-only ([13](../architecture/13-distribution-updates.md) §9). No node writes them; a future major schema may drop them.
+
+## 2a. Schema step 2 (AF-CTR-05 target)
+
+*Added 2026-11-05 (Plan decisions PN-7 and Q8; not built).* Step 1 is [node-store.sql](node-store.sql) above the blank line before its `schema step 2` line of dashes, unchanged since `4823296` (SHA-256 `8f56a161…a649`); the ArcForges node store ships it verbatim as its migration step 1. Step 2 is the block from that line of dashes to the end of the file, and the node store ships it verbatim as its migration step 2 (part N2). Both steps are expand-only (§1, "Migrations").
+
+- **`task.local_diagnostic`** (Plan decision Q8). `1` marks a diagnostic local submission ([AD-0021](../decisions/AD-0021-central-access-go-center.md) §5 as amended): a local `SubmitTask` from a HUMAN caller, or from a SCRIPT caller of a `--test-mode` node with the test allowance. A routed call never sets it, and every view labels such a task diagnostic.
+- **`routed_call_log`** (Plan decision PN-7). `remote_command_log` does not fit routed calls: its key is a command ID, which reads do not carry and which a forged frame could occupy before the legitimate call arrives, its decisions have no value for a verification refusal, and its result is a `NodeCommandResult`. The routed calls get their own log, and `remote_command_log` stays for the unserved command kinds of `SendNodeCommand`.
+  - **Rows.** One row per received call frame: every call that passed the node's verification ([11](../architecture/11-security-privacy.md) T-11) and every frame refused by it.
+  - **Key.** A surrogate `log_id`. `call_id`, `signature_kid`, `method`, `caller`, `command_id` and the digests are written only for a verified call, so an unverified frame never names or occupies an ID. A refused frame is named by `frame_sha256` and its failed step only.
+  - **Decision.** `1` executed: the TaskService handler ran, and its answer, a success or the handler's own refusal (`refusal_code`), is the signed result. `2` refused by the center-routed policy or the permission matrix, an approval raised included ([11](../architecture/11-security-privacy.md) §1, "Center-routed callers"). `3` refused at verification: `refusal_step` names the step (closed vocabulary, part N1) and `refusal_code` is `AUTHENTICATION/signature_invalid` or `STATE/expired`. `4` expired before the effect: verified, but the re-check of the expiry immediately before the effect failed (`STATE/expired`).
+  - **What it never holds.** No request or response payload, argv, working directory, environment or output, and no refusal message or details: only the refusal's `CATEGORY/code`, digests and sizes (Plan decision PN-6).
+  - **Retention.** Submit, cancel and every refused call: 1 year, like `remote_command_log`. Executed reads: 7 days, because a client that follows output reads often. Refusals at verification keep at most the newest 10,000 rows, so a flood of forged frames cannot grow the store.
+- **What a routed read returns** of a task's specification is decided in [11](../architecture/11-security-privacy.md) §1, "Center-routed callers" (Plan decision PN-8, the privacy policy `remote_command_lines`).
 
 ## 3. Data that is never stored
 

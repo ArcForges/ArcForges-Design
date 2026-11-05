@@ -4,6 +4,8 @@ Page and screen specifications are in [experience/](../experience/README.md). Th
 
 **Amended 2026-10-28 (target; AF-CTR-04, AF-CTR-05) by [AD-0021](../decisions/AD-0021-central-access-go-center.md) §2, §5.** Ordinary client operations go through the configured center to an explicitly selected node; the shared client library's local connection serves node management, sign-in, diagnostics and recovery.
 
+**Amended 2026-11-05 (AF-CTR-05 target, not built; Plan decisions Q1 and PB-2; [AD-0021](../decisions/AD-0021-central-access-go-center.md) §7 as amended).** The CLI's ordinary operations still go through the center, but they pass through the node's local endpoint to get there: the CLI calls the routed fleet methods on its node's local endpoint, and the node forwards each call to the center as a **node-relayed caller**, with its node credential and the local origin it assigned to the CLI ([11](11-security-privacy.md) §1, "Center-routed callers"). The CLI holds no credential of its own. By default the target node admits a relayed call only from itself; cross-node relay is an opt-in a local HUMAN sets on the target, and MCP adapter and hook clients behind the local endpoint reach only their own node until AF-CTR-07. Web and Android call the center with their account sessions and are not relayed.
+
 ## 1. Shared client library (`ArcForges.Client`)
 
 Used by the CLI, the Desktop and the MCP adapter.
