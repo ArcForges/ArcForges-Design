@@ -6,6 +6,7 @@ package arcforges.node.v1;
 
 import "arcforges/foundation/v1/foundation.proto";
 import "arcforges/node/v1/common.proto";
+import "arcforges/node/v1/files.proto";
 import "arcforges/node/v1/policy.proto";
 
 option csharp_namespace = "ArcForges.Contracts.Node.V1";
@@ -127,6 +128,7 @@ message WorkspaceServiceRegisterWorkspaceResponse {
     arcforges.foundation.v1.ArcError error = 3 [json_name = "error"];
   }
   reserved 4 to 9;
+  FileAuditMetadata audit = 10 [json_name = "audit"]; // validate: bounded metadata observations; never workspace file bodies
 }
 message WorkspaceServiceRegisterWorkspaceValue {
   Workspace workspace = 10 [json_name = "workspace"];
@@ -144,6 +146,7 @@ message WorkspaceServiceUnregisterWorkspaceResponse {
     arcforges.foundation.v1.ArcError error = 3 [json_name = "error"];
   }
   reserved 4 to 9;
+  FileAuditMetadata audit = 10 [json_name = "audit"]; // validate: bounded metadata observations; never workspace file bodies
 }
 message WorkspaceServiceUnregisterWorkspaceValue {
   arcforges.foundation.v1.Receipt receipt = 10 [json_name = "receipt"];
@@ -162,6 +165,7 @@ message WorkspaceServiceListWorkspacesResponse {
     arcforges.foundation.v1.ArcError error = 3 [json_name = "error"];
   }
   reserved 4 to 9;
+  FileAuditMetadata audit = 10 [json_name = "audit"]; // validate: bounded metadata observations; never workspace file bodies
 }
 message WorkspaceServiceListWorkspacesValue {
   repeated Workspace workspaces = 10 [json_name = "workspaces"];
@@ -180,6 +184,7 @@ message WorkspaceServiceGetWorkspaceResponse {
     arcforges.foundation.v1.ArcError error = 3 [json_name = "error"];
   }
   reserved 4 to 9;
+  FileAuditMetadata audit = 10 [json_name = "audit"]; // validate: bounded metadata observations; never workspace file bodies
 }
 message WorkspaceServiceGetWorkspaceValue {
   Workspace workspace = 10 [json_name = "workspace"];
