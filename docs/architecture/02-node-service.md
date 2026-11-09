@@ -44,7 +44,7 @@ flowchart TB
 | Session registry | `ArcForges.Node.Core` | Agent sessions, subagents, client connections, process ancestry roots |
 | Policy engine | `ArcForges.Node.Core` | Revisioned policy documents, effective-policy evaluation per scope |
 | Peer subsystem | `ArcForges.Node.Peer` | Discovery, pairing, mTLS listener, placement, transfer, cache endpoint |
-| Cloud link | `ArcForges.Node.CloudLink` | Sign-in and node credential, outbound Go-center channel, hello proof, command-key refresh and signed call/result verification; the local Fleet proxy obtains relay nonces and signs caller assertions |
+| Cloud link | `ArcForges.Node.CloudLink` | Sign-in and node credential, outbound Go-center channel, hello proof, command-key refresh, verification of signed calls and signing of results; the local Fleet proxy obtains relay nonces and signs caller assertions |
 | Updater | `ArcForges.Node.Updates` | Manifest checks, staging, switching, health check, rollback |
 
 **Concurrency rules.**
