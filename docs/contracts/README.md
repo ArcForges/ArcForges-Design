@@ -4,7 +4,7 @@ Decision: [AD-0004](../decisions/AD-0004-contracts-and-state.md). Protobuf is ca
 
 **Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target until each AF-CTR task is delivered).** Business decisions are made by the Go center (not the C# host), which consumes Go bindings generated from these protos in the Contracts repository (AF-CTR-01, delivered 2026-10-28: module `github.com/ArcForges/Contracts/go`, published as `go/v<cohort version>` with each NuGet cohort, first `go/v1.0.0-ci.410.1`); node connections terminate in the Go center instead of `FleetHub`. `arcforges.peer.v1` stays in `v1`, compatible and not served.
 
-The `.proto` files under [proto/](proto/) mirror the Contracts specification. AF-CON-01 adopted the original files into Contracts; AF-CTR-05 K2 updates six mirrors byte-for-byte to Contracts commit `e67a6b089a7270ab771a97c27aeba92c5d3b0469` (cohort `1.0.0-ci.437.1`). The placement is:
+The `.proto` files under [proto/](proto/) mirror the Contracts specification. AF-CON-01 adopted the original files into Contracts; AF-CTR-05 K2 updated six mirrors byte-for-byte to Contracts commit `e67a6b089a7270ab771a97c27aeba92c5d3b0469` (cohort `1.0.0-ci.437.1`). The AF-CTR-06 target annotations on `node/v1/workspaces.proto` are a pending design amendment, not a claim that the published Contracts cohort already contains them; the Contracts delivery must align the source and generated bindings. The placement is:
 - `node`, `fleet` → `public/proto`;
 - `peer`, `relay` → `internal/proto`.
 

@@ -37,6 +37,8 @@ A directory found under a managed sub-root without a record is reported as `UNTR
 
 ## 3. Workspaces
 
+**Amended 2026-11-09 (AF-CTR-06 target).** The registration, origin, durable root identity and ordinary center route in [06a](06a-node-files.md) supersede the older registration-origin and automatic-registration wording below. In particular AGENT and SCRIPT cannot cause registration, including indirectly through a task. Managed worktrees remain AF-WS-01.
+
 | Kind | Created by | Identity | Removal |
 |---|---|---|---|
 | `REGISTERED` | User (CLI, Desktop) or automatically on the first task whose working directory is inside a git repository (policy `auto_register=true`) | `git rev-parse --git-common-dir` plus remote URLs (hashed) and the root path; for non-git roots, the canonical path | Unregister only (never deletes files) |
@@ -170,6 +172,8 @@ The disk level of each volume is part of `ResourceSnapshot.volumes` and of the r
 Sizes use an incremental size cache keyed by `(path, mtime, inode/file-id)`. The same size cache measures managed caches for per-attempt evidence ([07](07-records-diagnosis-memory.md) §1.5). Directory symlinks and junctions are never followed outside their root. Analysis is bounded (default 15 min, 5 million entries) and reports truncation explicitly.
 
 ## 7. Cleanup (two-phase, bounded)
+
+**Amended 2026-11-09 (AF-CTR-06 target).** [06a §5](06a-node-files.md) targets a restricted exact-object plan for a caller-created workspace object or its task temporary directory, with verified caller ownership, real HUMAN decisions where needed and per-item confirmation when no quarantine root exists. It retains this section's open-file `IN_USE` protection; the proposed distinction between external data-use and metadata-only references is pending independent review, not an accepted narrowing. Before any cleanup namespace effect, strict enforced stability of the exact source, its parents and entire planned tree is required, including against same-user processes and pre-existing handles. The tested ordinary Linux 6.12/ext4 environment cannot currently establish it and must refuse before effect (L-33), leaving real Linux cleanup and its acceptance outstanding. A safe refusal is not a delivered cleanup implementation. This amendment does not deliver AF-STOR-01's general analyzer or broaden its cleanup classes, and the prohibition on deleting an unplanned path remains.
 
 1. **Plan.** `PlanCleanup(analysis_id or rules, selection)` returns a `cleanup_plan`. Each item has: ID, absolute path, size, class, reason, risk, action (`QUARANTINE`, `GIT_WORKTREE_REMOVE`, `TOOL_CLEAN`, `ARCHIVE_THEN_REMOVE` or `DIRECT_DELETE`), and a validation fingerprint (mtime, size, owner state). The plan expires after 60 min and carries a digest. No item is acted on during planning.
 2. **Approval.** Human surfaces approve explicitly. MCP callers may plan, but execution from MCP needs an approval unless policy `cleanup.agent_execute=LOW_RISK_ONLY` and every selected item is low risk.

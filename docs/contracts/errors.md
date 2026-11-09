@@ -29,7 +29,7 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 | `VALIDATION/invalid_argument` | A field violates its `validate:` rule | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = field path and rule |
 | `VALIDATION/unsafe_batch_argument` | A batch-file argument cannot be quoted safely (CVE-2024-24576 class) | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = argument index |
 | `VALIDATION/unsupported_shell` | The requested shell is unavailable on the executing node | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = shell kind |
-| `VALIDATION/path_not_found` | A required path does not exist or is not a directory | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = path field |
+| `VALIDATION/path_not_found` | A required file or directory does not exist or has the wrong required type | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = path field |
 | `VALIDATION/inputs_required` | Remote placement needs input selection, and none can be derived safely (for example a non-git working directory) | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = working directory |
 | `VALIDATION/program_not_found` | `argv[0]` did not resolve through PATH/PATHEXT | `NEVER` | `DID_NOT_HAPPEN` | `state.reason` = program |
 | `VALIDATION/invalid_dependency` | A dependency is missing or forms a cycle | `NEVER` | `DID_NOT_HAPPEN` | `state.resource` = dependency |
@@ -53,7 +53,9 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 | `CONFLICT/revision_conflict` | `meta.expected_rev` differs from the current revision | `NEVER` (re-read, merge) | `DID_NOT_HAPPEN` | `revision` |
 | `CONFLICT/already_exists` | The named object already exists | `NEVER` | `DID_NOT_HAPPEN` | `state.resource`; or, without a resource: for a node key an installation holds (`BeginNodeSignIn`, `StartDeviceAuthorization`, `CompleteNodeSignIn`, `PollDeviceAuthorization`) `state.state` = `node_key` and `state.reason` = `already_registered`; for a node ID live under another account (`CompleteNodeSignIn`, `PollDeviceAuthorization` only) `state.state` = `node` and `state.reason` = `already_exists` |
 | `CONFLICT/command_id_reused` | The same `command_id` arrived with a different payload digest | `NEVER` | `DID_NOT_HAPPEN` | — |
-| `CONFLICT/digest_mismatch` | A plan digest differs from the presented one | `NEVER` (re-plan) | `DID_NOT_HAPPEN` | — |
+| `CONFLICT/digest_mismatch` | A plan digest or AF-CTR-06 file-operation acknowledgment's expected request digest differs from the recorded one | `NEVER` (re-plan, or show and review the current file operation) | `DID_NOT_HAPPEN` | For file-operation acknowledgment, `state.state` = `file_operation`, `state.reason` = `operation_digest_mismatch`; no body |
+| `CONFLICT/file_changed` | AF-CTR-06 target: the checked file hash, opened identity or planned path differs before any filesystem effect | `NEVER` (re-read and submit a new command) | `DID_NOT_HAPPEN` | `state.state` = `file`, `state.reason` = closed mismatch kind; no file content |
+| `CONFLICT/occurrence_mismatch` | AF-CTR-06 target: the exact edit occurrence count differs | `NEVER` (re-read and submit a new command) | `DID_NOT_HAPPEN` | `state.state` = `file`, `state.reason` = `occurrence_mismatch`; no file content |
 | `CONFLICT/code_reused` | A sign-in code was presented twice; the flow is revoked | `NEVER` | `DID_NOT_HAPPEN` | — |
 | `CONFLICT/purchase_already_linked` | The Play purchase is linked to another account | `NEVER` | `DID_NOT_HAPPEN` | — |
 | `STATE/not_found` | The object does not exist (or is not visible to the caller) | `NEVER` | `DID_NOT_HAPPEN` | `state.resource` |
@@ -65,6 +67,7 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 | `STATE/not_attached` | A stdin call without the caller's current attach | `NEVER` | `DID_NOT_HAPPEN` | — |
 | `STATE/secrets_unavailable` | A retry needs sealed secret environment values that were purged (terminal state + `storage.secret_retention_hours`), or that the node data key can no longer open because the key is missing or unreadable ([04](../architecture/04-execution.md) §2) | `NEVER` (submit again with the environment) | `DID_NOT_HAPPEN` | `state.reason` = purge time (absent when the key cannot open them) |
 | `STATE/in_use` | Referenced by running work, a session or a lease | `AFTER_TIME` | `DID_NOT_HAPPEN` | `state.reason` = holder |
+| `STATE/file_access_denied` | AF-CTR-06 target: the native filesystem refuses access before any effect or cannot supply the required safe identity or path primitive | `NEVER` | `DID_NOT_HAPPEN` | `state.state` = `file`, `state.reason` = closed non-secret reason |
 | `STATE/dirty_worktree` | A worktree has uncommitted changes | `NEVER` (archive or commit) | `DID_NOT_HAPPEN` | — |
 | `STATE/sas_mismatch` | Pairing digits did not match, or the commitment failed | `NEVER` | `DID_NOT_HAPPEN` | — |
 | `STATE/peer_incompatible` | The peer's protocol range does not overlap | `NEVER` | `DID_NOT_HAPPEN` | `upgrade` |
@@ -93,6 +96,8 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 | `EXECUTION/provider_error` | A provider API (Google Play, Paddle) failed | `RECONCILE`, reading `StoreBillingService.GetBillingStatus` | `UNKNOWN` | — |
 | `INTERNAL/internal` | Unexpected failure; the correlation ID is in the node or cloud log, and an unanswered `COMMIT` of the call's own effect write is reported here with `UNKNOWN`. For `PurgeTaskRecord`, a failed or busy post-commit WAL checkpoint reports `HAPPENED`; the logical purge is committed, and identical-command replay reattempts the checkpoint (node-store section 1, MR-14) | `NEVER` when the effect is `UNKNOWN`; `AFTER_TIME` once when it is `DID_NOT_HAPPEN` or `HAPPENED` (`SAME_COMMAND` for the checkpoint) | `UNKNOWN` unless known | — |
 | `INTERNAL/store_corrupt` | The node store failed its integrity check | `NEVER` (doctor; restore from backup) | `DID_NOT_HAPPEN` | — |
+
+**AF-CTR-06 file outcomes (target).** The specific file, workspace and removal methods, limits, authorization and effect/retry pairs are specified by [06a](../architecture/06a-node-files.md) §§3–6. A delivered file mutation whose answer was lost returns `STATE/node_unreachable`, `UNKNOWN`/`SAME_COMMAND`, and may be resent only with the same command ID and exact bytes; the node journal must never repeat an uncertain effect. When that journal cannot prove the effect, it returns `EXECUTION/operation_failed`, `UNKNOWN`/`NEVER`, reason `file_outcome_unknown`, and exposes the pending status for HUMAN resolution. No `UNKNOWN` is paired with `AFTER_TIME`.
 
 ## Center ingress transport statuses (added 2026-10-28, AF-CTR-02)
 
