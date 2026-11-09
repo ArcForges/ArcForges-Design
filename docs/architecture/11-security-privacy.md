@@ -35,6 +35,8 @@ The matrix therefore protects against accidental and casual misuse by AI clients
   The host's own account type and Administrator protection state are D2 host posture (§5): only the doctor's HUMAN-only host-posture check reports them ([07](07-records-diagnosis-memory.md) §2.4), never the release coverage statement or the MCP adapter.
 - **Paired peers (T-27).** A paired peer with placement rights executes code as the local user. Per-peer command patterns are argument-vector filters, which are guardrails ([09](09-lan.md) §4).
 
+**Amended 2026-11-09 (AF-CTR-06 target).** The fixed HUMAN-only workspace registration rows, file-operation defaults, explicit AGENT write/removal authorization, signed routed rows, ownership and HUMAN approval are defined in [06a](06a-node-files.md). They add to the existing matrix and routed allowlist; they do not promote AGENT or SCRIPT to HUMAN. The older statement that all operations without a remote command kind are denied is superseded only for the explicitly listed center-routed methods. The existing command-kind and AF-CTR-05 task rows below stay unchanged.
+
 Default permission matrix (policy `permissions`, editable only by `HUMAN`).
 - **Key.** A = allow; P = approval required (an approval request is raised and the call fails with `AUTHORIZATION/approval_required`, carrying the approval ID); D = deny.
 - **REMOTE column.** It names the `fleet.v1.NodeCommandBody` kind and its risk class. The cloud requires step-up for medium and high, and the node's remote-control policy decides last (AD-0009 §5). Anything without a command kind is denied remotely. The RPC annotations carry the same class (`REMOTE=…`; [contracts](../contracts/README.md)).

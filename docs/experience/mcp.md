@@ -8,6 +8,8 @@ Architecture: [08](../architecture/08-ai-integration.md) §2; decision [AD-0007]
 - **Protocol revisions.** 2025-11-25 and 2026-07-28.
 - **Origin.** `AGENT`. The session is correlated by the adapter's parent process ([08](../architecture/08-ai-integration.md) §3.2).
 
+AF-CTR-06 specifies the node and Fleet file/workspace paths in [06a](../architecture/06a-node-files.md); the MCP transport and corresponding tools remain AF-CTR-07. No MCP implementation is claimed by the file design.
+
 ## 1. Server metadata
 
 - **`serverInfo`:** `{name: "arcforges", title: "ArcForges", version: <product version>}`.

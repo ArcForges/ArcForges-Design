@@ -124,6 +124,12 @@ fallback. The SQL schema and version are unchanged.
   - **Retention.** Submit, cancel and every refused call: 1 year, like `remote_command_log`. Executed reads: 7 days, because a client that follows output reads often. Refusals at verification: 1 year or the newest 10,000 rows, whichever is fewer, so a flood of forged frames cannot grow the store.
 - **What a routed read returns** of a task's specification is decided in [11](../architecture/11-security-privacy.md) §1, "Center-routed callers" (Plan decision PN-8, the privacy policy `remote_command_lines`).
 
+## 2b. Schema after step 2 — AF-CTR-06 target
+
+This section is a target, not a statement that the next schema step has shipped. [06a](../architecture/06a-node-files.md) defines its commands, journal and recovery. Step 2 and its checksum stay byte-for-byte unchanged: its `routed_call_log.method` CHECK admits only 1–6. Add new tables and indexes for `routed_file_call_log` (file/workspace verified and refused calls, same no-payload rule), a verified call-ID registry shared with the old log, root identity, created-object ownership, restricted removal plans and file-operation journal/receipts. Backfill live verified IDs and enforce uniqueness for both old and new logs atomically under the node's single writer, including when an older compatible binary runs. Never impersonate a legacy method or use an unverified call ID.
+
+The journal binds command ID, request digest, specific caller, object identities, preconditions, effect phase and metadata outcome; it contains neither file bodies nor search strings. Unresolved records and the target hold survive restart until a local HUMAN acknowledges them; completed receipts follow the 24-hour command-dedup window. Ownership lives until invalidated or unregistered, plans expire after 60 minutes, and audit/verification logs follow 06a and §2a. Any private staging file is separately access-restricted and handled by 06a §6, never embedded in SQLite audit, receipt or backup as a payload. A future step is appended to [node-store.sql](node-store.sql) only with the actual migration and its verified checksum; this target does not change either shipped step.
+
 ## 3. Data that is never stored
 
 - **Environment values for secret-shaped names.** They are stored as presence only (R-EXE-017).
