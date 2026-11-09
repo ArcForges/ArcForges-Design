@@ -2,9 +2,13 @@
 
 Decisions: [AD-0009](../decisions/AD-0009-cloud-relay-and-cost-controls.md), [AD-0010](../decisions/AD-0010-commerce-and-entitlements.md), [AD-0011](../decisions/AD-0011-identity-and-login.md). Contracts: `arcforges.fleet.v1`, `arcforges.relay.v1`, and the reused `arcforges.publicapi.v1`. Persistence: [data/cloud-store.md](../data/cloud-store.md).
 
-**Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target until each AF-CTR task is delivered; AF-CTR-02 delivered 2026-10-28: the Go center on Neon/PostgreSQL serves the Hello in production and in the acceptance environment, Cloud #112, #116 and #117; AF-CTR-03 delivered 2026-11-03, the date of its last evidence merge: accounts, sessions, devices, the center's account pages and feature availability, dark in production, with the account surfaces and the operator-grant page enabled on the acceptance environment, Cloud #118, #120, #121, #122, #123, #124 and #127 and Contracts #121; AF-CTR-04 is in delivery: node sign-in and enrollment, the `fleet` surface, are delivered by Cloud #130, #132, #134 and #135 and ArcForges #63 and #69, dark in production and enabled on the acceptance environment, while its mobile sign-in, part M, is target).** The C# host of §1–§2 becomes the Go center (`center/` in the Cloud repository) on Neon/PostgreSQL; D1 is no longer the center's store; the Worker stays a thin adapter and passes node WebSocket upgrades and MCP requests to the Container. Node connections terminate in the Go center (§3.4 and §4 describe the earlier `FleetHub` design, kept as history; a per-account Durable Object hub is exploratory roadmap EX-28). Remote commands (§3.6) become center-routed calls under the node's local policy; each routed call is signed by the center with the ES256 command-signing key and verified by the node, as AD-0021 §10 states (AF-CTR-05). The per-node envelope buffer of §3.6 is not built: a call for an offline node is refused. The center serves its own sign-in, `/connect` and `/activate` pages so that self-hosted centers need no Web deployment, and derives every URL from its configured public base URL. The limits of §5 are current settings to assess, not decided prices or allowances. Surfaces deploy dark (§8) under the same activation rule, with the center's surfaces (`identity`, `fleet_api`, the node channel, `mcp`).
+**Current delivery (2026-11-09; [AD-0021](../decisions/AD-0021-central-access-go-center.md)).** The Go center on PostgreSQL serves its own account and node-enrollment surfaces. AF-CTR-04 is complete, including mobile native authorization (Cloud #141/#142 and ArcForges #70/#71); production stays dark. AF-CTR-05's merged Cloud parts E0–E3 and node parts N1–N3 implement the node channel, Fleet registry, routed task methods and local CLI proxy. The checked-in E3 proof target prepares `relay,nodes` while retaining `identity,pages,operations,fleet,mobile`; this is not evidence of an E3 hosted deployment. Signed hosted and Windows-to-Linux device acceptance remains NOT PROVEN under the owner/mock exception. Viewer streams, routed files/workspaces, MCP and push are later work.
+
+The Worker remains a thin edge adapter, and node connections terminate in the Go center rather than a per-account `FleetHub` Durable Object. A call for an offline target is refused; the center holds no envelope queue. The center derives its pages and URLs from its configured public base URL. The configured limits in §5 are operating bounds and illustrative owner placeholders, not approved plan prices or allowances.
 
 ## 1. Components
+
+**Current implementation.** The Worker routes the binary gRPC-Web methods and passes the node WebSocket upgrade through the Container Durable Object; the center authenticates its credential. The Go center runs the `hub` and Fleet routing over PostgreSQL; the Durable Object provides Container lifecycle and socket proxying, not a per-account Fleet hub. The production Worker keeps the flagship surface list empty. The following original C#/D1 and FleetHub component table is historical design, not the currently deployed center:
 
 | Component | Implementation | Responsibility |
 |---|---|---|
@@ -16,11 +20,13 @@ Decisions: [AD-0009](../decisions/AD-0009-cloud-relay-and-cost-controls.md), [AD
 | R2 (bucket to be provisioned) | Release artifacts, support uploads | Static release manifests (`releases.arcforges.com`), support bundles (consented) |
 | Queue (to be provisioned) | The wake-queue pattern of Cloud's `proof` environment (`WAKE_QUEUE`, with a dead-letter queue) | Wakes the C# host for queued background work (outbox dispatch, jobs) |
 
-**Production bindings.** At Cloud main `92ba1dc9`, only the `proof` environment of `wrangler.json` declares D1, R2 and Queue bindings, and `crons` is empty. AF-CLD-01 adds a repository provisioning script that creates the D1 database, the R2 bucket (with the lifecycle rules of §3.11) and the Queue, and the binding definitions it writes. The production `wrangler.json` receives those bindings only during production activation (§8), with the user's approval (H-20). AF-CLD-04 adds the `FleetHub` Durable Object class and its migration (no external resource), and AF-PLAT-01 the cron trigger.
+**Historical production bindings proposal.** At Cloud main `92ba1dc9`, only the `proof` environment of `wrangler.json` declares D1, R2 and Queue bindings, and `crons` is empty. AF-CLD-01 adds a repository provisioning script that creates the D1 database, the R2 bucket (with the lifecycle rules of §3.11) and the Queue, and the binding definitions it writes. The production `wrangler.json` receives those bindings only during production activation (§8), with the user's approval (H-20). AF-CLD-04 adds the `FleetHub` Durable Object class and its migration (no external resource), and AF-PLAT-01 the cron trigger.
 
-**Viewer transport.** Viewers (web, Android) receive live fleet state over a **WebSocket to `FleetHub` carrying `arcforges.relay.v1.ViewerFrame` protobuf messages**, not over a gRPC-Web stream. A streaming HTTP response would keep the Durable Object awake and billed for the stream's lifetime, while hibernating WebSockets do not (V-C01). The frames and the snapshot/delta/cursor semantics are the same contract the gRPC-Web method `FleetService.WatchFleet` defines. `WatchFleet` stays available as a gRPC-Web server stream for clients that cannot use WebSockets, and is served by the C# host with a 10-minute lifetime cap (R-API-004).
+**Historical viewer transport proposal (not built; AF-CLD-04).** Viewers (web, Android) receive live fleet state over a **WebSocket to `FleetHub` carrying `arcforges.relay.v1.ViewerFrame` protobuf messages**, not over a gRPC-Web stream. A streaming HTTP response would keep the Durable Object awake and billed for the stream's lifetime, while hibernating WebSockets do not (V-C01). The frames and the snapshot/delta/cursor semantics are the same contract the gRPC-Web method `FleetService.WatchFleet` defines. `WatchFleet` stays available as a gRPC-Web server stream for clients that cannot use WebSockets, and is served by the C# host with a 10-minute lifetime cap (R-API-004).
 
 ## 2. C# modules
+
+*Historical baseline and planned reuse.* The Go center now owns delivered identity, device, entitlement and fleet operations. The C# and D1 table below describes the earlier baseline and later target modules, not the implementation of the node channel or routed task calls.
 
 **Baseline reality** (Cloud main `92ba1dc9`, checked 2026-10-12):
 - The host serves only `HelloService` over gRPC.
@@ -71,6 +77,8 @@ Decisions: [AD-0009](../decisions/AD-0009-cloud-relay-and-cost-controls.md), [AD
 
 ### 3.3 Phone sign-in by QR from a signed-in node (R-AUTH-002)
 
+*Future design, not served by AF-CTR-04 or AF-CTR-05.*
+
 1. The Desktop asks the node to call `CreatePhonePairing{}` and gets `{pairing_id, qr = "arcforges://pair?i=<pairing_id>&s=<secret>", expires_at (120 s)}`.
 2. The phone scans and calls `ClaimPhonePairing{pairing_id, secret, phone_installation_info}`, and the state becomes `AWAITING_CONFIRMATION`.
 3. The Desktop (polling `GetPhonePairing`, or through a node event) shows "Allow <phone model> to sign in as <account>?". The user calls `ConfirmPhonePairing{pairing_id, approve}`.
@@ -81,34 +89,30 @@ Each secret is single-use. A wrong secret consumes the pairing.
 
 ### 3.4 Relay connection (node)
 
-1. The node calls `IssueRelayToken{}` with its node credential and gets `{token, expires_at (15 min), relay_url}`. The token claims: `aud=relay.node`, `acct`, `node`, `kinds_allowed`, `limits {frames_per_min, bytes_per_day, snapshot_max_bytes}` and `kid`.
-2. The node opens `wss://relay.arcforges.com/v1/node` with header `Authorization: Bearer <token>`. The Worker verifies the token and routes to `FleetHub(acct)`, which calls `acceptWebSocket` with attachment `{kind: node, node, limits, exp}`.
-3. The node sends `NodeHello`, `StatusSummary` (≤4 KiB) and then summary changes (≤1 per 60 s), with WebSocket pings every 30 s; pings do not wake the DO.
-4. The node refreshes the token at 2/3 of its lifetime with a `TokenRefresh` frame. At expiry without refresh, the DO closes the socket with code 4401.
+A signed-in node opens `GET <center>/fleet/v1/node` with its node credential and subprotocol `arcforges.relay.v1`. The Worker checks the upgrade route and forwards it unchanged; the Go center authenticates, applies the `center.nodes` entitlement after authorization and audit, and upgrades. Its 32-byte connection-specific challenge must be signed by the key of that credential's installation, with matching node and installation IDs, within 10 seconds. Only a proved replacement may close the old connection (4409). `ChannelAccepted` carries its connection ID, current signing key IDs and limits; frames carry a per-connection sequence.
+
+The hub sends a heartbeat every 25 seconds, closes on 60 seconds of silence and fences presence writes with the singleton PostgreSQL hub lease (renewed every 10 seconds, 30-second TTL). The node sends `TokenRefresh` after a credential rotation on the same connection; the center rechecks session, installation and node, and closes on revocation or entitlement lapse. Close codes and the node's 1–60 second jittered backoff, refresh-first 4401 handling and REFUSED retry after one hour or a subsequent credential rotation are in [SM-RELAY](../state-machines/README.md#sm-relay). The proxy's open socket keeps a Container instance and Durable Object active; actual cost remains an owner decision (H-09/H-06).
 
 ### 3.5 Viewer watch (web, Android)
+
+*Historical proposal, not built.* Viewer streams and telemetry are AF-CLD-04; the node channel above does not implement this FleetHub viewer design.
 
 1. The client calls `FleetService.OpenFleetWatch{node_ids (empty = all), detail: SUMMARY | FULL}`. C# authorizes the account session, checks entitlement `remote.view` and limits, and returns `{grant (aud=relay.view, 10 min), ws_url}`.
 2. The client connects to `wss://relay.arcforges.com/v1/view`. Browsers cannot set headers on WebSockets, so every viewer sends the grant as a subprotocol: `Sec-WebSocket-Protocol: arcforges.v1, grant.<base64url grant>`. The Worker validates the grant **before** routing to the Durable Object, so unauthenticated sockets never wake it, and answers with the subprotocol `arcforges.v1`. Grants never appear in URLs. `FleetHub` sends `ViewerFrame.snapshot` for the permitted nodes from its cache. If `detail=FULL` and a cached snapshot is older than 10 s, it sends `DemandSignal{interval 2 s, duration 10 min}` to each node, and the nodes then stream `StatusDelta` frames, which the DO fans out.
 3. Each frame carries `{node_id, node_seq, generation}`. The client resumes after reconnect by sending `ViewerResume{cursors}`. A gap beyond the cache yields `reset` plus a snapshot.
 4. The grant is refreshed through `OpenFleetWatch` before expiry, sent as a `GrantRefresh` frame.
 
-### 3.6 Remote command (R-CLOUD-004)
+### 3.6 Center-routed tasks (R-CLOUD-004)
 
-1. The client calls `FleetService.SendNodeCommand{node_id, command (oneof), meta.command_id}`.
-2. C# then:
-   - authenticates the session;
-   - checks entitlement `remote.control`;
-   - classifies risk (AD-0009 §5);
-   - requires a proved step-up (single-use evidence; authentication time is never evidence) for `MEDIUM` and `HIGH` (the `fleet.proto` header's gloss "passkey or recent authentication" is superseded by this rule; its comment is corrected by Contracts #125 (`a5bc52f`), and the Design copy follows it);
-   - writes `fleet_remote_command` (`ACCEPTED`, `expires_at` = now + 5 min);
-   - audits;
-   - signs the `NodeCommand` payload (`fleet.v1`) with the ES256 **command signing key** (ECDSA P-256; `kid`; V-N05).
-3. C# posts the envelope to the internal relay route (HMAC-authenticated container-to-Worker route, existing coordination pattern). `FleetHub` delivers it if the node is connected. Otherwise it stores the envelope (≤20 per node) and delivers it on reconnect if it has not expired.
-4. The node verifies the signature (public keys from enrollment and updates), the expiry, the target, and its local remote-control policy. It executes through its own API with origin `REMOTE`, and replies with a `NodeCommandResult` (receipt or error), signed ES256 with its node key. For `ReadOutputTail` the result carries only the tail's SHA-256 and size. The tail itself goes to the requesting viewer as a relay `OutputTail` frame (node → DO → viewer) and is never stored in D1 or Durable Object storage (R-OPS-003).
-5. `FleetHub` forwards the result envelope to C#, which updates the command (`SUCCEEDED`, `FAILED`, `REJECTED_BY_NODE`) and audits. Viewers see the update. Undelivered commands become `EXPIRED`.
+The Go center serves `SubmitNodeTask`, `GetNodeTask`, `ListNodeTasks`, `WaitNodeTask`, `ReadNodeTaskOutput` and `CancelNodeTask` on `nodes`. A caller uses an account session or a node credential only as a verified node relay. For a relayed call the local node signs an assertion over the exact inner request digest, identity, target, method, command ID and a one-use center nonce. The center authenticates and authorizes, applies resource controls, appends `access.authorized`, then asks the appropriate feature gate (`center.execute`, `remote.view`, or `remote.control`). An account-session Submit or Cancel requires fresh, target-bound step-up on each actual delivery; the relay is confined by target policy instead. A lapsed account can still list and revoke its nodes.
+
+The hub signs each call with its loaded ES256 command key. The target checks the signature, target, expiry and local center-routed policy before dispatching to its existing TaskService; it signs the result with its node key. The center verifies the result against the exact transmitted bytes. A disconnected target with no possible prior delivery is `STATE/node_offline`, with no store-and-forward buffer; if an earlier mutation may have reached it, the refusal preserves `UNKNOWN` instead. A read has no routing record. Submit and Cancel use `fleet.routed_call` keyed by account and command ID; it stores IDs, metadata, state, lengths and digests, never argv, environment, output or request/response bytes ([cloud store](../data/cloud-store.md#6-postgresql-model-ad-0021)).
+
+A mutation that may have reached the target and lacks a verified outcome is `UNKNOWN`, never silently treated as not executed. Same-command retry preserves the original inner bytes and ID; the node's deduplication converges on the original outcome. A possible-delivery replay outside the configured window is `STATE/invalid_state` `replay_window_passed`, and a mismatching replayed result is `STATE/node_unreachable` `replay_digest_differs`; neither authorizes a fresh command ID. See [SM-ROUTED-CALL](../state-machines/README.md#sm-routed-call) and [CLI](../experience/cli.md#c-01-run-and-tasks). The historical `SendNodeCommand`/FleetHub envelope and its legacy wire-state machine are unbuilt and retained only for compatibility.
 
 ### 3.7 Push (R-CLOUD-005)
+
+*Historical proposal, not built; AF-CLD-06 owns the push sender.*
 
 1. Nodes send `EventBatch` frames for push-worthy events when the user enabled them on that node.
 2. `FleetHub` batches them and forwards to C# immediately for `approval_needed`, and every 30 s otherwise.
@@ -116,9 +120,13 @@ Each secret is single-use. A wrong secret consumes the pairing.
 
 ### 3.8 Entitlement token (R-COM-004)
 
+*Historical future design, not served:* current node credentials carry no entitlement token; the Go center gates each channel and routed call.
+
 `RefreshEntitlementToken{}` (node credential) returns a compact ES256-signed token (`SignedBlob` with `EntitlementClaims`): `{acct, node, plan, features[], issued_at, not_after (14 days), revoked_nodes[] (reserved for RM-01, empty in release 1), kid}`. It describes cloud features only; local and LAN features never check it ([AD-0015](../decisions/AD-0015-direction-editions-roadmap.md) §2). Nodes refresh it every 24 h while online. Public keys ship in releases, and `GetEntitlementKeys` serves rotations.
 
 ### 3.9 Google Play (R-COM-002)
+
+*Future design, not served by AF-CTR-05.*
 
 As in [AD-0010](../decisions/AD-0010-commerce-and-entitlements.md) §3:
 - RTDN arrives at `POST /hooks/play-rtdn` as a Pub/Sub push with an authenticated OIDC token, verified in C# (`aud`, `email` of the Pub/Sub service account).
@@ -131,6 +139,8 @@ As in [AD-0010](../decisions/AD-0010-commerce-and-entitlements.md) §3:
 
 ### 3.11 Support bundle upload (R-OPS-005)
 
+*Future design, not served by AF-CTR-05.*
+
 1. After the user reviews the file list and consents, the node calls `NodeEnrollmentService.BeginSupportUpload` (node credential) with the case reference (or a new case subject), file name, size and SHA-256.
 2. C# checks the plan's daily upload limit and the `support uploads` kill switch, creates the case if needed, and returns an R2 presigned PUT URL for the key `support-pending/<upload_id>`, valid for 15 minutes. C# signs it with SigV4 using a bucket-scoped R2 S3 API credential (prerequisite H-16), for the declared length and SHA-256 checksum where R2 enforces them (A-C03). Step 4 verifies both in any case.
 3. The node uploads the bundle directly to R2 over HTTPS; the bytes never pass through the Container.
@@ -138,6 +148,8 @@ As in [AD-0010](../decisions/AD-0010-commerce-and-entitlements.md) §3:
 5. R2 lifecycle rules work by prefix: objects under `support-pending/` are deleted after 1 day (uploads never completed), and objects under `support-bundles/` after 30 days.
 
 ## 4. Durable Object layout (`FleetHub`)
+
+*Historical proposal, not built:* the current per-center Go hub and PostgreSQL lease replace this per-account Durable Object design.
 
 | Key | Content | Bound |
 |---|---|---|
@@ -152,29 +164,34 @@ All values are opaque bytes plus small headers. Socket attachments hold `{kind, 
 
 ## 5. Limits and cost controls (R-CLOUD-006)
 
-| Limit | Free | Pro | Enforced at |
-|---|---|---|---|
-| Nodes per account (relay) | 0 | 10 | `IssueRelayToken` |
-| Concurrent viewers | 0 | 5 | `OpenFleetWatch` + DO |
-| Node frames per minute | — | 30 (summary), 60 (delta while demanded) | DO (token claim) |
-| Relay bytes per account per day | — | 500 MiB | DO counter, C# budget |
-| Remote commands per hour | — | 120 | C# |
-| Push per account per day | — | 50 | C# Notification |
-| Support bundle uploads per day | 1 | 5 | C# Support |
-| DO wakes per hour per account | — | 3,600 | DO guard |
+The delivered bounds are configuration and safety limits, not subscription prices or approved plan allowances. H-07 remains open. Cloud `docs/center.md`, `docs/center-identity.md` and `docs/center-fleet.md` are the implementation-level sources.
 
-**Global operating budgets** (`platform_operating_budget`) cover every billable dimension of the products in use, per UTC day ([14](14-commercial-operations.md) §7.1). Exceeding 80% raises operator alerts. At 100% the degradation ladder of [14](14-commercial-operations.md) §7.3 applies: live streaming off, then existing relay sockets closed and new ones refused, push batched then stopped, uploads refused, and finally essential-only mode, in which the Worker answers non-essential routes without waking the container. The residual exposure is computed and shown (§7.4 there). Budget alerts from Cloudflare are informational (V-C04).
+| Bound | Current default and scope |
+|---|---|
+| Node connections | 256 per center process, configurable 1–4096; separate from the per-account enrollment cap (default 100, configurable 1–1000). There is no additional per-account connected-node cap. |
+| Channel | 1 MiB/frame; 8 in-flight calls per node; 25 s heartbeats and 60 s deadline. |
+| Routed controls | 3,600 calls/account/hour and 16 in-flight/account; 600 upgrades/account/hour and 60/node/hour. These are illustrative policy defaults, not plan limits. |
+| Routing | Submit inner request at most 253,952 bytes; other routed requests 3,072 bytes; node reply at most 1,040,384 bytes. Wait is at most 50 seconds and output long-poll at most 20 seconds. |
+| Replay | 23-hour default, configurable from 1 hour to 23 hours 52 minutes; node command deduplication is 24 hours. |
+| Signing keys | At most eight private bindings loaded by a relay process; published public sets have no eight-key cap. Supported registration checks the entire sign-in, poll and refresh reply against the fleet's 65,536-byte transport bound, including framing and trailer allowance. Validity is at most 400 days; a successor overlaps currently valid keys by at least seven days. |
+
+The node channel keeps the hosted Container and proxy Durable Object active while connected. A cost ceiling and commercial limits are owner decisions, not implemented plan tiers; the older per-account FleetHub viewer, push and operating-budget ladder remain future design.
 
 ## 6. Failure handling
 
-| Failure | Behaviour |
+| Failure | Current routed behavior |
 |---|---|
-| Container cold or unavailable | The Worker returns `UNAVAILABLE` with retry advice. Relay sockets keep working with cached data. Commands queue in the C# outbox when the container returns. |
-| D1 overloaded (V-C03) | C# returns `RESOURCE` + `retry after`. Command submission is idempotent by `command_id`. |
-| DO restart or eviction | Sockets survive hibernation. On a real restart, nodes reconnect with jittered backoff (1 s → 60 s) and re-send their summaries. |
-| Clock skew | Tokens allow ±60 s. Commands carry a server-issued expiry checked against node time ±120 s, and the record notes the skew when detected. |
+| Target is offline before any possible delivery | `STATE/node_offline`, `DID_NOT_HAPPEN`; the center does not queue a request. |
+| Connection or center lost after a mutation may have reached the node | `STATE/node_unreachable`, `UNKNOWN` with same-command retry; never claim no effect and never create a new command ID solely because the reply is missing. Reads and mutations never delivered are `DID_NOT_HAPPEN`. |
+| Replay window passed | `STATE/invalid_state` `replay_window_passed`, `DID_NOT_HAPPEN` for this delivery but the original command may have run; inspect the named task where known. |
+| Credential revoked | The affected node channel closes 4401 after committed revocation; accepted tasks already running remain on the node. |
+| Clock skew or expiry | The node checks the signed expiry with the configured 120-second skew; an expired call is not executed late. |
+
+The former FleetHub cache, D1 outbox and offline-envelope retry behavior in earlier revisions is not implemented.
 
 ## 7. Observability
+
+*The following original dashboard and cost dimensions are target work; current hub and routing audit events are documented in Cloud `docs/center-fleet.md`.*
 
 - Structured logs (C# and Worker) with correlation IDs.
 - Metrics:
@@ -192,14 +209,14 @@ Runbooks are in [14-commercial-operations.md](14-commercial-operations.md) (R-OP
 
 Implementation delivery and production activation are separate steps ([AD-0014](../decisions/AD-0014-delivery-method.md) §9):
 - **Dark deploys.** The Cloud and Web repositories keep deploying on every main push through their guarded scripts, and flagship features ship **disabled**:
-  - **Cloud:** the Worker variable `FLAGSHIP_SURFACES` in `wrangler.json` lists the enabled surfaces: `identity`, `pages` (needs `identity`) and `operations` (the interim operator-grant page, needs `identity` and `pages`; enabled only on the acceptance environment, and replaced by AF-OPS-01) are delivered names (AF-CTR-03); `fleet` (node enrollment: the `NodeEnrollmentService` sign-in, refresh, report and sign-out methods and the `/connect` and `/activate` pages; needs `identity` and `pages`) is a delivered name (AF-CTR-04, Cloud #130, #132, #134 and #135), enabled on the acceptance environment (`identity,pages,operations,fleet`, Cloud #135) and not in production; `mobile` (the Android sign-in) is AF-CTR-04's target name (part M); `fleet_api`, `relay`, `push`, `support` and `commerce` are target names, which AF-PLAT-01 fixes; it is empty by default. A self-hosted center enables `identity,pages,fleet` by default (Cloud #135; a center whose public base URL cannot be a WebAuthn relying party serves none). The Worker passes the list to the Container as `ARCFORGES_CENTER_SURFACES`; the center states the surfaces it serves as `center.surfaces` in its health document, which the live deployment check compares with the deployment evidence, and a Container started with an older environment is stopped and started again with the new one before a request is forwarded to it (delivered by AF-CTR-03: the list passed to the Container by Cloud #118, `center.surfaces` and the restart by Cloud #120). It is a deployment setting, not a D1 configuration revision, because the production D1 binding does not exist until activation, and it changes only through a reviewed main-push deploy. A disabled surface is answered by the Worker with `STATE/not_activated` (the `pages` and `operations` surfaces, whose paths are not API methods, with the Worker's plain-text 404 of a path it does not know), without waking the container. While no surface is enabled, the scheduled (cron) handler returns at once, so nothing wakes the container.
+  - **Cloud:** `FLAGSHIP_SURFACES` is empty in production. Actual supported names are `identity`, `pages`, `operations`, `fleet`, `mobile`, `relay` and `nodes`. `fleet` needs `identity,pages`; `mobile` needs them and a valid issuer; `relay` needs `identity,fleet` and a valid loaded command key; `nodes` needs `identity,fleet,relay`. The protected E3 proof target is `identity,pages,operations,fleet,mobile,relay,nodes`, but its checked-in configuration is not evidence of a hosted E3 run. The last AF-CTR-04 proof deployment included the first five. The Worker forwards the enabled set to the Go center and refuses disabled routes before waking the Container. Self-hosted defaults admit the available surfaces and omit `mobile` for an invalid issuer, or `relay,nodes` when no command key is configured. `operations` is official-hosted only.
   - **Web:** the repository's deploy configuration holds the switches `public_site`, `web_account` and `web_fleet`, all off. While a switch is off, the guarded deploy keeps publishing the current pages and leaves that part out, so nothing new becomes visible.
-- **No production prerequisites at merge.** Implementation tasks are verified on the local cloud stack ([16](16-testing-strategy.md) §3.1). They never need production key material, domains or provisioned resources. Until activation, the production migration step reports "not applicable" (no D1 binding), and readiness lists the flagship modules as "not provisioned".
+- **No production prerequisites at merge.** Implementation tasks are verified on the local cloud stack ([16](16-testing-strategy.md) §3.1). They never need production key material, domains or provisioned resources. The guarded Cloud main-push path may apply PostgreSQL migrations while the production surfaces remain disabled; activation and owner-only integrations remain separate.
 - **Activation** (Plan task AF-PROD-01, after the release candidate) needs the user's approval and these prerequisites:
 
   | Surface | Prerequisites |
   |---|---|
-  | Core: provisioning, `identity`, `pages` (the center's account pages; needs `identity`), `fleet_api`, `relay` | H-05 (domains), H-06 (account settings), H-09 (the cost ceiling the production budgets derive from), H-16 (key material), H-19 (transactional e-mail for sign-in codes and security notices), H-20 (provisioning) |
+  | Core: provisioning, `identity`, `pages` (the center's account pages; needs `identity`), `fleet`, `mobile`, `relay`, `nodes` | H-05 (domains), H-06 (account settings), H-09 (the cost ceiling the production budgets derive from), H-16 (key material), H-19 (transactional e-mail for sign-in codes and security notices), H-20 (provisioning) |
   | `support` | The core, and the R2 credential of H-16 |
   | `push` | The core, and H-03 (Firebase) |
   | `commerce` | The core, H-01 (Paddle) and, for Play, H-02, with H-07 (prices) and the published legal pages (H-10) |
