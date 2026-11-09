@@ -5,7 +5,7 @@ Architecture: [12](../architecture/12-client-applications.md) §3. Origin:
 - `AGENT` under an agent root or with `ARCFORGES_SESSION`;
 - `SCRIPT` otherwise ([11](../architecture/11-security-privacy.md) §1).
 
-**Amended 2026-10-28 (target; AF-CTR-04, AF-CTR-05) by [AD-0021](../decisions/AD-0021-central-access-go-center.md) §4–§5.** `arcforges run`, `tasks`, `wait`, `output` and `cancel` go through the configured center to the selected node (`--node`, default this installation's node); `arcforges run --local` is a labelled diagnostic for recovery. New commands: `arcforges center set <url>`, `arcforges login [--device-code]`, `arcforges logout`, `arcforges account status` (AF-CTR-04, AF-CTR-05). LAN commands are out of current delivery. *Delivered 2026-11-05 by AF-CTR-04 part N2 (ArcForges #69):* `login [--device-code]`, `logout [--local]`, `center show`, `center set <url> | --default` and `account status`, with the hidden aliases `account login [--device]` and `account logout` (C-09); the center-routed commands remain AF-CTR-05's target.
+**Delivered and bounded by [AD-0021](../decisions/AD-0021-central-access-go-center.md) §4–§5.** AF-CTR-04 delivered `login [--device-code]`, `logout [--local]`, `center show`, `center set <url> | --default` and `account status` (ArcForges #69). AF-CTR-05 N3 (ArcForges #75) routes `run`, `tasks` list/show/wait/cancel and `output` through the local Fleet proxy and configured center; `--node` defaults to this installation's node. `run --local` is a labelled HUMAN diagnostic. Other task commands remain local unless separately delivered. LAN commands remain out of current delivery.
 
 ## 1. Grammar and global options
 
@@ -59,7 +59,7 @@ arcforges run [run options] --shell <kind> -- "<script>"
 
 ## 4. Commands
 
-Each row lists the command, its main options, the RPCs it calls and its notes. All mutating commands send a fresh `command_id`. The CLI retries transport failures with the same ID, at most 3 times with jittered backoff.
+Each row lists the command, its main options, the RPCs it calls and its notes. Mutating commands use a fresh `command_id` for the user action. The local command retry policy allows at most three transport retries; routed mutations have the distinct bounded same-command policy below.
 
 ### C-01 Run and tasks
 
@@ -71,6 +71,7 @@ Each row lists the command, its main options, the RPCs it calls and its notes. A
 | `tasks wait <id>` | `--for terminal\|started\|ready`, `--timeout <dur>` (≤ 55 s per call; the CLI loops), `--output tail\|all\|none` (default `tail`) | `WaitTask`, `ReadTaskOutput` | When the task is terminal: prints its output (default the last 4 KiB) and exits with the task's exit code. Exit 9 when the target is not reached before `--timeout`, with the state and queue position on stderr. This is the wait command printed by a hand-off. |
 | `tasks attach <id>` | `--from-start` | `AttachTask` | Detaching never stops the task |
 | `tasks logs <id>` | `--attempt n`, `--stream stdout\|stderr\|merged`, `--follow`, `--tail <n>` | `ReadTaskOutput`, `WatchTaskOutput` | — |
+| `output <id>` | `--node <name-or-uuid>`, `--local`, `--stream stdout\|stderr\|merged`, `--from-offset <n>`, `--follow` | local `ReadTaskOutput` or routed `ReadNodeTaskOutput` | Reads from a resumable byte offset; `--json` emits JSON Lines |
 | `tasks cancel <id>...` | `--reason`, `--grace <dur>` | `CancelTask` | Prompts on a TTY when the tasks belong to others |
 | `tasks retry <id>` | `--mem <size>` | `RetryTask` | Warns for side-effecting or unknown classes |
 | `tasks priority <id> <class>` | `--pool` | `SetTaskPriority` | — |
@@ -79,6 +80,12 @@ Each row lists the command, its main options, the RPCs it calls and its notes. A
 | `tasks purge <id>` | — | `PurgeTaskRecord` | HUMAN only; prompts |
 | `tasks timeline <id>` | `--attempt n`, `--samples`, `--processes` | `GetTimeline` | — |
 | `tasks attempts <id>` | — | `ListAttempts` | — |
+
+**Routed execution details (AF-CTR-05 N3).** `run`, `tasks` list/show/wait/cancel and `output` accept `--node <name-or-uuid>` or `--local`, never both. A canonical nonzero UUID is taken directly; a name must exactly and uniquely match the account's node name. Without either option the target is this node, reached through the center. `tasks attach`, `tasks logs` and the other task controls in the table remain local; routed `run` follows output by offset instead of a local attach stream. For another node, `--cwd` is required and it, `--stdin file:` and `--ready-file` must be absolute target paths; POSIX, Windows drive-absolute and UNC forms are passed unchanged for validation on the target. Routed `--stdin stream` is not available.
+
+The CLI sets `EnvironmentSpec.inherit` to NODE by default for routed `run`, and to CALLER for `--local`; an explicit choice is honored, not silently filtered. This CLI override is separate from the unchanged Contracts comment on `EnvironmentSpec.inherit`. Before requesting a relay nonce or sending a Submit, the local proxy examines the original environment wire fields. For this node it refuses carried values whose names match either default or current local secret-name patterns; it fails closed if the policy cannot be read or interpreted. For another node it refuses all caller/set environment values because the target's custom patterns are unknown; NODE or NONE without carried values remains available. Unknown environment or map-entry fields are refused; unrelated protobuf fields keep normal pass-through. These guarantees concern environment values, not an exhaustive classifier for argv, output or other payloads.
+
+A routed mutation retries at most five times within two minutes using the original command ID and inner request bytes. An explicit `--wait-approval` is a separate human wait; an approval on this node restarts that transport clock. When a mutation may have run, the CLI retains and prints its command ID and warns against a new submission; an interrupted in-flight mutation or pending approval receives the same uncertainty warning in the X repair under review. `replay_window_passed` also means an earlier attempt may have run, even though the current delivery did not; `replay_digest_differs` is a defect and is not retried as a new command. A local proxy that is not signed in or whose center/channel is unavailable before a routed call reports exit 4; a target `node_offline` with DID_NOT_HAPPEN reports 75. Failure to reach the local node itself has its own connection-error mapping. Owner-device and hosted routed acceptance remains NOT PROVEN; local and synthetic test results do not prove it.
 
 ### C-02 Queue
 

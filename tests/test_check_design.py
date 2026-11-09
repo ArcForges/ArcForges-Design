@@ -296,6 +296,91 @@ class MachineChecks(unittest.TestCase):
         self.assertEqual(cd.render_machines(data), cd.render_machines(data))
         self.assertIn("stateDiagram-v2", cd.render_machines(data))
 
+    def test_render_truncated_transition_labels_do_not_leave_trailing_whitespace(self):
+        text = cd.render_machines(self.machine(transitions=[{"from": ["NEW"], "to": "DONE", "on": "a" * 59 + " tail"}]))
+        edge = next(line for line in text.splitlines() if "NEW --> DONE" in line)
+        self.assertEqual(edge, "  NEW --> DONE : " + "a" * 59)
+        self.assertFalse(any(line.rstrip() != line for line in text.splitlines()))
+
+    def stored_machine(self, **over):
+        m = self.machine()["machines"][0]
+        del m["enum"]
+        m.update({"state_values": {"NEW": 1, "DONE": 3},
+                  "state_source": {"repository": "example/Cloud", "commit": "a" * 40,
+                                   "paths": ["center/schema.sql", "center/routed.go"]}})
+        m.update(over)
+        return {"machines": [m]}
+
+    def test_stored_states_have_a_distinct_source_and_rendered_values(self):
+        data = self.stored_machine()
+        rep = cd.Report()
+        cd.check_machines(rep, self.model, data)
+        self.assertEqual(rep.errors, [])
+        text = cd.render_machines(data)
+        self.assertIn("non-wire stored states", text)
+        self.assertIn("`NEW=1`", text)
+        self.assertIn("`example/Cloud@" + "a" * 40 + "`", text)
+        self.assertNotIn("Enum: `arcforges.node.v1.ThingState`", text)
+
+    def test_stored_states_need_exactly_one_authority(self):
+        for data in (self.stored_machine(enum="arcforges.node.v1.ThingState"), self.machine(state_values={"NEW": 1}),
+                     self.machine(enum=None)):
+            with self.subTest(data=data):
+                rep = cd.Report()
+                cd.check_machines(rep, self.model, data)
+                self.assertNotEqual(rep.errors, [])
+        data = self.machine()
+        del data["machines"][0]["enum"]
+        rep = cd.Report()
+        cd.check_machines(rep, self.model, data)
+        self.assertTrue(any("exactly one" in e for e in rep.errors), rep.errors)
+        data = self.machine(state_source={"repository": "example/Cloud", "commit": "a" * 40, "paths": ["center/schema.sql"]})
+        rep = cd.Report()
+        cd.check_machines(rep, self.model, data)
+        self.assertTrue(any("enum-backed machines cannot" in e for e in rep.errors), rep.errors)
+
+    def test_stored_states_refuse_invalid_or_ambiguous_values(self):
+        for values in ({}, {"NEW": 1, "DONE": 1}, {"NEW": True, "DONE": 3},
+                       {"NEW": 0, "DONE": 3}, {"NEW": 32768, "DONE": 3}, {"New": 1, "DONE": 3}):
+            with self.subTest(values=values):
+                rep = cd.Report()
+                cd.check_machines(rep, self.model, self.stored_machine(state_values=values))
+                self.assertNotEqual(rep.errors, [])
+
+    def test_stored_states_require_an_immutable_safe_source(self):
+        source = {"repository": "example/Cloud", "commit": "a" * 40, "paths": ["center/schema.sql"]}
+        invalid = [None, {}, {**source, "extra": "x"}, {**source, "commit": "a" * 12},
+                   {**source, "repository": "../Cloud"}, {**source, "commit": "0" * 40}, {**source, "paths": []},
+                   {**source, "paths": ["../schema.sql"]}, {**source, "paths": ["/absolute.sql"]},
+                   {**source, "paths": ["center/x", "center/x"]}, {**source, "paths": [False]},
+                   {**source, "commit": "A" * 40}]
+        for value in invalid:
+            with self.subTest(source=value):
+                rep = cd.Report()
+                cd.check_machines(rep, self.model, self.stored_machine(state_source=value))
+                self.assertTrue(any("repository, full commit and safe source paths" in e for e in rep.errors), rep.errors)
+
+    def test_stored_states_require_exact_coverage_and_reachability(self):
+        cases = [
+            (self.stored_machine(state_values={"NEW": 1, "DONE": 3, "MISSING": 8}), "never used"),
+            (self.stored_machine(transitions=[{"from": ["NEW"], "to": "EXTRA", "on": "x"}], terminal=["EXTRA"]), "not in"),
+            (self.stored_machine(state_values={"NEW": 1, "DONE": 3, "LOST": 8}, transitions=[
+                {"from": ["NEW"], "to": "DONE", "on": "x"}, {"from": ["LOST"], "to": "DONE", "on": "x"}]), "unreachable"),
+            (self.stored_machine(transitions=[{"from": ["NEW"], "to": "DONE", "on": "x"},
+                                               {"from": ["DONE"], "to": "NEW", "on": "x"}]), "without reopen"),
+        ]
+        for data, message in cases:
+            with self.subTest(message=message):
+                rep = cd.Report()
+                cd.check_machines(rep, self.model, data)
+                self.assertTrue(any(message in e for e in rep.errors), rep.errors)
+
+    def test_stored_states_cannot_use_enum_only_exemptions(self):
+        for field in ("pseudo_states", "response_only"):
+            rep = cd.Report()
+            cd.check_machines(rep, self.model, self.stored_machine(**{field: ["OTHER"]}))
+            self.assertTrue(any("enum-only" in e for e in rep.errors), rep.errors)
+
 
 class RepositoryState(unittest.TestCase):
     def test_repository_checks_pass(self):

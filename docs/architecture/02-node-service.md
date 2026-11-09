@@ -44,7 +44,7 @@ flowchart TB
 | Session registry | `ArcForges.Node.Core` | Agent sessions, subagents, client connections, process ancestry roots |
 | Policy engine | `ArcForges.Node.Core` | Revisioned policy documents, effective-policy evaluation per scope |
 | Peer subsystem | `ArcForges.Node.Peer` | Discovery, pairing, mTLS listener, placement, transfer, cache endpoint |
-| Cloud link | `ArcForges.Node.CloudLink` | Sign-in flows, device credential, entitlement token, relay connection, command verification |
+| Cloud link | `ArcForges.Node.CloudLink` | Sign-in and node credential, outbound Go-center channel, hello proof, command-key refresh and signed call/result verification; the local Fleet proxy obtains relay nonces and signs caller assertions |
 | Updater | `ArcForges.Node.Updates` | Manifest checks, staging, switching, health check, rollback |
 
 **Concurrency rules.**
@@ -116,7 +116,7 @@ If the connection fails with not-found or refused, the client starts the node de
 
 The client waits for readiness up to 5 s (CLI) or 15 s (Desktop, MCP adapter), then performs the **client hello** (`NodeService.Hello`): client kind, version, contract version, process ID and, for the MCP adapter and hooks, the agent process hints.
 
-**Feature tokens.** The node lists the optional features it serves in `NodeInfo.features`, and clients feature-detect with them ([contracts](../contracts/README.md) §7). Delivered: `account.sign_in.v1` (AF-CTR-04 part N2, ArcForges #69): the node serves the sign-in methods `AccountService.BeginSignIn`, `GetSignInFlow` and `CancelSignIn`.
+**Feature tokens.** The node lists the optional features it serves in `NodeInfo.features`, and clients feature-detect with them ([contracts](../contracts/README.md) §7). Delivered: `account.sign_in.v1` (AF-CTR-04 part N2, ArcForges #69): the node serves the sign-in methods `AccountService.BeginSignIn`, `GetSignInFlow` and `CancelSignIn`. AF-CTR-05 N1–N3 add the outbound channel, verification and local Fleet proxy; a caller uses its node's local endpoint and does not hold a center credential. Node policy remains the final authority before an effect ([11](11-security-privacy.md) §1).
 
 ## 4. Configuration
 

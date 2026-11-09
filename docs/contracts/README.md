@@ -4,7 +4,7 @@ Decision: [AD-0004](../decisions/AD-0004-contracts-and-state.md). Protobuf is ca
 
 **Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target until each AF-CTR task is delivered).** Business decisions are made by the Go center (not the C# host), which consumes Go bindings generated from these protos in the Contracts repository (AF-CTR-01, delivered 2026-10-28: module `github.com/ArcForges/Contracts/go`, published as `go/v<cohort version>` with each NuGet cohort, first `go/v1.0.0-ci.410.1`); node connections terminate in the Go center instead of `FleetHub`. `arcforges.peer.v1` stays in `v1`, compatible and not served.
 
-The `.proto` files under [proto/](proto/) are the **specification**. Task AF-CON-01 adopts them into the Contracts repository unchanged, apart from placement:
+The `.proto` files under [proto/](proto/) mirror the Contracts specification. AF-CON-01 adopted the original files into Contracts; AF-CTR-05 K2 updates six mirrors byte-for-byte to Contracts commit `e67a6b089a7270ab771a97c27aeba92c5d3b0469` (cohort `1.0.0-ci.437.1`). The placement is:
 - `node`, `fleet` → `public/proto`;
 - `peer`, `relay` → `internal/proto`.
 
@@ -16,10 +16,10 @@ The files compile with the protoc bundled in Grpc.Tools 2.84.0 (libprotoc 35.1) 
 |---|---|---|---|---|---|
 | `arcforges.node.v1` | 20 files, 19 services | `ArcForges.Contracts.Node.V1` / `ArcForges.Contracts.Node` | gRPC over HTTP/2 on a named pipe or Unix socket (DesktopPlatform LocalRpc service-endpoint mode) | One node | CLI, Desktop, MCP adapter, hook handler, probe; relay commands mapped internally |
 | `arcforges.peer.v1` | `peer.proto`, 6 services | `ArcForges.Contracts.Peer.V1` / `ArcForges.Contracts.Peer` (internal) | gRPC over HTTP/2 with TLS 1.3 mTLS on TCP 47820 (`GuestLinkService`, formerly carried over the WSL bridge byte stream, is retired: §7) | Node ↔ node | Paired peers |
-| `arcforges.fleet.v1` | `fleet.proto`, 3 services | `ArcForges.Contracts.Fleet.V1` / `ArcForges.Contracts.Fleet` | Binary gRPC-Web through the Worker ingress to the C# host; `WatchFleet` as gRPC-Web text streaming | Cloud | Nodes (node credential), web and Android (account session), unauthenticated flow endpoints |
-| `arcforges.relay.v1` | `relay.proto`, messages only | `ArcForges.Contracts.Relay.V1` / `ArcForges.Contracts.Relay` (internal) | Protobuf binary WebSocket messages; the DO ↔ C# internal container route | Relay | Nodes, viewers, `FleetHub`, C# host |
-| `arcforges.publicapi.v1` (additive) | `support_access.proto`, 1 new service (`SupportAccessService`); the reused services are unchanged | `ArcForges.Contracts.PublicApi.V1` (the package's existing namespace) | Binary gRPC-Web through the Worker ingress to the C# host | Cloud | Web Account profile (account session) |
-| `arcforges.operator.v1` (additive) | `operator_read.proto`, 1 new service (`OperatorReadService`); the reused `OperatorService` is unchanged | `ArcForges.Contracts.CloudInternal.Operator.V1` (the package's existing namespace; internal) | Binary gRPC-Web from the Operations profile to the C# host | Cloud | Operators (operator session with step-up) |
+| `arcforges.fleet.v1` | `fleet.proto`, 3 services | `ArcForges.Contracts.Fleet.V1` / `ArcForges.Contracts.Fleet` | Binary gRPC-Web through the Worker ingress to the Go center; `WatchFleet` remains an unserved contract | Cloud | Nodes and node-relayed local clients; future web and Android |
+| `arcforges.relay.v1` | `relay.proto`, messages only | `ArcForges.Contracts.Relay.V1` / `ArcForges.Contracts.Relay` (internal) | Protobuf binary WebSocket messages between the node and Go center, through the Worker for hosted mode | Relay | Nodes and the Go hub; viewers are not built |
+| `arcforges.publicapi.v1` (additive) | `support_access.proto`, 1 new service (`SupportAccessService`); the reused services are unchanged | `ArcForges.Contracts.PublicApi.V1` (the package's existing namespace) | Planned binary gRPC-Web through the Worker to the Go center; `SupportAccessService` is not yet served | Cloud | Future Web Account profile |
+| `arcforges.operator.v1` (additive) | `operator_read.proto`, 1 new service (`OperatorReadService`); the reused `OperatorService` is unchanged | `ArcForges.Contracts.CloudInternal.Operator.V1` (the package's existing namespace; internal) | Planned binary gRPC-Web from the Operations profile to the Go center; `OperatorReadService` is not yet served | Cloud | Future operator profile |
 
 Reused contracts are listed in [reuse-map.md](reuse-map.md). The method-by-method index is [api-catalogue.md](api-catalogue.md), generated from the protos.
 
