@@ -13,6 +13,7 @@ Method annotations name codes as `CATEGORY/code` ([README](README.md) §4). `too
 - `INTERNAL/internal`;
 - `RESOURCE/overloaded`;
 - for local node methods: `STATE/node_stopping`;
+- for the AF-CTR-06 FileService/WorkspaceService operations and their explicitly routed Fleet counterparts only: `RESOURCE/too_large` for the write, edit, path and plan resource maxima in [06a §4](../architecture/06a-node-files.md#4-permissions-and-conflicterror-contract), with the actual applicable limit. This narrow annotation erratum includes the outer Fleet refusal omitted from the published `1.0.0-ci.450.1` method comments; it does not change the wire envelope or make every field-validation failure a resource error;
 - for cloud methods: `AUTHENTICATION/unauthenticated`, `RESOURCE/rate_limited`, and `STATE/not_activated` while the method's surface is not activated in production ([10](../architecture/10-cloud.md) §8);
 - for a mutation deduplicated under a command receipt: `CONFLICT/command_id_reused` ([README](README.md) §6). The Go center answers it for every method it serves under a receipt, among them `ApproveDeviceCode`, `ReportNodeInfo` and `SignOutNode` (AF-CTR-04, Cloud #130 and #134), whose annotations do not name it.
 

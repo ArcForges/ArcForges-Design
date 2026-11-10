@@ -84,7 +84,7 @@ Every RPC carries structured comments, which `tools/check_design.py` verifies an
 | `locality:` | Where the call executes: `node`, `node -> cloud`, `peer`, `cloud`, `cloud -> relay -> node`; `guest` appears only on the retired surfaces of §7 |
 | `state:` | Optional state-machine transitions caused ([state-machines](../state-machines/README.md)) |
 
-**Field validation** appears as a trailing `// validate:` comment on request and input fields. A violation returns `VALIDATION/invalid_argument`, with the field path in `details.state.reason`.
+**Field validation** appears as a trailing `// validate:` comment on request and input fields. A violation returns `VALIDATION/invalid_argument`, with the field path in `details.state.reason`. The bounded AF-CTR-06 file/workspace resource maxima are the explicit exception in [06a §4](../architecture/06a-node-files.md#4-permissions-and-conflicterror-contract): an otherwise decodable request exceeding a write, edit, path or plan maximum returns `RESOURCE/too_large` with its actual applicable limit at the deciding node or Fleet layer. The error catalogue records the narrow `450.1` annotation erratum as an implicit code; published artifacts remain immutable.
 
 ## 5. Authorization and identity
 
