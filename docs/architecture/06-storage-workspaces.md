@@ -39,6 +39,8 @@ A directory found under a managed sub-root without a record is reported as `UNTR
 
 **Amended 2026-11-09 (AF-CTR-06 target).** The registration, origin, durable root identity and ordinary center route in [06a](06a-node-files.md) supersede the older registration-origin and automatic-registration wording below. In particular AGENT and SCRIPT cannot cause registration, including indirectly through a task. Managed worktrees remain AF-WS-01.
 
+**Superseding AF-CTR-06 process scope, 2026-11-13 (user decision).** For the restricted cleanup delivered by AF-CTR-06, [06a §5](06a-node-files.md) now requires coordination only of ArcForges itself and its managed child processes. Its managed attempts, sessions, pins and leases still block conflicting cleanup, and observed identity/plan changes still refuse. Independent processes, their open handles/mappings and namespace mutations are outside this acceptance boundary; the previous paragraph's global exclusion requirement and Linux blocker no longer apply. Implement actual cleanup within this scope on both hosts, retaining the existing permission, approval, quarantine, receipt/audit and recovery behavior. The task may complete once those agreed checks pass; blanket refusal is not a replacement for available functionality. This does not extend AF-CTR-06 into the general AF-STOR-01 analyzer, purge or restore services.
+
 | Kind | Created by | Identity | Removal |
 |---|---|---|---|
 | `REGISTERED` | User (CLI, Desktop) or automatically on the first task whose working directory is inside a git repository (policy `auto_register=true`) | `git rev-parse --git-common-dir` plus remote URLs (hashed) and the root path; for non-git roots, the canonical path | Unregister only (never deletes files) |
