@@ -36,7 +36,7 @@ ACTIONLINT = (
     "echo \"$sum  $t.part\" | sha256sum --check --quiet; mv \"$t.part\" \"$t\"; fi; "
     "echo \"$sum  $t\" | sha256sum --check --quiet; "
     "mkdir -p \"$d/actionlint-$v\"; tar -xzf \"$t\" -C \"$d/actionlint-$v\" actionlint; "
-    "\"$d/actionlint-$v/actionlint\""
+    "\"$d/actionlint-$v/actionlint\" -config-file eng/actionlint.yaml"
 )
 
 
@@ -49,9 +49,11 @@ def select_profile(changed: list[str]) -> str:
 
 
 STEPS = [
+    Step("win-toolchain", "win", ["python", "eng/check_toolchain.py"], timeout=60, env=ENV),
     Step("win-restore", "win", RESTORE.split(), timeout=600, env=ENV),
     Step("win-design-check", "win", CHECK.split(), timeout=1200, env=ENV),
     Step("win-tool-tests", "win", TESTS.split(), timeout=600, env=ENV),
+    Step("linux-toolchain", "linux", "python eng/check_toolchain.py", timeout=60, env=ENV),
     Step("linux-restore", "linux", RESTORE, timeout=600, env=ENV),
     Step("linux-design-check", "linux", CHECK, timeout=1200, env=ENV),
     Step("linux-tool-tests", "linux", TESTS, timeout=600, env=ENV),

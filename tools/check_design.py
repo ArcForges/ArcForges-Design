@@ -419,28 +419,45 @@ def check_v2_namespaces(rep: Report, files: list[Path]) -> None:
 
 
 def find_protoc() -> tuple[str | None, str | None]:
-    exe = os.environ.get("ARCFORGES_PROTOC") or shutil.which("protoc")
-    inc = os.environ.get("ARCFORGES_PROTOC_INCLUDE")
-    if not exe:
-        base = Path.home() / ".nuget" / "packages" / "grpc.tools"
-        if base.is_dir():
-            versions = sorted(base.iterdir(), key=lambda p: [int(x) for x in re.findall(r"\d+", p.name)])
-            for v in reversed(versions):
-                sub = "windows_x64" if os.name == "nt" else "linux_x64"
-                cand = v / "tools" / sub / ("protoc.exe" if os.name == "nt" else "protoc")
-                if cand.exists():
-                    if os.name != "nt" and not os.access(cand, os.X_OK):
-                        cand.chmod(0o755)  # NuGet extraction drops the execute bit
-                    exe = str(cand)
-                    inc = inc or str(v / "build" / "native" / "include")
-                    break
-    return exe, inc
+    toolchain = ROOT / "tools" / "proto-toolchain"
+    lock = json.loads(read(toolchain / "packages.lock.json"))
+    versions = {packages["Grpc.Tools"]["resolved"] for packages in lock["dependencies"].values()
+                if "Grpc.Tools" in packages}
+    if len(versions) != 1:
+        raise ValueError("proto lockfile must resolve exactly one Grpc.Tools version")
+    version = versions.pop()
+    assets = toolchain / "obj" / "project.assets.json"
+    roots = list(json.loads(read(assets)).get("packageFolders", {})) if assets.is_file() else []
+    if not roots:
+        roots = [os.environ.get("NUGET_PACKAGES", str(Path.home() / ".nuget" / "packages"))]
+    sub = "windows_x64" if os.name == "nt" else "linux_x64"
+    for root in roots:
+        package = Path(root) / "grpc.tools" / version
+        exe = package / "tools" / sub / ("protoc.exe" if os.name == "nt" else "protoc")
+        inc = package / "build" / "native" / "include"
+        if not exe.is_file() or not inc.is_dir():
+            continue
+        for variable, expected in (("ARCFORGES_PROTOC", exe), ("ARCFORGES_PROTOC_INCLUDE", inc)):
+            override = os.environ.get(variable)
+            if override and Path(override).resolve() != expected.resolve():
+                raise ValueError(f"{variable} conflicts with locked Grpc.Tools {version}; remove the override")
+        if os.name != "nt" and not os.access(exe, os.X_OK):
+            exe.chmod(0o755)  # NuGet extraction drops the execute bit
+        # PATH and other cached versions never select the generator; the plugin is its locked sibling.
+        return str(exe), str(inc)
+    if os.environ.get("ARCFORGES_PROTOC") or os.environ.get("ARCFORGES_PROTOC_INCLUDE"):
+        raise ValueError(f"locked Grpc.Tools {version} is missing; overrides cannot replace it")
+    return None, None
 
 
 def run_protoc(rep: Report, files: list[Path], require: bool, out_dir: Path | None = None) -> bool:
-    exe, inc = find_protoc()
+    try:
+        exe, inc = find_protoc()
+    except ValueError as error:
+        rep.error(str(error))
+        return False
     if not exe:
-        (rep.error if require else rep.note)("protoc not found (set ARCFORGES_PROTOC); proto compilation skipped")
+        (rep.error if require else rep.note)("locked protoc not found; restore tools/proto-toolchain/ProtoToolchain.csproj --locked-mode")
         return False
     args = [exe, f"-I{PROTO_DIR}", f"-I{REF_DIR}"]
     if inc:
@@ -454,16 +471,22 @@ def run_protoc(rep: Report, files: list[Path], require: bool, out_dir: Path | No
     if res.returncode != 0:
         rep.error("protoc failed:\n" + res.stderr.strip())
         return False
-    rep.note(f"protoc compiled {len(files)} files ({Path(exe).name})")
+    rep.note(f"locked protoc compiled {len(files)} files ({exe})")
     return True
 
 
 def compile_csharp(rep: Report, files: list[Path]) -> None:
-    exe, inc = find_protoc()
+    try:
+        exe, inc = find_protoc()
+    except ValueError as error:
+        rep.error(str(error))
+        return
     plugin = None
     if exe:
         cand = Path(exe).with_name("grpc_csharp_plugin.exe" if os.name == "nt" else "grpc_csharp_plugin")
         plugin = str(cand) if cand.exists() else None
+        if plugin and os.name != "nt" and not os.access(cand, os.X_OK):
+            cand.chmod(0o755)  # Same locked NuGet payload as protoc.
     if not exe or not plugin or not shutil.which("dotnet"):
         rep.error("--compile needs protoc, grpc_csharp_plugin and dotnet")
         return
@@ -479,10 +502,10 @@ def compile_csharp(rep: Report, files: list[Path]) -> None:
             rep.error("C# generation failed: " + res.stderr.strip())
             return
         proj = Path(tmp) / "check.csproj"
-        proj.write_text("""<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework>
+        proj.write_text("""<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net11.0</TargetFramework>
 <Nullable>disable</Nullable><ImplicitUsings>disable</ImplicitUsings><IsAotCompatible>true</IsAotCompatible>
 <TreatWarningsAsErrors>true</TreatWarningsAsErrors><NoWarn>CS1591</NoWarn></PropertyGroup>
-<ItemGroup><PackageReference Include="Google.Protobuf" Version="3.36.1" /><PackageReference Include="Grpc.Core.Api" Version="2.84.0" /></ItemGroup></Project>""", encoding="utf-8")
+<ItemGroup><PackageReference Include="Google.Protobuf" Version="3.36.2" /><PackageReference Include="Grpc.Core.Api" Version="2.85.0" /></ItemGroup></Project>""", encoding="utf-8")
         res = subprocess.run(["dotnet", "build", str(proj), "-c", "Release", "-nologo", "-v", "q"], capture_output=True, text=True)
         if res.returncode != 0:
             rep.error("generated C# failed to build:\n" + (res.stdout + res.stderr)[-4000:])

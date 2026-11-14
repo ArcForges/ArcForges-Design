@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "task": "AFV2-ENV-01",
+  "repository": "ArcForges-Design",
+  "observed_at": "2026-11-14T15:05:49.650196+00:00",
+  "scope": "Current build/verification only; frozen history and dated MXC/source research retain original identities.",
+  "tools": [
+    {
+      "name": "Python",
+      "version": "3.15.2",
+      "selector": ".python-version",
+      "source": "https://www.python.org/downloads/release/python-3152/",
+      "platforms": [
+        "windows-x64",
+        "linux-x64"
+      ],
+      "packages": "Standard library only; no pip dependencies or package installation in this repository"
+    },
+    {
+      "name": ".NET SDK",
+      "version": "11.0.100",
+      "runtime": "11.0.0",
+      "selector": "global.json",
+      "source": "https://builds.dotnet.microsoft.com/dotnet/release-metadata/11.0/releases.json",
+      "rollForward": "disable",
+      "allowPrerelease": false
+    }
+  ],
+  "dependencies_and_actions": [
+    {
+      "kind": "nuget",
+      "name": "Google.Protobuf",
+      "version": "3.36.2",
+      "source": "https://api.nuget.org/v3-flatcontainer/google.protobuf/index.json"
+    },
+    {
+      "kind": "nuget",
+      "name": "Grpc.Core.Api",
+      "version": "2.85.0",
+      "source": "https://api.nuget.org/v3-flatcontainer/grpc.core.api/index.json"
+    },
+    {
+      "kind": "nuget",
+      "name": "Grpc.Tools",
+      "version": "2.85.0",
+      "source": "https://api.nuget.org/v3-flatcontainer/grpc.tools/index.json"
+    },
+    {
+      "kind": "github-release",
+      "name": "actions/checkout",
+      "version": "v7.0.1",
+      "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+      "source": "https://api.github.com/repos/actions/checkout/releases/latest",
+      "published_at": "2026-07-20T15:10:05Z"
+    },
+    {
+      "kind": "github-release",
+      "name": "actions/setup-python",
+      "version": "v7.1.0",
+      "commit": "6d4fd22b20465ccc0f7354476588e8df7c9ca0e0",
+      "source": "https://api.github.com/repos/actions/setup-python/releases/latest",
+      "published_at": "2026-10-22T02:56:04Z"
+    },
+    {
+      "kind": "github-release",
+      "name": "actions/setup-dotnet",
+      "version": "v6.1.0",
+      "commit": "0f4a354dd5547a28c70b7853dbd95d5b67886e73",
+      "source": "https://api.github.com/repos/actions/setup-dotnet/releases/latest",
+      "published_at": "2026-11-03T02:51:23Z"
+    },
+    {
+      "kind": "github-release",
+      "name": "rhysd/actionlint",
+      "version": "v1.7.12",
+      "commit": "914e7df21a07ef503a81201c76d2b11c789d3fca",
+      "source": "https://api.github.com/repos/rhysd/actionlint/releases/latest",
+      "published_at": "2026-03-30T17:49:21Z",
+      "artifact": {
+        "name": "actionlint_1.7.12_linux_amd64.tar.gz",
+        "url": "https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz",
+        "digest": "sha256:8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8"
+      },
+      "applies_to": "Linux host, when workflows change"
+    }
+  ],
+  "ci_venue": {
+    "runner": "ubuntu-26.04",
+    "source": "https://github.com/actions/runner-images",
+    "note": "Latest available stable Ubuntu runner OS label at lookup; hosted weekly image revision is service-managed and recorded by Actions, not an immutable container digest. Native Linux remains the designated Debian host; version parity applies to applicable tools and dependencies.",
+    "actionlint_compatibility": {
+      "config": "eng/actionlint.yaml",
+      "reason": "Latest stable actionlint 1.7.12 predates the official hosted Ubuntu 26.04 label; add exactly that documented label through its supported label configuration. No diagnostic filter or alternate venue.",
+      "source": "https://github.com/rhysd/actionlint/blob/main/docs/config.md"
+    }
+  },
+  "containers": [],
+  "other_language_manifests": [],
+  "lockfile": {
+    "path": "tools/proto-toolchain/packages.lock.json",
+    "sha256": "b1631c0c444c703cf9c74226ef6daf1fc2e9450e69f7b3c24e365a822eb99fde",
+    "closure": "net11.0: Google.Protobuf 3.36.2, Grpc.Core.Api 2.85.0 and Grpc.Tools 2.85.0; no additional transitive entries"
+  },
+  "local_ci_parity": {
+    "preflight": "python eng/check_toolchain.py",
+    "checks": [
+      "Invoking and PATH Python equal .python-version",
+      "Selected dotnet SDK equals exact global.json version",
+      "MSBuildSDKsPath, when set, belongs to selected SDK",
+      "Lockfile SHA256 recorded; restore uses --locked-mode",
+      "protoc, C# plugin and includes bind to the lockfile's exact Grpc.Tools package; PATH/higher cached versions cannot select them and conflicting explicit overrides fail"
+    ],
+    "required_evidence": "Exact pushed-head native Windows/Linux summaries and independent review, recorded in the PR; author diagnostics are not these statuses"
+  },
+  "author_evidence": [
+    "Native Windows new SDK/proto package restore succeeded; protoc generation and generated C# compilation completed with zero warnings under IsAotCompatible",
+    "39 affected Design tests and three real-tool version-preflight tests passed; explicit old interpreter must fail preflight",
+    "Four generator-selection regressions passed; an actual installed Grpc.Tools 2.84.0 override is rejected before compilation"
+  ],
+  "rollback": "Revert selectors, source compatibility changes and lockfile together on a reviewed branch; preserve installed old SDK/Python versions and historical evidence. This repository publishes no runtime product package."
+}

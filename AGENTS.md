@@ -32,6 +32,7 @@ This repository is the **V2 design authority** for ArcForges under AD-0022, supp
      Fetch `refs/pull/<n>/head` for a pull request from a fork, and only after reading its diff (the host runs its code).
    - **What runs.** The command runs this host's leg of the commit, exactly what `design.yml` runs:
      - the locked restore of `tools/proto-toolchain/ProtoToolchain.csproj`;
+     - exact Python/.NET selection and lockfile fingerprint via `python eng/check_toolchain.py` before restore;
      - `python tools/check_design.py --require-protoc --compile`;
      - `python -m unittest discover -s tests -v`;
      - `actionlint` on Linux when `.github/workflows/**` changed.

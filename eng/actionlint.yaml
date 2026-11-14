@@ -1,0 +1,6 @@
+# actionlint 1.7.12 predates this official hosted runner label.
+# Source: https://github.com/actions/runner-images (Ubuntu 26.04, reviewed 2026-11-14).
+# The configuration key adds exactly this label; it does not select a self-hosted venue or ignore diagnostics.
+self-hosted-runner:
+  labels:
+    - ubuntu-26.04
