@@ -1,6 +1,6 @@
 # Agent instructions: ArcForges-Design
 
-This repository is the **V2 design authority** for ArcForges under AD-0022. The frozen history is non-normative evidence. The delivery plan, ledger and procedures live in `ArcForges/Plan`; read its `AGENTS.md` before any delivery work.
+This repository is the **V2 design authority** for ArcForges under AD-0022, supplemented by AD-0023 for current dependency upgrades and local/CI parity. The frozen history is non-normative evidence. The delivery plan, ledger and procedures live in `ArcForges/Plan`; read its `AGENTS.md` before any delivery work.
 
 ## Rules
 

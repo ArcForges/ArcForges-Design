@@ -11,6 +11,7 @@ Read this index and [AD-0022](decisions/AD-0022-cli-sandbox-platform-pivot.md) f
 | Security | [08 Trust](architecture/08-security-trust.md) |
 | Remote product | [09 Go Center](architecture/09-go-center.md), [10 Blazor](architecture/10-blazor-dashboard.md), [11 Identity and commerce](architecture/11-identity-commerce.md) |
 | Delivery | [12 Distribution](architecture/12-distribution-updates.md), [verification](verification/platform-capabilities.md), [acceptance](verification/acceptance.md) |
+| Dependency baseline | [AD-0023](decisions/AD-0023-current-dependency-baseline.md): documents merge first, then all current dependencies upgrade with local/CI parity |
 | Wire and storage | [API conventions](contracts/README.md), [catalogue](contracts/api-catalogue.md), [errors](contracts/errors.md), [Node store](data/node-store.md), [Center store](data/cloud-store.md), [migrations](data/migrations.md), [state machines](state-machines/README.md) |
 | Migration evidence | [Baseline](research/baseline.md), [local audit](research/runtime-audit.md), [cloud audit](research/cloud-audit.md), [disposition](reuse/disposition.md), [traceability](traceability/model.json) |
 
