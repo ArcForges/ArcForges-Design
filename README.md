@@ -13,3 +13,5 @@ All earlier product definitions, task contracts, AI/MCP routing, cache platforms
 ## Contributing and validation
 
 Work in `design/<topic>` worktrees. Update the schema and traceability together. Run `python tools/check_design.py --write` to generate the API catalogue and state-machine index; run `python tools/check_design.py --plan <Plan>/delivery-graph.json` to cross-check requirements. Required Windows/Linux host verification, independent review, and Design-before-Plan merge order remain in force; see [AGENTS.md](AGENTS.md). No product code belongs in this repository.
+
+Current tool versions are pinned by `.python-version`, `global.json` and the proto-toolchain project/lockfile. Run `python eng/check_toolchain.py` before restoring: both the invoking and PATH Python must match, and a conflicting `MSBuildSDKsPath` is rejected. The same check runs in CI and both native profiles. See [dependency inventory](docs/dependency-upgrade/current.json) for upstream sources and platform applicability; historical source/acceptance snapshots retain their original versions.

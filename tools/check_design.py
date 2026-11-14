@@ -479,10 +479,10 @@ def compile_csharp(rep: Report, files: list[Path]) -> None:
             rep.error("C# generation failed: " + res.stderr.strip())
             return
         proj = Path(tmp) / "check.csproj"
-        proj.write_text("""<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework>
+        proj.write_text("""<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net11.0</TargetFramework>
 <Nullable>disable</Nullable><ImplicitUsings>disable</ImplicitUsings><IsAotCompatible>true</IsAotCompatible>
 <TreatWarningsAsErrors>true</TreatWarningsAsErrors><NoWarn>CS1591</NoWarn></PropertyGroup>
-<ItemGroup><PackageReference Include="Google.Protobuf" Version="3.36.1" /><PackageReference Include="Grpc.Core.Api" Version="2.84.0" /></ItemGroup></Project>""", encoding="utf-8")
+<ItemGroup><PackageReference Include="Google.Protobuf" Version="3.36.2" /><PackageReference Include="Grpc.Core.Api" Version="2.85.0" /></ItemGroup></Project>""", encoding="utf-8")
         res = subprocess.run(["dotnet", "build", str(proj), "-c", "Release", "-nologo", "-v", "q"], capture_output=True, text=True)
         if res.returncode != 0:
             rep.error("generated C# failed to build:\n" + (res.stdout + res.stderr)[-4000:])
