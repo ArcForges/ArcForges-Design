@@ -14,7 +14,7 @@ Required native host checks use the unchanged repository eng/verify.py profiles 
 
 | Layer | What proves it | Owner |
 |---|---|---|
-| Current dependency baseline | Complete official-source version/artifact inventory, compatible shared producers/consumers, local/CI fingerprints and exact-head required native profiles for all seven delivery repositories | AFV2-ENV-01 |
+| Current dependency baseline | Complete official-source version/artifact and selected/actual-closure inventory, compatible shared producers/consumers, local/CI fingerprints and exact-head required native profiles for all seven delivery repositories; only the owner-approved named Contracts Go qualifications in AD-0023 apply, with final candidate measurements on both applicable platforms | AFV2-ENV-01 |
 | Official engine admission | Exact stable artifact/source/license/AOT receipt and full composed Windows/Linux tests | AFV2-MXC-01..04 |
 | Core state and receipts | Real stores, locks, failure points, identity/revision/dedup and state-transition tests | AFV2-DATA-01, AFV2-CORE-01, AFV2-CORE-02, AFV2-REC-01 |
 | Terminal | Real TTY detection, full-screen redraw, Ctrl+C, resize, EOF, exclusive writer, detach and output GAP | AFV2-CORE-03, AFV2-CLI-02 |
