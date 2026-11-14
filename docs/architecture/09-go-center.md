@@ -1,6 +1,6 @@
 # Go Center and remote management
 
-Status: V2 target design. The existing Go identity, enrollment and channel are reusable implementations; the Sandbox/Run APIs and Dashboard described here are not yet delivered. Implementation owners: `AFV2-CENTER-01` through `AFV2-CENTER-03`, with contracts from `AFV2-API-01` and migration qualification from `AFV2-MIG-01`.
+Status: V2 target design. The existing Go identity, enrollment and channel are reusable implementations; the Sandbox/Run APIs and Dashboard described here are not yet delivered. `AFV2-BASE-01` owns the initial inventory, `AFV2-CENTER-01` the guarded PostgreSQL transition, `AFV2-CENTER-02` enrollment/channel, `AFV2-CENTER-03` typed control and `AFV2-CENTER-04` bounded streams/data. Contracts come from `AFV2-API-01`; `AFV2-MIG-01` is the final consumer/runtime cutover, not an early prerequisite of those Center tasks.
 
 ## 1. Responsibility and composition
 
@@ -36,6 +36,10 @@ Ordinary Cloud operators can administer service health and billing without an au
 
 Reuse the implemented browser loopback/PKCE flow and device-code flow. Keep one-use code semantics, Node key proof, strict refresh-token rotation, credential-family revocation, step-up on enrollment approval, origin/audience binding and prevention of cross-account Node reuse. Device-code polling is a sign-in mechanism for a generic CLI, not a mobile product dependency.
 
+`AFV2-CENTER-02` owns the working local center-control adapter and CLI after `AFV2-CLI-01`; earlier CLI delivery registers no placeholder connection commands. The local-only `CenterControlService` maps status to `GetStatus`, connect to `BeginConnect` plus bounded `GetConnectFlow`, cancellation to `CancelConnect`, disconnect to `Disconnect` and signout to `SignOut`. The four mutating methods preserve the original owner epoch and durable command identity. They reuse `CloudLinkService`, `SignInOrchestrator` and protected credential/control-file internals without retaining the old Node.v1 dispatcher or adding credential values to SQLite.
+
+Connect either resumes an admitted connection or returns an asynchronous sign-in flow; cancel affects only that pending flow. Disconnect disables the link and cancels its flow while retaining credentials for an explicit reconnect. Signout ends local credentials and reports remote revocation uncertainty separately when the Center cannot acknowledge. None of these actions stops local Runs or deletes Sandbox data. All six methods are owner-authenticated local IPC and are excluded from the Center's remote allowlist.
+
 The V2 channel uses a separate protocol version and signature-domain strings. It does not reinterpret `relay.v1` task enums as Sandbox operations. Capability negotiation states the protocol/cohort, OS/backend, supported operations and terminal/resource restrictions. It reports proof status for the complete admitted backend/profile combination: individual MXC and OS features do not establish that their composition works. Unknown mandatory capabilities fail with `upgrade_required`; unsupported or unproven combinations disable the affected operation with a precise reason and no weaker fallback. Platform capabilities, including ingress limitations, are independent of hosted/self-hosted subscription mode. The final V2 runtime serves no old Task/Fleet file routing endpoint.
 
 | Channel condition | Center behavior | Node behavior |
@@ -52,7 +56,7 @@ Reuse the current bounded challenge, heartbeat, send queue, frame rate, in-fligh
 
 ## 4. Public management operations
 
-The core contract namespace is `arcforges.sandbox.v2`. Services are `NodeService`, `SandboxService`, `RunService`, `ResourceService` and `DataService`; cloud device registration is `arcforges.management.v2`. Local and remote calls have the same Core request validation and result semantics. The remote envelope identifies a Node/enrollment and admits only the explicitly registered remote methods; it is not a generic method-name/JSON/host-command tunneling API.
+The core contract namespace is `arcforges.sandbox.v2`. The remotely eligible service groups are `NodeService`, `SandboxService`, `RunService`, `ResourceService` and `DataService`; cloud device registration is `arcforges.management.v2`. The auxiliary `CenterControlService` is local-only. Local and remote calls have the same Core request validation and result semantics. The remote envelope identifies a Node/enrollment and admits only the explicitly registered remote methods; it is not a generic method-name/JSON/host-command tunneling API.
 
 | Service/action group | Remote permission | Local policy and result |
 |---|---|---|
@@ -67,7 +71,7 @@ The core contract namespace is `arcforges.sandbox.v2`. Services are `NodeService
 | Resource observation | `view` | Timestamped CPU/memory/pressure samples plus requested, effective and verified limits; unavailable values are not zero |
 | Resource policy changes | `resources` | Restricted to locally authorized ceilings and current revision; Core handles rejection or partial backend application |
 | Data import/export and size | `data` | Only Sandbox-relative owned paths; bounded streams and byte limits; no generic host file edit/search API |
-| Operation reconciliation | Original operation's read permission | Query by `command_id`; does not execute, retry or invent a replacement command |
+| Operation reconciliation | Original operation's read permission | Query by original `owner_epoch` and `command_id`; does not execute, retry or invent a replacement command |
 
 The precise generated names and wire fields live in the V2 API specification. This table defines required authorization and routing behavior and must be checked against that catalogue, not maintained as an independent list of implemented methods.
 
@@ -77,7 +81,9 @@ Creation authority must exist before a Sandbox does. A locally created grant wit
 
 ## 5. Idempotency and uncertain outcomes
 
-Every mutation carries a nonzero `command_id`. A command is bound to `(account, enrollment, protocol, method, command_id)` and a canonical intent digest. Canonical intent includes target IDs, configuration revision and payload fields that change the effect; it excludes transport correlation, deadlines, step-up evidence and reissued signatures. Signed transport digests separately cover the exact transmitted bytes. The API contract defines the canonical digest bytes and C#/Go golden vectors.
+Every remotely routed durable mutation carries a nonzero `command_id`. A command is bound to `(account, enrollment, protocol, node_owner_epoch, method, command_id)` and a canonical intent digest. Canonical intent includes target IDs, configuration revision and payload fields that change the effect; it excludes transport correlation, deadlines, step-up evidence and reissued signatures. Signed transport digests separately cover the exact transmitted bytes. The API contract defines the canonical digest bytes and C#/Go golden vectors. Local terminal control is excluded: its acknowledgments live only in supervisor memory and never enter Center receipts.
+
+Every durable Node mutation also carries the original `owner_epoch`, a random 16-byte store authority distinct from channel, enrollment and event epochs. Center binds and retains it with the command identity. A reconnect or fresh Handshake never rewrites an admitted command to a new owner epoch. Reconciliation queries the original epoch/command; a replaced store rejects a retired epoch without an effect. Node receipt bodies can compact after their specified 24-hour window, while command identity remains for the entire admitted owner epoch. A compacted-body response or stale epoch is not permission to issue the same effect with a fresh identity.
 
 Center admission reserves the command in PostgreSQL before it can be delivered. The Node keeps the durable Core receipt and resulting IDs. A matching replay returns or reconciles the original effect; a different intent with the same identity is `command_id_reused`. Account ownership and current permission are rechecked before a replay reveals an old result. Expired authorization is never refreshed by replaying a command.
 
@@ -86,7 +92,7 @@ Center admission reserves the command in PostgreSQL before it can be delivered. 
 | `ACCEPTED` | Durable admission; delivery may not yet be known | Treat as possibly delivered after a crash |
 | `NOT_DELIVERED` | Transport proves no delivery in this or any prior attempt | Caller may explicitly retry the same command under fresh authorization |
 | `SUCCEEDED` / `FAILED` / `REJECTED` | Verified Node result with terminal outcome | Return/query the same result; never execute a new effect |
-| `UNKNOWN` | May have reached Node; no verified terminal result | Query `NodeService.GetOperation(command_id)`; preserve identity and show uncertainty |
+| `UNKNOWN` | May have reached Node; no verified terminal result | Query `NodeService.GetOperation(owner_epoch, command_id)`; preserve identity and show uncertainty |
 | `EXPIRED` | Delivery or replay validity ended | Refuse execution; explain whether earlier effect remains unknown |
 
 The browser never automatically retries a mutation after timeout, disconnect, reload or an unknown effect. It preserves the command identity for reconciliation. Explicit retry is limited to a proven `NOT_DELIVERED` or the contract's same-command recovery path; it never silently replaces the command ID. A state read can be retried with bounded backoff. This command protocol is transport reliability, not the cancelled Task/Attempt automatic-retry system.
@@ -100,6 +106,10 @@ The initial Dashboard uses bounded unary reads and capped long polls over the ex
 Each Node boot/channel snapshot has an epoch and monotonically increasing sequence. A response includes `observed_at`, `received_at`, epoch, sequence and freshness. Center forwards requested detail while the viewer is authorized; it does not permanently collect all filesystem paths or Run output. Registry last-seen data may be persisted; cached live summaries remain bounded and explicitly stale after disconnect.
 
 Pagination and output cursors are opaque, target-bound, versioned and length-bounded. Log cursors also bind Run/output epoch and byte position. A stale cursor returns `cursor_expired` with an available starting point; deleted or evicted data returns an explicit gap. No offset is silently reset to zero. Each read declares maximum bytes and wait duration; Core and Center both cap them. Cancellation of a read releases a call slot and does not stop its Run.
+
+Resource `WatchUsage` has separate sample epoch/sequence metadata and sends complete fresh snapshots. It has no retained-history resume cursor or byte-gap format. Downsampling can skip sample numbers; a slow consumer receives an overload error and a closed stream. Reconnect starts with a current sample and explicit staleness/resynchronization, without fabricating the missing measurements.
+
+Authorized `DataService.InspectTransfer` reads provide asynchronous transfer progress, final manifest digest and `closed_at`; Center never retries `BeginExport` to obtain progress. Materialized `COMPLETE` exports remain range-readable until explicit `CloseTransfer` or expiry, including retry of a lost final range response. Source Runs may resume after materialization, while the retained private snapshot still blocks Sandbox deletion until released.
 
 The Node never waits for a browser to consume output before draining a managed process's terminal/stdio. A bounded local spool and ring policy governs disk use and records truncation. Slow viewers receive gap markers or disconnects without changing Run lifetime. Details are fetched only on demand. Log rendering treats text as untrusted data: no HTML interpretation, external link auto-navigation or terminal escape execution in the ordinary log view.
 
@@ -115,18 +125,21 @@ HTTP/protocol failures preserve the common error category, retry/effect classifi
 
 ## 8. Implementation and deletion sequence
 
-1. `AFV2-API-01`: publish the new contract cohort and C#/Go compatibility vectors. Keep prior artifacts resolvable.
-2. `AFV2-MIG-01`: inventory deployed schema/artifact identities; qualify fresh/schema-10/schema-11 paths, backup/restore and finite rollback boundaries. The current `RequireCTR06SecurityBridge` hard stop must be resolved through a reviewed V2 successor; it is not a flag to bypass.
-3. `AFV2-CENTER-01`: adapt identity, registry and channel capability negotiation; create V2 data grants/receipts while preserving account and key identity. Keep product surfaces dark.
-4. `AFV2-CENTER-02`: register and implement the typed remote mutations and queries, local grant checks and uncertain-outcome reconciliation against real Sandbox Core.
-5. `AFV2-CENTER-03`: implement bounded status/resource/log delivery and revoke/backpressure/failure behavior.
-6. After all consumers have moved, remove Go `fleetapi` task/file/workspace routing, old routed-method enums from active composition, mobile pairing/auth routes, product MCP/AI seams and the C# Center/D1/proof-runtime composition. Keep historical migration inputs and immutable public artifacts as evidence; they are not executable legacy services.
+1. `AFV2-BASE-01` inventories actual source/schema/artifact/consumer identities and creates a read-only preflight. `AFV2-API-01` then publishes the new contract cohort and C#/Go vectors while keeping prior artifacts resolvable.
+2. `AFV2-CENTER-01` implements and qualifies fresh/schema-10/schema-11 PostgreSQL transition, backup/restore, receipt and credential-floor behavior on isolated real stores. The current `RequireCTR06SecurityBridge` hard stop requires a reviewed successor; it is not bypassed or deferred to a late undocumented task. Actual deployment authority remains a separate admission prerequisite.
+3. `AFV2-ID-01` completes bounded recovery/export/deletion on that identity/store foundation. `AFV2-CENTER-02` adapts enrollment, device List/Inspect/Revoke, outbound channels and capability negotiation while preserving account/key identity and default-off local grants.
+4. `AFV2-CENTER-03` registers typed Sandbox/Run/Resource control, local grant/provision checks and durable same-epoch operation reconciliation against real Core. `AFV2-CENTER-04` adds bounded status/resource/log/data delivery and revoke/backpressure/failure handling.
+5. `AFV2-HOST-01` owns official entitlement/self-host mode correctness, `AFV2-HOST-02` web commerce and `AFV2-HOST-03` deployment/operations infrastructure. Web tasks `AFV2-WEB-01` through `AFV2-WEB-04` deliver and qualify the actual Dashboard; an existing probe bundle does not satisfy that outcome.
+6. `AFV2-MIG-01`, after the graph's Core/CLI/file/Center/Web/hosting dependencies, performs the final consumer cutover and removes obsolete Go task/file/workspace/mobile adapters and the C# Center/D1 serving composition. `AFV2-MIG-02` contracts obsolete live schemas through new migrations. Historical SQL, published artifacts and non-executable receipts remain preserved.
+7. `AFV2-DIST-01` assembles and verifies the complete Go/PostgreSQL/Blazor self-host distribution after final cutover, transitively after `AFV2-WEB-04`. Later final acceptance/activation uses that coherent cohort, without treating infrastructure-only delivery as a completed Dashboard.
 
 Retain reusable Go `identity`, `session`, `device`, `entitlement`, `access`, `ingress`, `platform`, `store`, `observe`, `quota` and cryptographic/channel primitives. Refactor domain vocabulary rather than rebuilding their guarantees. Do not delete `DesktopPlatform` ContentSandbox or independent product contracts merely because their names include sandbox or AI.
 
 ## 9. Acceptance
 
 Real native Windows and Linux Nodes must be controlled through an actual Go Center backed by real PostgreSQL. Exercise both self-hosted and official-mode policy with fixture plan data clearly identified as fixtures. Browser integration is explicit local acceptance, not new hosted browser CI.
+
+Task-listed external mail/payment/deployment transports and rendering fixtures may exercise unavailable external responses. They never replace signature/proof verification, account/entitlement decisions, actual Node authorization, PostgreSQL transactions or native process/filesystem/terminal behavior. Real provider/mail/domain qualification remains separately recorded for public activation; fixtures produce no such evidence.
 
 Required scenarios: local start with no Center/account; wrong account and revoked grant denied; correct Sandbox start and stop with descendant cleanup; duplicate command before/after each persistence/send boundary; Center crash after delivery; Node crash during admission; lease takeover; signing-key rotation; schema upgrade/rollback and role fencing; stale/evicted log cursor; slow output viewer; session/entitlement expiry mid-read; grant revocation; offline local continuation; unsupported backend operation; resource requested/effective mismatch; malformed/oversized frames; and real Web-to-Center-to-Node operation on both OSes. Missing external provider or hosted evidence remains separately `NOT PROVEN` and is owned by the hosting acceptance task; it does not masquerade as an executed test.
 

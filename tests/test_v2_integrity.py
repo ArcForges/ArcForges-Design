@@ -1,5 +1,6 @@
 """V2 authority boundaries and PostgreSQL structural checks; no native runtime qualification."""
 import hashlib
+import copy
 import io
 import json
 import sys
@@ -12,6 +13,46 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "tools"))
 import check_design as cd  # noqa: E402
+
+
+class StateStorageChecks(unittest.TestCase):
+    """A persisted wire-state model must agree with the SQL states it can write."""
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.docs = Path(self.tmp.name)
+        (self.docs / "data").mkdir()
+        self.sql = self.docs / "data/node-store.sql"
+        self.sql.write_text("CREATE TABLE limit_application (state TEXT NOT NULL CHECK(state IN ('pending','effective'))) STRICT;", encoding="utf-8")
+        self.machine = {"id": "SM-EXAMPLE", "persisted": True,
+                        "storage": {"table": "limit_application", "column": "state", "encoding": "lowercase_enum"}}
+
+    def check(self, machine=None):
+        rep = cd.Report()
+        with patch.object(cd, "DOCS", self.docs):
+            cd.check_machine_storage(rep, machine or self.machine, {"PENDING", "EFFECTIVE"})
+        return rep.errors
+
+    def test_matching_storage_passes(self):
+        self.assertEqual(self.check(), [])
+
+    def test_nonpersisted_claim_fails_for_stored_state(self):
+        machine = copy.deepcopy(self.machine)
+        machine["persisted"] = False
+        self.assertTrue(any("persisted=true" in error for error in self.check(machine)))
+
+    def test_sql_state_addition_or_omission_fails(self):
+        for states in ("'pending'", "'pending','effective','unknown'"):
+            with self.subTest(states=states):
+                self.sql.write_text(f"CREATE TABLE limit_application (state TEXT NOT NULL CHECK(state IN ({states}))) STRICT;", encoding="utf-8")
+                self.assertTrue(any("disagree with enum" in error for error in self.check()))
+
+    def test_missing_closed_constraint_and_unsafe_location_fail(self):
+        self.sql.write_text("CREATE TABLE limit_application (state TEXT NOT NULL) STRICT;", encoding="utf-8")
+        self.assertTrue(any("closed IN check" in error for error in self.check()))
+        machine = copy.deepcopy(self.machine)
+        machine["storage"]["table"] = "../other"
+        self.assertTrue(any("safe table and column" in error for error in self.check(machine)))
 
 
 class ArchiveChecks(unittest.TestCase):

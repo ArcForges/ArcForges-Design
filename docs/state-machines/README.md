@@ -10,7 +10,7 @@ States equal the named proto enum values (without the enum prefix), or an explic
 | [SM-GRANT](#sm-grant) | Local remote grant | `arcforges.sandbox.v2.GrantState` | True | Local owner/Sandbox Core |
 | [SM-TRANSFER](#sm-transfer) | Owned import/export | `arcforges.sandbox.v2.TransferState` | True | Sandbox data manager |
 | [SM-OPERATION](#sm-operation) | Node mutation receipt | `arcforges.sandbox.v2.OperationState` | True | Node command processor |
-| [SM-LIMIT](#sm-limit) | Requested/applied/read-back limit | `arcforges.sandbox.v2.LimitStatus` | False | Resource manager |
+| [SM-LIMIT](#sm-limit) | Requested/applied/read-back limit | `arcforges.sandbox.v2.LimitStatus` | True | Resource manager |
 
 <a id="sm-sandbox"></a>
 
@@ -28,7 +28,7 @@ stateDiagram-v2
   READY --> RECOVERY_REQUIRED : Ownership/effect uncertain
   DELETING --> RECOVERY_REQUIRED : Ownership/effect uncertain
   ERROR --> RECOVERY_REQUIRED : Ownership/effect uncertain
-  ERROR --> READY : Explicit local repair
+  ERROR --> READY : Configure(repair_error=true)
   READY --> DELETING : Delete plan consumed
   ERROR --> DELETING : Delete failed creation
   DELETING --> DELETED : Owned subtree removed
@@ -42,12 +42,12 @@ stateDiagram-v2
 | CREATING | READY | Create committed | Private root manifest and configuration verified | Commit revision and ready event |
 | CREATING | ERROR | Create failed definitely | Owned partial state identified; no Run admitted | Persist reason and cleanup identity |
 | CREATING, READY, DELETING, ERROR | RECOVERY_REQUIRED | Ownership/effect uncertain | Identity or journal cannot be reconciled | Refuse conflicting starts and preserve evidence |
-| ERROR | READY | Explicit local repair | Ownership and profile valid; no unresolved effect | Commit corrected config |
+| ERROR | READY | Configure(repair_error=true) | Local owner, fresh revision, verified owned root and profile, no nonterminal Run or unresolved effect | Commit corrected config |
 | READY | DELETING | Delete plan consumed | Revision/root unchanged; no nonterminal Run or transfer; ownership lock | Block starts and journal quarantine intent |
 | ERROR | DELETING | Delete failed creation | Owned path verified; no use | Journal exact owned cleanup |
 | DELETING | DELETED | Owned subtree removed | Independent identity checks; no external grant included | Commit tombstone and receipt |
 | RECOVERY_REQUIRED | READY | Recovery proves prior ready state | Authenticated ownership and no pending destructive effect | Commit reconciliation |
-| RECOVERY_REQUIRED | DELETING | Resume known deletion | Same root/journal identity and no managed use | Resume exact intent without new ID |
+| RECOVERY_REQUIRED | DELETING | Resume known deletion | Explicit local Delete.resume_command_id; same owner epoch, original deletion journal/root identity, fresh revision and no managed use | Journal a successor command linked to the original intent; reconcile prior UNKNOWN from proof, never replay old Start or broaden deletion |
 
 <a id="sm-run"></a>
 
@@ -73,6 +73,7 @@ stateDiagram-v2
   DRAINING --> RECOVERY_REQUIRED : Supervisor/native effect ambiguous
   RECOVERY_REQUIRED --> RUNNING : Rebind live supervisor
   RECOVERY_REQUIRED --> DRAINING : Recovery locates exiting group
+  RECOVERY_REQUIRED --> FAILED : Recovery proves definite launch refusal
   EXITED --> [*]
   FAILED --> [*]
 ```
@@ -87,6 +88,7 @@ stateDiagram-v2
 | STARTING, RUNNING, STOPPING, DRAINING | RECOVERY_REQUIRED | Supervisor/native effect ambiguous | Cannot authenticate ownership/completion | Block conflicting cleanup; retain reservation and evidence |
 | RECOVERY_REQUIRED | RUNNING | Rebind live supervisor | Same boot/process creation/Run epoch and confinement; no Start replay | Restore observations and require fresh terminal lease |
 | RECOVERY_REQUIRED | DRAINING | Recovery locates exiting group | Verified ownership or host reboot proof | Finish cleanup and final record |
+| RECOVERY_REQUIRED | FAILED | Recovery proves definite launch refusal | payload_started=NOT_STARTED proved and owned outer boundary empty verified; no payload effect | Persist definite failure provenance and release reservation; no Start replay |
 
 <a id="sm-grant"></a>
 
@@ -119,9 +121,9 @@ stateDiagram-v2
 ```mermaid
 stateDiagram-v2
   [*] --> OPEN
-  OPEN --> STREAMING : First authorized chunk/range
-  OPEN --> COMPLETE : Commit import or finish export
-  STREAMING --> COMPLETE : Commit import or finish export
+  OPEN --> STREAMING : First import chunk or export snapshot copy begins
+  OPEN --> COMPLETE : Commit import or finish verified export snapshot
+  STREAMING --> COMPLETE : Commit import or finish verified export snapshot
   OPEN --> FAILED : Definite cancel/expiry/failure
   STREAMING --> FAILED : Definite cancel/expiry/failure
   OPEN --> RECOVERY_REQUIRED : Publication outcome unknown
@@ -134,11 +136,11 @@ stateDiagram-v2
 
 | From | To | Trigger | Guard | Effect |
 |---|---|---|---|---|
-| OPEN | STREAMING | First authorized chunk/range | Identity, expiry, no-use lock and quota valid | Advance contiguous verified cursor |
-| OPEN, STREAMING | COMPLETE | Commit import or finish export | Exact length/hash and final root identity verified | Persist receipt then release staging |
+| OPEN | STREAMING | First import chunk or export snapshot copy begins | Identity, expiry, source/destination no-use lock and quota valid | Advance verified import staging or export-copy cursor; client reads do not alter transfer state |
+| OPEN, STREAMING | COMPLETE | Commit import or finish verified export snapshot | Exact length/hash and final root identity verified | Persist COMPLETE; release source quiescence after export materialization; retain private export snapshot through ReadExport retries until CloseTransfer/expiry |
 | OPEN, STREAMING | FAILED | Definite cancel/expiry/failure | No uncertain publication effect | Remove only known staging; retain reason |
 | OPEN, STREAMING | RECOVERY_REQUIRED | Publication outcome unknown | Durable intent exists but native result absent | Hold journal and staging identity |
-| RECOVERY_REQUIRED | COMPLETE | Reconciliation proves commit | Exact destination/source version matches original intent | Return original receipt |
+| RECOVERY_REQUIRED | COMPLETE | Reconciliation proves commit | Exact destination/source version matches original intent | Return retained result identity; preserve export snapshot until CloseTransfer/expiry; never reapply import |
 | RECOVERY_REQUIRED | FAILED | Reconciliation proves no commit | Owned staging and absence/rejection proven | Safely release with original failure |
 
 <a id="sm-operation"></a>
@@ -172,7 +174,8 @@ stateDiagram-v2
 
 ## SM-LIMIT — Requested/applied/read-back limit
 
-- Enum: `arcforges.sandbox.v2.LimitStatus`; persisted: False; owner: Resource manager.
+- Enum: `arcforges.sandbox.v2.LimitStatus`; persisted: True; owner: Resource manager.
+- SQLite storage: `limit_application.state`; encoding: `lowercase_enum`; checked against the enum and closed SQL state set.
 - Initial: `PENDING`. Terminal: none (long-lived).
 
 ```mermaid

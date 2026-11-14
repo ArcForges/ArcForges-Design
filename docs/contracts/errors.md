@@ -1,6 +1,6 @@
 # V2 error vocabulary
 
-Foundation `ArcError`, effect certainty and retry advice remain immutable. Implicit authentication, overload, node-stopping, rate-limit and dark-surface errors apply to every method. An `UNKNOWN` effect never pairs with `AFTER_TIME`; reconcile the original command instead.
+Foundation `ArcError`, effect certainty and retry advice remain immutable. Implicit authentication, overload, node-stopping, rate-limit and dark-surface errors apply to every method. An `UNKNOWN` effect never pairs with `AFTER_TIME`; reconcile the original durable command instead; transient terminal uncertainty follows the live-lease rule and never triggers automatic input replay.
 
 | Category / code | Meaning | Retry advice | Effect | Details |
 |---|---|---|---|---|
@@ -12,9 +12,12 @@ Foundation `ArcError`, effect certainty and retry advice remain immutable. Impli
 | `ENTITLEMENT/hosted_access_required` | Official-hosted access is inactive | NEVER; update hosted subscription | DID_NOT_HAPPEN | Hosted mode only; never a local error |
 | `CONFLICT/revision_mismatch` | Expected aggregate revision changed | NEVER; inspect and explicitly reissue | DID_NOT_HAPPEN | Expected/actual revision |
 | `CONFLICT/command_id_reused` | One command ID is reused with a different canonical payload | NEVER | DID_NOT_HAPPEN | Command ID |
+| `CONFLICT/owner_epoch_retired` | Durable mutation carries a retired or different owner epoch | NEVER; inspect original authority | DID_NOT_HAPPEN | New attempt refused; no claim about a previous effect |
+| `STATE/receipt_compacted` | Known original response body was compacted but non-executable command identity remains | NEVER; inspect retained operation/aggregate | DID_NOT_HAPPEN or HAPPENED | Original known effect, original aggregate and command identity; never reexecute |
+| `EXECUTION/terminal_ack_unavailable` | A live terminal acknowledgment was lost/evicted or a consumed native input effect is uncertain | NEVER; inspect terminal state and take a new explicit user action | UNKNOWN | No durable GetOperation receipt; no automatic byte replay |
 | `CONFLICT/identity_changed` | Native file/root/grant identity changed since preview | NEVER; inspect and plan again | DID_NOT_HAPPEN | Safe identity reason |
 | `CONFLICT/lease_stale` | Terminal lease expired or generation/epoch changed | NEVER; reacquire locally | DID_NOT_HAPPEN | Current lease generation without credential |
-| `STATE/not_found` | Visible aggregate or known-result receipt no longer exists | NEVER | DID_NOT_HAPPEN | Resource kind |
+| `STATE/not_found` | No visible aggregate or durable receipt for this query | NEVER | DID_NOT_HAPPEN | Query only; absence does not prove an earlier terminal input had no effect |
 | `STATE/busy` | Conflicting admission/configure/delete operation is holding ownership | AFTER_TIME only when DID_NOT_HAPPEN | DID_NOT_HAPPEN | Blocking operation ID if visible |
 | `STATE/managed_use` | A nonterminal owned Run or transfer holds data | NEVER; stop or close explicitly | DID_NOT_HAPPEN | Visible managed use IDs |
 | `STATE/terminal_unavailable` | Requested profile/mode has no qualified terminal | NEVER | DID_NOT_HAPPEN | Capability requirement |

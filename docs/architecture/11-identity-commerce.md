@@ -1,6 +1,6 @@
 # Identity, entitlements and hosted commerce
 
-Status: V2 target design. Existing Go identity/session/device/entitlement foundations are retained and adapted; production subscription sales and the V2 management product are not yet delivered. Owners: `AFV2-CENTER-01`, `AFV2-ID-01`, `AFV2-HOST-01`, `AFV2-HOST-02`, `AFV2-WEB-03`.
+Status: V2 target design. Existing Go identity/session/device/entitlement foundations are retained and adapted; production subscription sales and the V2 management product are not yet delivered. Owners: `AFV2-CENTER-01` for storage, `AFV2-ID-01` for account lifecycle, `AFV2-HOST-01` for mode/entitlements, `AFV2-HOST-02` for commerce, `AFV2-HOST-03` for deployment/operations and `AFV2-WEB-03` for account UI. `AFV2-WEB-04` qualifies the finished UX and `AFV2-DIST-01` assembles the final self-host product.
 
 ## 1. Product and hosting rule
 
@@ -26,6 +26,8 @@ Retain Go account identity, WebAuthn/passkey and email-code sign-in, explicit se
 The current route inventory registers 22 identity/device methods. It explicitly leaves recovery, account deletion, account export and email change unregistered. Public proto declarations do not make those services implemented. `AFV2-ID-01`, dependent on `AFV2-CENTER-01` and owning `R-CTR-004`, completes the minimal recovery/deletion/export lifecycle required by this product; `AFV2-WEB-03` consumes it after acceptance. Other old identity promises do not automatically enter V2 scope.
 
 The Node connects with its own installation key and Node-scoped credential. It cannot use that credential for account billing, credential administration or operator actions. The browser uses an account cookie bound to its exact origin. A Cloud operator is a service administrator, not an implicit owner of every enrolled computer.
+
+The local CLI's working center connect/status/cancel/disconnect/signout slice is delivered by `AFV2-CENTER-02`, through the local-only typed `CenterControlService` and existing protected CloudLink credential internals. Disconnect retains credentials but disables the link; signout ends local credentials and distinguishes an unconfirmed remote revocation from a confirmed server result. Connection-flow metadata may be displayed; bearer/refresh secrets remain in the protected store and never enter the browser, account export or new Node SQL tables. These local controls are not remotely callable account-management endpoints.
 
 | Identity | Authority | Revocation effect |
 |---|---|---|
@@ -121,9 +123,11 @@ Account deletion/recovery must handle sessions, Node enrollments, provider subsc
 
 ## 8. Operating controls and self-host package
 
-`AFV2-HOST-01` provides the Go binary/container, static Blazor bundle, PostgreSQL migration/backup/restore procedures, TLS reverse-proxy example, explicit mode/base URL, owner bootstrap, signing-key generation and documented upgrade/cutover. Self-host configuration has no official plan, checkout, issuer or payment-provider prerequisite. Administrators supply their own email provider if email sign-in is enabled; passkey/bootstrap flows state their prerequisites honestly.
+`AFV2-HOST-01` implements explicit official/self-host mode and the service-key/entitlement boundary. `AFV2-HOST-02` implements the web provider/catalog/subscription pipeline. These tasks test real business decisions and PostgreSQL state, with only their named external fixture boundaries.
 
-`AFV2-HOST-02` adds official catalog/provider configuration, hosted service-key enforcement, meterable connection/traffic/storage budgets, minimal health/alert/runbooks, billing audit and dark-to-live release gates. Retain existing sealed-candidate promotion: build once, verify exact bytes, migrate with a separate role, promote through repository scripts. A continuously connected Node keeps its official Container active; capacity/cost acceptance must account for that rather than assuming idle sleep always bounds cost.
+`AFV2-HOST-03` supplies deployment and operating infrastructure: Go/PostgreSQL install configuration, static-origin contract, TLS reverse-proxy example, owner bootstrap, key custody, migration/backup/restore procedures, health/alerts/cost limits and guarded deployment dry runs. Its API/Node acceptance uses real services but does not claim that the new Dashboard has already been delivered. After `AFV2-WEB-04` and final consumer cutover in `AFV2-MIG-01`, `AFV2-DIST-01` packages and verifies the actual complete Go/PostgreSQL/Blazor distribution. An existing Hello/account probe bundle never satisfies the final product acceptance.
+
+Self-host configuration has no official plan, checkout, issuer or payment-provider prerequisite. Administrators supply their own email provider if email sign-in is enabled; passkey/bootstrap flows state their prerequisites honestly. Retain existing sealed-candidate promotion: build once, verify exact bytes, migrate with a separate role, promote through repository scripts. A continuously connected Node keeps its official Container active; capacity/cost acceptance must account for that rather than assuming idle sleep always bounds cost.
 
 The current singleton hub, bounded queues and PostgreSQL connection pool remain structural limits. Operational degradation can reject new connections/calls and close hosted channels under an explicit reason; it never reaches local Run control. No price or commercial allowance is inferred from technical queue/frame bounds.
 
@@ -133,4 +137,6 @@ Production-only inputs include seller configuration, product/price references, l
 
 Preserve native host verification and independent review. Test identity and role boundaries, real PostgreSQL concurrent receipt/grant writes, deterministic snapshot rebuild, expired terms, clock boundaries, out-of-order and duplicate provider notifications, repeated checkout/cancel commands, revocation, key rotation, subscription lapse during remote reads, and official catalog failure. Explicitly prove that local CLI operation succeeds without login/Center and after official subscription lapse, and that self-hosted remote use never contacts or depends on official billing.
 
-Provider sandbox tests and browser/device tests are explicit local acceptance or recorded external prerequisites, not silently substituted by unit mocks. Test credential verification and business persistence with their real code. No live purchase, refund, production migration or public activation is performed by this Design/Plan migration.
+`AFV2-ID-01` permits a test SMTP/mailbox peer and software-authenticator/browser ceremony messages at the external delivery/input boundary; actual proof hashing, WebAuthn/signature checks, account epochs, one-use rules and PostgreSQL transactions remain real. `AFV2-HOST-01` permits labeled catalog/provider-fact test data through the actual resolver. `AFV2-HOST-02` permits a versioned external provider HTTP peer and signed webhook test fixtures through the actual verification/parser/receipt/reconciliation code; it never substitutes a fake entitlement or successful payment decision. Web tasks permit typed rendering fixtures only for component state tests, not their completed business/control journeys.
+
+Real provider sandbox behavior, mailbox/domain delivery and live merchant/authority qualification are separately recorded in AR-10/H-04 and remain unproven until performed. Fixture-based development acceptance does not close those activation gates, create a charge or authorize public sales. Final native Core, Go/PostgreSQL and Dashboard journeys remain real even when a named external mail/provider peer is a fixture. No live purchase, refund, production migration or public activation is performed by this Design/Plan migration.

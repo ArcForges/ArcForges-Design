@@ -210,6 +210,9 @@ message Run {
   arcforges.foundation.v1.Instant ended_at = 11 [json_name = "endedAt"]; // validate: optional
   RunExit exit = 12 [json_name = "exit"]; // validate: absent until observed; may precede terminal state
   repeated LimitState limits = 13 [json_name = "limits"]; // validate: desired/applied/readback per dimension
+  optional string safe_command_display = 14 [json_name = "safeCommandDisplay"]; // validate: executable basename and redacted argument count; no raw argv/env/secret/host path
+  arcforges.foundation.v1.Revision sandbox_revision = 15 [json_name = "sandboxRevision"]; // validate: immutable configuration snapshot revision used for this Run
+  optional string profile_version = 16 [json_name = "profileVersion"]; // validate: exact admitted profile revision; not current Sandbox config
 }
 
 message TerminalSize {
@@ -223,8 +226,8 @@ message TerminalLease {
   optional uint64 generation = 3 [json_name = "generation"]; // validate: monotonic; stale rejected
   optional LeaseMode mode = 4 [json_name = "mode"]; // validate: writer or observer
   arcforges.foundation.v1.Instant expires_at = 5 [json_name = "expiresAt"]; // validate: UTC; 30s default writer renewal
-  optional uint64 last_input_sequence = 6 [json_name = "lastInputSequence"]; // validate: last accepted within this lease generation
-  optional uint64 last_resize_sequence = 7 [json_name = "lastResizeSequence"]; // validate: last applied within this lease generation
+  optional uint64 last_input_sequence = 6 [json_name = "lastInputSequence"]; // validate: consumed sequence high-water within this lease; not proof of confirmed byte count
+  optional uint64 last_resize_sequence = 7 [json_name = "lastResizeSequence"]; // validate: consumed resize high-water within this lease; an evicted acknowledgment is not application proof
 }
 
 message LimitState {
@@ -271,6 +274,8 @@ message ResourceSnapshot {
   optional double psi_cpu_some = 27 [json_name = "psiCpuSome"]; // validate: Linux PSI 0..100 or absent
   optional double psi_memory_some = 28 [json_name = "psiMemorySome"]; // validate: Linux PSI 0..100 or absent
   optional double psi_memory_full = 29 [json_name = "psiMemoryFull"]; // validate: Linux PSI 0..100 or absent
+  optional string sample_epoch = 30 [json_name = "sampleEpoch"]; // validate: sampler generation; changes on restart
+  optional uint64 sample_sequence = 31 [json_name = "sampleSequence"]; // validate: monotonic per scope/epoch; subscription may intentionally downsample
 }
 
 message OutputChunk {
@@ -314,6 +319,8 @@ message Operation {
   arcforges.foundation.v1.Revision revision = 6 [json_name = "revision"]; // validate: result revision if known
   arcforges.foundation.v1.ArcError error = 7 [json_name = "error"]; // validate: failure/reconciliation detail
   arcforges.foundation.v1.Instant updated_at = 8 [json_name = "updatedAt"]; // validate: UTC
+  arcforges.foundation.v1.Id owner_epoch = 9 [json_name = "ownerEpoch"]; // validate: durable command namespace
+  optional bool response_compacted = 10 [json_name = "responseCompacted"]; // validate: original body compacted; retained effect/aggregate identity remains authoritative
 }
 
 message DeletePlan {
@@ -325,6 +332,7 @@ message DeletePlan {
   repeated string excluded_host_grants = 6 [json_name = "excludedHostGrants"]; // validate: display only; never deletion roots
   arcforges.foundation.v1.Instant expires_at = 7 [json_name = "expiresAt"]; // validate: UTC; 5min default
   repeated arcforges.foundation.v1.Id blocking_runs = 8 [json_name = "blockingRuns"]; // validate: all nonterminal uses
+  repeated arcforges.foundation.v1.Id blocking_transfer_ids = 9 [json_name = "blockingTransferIds"]; // validate: open/uncertain transfers and retained unclosed export snapshots
 }
 
 message Transfer {
@@ -337,6 +345,7 @@ message Transfer {
   optional string sha256 = 7 [json_name = "sha256"]; // validate: 64 lowercase hex
   arcforges.foundation.v1.Instant expires_at = 8 [json_name = "expiresAt"]; // validate: UTC
   optional string direction = 9 [json_name = "direction"]; // validate: import or export; immutable authorization scope
+  arcforges.foundation.v1.Instant closed_at = 10 [json_name = "closedAt"]; // validate: snapshot/staging released after proven safe close/expiry; COMPLETE alone does not release an export
 }
 
 message FileEntry {
@@ -414,18 +423,18 @@ service NodeService {
   rpc WatchEvents(NodeServiceWatchEventsRequest) returns (stream NodeServiceWatchEventsFrame);
   // Create or narrow/expand a grant locally with revision checks.
   // auth: authenticated local owner; remote=forbidden
-  // idempotency: owner+meta.command_id+canonical request hash; UNKNOWN reconciles via GetOperation
+  // idempotency: durable owner+owner_epoch+command_id+canonical keyed digest; compacted identity never re-executes; UNKNOWN reconciles via GetOperation
   // deadline: 10 s; timeout does not imply no effect
   // stream: none
-  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown
+  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, CONFLICT/owner_epoch_retired, STATE/receipt_compacted
   // locality: local only
   rpc SetRemoteGrant(NodeServiceSetRemoteGrantRequest) returns (NodeServiceSetRemoteGrantResponse);
   // Revoke a grant and invalidate future remote access.
   // auth: authenticated local owner; remote=security.revoke
-  // idempotency: owner+meta.command_id+canonical request hash; UNKNOWN reconciles via GetOperation
+  // idempotency: durable owner+owner_epoch+command_id+canonical keyed digest; compacted identity never re-executes; UNKNOWN reconciles via GetOperation
   // deadline: 10 s; timeout does not imply no effect
   // stream: none
-  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown
+  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, CONFLICT/owner_epoch_retired, STATE/receipt_compacted
   // locality: local and explicitly granted Center route
   rpc RevokeRemoteGrant(NodeServiceRevokeRemoteGrantRequest) returns (NodeServiceRevokeRemoteGrantResponse);
   // List grants and expiration for the owner.
@@ -457,12 +466,14 @@ message NodeServiceHandshakeValue {
   optional string node_epoch = 11 [json_name = "nodeEpoch"]; // validate: current Node epoch
   optional string contract_version = 12 [json_name = "contractVersion"]; // validate: 2.0
   optional string cohort = 13 [json_name = "cohort"]; // validate: installed coherent build
+  arcforges.foundation.v1.Id owner_epoch = 14 [json_name = "ownerEpoch"]; // validate: persistent mutation namespace; distinct from restart/event epoch
 }
 
 message NodeServiceGetOperationRequest {
   arcforges.foundation.v1.RequestMeta meta = 1 [json_name = "meta"]; // validate: required; command_id for mutation, expected_rev for existing aggregate CAS
   reserved 2 to 9;
   arcforges.foundation.v1.Id command_id = 10 [json_name = "commandId"]; // validate: required original command ID
+  arcforges.foundation.v1.Id owner_epoch = 11 [json_name = "ownerEpoch"]; // validate: required original durable command epoch; terminal operations are not reconcilable here
 }
 
 message NodeServiceGetOperationResponse {
@@ -498,6 +509,7 @@ message NodeServiceSetRemoteGrantRequest {
   arcforges.foundation.v1.RequestMeta meta = 1 [json_name = "meta"]; // validate: required; command_id for mutation, expected_rev for existing aggregate CAS
   reserved 2 to 9;
   RemoteGrant grant = 10 [json_name = "grant"]; // validate: required validated local policy
+  arcforges.foundation.v1.Id owner_epoch = 100 [json_name = "ownerEpoch"]; // validate: required persistent mutation epoch from Handshake; preserve across retries; never replace after epoch retirement
 }
 
 message NodeServiceSetRemoteGrantResponse {
@@ -517,6 +529,7 @@ message NodeServiceRevokeRemoteGrantRequest {
   arcforges.foundation.v1.RequestMeta meta = 1 [json_name = "meta"]; // validate: required; command_id for mutation, expected_rev for existing aggregate CAS
   reserved 2 to 9;
   arcforges.foundation.v1.Id grant_id = 10 [json_name = "grantId"]; // validate: required visible grant
+  arcforges.foundation.v1.Id owner_epoch = 100 [json_name = "ownerEpoch"]; // validate: required persistent mutation epoch from Handshake; preserve across retries; never replace after epoch retirement
 }
 
 message NodeServiceRevokeRemoteGrantResponse {
@@ -558,18 +571,18 @@ message NodeServiceListRemoteGrantsValue {
 service SandboxService {
   // Create an owned persistent data environment.
   // auth: authenticated local owner; remote=sandbox.create
-  // idempotency: owner+meta.command_id+canonical request hash; UNKNOWN reconciles via GetOperation
+  // idempotency: durable owner+owner_epoch+command_id+canonical keyed digest; compacted identity never re-executes; UNKNOWN reconciles via GetOperation
   // deadline: 10 s; timeout does not imply no effect
   // stream: none
-  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, EXECUTION/unsupported_combination, RESOURCE/budget_unavailable, RESOURCE/enforcement_failed
+  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, EXECUTION/unsupported_combination, RESOURCE/budget_unavailable, RESOURCE/enforcement_failed, CONFLICT/owner_epoch_retired, STATE/receipt_compacted
   // locality: local and explicitly granted Center route
   rpc Create(SandboxServiceCreateRequest) returns (SandboxServiceCreateResponse);
   // Replace a revision-checked configuration; access changes require quiescence.
-  // auth: authenticated local owner; remote=sandbox.configure
-  // idempotency: owner+meta.command_id+canonical request hash; UNKNOWN reconciles via GetOperation
+  // auth: authenticated local owner; remote=sandbox.configure with repair_error forbidden
+  // idempotency: durable owner+owner_epoch+command_id+canonical keyed digest; compacted identity never re-executes; UNKNOWN reconciles via GetOperation
   // deadline: 10 s; timeout does not imply no effect
   // stream: none
-  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, EXECUTION/unsupported_combination, RESOURCE/budget_unavailable, RESOURCE/enforcement_failed
+  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, EXECUTION/unsupported_combination, RESOURCE/budget_unavailable, RESOURCE/enforcement_failed, CONFLICT/owner_epoch_retired, STATE/receipt_compacted
   // locality: local and explicitly granted Center route
   rpc Configure(SandboxServiceConfigureRequest) returns (SandboxServiceConfigureResponse);
   // List visible persistent environments.
@@ -597,11 +610,11 @@ service SandboxService {
   // locality: local and explicitly granted Center route
   rpc PlanDelete(SandboxServicePlanDeleteRequest) returns (SandboxServicePlanDeleteResponse);
   // Consume an unchanged delete plan under the same Sandbox admission lock.
-  // auth: authenticated local owner; remote=sandbox.delete
-  // idempotency: owner+meta.command_id+canonical request hash; UNKNOWN reconciles via GetOperation
+  // auth: authenticated local owner; remote=sandbox.delete for fresh plan only; resume_command_id is local-only
+  // idempotency: durable owner+owner_epoch+command_id+canonical keyed digest; compacted identity never re-executes; UNKNOWN reconciles via GetOperation
   // deadline: 10 s; timeout does not imply no effect
   // stream: none
-  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, VALIDATION/path_rejected, STATE/managed_use, RESOURCE/disk_space, CONFLICT/identity_changed
+  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, VALIDATION/path_rejected, STATE/managed_use, RESOURCE/disk_space, CONFLICT/identity_changed, CONFLICT/owner_epoch_retired, STATE/receipt_compacted
   // locality: local and explicitly granted Center route
   rpc Delete(SandboxServiceDeleteRequest) returns (SandboxServiceDeleteResponse);
 }
@@ -613,6 +626,7 @@ message SandboxServiceCreateRequest {
   SandboxConfig config = 11 [json_name = "config"]; // validate: required admitted full configuration
   arcforges.foundation.v1.Id provision_grant_id = 12 [json_name = "provisionGrantId"]; // validate: required for remote create; local may omit
   arcforges.foundation.v1.Revision template_revision = 13 [json_name = "templateRevision"]; // validate: required remote template revision
+  arcforges.foundation.v1.Id owner_epoch = 100 [json_name = "ownerEpoch"]; // validate: required persistent mutation epoch from Handshake; preserve across retries; never replace after epoch retirement
 }
 
 message SandboxServiceCreateResponse {
@@ -633,6 +647,9 @@ message SandboxServiceConfigureRequest {
   reserved 2 to 9;
   arcforges.foundation.v1.Id sandbox_id = 10 [json_name = "sandboxId"]; // validate: required 16 bytes; owned and visible
   SandboxConfig config = 11 [json_name = "config"]; // validate: required complete replacement
+  arcforges.foundation.v1.Id owner_epoch = 100 [json_name = "ownerEpoch"]; // validate: required persistent mutation epoch from Handshake; preserve across retries; never replace after epoch retirement
+  optional string display_name = 12 [json_name = "displayName"]; // validate: optional 1..80 chars; normalized unique; rename does not move root
+  optional bool repair_error = 13 [json_name = "repairError"]; // validate: local owner only; explicit ERROR repair after identity/no-use/no-unresolved-effect guards
 }
 
 message SandboxServiceConfigureResponse {
@@ -711,7 +728,9 @@ message SandboxServiceDeleteRequest {
   arcforges.foundation.v1.RequestMeta meta = 1 [json_name = "meta"]; // validate: required; command_id for mutation, expected_rev for existing aggregate CAS
   reserved 2 to 9;
   arcforges.foundation.v1.Id sandbox_id = 10 [json_name = "sandboxId"]; // validate: required 16 bytes; owned and visible
-  arcforges.foundation.v1.Id plan_id = 11 [json_name = "planId"]; // validate: required unexpired exact plan
+  arcforges.foundation.v1.Id plan_id = 11 [json_name = "planId"]; // validate: fresh deletion only; unexpired exact plan; mutually exclusive with resume_command_id
+  arcforges.foundation.v1.Id owner_epoch = 100 [json_name = "ownerEpoch"]; // validate: required persistent mutation epoch from Handshake; preserve across retries; never replace after epoch retirement
+  arcforges.foundation.v1.Id resume_command_id = 12 [json_name = "resumeCommandId"]; // validate: local owner only; original same-Sandbox delete command; fresh successor ID/CAS plus exact journal/root identity; mutually exclusive with plan_id
 }
 
 message SandboxServiceDeleteResponse {
@@ -731,10 +750,10 @@ message SandboxServiceDeleteValue {
 service RunService {
   // Start explicit argv after confinement/resource admission; never enqueue or auto retry.
   // auth: authenticated local owner; remote=run.start
-  // idempotency: owner+meta.command_id+canonical request hash; UNKNOWN reconciles via GetOperation
+  // idempotency: durable owner+owner_epoch+command_id+canonical keyed digest; compacted identity never re-executes; UNKNOWN reconciles via GetOperation
   // deadline: 10 s; timeout does not imply no effect
   // stream: none
-  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, EXECUTION/unsupported_combination, RESOURCE/budget_unavailable, RESOURCE/enforcement_failed
+  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, EXECUTION/unsupported_combination, RESOURCE/budget_unavailable, RESOURCE/enforcement_failed, CONFLICT/owner_epoch_retired, STATE/receipt_compacted, EXECUTION/launch_failed
   // locality: local and explicitly granted Center route
   rpc Start(RunServiceStartRequest) returns (RunServiceStartResponse);
   // List visible runs with stable pagination.
@@ -755,10 +774,10 @@ service RunService {
   rpc Inspect(RunServiceInspectRequest) returns (RunServiceInspectResponse);
   // Request bounded graceful stop then verified owned-group termination.
   // auth: authenticated local owner; remote=run.stop
-  // idempotency: owner+meta.command_id+canonical request hash; UNKNOWN reconciles via GetOperation
+  // idempotency: durable owner+owner_epoch+command_id+canonical keyed digest; compacted identity never re-executes; UNKNOWN reconciles via GetOperation
   // deadline: 10 s; timeout does not imply no effect
   // stream: none
-  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown
+  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, CONFLICT/owner_epoch_retired, STATE/receipt_compacted
   // locality: local and explicitly granted Center route
   rpc Stop(RunServiceStopRequest) returns (RunServiceStopResponse);
   // Read untrusted terminal or piped bytes with explicit gaps.
@@ -771,34 +790,34 @@ service RunService {
   rpc WatchOutput(RunServiceWatchOutputRequest) returns (stream RunServiceWatchOutputFrame);
   // Acquire or renew local exclusive writer/read-only observer lease.
   // auth: authenticated local owner; remote=forbidden
-  // idempotency: owner+meta.command_id+canonical request hash; UNKNOWN reconciles via GetOperation
+  // idempotency: transient live-lease acknowledgment window only; supervisor memory; no durable receipt or GetOperation; never replay uncertain input
   // deadline: 10 s; timeout does not imply no effect
   // stream: none
-  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, CONFLICT/lease_stale, STATE/terminal_unavailable
+  // errors: CONFLICT/lease_stale, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, STATE/terminal_unavailable, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/terminal_ack_unavailable
   // locality: local only
   rpc AcquireTerminal(RunServiceAcquireTerminalRequest) returns (RunServiceAcquireTerminalResponse);
   // Write bounded input under current local writer lease.
   // auth: authenticated local owner; remote=forbidden
-  // idempotency: owner+meta.command_id+canonical request hash; UNKNOWN reconciles via GetOperation
+  // idempotency: transient live-lease acknowledgment window only; supervisor memory; no durable receipt or GetOperation; never replay uncertain input
   // deadline: 10 s; timeout does not imply no effect
   // stream: none
-  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, CONFLICT/lease_stale, STATE/terminal_unavailable
+  // errors: CONFLICT/lease_stale, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, STATE/terminal_unavailable, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/terminal_ack_unavailable
   // locality: local only
   rpc WriteTerminal(RunServiceWriteTerminalRequest) returns (RunServiceWriteTerminalResponse);
   // Apply latest local terminal geometry under current writer lease.
   // auth: authenticated local owner; remote=forbidden
-  // idempotency: owner+meta.command_id+canonical request hash; UNKNOWN reconciles via GetOperation
+  // idempotency: transient live-lease acknowledgment window only; supervisor memory; no durable receipt or GetOperation; never replay uncertain input
   // deadline: 10 s; timeout does not imply no effect
   // stream: none
-  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, CONFLICT/lease_stale, STATE/terminal_unavailable
+  // errors: CONFLICT/lease_stale, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, STATE/terminal_unavailable, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/terminal_ack_unavailable
   // locality: local only
   rpc ResizeTerminal(RunServiceResizeTerminalRequest) returns (RunServiceResizeTerminalResponse);
   // Release a local attachment without stopping the Run.
   // auth: authenticated local owner; remote=forbidden
-  // idempotency: owner+meta.command_id+canonical request hash; UNKNOWN reconciles via GetOperation
+  // idempotency: transient live-lease acknowledgment window only; supervisor memory; no durable receipt or GetOperation; never replay uncertain input
   // deadline: 10 s; timeout does not imply no effect
   // stream: none
-  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, CONFLICT/lease_stale, STATE/terminal_unavailable
+  // errors: CONFLICT/lease_stale, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, STATE/terminal_unavailable, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/terminal_ack_unavailable
   // locality: local only
   rpc DetachTerminal(RunServiceDetachTerminalRequest) returns (RunServiceDetachTerminalResponse);
 }
@@ -813,6 +832,7 @@ message RunServiceStartRequest {
   optional TerminalMode terminal_mode = 14 [json_name = "terminalMode"]; // validate: required
   TerminalSize terminal_size = 15 [json_name = "terminalSize"]; // validate: required for interactive
   ResourcePolicy requested_resources = 16 [json_name = "requestedResources"]; // validate: within Sandbox ceiling
+  arcforges.foundation.v1.Id owner_epoch = 100 [json_name = "ownerEpoch"]; // validate: required persistent mutation epoch from Handshake; preserve across retries; never replace after epoch retirement
 }
 
 message RunServiceStartResponse {
@@ -875,6 +895,7 @@ message RunServiceStopRequest {
   reserved 2 to 9;
   arcforges.foundation.v1.Id run_id = 10 [json_name = "runId"]; // validate: required 16 bytes; owned and visible
   optional uint32 grace_ms = 11 [json_name = "graceMs"]; // validate: 0..60000; default5000
+  arcforges.foundation.v1.Id owner_epoch = 100 [json_name = "ownerEpoch"]; // validate: required persistent mutation epoch from Handshake; preserve across retries; never replace after epoch retirement
 }
 
 message RunServiceStopResponse {
@@ -1008,17 +1029,17 @@ service ResourceService {
   rpc GetBudget(ResourceServiceGetBudgetRequest) returns (ResourceServiceGetBudgetResponse);
   // Set bounded resource policy; requested and applied state remain distinct.
   // auth: authenticated local owner; remote=resource.configure
-  // idempotency: owner+meta.command_id+canonical request hash; UNKNOWN reconciles via GetOperation
+  // idempotency: durable owner+owner_epoch+command_id+canonical keyed digest; compacted identity never re-executes; UNKNOWN reconciles via GetOperation
   // deadline: 10 s; timeout does not imply no effect
   // stream: none
-  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown
+  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, CONFLICT/owner_epoch_retired, STATE/receipt_compacted
   // locality: local and explicitly granted Center route
   rpc SetPolicy(ResourceServiceSetPolicyRequest) returns (ResourceServiceSetPolicyResponse);
   // Read bounded sampled usage; slow clients resnapshot.
   // auth: authenticated local owner; remote=resource.read
   // idempotency: pure read; cursor/snapshot scoped
   // deadline: 10 s; timeout does not imply no effect
-  // stream: server; bounded, epoch/cursor, gap and terminal errors
+  // stream: server; complete fresh snapshots only; no cursor/backfill; slow consumer closes with RESOURCE/overloaded
   // errors: STATE/not_found, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, VALIDATION/invalid_cursor
   // locality: local and explicitly granted Center route
   rpc WatchUsage(ResourceServiceWatchUsageRequest) returns (stream ResourceServiceWatchUsageFrame);
@@ -1050,6 +1071,7 @@ message ResourceServiceSetPolicyRequest {
   optional string scope_kind = 10 [json_name = "scopeKind"]; // validate: node/sandbox/run
   arcforges.foundation.v1.Id scope_id = 11 [json_name = "scopeId"]; // validate: required except node
   ResourcePolicy policy = 12 [json_name = "policy"]; // validate: required local/remote-ceiling validated
+  arcforges.foundation.v1.Id owner_epoch = 100 [json_name = "ownerEpoch"]; // validate: required persistent mutation epoch from Handshake; preserve across retries; never replace after epoch retirement
 }
 
 message ResourceServiceSetPolicyResponse {
@@ -1076,9 +1098,9 @@ message ResourceServiceWatchUsageRequest {
 
 message ResourceServiceWatchUsageFrame {
   arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
+  reserved 11;
   oneof frame {
     ResourceSnapshot snapshot = 10 [json_name = "snapshot"];
-    OutputGap gap = 11 [json_name = "gap"];
     arcforges.foundation.v1.ArcError error = 20 [json_name = "error"];
   }
 }
@@ -1103,34 +1125,34 @@ service DataService {
   rpc ListEntries(DataServiceListEntriesRequest) returns (DataServiceListEntriesResponse);
   // Stage a regular-file upload under owned root; no archive extraction.
   // auth: authenticated local owner; remote=data.write
-  // idempotency: owner+meta.command_id+canonical request hash; UNKNOWN reconciles via GetOperation
+  // idempotency: durable owner+owner_epoch+command_id+canonical keyed digest; compacted identity never re-executes; UNKNOWN reconciles via GetOperation
   // deadline: 30 s; timeout does not imply no effect
   // stream: none
-  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, VALIDATION/path_rejected, STATE/managed_use, RESOURCE/disk_space, CONFLICT/identity_changed
+  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, VALIDATION/path_rejected, STATE/managed_use, RESOURCE/disk_space, CONFLICT/identity_changed, CONFLICT/owner_epoch_retired, STATE/receipt_compacted
   // locality: local and explicitly granted Center route
   rpc BeginImport(DataServiceBeginImportRequest) returns (DataServiceBeginImportResponse);
   // Append or identically replay a bounded verified chunk.
   // auth: authenticated local owner; remote=data.write
-  // idempotency: owner+meta.command_id+canonical request hash; UNKNOWN reconciles via GetOperation
+  // idempotency: durable owner+owner_epoch+command_id+canonical keyed digest; compacted identity never re-executes; UNKNOWN reconciles via GetOperation
   // deadline: 30 s; timeout does not imply no effect
   // stream: none
-  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, VALIDATION/path_rejected, STATE/managed_use, RESOURCE/disk_space, CONFLICT/identity_changed
+  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, VALIDATION/path_rejected, STATE/managed_use, RESOURCE/disk_space, CONFLICT/identity_changed, CONFLICT/owner_epoch_retired, STATE/receipt_compacted
   // locality: local and explicitly granted Center route
   rpc WriteImport(DataServiceWriteImportRequest) returns (DataServiceWriteImportResponse);
   // Verify complete length/hash then atomically publish within ownership lock.
   // auth: authenticated local owner; remote=data.write
-  // idempotency: owner+meta.command_id+canonical request hash; UNKNOWN reconciles via GetOperation
+  // idempotency: durable owner+owner_epoch+command_id+canonical keyed digest; compacted identity never re-executes; UNKNOWN reconciles via GetOperation
   // deadline: 30 s; timeout does not imply no effect
   // stream: none
-  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, VALIDATION/path_rejected, STATE/managed_use, RESOURCE/disk_space, CONFLICT/identity_changed
+  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, VALIDATION/path_rejected, STATE/managed_use, RESOURCE/disk_space, CONFLICT/identity_changed, CONFLICT/owner_epoch_retired, STATE/receipt_compacted
   // locality: local and explicitly granted Center route
   rpc CommitImport(DataServiceCommitImportRequest) returns (DataServiceCommitImportResponse);
   // Bind an owned regular file to a bounded immutable export snapshot.
   // auth: authenticated local owner; remote=data.read
-  // idempotency: owner+meta.command_id+canonical request hash; UNKNOWN reconciles via GetOperation
+  // idempotency: durable owner+owner_epoch+command_id+canonical keyed digest; compacted identity never re-executes; UNKNOWN reconciles via GetOperation
   // deadline: 30 s; timeout does not imply no effect
   // stream: none
-  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, VALIDATION/path_rejected, STATE/managed_use, RESOURCE/disk_space, CONFLICT/identity_changed
+  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, VALIDATION/path_rejected, STATE/managed_use, RESOURCE/disk_space, CONFLICT/identity_changed, CONFLICT/owner_epoch_retired, STATE/receipt_compacted
   // locality: local and explicitly granted Center route
   rpc BeginExport(DataServiceBeginExportRequest) returns (DataServiceBeginExportResponse);
   // Read a bounded snapshot range, verifying actor and expiry.
@@ -1141,12 +1163,20 @@ service DataService {
   // errors: STATE/not_found, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, VALIDATION/invalid_cursor, VALIDATION/path_rejected, STATE/managed_use, RESOURCE/disk_space, CONFLICT/identity_changed
   // locality: local and explicitly granted Center route
   rpc ReadExport(DataServiceReadExportRequest) returns (DataServiceReadExportResponse);
+  // Inspect transfer progress, immutable snapshot identity and safe release state.
+  // auth: authenticated local owner; remote=data.write for import or data.read for export; initiating actor/grant scope
+  // idempotency: pure read; never resumes an effect
+  // deadline: 10 s
+  // stream: none
+  // errors: STATE/not_found, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument
+  // locality: local and explicitly granted Center route
+  rpc InspectTransfer(DataServiceInspectTransferRequest) returns (DataServiceInspectTransferResponse);
   // Close or cancel staging without hiding an uncertain committed effect.
   // auth: authenticated local owner; remote=data.write for import or data.read for export; actor/grant must own transfer
-  // idempotency: owner+meta.command_id+canonical request hash; UNKNOWN reconciles via GetOperation
+  // idempotency: durable owner+owner_epoch+command_id+canonical keyed digest; compacted identity never re-executes; UNKNOWN reconciles via GetOperation
   // deadline: 30 s; timeout does not imply no effect
   // stream: none
-  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, VALIDATION/path_rejected, STATE/managed_use, RESOURCE/disk_space, CONFLICT/identity_changed
+  // errors: CONFLICT/revision_mismatch, CONFLICT/command_id_reused, STATE/not_found, STATE/busy, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, EXECUTION/outcome_unknown, VALIDATION/path_rejected, STATE/managed_use, RESOURCE/disk_space, CONFLICT/identity_changed, CONFLICT/owner_epoch_retired, STATE/receipt_compacted
   // locality: local and explicitly granted Center route
   rpc CloseTransfer(DataServiceCloseTransferRequest) returns (DataServiceCloseTransferResponse);
 }
@@ -1202,6 +1232,7 @@ message DataServiceBeginImportRequest {
   optional string sha256 = 13 [json_name = "sha256"]; // validate: required64 lowercase hex
   optional bool overwrite = 14 [json_name = "overwrite"]; // validate: explicit true and matching expected_file_version
   optional string expected_file_version = 15 [json_name = "expectedFileVersion"]; // validate: required for overwrite
+  arcforges.foundation.v1.Id owner_epoch = 100 [json_name = "ownerEpoch"]; // validate: required persistent mutation epoch from Handshake; preserve across retries; never replace after epoch retirement
 }
 
 message DataServiceBeginImportResponse {
@@ -1223,6 +1254,7 @@ message DataServiceWriteImportRequest {
   arcforges.foundation.v1.Id transfer_id = 10 [json_name = "transferId"]; // validate: active import owned by actor
   optional uint64 offset = 11 [json_name = "offset"]; // validate: current contiguous offset; identical replay allowed
   optional bytes chunk = 12 [json_name = "chunk"]; // validate: 1..1048576 bytes
+  arcforges.foundation.v1.Id owner_epoch = 100 [json_name = "ownerEpoch"]; // validate: required persistent mutation epoch from Handshake; preserve across retries; never replace after epoch retirement
 }
 
 message DataServiceWriteImportResponse {
@@ -1242,6 +1274,7 @@ message DataServiceCommitImportRequest {
   arcforges.foundation.v1.RequestMeta meta = 1 [json_name = "meta"]; // validate: required; command_id for mutation, expected_rev for existing aggregate CAS
   reserved 2 to 9;
   arcforges.foundation.v1.Id transfer_id = 10 [json_name = "transferId"]; // validate: active completed staging
+  arcforges.foundation.v1.Id owner_epoch = 100 [json_name = "ownerEpoch"]; // validate: required persistent mutation epoch from Handshake; preserve across retries; never replace after epoch retirement
 }
 
 message DataServiceCommitImportResponse {
@@ -1264,6 +1297,7 @@ message DataServiceBeginExportRequest {
   arcforges.foundation.v1.Id sandbox_id = 10 [json_name = "sandboxId"]; // validate: required 16 bytes; owned and visible
   optional string relative_path = 11 [json_name = "relativePath"]; // validate: normalized safe regular-file source
   optional string expected_file_version = 12 [json_name = "expectedFileVersion"]; // validate: optional caller-observed version
+  arcforges.foundation.v1.Id owner_epoch = 100 [json_name = "ownerEpoch"]; // validate: required persistent mutation epoch from Handshake; preserve across retries; never replace after epoch retirement
 }
 
 message DataServiceBeginExportResponse {
@@ -1304,6 +1338,7 @@ message DataServiceCloseTransferRequest {
   arcforges.foundation.v1.RequestMeta meta = 1 [json_name = "meta"]; // validate: required; command_id for mutation, expected_rev for existing aggregate CAS
   reserved 2 to 9;
   arcforges.foundation.v1.Id transfer_id = 10 [json_name = "transferId"]; // validate: owned transfer
+  arcforges.foundation.v1.Id owner_epoch = 100 [json_name = "ownerEpoch"]; // validate: required persistent mutation epoch from Handshake; preserve across retries; never replace after epoch retirement
 }
 
 message DataServiceCloseTransferResponse {
@@ -1317,5 +1352,24 @@ message DataServiceCloseTransferResponse {
 
 message DataServiceCloseTransferValue {
   Transfer transfer = 10 [json_name = "transfer"]; // validate: final known state or recovery-required
+}
+
+message DataServiceInspectTransferRequest {
+  arcforges.foundation.v1.RequestMeta meta = 1 [json_name = "meta"]; // validate: required owner/correlation context
+  reserved 2 to 9;
+  arcforges.foundation.v1.Id transfer_id = 10 [json_name = "transferId"]; // validate: required owned visible transfer
+}
+
+message DataServiceInspectTransferResponse {
+  arcforges.foundation.v1.ResponseMeta meta = 1 [json_name = "meta"];
+  oneof outcome {
+    DataServiceInspectTransferValue value = 2 [json_name = "value"];
+    arcforges.foundation.v1.ArcError error = 3 [json_name = "error"];
+  }
+  reserved 4 to 9;
+}
+
+message DataServiceInspectTransferValue {
+  Transfer transfer = 10 [json_name = "transfer"]; // validate: current progress, verified length/hash and closed_at; no secret or native path
 }
 

@@ -31,3 +31,5 @@ This index is normative for migration. Exact class/file/table/consumer findings 
 The final removal sweep covers source, tests that assert cancelled behavior, registrations, dependency locks, solution entries, build/package inventories, routes, active schema, CLI help/completions, UI navigation and current docs. It must not delete immutable applied migrations, accepted historical evidence, published package versions, shared consumer assets, or development MCP access.
 
 An asset absent from current source is marked absent in the audit and has no fabricated migration cost. Relevant conceptual designs and empty tables still leave current authority. Any new main-branch drift must be audited by the baseline/preflight task before it widens deletion scope.
+
+The [applied Plan source-scope audit](plan-scope-audit.md) checks all 39 task allowlists against these real source locations, including concrete C# Center retirement and shared-consumer preservation. It is dated review evidence; the Plan graph remains the task authority.

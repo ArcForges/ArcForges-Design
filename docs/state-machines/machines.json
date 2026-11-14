@@ -50,8 +50,8 @@
             "ERROR"
           ],
           "to": "READY",
-          "on": "Explicit local repair",
-          "guard": "Ownership and profile valid; no unresolved effect",
+          "on": "Configure(repair_error=true)",
+          "guard": "Local owner, fresh revision, verified owned root and profile, no nonterminal Run or unresolved effect",
           "effect": "Commit corrected config"
         },
         {
@@ -96,8 +96,8 @@
           ],
           "to": "DELETING",
           "on": "Resume known deletion",
-          "guard": "Same root/journal identity and no managed use",
-          "effect": "Resume exact intent without new ID"
+          "guard": "Explicit local Delete.resume_command_id; same owner epoch, original deletion journal/root identity, fresh revision and no managed use",
+          "effect": "Journal a successor command linked to the original intent; reconcile prior UNKNOWN from proof, never replay old Start or broaden deletion"
         }
       ]
     },
@@ -192,6 +192,15 @@
           "on": "Recovery locates exiting group",
           "guard": "Verified ownership or host reboot proof",
           "effect": "Finish cleanup and final record"
+        },
+        {
+          "from": [
+            "RECOVERY_REQUIRED"
+          ],
+          "to": "FAILED",
+          "on": "Recovery proves definite launch refusal",
+          "guard": "payload_started=NOT_STARTED proved and owned outer boundary empty verified; no payload effect",
+          "effect": "Persist definite failure provenance and release reservation; no Start replay"
         }
       ]
     },
@@ -248,9 +257,9 @@
             "OPEN"
           ],
           "to": "STREAMING",
-          "on": "First authorized chunk/range",
-          "guard": "Identity, expiry, no-use lock and quota valid",
-          "effect": "Advance contiguous verified cursor"
+          "on": "First import chunk or export snapshot copy begins",
+          "guard": "Identity, expiry, source/destination no-use lock and quota valid",
+          "effect": "Advance verified import staging or export-copy cursor; client reads do not alter transfer state"
         },
         {
           "from": [
@@ -258,9 +267,9 @@
             "STREAMING"
           ],
           "to": "COMPLETE",
-          "on": "Commit import or finish export",
+          "on": "Commit import or finish verified export snapshot",
           "guard": "Exact length/hash and final root identity verified",
-          "effect": "Persist receipt then release staging"
+          "effect": "Persist COMPLETE; release source quiescence after export materialization; retain private export snapshot through ReadExport retries until CloseTransfer/expiry"
         },
         {
           "from": [
@@ -289,7 +298,7 @@
           "to": "COMPLETE",
           "on": "Reconciliation proves commit",
           "guard": "Exact destination/source version matches original intent",
-          "effect": "Return original receipt"
+          "effect": "Return retained result identity; preserve export snapshot until CloseTransfer/expiry; never reapply import"
         },
         {
           "from": [
@@ -371,7 +380,7 @@
         "PENDING"
       ],
       "terminal": [],
-      "persisted": false,
+      "persisted": true,
       "owner": "Resource manager",
       "transitions": [
         {
@@ -422,7 +431,12 @@
           "guard": "New policy/qualification identity; no stale success reuse",
           "effect": "Reapply and read back independently"
         }
-      ]
+      ],
+      "storage": {
+        "table": "limit_application",
+        "column": "state",
+        "encoding": "lowercase_enum"
+      }
     }
   ]
 }

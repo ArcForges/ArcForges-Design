@@ -93,15 +93,21 @@ CREATE TABLE management.command_identity (
     enrollment_id uuid NOT NULL,
     node_id uuid NOT NULL,
     namespace smallint NOT NULL CHECK (namespace IN (1, 2, 3)),
+    node_owner_epoch bytea,
     method text NOT NULL CHECK (char_length(method) BETWEEN 1 AND 128),
     intent_sha256 bytea NOT NULL CHECK (octet_length(intent_sha256) = 32),
     created_at timestamptz NOT NULL,
     replay_until timestamptz NOT NULL,
     PRIMARY KEY (account_id, command_id),
+    UNIQUE (account_id, command_id, node_owner_epoch),
     FOREIGN KEY (enrollment_id, node_id, account_id)
         REFERENCES fleet.node (enrollment_id, node_id, user_id),
-    CHECK (replay_until > created_at)
+    CHECK (replay_until > created_at),
+    CHECK ((namespace = 3) = (node_owner_epoch IS NOT NULL)),
+    CHECK (node_owner_epoch IS NULL OR octet_length(node_owner_epoch) = 16)
 );
+-- Node store owner epoch is distinct from enrollment/protocol/channel epochs.
+-- Legacy namespaces have no such epoch; they are non-executable tombstones.
 CREATE INDEX command_identity_enrollment
     ON management.command_identity (enrollment_id, created_at);
 
@@ -112,6 +118,7 @@ CREATE INDEX command_identity_enrollment
 CREATE TABLE management.remote_operation (
     account_id uuid NOT NULL,
     command_id uuid NOT NULL,
+    node_owner_epoch bytea NOT NULL CHECK (octet_length(node_owner_epoch) = 16),
     method text NOT NULL REFERENCES management.method_catalogue (method),
     state smallint NOT NULL CHECK (state IN (1, 3, 4, 5, 6, 7, 8)),
     may_have_delivered boolean NOT NULL DEFAULT false,
@@ -128,8 +135,8 @@ CREATE TABLE management.remote_operation (
     updated_at timestamptz NOT NULL,
     final_at timestamptz,
     PRIMARY KEY (account_id, command_id),
-    FOREIGN KEY (account_id, command_id)
-        REFERENCES management.command_identity (account_id, command_id),
+    FOREIGN KEY (account_id, command_id, node_owner_epoch)
+        REFERENCES management.command_identity (account_id, command_id, node_owner_epoch),
     CHECK (result_sha256 IS NULL OR octet_length(result_sha256) = 32),
     CHECK ((result_kind IS NULL) = (result_id IS NULL)),
     CHECK (state <> 8 OR NOT may_have_delivered),

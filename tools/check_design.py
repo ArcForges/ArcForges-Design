@@ -532,6 +532,9 @@ def render_machines(data: dict) -> str:
         out += ["", f'<a id="{m["id"].lower()}"></a>', "", f"## {m['id']} — {m['title']}", ""]
         if "enum" in m:
             out.append(f"- Enum: `{m['enum']}`; persisted: {m['persisted']}; owner: {m['owner']}.")
+            if "storage" in m:
+                storage = m["storage"]
+                out.append(f"- SQLite storage: `{storage['table']}.{storage['column']}`; encoding: `{storage['encoding']}`; checked against the enum and closed SQL state set.")
         else:
             source = m.get("state_source")
             source_text = (f"`{source.get('repository', '?')}@{source.get('commit', '?')}`: "
@@ -604,6 +607,8 @@ def check_machines(rep: Report, model: ProtoModel, data: dict) -> None:
                 continue
             prefix = re.sub(r"(?<!^)([A-Z])", r"_\1", enum_name.split(".")[-1]).upper() + "_"
             enum_states = {v[len(prefix):] for v in enum if v.startswith(prefix) and not v.endswith("_UNSPECIFIED")}
+            if "storage" in m:
+                check_machine_storage(rep, m, enum_states)
             pseudo = set(m.get("pseudo_states", []))
             response_only = set(m.get("response_only", []))
             expected = enum_states - response_only
@@ -664,6 +669,41 @@ def check_machines(rep: Report, model: ProtoModel, data: dict) -> None:
 
 
 # ---------------------------------------------------------------------------- SQL
+
+def check_machine_storage(rep: Report, machine: dict, states: set[str]) -> None:
+    """Check an explicitly mapped enum against the SQLite column's closed state set."""
+    mid = machine["id"]
+    storage = machine.get("storage")
+    if machine.get("persisted") is not True:
+        rep.error(f"{mid}: a stored state machine must declare persisted=true")
+    if not isinstance(storage, dict) or storage.get("encoding") != "lowercase_enum":
+        rep.error(f"{mid}: unsupported state storage encoding")
+        return
+    table, column = storage.get("table"), storage.get("column")
+    if any(not isinstance(value, str) or not re.fullmatch(r"[a-z][a-z0-9_]*", value)
+           for value in (table, column)):
+        rep.error(f"{mid}: state storage requires safe table and column names")
+        return
+    sql = sql_without_comments(read(DOCS / "data" / "node-store.sql"))
+    match = re.search(r"\bCREATE\s+TABLE\s+" + re.escape(table) + r"\s*\((.*?)\)\s*STRICT\s*;", sql, re.I | re.S)
+    if not match:
+        rep.error(f"{mid}: stored state table {table} not found")
+        return
+    definitions = split_sql_top_level(match.group(1))
+    definition = next((item for item in definitions
+                       if re.match(re.escape(column) + r"\s", item, re.I)), "")
+    check = re.search(r"\bCHECK\s*\(\s*" + re.escape(column) + r"\s+IN\s*\(([^)]*)\)\s*\)", definition, re.I)
+    if not check:
+        rep.error(f"{mid}: stored state column {table}.{column} needs a closed IN check")
+        return
+    literals = split_sql_top_level(check.group(1))
+    if any(not re.fullmatch(r"'[a-z][a-z0-9_]*'", value) for value in literals):
+        rep.error(f"{mid}: stored state check must contain simple lowercase state literals")
+        return
+    actual = {value[1:-1] for value in literals}
+    expected = {state.lower() for state in states}
+    if actual != expected or len(literals) != len(actual):
+        rep.error(f"{mid}: stored states disagree with enum: expected {sorted(expected)}, got {sorted(actual)}")
 
 PG_TYPES = {"uuid", "text", "smallint", "integer", "bigint", "bytea", "timestamptz", "boolean", "numeric"}
 # Retained Cloud schema at 6df33c525fcbc20495e46c9c4c011086146da796.

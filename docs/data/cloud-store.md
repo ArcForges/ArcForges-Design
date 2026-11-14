@@ -1,6 +1,6 @@
 # V2 Center data model and migration
 
-Status: target PostgreSQL specification, not an executed migration. Owners: `AFV2-MIG-01`, `AFV2-CENTER-01` through `AFV2-CENTER-03`, `AFV2-ID-01`, `AFV2-HOST-02`. The companion [cloud-store.sql](cloud-store.sql) specifies new tables/constraints against the retained Go schema; it is not executable SQLite and does not replace the product's migration runner.
+Status: target PostgreSQL specification, not an executed migration. `AFV2-BASE-01` owns inventory/preflight; `AFV2-CENTER-01` owns the guarded PostgreSQL transition and real fixture qualification; CENTER-02/03/04 respectively own channel, typed control and bounded delivery. `AFV2-ID-01` and `AFV2-HOST-02` add account/commerce state. Final runtime cutover is `AFV2-MIG-01`, followed by live-schema contraction in `AFV2-MIG-02`. The companion [cloud-store.sql](cloud-store.sql) specifies new tables/constraints against the retained Go schema; it is not executable SQLite and does not replace the product's migration runner.
 
 ## 1. Baseline and authority
 
@@ -32,7 +32,7 @@ Capabilities and resource telemetry are volatile bounded snapshots. Persisted re
 
 ### 2.2 Command namespace and routing result
 
-`management.command_identity` is immutable. `(account_id, command_id)` is unique across V2 management commands and imported V1 tombstones. It binds namespace, enrollment, method, canonical intent digest and creation/replay boundary. Reusing the ID against another target or method is a conflict. A same-command retry cannot obtain a new identity by changing route or enrollment.
+`management.command_identity` is immutable. `(account_id, command_id)` is unique across V2 management commands and imported V1 tombstones. It binds namespace, enrollment, method, canonical intent digest and creation/replay boundary. V2 identities additionally store the original 16-byte `node_owner_epoch`; the remote-operation foreign key binds that same epoch. This is the durable Node store authority, not the enrollment/protocol/channel epoch. Reusing the ID against another target, method or owner epoch is a conflict. Reconnect and a fresh Handshake cannot rebind an admitted command. Legacy tombstones have no Node owner epoch and cannot be used as V2 operations; migration does not invent an epoch for old commands.
 
 `management.remote_operation` contains routing state, monotonic “may have delivered”, delivery count, current hub/channel epoch, result reference/digest and timestamps. It stores no request or response body. The authoritative Core receipt is queried when a full result is needed. For an offline Node, Center may report the last verified outcome/reference but must identify its provenance and freshness rather than fabricate a current Core result.
 
@@ -91,7 +91,7 @@ Existing flow/receipt/audit retention policies must be carried into the new acce
 
 ## 5. Finite migration sequence
 
-The migration task first records actual deployment identities, schema versions, checksums, runtime credential generations, available backup/restore evidence, and whether retained D1 data exists. No production probing or modification is authorized by this documentation task. Implementation uses test-owned databases representing every supported starting state.
+`AFV2-BASE-01` first records actual deployment identities, schema versions, checksums, runtime credential generations, available backup/restore evidence, and whether retained D1 data exists. `AFV2-CENTER-01` implements and qualifies the guarded transition on isolated fresh/schema10/schema11 databases; it does not depend on the late runtime-removal task. The cutover procedure below is executed only after its real admission prerequisites, with final old-route/consumer retirement in `AFV2-MIG-01` and live-schema contraction in `AFV2-MIG-02`. No production probing or modification is authorized by this documentation task.
 
 ### 5.1 Common preparation
 

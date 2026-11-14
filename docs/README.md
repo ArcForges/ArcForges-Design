@@ -15,3 +15,8 @@ Read this index and [AD-0022](decisions/AD-0022-cli-sandbox-platform-pivot.md) f
 | Migration evidence | [Baseline](research/baseline.md), [local audit](research/runtime-audit.md), [cloud audit](research/cloud-audit.md), [disposition](reuse/disposition.md), [traceability](traceability/model.json) |
 
 V2's Plan uses only `AFV2-*` task IDs. The complete V1 corpus is outside `docs/`, in the frozen history snapshot. The retained delivery/verification ADRs preserve their gates; product ADRs AD-0001–AD-0021 have an explicit disposition beside AD-0022.
+
+## Consolidated review
+
+- [Independent review and repair record](verification/v2-review.md) preserves the initial findings, applied resolutions and final-PR evidence boundary.
+- [Applied task source-scope audit](reuse/plan-scope-audit.md) records real module paths, future targets and finite retirement coverage.
