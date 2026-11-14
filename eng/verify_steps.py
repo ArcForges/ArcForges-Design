@@ -36,7 +36,7 @@ ACTIONLINT = (
     "echo \"$sum  $t.part\" | sha256sum --check --quiet; mv \"$t.part\" \"$t\"; fi; "
     "echo \"$sum  $t\" | sha256sum --check --quiet; "
     "mkdir -p \"$d/actionlint-$v\"; tar -xzf \"$t\" -C \"$d/actionlint-$v\" actionlint; "
-    "\"$d/actionlint-$v/actionlint\""
+    "\"$d/actionlint-$v/actionlint\" -config-file eng/actionlint.yaml"
 )
 
 

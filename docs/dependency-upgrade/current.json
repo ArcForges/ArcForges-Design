@@ -87,7 +87,12 @@
   "ci_venue": {
     "runner": "ubuntu-26.04",
     "source": "https://github.com/actions/runner-images",
-    "note": "Latest available stable Ubuntu runner OS label at lookup; hosted weekly image revision is service-managed and recorded by Actions, not an immutable container digest. Native Linux remains the designated Debian host; version parity applies to applicable tools and dependencies."
+    "note": "Latest available stable Ubuntu runner OS label at lookup; hosted weekly image revision is service-managed and recorded by Actions, not an immutable container digest. Native Linux remains the designated Debian host; version parity applies to applicable tools and dependencies.",
+    "actionlint_compatibility": {
+      "config": "eng/actionlint.yaml",
+      "reason": "Latest stable actionlint 1.7.12 predates the official hosted Ubuntu 26.04 label; add exactly that documented label through its supported label configuration. No diagnostic filter or alternate venue.",
+      "source": "https://github.com/rhysd/actionlint/blob/main/docs/config.md"
+    }
   },
   "containers": [],
   "other_language_manifests": [],
@@ -102,13 +107,15 @@
       "Invoking and PATH Python equal .python-version",
       "Selected dotnet SDK equals exact global.json version",
       "MSBuildSDKsPath, when set, belongs to selected SDK",
-      "Lockfile SHA256 recorded; restore uses --locked-mode"
+      "Lockfile SHA256 recorded; restore uses --locked-mode",
+      "protoc, C# plugin and includes bind to the lockfile's exact Grpc.Tools package; PATH/higher cached versions cannot select them and conflicting explicit overrides fail"
     ],
     "required_evidence": "Exact pushed-head native Windows/Linux summaries and independent review, recorded in the PR; author diagnostics are not these statuses"
   },
   "author_evidence": [
     "Native Windows new SDK/proto package restore succeeded; protoc generation and generated C# compilation completed with zero warnings under IsAotCompatible",
-    "39 affected Design tests and three real-tool version-preflight tests passed; explicit old interpreter must fail preflight"
+    "39 affected Design tests and three real-tool version-preflight tests passed; explicit old interpreter must fail preflight",
+    "Four generator-selection regressions passed; an actual installed Grpc.Tools 2.84.0 override is rejected before compilation"
   ],
   "rollback": "Revert selectors, source compatibility changes and lockfile together on a reviewed branch; preserve installed old SDK/Python versions and historical evidence. This repository publishes no runtime product package."
 }
