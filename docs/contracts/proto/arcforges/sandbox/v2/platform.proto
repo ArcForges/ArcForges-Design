@@ -264,7 +264,7 @@ message ResourceSnapshot {
   optional uint32 reserved_cpu_millicores = 17 [json_name = "reservedCpuMillicores"]; // validate: host reserve
   optional uint64 node_memory_bytes = 18 [json_name = "nodeMemoryBytes"]; // validate: separate Node overhead
   optional uint32 node_cpu_millicores = 19 [json_name = "nodeCpuMillicores"]; // validate: separate Node overhead
-  optional uint64 sample_sequence = 20 [json_name = "sampleSequence"]; // validate: monotonic per sample epoch
+  optional uint64 sample_sequence = 20 [json_name = "sampleSequence"]; // validate: monotonic per scope/epoch; subscription may intentionally downsample
   optional uint32 sample_interval_ms = 21 [json_name = "sampleIntervalMs"]; // validate: actual observation interval
   arcforges.foundation.v1.Revision policy_revision = 22 [json_name = "policyRevision"]; // validate: policy that produced budget
   optional uint64 peak_memory_bytes = 23 [json_name = "peakMemoryBytes"]; // validate: per scope; metric labeled
@@ -275,7 +275,6 @@ message ResourceSnapshot {
   optional double psi_memory_some = 28 [json_name = "psiMemorySome"]; // validate: Linux PSI 0..100 or absent
   optional double psi_memory_full = 29 [json_name = "psiMemoryFull"]; // validate: Linux PSI 0..100 or absent
   optional string sample_epoch = 30 [json_name = "sampleEpoch"]; // validate: sampler generation; changes on restart
-  optional uint64 sample_sequence = 31 [json_name = "sampleSequence"]; // validate: monotonic per scope/epoch; subscription may intentionally downsample
 }
 
 message OutputChunk {
@@ -1021,10 +1020,10 @@ message RunServiceDetachTerminalValue {
 service ResourceService {
   // Read sampled host/Sandbox/Run budgets and actual limits.
   // auth: authenticated local owner; remote=resource.read
-  // idempotency: pure read; cursor/snapshot scoped
+  // idempotency: pure read; current complete snapshot
   // deadline: 10 s; timeout does not imply no effect
   // stream: none
-  // errors: STATE/not_found, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, VALIDATION/invalid_cursor
+  // errors: STATE/not_found, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument
   // locality: local and explicitly granted Center route
   rpc GetBudget(ResourceServiceGetBudgetRequest) returns (ResourceServiceGetBudgetResponse);
   // Set bounded resource policy; requested and applied state remain distinct.
@@ -1037,10 +1036,10 @@ service ResourceService {
   rpc SetPolicy(ResourceServiceSetPolicyRequest) returns (ResourceServiceSetPolicyResponse);
   // Read bounded sampled usage; slow clients resnapshot.
   // auth: authenticated local owner; remote=resource.read
-  // idempotency: pure read; cursor/snapshot scoped
+  // idempotency: pure read; fresh complete snapshots; reconnect does not replay history
   // deadline: 10 s; timeout does not imply no effect
   // stream: server; complete fresh snapshots only; no cursor/backfill; slow consumer closes with RESOURCE/overloaded
-  // errors: STATE/not_found, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, VALIDATION/invalid_cursor
+  // errors: STATE/not_found, AUTHORIZATION/permission_denied, VALIDATION/invalid_argument, RESOURCE/overloaded
   // locality: local and explicitly granted Center route
   rpc WatchUsage(ResourceServiceWatchUsageRequest) returns (stream ResourceServiceWatchUsageFrame);
 }

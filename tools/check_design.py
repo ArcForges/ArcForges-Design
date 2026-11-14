@@ -336,7 +336,11 @@ def check_protos(rep: Report, model: ProtoModel, files: list[Path]) -> None:
     for key, msg in model.messages.items():
         if msg.file == "foundation":
             continue
+        field_names: set[str] = set()
         for f in msg.fields:
+            if f.name in field_names:
+                rep.error(f"{msg.file}: {msg.name} has duplicate field name {f.name}")
+            field_names.add(f.name)
             if f'json_name = "{camel(f.name)}"' not in f.options:
                 rep.error(f"{msg.file}: {msg.name}.{f.name} lacks json_name \"{camel(f.name)}\"")
             base = f.type.split(".")[-1]

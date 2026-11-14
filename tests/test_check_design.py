@@ -136,6 +136,15 @@ class ProtoChecks(unittest.TestCase):
         rep = self.run_fixture(GOOD.replace(' [json_name = "name"]', ""))
         self.assertTrue(any("lacks json_name" in e for e in rep.errors))
 
+    def test_duplicate_field_name_in_auxiliary_message(self):
+        rep = self.run_fixture(GOOD + '''
+message ResourceSnapshot {
+  optional uint64 sample_sequence = 20 [json_name = "sampleSequence"];
+  optional uint64 sample_sequence = 31 [json_name = "sampleSequence"];
+}
+''')
+        self.assertTrue(any("ResourceSnapshot has duplicate field name sample_sequence" in e for e in rep.errors))
+
     def test_missing_optional(self):
         rep = self.run_fixture(GOOD.replace("optional string name", "string name"))
         self.assertTrue(any("must be optional" in e for e in rep.errors))
