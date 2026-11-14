@@ -10,8 +10,11 @@ Required native host checks use the unchanged repository eng/verify.py profiles 
 
 ## Product acceptance layers
 
+[AD-0023](../decisions/AD-0023-current-dependency-baseline.md) adds a documents-first dependency baseline. AFV2-ENV-01 owns the seven-repository latest-stable upgrade and local/CI parity evidence (Plan AR-13) before the product roots resume. Its implementation begins after this paired policy amendment merges. The dated original source audit and MXC research remain evidence of their recorded versions; changed components require new admission evidence and the composed P1 native gates.
+
 | Layer | What proves it | Owner |
 |---|---|---|
+| Current dependency baseline | Complete official-source version/artifact inventory, compatible shared producers/consumers, local/CI fingerprints and exact-head required native profiles for all seven delivery repositories | AFV2-ENV-01 |
 | Official engine admission | Exact stable artifact/source/license/AOT receipt and full composed Windows/Linux tests | AFV2-MXC-01..04 |
 | Core state and receipts | Real stores, locks, failure points, identity/revision/dedup and state-transition tests | AFV2-DATA-01, AFV2-CORE-01, AFV2-CORE-02, AFV2-REC-01 |
 | Terminal | Real TTY detection, full-screen redraw, Ctrl+C, resize, EOF, exclusive writer, detach and output GAP | AFV2-CORE-03, AFV2-CLI-02 |

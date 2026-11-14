@@ -517,6 +517,15 @@
         "AFV2-WEB-03",
         "AFV2-ACC-02"
       ]
+    },
+    {
+      "id": "R-DEP-001",
+      "design": [
+        "docs/decisions/AD-0023-current-dependency-baseline.md"
+      ],
+      "tasks": [
+        "AFV2-ENV-01"
+      ]
     }
   ]
 }

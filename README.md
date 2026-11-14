@@ -6,6 +6,8 @@ ArcForges is an open-source general CLI sandbox and intelligent resource-managem
 
 This is a design and migration specification, not a claim that V2 is implemented. The source audit distinguishes delivered V1 code from V2 targets and unproven MXC combinations. Read [verification](docs/verification/platform-capabilities.md) before making a platform support claim.
 
+[AD-0023](docs/decisions/AD-0023-current-dependency-baseline.md) adds the owner-directed dependency upgrade: merge the reviewed policy documents first, then upgrade all current dependencies across the seven delivery repositories with local/CI parity before product implementation resumes.
+
 All earlier product definitions, task contracts, AI/MCP routing, cache platforms, desktop/mobile applications, and Center-required local execution are superseded. Their unmodified evidence is frozen at `62172622550fff73a553135ca178f9b7117c9cbd` under [history/v1-20261114](history/v1-20261114-notice.md). Never execute a historical task from that archive.
 
 ## Contributing and validation
