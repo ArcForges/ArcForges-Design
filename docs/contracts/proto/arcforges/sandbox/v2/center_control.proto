@@ -202,4 +202,3 @@ message CenterControlServiceSignOutValue {
   CenterConnection connection = 10 [json_name = "connection"]; // validate: local authority ended; remote revocation separately confirmed or unknown
   Operation operation = 11 [json_name = "operation"]; // validate: durable receipt; unconfirmed remote effect remains unresolved
 }
-

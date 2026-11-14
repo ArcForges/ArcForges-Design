@@ -1372,4 +1372,3 @@ message DataServiceInspectTransferResponse {
 message DataServiceInspectTransferValue {
   Transfer transfer = 10 [json_name = "transfer"]; // validate: current progress, verified length/hash and closed_at; no secret or native path
 }
-

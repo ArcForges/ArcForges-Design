@@ -106,4 +106,3 @@ message DeviceServiceRevokeResponse {
 message DeviceServiceRevokeValue {
   Device device = 10 [json_name = "device"]; // validate: observed or revoked
 }
-
