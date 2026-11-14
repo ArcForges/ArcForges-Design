@@ -1,0 +1,612 @@
+{
+  "format_version": 1,
+  "research_date_utc": "2026-11-14",
+  "repository": "https://github.com/microsoft/mxc",
+  "stable": {
+    "sdk_version": "1.0.1",
+    "schema_version": "1.0.0",
+    "tag": "v1.0.1",
+    "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+    "latest_stable_checked": true
+  },
+  "release_asset": {
+    "name": "mxc-release-binaries.zip",
+    "url": "https://github.com/microsoft/mxc/releases/download/v1.0.1/mxc-release-binaries.zip",
+    "size_bytes": 542051775,
+    "upstream_sha256": "0e832239454ba7fcd338ff56218a287eef4c0a01c1484084b869f55feff8abe9",
+    "downloaded": false,
+    "locally_hash_verified": false,
+    "signature_verified_on_native_host": false
+  },
+  "unreleased_snapshot": {
+    "branch": "main",
+    "commit": "6a89e69c72104bdf83b1f682a2f576b529b8bd65",
+    "selected_for_implementation": false
+  },
+  "profiles": [
+    {
+      "id": "windows-process-executor-v1",
+      "backend": "processcontainer",
+      "required_tier": "base-container",
+      "execution_surface": "unchanged official wxc-exec stable JSON",
+      "terminal_surface": "C# Native AOT host ConPTY",
+      "resource_surface": "ArcForges preinstalled outer Job",
+      "tier_guard": "nonempty private control-directory deniedPaths plus fallback.allowDaclMutation=false",
+      "qualification": "UNPROVEN",
+      "owner_task": "AFV2-MXC-02",
+      "assumption": "A-MXC-01",
+      "future_evidence": "F-MXC-01"
+    },
+    {
+      "id": "linux-bubblewrap-sdk-v1",
+      "backend": "bubblewrap",
+      "execution_surface": "Microsoft.Mxc.Sdk.V1",
+      "terminal_surface": "MxcContainer.SpawnWithPty",
+      "resource_surface": "preinstalled delegated cgroup v2/systemd scope",
+      "qualification": "UNPROVEN",
+      "owner_task": "AFV2-MXC-03",
+      "assumption": "A-MXC-02",
+      "future_evidence": "F-MXC-02"
+    }
+  ],
+  "fact_groups": {
+    "V-MXC-01": [
+      "MXCS-01",
+      "MXCS-02",
+      "MXCS-11",
+      "MXCS-26"
+    ],
+    "V-MXC-02": [
+      "MXCS-02",
+      "MXCS-03",
+      "MXCS-09",
+      "MXCS-10",
+      "MXCS-21",
+      "MXCS-24",
+      "MXCS-25",
+      "MXCS-27"
+    ],
+    "V-MXC-03": [
+      "MXCS-05",
+      "MXCS-06",
+      "MXCS-07",
+      "MXCS-08",
+      "MXCS-22",
+      "MXCS-23"
+    ],
+    "V-MXC-04": [
+      "MXCS-03",
+      "MXCS-11",
+      "MXCS-13",
+      "MXCS-14",
+      "MXCS-15",
+      "MXCS-28"
+    ],
+    "V-MXC-05": [
+      "MXCS-03",
+      "MXCS-11",
+      "MXCS-12",
+      "MXCS-13",
+      "MXCS-14"
+    ],
+    "V-MXC-06": [
+      "MXCS-02",
+      "MXCS-04",
+      "MXCS-05",
+      "MXCS-06",
+      "MXCS-09",
+      "MXCS-14",
+      "MXCS-18"
+    ],
+    "V-MXC-07": [
+      "MXCS-16",
+      "MXCS-19",
+      "MXCS-20",
+      "MXCS-25",
+      "MXCS-26",
+      "MXCS-29",
+      "MXCS-30"
+    ]
+  },
+  "runtime_evidence": {
+    "windows": "NOT_RUN",
+    "linux": "NOT_RUN",
+    "native_aot_execution": "NOT_RUN",
+    "decision_owner": "AFV2-MXC-04",
+    "aot_owner": "AFV2-MXC-01",
+    "notes": "Only official source, public release/package metadata and inert npm payload text were inspected. No designated verification-host experiment was run."
+  },
+  "sources": [
+    {
+      "id": "MXCS-01",
+      "title": "Official latest stable release",
+      "kind": "official_release_metadata",
+      "url": "https://github.com/microsoft/mxc/releases/tag/v1.0.1",
+      "api_url": "https://api.github.com/repos/microsoft/mxc/releases/latest",
+      "tag": "v1.0.1",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "published_at": "2026-10-17T00:55:03Z",
+      "prerelease": false
+    },
+    {
+      "id": "MXCS-02",
+      "title": "Stable .NET operation signatures",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/docs/api-reference/dotnet/v1/api.md",
+      "files": [
+        {
+          "path": "docs/api-reference/dotnet/v1/api.md",
+          "git_blob": "3d7f7af377a2900e595871b1c54a36e8883548f5",
+          "sha256": "f078a94715267f125d4d5c068102190915319c21d2b08e2ab1bd535df773303f"
+        },
+        {
+          "path": "docs/api-reference/dotnet/v1/types.md",
+          "git_blob": "a45500ccdac5ad4c18f30d46615f2bbec7b7e62f",
+          "sha256": "0d670f520fc8876e8f568c309eea92be35d331685c7c7174246c5f77a0a5acd6"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-03",
+      "title": "Stable typed request and exact-wire writer",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/sdk/dotnet/Microsoft.Mxc.Sdk/V1/ContainerRequest.cs",
+      "files": [
+        {
+          "path": "sdk/dotnet/Microsoft.Mxc.Sdk/V1/ContainerRequest.cs",
+          "git_blob": "1e6cd94e5df1c8033d43cf41d5828f6806535b75",
+          "sha256": "4661e6476bc6836b8cf9ff57f60ac29d82d1c7498506f5282481390888e3cfb7"
+        },
+        {
+          "path": "sdk/dotnet/Microsoft.Mxc.Sdk/V1/ExactOneShotRequestWriter.cs",
+          "git_blob": "81e6d832ff40fff60e7e1a682b022b4408e17aaf",
+          "sha256": "32d59cd00d8c84e8609d5bc480c1c440c18f6da7d5c121a6cbeaed0cd6c409d1"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-04",
+      "title": "Managed process, PTY and wait/disposal ownership",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/sdk/dotnet/Microsoft.Mxc.Sdk/V1/MxcProcess.cs",
+      "files": [
+        {
+          "path": "sdk/dotnet/Microsoft.Mxc.Sdk/V1/MxcProcess.cs",
+          "git_blob": "94d5b5adaf266524c809587c838dd379b2dc46ba",
+          "sha256": "452e41cd2b7a8597f815d691008a6f56f50ec5950220c9d7d6d501b9b75b2b1e"
+        },
+        {
+          "path": "sdk/dotnet/Microsoft.Mxc.Sdk/V1/MxcPtyProcess.cs",
+          "git_blob": "62c0dff48aa3a49f92aa33cda39728327cd1e415",
+          "sha256": "4ef9c02a94d01b600ac38489dd5151d703a875d0b6d55392936eea0306e4cedf"
+        },
+        {
+          "path": "sdk/dotnet/Microsoft.Mxc.Sdk/V1/MxcContainer.cs",
+          "git_blob": "611da275f6034f6fbe06da05084f23cb5c9e4235",
+          "sha256": "4263248798a9c2cb761f335f17c3e65f33d527dc056a58de864500b50b0f10f1"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-05",
+      "title": "MXC internal Job setup and bounded empty wait",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/src/mxc-sdk/src/backends/process_container/common/job_object.rs",
+      "files": [
+        {
+          "path": "src/mxc-sdk/src/backends/process_container/common/job_object.rs",
+          "git_blob": "795deda7f3c30e17775291962a235f439fac2f77",
+          "sha256": "a36fb16b95f3efce5cf500ad6525d5ec4a7f1f06b6f03074bb656a94705b281e"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-06",
+      "title": "BaseContainer suspended launch, Job and teardown",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/src/mxc-sdk/src/backends/process_container/common/base_container_runner.rs",
+      "files": [
+        {
+          "path": "src/mxc-sdk/src/backends/process_container/common/base_container_runner.rs",
+          "git_blob": "27b83a786d87fb00f0255f173d427296c351366a",
+          "sha256": "4ca25d357a01550d3e16049b0ee0453f7dbda97dfe5aa56adc2f60773a6b0229"
+        },
+        {
+          "path": "src/mxc-sdk/src/backends/process_container/common/base_container_helpers.rs",
+          "git_blob": "9550eaf8a80d6274986f3087f1d27236fbe4d366",
+          "sha256": "ed1f77ab66ce6975ab4692f622681c385660532189cfbf8885781413af836c3c"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-07",
+      "title": "AppContainer launch and Job UI restrictions",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/src/mxc-sdk/src/backends/process_container/common/appcontainer_runner.rs",
+      "files": [
+        {
+          "path": "src/mxc-sdk/src/backends/process_container/common/appcontainer_runner.rs",
+          "git_blob": "a3cff3cac7d749172af3f5ba68a2991fb7c82b08",
+          "sha256": "89f571c4a4a36599791446628d0cf30f8624ce68e01758951d011ed000a375c6"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-08",
+      "title": "Tier selection and DACL consent gate",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/src/mxc-sdk/src/backends/process_container/common/fallback_detector.rs",
+      "files": [
+        {
+          "path": "src/mxc-sdk/src/backends/process_container/common/fallback_detector.rs",
+          "git_blob": "677e017cb0384d55712c2e57262f5ec77e27a8bc",
+          "sha256": "a3e687733723016bcc3a99cdaaae0cb5b7127214afb2a41d8bec57904e325f5d"
+        },
+        {
+          "path": "src/mxc-sdk/src/backends/process_container/common/dispatcher.rs",
+          "git_blob": "322cfcf5c1c08e83ac567f17a7103f17e28c9d6e",
+          "sha256": "75d37e3a231ced720b1fc0521b960964d1ea060d459424576d67616966b746f4"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-09",
+      "title": "Official executor arguments, dispatch, exit and diagnostics",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/src/tools/wxc/src/main.rs",
+      "files": [
+        {
+          "path": "src/tools/wxc/src/main.rs",
+          "git_blob": "685738be22c68ac0ca2efb17af63afa3daa17dc0",
+          "sha256": "444ad3c268e5a556f874cf2e761ac84fe2ee98646c918b331d5f6873056f0234"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-10",
+      "title": "Stable official Node ProcessContainer ConPTY adapter",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/sdk/node/src/bindings/process-container-pty.ts",
+      "files": [
+        {
+          "path": "sdk/node/src/bindings/process-container-pty.ts",
+          "git_blob": "891fa5c7864d28dd6ed06405b64701173232477d",
+          "sha256": "73e5ea69d26fabbcd64bdc401b00c0779d97ad977a62a24ad5b574550ec2d1cd"
+        },
+        {
+          "path": "sdk/node/src/v1/container.ts",
+          "git_blob": "e75037b44bb77a8b0a7bd1f2e3ebeb2c574ca483",
+          "sha256": "6c6186c8cdf710e74d5321595d09ec6f52f79c9427ecd2f180c996b0ba9a5fdd"
+        },
+        {
+          "path": "sdk/node/package.json",
+          "git_blob": "030ba59b255f4c5dc477da29646d5b03a35beb22",
+          "sha256": "d6fa280a01408b6fb5be11c54009233ba8aab69e818614d90f55bb8d11108292"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-11",
+      "title": "Exact stable JSON schema 1.0.0",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/schemas/stable/mxc-config.schema.1.0.0.json",
+      "files": [
+        {
+          "path": "schemas/stable/mxc-config.schema.1.0.0.json",
+          "git_blob": "8bb245450b943012febc421530c6a699d6395ed0",
+          "sha256": "207254fa94966a800fa70f01a2da73ae813d27fe8847200c92f4dd0e219649c2"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-12",
+      "title": "Stable containment policy meanings",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/docs/containment-policy/1.0.0/policy.md",
+      "files": [
+        {
+          "path": "docs/containment-policy/1.0.0/policy.md",
+          "git_blob": "eb9d1a7dee5e06a2bc6b879025b19796a1fdf571",
+          "sha256": "d12bb8c7674c4ed097e10c70d1f8c5c79c7ff1c7118cff698ddc877da92e9748"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-13",
+      "title": "Bubblewrap consumer contract and dependencies",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/docs/backends/bwrap/bubblewrap-backend.md",
+      "files": [
+        {
+          "path": "docs/backends/bwrap/bubblewrap-backend.md",
+          "git_blob": "8debd76e9856266f1321a75ac4f7641a5175f786",
+          "sha256": "7a0f5dfa2b3004086261cd05d315555fa38d56eb61133038bce59cd8ab1855b6"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-14",
+      "title": "Bubblewrap command, namespace, terminal and teardown implementation",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/src/mxc-sdk/src/backends/bubblewrap/common/bwrap_runner.rs",
+      "files": [
+        {
+          "path": "src/mxc-sdk/src/backends/bubblewrap/common/bwrap_runner.rs",
+          "git_blob": "2e5df33d06fb8fff582815fa69c28756ef77210f",
+          "sha256": "92dbf4a1d3eb766b4f92d3a5a279f05dba38c7352bf3c2ac4409fc5bb417d735"
+        },
+        {
+          "path": "src/mxc-sdk/src/backends/bubblewrap/common/bwrap_command.rs",
+          "git_blob": "111a6393c0b2f0700f2aa714016b7745a87f780c",
+          "sha256": "824f52a7710928a495265d0a0a75166025c7bf7677536e94390384a6651ab2dc"
+        },
+        {
+          "path": "src/mxc-sdk/src/core/mxc_pty/mod.rs",
+          "git_blob": "29d7e536f537b9cd0bc17da2c6c13fc00cc85b7d",
+          "sha256": "8b3279d56a72c492795707dc0000f18adfd5c74786c6b777070011511c6b672d"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-15",
+      "title": "Windows ProcessContainer network policy",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/docs/backends/process-container/networking.md",
+      "files": [
+        {
+          "path": "docs/backends/process-container/networking.md",
+          "git_blob": "a7c371095d6eaf25c27a2c8843e621432e1331e1",
+          "sha256": "5181ef6ed2f44cdc07c6599998b803cf971a04d7a509d57fb87e0ae2b75bfa17"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-16",
+      "title": "Release-pinned Windows OS support table",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/docs/backends/process-container/os-version-support.md",
+      "files": [
+        {
+          "path": "docs/backends/process-container/os-version-support.md",
+          "git_blob": "b40a25d82f9d2dbf0826a10c116902bf66a3b645",
+          "sha256": "ba616cda7196f0b3f440c92b4d4d09f2a7646128a18687363051793354739bd5"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-17",
+      "title": "IsolationSession one-shot policy honor matrix",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/docs/development/architecture/backends/isolation-session/oneshot.md",
+      "files": [
+        {
+          "path": "docs/development/architecture/backends/isolation-session/oneshot.md",
+          "git_blob": "7cdbbb4cafb2ff0743e12234014353152ce4854e",
+          "sha256": "94f785e717bf8cae2133fdc21e59419430a20ccf98dd35544a072103af9672fa"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-18",
+      "title": "Lifecycle API applicability",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/docs/container-lifecycle.md",
+      "files": [
+        {
+          "path": "docs/container-lifecycle.md",
+          "git_blob": "360617d6d709763616401ad804ae4f4d5dd58661",
+          "sha256": "303d991c4d2a09844abdb097858ac3b93b15ac2f7c70df71c4aa48c225baba50"
+        },
+        {
+          "path": "docs/development/architecture/container-lifecycle.md",
+          "git_blob": "76344f44a0081d93ff7414db51b4562afb1fa225",
+          "sha256": "70ccc844b484e91046360d7f4617799a74dfa2be277c01d9649a56700f84231d"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-19",
+      "title": "AOT intent, JSON-only smoke and native distribution",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/sdk/dotnet/Microsoft.Mxc.Sdk/Microsoft.Mxc.Sdk.csproj",
+      "files": [
+        {
+          "path": "sdk/dotnet/Microsoft.Mxc.Sdk/Microsoft.Mxc.Sdk.csproj",
+          "git_blob": "58a2be72aac7a1dd27d5defa73214b283eae81f8",
+          "sha256": "d1b4d829e770c40a3da2bbad83a9f961dcc54a0d73254e514c98556894582cb5"
+        },
+        {
+          "path": "sdk/dotnet/Microsoft.Mxc.Sdk.AotSmokeTest/Program.cs",
+          "git_blob": "4c8ffeb2a3ec408bdbcaa864b3fbc4a03928350e",
+          "sha256": "e245b303c20c95aae96fbb1f89dd93ba78200cb130e73bfeac64286e17e2bf86"
+        },
+        {
+          "path": "sdk/dotnet/Microsoft.Mxc.Sdk/Native/NativeLibraryResolver.cs",
+          "git_blob": "56ef050859ba3ac6d28bc9b5da222c23defe42bf",
+          "sha256": "566d9fded800770924b367ae776b63a4c920df9b81ec26497c5c4d75bea19c5a"
+        },
+        {
+          "path": "sdk/dotnet/Microsoft.Mxc.Sdk.Package/Microsoft.Mxc.Sdk.nuspec",
+          "git_blob": "0b0f6507db8ef8daac2f9aa32b3a27f78163ca8f",
+          "sha256": "389331f1bcf0143b47836d7ec15ca4ffcd35030c445b1ae2ebcc73dc18b3d38c"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-20",
+      "title": "License and backend status overview",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/LICENSE.md",
+      "files": [
+        {
+          "path": "LICENSE.md",
+          "git_blob": "79656060de00aa4659ad2c276d5be8830664d544",
+          "sha256": "d9a1b1e30d633d5732ea18e3cba9538d293ebc53e1a9e4e96ab739e0c5c4f1cb"
+        },
+        {
+          "path": "README.md",
+          "git_blob": "1e5a99e60829128e18210a96396efd9de9b4eb42",
+          "sha256": "32212618552dc0ff16c2b7c41d1e60da269e1100a41d5297176a0df88e15f722"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-21",
+      "title": "Unreleased .NET inherited-stdio and development JSON API",
+      "kind": "unreleased_repository_source",
+      "commit": "6a89e69c72104bdf83b1f682a2f576b529b8bd65",
+      "url": "https://github.com/microsoft/mxc/blob/6a89e69c72104bdf83b1f682a2f576b529b8bd65/docs/api-reference/dotnet/v1/api.md",
+      "selected_for_implementation": false,
+      "files": [
+        {
+          "path": "docs/api-reference/dotnet/v1/api.md",
+          "git_blob": "d0a3c2ca4fe5373796f23e9f9381f953f947fc10",
+          "sha256": "f81c5c7228dbf84430aaf42c23e1f846474ecfa5db8dd8c825b51631cb521647"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-22",
+      "title": "Microsoft nested Job hierarchy and UI restrictions",
+      "kind": "official_documentation",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/procthread/nested-jobs",
+      "observed_on": "2026-11-14",
+      "content_immutable": false
+    },
+    {
+      "id": "MXCS-23",
+      "title": "Microsoft AssignProcessToJobObject and pre-assignment accounting",
+      "kind": "official_documentation",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/jobapi2/nf-jobapi2-assignprocesstojobobject",
+      "observed_on": "2026-11-14",
+      "content_immutable": false
+    },
+    {
+      "id": "MXCS-24",
+      "title": "Microsoft ConPTY creation and handle ownership",
+      "kind": "official_documentation",
+      "url": "https://learn.microsoft.com/en-us/windows/console/creating-a-pseudoconsole-session",
+      "observed_on": "2026-11-14",
+      "content_immutable": false
+    },
+    {
+      "id": "MXCS-25",
+      "title": "Official MXC executor distribution and matching versions",
+      "kind": "official_documentation",
+      "url": "https://learn.microsoft.com/en-us/windows/apps/develop/mxc/releases",
+      "observed_on": "2026-11-14",
+      "content_immutable": false
+    },
+    {
+      "id": "MXCS-26",
+      "title": "Official NuGet package and registry version index",
+      "kind": "official_registry",
+      "url": "https://www.nuget.org/packages/Microsoft.Mxc.Sdk/1.0.1",
+      "index_url": "https://api.nuget.org/v3-flatcontainer/microsoft.mxc.sdk/index.json",
+      "observed_versions": [
+        "1.0.0",
+        "1.0.1"
+      ],
+      "selected_version": "1.0.1",
+      "target_framework": "net8.0",
+      "native_runtime_executed": false
+    },
+    {
+      "id": "MXCS-27",
+      "title": "Published npm 1.0.1 ConPTY adapter payload corroboration",
+      "kind": "official_registry_and_payload",
+      "url": "https://registry.npmjs.org/@microsoft%2fmxc-sdk/1.0.1",
+      "version": "1.0.1",
+      "tarball": "https://registry.npmjs.org/@microsoft/mxc-sdk/-/mxc-sdk-1.0.1.tgz",
+      "upstream_integrity": "sha512-2cP925G5+lQyKzjBVha8uNtVd7XESgDBtgi1yCYYSo9M3xiFyZWtCO4SWPGTk509rdI6nqjyGcZxvEP3t6l8Hg==",
+      "upstream_shasum": "f1a4859f7810b34f01a238c98166012a5d63a3fb",
+      "upstream_file_count": 217,
+      "tarball_integrity_locally_verified": false,
+      "package_installed": false,
+      "native_runtime_executed": false,
+      "files": [
+        {
+          "path": "package/dist/bindings/process-container-pty.js",
+          "sha256": "6f96df11cd6174614aa9d479167038456039fd4d6ca700620819ecfced95b146",
+          "inspection": "inert text extracted from published tarball"
+        },
+        {
+          "path": "package/dist/v1/container.js",
+          "sha256": "87cf73e5325ac8e9f5d356edf2c2272ed06421397f29bb04ca0d9d41af9ecda6",
+          "inspection": "inert text extracted from published tarball"
+        },
+        {
+          "path": "package/package.json",
+          "sha256": "d6fa280a01408b6fb5be11c54009233ba8aab69e818614d90f55bb8d11108292",
+          "inspection": "inert text extracted from published tarball"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-28",
+      "title": "Stable .NET runtime version and discovery API",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/sdk/dotnet/Microsoft.Mxc.Sdk/V1/MxcPlatform.cs",
+      "files": [
+        {
+          "path": "sdk/dotnet/Microsoft.Mxc.Sdk/V1/MxcPlatform.cs",
+          "git_blob": "53db9685d74a21306a5b8a2dbfadc0ebe86f278a",
+          "sha256": "d48e8954a9c0b5ba24fa2f95462e47f8339b79cfb9c63d5dc8d2d3d2fa2a4da7"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-29",
+      "title": "Stable optional telemetry gate",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/docs/telemetry.md",
+      "files": [
+        {
+          "path": "docs/telemetry.md",
+          "git_blob": "438528de1c13d4493b32c25e6d70ceaea18291c6",
+          "sha256": "65ed4f30ca521996a8948c1e30d99e17ca10d736c45c4b47e5037e0f6e850bf6"
+        },
+        {
+          "path": "src/mxc-sdk/src/core/mxc_common/telemetry/mod.rs",
+          "git_blob": "de38919715a0b606b43df1c3178556a589a057df",
+          "sha256": "f206be3bb35f10ba1230cf26b1afda0d233c3763f2973bd4251e3b2d5082a35a"
+        }
+      ]
+    },
+    {
+      "id": "MXCS-30",
+      "title": "Host preparation and ACL side effects",
+      "kind": "stable_repository_source",
+      "commit": "fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2",
+      "url": "https://github.com/microsoft/mxc/blob/fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2/docs/backends/process-container/host-prep.md",
+      "files": [
+        {
+          "path": "docs/backends/process-container/host-prep.md",
+          "git_blob": "0517422b66cf280e43dda4032c34fd78389ebc72",
+          "sha256": "ce1878ef83681a42356f61a0b87f539ef09fd00aec61ddc3b71c267cd163993c"
+        }
+      ]
+    }
+  ]
+}

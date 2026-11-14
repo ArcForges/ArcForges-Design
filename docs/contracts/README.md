@@ -1,123 +1,45 @@
-# Contracts
+# V2 API conventions and operation semantics
 
-Decision: [AD-0004](../decisions/AD-0004-contracts-and-state.md). Protobuf is canonical. First-party transports are gRPC; browsers and Android use binary gRPC-Web; live relay traffic uses protobuf frames over WebSockets.
+The hand-maintained protobuf specifications in [proto](proto/) define the complete Node Sandbox/Run/Resource/Data and Center Device surfaces. The [API catalogue](api-catalogue.md) is generated; [state machines](../state-machines/README.md), [errors](errors.md) and architecture chapters define effects. All requests have explicit field presence, stable `json_name`, validation, authorization, idempotency, deadline, stream and locality annotations. Active versioned packages are `arcforges.sandbox.v2` and `arcforges.management.v2`.
 
-**Amended 2026-10-28 by [AD-0021](../decisions/AD-0021-central-access-go-center.md) (target until each AF-CTR task is delivered).** Business decisions are made by the Go center (not the C# host), which consumes Go bindings generated from these protos in the Contracts repository (AF-CTR-01, delivered 2026-10-28: module `github.com/ArcForges/Contracts/go`, published as `go/v<cohort version>` with each NuGet cohort, first `go/v1.0.0-ci.410.1`); node connections terminate in the Go center instead of `FleetHub`. `arcforges.peer.v1` stays in `v1`, compatible and not served.
+The pinned foundation v1 snapshot is reused without alteration for IDs, revisions, request/response metadata and structured error/effect semantics. It is not the old Task API. Future Contracts delivery checks the foundation compatibility against its actual admitted cohort. Never silently reuse `arcforges.local.sandbox.v1`, which belongs to shared ContentSandbox.
 
-The `.proto` files under [proto/](proto/) mirror the Contracts specification. AF-CON-01 adopted the original files into Contracts; AF-CTR-05 K2 updated six mirrors byte-for-byte to Contracts commit `e67a6b089a7270ab771a97c27aeba92c5d3b0469` (cohort `1.0.0-ci.437.1`). AF-CTR-06 D1 mirrors four target files byte-for-byte from Contracts author commit `574e25cffdb07216c25501762d21fa96d8bb681c`: the new `node/v1/files.proto` and the updated `node/v1/workspaces.proto`, `fleet/v1/fleet.proto` and `relay/v1/relay.proto`. These describe the proposed wire contract; the author commit is not a published cohort or proof of node, center, client or cleanup delivery. The placement is:
-- `node`, `fleet` → `public/proto`;
-- `peer`, `relay` → `internal/proto`.
+## 1. Transport and naming
 
-The files compile with the protoc bundled in Grpc.Tools 2.84.0 (libprotoc 35.1) against the pinned foundation contract in [reference/contracts-b774c322/](reference/contracts-b774c322/README.md). The generated C# (messages and gRPC stubs) builds with zero warnings under `IsAotCompatible` (checked by `tools/check_design.py --compile`).
+Node exposes typed LocalRpc over authenticated per-user Windows named pipes or Linux Unix sockets. The same Core methods may be invoked by a separately authenticated Center adapter only from the [fixed remote allowlist](../architecture/09-go-center.md). A route selects the enrolled node explicitly and carries a typed operation, owner/actor, enrollment epoch and local grant revision. There is no arbitrary host command endpoint, reflection-based method dispatcher or caller-supplied native handle.
 
-## 1. Packages
+The Blazor app consumes browser-compatible Center HTTP/Connect or the admitted gRPC-Web façade; the Center translates that transport to the same versioned typed body. Unary request/response semantics are unchanged. Output/usage/event server streams may use the existing approved streaming transport; transport reconnection never resubmits a mutation. Terminal input/resize/lease operations are local only in V2.
 
-| Package | Files | C# namespace / package | Transport | Locality | Callers |
-|---|---|---|---|---|---|
-| `arcforges.node.v1` | 21 files, 20 services | `ArcForges.Contracts.Node.V1` / `ArcForges.Contracts.Node` | gRPC over HTTP/2 on a named pipe or Unix socket (DesktopPlatform LocalRpc service-endpoint mode) | One node | CLI, Desktop, MCP adapter, hook handler, probe; relay commands mapped internally |
-| `arcforges.peer.v1` | `peer.proto`, 6 services | `ArcForges.Contracts.Peer.V1` / `ArcForges.Contracts.Peer` (internal) | gRPC over HTTP/2 with TLS 1.3 mTLS on TCP 47820 (`GuestLinkService`, formerly carried over the WSL bridge byte stream, is retired: §7) | Node ↔ node | Paired peers |
-| `arcforges.fleet.v1` | `fleet.proto`, 3 services | `ArcForges.Contracts.Fleet.V1` / `ArcForges.Contracts.Fleet` | Binary gRPC-Web through the Worker ingress to the Go center; `WatchFleet` remains an unserved contract | Cloud | Nodes and node-relayed local clients; future web and Android |
-| `arcforges.relay.v1` | `relay.proto`, messages only | `ArcForges.Contracts.Relay.V1` / `ArcForges.Contracts.Relay` (internal) | Protobuf binary WebSocket messages between the node and Go center, through the Worker for hosted mode | Relay | Nodes and the Go hub; viewers are not built |
-| `arcforges.publicapi.v1` (additive) | `support_access.proto`, 1 new service (`SupportAccessService`); the reused services are unchanged | `ArcForges.Contracts.PublicApi.V1` (the package's existing namespace) | Planned binary gRPC-Web through the Worker to the Go center; `SupportAccessService` is not yet served | Cloud | Future Web Account profile |
-| `arcforges.operator.v1` (additive) | `operator_read.proto`, 1 new service (`OperatorReadService`); the reused `OperatorService` is unchanged | `ArcForges.Contracts.CloudInternal.Operator.V1` (the package's existing namespace; internal) | Planned binary gRPC-Web from the Operations profile to the Go center; `OperatorReadService` is not yet served | Cloud | Future operator profile |
+Account sign-in, sessions, recovery, enrollment and provider webhooks reuse the audited Go identity/security contracts where valid; exact retained API inventory and migration are in [09](../architecture/09-go-center.md). The new DeviceService specifies V2 visible inventory/revocation. No old Task/Fleet/MCP/host-file business route remains after the finite cutover.
 
-Reused contracts are listed in [reuse-map.md](reuse-map.md). The method-by-method index is [api-catalogue.md](api-catalogue.md), generated from the protos.
+## 2. Metadata and concurrency
 
-## 2. Message conventions (existing Contracts rules)
+`RequestMeta.command_id` is a random 128-bit identifier chosen before a mutation; the client retains it through response loss. `expected_rev` is required for mutating existing Sandbox/config/grant/policy/device aggregates and matches the revision shown in the preview. Run Start requires current Sandbox revision; Stop is idempotent against Run identity and need not conflict merely because a running status advanced. Terminal writes use lease generation plus command deduplication instead of an aggregate revision. Chunk writes use transfer ID, offset and content hash. Read requests may omit command ID but carry correlation ID.
 
-- **Request:** `arcforges.foundation.v1.RequestMeta meta = 1; reserved 2 to 9;` with business fields from 10. `meta.command_id` (UUIDv7) is required on every mutating call.
-- **Response:** `ResponseMeta meta = 1; oneof outcome { <Method>Value value = 2; ArcError error = 3; } reserved 4 to 9;`. Value fields start at 10.
-- **Naming:**
-  - Messages are named `<Service><Method>Request`, `…Response`, `…Value` and `…Frame`.
-  - Domain messages carry plain names. `ManagedTask` is not called `Task`, because that would clash with `System.Threading.Tasks.Task` in C#.
-- **Fields:**
-  - Every field has an explicit `json_name` in lowerCamel.
-  - Singular scalar and enum fields are `optional` (explicit presence).
-  - Enums start with `<ENUM>_UNSPECIFIED = 0`, and values carry the enum-name prefix.
-- **Identifiers:** `arcforges.foundation.v1.Id` (16-byte UUIDv7). Text form: Crockford base32, lower case (CLI, MCP, URLs).
-- **Units:**
-  - CPU: millicores (`*_millicores`);
-  - bytes: `*_bytes`;
-  - durations: milliseconds (`*_ms`);
-  - time points: `arcforges.foundation.v1.Instant`.
-- **Bounds:**
-  - gRPC message size limit 4 MiB, except `TransferService` and output reads, which use chunking;
-  - output frames ≤ 64 KiB;
-  - lists paged with `PageRequest` / `PageState`, defaulting to 100 entries.
+Node/Center store `(principal, command_id, method, canonical_request_hash)` before executing native effects. Canonicalization includes resolved authorization scope, immutable profile/template revision and requested effect-bearing fields, excludes deadlines/correlation IDs, and never discards different argv/env/path/grant values. Same ID and same request returns the recorded receipt; a different payload returns `CONFLICT/command_id_reused`. All successful existing-aggregate mutations increment a revision and return it. Cursors bind owner, query/filter and snapshot epoch with a tamper-resistant token.
 
-## 3. Streams
+A successful RPC can report an accepted asynchronous operation, not completed deletion/stop. Read `Operation.state` and `effect`; reconcile through `NodeService.GetOperation(command_id)` and the relevant Inspect. `UNKNOWN` never permits `AFTER_TIME` blind retry. A Center receipt saying delivered with no result never resets to not-delivered. Unknown receipts and native-effect journals are not expired by the normal 24-hour known-result retention. Inputs use bounded canonical bytes rather than arbitrary dynamic JSON execution objects.
 
-Server streams return `<Service><Method>Frame`:
+## 3. Bounds and errors
 
-```proto
-message XFrame {
-  arcforges.foundation.v1.ResponseMeta meta = 1;
-  StreamPosition position = 2;        // cursor, sequence, generation
-  reserved 3 to 9;
-  oneof frame {
-    StreamReset reset = 10;           // gap, generation change, overflow; snapshot follows if stated
-    Heartbeat heartbeat = 11;         // every 15 s unless stated
-    arcforges.foundation.v1.ArcError error = 12;  // terminal error frame
-    ...                               // method-specific frames from 20
-  }
-}
-```
+Default unary deadline is 10 seconds; bounded data calls allow 30 seconds. Deadline expiry stops waiting, not an accepted Run. Use explicit Stop for lifetime control. Maximum metadata/request body is 1 MiB except a single 1 MiB transfer chunk plus envelope (2 MiB wire ceiling). Lists default to 50 and cap at 200. Output frames cap at 64 KiB, a per-stream buffer has a fixed cap, and slow clients receive a gap/resnapshot instruction. IDs are exactly 16 bytes; revisions are positive; UNSPECIFIED enums are rejected for inputs that require a value.
 
-- **Shape.** The position shape is reused from `arcforges.events.v1.StreamPosition`, but not imported, so the legacy event registry is not pulled in.
-- **Resuming.** A client resumes with the last cursor.
-- **Resets.** The server answers a stale cursor (beyond retention or another generation) with `reset{snapshot_follows=true}` and a snapshot.
-- **Duplicates.** Clients drop events with `seq ≤ last applied`.
-- **Client-to-server streaming** is not used. Input travels as ordered unary calls (`WriteTaskInput` with an offset), so the same contracts work over gRPC-Web.
+Relative file paths are UTF-8, normalized using the target OS, contain no traversal, absolute/drive/UNC/device syntax, NUL or alternate stream names, and resolve through an opened owned root. The platform's length limit is checked before mutation. Each import/export transfer supports one regular file; a client coordinates several files with separate transfers. No whole-directory consistency, automatic archive extraction or remote arbitrary host search/edit is provided. Expected file versions and native root identities protect against changes between preview and execution. Partial/unknown file effects return a durable reconciliation operation, not a false success. Transfer direction is immutable: closing an export needs its existing data.read authority, while closing an import needs data.write; both remain bound to the initiating actor and grant.
 
-## 4. Method annotations
+Every error has stable category/code, safe message key, effect certainty, retry advice and correlation ID. Existence-sensitive errors are returned only after authorization. Detailed local paths and command secrets are omitted from remote errors. The table in errors.md is the vocabulary; the catalogue lists each method's additional expected errors and the implicit errors below apply everywhere.
 
-Every RPC carries structured comments, which `tools/check_design.py` verifies and renders into the API catalogue.
+## 4. Terminal, output and exit
 
-| Key | Content |
-|---|---|
-| (first lines) | Purpose |
-| `auth:` | Permission per origin (`HUMAN`, `SCRIPT`, `AGENT`: `A` allow, `P` approval, `D` deny), and the remote risk class. `REMOTE=low\|medium\|high` marks the risk class of the method's explicitly routed Fleet operation or its `fleet.v1.NodeCommandBody` kind. It does not grant authority: the fixed origin rows, step-up and target policy still apply. `REMOTE=-` means no remote command or routed Fleet method reaches it; remote viewers see only the status summaries the node publishes. Peer and cloud methods name the credential (`PEER: paired`, `account session`, `node credential`, step-up). Defaults come from [security](../architecture/11-security-privacy.md) §1. |
-| `idempotency:` | `read`; `command_id` with its window (24 h; payload digest compared); or `natural: <key>` |
-| `deadline:` | Default server bound. For streams: lifetime, heartbeat and idle limits. |
-| `stream:` | `none`, or `server: <Frame>` with end conditions |
-| `errors:` | `CATEGORY/code` list from [errors.md](errors.md), excluding the implicit codes |
-| `locality:` | Where the call executes: `node`, `node -> cloud`, `peer`, `cloud`, `cloud -> relay -> node`; `guest` appears only on the retired surfaces of §7 |
-| `state:` | Optional state-machine transitions caused ([state-machines](../state-machines/README.md)) |
+Interactive mode is a real capability. No byte/line piping fallback is advertised as PTY. AcquireTerminal returns one exclusive renewable writer lease (30 seconds by default) or observer attachment; stale epoch/generation writes and resizes are refused. Input calls are bounded and deduplicated per command ID. A timeout with unknown input effect requires reconciliation; do not resend the same bytes under a new ID. Detach releases input authority only. Output uses selected stream kind, Run epoch and byte offsets, with explicit gap and terminal-state frames.
 
-**Field validation** appears as a trailing `// validate:` comment on request and input fields. A violation returns `VALIDATION/invalid_argument`, with the field path in `details.state.reason`. The bounded AF-CTR-06 file/workspace resource maxima are the explicit exception in [06a §4](../architecture/06a-node-files.md#4-permissions-and-conflicterror-contract): an otherwise decodable request exceeding a write, edit, path or plan maximum returns `RESOURCE/too_large` with its actual applicable limit at the deciding node or Fleet layer. The error catalogue records the narrow `450.1` annotation erratum as an implicit code; published artifacts remain immutable.
+Terminal output is untrusted. In the Windows official-executor profile, even text resembling a backend JSON error on stderr cannot become a trusted control message because a payload can emit it. `RunExit.source` distinguishes PAYLOAD, OFFICIAL_EXECUTOR, SUPERVISOR and UNKNOWN; `payload_started` is independently unknown/not_started/confirmed. RUNNING means a supervised execution is active; it does not prove an application entry point was reached. Root/executor exit is followed by DRAINING until the outer resource boundary proves no managed descendants. FAILED is a definite launch failure; a nonzero payload exit is EXITED with its code.
 
-## 5. Authorization and identity
+## 5. Remote creation and policy changes
 
-- **Local node API.** The node assigns the origin at `NodeService.Hello` from the connection (the verified peer process, its client kind and process ancestry) and applies the permission matrix. Caller-supplied identity is never trusted ([11](../architecture/11-security-privacy.md) §1).
-- **Peer API.** Identity comes from the TLS client certificate (pinned fingerprint or account SAN). Origin `PEER`. The origins `HOST` and `GUEST` (formerly the bridge's) are retired (§7).
-- **Fleet API.** The credential decides access: an account session from the Identity service (reused contract; endpoints AF-CTR-03, which superseded AF-ID-01), or a node credential. Step-up uses the reused Identity step-up. Entitlement checks use the reused Entitlement module.
+Ordinary remote grants are Sandbox-scoped, created or expanded locally. Remote Sandbox creation requires a locally authored provisioning grant bound to an immutable creation template; the requested config must equal or narrow its mounts, network and resource ceilings. A remote caller cannot mint this grant or add host paths. Each created Sandbox receives a child grant bounded by the provisioning authority, which remains revocable. Every new remote admission checks both the child and its parent for revocation, expiry and current ceilings; a child cannot outlive or expand its parent authority. The Node records parent grant identity and version with the create command; revocation before admission denies it, while accepted effects are reconciled. Grant listings return only caller-visible scopes, with an optional Sandbox filter; an absent filter does not authorize Node-wide access.
 
-## 6. Idempotency
+Remote configuration may only narrow preauthorized fields or change explicitly delegated resource/display settings. Permission expansion, enrollment switching, Node safety reserve reduction, arbitrary roots and terminal access remain local owner operations. Revoke invalidates future authority; it never deletes local data or automatically terminates local Runs.
 
-- **Mutations** deduplicate by `meta.command_id` for 24 hours. The node stores `(command_id, payload_digest, outcome)`.
-  - Same ID and same payload: the stored logical outcome is returned. For `PurgeTaskRecord`, its post-commit WAL checkpoint is also attempted on replay (MR-14; [node-store](../data/node-store.md) section 1). A busy or failed checkpoint returns the transient `INTERNAL/internal` error with known effect `HAPPENED` instead of success; it does not replace the stored logical outcome. Replaying identical bytes retries the checkpoint without deleting the task record again.
-  - Same ID and a different payload: `CONFLICT/command_id_reused`.
-- **Approvals** keep the original `command_id`, so an agent that retries after approval receives the executed outcome.
-- **Cloud mutations** use the reused platform command-dedup table.
+## 6. Contract compatibility and validation
 
-## 7. Compatibility
-
-- **Within `v1`, changes are additive only:**
-  - new fields and methods;
-  - new enum values, which clients must treat as unknown;
-  - new oneof members.
-- **Never:** renumbering, retyping or reusing numbers. Removed fields become `reserved` with their names. Breaking changes need a `v2` package beside `v1`.
-- **From when.** These rules apply from the first cohort that AF-CON-01 publishes. Until then the design protos are specifications and may still change; each change is listed in the design PR.
-- **Clients** feature-detect with the `features` lists in `NodeService.Hello` and `PeerHandshakeService.Hello`. The Contracts repository's wire-compatibility gate compares each change with the last published package.
-- **Error codes** are additive. Clients treat an unknown code by its category.
-- **Retired v1 surfaces** ([AD-0018](../decisions/AD-0018-native-platforms-without-wsl-integration.md) §3). The dedicated Windows–WSL integration was dropped on 2026-10-21. Its declarations stay in the v1 packages for wire compatibility, but no node serves, calls, sets or relies on them, no client shows them, and no later change extends them; a future major version may drop them. They are `peer.v1.GuestLinkService` and its messages (`GuestHello`, `GrantRequest`, `GrantRelease`, `GuestUsageReport`, `GrantDecision`); `ResourceService.ListGuestLinks`, `SetGuestLink`, `GetHostLink` and `TrustHost`, with `GuestLinkView` and `GuestLinkState`; `NODE_ROLE_GUEST` (every node is `NODE_ROLE_HOST`), `NodeRef.host_node_id`, `ORIGIN_GUEST` and `ORIGIN_HOST`, `ResourceSnapshot.guests` and `GuestConsumer`, `NodeInfo.guest_links`, `EVENT_TOPIC_GUESTS` and `NodeEvent.guest_link`, `FINDING_KIND_GUEST_LINK_LOST`, `ResourcePolicy.guest_standalone_fraction`, `ProbeObservation.wsl_distro`, the fleet's `role` and `host_node_id` for guests, and the error `STATE/link_down`. Still in use: `PROCESS_LABEL_GUEST_VM` and `ProcessView.crosses_vm_boundary`. The generated [API catalogue](api-catalogue.md) still lists the retired methods, as the protos declare them.
-
-## 8. JSON mapping
-
-The canonical protobuf JSON mapping (with the explicit `json_name`s) is used by:
-- CLI `--json`;
-- MCP `structuredContent`;
-- `ExportRecords` JSON Lines;
-- configuration snapshots in support bundles.
-
-Ids are base64 in the canonical mapping. The CLI and MCP adapter additionally render `*_id` fields as Crockford base32 strings, documented as a presentation layer ([experience/cli.md](../experience/cli.md), [experience/mcp.md](../experience/mcp.md)).
+Adopt specs through explicit new package/version policy, generate C#/Go/browser bindings once in Contracts, preserve published artifacts and unknown-field rules, then migrate consumers in order. Never publish a breaking meaning change under an existing message/field. `tools/check_design.py` validates annotations, field numbering/presence, errors, compilable protos, state coverage, SQL model, links and traceability; `--compile` still builds generated C# with AOT compatibility analyzers. Local diagnostics do not replace the required exact-head Windows/Linux profiles.

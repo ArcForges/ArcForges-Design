@@ -1,0 +1,556 @@
+{
+  "source_repository": "ArcForges/ArcForges-Design",
+  "source_commit": "62172622550fff73a553135ca178f9b7117c9cbd",
+  "frozen_at": "2026-11-14",
+  "authority": "Historical evidence only; superseded by AD-0022. No task is active here.",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "ac124109a5904ced3a67e4d69822b16477585c2d5d099c68cfee673209769491"
+    },
+    {
+      "path": "README.md",
+      "sha256": "caaf7fdf9fd7557028e3d28fdf29bc692b2bd188c0758f09abc228bb38584366"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "58b3c8eaa319433fcadb9ba7e849794a4038c9f90040976af636ecd4c3361876"
+    },
+    {
+      "path": "docs/architecture/01-system-overview.md",
+      "sha256": "5775028d605198350c4af85a0ddee49e02676af545b3d68621424d9054b98057"
+    },
+    {
+      "path": "docs/architecture/02-node-service.md",
+      "sha256": "009f5e1faac0e327d447cae4adff06b05dec9857301f2f31a1ca61e691ee1a10"
+    },
+    {
+      "path": "docs/architecture/03-resource-control.md",
+      "sha256": "c8f049b38f13d003ba9f2504e06c72e943f1bb930ff73e497e45b0e4dbff2c4f"
+    },
+    {
+      "path": "docs/architecture/04-execution.md",
+      "sha256": "c1fad832a1d8c2ffb06ffdf207f3eaa965d8fed61b9cb6148b311353fa5229f7"
+    },
+    {
+      "path": "docs/architecture/05-toolchains-caches.md",
+      "sha256": "9124f3a37781dc2535df1024d3f2c71a519ccff72dd0e733e0121e69dd1afc84"
+    },
+    {
+      "path": "docs/architecture/06-storage-workspaces.md",
+      "sha256": "2dddaa085e9b5f39e50686861e0dc57037b246a7ea9f00418717986292853f6f"
+    },
+    {
+      "path": "docs/architecture/06a-node-files.md",
+      "sha256": "13e25fc44dffd33920778e4e47558f2fda1078404daeb8f89ea513cd89b70194"
+    },
+    {
+      "path": "docs/architecture/07-records-diagnosis-memory.md",
+      "sha256": "047f9daac97b383c8263ee55e1affc9359e95d90d20a3d6a0b3fcb82256ddad9"
+    },
+    {
+      "path": "docs/architecture/08-ai-integration.md",
+      "sha256": "24997804230350ecb1488b48bba56e415c2fdee299d996941cb7db4edd5df873"
+    },
+    {
+      "path": "docs/architecture/09-lan.md",
+      "sha256": "c773c53f2a9655e101d143d2bd4b6bb24b769afcd5464941ef34c9b5b8f5579c"
+    },
+    {
+      "path": "docs/architecture/10-cloud.md",
+      "sha256": "baa1e567bdd7962ffda0f25e854de442110ee79cb4a2de76eb9e5e4ce2884d04"
+    },
+    {
+      "path": "docs/architecture/11-security-privacy.md",
+      "sha256": "9edeac23e488583a57d220e94d7abd7d64a74eb1c7016cf0479927e55601592d"
+    },
+    {
+      "path": "docs/architecture/12-client-applications.md",
+      "sha256": "8c6773af8a76c6352729fa5d7433ec55b47fe3c57538057092a1fa68f31c103d"
+    },
+    {
+      "path": "docs/architecture/13-distribution-updates.md",
+      "sha256": "ef44fabb87397c1a707be164ecec2785075002ee04bd490becdb91d1238b56ad"
+    },
+    {
+      "path": "docs/architecture/14-commercial-operations.md",
+      "sha256": "4e8d876a7e7361da14ba0cdc13e748f5eb44e0275bb5c9bdbfb32c5418f40b25"
+    },
+    {
+      "path": "docs/architecture/15-performance-targets.md",
+      "sha256": "1af382f7b3eedcd0e967e64f3a989de1ac6f402ff57cb8de5e6952a3173b3790"
+    },
+    {
+      "path": "docs/architecture/16-testing-strategy.md",
+      "sha256": "889b6b7262ebf284cf5a679a553c60ddc5b74890cdab9bbbd1c1fb9f240ad824"
+    },
+    {
+      "path": "docs/architecture/17-delegated-execution.md",
+      "sha256": "c3ba11932243edf8bfd490e44dcf3d94c7ab4364484d0c0f6a8c4cd836fd5555"
+    },
+    {
+      "path": "docs/architecture/18-application-workload-control.md",
+      "sha256": "1fb8b6e58544e02b5cca4a256060cb3c996df831539658a266a4906cc7db1ede"
+    },
+    {
+      "path": "docs/contracts/README.md",
+      "sha256": "0f955843449e3014f17f9bb65f289500843e15dfc9450257150f7670b6680b69"
+    },
+    {
+      "path": "docs/contracts/api-catalogue.md",
+      "sha256": "b89597c12c12062c05cee309699666ed9e1a5314a1021a2dab0af0663e73eddc"
+    },
+    {
+      "path": "docs/contracts/errors.md",
+      "sha256": "44f01f2b349f231560d4129a290686c1638d6f4ba39cf5857a72763a4f86c7ea"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/fleet/v1/fleet.proto",
+      "sha256": "05d59eabd6112a24e1e8066b539f436a09c833ee49d2548bf6457894041ba5f8"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/account.proto",
+      "sha256": "0a762f8c7e5c2a7d9c28cc9d789c3e45b1bf2c87dc6b479edab5f0fb6b815805"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/approvals.proto",
+      "sha256": "5448a511883290e61764ee0edf123f05ea5103ad7463803b1966c7c8e71c16c8"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/caches.proto",
+      "sha256": "891bcf89496a429c78cc33c2c5accb06e7124e85eb3ba2e50889863a4f94f791"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/common.proto",
+      "sha256": "7c0a2d165374cd3ad3e3206b55c44c18a0993deca5afdd56a1c78a1d7088606e"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/diagnosis.proto",
+      "sha256": "8e244d1f2abfc3a5171b49a2e822d501fa47865ea186d84ba56f2010d7f4e22a"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/events.proto",
+      "sha256": "32fb764f18be77725eff4d31bb105a94a36bc41abcbdd01987efe7d0f519a6ad"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/files.proto",
+      "sha256": "7d8fec3a2815c588ad6f6352ba628ef5933a74fa04e36cf8f05a6b251db70294"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/integrations.proto",
+      "sha256": "eae1d1834db7226b5e0a262438a17cb953db74e81015d59e2749ce0262b8e98f"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/memory.proto",
+      "sha256": "3703101a71b689d13190a8acf7fb9cd7b315f38975a518bc37b53bb6681273fd"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/node.proto",
+      "sha256": "d44bb6760e6ccd20937d468c38dfd337120cadeafa431e4f0d396acb5bcf4a09"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/peers.proto",
+      "sha256": "4dbd240850d35076df4793fa45fcc8af83e6a09ed435b239b70dc5c5468296e9"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/policy.proto",
+      "sha256": "3824a351e4eab88375d2966a5d2ea5f58c6e5b5078138589194e3c26cff9d218"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/queue.proto",
+      "sha256": "5bd0faa45fe80a691c727ac6c0a1d3d8254c6141dd7a611ddba822efa3b9fda3"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/resources.proto",
+      "sha256": "b53a6f882a0d2d9684862a83b21e176548836b63567dfc82c2065f928bf55e7a"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/sessions.proto",
+      "sha256": "fb8cfb55a82f293d593bd3b1fa35338adb976deeb43bb582b7aaae4e9b24c86c"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/storage.proto",
+      "sha256": "7370d0b19c92712d108a5b9f80a692caf8c41a6f17a88f50ec925a8044cdd78d"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/support.proto",
+      "sha256": "367accae9e3cff62cfd4e2153c190be5a9a3753205a2092484c18470ec388ba6"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/tasks.proto",
+      "sha256": "c8d06bd43b17b9ef275ec147b3fc84b2b030346dd6f32d6c9884c6fbffbc2e39"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/toolchains.proto",
+      "sha256": "ac2d6e1fee531da75a6acb0ec6dc101f61b11a96c18843de1e847821a1e2766c"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/updates.proto",
+      "sha256": "f5e1d1bbe199d2bd2897c6adcfbb490606d1ae992f546b1d2dbd8e6034383931"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/node/v1/workspaces.proto",
+      "sha256": "4f83ec539d66631439a3447c565bde50222fb19211670d20e971ffffd0c62e5d"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/operator/v1/operator_read.proto",
+      "sha256": "d8e91cef0922462c876a6f449d256f98e816681de5a3e32fa196d2cdfaf525e5"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/peer/v1/peer.proto",
+      "sha256": "e338d0e1ce9884bd11f0d4cad6b85c1849d091870afb4ad51a3d6a9c7eacee6b"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/publicapi/v1/support_access.proto",
+      "sha256": "b188129f2d2e9a8583aee609521187b5f871e67cbb368630d693c64ff853581f"
+    },
+    {
+      "path": "docs/contracts/proto/arcforges/relay/v1/relay.proto",
+      "sha256": "111dc8c8637a4010054312b6b405b04095f8fc2189737268d61f7d3cab2446f8"
+    },
+    {
+      "path": "docs/contracts/reference/contracts-b774c322/README.md",
+      "sha256": "fe4aac4e949039a12de432efd95848d14dda05bab37e45bee155973572bb1839"
+    },
+    {
+      "path": "docs/contracts/reference/contracts-b774c322/arcforges/foundation/v1/foundation.proto",
+      "sha256": "e7e634103664dcca4c63383dd0eda5d90b408edb4786bfdf4a148856fed92736"
+    },
+    {
+      "path": "docs/contracts/reuse-map.md",
+      "sha256": "349847d46233e8d379ad89a9b89d6125845174772274031049af774d1a0a160d"
+    },
+    {
+      "path": "docs/data/cloud-store.md",
+      "sha256": "23b8950bd5b91d2abab902a6df92b239ef21bba169dc0fdc9a2424228fba0c9e"
+    },
+    {
+      "path": "docs/data/cloud-store.sql",
+      "sha256": "7d1b906a0e77d650f12c72be7baed7e7c39025666ee76116880088c6638a63b9"
+    },
+    {
+      "path": "docs/data/node-store.md",
+      "sha256": "4a4772b6829948af53c505ab65b5cadb7b7970938d1beff530e447a66e03f948"
+    },
+    {
+      "path": "docs/data/node-store.sql",
+      "sha256": "e449ab6d374f5b87dcd3cd25779c100e867c382ae15f133e8a858fe853cedbd3"
+    },
+    {
+      "path": "docs/decisions/AD-0001-flagship-pivot.md",
+      "sha256": "8a0971d0c835be0af9e42f21778d237ba04f47a4a563d109dc5ecacb9bd6dd8e"
+    },
+    {
+      "path": "docs/decisions/AD-0002-platform-scope.md",
+      "sha256": "ac7c2671f465f0b80323af4ba1ace5c9ead130c62ae7f0e2d79ea1e70f1dcc9e"
+    },
+    {
+      "path": "docs/decisions/AD-0003-architecture-and-runtimes.md",
+      "sha256": "09742640eac4003c885e6f1be6df18d6ee449d59c85b0f28d1d62ee0a0470c8d"
+    },
+    {
+      "path": "docs/decisions/AD-0004-contracts-and-state.md",
+      "sha256": "6fcc405b67f8df73e5ee9d987325bcda20c5c8731ffc57a20d3700daab82e42b"
+    },
+    {
+      "path": "docs/decisions/AD-0005-resource-enforcement.md",
+      "sha256": "ef8f449d7417d908084e95e81c864a111a77cea0111f3084204207335917b541"
+    },
+    {
+      "path": "docs/decisions/AD-0006-execution-semantics.md",
+      "sha256": "73b0aab9f6e16f1fc6ef256fbc8b89b64125177a08f4e57201418e846c7e82c8"
+    },
+    {
+      "path": "docs/decisions/AD-0007-ai-integration.md",
+      "sha256": "026549f3f17a4083aab0db5f746809c749fc622753321d77606bd23e09933d7b"
+    },
+    {
+      "path": "docs/decisions/AD-0008-lan-trust-and-placement.md",
+      "sha256": "36d8f29eec013ac926dd209774b0d94a26bc63ad6cfea95a75cd3d999dd081e1"
+    },
+    {
+      "path": "docs/decisions/AD-0009-cloud-relay-and-cost-controls.md",
+      "sha256": "41da16f9b370af227a17897d1de2eacd6ceb4d3e66f3f5a5d82607d54b5a70bf"
+    },
+    {
+      "path": "docs/decisions/AD-0010-commerce-and-entitlements.md",
+      "sha256": "c65addc928b8710c8330fb10f4407ace72ee9590231518f886bbcb8324e2510c"
+    },
+    {
+      "path": "docs/decisions/AD-0011-identity-and-login.md",
+      "sha256": "918a4465f63eb82272174d5ca0e439f3cb2a80178f0b632c4e91216eb6554ddd"
+    },
+    {
+      "path": "docs/decisions/AD-0012-distribution-and-updates.md",
+      "sha256": "32a6da0e0bc118e94281a9289c825a2486c4289d0d66306f7b15e27bb462e43b"
+    },
+    {
+      "path": "docs/decisions/AD-0013-reuse-and-supersession.md",
+      "sha256": "393a94a77c7f7a70bbac020abfdc112782dc4f732658a9d1b894fd2ed05b9592"
+    },
+    {
+      "path": "docs/decisions/AD-0014-delivery-method.md",
+      "sha256": "bedea7a01a4d6e3949b1cba64c4d5aa46aa3e6628398a593b5acb87d1d1cd47b"
+    },
+    {
+      "path": "docs/decisions/AD-0015-direction-editions-roadmap.md",
+      "sha256": "0a4c3ab1e2cb80259a8baa532d8ec5ada00cc785006785dec7175885d87b04b8"
+    },
+    {
+      "path": "docs/decisions/AD-0016-local-first-verification.md",
+      "sha256": "fd7e9f79b9561b9ce30c776e0b9f329dedf4890749ebc84aeb327af73cc50454"
+    },
+    {
+      "path": "docs/decisions/AD-0017-delegated-execution-direction.md",
+      "sha256": "d87aabb7e708e2793fa489a3f6bd3eb74753866ec5f1029db051b7ce38e89655"
+    },
+    {
+      "path": "docs/decisions/AD-0018-native-platforms-without-wsl-integration.md",
+      "sha256": "cfe67ebdf42b548c614999c929117a2cccd53c770156b02f5777ace59da605e4"
+    },
+    {
+      "path": "docs/decisions/AD-0019-mcp-first-verification.md",
+      "sha256": "0dd0c664a6054fef702ecc6f79863291fe0dd38c8bbf5253b55f74bedf9ddd7b"
+    },
+    {
+      "path": "docs/decisions/AD-0020-post-push-verification-and-required-checks.md",
+      "sha256": "8c86e06b93c86d45efb47630ee3eeec2b8e0ded3d641d8e67c2cf3203fd97979"
+    },
+    {
+      "path": "docs/decisions/AD-0021-central-access-go-center.md",
+      "sha256": "f2aef94dbaa929c540a6bfd2e5c49c5d2bdac175bb16f66c7de3e72b14fab438"
+    },
+    {
+      "path": "docs/experience/README.md",
+      "sha256": "7c8e5d6ee2e8fdb3c68bcfa08e04abdc53311a1d5cff59f1f5c46b526e97cf49"
+    },
+    {
+      "path": "docs/experience/android.md",
+      "sha256": "b8b3e4f8a9c49a1c205c7c3924e50ce1663941d62ce8593d1fc26ef052aea491"
+    },
+    {
+      "path": "docs/experience/cli.md",
+      "sha256": "b0ef23a82f56481dd55e520943600b60c4d59752e8b10a4f6a575310c0e71fcd"
+    },
+    {
+      "path": "docs/experience/desktop.md",
+      "sha256": "a09ac4fe796b886e8ce6912d084a2cd88cdf4beb4ad34021ca768f33fb36a9e9"
+    },
+    {
+      "path": "docs/experience/journeys.md",
+      "sha256": "c5296811f08d47f971f15ad6c0c663732238a9988dd39261ec42f9400c19ced2"
+    },
+    {
+      "path": "docs/experience/mcp.md",
+      "sha256": "bd922df8115713a02b786b297dabf755d856cf0c5f4c1b95cd53077d6f245c7a"
+    },
+    {
+      "path": "docs/experience/web.md",
+      "sha256": "8cf4310db428f398a550e55a267cdf3a7d13687f96852c8621cabe546e0dab46"
+    },
+    {
+      "path": "docs/product/product-definition.md",
+      "sha256": "7c7472e11ded1c055c6c2c477aeed49a9ab48f7dfa3992f8e8fe238920b9e26e"
+    },
+    {
+      "path": "docs/product/requirements.md",
+      "sha256": "1fd2eb6f32a5c6f3e0e37eded9b5482489ed0ffb49bcbf23d309f2b3b5f75310"
+    },
+    {
+      "path": "docs/research-prompts/PRP-0001-network-plugins-and-platform-positioning.md",
+      "sha256": "18853e06502589a95105093f8c8ace8c63f077f623e9e6b3c95f7e5a0834673a"
+    },
+    {
+      "path": "docs/research-prompts/README.md",
+      "sha256": "1eab76baee4b0e0e08066019ef14b2a73b911652343952fb95658d348d41fedd"
+    },
+    {
+      "path": "docs/research/2026-10-18-delegated-execution/README.md",
+      "sha256": "50713aceaea2a0295a3467e0c7c94123e48e4067054885603bf622e172211f43"
+    },
+    {
+      "path": "docs/research/2026-10-18-delegated-execution/evidence/acquisition-runtimes.md",
+      "sha256": "af0bbc0bc83e6b08768faf6043411874154a6e951a764cccb35d2a1bd3f7c764"
+    },
+    {
+      "path": "docs/research/2026-10-18-delegated-execution/evidence/credentials-completion.md",
+      "sha256": "3b3d8b68c789019e40b8a656f9503dd8b19bb38406ff6388ede836cffe075784"
+    },
+    {
+      "path": "docs/research/2026-10-18-delegated-execution/evidence/identity-ipc-completion.md",
+      "sha256": "d3496429828ecf495a02d1ce017747f58d07148647e3953ddedab0fccf3263a3"
+    },
+    {
+      "path": "docs/research/2026-10-18-delegated-execution/evidence/linux-chain-install.md",
+      "sha256": "3c51f202933065384e78025a23fac9d9ee20f55e53f15fc41cc889af67a790ee"
+    },
+    {
+      "path": "docs/research/2026-10-18-delegated-execution/evidence/lnx-kernel.md",
+      "sha256": "ba4ada4de011a52fcd37920bb8255d93470e70fef820d62814b335faee2e1d02"
+    },
+    {
+      "path": "docs/research/2026-10-18-delegated-execution/evidence/lnx-projects.md",
+      "sha256": "098293171b6d958e07808697c0028ba3b7bf576174513ab11a8714c70b3edadb"
+    },
+    {
+      "path": "docs/research/2026-10-18-delegated-execution/evidence/macos.md",
+      "sha256": "ab91c815b40cb783b8ffba92d488199b7345cd343129da1dd196dad12e7cc9a4"
+    },
+    {
+      "path": "docs/research/2026-10-18-delegated-execution/evidence/persistence-observation-recovery.md",
+      "sha256": "3c24e37960e99b5499679a233ef825ac75ffaf464ce880c9e7970e7ed2d34874"
+    },
+    {
+      "path": "docs/research/2026-10-18-delegated-execution/evidence/win-install.md",
+      "sha256": "f8c65bca955177aa1e882e280d19cfb60d81cfd2b286cc60ddafee124bebfb2c"
+    },
+    {
+      "path": "docs/research/2026-10-18-delegated-execution/evidence/win-primitives-completion.md",
+      "sha256": "0eb6395e8f2141a22576fe1cc4e5d2072dc8df10bda4b68f75023ea3e08626ec"
+    },
+    {
+      "path": "docs/research/2026-10-18-delegated-execution/evidence/win-strong.md",
+      "sha256": "3b2061d656b0620565eb6d7ab268a4f8d3055e6fa84d450c0b6ece3867d90089"
+    },
+    {
+      "path": "docs/research/2026-10-18-delegated-execution/evidence/x-agents.md",
+      "sha256": "13bd7535b0a6fc21997997725833ab6c4db9338698ddd4049149854cfd6e1b47"
+    },
+    {
+      "path": "docs/research/2026-10-18-delegated-execution/evidence/x-lifecycle.md",
+      "sha256": "92196d33ab642e55ec06b42f9d14d95940a9186e44a79c5a52307a58f1b7b19a"
+    },
+    {
+      "path": "docs/research/2026-10-18-delegated-execution/lab-register.md",
+      "sha256": "bec9882efd2f271a1bc0afa6cdb2d2ecbe146dad06d92f6b1bd564c6a7eae39a"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/README.md",
+      "sha256": "fc5e91c311af4a20be7ba083050c700207227551b70e50ce7842624705a93ad7"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/diagnostics-identity.md",
+      "sha256": "49ac42f5b95c3f234b5c615d56ba69062afcc85bcdb617721d97b216707f9d16"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/first-party.md",
+      "sha256": "965acda85cc8d0013f0a621081a760ab52ec45bef70d9c6093b85d84298e6209"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/games.md",
+      "sha256": "46c340d67dbb7f189e8c1aee1c08807a3ea96f37641d3c07042e36fa09afbe11"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/gf01-placement.md",
+      "sha256": "1c800d7247ae0a44a3d8fda521e1243790752ea5378dd538044bc88cfa149530"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/gf02-vocabulary.md",
+      "sha256": "0980e706986f2867897207dd5a6bbc7275633a5124cd3cd9330d018a5e96f531"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/gf04-coop-api.md",
+      "sha256": "85e445565ad622c347b88008c84a43df05c286b2792ed1a797ea2ba143098e1d"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/gf05-access-denial.md",
+      "sha256": "794ce69ca34b96605b25c1b604fa48c447befca59ee03312dbaedaa9eb0dc8fa"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/gf06-workload-classes.md",
+      "sha256": "3aa28d9f8583ad6865c639c29e2931b99629b014d24c14f8624b2263d34fbc2b"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/gf07-tamper-human.md",
+      "sha256": "2b27fa9a659d5fa4db76be075e72181448ace71d56013f9d3f20996bf286d5a0"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/gf08-linux-gui-compat.md",
+      "sha256": "0d7fac27392e08886a8b30b1ee5ab2ac6be5f5e049c0fff7103ec0900a607049"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/gf09-windows-facts.md",
+      "sha256": "4016afe66ad4870c195742a7e56cf41d52a4f7fc17c02590caba0ff69d90fbf6"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/gf10-clients.md",
+      "sha256": "3422984e0d80d2f33db7af4a488fde5e316c5ca71fd53e17de11559034118f43"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/gf11-cost.md",
+      "sha256": "54a15ea831868e6cb7078055a72262ed5d7380500e6f0d0301a71345ebc5c1ee"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/gf12-inter-app.md",
+      "sha256": "1f6f95dfb32b168ce78d72fb4896057f340a0047b12bb93ae70bd4dcdca504a9"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/gf15-control-clients.md",
+      "sha256": "bfe6226ff3c8021b0ee30987f13fdb6e90a9109cf89a84af0d640b265ee4d529"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/landscape.md",
+      "sha256": "5666a4786e4ad101269674639c1925c34554758b5ecf1db96833b7faa5d8ee08"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/lnx-confine.md",
+      "sha256": "ff27fe8960b79bddcf6cfaf21e7e5799f3259291bc56e481d1b2a42b924482b7"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/lnx-resource.md",
+      "sha256": "0cff82155243eba3d0bb0e8554a3c9c94c04761c1af84681d5f06d0617f97498"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/macos.md",
+      "sha256": "6d09e0804be4877f3e6ba635bdc2091ab38f1d099808377bfde8acfcb7f7db21"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/resource-api.md",
+      "sha256": "e42b6581312d7ed2607ee70eebedfb6d875b92ea56be6f51ab8239c9324941ef"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/storage.md",
+      "sha256": "8c2f58b866b4ea746c7a2c9401fdf1cea63d32ba7f4b9f16fd4f401a451b3451"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/win-confine.md",
+      "sha256": "300d6a76c21ed8bfa3c318c6eff1feab7a7b920f7dfe25ad9ac295dc1e0eb4b0"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/evidence/win-resource.md",
+      "sha256": "15134e9ac5d3955c5111cb09c1b50d89c8cfe651eaf217b7cf323c60bcec0835"
+    },
+    {
+      "path": "docs/research/2026-10-19-application-workload-control/lab-register.md",
+      "sha256": "c8ecf45be77d38b08a4c6706bb5f95ccde9845658b341247c12d5468fb87461b"
+    },
+    {
+      "path": "docs/reuse/conflicts.md",
+      "sha256": "d88606335e9624b102fef2d2aa0d8a95728a497ea88ae3e7df90833a4657fd8b"
+    },
+    {
+      "path": "docs/reuse/desktopplatform-refactor.md",
+      "sha256": "defb8c56561935b92f4611dd3af4412321f805ec3f91c5d4958ef6884b7a55a5"
+    },
+    {
+      "path": "docs/reuse/inventory-and-classification.md",
+      "sha256": "57f88670c38d1a63e4b98dbb5ebf006e5a70330e32a58ed3fc8f83cbb08ce891"
+    },
+    {
+      "path": "docs/state-machines/README.md",
+      "sha256": "556cdd74029f37b60690faaa5e99d217fa1a0427c142e25f0161d016d3e4acbc"
+    },
+    {
+      "path": "docs/state-machines/machines.json",
+      "sha256": "fa3583c2ff30f277e7519b641082ac416b0669fbea00386f021b22d1f07e5ad3"
+    },
+    {
+      "path": "docs/traceability/model.json",
+      "sha256": "5e1322001d686aa4b857557197dc9d88a9e71cc78ccf90377e374dd2fc4b32ca"
+    },
+    {
+      "path": "docs/verification/platform-capabilities.md",
+      "sha256": "6e01059b52aa2db644b5ec04398d8072963797c47de56b3f76c660aa89cfbab7"
+    }
+  ]
+}

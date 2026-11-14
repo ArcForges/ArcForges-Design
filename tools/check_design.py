@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Design repository checks for the ArcForges flagship design.
+"""Design repository checks for the ArcForges V2 Sandbox design.
 
 Usage:
   python tools/check_design.py                 # run all checks (protoc optional unless --require-protoc)
@@ -37,6 +37,12 @@ MACHINES_MD = DOCS / "state-machines" / "README.md"
 REQUIREMENTS_MD = DOCS / "product" / "requirements.md"
 TRACE_JSON = DOCS / "traceability" / "model.json"
 VERIFICATION_MD = DOCS / "verification" / "platform-capabilities.md"
+HISTORY_DIR = ROOT / "history" / "v1-20261114"
+HISTORY_SOURCE_COMMIT = "62172622550fff73a553135ca178f9b7117c9cbd"
+HISTORY_MANIFEST_SHA256 = "69fe138cb803bb368ca0b09a4669604842f145b20cfa8f6fc8579765e436c79d"
+TASK_ID_RE = re.compile(r"\bAFV2-[A-Z]+-\d{2}\b")
+OBSOLETE_TASK_ID_RE = re.compile(r"\bAF-[A-Z]+-\d{2}\b")
+VERIFICATION_ID = r"[VLAF]-(?:[A-Z][A-Z0-9]*-)?[A-Z]?\d{2}"
 
 ANN_REQUIRED = ["auth", "idempotency", "deadline", "stream", "errors", "locality"]
 ANN_KEYS = ANN_REQUIRED + ["state"]
@@ -60,6 +66,70 @@ class Report:
 
 def read(path: Path) -> str:
     return path.read_text(encoding="utf-8").replace("\r\n", "\n")
+
+
+def active_documents(suffixes: tuple[str, ...] = (".md", ".json", ".proto", ".sql")) -> list[Path]:
+    """The frozen archive and pinned Contracts reference are not executable V2 authority."""
+    return sorted(p for p in DOCS.rglob("*")
+                  if p.is_file() and p.suffix in suffixes and not p.is_relative_to(REF_DIR))
+
+
+def check_history(rep: Report) -> None:
+    """Verify the frozen manifest itself and every byte it identifies, without rewriting history."""
+    manifest = HISTORY_DIR / "snapshot.json"
+    if not manifest.is_file() or manifest.is_symlink():
+        rep.error("V1 archive: snapshot.json is missing or is a symlink")
+        return
+    if hashlib.sha256(manifest.read_bytes()).hexdigest() != HISTORY_MANIFEST_SHA256:
+        rep.error("V1 archive: snapshot.json SHA-256 changed; the archive cannot be rebaselined")
+    try:
+        data = json.loads(read(manifest))
+    except (ValueError, OSError) as exc:
+        rep.error(f"V1 archive: unreadable snapshot.json: {exc}")
+        return
+    if (data.get("source_repository") != "ArcForges/ArcForges-Design"
+            or data.get("source_commit") != HISTORY_SOURCE_COMMIT):
+        rep.error("V1 archive: source repository/commit differs from the frozen baseline")
+    entries = data.get("files")
+    if not isinstance(entries, list) or not entries:
+        rep.error("V1 archive: files must be a nonempty manifest")
+        return
+    listed: set[str] = set()
+    for entry in entries:
+        if not isinstance(entry, dict):
+            rep.error("V1 archive: invalid file entry")
+            continue
+        name, digest = entry.get("path"), entry.get("sha256")
+        if (not isinstance(name, str) or not name or "\\" in name or ":" in name or name.startswith("/")
+                or any(part in {"", ".", ".."} for part in name.split("/"))
+                or not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest)):
+            rep.error(f"V1 archive: unsafe path or invalid digest: {name!r}")
+            continue
+        if name in listed:
+            rep.error(f"V1 archive: duplicate path {name}")
+        listed.add(name)
+        path = HISTORY_DIR / name
+        components = name.split("/")
+        if (not path.is_file() or any(HISTORY_DIR.joinpath(*components[:n]).is_symlink()
+                                    for n in range(1, len(components) + 1))):
+            rep.error(f"V1 archive: missing or symlinked file {name}")
+            continue
+        if hashlib.sha256(path.read_bytes()).hexdigest() != digest:
+            rep.error(f"V1 archive: SHA-256 mismatch for {name}")
+    actual = {p.relative_to(HISTORY_DIR).as_posix() for p in HISTORY_DIR.rglob("*") if p.is_file()}
+    extras = actual - listed - {"snapshot.json"}
+    if extras:
+        rep.error(f"V1 archive: unmanifested files {sorted(extras)}")
+    rep.note(f"V1 archive: checked {len(listed)} frozen file identities")
+
+
+def check_obsolete_task_references(rep: Report) -> None:
+    for path in active_documents():
+        if path.is_relative_to(DOCS / "research"):
+            continue  # Historical source/ledger citations are evidence, not active task assignments.
+        for task in sorted(set(OBSOLETE_TASK_ID_RE.findall(read(path)))):
+            rep.error(f"{path.relative_to(ROOT).as_posix()}: obsolete executable task ID {task}; "
+                      "move historical evidence to research and use an AFV2 task for current work")
 
 
 # --------------------------------------------------------------------------- proto model
@@ -328,6 +398,22 @@ def check_protos(rep: Report, model: ProtoModel, files: list[Path]) -> None:
         rep.note(f"error code {code} is catalogued but not named by any method")
 
 
+def check_v2_namespaces(rep: Report, files: list[Path]) -> None:
+    """V1 specifications stay frozen; only the immutable foundation is shared by V2."""
+    if not files:
+        rep.error("no active V2 protobuf specifications found")
+    for path in files:
+        text = read(path)
+        package = re.search(r"^package\s+([\w.]+);", text, re.M)
+        if not package or not re.fullmatch(r"arcforges\.[a-z][a-z0-9_]*\.v2", package.group(1)):
+            rep.error(f"{path.name}: active contract package must be an arcforges V2 namespace")
+        elif path.parent.relative_to(PROTO_DIR).as_posix() != package.group(1).replace(".", "/"):
+            rep.error(f"{path.name}: proto path does not match its V2 package")
+        for imported in re.findall(r'^import\s+"([^"]+)";', text, re.M):
+            if imported.startswith("arcforges/") and "/v1/" in imported and imported != "arcforges/foundation/v1/foundation.proto":
+                rep.error(f"{path.name}: active contract imports obsolete V1 surface {imported}")
+
+
 def find_protoc() -> tuple[str | None, str | None]:
     exe = os.environ.get("ARCFORGES_PROTOC") or shutil.which("protoc")
     inc = os.environ.get("ARCFORGES_PROTOC_INCLUDE")
@@ -579,36 +665,179 @@ def check_machines(rep: Report, model: ProtoModel, data: dict) -> None:
 
 # ---------------------------------------------------------------------------- SQL
 
+PG_TYPES = {"uuid", "text", "smallint", "integer", "bigint", "bytea", "timestamptz", "boolean", "numeric"}
+# Retained Cloud schema at 6df33c525fcbc20495e46c9c4c011086146da796.
+# This map is not a substitute for executing the retained migration chain.
+PG_RETAINED_COLUMNS = {
+    "identity.user": {"user_id": "uuid"},
+    "fleet.node": {"enrollment_id": "uuid", "node_id": "uuid", "user_id": "uuid"},
+}
+PG_RETAINED_SCHEMAS = {"identity", "fleet", "device", "entitlement", "audit", "platform"}
+
+
+def sql_without_comments(text: str) -> str:
+    return re.sub(r"'(?:''|[^'])*'|--[^\n]*|/\*.*?\*/",
+                  lambda m: m.group(0) if m.group(0).startswith("'") else "", text, flags=re.S)
+
+
+def split_sql_top_level(text: str, separator: str = ",") -> list[str]:
+    """Split documented DDL while respecting strings and nested CHECK expressions."""
+    out, start, depth, quoted, i = [], 0, 0, False, 0
+    while i < len(text):
+        c = text[i]
+        if c == "'":
+            if quoted and i + 1 < len(text) and text[i + 1] == "'":
+                i += 2
+                continue
+            quoted = not quoted
+        elif not quoted:
+            if c == "(":
+                depth += 1
+            elif c == ")":
+                depth -= 1
+                if depth < 0:
+                    raise ValueError("unbalanced closing parenthesis")
+            elif c == separator and depth == 0:
+                out.append(text[start:i].strip())
+                start = i + 1
+        i += 1
+    if quoted or depth:
+        raise ValueError("unterminated SQL string or parentheses")
+    if text[start:].strip():
+        out.append(text[start:].strip())
+    return out
+
+
+def check_postgres_structure(rep: Report, path: Path, documentation: Path) -> None:
+    """Check PostgreSQL DDL structure only; never execute it in SQLite or claim runtime proof."""
+    sql, doc = sql_without_comments(read(path)), read(documentation)
+    if re.search(r"\b(PRAGMA|AUTOINCREMENT|STRICT)\b", sql, re.I):
+        rep.error(f"{path.name}: SQLite syntax is invalid in the PostgreSQL specification")
+    try:
+        statements = split_sql_top_level(sql, ";")
+    except ValueError as exc:
+        rep.error(f"{path.name}: {exc}")
+        return
+    if sql.rstrip() and not sql.rstrip().endswith(";"):
+        rep.error(f"{path.name}: final DDL statement lacks a semicolon")
+    schemas: set[str] = set()
+    tables: dict[str, dict[str, str]] = {}
+    definitions: dict[str, list[str]] = {}
+    indexes: list[tuple[str, str]] = []
+    alterations: list[tuple[str, str]] = []
+    ident = r"[a-z_][a-z0-9_]*"
+    qualified = rf"{ident}\.{ident}"
+    for statement in statements:
+        schema = re.fullmatch(rf"CREATE\s+SCHEMA\s+({ident})", statement, re.I)
+        table = re.fullmatch(rf"CREATE\s+TABLE\s+({qualified})\s*\((.*)\)", statement, re.I | re.S)
+        index = re.fullmatch(rf"CREATE\s+(?:UNIQUE\s+)?INDEX\s+{ident}\s+ON\s+({qualified})\s*\(([^)]+)\)(?:\s+WHERE\s+.+)?", statement, re.I | re.S)
+        alteration = re.fullmatch(rf"ALTER\s+TABLE\s+({qualified})\s+ADD\s+CONSTRAINT\s+{ident}\s+UNIQUE\s*\(([^)]+)\)", statement, re.I | re.S)
+        if schema:
+            name = schema.group(1).lower()
+            if name in schemas:
+                rep.error(f"{path.name}: duplicate schema {name}")
+            schemas.add(name)
+        elif table:
+            name, body = table.group(1).lower(), table.group(2)
+            if name in tables:
+                rep.error(f"{path.name}: duplicate table {name}")
+            columns: dict[str, str] = {}
+            definitions[name] = split_sql_top_level(body)
+            for definition in definitions[name]:
+                if re.match(r"^(?:PRIMARY\s+KEY|FOREIGN\s+KEY|UNIQUE|CHECK|CONSTRAINT)\b", definition, re.I):
+                    continue
+                column = re.match(rf"^({ident})\s+({ident})\b", definition, re.I)
+                if not column:
+                    rep.error(f"{path.name}: unreadable column in {name}: {definition[:70]}")
+                    continue
+                column_name, column_type = (part.lower() for part in column.groups())
+                if column_name in columns:
+                    rep.error(f"{path.name}: duplicate column {name}.{column_name}")
+                columns[column_name] = column_type
+                if column_type not in PG_TYPES:
+                    rep.error(f"{path.name}: unsupported declared PostgreSQL type {column_type} for {name}.{column_name}")
+                if column_type == "numeric" and not re.match(rf"^{ident}\s+numeric\s*\(\s*\d+\s*,\s*\d+\s*\)", definition, re.I):
+                    rep.error(f"{path.name}: numeric type must declare precision/scale for {name}.{column_name}")
+            if not columns:
+                rep.error(f"{path.name}: table {name} has no parsed columns")
+            tables[name] = columns
+        elif index:
+            indexes.append((index.group(1).lower(), index.group(2)))
+        elif alteration:
+            alterations.append((alteration.group(1).lower(), alteration.group(2)))
+        else:
+            rep.error(f"{path.name}: DDL statement outside the structurally checked subset: {statement[:90]}")
+    if not tables:
+        rep.error(f"{path.name}: no schema-qualified PostgreSQL tables found")
+    known_columns = {**PG_RETAINED_COLUMNS, **tables}
+    for name, columns in tables.items():
+        if name.split(".")[0] not in schemas | PG_RETAINED_SCHEMAS:
+            rep.error(f"{path.name}: {name} has no declared schema")
+        if name in PG_RETAINED_COLUMNS:
+            rep.error(f"{path.name}: cannot recreate retained table {name}")
+        if f"`{name}`" not in doc:
+            rep.error(f"{documentation.name} does not document table {name}")
+        for definition in definitions[name]:
+            ref = re.search(rf"\bREFERENCES\s+({qualified})\s*\(([^)]+)\)", definition, re.I)
+            if not ref:
+                if re.search(r"\bREFERENCES\b", definition, re.I):
+                    rep.error(f"{path.name}: foreign key in {name} requires a qualified table and explicit columns")
+                continue
+            target = ref.group(1).lower()
+            target_names = [c.strip().lower() for c in ref.group(2).split(",")]
+            fk = re.search(r"FOREIGN\s+KEY\s*\(([^)]+)\)", definition, re.I)
+            source_names = ([c.strip().lower() for c in fk.group(1).split(",")] if fk else [definition.split()[0].lower()])
+            if target not in known_columns:
+                rep.error(f"{path.name}: {name} references unknown table {target}")
+                continue
+            if len(source_names) != len(target_names):
+                rep.error(f"{path.name}: foreign-key arity differs for {name} -> {target}")
+            for source_column, target_column in zip(source_names, target_names):
+                if source_column not in columns or target_column not in known_columns[target]:
+                    rep.error(f"{path.name}: unknown foreign-key column {name}.{source_column} -> {target}.{target_column}")
+                elif columns[source_column] != known_columns[target][target_column]:
+                    rep.error(f"{path.name}: foreign-key type mismatch {name}.{source_column} -> {target}.{target_column}")
+    for name, index_columns in indexes:
+        if name not in tables:
+            rep.error(f"{path.name}: index targets unknown table {name}")
+            continue
+        for column in [c.strip().lower() for c in index_columns.split(",")]:
+            if column not in tables[name]:
+                rep.error(f"{path.name}: index references unknown column {name}.{column}")
+    for name, altered_columns in alterations:
+        if name not in PG_RETAINED_COLUMNS:
+            rep.error(f"{path.name}: ALTER targets an undeclared retained table {name}")
+        elif any(c.strip().lower() not in PG_RETAINED_COLUMNS[name] for c in altered_columns.split(",")):
+            rep.error(f"{path.name}: ALTER references unknown retained column in {name}")
+    for requirement in ("postgresql", "migration", "checksum", "backup", "restore", "least-privilege", "afv2-center-01"):
+        if requirement not in doc.lower():
+            rep.error(f"{documentation.name}: missing migration protocol topic {requirement}")
+    rep.note(f"{path.name}: structural PostgreSQL check of {len(tables)} tables only; "
+             "NOT PostgreSQL execution/migration proof (AFV2-CENTER-01)")
+
+
 def check_sql(rep: Report) -> None:
     node = DOCS / "data" / "node-store.sql"
     cloud = DOCS / "data" / "cloud-store.sql"
-    for path, prelude in ((node, ""), (cloud, "CREATE TABLE identity_user(user_id TEXT PRIMARY KEY) STRICT;"
-                                              "CREATE TABLE device_device(device_id TEXT PRIMARY KEY) STRICT;"
-                                              "CREATE TABLE device_installation(installation_id TEXT PRIMARY KEY) STRICT;")):
-        con = sqlite3.connect(":memory:")
-        try:
-            con.execute("PRAGMA foreign_keys = ON")
-            if prelude:
-                con.executescript(prelude)
-            con.executescript(read(path))
-            if con.execute("PRAGMA foreign_key_check").fetchall():
-                rep.error(f"{path.name}: foreign_key_check failed")
-            if con.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
-                rep.error(f"{path.name}: integrity_check failed")
-            n = con.execute("SELECT count(*) FROM sqlite_master WHERE type='table'").fetchone()[0]
-            rep.note(f"{path.name}: {n} tables loaded")
-        except sqlite3.Error as e:
-            rep.error(f"{path.name}: {e}")
-        finally:
-            con.close()
-    # every table documented in node-store.md
-    md = read(DOCS / "data" / "node-store.md")
     con = sqlite3.connect(":memory:")
-    con.executescript(read(node))
-    for (name,) in con.execute("SELECT name FROM sqlite_master WHERE type='table'"):
-        if f"`{name}`" not in md:
-            rep.error(f"node-store.md does not document table {name}")
-    con.close()
+    try:
+        con.execute("PRAGMA foreign_keys = ON")
+        con.executescript(read(node))
+        if con.execute("PRAGMA foreign_key_check").fetchall():
+            rep.error(f"{node.name}: foreign_key_check failed")
+        if con.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
+            rep.error(f"{node.name}: integrity_check failed")
+        tables = con.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").fetchall()
+        md = read(DOCS / "data" / "node-store.md")
+        for (name,) in tables:
+            if f"`{name}`" not in md:
+                rep.error(f"node-store.md does not document table {name}")
+        rep.note(f"{node.name}: {len(tables)} SQLite tables loaded; integrity and foreign keys checked")
+    except sqlite3.Error as exc:
+        rep.error(f"{node.name}: {exc}")
+    finally:
+        con.close()
+    check_postgres_structure(rep, cloud, DOCS / "data" / "cloud-store.md")
 
 
 # ------------------------------------------------------------------------- markdown
@@ -641,19 +870,21 @@ def check_references(rep: Report) -> None:
     reqs = requirement_ids()
     if not reqs:
         rep.error("no requirements found")
-    for md in DOCS.rglob("*.md"):
+    for md in active_documents((".md",)):
         text = read(md)
         for rid in set(re.findall(r"\bR-[A-Z]+-\d+\b", text)):
             if rid not in reqs:
                 rep.error(f"{md.relative_to(ROOT).as_posix()}: unknown requirement {rid}")
-    ver_ids = set(re.findall(r"^\|\s*([VLAF]-[A-Z]?\d{2}|[VAF]-[A-Z]\d{2})\s*\|", read(VERIFICATION_MD), re.M))
-    for md in DOCS.rglob("*.md"):
+    ver_ids = set(re.findall(rf"^\|\s*({VERIFICATION_ID})\s*\|", read(VERIFICATION_MD), re.M))
+    if not ver_ids:
+        rep.error("no platform verification IDs found")
+    for md in active_documents((".md",)):
         text = read(md)
-        for vid in set(re.findall(r"\b([VAF]-[WLNACT]\d{2}|L-\d{2})\b", text)):
+        for vid in set(re.findall(rf"\b({VERIFICATION_ID})\b", text)):
             if vid not in ver_ids:
                 rep.error(f"{md.relative_to(ROOT).as_posix()}: unknown verification ID {vid}")
     sm_ids = {m["id"] for m in json.loads(read(MACHINES_JSON))["machines"]}
-    for md in DOCS.rglob("*.md"):
+    for md in active_documents((".md",)):
         for sid in set(re.findall(r"\bSM-[A-Z-]*[A-Z]\b", read(md))):
             if sid not in sm_ids:
                 rep.error(f"{md.relative_to(ROOT).as_posix()}: unknown state machine {sid}")
@@ -661,7 +892,7 @@ def check_references(rep: Report) -> None:
     for p in (DOCS / "decisions").glob("AD-*.md"):
         if "- Status:" not in read(p):
             rep.error(f"{p.name}: missing Status line")
-    for md in DOCS.rglob("*.md"):
+    for md in active_documents((".md",)):
         for aid in set(re.findall(r"\bAD-\d{4}\b", read(md))):
             if aid not in adrs:
                 rep.error(f"{md.relative_to(ROOT).as_posix()}: unknown decision {aid}")
@@ -669,8 +900,8 @@ def check_references(rep: Report) -> None:
 
 def task_ids_in_design() -> dict[str, set[str]]:
     found: dict[str, set[str]] = {}
-    for md in list(DOCS.rglob("*.md")) + list(DOCS.rglob("*.json")):
-        for tid in re.findall(r"\bAF-[A-Z]+-\d{2}\b", read(md)):
+    for md in active_documents():
+        for tid in TASK_ID_RE.findall(read(md)):
             found.setdefault(tid, set()).add(md.relative_to(ROOT).as_posix())
     return found
 
@@ -686,11 +917,16 @@ def check_traceability(rep: Report, plan: Path | None) -> None:
         rid = entry["id"]
         if rid not in reqs:
             rep.error(f"traceability: unknown requirement {rid}")
+        if rid in covered:
+            rep.error(f"traceability: duplicate requirement {rid}")
         covered.add(rid)
         if not entry.get("design"):
             rep.error(f"traceability: {rid} has no design reference")
         if not entry.get("tasks"):
             rep.error(f"traceability: {rid} has no delivery task")
+        for task in entry.get("tasks", []):
+            if not isinstance(task, str) or not TASK_ID_RE.fullmatch(task):
+                rep.error(f"traceability: {rid} has obsolete or malformed task ID {task!r}")
         for ref in entry.get("design", []):
             if not (ROOT / ref.split("#")[0]).exists():
                 rep.error(f"traceability: {rid} references missing {ref}")
@@ -703,6 +939,9 @@ def check_traceability(rep: Report, plan: Path | None) -> None:
 def check_plan_consistency(rep: Report, model: dict, graph: dict) -> None:
     """The traceability model and the Plan delivery graph must name the same tasks per requirement."""
     tasks = {t["id"] for t in graph["tasks"]}
+    for task in sorted(tasks):
+        if not TASK_ID_RE.fullmatch(task):
+            rep.error(f"delivery graph contains obsolete or malformed active task ID {task}")
     for tid, where in sorted(task_ids_in_design().items()):
         if tid not in tasks:
             rep.error(f"task {tid} referenced in {sorted(where)} is not in the delivery graph")
@@ -729,6 +968,8 @@ def main(argv: list[str]) -> int:
     ap.add_argument("--compile", action="store_true", help="generate and build C# from the protos")
     args = ap.parse_args(argv)
     rep = Report()
+    check_history(rep)
+    check_obsolete_task_references(rep)
     model, files = load_protos()
     machines = json.loads(read(MACHINES_JSON))
     generated = {CATALOGUE_MD: render_catalogue(model), MACHINES_MD: render_machines(machines)}
@@ -738,6 +979,7 @@ def main(argv: list[str]) -> int:
         elif not path.exists() or read(path) != content:
             rep.error(f"{path.relative_to(ROOT).as_posix()} is out of date (run --write)")
     check_protos(rep, model, files)
+    check_v2_namespaces(rep, files)
     check_error_pairs(rep)
     run_protoc(rep, files, args.require_protoc)
     if args.compile:

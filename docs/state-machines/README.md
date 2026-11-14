@@ -5,839 +5,193 @@ States equal the named proto enum values (without the enum prefix), or an explic
 
 | ID | Machine | State authority | Persisted | Owner |
 |---|---|---|---|---|
-| [SM-TASK](#sm-task) | Task | `arcforges.node.v1.TaskState` | node store task.state | Scheduler |
-| [SM-ATTEMPT](#sm-attempt) | Attempt | `arcforges.node.v1.AttemptState` | node store attempt.state | Supervisor |
-| [SM-FINDING](#sm-finding) | Finding | `arcforges.node.v1.FindingState` | node store finding.state | Diagnosis |
-| [SM-NODE](#sm-node) | Node lifecycle | `arcforges.node.v1.NodeLifecycleState` | in memory; journaled as NodeStatusChanged events | Host |
-| [SM-GUEST-LINK](#sm-guest-link) | WSL guest link (host side): retired 2026-10-21 by AD-0018, never entered; kept as history | `arcforges.node.v1.GuestLinkState` | node store guest_link.state (retired table, never written) | none (the guest manager is retired by AD-0018) |
-| [SM-PAIRING](#sm-pairing) | LAN pairing (local confirmation): out of current delivery since 2026-10-28 (AD-0021 §12); kept as history | `arcforges.node.v1.PairingState` | node store pairing.state (secrets in memory) | Peer manager |
-| [SM-REMOTE-ATTEMPT](#sm-remote-attempt) | Remote attempt (executor side): out of current delivery since 2026-10-28 (AD-0021 §12); kept as history | `arcforges.peer.v1.RemoteAttemptState` | executor node store remote_attempt.state; origin mirrors as ATTEMPT_KIND_REMOTE | Placement |
-| [SM-CLEANUP-PLAN](#sm-cleanup-plan) | Cleanup plan | `arcforges.node.v1.CleanupPlanState` | node store cleanup_plan.state | Cleanup executor |
-| [SM-WORKTREE](#sm-worktree) | Managed worktree | `arcforges.node.v1.WorkspaceState` | node store workspace.state (kind MANAGED_WORKTREE) | Workspace manager |
-| [SM-SESSION](#sm-session) | AI client session | `arcforges.node.v1.SessionState` | node store session.state | Session service |
-| [SM-APPROVAL](#sm-approval) | Approval | `arcforges.node.v1.ApprovalState` | node store approval.state | Approval service |
-| [SM-SIGN-IN](#sm-sign-in) | Node browser sign-in (cloud side) | `arcforges.fleet.v1.NodeSignInState` | cloud fleet_node_sign_in.state; node mirrors as SignInFlowState | Fleet module |
-| [SM-DEVICE-AUTH](#sm-device-auth) | Device authorization (headless sign-in) | `arcforges.fleet.v1.DeviceAuthorizationState` | cloud fleet_device_authorization.state | Fleet module |
-| [SM-PHONE-PAIRING](#sm-phone-pairing) | Phone sign-in by QR | `arcforges.fleet.v1.PhonePairingCloudState` | cloud fleet_phone_pairing.state; node mirrors as PhonePairingState | Fleet module |
-| [SM-RELAY](#sm-relay) | Node channel connection to the Go center (AF-CTR-05; AD-0021 §9) | `arcforges.node.v1.RelayState` | in memory; reported in AccountStatus | Cloud link |
-| [SM-REMOTE-COMMAND](#sm-remote-command) | Historical FleetHub remote-command wire enum (unbuilt; retained for v1 compatibility) | `arcforges.fleet.v1.RemoteCommandState` | not built; legacy fleet_remote_command and remote_command_log design | none (historical design) |
-| [SM-ROUTED-CALL](#sm-routed-call) | Center-routed Submit and Cancel record (AF-CTR-05) | non-wire stored states | PostgreSQL fleet.routed_call.state with delivered and final_at; not the historical RemoteCommandState wire enum. A final record may be resent under the same command ID without changing its final state; a comparable node result is checked against the recorded outcome digest | Go center fleet |
-| [SM-SUBSCRIPTION](#sm-subscription) | Subscription (normalized across Paddle and Google Play) | `arcforges.fleet.v1.SubscriptionState` | cloud commerce_subscription (reused) with provider state; fleet_play_purchase.play_state | Commerce module |
-| [SM-UPDATE](#sm-update) | Node update | `arcforges.node.v1.UpdateState` | node store update_state.state; run/update-switch.json during a switch | Updater |
-| [SM-INTEGRATION](#sm-integration) | AI client integration | `arcforges.node.v1.IntegrationState` | derived from integration_write, client settings and probes (re-evaluated by file watchers) | Integration service |
+| [SM-SANDBOX](#sm-sandbox) | Persistent Sandbox | `arcforges.sandbox.v2.SandboxState` | True | Sandbox Core |
+| [SM-RUN](#sm-run) | Managed execution | `arcforges.sandbox.v2.RunState` | True | RunSupervisor and Node reconciliation |
+| [SM-GRANT](#sm-grant) | Local remote grant | `arcforges.sandbox.v2.GrantState` | True | Local owner/Sandbox Core |
+| [SM-TRANSFER](#sm-transfer) | Owned import/export | `arcforges.sandbox.v2.TransferState` | True | Sandbox data manager |
+| [SM-OPERATION](#sm-operation) | Node mutation receipt | `arcforges.sandbox.v2.OperationState` | True | Node command processor |
+| [SM-LIMIT](#sm-limit) | Requested/applied/read-back limit | `arcforges.sandbox.v2.LimitStatus` | False | Resource manager |
 
-<a id="sm-task"></a>
+<a id="sm-sandbox"></a>
 
-## SM-TASK — Task
+## SM-SANDBOX — Persistent Sandbox
 
-- Enum: `arcforges.node.v1.TaskState`; persisted: node store task.state; owner: Scheduler.
-- Initial: `QUEUED`, `WAITING_DEPENDENCY`, `RUNNING`. Terminal: `SUCCEEDED`, `FAILED`, `CANCELLED`, `LOST`.
-- Initial guard for `QUEUED`: kind != ADOPTED; ordinary submission.
-- Initial guard for `WAITING_DEPENDENCY`: kind != ADOPTED; submission with unmet dependencies.
-- Initial guard for `RUNNING`: kind = ADOPTED; successful explicit HUMAN adoption records the synthetic task and its one ADOPTED attempt together.
-
-```mermaid
-stateDiagram-v2
-  [*] --> QUEUED
-  [*] --> WAITING_DEPENDENCY
-  [*] --> RUNNING
-  WAITING_DEPENDENCY --> QUEUED : dependencies satisfied
-  WAITING_DEPENDENCY --> CANCELLED : dependency failed or cancelled (condition SUCCEEDED)
-  QUEUED --> RUNNING : admitted locally
-  QUEUED --> PLACING : placement chose a peer (placement ANY or SPECIFIC_NODE)
-  PLACING --> RUNNING : remote attempt started
-  PLACING --> QUEUED : offer declined or expired
-  RUNNING --> PAUSED : TaskService.PauseTask
-  PAUSED --> RUNNING : TaskService.ResumeTask
-  RUNNING --> SUCCEEDED : attempt finished with exit code 0
-  RUNNING --> RETRY_WAIT : attempt failed, LOST or PREEMPTED
-  RETRY_WAIT --> QUEUED : backoff elapsed
-  RUNNING --> FAILED : attempt finished non-zero, timed out, OOM, CPU limit or term
-  RUNNING --> LOST : attempt LOST (boot changed, container missing, peer lease en
-  QUEUED --> CANCELLED : TaskService.CancelTask
-  PLACING --> CANCELLED : TaskService.CancelTask
-  RUNNING --> CANCELLED : TaskService.CancelTask
-  PAUSED --> CANCELLED : TaskService.CancelTask
-  RETRY_WAIT --> CANCELLED : TaskService.CancelTask
-  FAILED --> QUEUED : TaskService.RetryTask
-  CANCELLED --> QUEUED : TaskService.RetryTask
-  LOST --> QUEUED : TaskService.RetryTask
-  RUNNING --> CANCELLED : explicit cancellation of the adopted container completed
-  RUNNING --> LOST : adoption container emptied without cancellation
-  SUCCEEDED --> [*]
-  FAILED --> [*]
-  CANCELLED --> [*]
-  LOST --> [*]
-```
-
-| From | To | Trigger | Guard | Effect |
-|---|---|---|---|---|
-| WAITING_DEPENDENCY | QUEUED | dependencies satisfied | kind != ADOPTED |  |
-| WAITING_DEPENDENCY | CANCELLED | dependency failed or cancelled (condition SUCCEEDED); TaskService.CancelTask | kind != ADOPTED |  |
-| QUEUED | RUNNING | admitted locally; attempt created | budget, pool, global limits (03 section 4); kind != ADOPTED |  |
-| QUEUED | PLACING | placement chose a peer (placement ANY or SPECIFIC_NODE) | peer policy (no entitlement: LAN is free, AD-0015); kind != ADOPTED |  |
-| PLACING | RUNNING | remote attempt started | kind != ADOPTED |  |
-| PLACING | QUEUED | offer declined or expired; transfer failed before start | kind != ADOPTED | re-placement; any side-effect class |
-| RUNNING | PAUSED | TaskService.PauseTask; pressure freeze | pause SUPPORTED and task pausable; kind != ADOPTED |  |
-| PAUSED | RUNNING | TaskService.ResumeTask; pressure recovered | kind != ADOPTED |  |
-| RUNNING | SUCCEEDED | attempt finished with exit code 0 | kind != ADOPTED |  |
-| RUNNING | RETRY_WAIT | attempt failed, LOST or PREEMPTED | retry rules allow (AD-0006 section 4) and attempts remain; kind != ADOPTED |  |
-| RETRY_WAIT | QUEUED | backoff elapsed | kind != ADOPTED |  |
-| RUNNING | FAILED | attempt finished non-zero, timed out, OOM, CPU limit or termination incomplete | no retry applies; kind != ADOPTED |  |
-| RUNNING | LOST | attempt LOST (boot changed, container missing, peer lease ended) | not retryable; for ADOPTED, its attempt is RUNNING or STOPPING and the boot changed or adoption container cannot be reopened |  |
-| QUEUED, PLACING, RUNNING, PAUSED, RETRY_WAIT | CANCELLED | TaskService.CancelTask; session ended (stop_with_session); node shutdown for kill_with_node | kind != ADOPTED |  |
-| FAILED, CANCELLED, LOST | QUEUED (reopen) | TaskService.RetryTask | kind != ADOPTED | new attempt number |
-| RUNNING | CANCELLED | explicit cancellation of the adopted container completed | kind = ADOPTED; adoption container is empty | one attempt FINISHED with CANCELLED/HAPPENED; no retry |
-| RUNNING | LOST | adoption container emptied without cancellation | kind = ADOPTED | one attempt FINISHED with LOST/UNKNOWN; no exit status and no retry |
-
-<a id="sm-attempt"></a>
-
-## SM-ATTEMPT — Attempt
-
-- Enum: `arcforges.node.v1.AttemptState`; persisted: node store attempt.state; owner: Supervisor.
-- Initial: `CREATED`, `STARTING`, `RUNNING`. Terminal: `FINISHED`.
-- Initial guard for `CREATED`: kind != ADOPTED; remote placement or cache restore.
-- Initial guard for `STARTING`: kind = LOCAL; durable local launch intent.
-- Initial guard for `RUNNING`: kind = ADOPTED; successful explicit HUMAN adoption, with no command launch.
-
-```mermaid
-stateDiagram-v2
-  [*] --> CREATED
-  [*] --> STARTING
-  [*] --> RUNNING
-  CREATED --> TRANSFERRING : remote placement  inputs transferring
-  CREATED --> STARTING : local admission commits launch intent and reserves the conta
-  TRANSFERRING --> STARTING : inputs complete on the executor
-  STARTING --> RUNNING : process started (job resumed or unit job done)
-  STARTING --> FINISHED : spawn failed or policy denied
-  RUNNING --> PAUSING : freeze requested
-  PAUSING --> PAUSED : freeze confirmed (cgroup.events frozen 1)
-  PAUSED --> RUNNING : thaw
-  RUNNING --> STOPPING : cancel, timeout, CPU/output/disk limit, preemption or kill_w
-  PAUSING --> STOPPING : cancel, timeout, CPU/output/disk limit, preemption or kill_w
-  PAUSED --> STOPPING : cancel, timeout, CPU/output/disk limit, preemption or kill_w
-  STARTING --> STOPPING : cancel, timeout, CPU/output/disk limit, preemption or kill_w
-  STARTING --> FINALIZING : completion evidence is available (exit record or platform co
-  RUNNING --> FINALIZING : completion evidence is available (exit record or platform co
-  PAUSING --> FINALIZING : completion evidence is available (exit record or platform co
-  PAUSED --> FINALIZING : completion evidence is available (exit record or platform co
-  STOPPING --> FINALIZING : container empty, or verification window (5 s) elapsed
-  CREATED --> FINALIZING : result-cache hit (CACHE_RESTORE attempt
-  FINALIZING --> FINISHED : output, accounting and records finalized
-  CREATED --> FINISHED : recovery  container missing, boot changed, or peer lease end
-  TRANSFERRING --> FINISHED : recovery  container missing, boot changed, or peer lease end
-  STARTING --> FINISHED : recovery  container missing, boot changed, or peer lease end
-  RUNNING --> FINISHED : recovery  container missing, boot changed, or peer lease end
-  PAUSING --> FINISHED : recovery  container missing, boot changed, or peer lease end
-  PAUSED --> FINISHED : recovery  container missing, boot changed, or peer lease end
-  STOPPING --> FINISHED : recovery  container missing, boot changed, or peer lease end
-  FINALIZING --> FINISHED : recovery  container missing, boot changed, or peer lease end
-  RUNNING --> STOPPING : TaskService.CancelTask requests termination of the adopted c
-  STOPPING --> FINISHED : cancelled adoption container is empty
-  RUNNING --> FINISHED : adoption container emptied without cancellation
-  FINISHED --> [*]
-```
-
-| From | To | Trigger | Guard | Effect |
-|---|---|---|---|---|
-| CREATED | TRANSFERRING | remote placement: inputs transferring | kind != ADOPTED |  |
-| CREATED | STARTING | local admission commits launch intent and reserves the container name (also the initial local state); before creating the OS container | kind != ADOPTED |  |
-| TRANSFERRING | STARTING | inputs complete on the executor | kind != ADOPTED |  |
-| STARTING | RUNNING | process started (job resumed or unit job done) | kind != ADOPTED |  |
-| STARTING | FINISHED | spawn failed or policy denied | kind != ADOPTED | termination SPAWN_FAILED or POLICY_DENIED; effect DID_NOT_HAPPEN |
-| RUNNING | PAUSING | freeze requested | kind != ADOPTED |  |
-| PAUSING | PAUSED | freeze confirmed (cgroup.events frozen 1) | kind != ADOPTED |  |
-| PAUSED | RUNNING | thaw | kind != ADOPTED |  |
-| RUNNING, PAUSING, PAUSED | STOPPING | cancel, timeout, CPU/output/disk limit, preemption or kill_with_node shutdown | kind != ADOPTED | commit STOPPING with the pending cause and redacted detail before applying the platform stop; a restart continues that stop (architecture 04 sections 6 and 9) |
-| STARTING | STOPPING | cancel, timeout, CPU/output/disk limit, preemption or kill_with_node shutdown while launch is pending | kind != ADOPTED | commit STOPPING with the pending cause and redacted detail before applying the platform stop; a restart continues that stop (architecture 04 sections 6 and 9) |
-| STARTING, RUNNING, PAUSING, PAUSED | FINALIZING | completion evidence is available (exit record or platform completion); a fast root can exit before RUNNING is published | kind != ADOPTED | end steps and leftover rundown precede the exit evidence; persist FINALIZING before final output/accounting/result recording |
-| STOPPING | FINALIZING | container empty, or verification window (5 s) elapsed | kind != ADOPTED | retain the pending stop cause and detail; TERMINATION_INCOMPLETE when processes remain; persist before final result recording |
-| CREATED | FINALIZING | result-cache hit (CACHE_RESTORE attempt; RESTORE mode is roadmap RM-04, not in release 1) | kind != ADOPTED |  |
-| FINALIZING | FINISHED | output, accounting and records finalized | kind != ADOPTED |  |
-| CREATED, TRANSFERRING, STARTING, RUNNING, PAUSING, PAUSED, STOPPING, FINALIZING | FINISHED | recovery: container missing, boot changed, or peer lease ended | for ADOPTED, only RUNNING or STOPPING; boot changed or adoption container cannot be reopened | termination LOST; effect UNKNOWN |
-| RUNNING | STOPPING | TaskService.CancelTask requests termination of the adopted container | kind = ADOPTED | record and journal STOPPING in the cancel command; no command launch or managed end steps |
-| STOPPING | FINISHED | cancelled adoption container is empty | kind = ADOPTED | termination CANCELLED; effect HAPPENED; no captured exit code, output or managed FINALIZING phase |
-| RUNNING | FINISHED | adoption container emptied without cancellation | kind = ADOPTED | termination LOST; effect UNKNOWN; node is not the parent and has no exit status |
-
-<a id="sm-finding"></a>
-
-## SM-FINDING — Finding
-
-- Enum: `arcforges.node.v1.FindingState`; persisted: node store finding.state; owner: Diagnosis.
-- Initial: `OPEN`. Terminal: `RESOLVED`, `AUTO_RESOLVED`.
-
-```mermaid
-stateDiagram-v2
-  [*] --> OPEN
-  OPEN --> ACKNOWLEDGED : DiagnosisService.AcknowledgeFinding
-  OPEN --> MUTED : DiagnosisService.MuteFinding
-  ACKNOWLEDGED --> MUTED : DiagnosisService.MuteFinding
-  MUTED --> OPEN : mute expired while the condition persists
-  OPEN --> RESOLVED : DiagnosisService.ApplyRemedy succeeded and the condition cle
-  ACKNOWLEDGED --> RESOLVED : DiagnosisService.ApplyRemedy succeeded and the condition cle
-  OPEN --> AUTO_RESOLVED : condition cleared for 2 consecutive checks
-  ACKNOWLEDGED --> AUTO_RESOLVED : condition cleared for 2 consecutive checks
-  MUTED --> AUTO_RESOLVED : condition cleared for 2 consecutive checks
-  RESOLVED --> [*]
-  AUTO_RESOLVED --> [*]
-```
-
-| From | To | Trigger | Guard | Effect |
-|---|---|---|---|---|
-| OPEN | ACKNOWLEDGED | DiagnosisService.AcknowledgeFinding |  |  |
-| OPEN, ACKNOWLEDGED | MUTED | DiagnosisService.MuteFinding |  |  |
-| MUTED | OPEN | mute expired while the condition persists |  |  |
-| OPEN, ACKNOWLEDGED | RESOLVED | DiagnosisService.ApplyRemedy succeeded and the condition cleared |  |  |
-| OPEN, ACKNOWLEDGED, MUTED | AUTO_RESOLVED | condition cleared for 2 consecutive checks |  |  |
-
-<a id="sm-node"></a>
-
-## SM-NODE — Node lifecycle
-
-- Enum: `arcforges.node.v1.NodeLifecycleState`; persisted: in memory; journaled as NodeStatusChanged events; owner: Host.
-- Initial: `STARTING`. Terminal: `STOPPED`.
-- Pseudo-states (not in the enum): STOPPED.
-
-```mermaid
-stateDiagram-v2
-  [*] --> STARTING
-  STARTING --> RECOVERING : store opened and migrated (02 section 2 steps 1-4)
-  RECOVERING --> READY : recovery done, enforcement self-test passed, endpoint listen
-  RECOVERING --> DEGRADED : recovery done
-  READY --> DEGRADED : capability lost (e.g. user manager restarted without delegat
-  DEGRADED --> READY : capability restored, or disk space returned and a store writ
-  READY --> STOPPING : NodeService.StopNode
-  DEGRADED --> STOPPING : NodeService.StopNode
-  READY --> UPDATING : update switch (13 section 5.3)
-  DEGRADED --> UPDATING : update switch (13 section 5.3)
-  STOPPING --> STOPPED : process exit (code 0, or 75 for an update restart)
-  UPDATING --> STOPPED : process exit (code 0, or 75 for an update restart)
-  STARTING --> STOPPED : fatal startup error (store incompatible, endpoint held by an
-  RECOVERING --> STOPPED : fatal startup error (store incompatible, endpoint held by an
-  STOPPED --> [*]
-```
-
-| From | To | Trigger | Guard | Effect |
-|---|---|---|---|---|
-| STARTING | RECOVERING | store opened and migrated (02 section 2 steps 1-4) |  |  |
-| RECOVERING | READY | recovery done, enforcement self-test passed, endpoint listening |  |  |
-| RECOVERING | DEGRADED | recovery done; some capability missing (OBSERVE_ONLY or PARTIAL) |  |  |
-| READY | DEGRADED | capability lost (e.g. user manager restarted without delegation), or a store write failed for lack of disk space (reason store_out_of_space; 06 section 5) |  |  |
-| DEGRADED | READY | capability restored, or disk space returned and a store write succeeded |  |  |
-| READY, DEGRADED | STOPPING | NodeService.StopNode; OS logoff; service stop |  |  |
-| READY, DEGRADED | UPDATING | update switch (13 section 5.3) |  |  |
-| STOPPING, UPDATING | STOPPED | process exit (code 0, or 75 for an update restart) |  |  |
-| STARTING, RECOVERING | STOPPED | fatal startup error (store incompatible, endpoint held by another instance) |  |  |
-
-<a id="sm-guest-link"></a>
-
-## SM-GUEST-LINK — WSL guest link (host side): retired 2026-10-21 by AD-0018, never entered; kept as history
-
-- Enum: `arcforges.node.v1.GuestLinkState`; persisted: node store guest_link.state (retired table, never written); owner: none (the guest manager is retired by AD-0018).
-- Initial: `NOT_INSTALLED`, `DISCOVERED`. Terminal: none (long-lived).
-
-```mermaid
-stateDiagram-v2
-  [*] --> NOT_INSTALLED
-  [*] --> DISCOVERED
-  NOT_INSTALLED --> DISCOVERED : guest node installed in the distribution (user action)
-  DISCOVERED --> CONNECTING : host starts the wsl.exe bridge
-  CONNECTING --> LINKED : GuestLinkService.OpenLink hello received
-  CONNECTING --> LOST : bridge exited or no hello within 30 s
-  LINKED --> DEGRADED : guest reports degraded enforcement (no systemd, missing cont
-  DEGRADED --> LINKED : guest capabilities restored
-  LINKED --> LOST : 30 s without frames, or bridge exit
-  DEGRADED --> LOST : 30 s without frames, or bridge exit
-  LOST --> CONNECTING : bounded backoff retry (1 s to 60 s)
-  DISCOVERED --> DISABLED : ResourceService.SetGuestLink enabled=false
-  CONNECTING --> DISABLED : ResourceService.SetGuestLink enabled=false
-  LINKED --> DISABLED : ResourceService.SetGuestLink enabled=false
-  DEGRADED --> DISABLED : ResourceService.SetGuestLink enabled=false
-  LOST --> DISABLED : ResourceService.SetGuestLink enabled=false
-  DISABLED --> CONNECTING : ResourceService.SetGuestLink enabled=true
-  DISCOVERED --> NOT_INSTALLED : distribution or guest binary removed
-  LOST --> NOT_INSTALLED : distribution or guest binary removed
-  DISABLED --> NOT_INSTALLED : distribution or guest binary removed
-```
-
-| From | To | Trigger | Guard | Effect |
-|---|---|---|---|---|
-| NOT_INSTALLED | DISCOVERED | guest node installed in the distribution (user action) |  |  |
-| DISCOVERED | CONNECTING | host starts the wsl.exe bridge |  |  |
-| CONNECTING | LINKED | GuestLinkService.OpenLink hello received | link token valid; protocol compatible |  |
-| CONNECTING | LOST | bridge exited or no hello within 30 s |  |  |
-| LINKED | DEGRADED | guest reports degraded enforcement (no systemd, missing controllers) |  |  |
-| DEGRADED | LINKED | guest capabilities restored |  |  |
-| LINKED, DEGRADED | LOST | 30 s without frames, or bridge exit |  | finding GUEST_LINK_LOST; the guest keeps its last allocation until lease_until, then admits only within the standalone allocation; the host keeps the guest's reserved allocation (the last acknowledged one and any larger unacknowledged push) until the guest acknowledges a smaller one after reconnecting, or its distribution is observed stopped (architecture 03 section 6) |
-| LOST | CONNECTING | bounded backoff retry (1 s to 60 s) |  |  |
-| DISCOVERED, CONNECTING, LINKED, DEGRADED, LOST | DISABLED | ResourceService.SetGuestLink enabled=false |  | the guest's reserved allocation stays, whether the link was up or lost, until the guest acknowledges a smaller one or its distribution is observed stopped (architecture 03 section 6) |
-| DISABLED | CONNECTING | ResourceService.SetGuestLink enabled=true |  |  |
-| DISCOVERED, LOST, DISABLED | NOT_INSTALLED | distribution or guest binary removed |  | the guest's reserved allocation stays, whether the link was up or lost, until the guest acknowledges a smaller one or its distribution is observed stopped (architecture 03 section 6) |
-
-<a id="sm-pairing"></a>
-
-## SM-PAIRING — LAN pairing (local confirmation): out of current delivery since 2026-10-28 (AD-0021 §12); kept as history
-
-- Enum: `arcforges.node.v1.PairingState`; persisted: node store pairing.state (secrets in memory); owner: Peer manager.
-- Initial: `REQUESTED`, `INCOMING`. Terminal: `PAIRED`, `REJECTED`, `MISMATCH`, `EXPIRED`, `CANCELLED`, `BLOCKED`.
-
-```mermaid
-stateDiagram-v2
-  [*] --> REQUESTED
-  [*] --> INCOMING
-  REQUESTED --> EXCHANGING : responder accepted (PairingService.AwaitResponse)
-  INCOMING --> EXCHANGING : PeerService.RespondToPairing accept
-  REQUESTED --> REJECTED : responder rejected
-  INCOMING --> REJECTED : responder rejected
-  EXCHANGING --> AWAITING_CONFIRMATION : commitment verified (PairingService.Reveal)
-  EXCHANGING --> MISMATCH : commitment invalid
-  AWAITING_CONFIRMATION --> CONFIRMED_LOCALLY : PeerService.ConfirmPairing digits_match=true
-  AWAITING_CONFIRMATION --> MISMATCH : either user reports different digits
-  CONFIRMED_LOCALLY --> MISMATCH : either user reports different digits
-  CONFIRMED_LOCALLY --> PAIRED : the other side confirmed
-  REQUESTED --> EXPIRED : 120 s elapsed
-  INCOMING --> EXPIRED : 120 s elapsed
-  EXCHANGING --> EXPIRED : 120 s elapsed
-  AWAITING_CONFIRMATION --> EXPIRED : 120 s elapsed
-  CONFIRMED_LOCALLY --> EXPIRED : 120 s elapsed
-  REQUESTED --> CANCELLED : PeerService.CancelPairing
-  INCOMING --> CANCELLED : PeerService.CancelPairing
-  EXCHANGING --> CANCELLED : PeerService.CancelPairing
-  AWAITING_CONFIRMATION --> CANCELLED : PeerService.CancelPairing
-  CONFIRMED_LOCALLY --> CANCELLED : PeerService.CancelPairing
-  REQUESTED --> BLOCKED : 5 failed attempts for the peer within an hour
-  INCOMING --> BLOCKED : 5 failed attempts for the peer within an hour
-  PAIRED --> [*]
-  REJECTED --> [*]
-  MISMATCH --> [*]
-  EXPIRED --> [*]
-  CANCELLED --> [*]
-  BLOCKED --> [*]
-```
-
-| From | To | Trigger | Guard | Effect |
-|---|---|---|---|---|
-| REQUESTED | EXCHANGING | responder accepted (PairingService.AwaitResponse) |  |  |
-| INCOMING | EXCHANGING | PeerService.RespondToPairing accept |  |  |
-| REQUESTED, INCOMING | REJECTED | responder rejected |  |  |
-| EXCHANGING | AWAITING_CONFIRMATION | commitment verified (PairingService.Reveal); SAS computed |  |  |
-| EXCHANGING | MISMATCH | commitment invalid |  |  |
-| AWAITING_CONFIRMATION | CONFIRMED_LOCALLY | PeerService.ConfirmPairing digits_match=true |  |  |
-| AWAITING_CONFIRMATION, CONFIRMED_LOCALLY | MISMATCH | either user reports different digits |  |  |
-| CONFIRMED_LOCALLY | PAIRED | the other side confirmed |  | fingerprints pinned; peer PAIRED (PINNED); default policy status-only |
-| REQUESTED, INCOMING, EXCHANGING, AWAITING_CONFIRMATION, CONFIRMED_LOCALLY | EXPIRED | 120 s elapsed |  |  |
-| REQUESTED, INCOMING, EXCHANGING, AWAITING_CONFIRMATION, CONFIRMED_LOCALLY | CANCELLED | PeerService.CancelPairing; PairingService.Abort |  |  |
-| REQUESTED, INCOMING | BLOCKED | 5 failed attempts for the peer within an hour |  |  |
-
-<a id="sm-remote-attempt"></a>
-
-## SM-REMOTE-ATTEMPT — Remote attempt (executor side): out of current delivery since 2026-10-28 (AD-0021 §12); kept as history
-
-- Enum: `arcforges.peer.v1.RemoteAttemptState`; persisted: executor node store remote_attempt.state; origin mirrors as ATTEMPT_KIND_REMOTE; owner: Placement.
-- Initial: `RESERVED`. Terminal: `RELEASED`, `CANCELLED`, `PREEMPTED`.
-
-```mermaid
-stateDiagram-v2
-  [*] --> RESERVED
-  RESERVED --> RECEIVING_INPUTS : executor starts pulling the input manifest
-  RECEIVING_INPUTS --> QUEUED : inputs materialized
-  QUEUED --> RUNNING : local admission granted the reservation
-  RUNNING --> FINISHED : attempt finished while the origin holds the lease
-  RUNNING --> RETAINED : attempt finished after the origin went silent beyond the lea
-  FINISHED --> RELEASED : PlacementService.ReleaseRemoteAttempt
-  RETAINED --> RELEASED : PlacementService.ReleaseRemoteAttempt
-  RESERVED --> CANCELLED : PlacementService.CancelRemoteAttempt
-  RECEIVING_INPUTS --> CANCELLED : PlacementService.CancelRemoteAttempt
-  QUEUED --> CANCELLED : PlacementService.CancelRemoteAttempt
-  RUNNING --> CANCELLED : PlacementService.CancelRemoteAttempt
-  QUEUED --> PREEMPTED : executor pressure or policy
-  RUNNING --> PREEMPTED : executor pressure or policy
-  RELEASED --> [*]
-  CANCELLED --> [*]
-  PREEMPTED --> [*]
-```
-
-| From | To | Trigger | Guard | Effect |
-|---|---|---|---|---|
-| RESERVED | RECEIVING_INPUTS | executor starts pulling the input manifest |  |  |
-| RECEIVING_INPUTS | QUEUED | inputs materialized |  |  |
-| QUEUED | RUNNING | local admission granted the reservation |  |  |
-| RUNNING | FINISHED | attempt finished while the origin holds the lease |  |  |
-| RUNNING | RETAINED | attempt finished after the origin went silent beyond the lease (FINISH_AND_RETAIN) |  |  |
-| FINISHED, RETAINED | RELEASED | PlacementService.ReleaseRemoteAttempt; retention (7 days) ended |  |  |
-| RESERVED, RECEIVING_INPUTS, QUEUED, RUNNING | CANCELLED | PlacementService.CancelRemoteAttempt; lease expired with CANCEL; executor user cancelled |  |  |
-| QUEUED, RUNNING | PREEMPTED | executor pressure or policy |  |  |
-
-<a id="sm-cleanup-plan"></a>
-
-## SM-CLEANUP-PLAN — Cleanup plan
-
-- Enum: `arcforges.node.v1.CleanupPlanState`; persisted: node store cleanup_plan.state; owner: Cleanup executor.
-- Initial: `PLANNED`. Terminal: `COMPLETED`, `PARTIAL`, `EXPIRED`, `CANCELLED`.
-
-```mermaid
-stateDiagram-v2
-  [*] --> PLANNED
-  PLANNED --> AWAITING_APPROVAL : StorageService.ExecuteCleanup by a caller who needs approval
-  PLANNED --> EXECUTING : StorageService.ExecuteCleanup permitted
-  AWAITING_APPROVAL --> EXECUTING : approval approved
-  AWAITING_APPROVAL --> CANCELLED : approval denied, cancelled or expired
-  EXECUTING --> COMPLETED : every selected item DONE
-  EXECUTING --> PARTIAL : some items IN_USE, CHANGED, REFERENCED, NOT_ALLOWED or FAILE
-  PLANNED --> EXPIRED : 60 minutes after creation
-  AWAITING_APPROVAL --> EXPIRED : 60 minutes after creation
-  PLANNED --> CANCELLED : StorageService.CancelCleanupPlan
-  COMPLETED --> [*]
-  PARTIAL --> [*]
-  EXPIRED --> [*]
-  CANCELLED --> [*]
-```
-
-| From | To | Trigger | Guard | Effect |
-|---|---|---|---|---|
-| PLANNED | AWAITING_APPROVAL | StorageService.ExecuteCleanup by a caller who needs approval |  |  |
-| PLANNED | EXECUTING | StorageService.ExecuteCleanup permitted | digest matches; not expired |  |
-| AWAITING_APPROVAL | EXECUTING | approval approved |  |  |
-| AWAITING_APPROVAL | CANCELLED | approval denied, cancelled or expired |  |  |
-| EXECUTING | COMPLETED | every selected item DONE |  |  |
-| EXECUTING | PARTIAL | some items IN_USE, CHANGED, REFERENCED, NOT_ALLOWED or FAILED |  |  |
-| PLANNED, AWAITING_APPROVAL | EXPIRED | 60 minutes after creation |  |  |
-| PLANNED | CANCELLED | StorageService.CancelCleanupPlan |  |  |
-
-<a id="sm-worktree"></a>
-
-## SM-WORKTREE — Managed worktree
-
-- Enum: `arcforges.node.v1.WorkspaceState`; persisted: node store workspace.state (kind MANAGED_WORKTREE); owner: Workspace manager.
-- Initial: `CREATING`. Terminal: `REMOVED`.
+- Enum: `arcforges.sandbox.v2.SandboxState`; persisted: True; owner: Sandbox Core.
+- Initial: `CREATING`. Terminal: `DELETED`.
 
 ```mermaid
 stateDiagram-v2
   [*] --> CREATING
-  CREATING --> ACTIVE : git worktree add succeeded (node job)
-  CREATING --> FAILED : node job failed
-  ACTIVE --> IDLE : no task, session or lock for 14 days
-  IDLE --> ACTIVE : used by a task or session
-  ACTIVE --> REMOVING : WorkspaceService.RemoveWorktree
-  IDLE --> REMOVING : WorkspaceService.RemoveWorktree
-  ACTIVE --> ARCHIVING : WorkspaceService.RemoveWorktree with archive_changes (approv
-  IDLE --> ARCHIVING : WorkspaceService.RemoveWorktree with archive_changes (approv
-  ARCHIVING --> REMOVING : archive verified  snapshot commits I and W written, the bund
-  ARCHIVING --> ACTIVE : archive creation or verification failed
-  REMOVING --> REMOVED : git worktree remove succeeded
-  REMOVING --> ACTIVE : removal failed (in use or git refused)
-  FAILED --> REMOVED : partial directory cleaned up
-  REMOVED --> [*]
+  CREATING --> READY : Create committed
+  CREATING --> ERROR : Create failed definitely
+  CREATING --> RECOVERY_REQUIRED : Ownership/effect uncertain
+  READY --> RECOVERY_REQUIRED : Ownership/effect uncertain
+  DELETING --> RECOVERY_REQUIRED : Ownership/effect uncertain
+  ERROR --> RECOVERY_REQUIRED : Ownership/effect uncertain
+  ERROR --> READY : Explicit local repair
+  READY --> DELETING : Delete plan consumed
+  ERROR --> DELETING : Delete failed creation
+  DELETING --> DELETED : Owned subtree removed
+  RECOVERY_REQUIRED --> READY : Recovery proves prior ready state
+  RECOVERY_REQUIRED --> DELETING : Resume known deletion
+  DELETED --> [*]
 ```
 
 | From | To | Trigger | Guard | Effect |
 |---|---|---|---|---|
-| CREATING | ACTIVE | git worktree add succeeded (node job) |  |  |
-| CREATING | FAILED | node job failed |  |  |
-| ACTIVE | IDLE | no task, session or lock for 14 days |  |  |
-| IDLE | ACTIVE | used by a task or session |  |  |
-| ACTIVE, IDLE | REMOVING | WorkspaceService.RemoveWorktree; approved cleanup item | clean (no staged, unstaged or untracked changes) |  |
-| ACTIVE, IDLE | ARCHIVING | WorkspaceService.RemoveWorktree with archive_changes (approved), with the ignored-files decision when the removal plan lists ignored files | dirty; nothing listed as blocking; no task, session or lock uses the worktree |  |
-| ARCHIVING | REMOVING | archive verified: snapshot commits I and W written, the bundle fetched over the base ref into a temporary repository with the same commit IDs, live files matched by blob ID, mode and bytes, the index matched to I (06 section 3) |  |  |
-| ARCHIVING | ACTIVE | archive creation or verification failed; nothing removed; finding raised |  |  |
-| REMOVING | REMOVED | git worktree remove succeeded |  |  |
-| REMOVING | ACTIVE | removal failed (in use or git refused) |  |  |
-| FAILED | REMOVED | partial directory cleaned up |  |  |
+| CREATING | READY | Create committed | Private root manifest and configuration verified | Commit revision and ready event |
+| CREATING | ERROR | Create failed definitely | Owned partial state identified; no Run admitted | Persist reason and cleanup identity |
+| CREATING, READY, DELETING, ERROR | RECOVERY_REQUIRED | Ownership/effect uncertain | Identity or journal cannot be reconciled | Refuse conflicting starts and preserve evidence |
+| ERROR | READY | Explicit local repair | Ownership and profile valid; no unresolved effect | Commit corrected config |
+| READY | DELETING | Delete plan consumed | Revision/root unchanged; no nonterminal Run or transfer; ownership lock | Block starts and journal quarantine intent |
+| ERROR | DELETING | Delete failed creation | Owned path verified; no use | Journal exact owned cleanup |
+| DELETING | DELETED | Owned subtree removed | Independent identity checks; no external grant included | Commit tombstone and receipt |
+| RECOVERY_REQUIRED | READY | Recovery proves prior ready state | Authenticated ownership and no pending destructive effect | Commit reconciliation |
+| RECOVERY_REQUIRED | DELETING | Resume known deletion | Same root/journal identity and no managed use | Resume exact intent without new ID |
 
-<a id="sm-session"></a>
+<a id="sm-run"></a>
 
-## SM-SESSION — AI client session
+## SM-RUN — Managed execution
 
-- Enum: `arcforges.node.v1.SessionState`; persisted: node store session.state; owner: Session service.
-- Initial: `ACTIVE`. Terminal: `ENDED`.
+- Enum: `arcforges.sandbox.v2.RunState`; persisted: True; owner: RunSupervisor and Node reconciliation.
+- Initial: `STARTING`. Terminal: `EXITED`, `FAILED`.
+
+```mermaid
+stateDiagram-v2
+  [*] --> STARTING
+  STARTING --> RUNNING : Supervisor reports execution active
+  STARTING --> FAILED : Definite launch refusal
+  STARTING --> STOPPING : Explicit stop/pressure policy
+  RUNNING --> STOPPING : Explicit stop/pressure policy
+  STARTING --> DRAINING : Root/executor exit or termination observed
+  RUNNING --> DRAINING : Root/executor exit or termination observed
+  STOPPING --> DRAINING : Root/executor exit or termination observed
+  DRAINING --> EXITED : Whole owned group empty
+  STARTING --> RECOVERY_REQUIRED : Supervisor/native effect ambiguous
+  RUNNING --> RECOVERY_REQUIRED : Supervisor/native effect ambiguous
+  STOPPING --> RECOVERY_REQUIRED : Supervisor/native effect ambiguous
+  DRAINING --> RECOVERY_REQUIRED : Supervisor/native effect ambiguous
+  RECOVERY_REQUIRED --> RUNNING : Rebind live supervisor
+  RECOVERY_REQUIRED --> DRAINING : Recovery locates exiting group
+  EXITED --> [*]
+  FAILED --> [*]
+```
+
+| From | To | Trigger | Guard | Effect |
+|---|---|---|---|---|
+| STARTING | RUNNING | Supervisor reports execution active | Confinement/resource prerequisites applied; supervised executor identity bound | Record started time; payload_started may remain UNKNOWN |
+| STARTING | FAILED | Definite launch refusal | No payload effect; outer owned group empty verified | Record failure and release grant |
+| STARTING, RUNNING | STOPPING | Explicit stop/pressure policy | Actor authorized; owned boundary identity verified | Persist stop intent and issue tested graceful signal |
+| STARTING, RUNNING, STOPPING | DRAINING | Root/executor exit or termination observed | Authoritative observation provenance; no terminal-text parsing | Record raw exit; drain descendants and retain ownership |
+| DRAINING | EXITED | Whole owned group empty | Native outer boundary empty independently confirmed | Persist final reason/exit and release grant |
+| STARTING, RUNNING, STOPPING, DRAINING | RECOVERY_REQUIRED | Supervisor/native effect ambiguous | Cannot authenticate ownership/completion | Block conflicting cleanup; retain reservation and evidence |
+| RECOVERY_REQUIRED | RUNNING | Rebind live supervisor | Same boot/process creation/Run epoch and confinement; no Start replay | Restore observations and require fresh terminal lease |
+| RECOVERY_REQUIRED | DRAINING | Recovery locates exiting group | Verified ownership or host reboot proof | Finish cleanup and final record |
+
+<a id="sm-grant"></a>
+
+## SM-GRANT — Local remote grant
+
+- Enum: `arcforges.sandbox.v2.GrantState`; persisted: True; owner: Local owner/Sandbox Core.
+- Initial: `ACTIVE`. Terminal: `REVOKED`, `EXPIRED`.
 
 ```mermaid
 stateDiagram-v2
   [*] --> ACTIVE
-  ACTIVE --> IDLE : no hook, MCP or task activity for 30 minutes
-  IDLE --> ACTIVE : activity
-  ACTIVE --> ENDED : SessionEnd hook
-  IDLE --> ENDED : SessionEnd hook
-  ENDED --> [*]
-```
-
-| From | To | Trigger | Guard | Effect |
-|---|---|---|---|---|
-| ACTIVE | IDLE | no hook, MCP or task activity for 30 minutes |  |  |
-| IDLE | ACTIVE | activity |  |  |
-| ACTIVE, IDLE | ENDED | SessionEnd hook; agent root process exited; 24 h inactivity; SessionService.EndSession |  | services with stop_with_session stop |
-
-<a id="sm-approval"></a>
-
-## SM-APPROVAL — Approval
-
-- Enum: `arcforges.node.v1.ApprovalState`; persisted: node store approval.state; owner: Approval service.
-- Initial: `PENDING`. Terminal: `EXECUTED`, `FAILED`, `DENIED`, `EXPIRED`, `CANCELLED`.
-
-```mermaid
-stateDiagram-v2
-  [*] --> PENDING
-  PENDING --> APPROVED : ApprovalService.DecideApproval approve
-  APPROVED --> EXECUTED : captured request executed with its command_id
-  APPROVED --> FAILED : captured request failed (outcome stored)
-  PENDING --> DENIED : ApprovalService.DecideApproval deny
-  PENDING --> EXPIRED : approval TTL elapsed (default 24 h)
-  PENDING --> CANCELLED : ApprovalService.CancelApproval
-  EXECUTED --> [*]
-  FAILED --> [*]
-  DENIED --> [*]
-  EXPIRED --> [*]
-  CANCELLED --> [*]
-```
-
-| From | To | Trigger | Guard | Effect |
-|---|---|---|---|---|
-| PENDING | APPROVED | ApprovalService.DecideApproval approve | approver HUMAN, or REMOTE with step-up and remote.allow_approvals |  |
-| APPROVED | EXECUTED | captured request executed with its command_id |  |  |
-| APPROVED | FAILED | captured request failed (outcome stored) |  |  |
-| PENDING | DENIED | ApprovalService.DecideApproval deny |  |  |
-| PENDING | EXPIRED | approval TTL elapsed (default 24 h) |  |  |
-| PENDING | CANCELLED | ApprovalService.CancelApproval |  |  |
-
-<a id="sm-sign-in"></a>
-
-## SM-SIGN-IN — Node browser sign-in (cloud side)
-
-- Enum: `arcforges.fleet.v1.NodeSignInState`; persisted: cloud fleet_node_sign_in.state; node mirrors as SignInFlowState; owner: Fleet module.
-- Initial: `PENDING`. Terminal: `DENIED`, `EXPIRED`, `REVOKED`.
-
-```mermaid
-stateDiagram-v2
-  [*] --> PENDING
-  PENDING --> APPROVED : NodeEnrollmentService.ApproveNodeSignIn approve
-  APPROVED --> APPROVED : NodeEnrollmentService.ApproveNodeSignIn approve again by the
-  PENDING --> DENIED : NodeEnrollmentService.ApproveNodeSignIn deny
-  APPROVED --> DENIED : NodeEnrollmentService.ApproveNodeSignIn deny by the approvin
-  APPROVED --> COMPLETED : NodeEnrollmentService.CompleteNodeSignIn with the correct co
-  APPROVED --> REVOKED : NodeEnrollmentService.CompleteNodeSignIn with the correct co
-  COMPLETED --> REVOKED : NodeEnrollmentService.CompleteNodeSignIn with the correct co
-  PENDING --> EXPIRED : 10 minutes elapsed (derived when the row is read, not writte
-  APPROVED --> EXPIRED : 10 minutes elapsed (derived when the row is read, not writte
-  DENIED --> [*]
-  EXPIRED --> [*]
+  ACTIVE --> REVOKED : Authorized revocation
+  ACTIVE --> EXPIRED : Expiry observed
   REVOKED --> [*]
-```
-
-| From | To | Trigger | Guard | Effect |
-|---|---|---|---|---|
-| PENDING | APPROVED | NodeEnrollmentService.ApproveNodeSignIn approve | this account reviewed the flow (GetNodeSignInFlow) within the last 10 minutes, else STATE/invalid_state not_reviewed; a proved step-up of class fleet.approveNodeSignIn bound to the flow ID, consumed in the approval's transaction; the node cap admits one more node, else RESOURCE/quota_exceeded max_nodes_per_account; an absent approve is refused (approve: required, a center rule) | one-use code issued (32 random bytes, stored as a digest, valid 2 minutes by default and never past the flow); the approving session and its epochs stored; the reply is the redirect to the stored loopback URI with code and state |
-| APPROVED | APPROVED | NodeEnrollmentService.ApproveNodeSignIn approve again by the approving account, before the one-use code is redeemed | as for the first approval | a new one-use code replaces the unredeemed one |
-| PENDING | DENIED | NodeEnrollmentService.ApproveNodeSignIn deny | this account reviewed the flow within the last 10 minutes; no step-up | the reply is the redirect to the stored loopback URI with error=access_denied and state |
-| APPROVED | DENIED | NodeEnrollmentService.ApproveNodeSignIn deny by the approving account, before the one-use code is redeemed; or the approving account's IdentityService.RevokeAllSessions or RemoveAuthIdentity |  | the unredeemed code is void |
-| APPROVED | COMPLETED | NodeEnrollmentService.CompleteNodeSignIn with the correct code, verifier and node key proof | the code is compared first, in constant time; the one-use code has not expired (a correct code presented after its lifetime is STATE/expired, consumes nothing and leaves the flow APPROVED); the approval has not lapsed and Enroll admits the node | installation registered (Enroll); node credentials issued |
-| APPROVED | REVOKED | NodeEnrollmentService.CompleteNodeSignIn with the correct code and a wrong verifier or node key proof |  | the code is redeemed; the reply is AUTHENTICATION/unauthenticated |
-| COMPLETED | REVOKED | NodeEnrollmentService.CompleteNodeSignIn with the correct code presented again (reuse) |  | the credential family the flow delivered is revoked; the reply is CONFLICT/code_reused (also for any later presentation) |
-| PENDING | EXPIRED | 10 minutes elapsed (derived when the row is read, not written); or a newer BeginNodeSignIn of the same node ID and the same node key |  |  |
-| APPROVED | EXPIRED | 10 minutes elapsed (derived when the row is read, not written); or CompleteNodeSignIn with the correct code, verifier and proof finds the approval lapsed (the approving session revoked by the account, with its device or by an operator, an epoch of it moved, or the account not Active; a sign-out or an expiry of that session does not lapse it) |  | nothing of the enrollment remains; the reply is STATE/expired |
-
-<a id="sm-device-auth"></a>
-
-## SM-DEVICE-AUTH — Device authorization (headless sign-in)
-
-- Enum: `arcforges.fleet.v1.DeviceAuthorizationState`; persisted: cloud fleet_device_authorization.state; owner: Fleet module.
-- Initial: `PENDING`. Terminal: `COMPLETED`, `DENIED`, `EXPIRED`.
-- Response-only enum values (never stored): SLOW_DOWN.
-
-```mermaid
-stateDiagram-v2
-  [*] --> PENDING
-  PENDING --> APPROVED : NodeEnrollmentService.ApproveDeviceCode approve
-  PENDING --> DENIED : NodeEnrollmentService.ApproveDeviceCode deny
-  APPROVED --> DENIED : NodeEnrollmentService.ApproveDeviceCode deny by the approvin
-  APPROVED --> COMPLETED : PollDeviceAuthorization with the device code and a valid nod
-  PENDING --> EXPIRED : 600 s elapsed (a poll records it)
-  APPROVED --> EXPIRED : 600 s elapsed (a poll records it)
-  COMPLETED --> [*]
-  DENIED --> [*]
   EXPIRED --> [*]
 ```
 
 | From | To | Trigger | Guard | Effect |
 |---|---|---|---|---|
-| PENDING | APPROVED | NodeEnrollmentService.ApproveDeviceCode approve | this account looked the code up (LookupDeviceCode) within the last 10 minutes, else STATE/invalid_state not_reviewed; a proved step-up of class fleet.approveDeviceCode bound to the normalized user code; the node cap admits one more node, else RESOURCE/quota_exceeded max_nodes_per_account; an absent approve is refused (approve: required, a center rule); on the /activate page the typed last group of the node key's fingerprint matches, checked before any step-up evidence is consumed (else VALIDATION/invalid_argument fingerprint_tail: mismatch) | the approving session and its epochs stored |
-| PENDING | DENIED | NodeEnrollmentService.ApproveDeviceCode deny | this account looked the code up within the last 10 minutes; no step-up |  |
-| APPROVED | DENIED | NodeEnrollmentService.ApproveDeviceCode deny by the approving account, before the credentials are delivered; or the approving account's IdentityService.RevokeAllSessions or RemoveAuthIdentity |  |  |
-| APPROVED | COMPLETED | PollDeviceAuthorization with the device code and a valid node key proof delivered credentials | the poll is not early (a poll sooner than its interval less 500 ms is answered SLOW_DOWN and delivers nothing); the approval has not lapsed and Enroll admits the node | installation registered (Enroll); node credentials issued. A later poll with the device code and a valid proof is a reuse: the authorization stays COMPLETED, reused_at is set once, the delivered credential family is revoked, and the reply is COMPLETED without credentials |
-| PENDING | EXPIRED | 600 s elapsed (a poll records it); or a newer StartDeviceAuthorization of the same node ID and the same node key |  |  |
-| APPROVED | EXPIRED | 600 s elapsed (a poll records it); or the delivering poll finds the approval lapsed (the approving session revoked by the account, with its device or by an operator, an epoch of it moved, or the account not Active; a sign-out or an expiry of that session does not lapse it) |  | nothing was issued |
+| ACTIVE | REVOKED | Authorized revocation | Local owner or permitted remote narrowing | Advance revision and reject future stale commands |
+| ACTIVE | EXPIRED | Expiry observed | Trusted local time policy; finite grant | Refuse future remote use; local runs continue |
 
-<a id="sm-phone-pairing"></a>
+<a id="sm-transfer"></a>
 
-## SM-PHONE-PAIRING — Phone sign-in by QR
+## SM-TRANSFER — Owned import/export
 
-- Enum: `arcforges.fleet.v1.PhonePairingCloudState`; persisted: cloud fleet_phone_pairing.state; node mirrors as PhonePairingState; owner: Fleet module.
-- Initial: `WAITING_FOR_SCAN`. Terminal: `COMPLETED`, `DENIED`, `EXPIRED`, `CONSUMED`.
+- Enum: `arcforges.sandbox.v2.TransferState`; persisted: True; owner: Sandbox data manager.
+- Initial: `OPEN`. Terminal: `COMPLETE`, `FAILED`.
 
 ```mermaid
 stateDiagram-v2
-  [*] --> WAITING_FOR_SCAN
-  WAITING_FOR_SCAN --> AWAITING_CONFIRMATION : NodeEnrollmentService.ClaimPhonePairing with the right secre
-  WAITING_FOR_SCAN --> CONSUMED : a wrong secret was presented
-  AWAITING_CONFIRMATION --> CONFIRMED : NodeEnrollmentService.ConfirmPhonePairing approve (desktop u
-  AWAITING_CONFIRMATION --> DENIED : NodeEnrollmentService.ConfirmPhonePairing deny
-  CONFIRMED --> COMPLETED : PollPhonePairing delivered the phone credentials
-  WAITING_FOR_SCAN --> EXPIRED : 120 s elapsed
-  AWAITING_CONFIRMATION --> EXPIRED : 120 s elapsed
-  CONFIRMED --> EXPIRED : 120 s elapsed
-  COMPLETED --> [*]
-  DENIED --> [*]
-  EXPIRED --> [*]
-  CONSUMED --> [*]
+  [*] --> OPEN
+  OPEN --> STREAMING : First authorized chunk/range
+  OPEN --> COMPLETE : Commit import or finish export
+  STREAMING --> COMPLETE : Commit import or finish export
+  OPEN --> FAILED : Definite cancel/expiry/failure
+  STREAMING --> FAILED : Definite cancel/expiry/failure
+  OPEN --> RECOVERY_REQUIRED : Publication outcome unknown
+  STREAMING --> RECOVERY_REQUIRED : Publication outcome unknown
+  RECOVERY_REQUIRED --> COMPLETE : Reconciliation proves commit
+  RECOVERY_REQUIRED --> FAILED : Reconciliation proves no commit
+  COMPLETE --> [*]
+  FAILED --> [*]
 ```
 
 | From | To | Trigger | Guard | Effect |
 |---|---|---|---|---|
-| WAITING_FOR_SCAN | AWAITING_CONFIRMATION | NodeEnrollmentService.ClaimPhonePairing with the right secret |  |  |
-| WAITING_FOR_SCAN | CONSUMED | a wrong secret was presented |  |  |
-| AWAITING_CONFIRMATION | CONFIRMED | NodeEnrollmentService.ConfirmPhonePairing approve (desktop user) |  |  |
-| AWAITING_CONFIRMATION | DENIED | NodeEnrollmentService.ConfirmPhonePairing deny |  |  |
-| CONFIRMED | COMPLETED | PollPhonePairing delivered the phone credentials |  |  |
-| WAITING_FOR_SCAN, AWAITING_CONFIRMATION, CONFIRMED | EXPIRED | 120 s elapsed |  |  |
+| OPEN | STREAMING | First authorized chunk/range | Identity, expiry, no-use lock and quota valid | Advance contiguous verified cursor |
+| OPEN, STREAMING | COMPLETE | Commit import or finish export | Exact length/hash and final root identity verified | Persist receipt then release staging |
+| OPEN, STREAMING | FAILED | Definite cancel/expiry/failure | No uncertain publication effect | Remove only known staging; retain reason |
+| OPEN, STREAMING | RECOVERY_REQUIRED | Publication outcome unknown | Durable intent exists but native result absent | Hold journal and staging identity |
+| RECOVERY_REQUIRED | COMPLETE | Reconciliation proves commit | Exact destination/source version matches original intent | Return original receipt |
+| RECOVERY_REQUIRED | FAILED | Reconciliation proves no commit | Owned staging and absence/rejection proven | Safely release with original failure |
 
-<a id="sm-relay"></a>
+<a id="sm-operation"></a>
 
-## SM-RELAY — Node channel connection to the Go center (AF-CTR-05; AD-0021 §9)
+## SM-OPERATION — Node mutation receipt
 
-- Enum: `arcforges.node.v1.RelayState`; persisted: in memory; reported in AccountStatus; owner: Cloud link.
-- Initial: `DISABLED`. Terminal: none (long-lived).
-
-```mermaid
-stateDiagram-v2
-  [*] --> DISABLED
-  DISABLED --> CONNECTING : a signed-in node has an enabled CloudLink ticket
-  CONNECTING --> CONNECTED : authenticated WebSocket upgrade, connection-bound NodeHello
-  CONNECTED --> CONNECTED : credential rotation sends TokenRefresh on the same connectio
-  CONNECTING --> BACKOFF : network failure or close 4401, 4408, 4409, 4413, 4429 or 450
-  CONNECTED --> BACKOFF : network failure or close 4401, 4408, 4409, 4413, 4429 or 450
-  BACKOFF --> CONNECTING : backoff or a link change wakes the loop
-  CONNECTING --> REFUSED : close 4403 or reserved 4503, or an upgrade refusal for featu
-  CONNECTED --> REFUSED : close 4403 or reserved 4503, or an upgrade refusal for featu
-  REFUSED --> CONNECTING : one hour elapsed, a later credential rotation, or a link cha
-  CONNECTING --> DISABLED : cloud link disabled, sign-out or node credential unavailable
-  CONNECTED --> DISABLED : cloud link disabled, sign-out or node credential unavailable
-  BACKOFF --> DISABLED : cloud link disabled, sign-out or node credential unavailable
-  REFUSED --> DISABLED : cloud link disabled, sign-out or node credential unavailable
-```
-
-| From | To | Trigger | Guard | Effect |
-|---|---|---|---|---|
-| DISABLED | CONNECTING | a signed-in node has an enabled CloudLink ticket |  |  |
-| CONNECTING | CONNECTED | authenticated WebSocket upgrade, connection-bound NodeHello proof and ChannelAccepted |  |  |
-| CONNECTED | CONNECTED | credential rotation sends TokenRefresh on the same connection | the new token is of the same center, session family, node and installation; the center rechecks the credential and center.nodes gate |  |
-| CONNECTING, CONNECTED | BACKOFF | network failure or close 4401, 4408, 4409, 4413, 4429 or 4500 |  | 4401 refreshes the node credential before retry; 4500 may supply a bounded reconnect hint; normal jittered backoff is 1 to 60 s |
-| BACKOFF | CONNECTING | backoff or a link change wakes the loop |  |  |
-| CONNECTING, CONNECTED | REFUSED | close 4403 or reserved 4503, or an upgrade refusal for feature, plan or account state |  |  |
-| REFUSED | CONNECTING | one hour elapsed, a later credential rotation, or a link change wakes the loop |  | a rotation during the refused attempt does not trigger an immediate retry |
-| CONNECTING, CONNECTED, BACKOFF, REFUSED | DISABLED | cloud link disabled, sign-out or node credential unavailable |  |  |
-
-<a id="sm-remote-command"></a>
-
-## SM-REMOTE-COMMAND — Historical FleetHub remote-command wire enum (unbuilt; retained for v1 compatibility)
-
-- Enum: `arcforges.fleet.v1.RemoteCommandState`; persisted: not built; legacy fleet_remote_command and remote_command_log design; owner: none (historical design).
-- Initial: `ACCEPTED`. Terminal: `SUCCEEDED`, `FAILED`, `REJECTED_BY_NODE`, `EXPIRED`, `CANCELLED`.
+- Enum: `arcforges.sandbox.v2.OperationState`; persisted: True; owner: Node command processor.
+- Initial: `ACCEPTED`. Terminal: `SUCCEEDED`, `FAILED`.
 
 ```mermaid
 stateDiagram-v2
   [*] --> ACCEPTED
-  ACCEPTED --> DELIVERED : FleetHub delivered the signed envelope to the node socket
-  DELIVERED --> SUCCEEDED : signed result with a receipt
-  DELIVERED --> FAILED : signed result with an error
-  DELIVERED --> REJECTED_BY_NODE : node signature, expiry, target or remote-control policy chec
-  ACCEPTED --> EXPIRED : expiry (<= 5 min) passed without a result
-  DELIVERED --> EXPIRED : expiry (<= 5 min) passed without a result
-  ACCEPTED --> CANCELLED : FleetService.CancelNodeCommand
+  ACCEPTED --> SUCCEEDED : Effect committed
+  ACCEPTED --> FAILED : Definite refusal/failure
+  ACCEPTED --> UNKNOWN : Reply/native completion lost
+  UNKNOWN --> SUCCEEDED : Authoritative recovery proves effect
+  UNKNOWN --> FAILED : Authoritative recovery proves failure
   SUCCEEDED --> [*]
   FAILED --> [*]
-  REJECTED_BY_NODE --> [*]
-  EXPIRED --> [*]
-  CANCELLED --> [*]
 ```
 
 | From | To | Trigger | Guard | Effect |
 |---|---|---|---|---|
-| ACCEPTED | DELIVERED | FleetHub delivered the signed envelope to the node socket |  |  |
-| DELIVERED | SUCCEEDED | signed result with a receipt |  |  |
-| DELIVERED | FAILED | signed result with an error |  |  |
-| DELIVERED | REJECTED_BY_NODE | node signature, expiry, target or remote-control policy check failed |  |  |
-| ACCEPTED, DELIVERED | EXPIRED | expiry (<= 5 min) passed without a result |  | never executed late |
-| ACCEPTED | CANCELLED | FleetService.CancelNodeCommand |  |  |
+| ACCEPTED | SUCCEEDED | Effect committed | Outcome and aggregate revision durable | Return same receipt for repeated ID |
+| ACCEPTED | FAILED | Definite refusal/failure | Effect certainty known and recorded | Return immutable failure |
+| ACCEPTED | UNKNOWN | Reply/native completion lost | Accepted effect might have happened | Require GetOperation reconciliation; no new-ID retry |
+| UNKNOWN | SUCCEEDED | Authoritative recovery proves effect | Matches command and canonical payload | Finalize once |
+| UNKNOWN | FAILED | Authoritative recovery proves failure | No conflicting effect; preserved audit | Finalize once |
 
-<a id="sm-routed-call"></a>
+<a id="sm-limit"></a>
 
-## SM-ROUTED-CALL — Center-routed Submit and Cancel record (AF-CTR-05)
+## SM-LIMIT — Requested/applied/read-back limit
 
-- Non-wire stored states: `ACCEPTED=1`, `SUCCEEDED=3`, `FAILED=4`, `REJECTED_BY_NODE=5`, `EXPIRED=6`, `UNKNOWN=7`, `NOT_DELIVERED=8`; source: `ArcForges/Cloud@d2fd7c517f919b0e136ce91413e26366f0e9c1e3`: `center/internal/schema/migrations/0010_fleet_routed_call.sql`, `center/internal/fleet/routed.go`; persisted: PostgreSQL fleet.routed_call.state with delivered and final_at; not the historical RemoteCommandState wire enum. A final record may be resent under the same command ID without changing its final state; a comparable node result is checked against the recorded outcome digest; owner: Go center fleet.
-- Initial: `ACCEPTED`. Terminal: `SUCCEEDED`.
-
-```mermaid
-stateDiagram-v2
-  [*] --> ACCEPTED
-  ACCEPTED --> SUCCEEDED : verified EXECUTED result with a value
-  ACCEPTED --> FAILED : verified EXECUTED result containing the TaskService handler
-  ACCEPTED --> REJECTED_BY_NODE : verified node refusal of the attempt
-  ACCEPTED --> EXPIRED : verified node expiry refusal
-  ACCEPTED --> UNKNOWN : an attempt that may have reached the node has no verified re
-  ACCEPTED --> NOT_DELIVERED : no attempt has reached the node and this call could not be s
-  UNKNOWN --> ACCEPTED : same-command resend is admitted
-  NOT_DELIVERED --> ACCEPTED : same-command resend is admitted
-  FAILED --> ACCEPTED : same-command resend is admitted
-  REJECTED_BY_NODE --> ACCEPTED : same-command resend is admitted
-  EXPIRED --> ACCEPTED : same-command resend is admitted
-  SUCCEEDED --> [*]
-```
-
-| From | To | Trigger | Guard | Effect |
-|---|---|---|---|---|
-| ACCEPTED | SUCCEEDED | verified EXECUTED result with a value |  | final; a verified comparable resend is checked against the recorded node outcome digest |
-| ACCEPTED | FAILED | verified EXECUTED result containing the TaskService handler error |  | final only for an effect that happened; DID_NOT_HAPPEN remains nonfinal |
-| ACCEPTED | REJECTED_BY_NODE | verified node refusal of the attempt |  | final only when its effect is not DID_NOT_HAPPEN; a prior possible delivery stays UNKNOWN |
-| ACCEPTED | EXPIRED | verified node expiry refusal |  | final only when its effect is not DID_NOT_HAPPEN; an expired call never executes late |
-| ACCEPTED | UNKNOWN | an attempt that may have reached the node has no verified result, the node reports UNKNOWN, or the next lease-holder sweeps an unsettled ACCEPTED record |  | never conclude the effect did not happen; a later no-effect refusal cannot erase an earlier possible delivery |
-| ACCEPTED | NOT_DELIVERED | no attempt has reached the node and this call could not be sent |  | DID_NOT_HAPPEN; not final |
-| UNKNOWN, NOT_DELIVERED, FAILED, REJECTED_BY_NODE, EXPIRED | ACCEPTED | same-command resend is admitted | record not final; same digest and live target; a possibly delivered record remains inside its replay window; fresh account step-up when required | a new attempt routes its own unchanged inner bytes; node command deduplication protects the original command ID. A final record may also be resent without changing its state or outcome; a comparable result is checked against its recorded digest |
-
-<a id="sm-subscription"></a>
-
-## SM-SUBSCRIPTION — Subscription (normalized across Paddle and Google Play)
-
-- Enum: `arcforges.fleet.v1.SubscriptionState`; persisted: cloud commerce_subscription (reused) with provider state; fleet_play_purchase.play_state; owner: Commerce module.
-- Initial: `PENDING`, `ACTIVE`, `TRIALING`. Terminal: `EXPIRED`, `REVOKED`.
+- Enum: `arcforges.sandbox.v2.LimitStatus`; persisted: False; owner: Resource manager.
+- Initial: `PENDING`. Terminal: none (long-lived).
 
 ```mermaid
 stateDiagram-v2
   [*] --> PENDING
-  [*] --> ACTIVE
-  [*] --> TRIALING
-  PENDING --> ACTIVE : payment completed (Play purchase PURCHASED
-  PENDING --> EXPIRED : pending purchase cancelled
-  TRIALING --> ACTIVE : trial converted
-  TRIALING --> EXPIRED : trial ended without payment
-  ACTIVE --> PAYMENT_ISSUE : Paddle past_due
-  PAYMENT_ISSUE --> ACTIVE : payment recovered
-  PAYMENT_ISSUE --> ON_HOLD : Play account hold
-  ON_HOLD --> ACTIVE : payment recovered
-  ACTIVE --> PAUSED : provider pause
-  PAUSED --> ACTIVE : pause ended
-  ACTIVE --> CANCELED_ACTIVE : cancellation scheduled at period end
-  PAYMENT_ISSUE --> CANCELED_ACTIVE : cancellation scheduled at period end
-  CANCELED_ACTIVE --> ACTIVE : reactivated before period end
-  CANCELED_ACTIVE --> EXPIRED : period ended or dunning exhausted
-  PAYMENT_ISSUE --> EXPIRED : period ended or dunning exhausted
-  ON_HOLD --> EXPIRED : period ended or dunning exhausted
-  PAUSED --> EXPIRED : period ended or dunning exhausted
-  ACTIVE --> REVOKED : full refund, chargeback, voided purchase, Play revocation
-  TRIALING --> REVOKED : full refund, chargeback, voided purchase, Play revocation
-  PAYMENT_ISSUE --> REVOKED : full refund, chargeback, voided purchase, Play revocation
-  ON_HOLD --> REVOKED : full refund, chargeback, voided purchase, Play revocation
-  PAUSED --> REVOKED : full refund, chargeback, voided purchase, Play revocation
-  CANCELED_ACTIVE --> REVOKED : full refund, chargeback, voided purchase, Play revocation
-  EXPIRED --> [*]
-  REVOKED --> [*]
+  PENDING --> EFFECTIVE : Readback matches
+  PENDING --> DEGRADED : Safe lower control only
+  PENDING --> FAILED : Apply/readback fails
+  PENDING --> UNSUPPORTED : Backend lacks control
+  EFFECTIVE --> PENDING : New revision or repair attempt
+  DEGRADED --> PENDING : New revision or repair attempt
+  FAILED --> PENDING : New revision or repair attempt
+  UNSUPPORTED --> PENDING : New revision or repair attempt
 ```
 
 | From | To | Trigger | Guard | Effect |
 |---|---|---|---|---|
-| PENDING | ACTIVE | payment completed (Play purchase PURCHASED; Paddle subscription active) |  |  |
-| PENDING | EXPIRED | pending purchase cancelled |  |  |
-| TRIALING | ACTIVE | trial converted |  |  |
-| TRIALING | EXPIRED | trial ended without payment |  |  |
-| ACTIVE | PAYMENT_ISSUE | Paddle past_due; Play grace period |  |  |
-| PAYMENT_ISSUE | ACTIVE | payment recovered |  |  |
-| PAYMENT_ISSUE | ON_HOLD | Play account hold |  |  |
-| ON_HOLD | ACTIVE | payment recovered |  |  |
-| ACTIVE | PAUSED | provider pause |  |  |
-| PAUSED | ACTIVE | pause ended |  |  |
-| ACTIVE, PAYMENT_ISSUE | CANCELED_ACTIVE | cancellation scheduled at period end |  |  |
-| CANCELED_ACTIVE | ACTIVE | reactivated before period end |  |  |
-| CANCELED_ACTIVE, PAYMENT_ISSUE, ON_HOLD, PAUSED | EXPIRED | period ended or dunning exhausted |  |  |
-| ACTIVE, TRIALING, PAYMENT_ISSUE, ON_HOLD, PAUSED, CANCELED_ACTIVE | REVOKED | full refund, chargeback, voided purchase, Play revocation |  | entitlement removed immediately |
-
-<a id="sm-update"></a>
-
-## SM-UPDATE — Node update
-
-- Enum: `arcforges.node.v1.UpdateState`; persisted: node store update_state.state; run/update-switch.json during a switch; owner: Updater.
-- Initial: `IDLE`, `MANAGED_EXTERNALLY`. Terminal: `MANAGED_EXTERNALLY`.
-
-```mermaid
-stateDiagram-v2
-  [*] --> IDLE
-  [*] --> MANAGED_EXTERNALLY
-  IDLE --> CHECKING : 6-hour timer
-  CHECKING --> IDLE : no newer non-revoked version
-  CHECKING --> DOWNLOADING : newer version and mode AUTO (or CheckNow under NOTIFY)
-  CHECKING --> FAILED : manifest refused (signature, expiry, rollback protection) or
-  DOWNLOADING --> FAILED : manifest refused (signature, expiry, rollback protection) or
-  DOWNLOADING --> STAGED : verified, extracted, staged self-test passed
-  STAGED --> PENDING_RESTART : policy window open
-  STAGED --> SWITCHING : countdown ended
-  PENDING_RESTART --> SWITCHING : countdown ended
-  PENDING_RESTART --> STAGED : UpdateService.Postpone
-  SWITCHING --> VERIFYING : new version started
-  VERIFYING --> IDLE : health check passed within 120 s
-  VERIFYING --> ROLLED_BACK : health check failed, crash loop, store incompatibility
-  SWITCHING --> ROLLED_BACK : health check failed, crash loop, store incompatibility
-  IDLE --> SWITCHING : UpdateService.Rollback (to the previous version)
-  ROLLED_BACK --> IDLE : next check cycle
-  FAILED --> IDLE : next check cycle
-  MANAGED_EXTERNALLY --> [*]
-```
-
-| From | To | Trigger | Guard | Effect |
-|---|---|---|---|---|
-| IDLE | CHECKING | 6-hour timer; UpdateService.CheckNow |  |  |
-| CHECKING | IDLE | no newer non-revoked version |  |  |
-| CHECKING | DOWNLOADING | newer version and mode AUTO (or CheckNow under NOTIFY) |  |  |
-| CHECKING, DOWNLOADING | FAILED | manifest refused (signature, expiry, rollback protection) or digest mismatch |  |  |
-| DOWNLOADING | STAGED | verified, extracted, staged self-test passed |  |  |
-| STAGED | PENDING_RESTART | policy window open; restart announced |  |  |
-| STAGED, PENDING_RESTART | SWITCHING | countdown ended; UpdateService.ApplyNow |  |  |
-| PENDING_RESTART | STAGED | UpdateService.Postpone |  |  |
-| SWITCHING | VERIFYING | new version started |  |  |
-| VERIFYING | IDLE | health check passed within 120 s |  | new version ACTIVE; previous kept |
-| VERIFYING, SWITCHING | ROLLED_BACK | health check failed, crash loop, store incompatibility |  | finding UPDATE_FAILED; version marked BAD |
-| IDLE | SWITCHING | UpdateService.Rollback (to the previous version) |  |  |
-| ROLLED_BACK, FAILED | IDLE | next check cycle |  |  |
-
-<a id="sm-integration"></a>
-
-## SM-INTEGRATION — AI client integration
-
-- Enum: `arcforges.node.v1.IntegrationState`; persisted: derived from integration_write, client settings and probes (re-evaluated by file watchers); owner: Integration service.
-- Initial: `CLIENT_NOT_FOUND`, `NOT_CONFIGURED`. Terminal: none (long-lived).
-
-```mermaid
-stateDiagram-v2
-  [*] --> CLIENT_NOT_FOUND
-  [*] --> NOT_CONFIGURED
-  CLIENT_NOT_FOUND --> NOT_CONFIGURED : client detected
-  NOT_CONFIGURED --> CONFIGURED : IntegrationService.ApplyIntegration (all selected components
-  PARTIAL --> CONFIGURED : IntegrationService.ApplyIntegration (all selected components
-  NOT_CONFIGURED --> PARTIAL : IntegrationService.ApplyIntegration (subset of components)
-  CONFIGURED --> DEGRADED : conflict detected  hooks disabled or untrusted, probe failed
-  PARTIAL --> DEGRADED : conflict detected  hooks disabled or untrusted, probe failed
-  DEGRADED --> CONFIGURED : conflict resolved and re-checked
-  CONFIGURED --> NOT_CONFIGURED : removal plan applied
-  PARTIAL --> NOT_CONFIGURED : removal plan applied
-  DEGRADED --> NOT_CONFIGURED : removal plan applied
-  NOT_CONFIGURED --> CLIENT_NOT_FOUND : client uninstalled
-  CONFIGURED --> CLIENT_NOT_FOUND : client uninstalled
-  PARTIAL --> CLIENT_NOT_FOUND : client uninstalled
-  DEGRADED --> CLIENT_NOT_FOUND : client uninstalled
-```
-
-| From | To | Trigger | Guard | Effect |
-|---|---|---|---|---|
-| CLIENT_NOT_FOUND | NOT_CONFIGURED | client detected |  |  |
-| NOT_CONFIGURED, PARTIAL | CONFIGURED | IntegrationService.ApplyIntegration (all selected components) |  |  |
-| NOT_CONFIGURED | PARTIAL | IntegrationService.ApplyIntegration (subset of components) |  |  |
-| CONFIGURED, PARTIAL | DEGRADED | conflict detected: hooks disabled or untrusted, probe failed, configuration edited away |  |  |
-| DEGRADED | CONFIGURED | conflict resolved and re-checked |  |  |
-| CONFIGURED, PARTIAL, DEGRADED | NOT_CONFIGURED | removal plan applied |  |  |
-| NOT_CONFIGURED, CONFIGURED, PARTIAL, DEGRADED | CLIENT_NOT_FOUND | client uninstalled |  |  |
+| PENDING | EFFECTIVE | Readback matches | Correct boundary identity/value/metric verified | Expose applied and observed values/times |
+| PENDING | DEGRADED | Safe lower control only | Requested policy not fully honored but safety preserved | Explain degraded metric; reject unsafe admission |
+| PENDING | FAILED | Apply/readback fails | Cannot establish requested safety | Freeze increases; stop/refuse as policy requires |
+| PENDING | UNSUPPORTED | Backend lacks control | Capability receipt identifies missing dimension | Reject requirements needing this control |
+| EFFECTIVE, DEGRADED, FAILED, UNSUPPORTED | PENDING | New revision or repair attempt | New policy/qualification identity; no stale success reuse | Reapply and read back independently |
