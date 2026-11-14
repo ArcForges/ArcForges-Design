@@ -136,6 +136,15 @@ class ProtoChecks(unittest.TestCase):
         rep = self.run_fixture(GOOD.replace(' [json_name = "name"]', ""))
         self.assertTrue(any("lacks json_name" in e for e in rep.errors))
 
+    def test_duplicate_field_name_in_auxiliary_message(self):
+        rep = self.run_fixture(GOOD + '''
+message ResourceSnapshot {
+  optional uint64 sample_sequence = 20 [json_name = "sampleSequence"];
+  optional uint64 sample_sequence = 31 [json_name = "sampleSequence"];
+}
+''')
+        self.assertTrue(any("ResourceSnapshot has duplicate field name sample_sequence" in e for e in rep.errors))
+
     def test_missing_optional(self):
         rep = self.run_fixture(GOOD.replace("optional string name", "string name"))
         self.assertTrue(any("must be optional" in e for e in rep.errors))
@@ -214,11 +223,11 @@ class ErrorPairChecks(unittest.TestCase):
                 self.assertTrue(any("advises AFTER_TIME" in e for e in self.run_rows(row)), self.run_rows(row))
 
     def test_the_full_run_fails_on_a_pre_amendment_row(self):
-        # The provider_error row of ArcForges-Design 44a86a9 inside a copy of the real catalogue: main() must exit 1, so removing
-        # the gate's call from main() fails this test.
-        old_row = "| `EXECUTION/provider_error` | A provider API (Google Play, Paddle) failed | `AFTER_TIME` | `UNKNOWN` | — |"
+        # Preserve the historical regression in the V2 catalogue: main() must exit 1 when a row recommends
+        # automatic replay after UNKNOWN. Removing the error-pair gate from main() must fail this test.
+        old_row = "| `EXECUTION/outcome_unknown` | An effect is unconfirmed | `AFTER_TIME` | `UNKNOWN` | — |"
         text = cd.read(cd.ERRORS_MD)
-        current = next(line for line in text.split("\n") if line.startswith("| `EXECUTION/provider_error` |"))
+        current = next(line for line in text.split("\n") if line.startswith("| `EXECUTION/outcome_unknown` |"))
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "errors.md"
             path.write_text(text.replace(current, old_row), encoding="utf-8")
@@ -231,7 +240,7 @@ class ErrorPairChecks(unittest.TestCase):
             finally:
                 cd.ERRORS_MD = saved
         self.assertEqual(status, 1, out.getvalue())
-        self.assertIn("EXECUTION/provider_error advises AFTER_TIME", out.getvalue())
+        self.assertIn("EXECUTION/outcome_unknown advises AFTER_TIME", out.getvalue())
 
     def test_a_row_with_another_cell_count_fails(self):
         row = "| `STATE/peer_unreachable` | x | `AFTER_TIME` with `DID_NOT_HAPPEN` | `UNKNOWN` |\n"
@@ -396,9 +405,10 @@ class RepositoryState(unittest.TestCase):
 
 class PlanConsistency(unittest.TestCase):
     def model_and_graph(self):
-        model = {"requirements": [{"id": "R-EXE-001", "tasks": ["AF-NODE-02"]}]}
-        graph = {"tasks": [{"id": tid, "requirements": ["R-EXE-001"] if tid == "AF-NODE-02" else []}
-                           for tid in sorted(cd.task_ids_in_design())]}
+        model = {"requirements": [{"id": "R-RUN-001", "tasks": ["AFV2-CORE-02"]}]}
+        tasks = set(cd.task_ids_in_design()) | {"AFV2-CORE-02", "AFV2-MXC-01"}
+        graph = {"tasks": [{"id": tid, "requirements": ["R-RUN-001"] if tid == "AFV2-CORE-02" else []}
+                           for tid in sorted(tasks)]}
         return model, graph
 
     def test_matching_mappings_pass(self):
@@ -409,17 +419,17 @@ class PlanConsistency(unittest.TestCase):
 
     def test_disagreeing_mappings_fail(self):
         model, graph = self.model_and_graph()
-        next(t for t in graph["tasks"] if t["id"] == "AF-EXEC-01")["requirements"] = ["R-EXE-001"]
+        next(t for t in graph["tasks"] if t["id"] == "AFV2-MXC-01")["requirements"] = ["R-RUN-001"]
         rep = cd.Report()
         cd.check_plan_consistency(rep, model, graph)
-        self.assertTrue(any("R-EXE-001 lists tasks" in e for e in rep.errors), rep.errors)
+        self.assertTrue(any("R-RUN-001 lists tasks" in e for e in rep.errors), rep.errors)
 
     def test_unknown_task_fails(self):
         model, graph = self.model_and_graph()
-        model["requirements"][0]["tasks"].append("AF-NOPE-01")
+        model["requirements"][0]["tasks"].append("AFV2-NOPE-01")
         rep = cd.Report()
         cd.check_plan_consistency(rep, model, graph)
-        self.assertTrue(any("unknown task AF-NOPE-01" in e for e in rep.errors), rep.errors)
+        self.assertTrue(any("unknown task AFV2-NOPE-01" in e for e in rep.errors), rep.errors)
 
 
 if __name__ == "__main__":

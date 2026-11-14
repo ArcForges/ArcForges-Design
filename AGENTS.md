@@ -1,6 +1,6 @@
 # Agent instructions: ArcForges-Design
 
-This repository is the **design authority** for ArcForges. The delivery plan, ledger and procedures live in `ArcForges/Plan`; read its `AGENTS.md` before any delivery work.
+This repository is the **V2 design authority** for ArcForges under AD-0022. The frozen history is non-normative evidence. The delivery plan, ledger and procedures live in `ArcForges/Plan`; read its `AGENTS.md` before any delivery work.
 
 ## Rules
 
@@ -10,10 +10,10 @@ This repository is the **design authority** for ArcForges. The delivery plan, le
 4. **Generated files.**
    - `docs/contracts/api-catalogue.md` and `docs/state-machines/README.md` are generated. Edit the protos or `machines.json` instead, then run `python tools/check_design.py --write`.
    - The protos under `docs/contracts/proto/` are hand-maintained specifications that follow [docs/contracts/README.md](docs/contracts/README.md).
-5. **Contract changes.** Additive only within `v1`. Every RPC carries the annotations `auth`, `idempotency`, `deadline`, `stream`, `errors` and `locality`; every request field carries a `validate:` rule; every error code is catalogued in `errors.md`. The checks enforce this.
+5. **Contract changes.** Active Sandbox/Run and management specifications use explicit `v2` namespaces. Retained foundation v1 and published contracts stay immutable; never repurpose ContentSandbox v1. Every RPC carries the annotations `auth`, `idempotency`, `deadline`, `stream`, `errors` and `locality`; every request field carries a `validate:` rule; every error code is catalogued in `errors.md`. The checks enforce this.
 6. **Decisions.** A change to an accepted decision is a new or amended ADR with status and date. Superseded material stays as history and names its successor.
 7. **Honesty.**
-   - Facts are cited by verification ID (V/L/A/F) in [docs/verification/platform-capabilities.md](docs/verification/platform-capabilities.md).
+   - Facts are cited by current verification ID (V/A/F) in [docs/verification/platform-capabilities.md](docs/verification/platform-capabilities.md).
    - Assumptions name their future-validation owner task.
    - Real-world validation that cannot run now goes to the Plan acceptance register, never reported as proven.
 8. **Verification** ([AD-0016](docs/decisions/AD-0016-local-first-verification.md) as amended by [AD-0020](docs/decisions/AD-0020-post-push-verification-and-required-checks.md); hosts [AD-0019](docs/decisions/AD-0019-mcp-first-verification.md)). Push → Fetch → Local verification → Report status → Required checks → Review → Merge.
@@ -66,8 +66,8 @@ This repository is the **design authority** for ArcForges. The delivery plan, le
     - Leave Dependabot PRs untouched.
     - Never change repository security settings.
 11. **Commits and PRs.** Any commit co-author trailer or PR footer must identify the actual contributors and tools used.
-12. **Priority Research Prompts** ([docs/research-prompts/](docs/research-prompts/README.md)).
-    - A PRP (`PRP-0001`, …) holds a complete prompt for research that will be performed later.
-    - PRP research has higher consideration priority than ordinary `RM-*` and `EX-*` roadmap research: when the owner requests a future research topic, check the PRPs before beginning ordinary roadmap exploration.
-    - Saving a PRP does not authorize executing it. A PRP is researched only when the owner explicitly requests it.
-    - A PRP does not supersede delivery authorization (serial delivery, [AD-0014](docs/decisions/AD-0014-delivery-method.md); the Plan's delivery graph), accepted decisions, or the canonical roadmap in `ArcForges/Plan` and its governance ([AD-0015](docs/decisions/AD-0015-direction-editions-roadmap.md) §9).
+12. **Current authority and historical evidence.**
+    - The current index is `docs/README.md`; AD-0022 supersedes conflicting product decisions.
+    - Previous Design bytes and evidence are immutable under `history/v1-20261114`; no old task or PRP starts automatically.
+    - Current source research supports explicit official MXC profiles; all mandatory unproven combinations have future evidence owners in Plan V2.
+    - Product MCP retirement does not change the designated verification-host MCP infrastructure or any gate above.

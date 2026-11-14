@@ -1,0 +1,196 @@
+{
+  "observed_date": "2026-11-14",
+  "repositories": [
+    {
+      "repo": "ArcForges-Design",
+      "sha": "62172622550fff73a553135ca178f9b7117c9cbd",
+      "tree": "da0ac3e187d07eceacd963e858fe5761192bd29d",
+      "date": "2026-11-13T11:56:04Z",
+      "protected": true
+    },
+    {
+      "repo": "Plan",
+      "sha": "742ed2660c5e934e1df86f90e54198b3a199e2b1",
+      "tree": "39282d836b487af26e76f5710882f73f6082656e",
+      "date": "2026-11-13T15:08:56Z",
+      "protected": true
+    },
+    {
+      "repo": "ArcForges",
+      "sha": "10f692224f94916cfc93fbad971f80ec340c5edf",
+      "tree": "b6265559f35540fd82dbae8fc849215da3ae5451",
+      "date": "2026-11-13T15:05:22Z",
+      "protected": true
+    },
+    {
+      "repo": "DesktopPlatform",
+      "sha": "e02ebe455d4fe2c06b19dabc0f3179a43ab21aa6",
+      "tree": "46768fc94d3f45383f8d008d1e433aebd5b47cb2",
+      "date": "2026-10-25T16:49:51Z",
+      "protected": true
+    },
+    {
+      "repo": "Contracts",
+      "sha": "de3dba76266e89654be9b4d29d097d525a281c6a",
+      "tree": "3508254c10d62c199a87789a7cf92018932216b7",
+      "date": "2026-11-09T12:48:01Z",
+      "protected": true
+    },
+    {
+      "repo": "Cloud",
+      "sha": "6df33c525fcbc20495e46c9c4c011086146da796",
+      "tree": "ccc558695f21b289e74aec7b7c6ab67cbf5be4ca",
+      "date": "2026-11-13T12:50:31Z",
+      "protected": true
+    },
+    {
+      "repo": "Web",
+      "sha": "56bb40fe7d1693013b4b1e2a82f1b796a65629c5",
+      "tree": "efabf503b9c6a8646175c07d88c76c42f3c8cd42",
+      "date": "2026-10-22T09:51:12Z",
+      "protected": true
+    },
+    {
+      "repo": "Mobile",
+      "sha": "072ee675e8ea67e779922082dbf65dbc02ed6916",
+      "tree": "7673458e728633aa29a5abf3039cd15cf5609478",
+      "date": "2026-10-22T09:54:42Z",
+      "protected": true
+    },
+    {
+      "repo": "AI",
+      "sha": "70f8b22d56d67abd2a983f8b448846731ee22902",
+      "tree": "6d8f0409a4588ce1cf8070a06d6a0f96942596bf",
+      "date": "2026-10-11T04:25:21Z",
+      "protected": true
+    },
+    {
+      "repo": "ArcScope",
+      "sha": "485c8d6d9a84825eb5bc737c9808b8bc4b616643",
+      "tree": "f2e675774e98ab57f81d78e9dd3e7b17b60869fb",
+      "date": "2026-10-11T15:39:14Z",
+      "protected": true
+    },
+    {
+      "repo": "ArcSlate",
+      "sha": "569785a050c97a8022fe264f6af986285766bf87",
+      "tree": "4ce522e63c6df18565d41cd53a4d3e99d01cc8f8",
+      "date": "2026-09-26T04:57:15Z",
+      "protected": true
+    },
+    {
+      "repo": "ArcNotes",
+      "sha": "2839da696cf3d6cc8ab3c241212eea8403c5a0a1",
+      "tree": "83d39dde03f67c2a7a1a099b7219de4272e640ec",
+      "date": "2026-09-26T04:57:05Z",
+      "protected": true
+    }
+  ],
+  "open_prs": [
+    {
+      "url": "https://github.com/ArcForges/Contracts/pull/137",
+      "title": "Bump ArcForges.Contracts.PublicApi from 1.0.0-ci.113.1 to 1.0.0-ci.450.1"
+    },
+    {
+      "url": "https://github.com/ArcForges/Contracts/pull/136",
+      "title": "Bump the grpc group with 5 updates"
+    },
+    {
+      "url": "https://github.com/ArcForges/Contracts/pull/135",
+      "title": "Bump the go-tools group across 1 directory with 4 updates"
+    },
+    {
+      "url": "https://github.com/ArcForges/Contracts/pull/134",
+      "title": "Bump @bufbuild/protobuf from 2.15.0 to 2.17.0"
+    },
+    {
+      "url": "https://github.com/ArcForges/DesktopPlatform/pull/214",
+      "title": "Bump xunit.v3 from 4.0.1 to 4.0.3"
+    },
+    {
+      "url": "https://github.com/ArcForges/DesktopPlatform/pull/213",
+      "title": "Bump ArcForges.Sdk.Contracts from 1.0.0-ci.216.1 to 1.0.0-ci.450.1"
+    },
+    {
+      "url": "https://github.com/ArcForges/DesktopPlatform/pull/212",
+      "title": "Bump ArcForges.Contracts.LocalRpc.Sandbox from 1.0.0-ci.216.1 to 1.0.0-ci.450.1"
+    },
+    {
+      "url": "https://github.com/ArcForges/DesktopPlatform/pull/211",
+      "title": "Bump ArcForges.Contracts.LocalRpc.Platform from 1.0.0-ci.216.1 to 1.0.0-ci.450.1"
+    },
+    {
+      "url": "https://github.com/ArcForges/DesktopPlatform/pull/210",
+      "title": "Bump the dotnet-foundation group with 3 updates"
+    },
+    {
+      "url": "https://github.com/ArcForges/ArcForges/pull/83",
+      "title": "Bump ArcForges.LocalRpc from 1.0.0-ci.138.1 to 1.0.0-ci.148.1"
+    },
+    {
+      "url": "https://github.com/ArcForges/ArcForges/pull/79",
+      "title": "Bump xunit.v3.mtp-v2 from 4.0.1 to 4.0.3"
+    },
+    {
+      "url": "https://github.com/ArcForges/ArcForges/pull/78",
+      "title": "Bump Avalonia.Desktop, Avalonia.Headless and Avalonia.Themes.Fluent"
+    },
+    {
+      "url": "https://github.com/ArcForges/Contracts/pull/130",
+      "title": "Bump the actions group across 1 directory with 7 updates"
+    },
+    {
+      "url": "https://github.com/ArcForges/ArcForges/pull/68",
+      "title": "build(deps): bump the actions group across 1 directory with 4 updates"
+    },
+    {
+      "url": "https://github.com/ArcForges/DesktopPlatform/pull/209",
+      "title": "Bump Grpc.Net.Client.Web from 2.84.0 to 2.85.0"
+    },
+    {
+      "url": "https://github.com/ArcForges/DesktopPlatform/pull/208",
+      "title": "Bump Grpc.Net.Client from 2.84.0 to 2.85.0"
+    },
+    {
+      "url": "https://github.com/ArcForges/DesktopPlatform/pull/207",
+      "title": "Bump Grpc.AspNetCore.Server from 2.83.0 to 2.85.0"
+    },
+    {
+      "url": "https://github.com/ArcForges/DesktopPlatform/pull/206",
+      "title": "Bump github/codeql-action/init from 24c7eb380a2dc368f2d129e4c65e51d172983a1e to 0911ee96d2d6c8def97122c36c5cadd93829a4b4"
+    },
+    {
+      "url": "https://github.com/ArcForges/DesktopPlatform/pull/205",
+      "title": "Bump lukka/get-cmake from 4.4.2 to 4.4.5"
+    },
+    {
+      "url": "https://github.com/ArcForges/DesktopPlatform/pull/204",
+      "title": "Bump filelock from 3.29.5 to 4.2.1 in /eng"
+    },
+    {
+      "url": "https://github.com/ArcForges/DesktopPlatform/pull/203",
+      "title": "Bump Tmds.DBus.Protocol from 0.94.1 to 0.95.2"
+    },
+    {
+      "url": "https://github.com/ArcForges/DesktopPlatform/pull/202",
+      "title": "Bump actions/setup-python from 7.0.0 to 7.1.0"
+    },
+    {
+      "url": "https://github.com/ArcForges/DesktopPlatform/pull/197",
+      "title": "Bump virtualenv from 21.5.1 to 21.14.9 in /eng"
+    },
+    {
+      "url": "https://github.com/ArcForges/Contracts/pull/106",
+      "title": "Bump prettier from 3.9.8 to 3.9.10"
+    },
+    {
+      "url": "https://github.com/ArcForges/DesktopPlatform/pull/183",
+      "title": "Bump actions/download-artifact from 8.0.1 to 8.0.2"
+    },
+    {
+      "url": "https://github.com/ArcForges/DesktopPlatform/pull/181",
+      "title": "Bump actions/upload-artifact from 7.0.1 to 7.0.2"
+    }
+  ],
+  "audit_boundary": "Main snapshots; local checkouts clean and identical to remote heads. Open dependency PRs were not modified. No native host verification performed."
+}
