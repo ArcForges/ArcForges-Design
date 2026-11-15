@@ -30,18 +30,41 @@ def check() -> list[str]:
     sdk = subprocess.run([dotnet_on_path, "--version"], cwd=ROOT, capture_output=True, text=True, check=False)
     if sdk.returncode or sdk.stdout.strip() != expected_sdk:
         errors.append(f"dotnet at {dotnet_on_path} does not select pinned SDK {expected_sdk}")
-    # A global MSBuild override can silently load tasks from a different SDK despite global.json.
+    # global.json selects the CLI SDK; evaluated projects must use that same installed SDK.
+    sdks = subprocess.run([dotnet_on_path, "--list-sdks"], capture_output=True, text=True, check=False)
+    sdk_roots = [Path(line.split("[", 1)[1].rstrip("]")) / expected_sdk
+                 for line in sdks.stdout.splitlines() if line.startswith(expected_sdk + " [")]
+    if sdks.returncode or not sdk_roots:
+        errors.append("The selected dotnet does not report an installed root for the pinned SDK")
+    effective = subprocess.run(
+        [dotnet_on_path, "msbuild", "tools/proto-toolchain/ProtoToolchain.csproj", "-nologo", "-verbosity:quiet",
+         "-getProperty:NETCoreSdkVersion,MSBuildToolsPath,MSBuildSDKsPath"],
+        cwd=ROOT, capture_output=True, text=True, check=False)
+    properties = {}
+    try:
+        if effective.returncode:
+            raise ValueError("project evaluation failed")
+        properties = json.loads(effective.stdout)["Properties"]
+        if properties["NETCoreSdkVersion"] != expected_sdk:
+            errors.append("Effective NETCoreSdkVersion differs from the pinned SDK")
+        if not properties["MSBuildToolsPath"] or not properties["MSBuildSDKsPath"] or not any(
+                Path(properties["MSBuildToolsPath"]).resolve() == root.resolve()
+                and Path(properties["MSBuildSDKsPath"]).resolve() == (root / "Sdks").resolve()
+                for root in sdk_roots):
+            errors.append("Effective MSBuild tools/SDK roots differ from the selected installed SDK")
+    except (ValueError, KeyError, TypeError):
+        errors.append("Cannot evaluate the effective MSBuild SDK/root identity")
+    # An explicit override also has to agree, even when a project resets its evaluated value.
     override = os.environ.get("MSBuildSDKsPath")
     if override:
-        sdks = subprocess.run([dotnet_on_path, "--list-sdks"], capture_output=True, text=True, check=False)
-        expected_paths = [Path(line.split("[", 1)[1].rstrip("]")) / expected_sdk / "Sdks"
-                          for line in sdks.stdout.splitlines() if line.startswith(expected_sdk + " [")]
-        if sdks.returncode or not any(Path(override).resolve() == path.resolve() for path in expected_paths):
+        if not any(Path(override).resolve() == (root / "Sdks").resolve() for root in sdk_roots):
             errors.append("MSBuildSDKsPath does not belong to the selected pinned SDK; remove the conflicting override")
     print(json.dumps({"python": current_python, "python_executable": sys.executable,
                       "path_python": python_on_path, "dotnet_executable": dotnet_on_path,
                       "sdk": sdk.stdout.strip(), "expected_python": expected_python,
                       "expected_sdk": expected_sdk,
+                      "installed_sdk_roots": [str(root) for root in sdk_roots],
+                      "effective_msbuild": properties,
                       "lock_sha256": hashlib.sha256((ROOT / "tools/proto-toolchain/packages.lock.json").read_bytes()).hexdigest()},
                      ensure_ascii=True))
     return errors

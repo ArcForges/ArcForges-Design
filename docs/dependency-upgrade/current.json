@@ -106,6 +106,7 @@
     "checks": [
       "Invoking and PATH Python equal .python-version",
       "Selected dotnet SDK equals exact global.json version",
+      "Evaluated NETCoreSdkVersion, MSBuildToolsPath and MSBuildSDKsPath use the same pinned SDK root reported by the selected dotnet --list-sdks",
       "MSBuildSDKsPath, when set, belongs to selected SDK",
       "Lockfile SHA256 recorded; restore uses --locked-mode",
       "protoc, C# plugin and includes bind to the lockfile's exact Grpc.Tools package; PATH/higher cached versions cannot select them and conflicting explicit overrides fail"
