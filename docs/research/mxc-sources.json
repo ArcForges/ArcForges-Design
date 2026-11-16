@@ -608,5 +608,68 @@
         }
       ]
     }
-  ]
+  ],
+  "admission_progress": {
+    "observed_at_utc": "2026-11-16",
+    "owner_task": "AFV2-MXC-01",
+    "status": "ARTIFACT_INSPECTED_RUNTIME_NOT_RUN",
+    "selected_sdk_version": "1.0.1",
+    "latest_release_observation": {
+      "tag": "v1.1.0",
+      "commit": "c66201839d63cae2239db5e92f1f1d6076cf5181",
+      "published_at": "2026-11-15T05:28:48Z",
+      "api_url": "https://api.github.com/repos/microsoft/mxc/releases/latest",
+      "selected_for_implementation": false,
+      "note": "A newer release does not change the reviewed pin. Its APIs and telemetry contract are not admitted by this artifact inspection."
+    },
+    "linux_artifact_inspection": {
+      "venue": "H-22 designated native Linux MCP host",
+      "node_baseline": "39c2c57fdaf3666ec046a22370aa2f2157c2d058",
+      "receipt": "ArcForges/.worktree/afv2-mxc-01-author/artifacts/mxc-01/official/linux-artifact-inspection.json",
+      "release_zip": {
+        "size_bytes": 542051775,
+        "sha256": "0e832239454ba7fcd338ff56218a287eef4c0a01c1484084b869f55feff8abe9",
+        "matches_fresh_official_metadata": true
+      },
+      "nuget": {
+        "url": "https://api.nuget.org/v3-flatcontainer/microsoft.mxc.sdk/1.0.1/microsoft.mxc.sdk.1.0.1.nupkg",
+        "size_bytes": 14615475,
+        "sha256": "d47b1f70c3fcaaed1705a0c3872807e2878fe8c1b778c0dd9eb9325bf421a672",
+        "license_sha256": "d9a1b1e30d633d5732ea18e3cba9538d293ebc53e1a9e4e96ab739e0c5c4f1cb"
+      },
+      "linux_x64_native": {
+        "file": "libmxc_ffi.so",
+        "size_bytes": 4913672,
+        "sha256": "18a1cba8f2980af79570141c4eec9cd3982872162ae6b63634d45862913002bc",
+        "nuget_equals_release_zip": true,
+        "elf_needed": [
+          "libgcc_s.so.1",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ],
+        "maximum_glibc_version": "2.34"
+      },
+      "all_five_x64_native_files_match_between_nuget_and_zip": true,
+      "release_sbom": {
+        "file": "x64/_manifest/spdx_2.2/manifest.spdx.json",
+        "sha256": "c759a523c07772c869e14c5afc0a69a1bcd178d656aab368982ca4f5a3b2e1bb",
+        "matches_bundled_digest": true,
+        "package_count": 548,
+        "license_declared": "NOASSERTION; not license closure approval"
+      },
+      "native_runtime_executed": false,
+      "prerequisites_observed": {
+        "kernel": "6.12.63+deb13-amd64",
+        "bubblewrap": "0.12.0",
+        "user_namespace_probe_exit": 0,
+        "systemd_user_manager": "running",
+        "cgroup_filesystem": "cgroup2fs"
+      },
+      "limitations": [
+        "No Native AOT publish or MXC execution yet.",
+        "Windows signatures, runtime closure, license/notice closure and all MXC-AOT-01 cases remain pending.",
+        "Firewall helper binaries absent from current PATH; no install or host policy change performed."
+      ]
+    }
+  }
 }

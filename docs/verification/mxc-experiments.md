@@ -37,6 +37,23 @@ Use disposable, uniquely owned fixture directories and synthetic data, never rea
 
 **Pass:** real published native execution and cleanup on each advertised RID, coherent verified official artifact set, license/distribution manifest and offline local behavior. Package metadata or the upstream reflection-free JSON smoke alone cannot pass. Unavailable architectures remain unqualified and must not be advertised.
 
+### Admission progress — 2026-11-16 UTC
+
+AFV2-MXC-01 is active. H-22 independently downloaded the exact official 1.0.1
+release ZIP and NuGet package; the ZIP matches freshly checked official metadata,
+and all five x64 native files match between those two distributions. Exact
+hashes and the same-host receipt location are in
+[mxc-sources.json](../research/mxc-sources.json), `admission_progress`.
+The bundled x64 SPDX 2.2 manifest digest matches, but its package licenses are
+`NOASSERTION`; this is an inventory observation, not license closure approval.
+User namespaces and Bubblewrap 0.12.0 are available on the actual native venue.
+
+This stage has not published or executed the probe. MXC-AOT-01 and every profile
+composition experiment remain NOT_RUN, with no runtime/profile admission.
+Official 1.1.0 was published after the original research baseline; it is recorded
+as a separate observation and is not selected by this 1.0.1 probe task. Any new
+pin still requires its own coherent artifact, privacy and native review.
+
 ## 3. Windows experiments
 
 ### MXC-WIN-01 — Exact policy admission and fail-closed tier
