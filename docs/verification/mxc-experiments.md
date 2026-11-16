@@ -4,11 +4,13 @@ Status on **2026-11-14 UTC: every experiment below is NOT_RUN**. Official releas
 
 This protocol implements [02 — MXC integration](../architecture/02-mxc-integration.md). The selected profiles are `windows-process-executor-v1` and `linux-bubblewrap-sdk-v1`, initially pinned to official **1.0.1**, stable schema **1.0.0**. Windows uses the unchanged official executor, C# Native AOT ConPTY supervision and an outer ArcForges Job. Linux uses the official typed .NET SDK inside the established cgroup boundary. No private fork, custom MXC build, test-only forced tier, substitute backend, or plain-pipe terminal claim is acceptable.
 
+**Update 2026-11-16 UTC:** MXC-AOT-01 has now run and **FAILED** the selected Linux 1.0.1 request-environment argv privacy check. Pipe/PTY execution passed and the owned scope was cleaned. No profile or package is admitted by these partial successes. Other experiment sets remain NOT_RUN. See the dated result below.
+
 ## 1. Ownership and evidence rules
 
 | Experiment set | Plan owner | Platform register | Current result |
 |---|---|---|---|
-| MXC-AOT-01 | AFV2-MXC-01 | F-AOT-01 | NOT_RUN |
+| MXC-AOT-01 | AFV2-MXC-01 | F-AOT-01 | FAILED — Linux request environment exposed in owned native argv; candidate rejected |
 | MXC-WIN-01 through MXC-WIN-06 | AFV2-MXC-02 | A-MXC-01 / F-MXC-01 | NOT_RUN; Windows combination UNPROVEN |
 | MXC-LNX-01 through MXC-LNX-05 | AFV2-MXC-03 | A-MXC-02 / F-MXC-02 | NOT_RUN; Linux combination UNPROVEN |
 | Cross-profile decision | AFV2-MXC-04 | Both combination facts plus F-AOT-01 | BLOCKED pending evidence, not a declared product impossibility |
@@ -36,6 +38,91 @@ Use disposable, uniquely owned fixture directories and synthetic data, never rea
 5. Apply per-request optional telemetry disabled for the selected stable version. Verify an offline local start and completion with no Center login/subscription. Inspect logs/process argv for synthetic secret sentinels; policy/environment contents must not leak there. Document any remaining official-runtime artifacts or required telemetry behavior before accepting a newer pin.
 
 **Pass:** real published native execution and cleanup on each advertised RID, coherent verified official artifact set, license/distribution manifest and offline local behavior. Package metadata or the upstream reflection-free JSON smoke alone cannot pass. Unavailable architectures remain unqualified and must not be advertised.
+
+### Admission progress — 2026-11-16 UTC
+
+AFV2-MXC-01 is active. H-22 independently downloaded the exact official 1.0.1
+release ZIP and NuGet package; the ZIP matches freshly checked official metadata,
+and all five x64 native files match between those two distributions. Exact
+hashes and the same-host receipt location are in
+[mxc-sources.json](../research/mxc-sources.json), `admission_progress`.
+The bundled x64 SPDX 2.2 manifest digest matches, but its package licenses are
+`NOASSERTION`; this is an inventory observation, not license closure approval.
+User namespaces and Bubblewrap 0.12.0 are available on the actual native venue.
+
+At this artifact-only checkpoint the probe had not been published or executed.
+The following dated result records the subsequent real execution and rejection.
+Every complete profile-composition experiment remains NOT_RUN.
+Official 1.1.0 was published after the original research baseline; it is recorded
+as a separate observation and is not selected by this 1.0.1 probe task. Any new
+pin still requires its own coherent artifact, privacy and native review.
+
+### Native negative result — 2026-11-16 UTC
+
+The designated H-22 host independently fetched candidate
+`8252c8fc13d5973b27ab76bc18726eab8f21cb96` from GitHub
+([Node draft93](https://github.com/ArcForges/ArcForges/pull/93)). Locked restore
+and linux-x64 Native AOT publish with the retained LLVM/binutils selector passed
+with **0 warnings/0 errors**. Its probe SHA256 is
+`d2465732a29fff4edd0d20b8017d3ed9f665254b67fa0af7005f0452d8b45663`;
+the official native payload remains the pinned hash above.
+
+A fresh Unicode/space installation was staged from the exact official ZIP and
+NuGet. The native executable ran without invoking dotnet, Center or a login,
+inside owned systemd user unit `arcforges-mxc-aot-825-26b98458`, with Delegate,
+45s runtime, 256MiB memory, 64 tasks and 100% CPU quota bounds. These are experiment
+bounds, not product resource qualification. The same-host evidence directory is
+`ArcForges/.worktree/afv2-mxc-01-8252c8f/artifacts/mxc-01/`.
+
+| Observation | Actual result |
+|---|---|
+| Public native version/support/backends |1.0.1 / supported / Bubblewrap |
+| Pipe/stdout/stderr | PASS; PID3026303, exit0, native wait and PID absent |
+| Real PTY `test -t` | PASS; PID3026310, exit0, native wait and PID absent |
+| Owned argv privacy | **FAILED**; actual native PID3026318 observed the synthetic request-environment sentinel in argv; only the boolean is exported |
+| Kill/wait and cleanup | Kill/native wait completed, PID3026318 absent; all recorded PIDs absent; unit inactive/not-found, empty ControlGroup |
+| Invalid private stages |4/4 PASS: missing native file, incompatible manifest, unexpected member and loader override all reject before fixture/native work |
+| Probe owner idle |1s observation: 0.949ms CPU, 14897152 bytes working set; no product target claim |
+
+`linux-report-825.json` SHA256 is
+`2d9fbd329c481e77912a9df5b566a96590eba1aa8c8591f196d9c3664310eafe`.
+The context, publish/staging/unit/cleanup logs and negative reports stay on the
+originating host; `mxc-sources.json` records their identities. Initial candidate
+676 produced the same native privacy refusal and is preserved separately.
+
+Windows native observations at the same exact 825 source are also preserved:
+zero-warning win-x64 AOT; all five official native signatures valid; five actual
+executor/Job-zero/argv-readback cases and four invalid-stage refusals passed.
+The process ran with only System32 on parent PATH and an absent DOTNET_ROOT;
+the PE has no CLR directory and actual module observations contain no
+CoreCLR/JIT/hostfxr/hostpolicy. The exact same-host summary is
+`ArcForges/.worktree/afv2-mxc-01/artifacts/mxc-01/windows-author-8252c8f-summary.json`,
+SHA256 `18bb697dd27f4ae5afce757a2dd19ddb49dd32c6c21ed2afb175b9dec31dc5d7`.
+The native probe SHA256 is
+`23b9bae909c4bbaa638b5c1985d202e1e22ac6dc9aa28191b0bcc77d6b3a5370`.
+First sequential fresh-process launch-to-Main was 66.632ms; the next four had
+p50 10.818ms, with discovery p50 2185.811ms. No OS caches were cleared, so this
+is not a cold-cache or product-performance claim. Per-case idle CPU/RSS and
+all signatures/reports remain in the originating artifacts. This **nonterminal**
+launcher does not qualify ConPTY or a complete Windows profile.
+
+The preserved Node draft head is now
+`4382988ce5b5ea40f4eb4583534a18bb135d371a`, only whitespace formatting after 825;
+native observations remain bound to 825 and are not relabelled as 438 results.
+Independent review and documentation repository gates record a failed admission;
+they cannot turn the rejected Node candidate into a delivered product task.
+
+This actual failure rejects the selected cohort under step 5 above. It is not a
+host-connectivity or helper-availability failure. Do not suppress the sentinel,
+remove the privacy assertion, patch MXC or infer product admission from pipe/PTY
+success. The later official 1.1.0 source still constructs request environment
+entries as `--setenv key value`; that bounded source check does not admit or
+execute 1.1.0 and supplies no demonstrated remedy. A supported upstream contract
+or an explicit reviewed product decision is needed before retrying admission.
+Keep the Node candidate as a draft and preserve the old product runtime. Full
+Windows/Linux profile experiments and warm performance qualification remain
+pending. AFV2-API-01 is independent of this admission and may proceed under the
+existing authorization once this blocked state is recorded.
 
 ## 3. Windows experiments
 
