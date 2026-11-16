@@ -109,12 +109,13 @@
     ]
   },
   "runtime_evidence": {
-    "windows": "NOT_RUN",
-    "linux": "NOT_RUN",
-    "native_aot_execution": "NOT_RUN",
+    "observed_at_utc": "2026-11-16",
+    "windows": "Native825 win-x64 AOT/discovery/signed official executor observations pass; nonterminal owner only, complete profile NOT_RUN",
+    "linux": "MXC-AOT-01 FAILED: selected1.0.1 request environment sentinel visible in owned native argv; pipe/PTY and cleanup observations recorded separately",
+    "native_aot_execution": "Real win-x64 and linux-x64 candidate825 executed after zero-warning publish; overall admission rejected by Linux environment-argv privacy failure",
     "decision_owner": "AFV2-MXC-04",
     "aot_owner": "AFV2-MXC-01",
-    "notes": "Only official source, public release/package metadata and inert npm payload text were inspected. No designated verification-host experiment was run."
+    "notes": "Initial2026-11-14 research had no runtime execution. Current native negative evidence is in admission_progress; no composed-profile claim or product runtime change."
   },
   "sources": [
     {
@@ -612,7 +613,7 @@
   "admission_progress": {
     "observed_at_utc": "2026-11-16",
     "owner_task": "AFV2-MXC-01",
-    "status": "ARTIFACT_INSPECTED_RUNTIME_NOT_RUN",
+    "status": "REJECTED_LINUX_REQUEST_ENVIRONMENT_ARGV_EXPOSURE",
     "selected_sdk_version": "1.0.1",
     "latest_release_observation": {
       "tag": "v1.1.0",
@@ -620,7 +621,12 @@
       "published_at": "2026-11-15T05:28:48Z",
       "api_url": "https://api.github.com/repos/microsoft/mxc/releases/latest",
       "selected_for_implementation": false,
-      "note": "A newer release does not change the reviewed pin. Its APIs and telemetry contract are not admitted by this artifact inspection."
+      "note": "A newer release does not change the reviewed pin. Its APIs and telemetry contract are not admitted by this artifact inspection.",
+      "bounded_remedy_inspection": {
+        "source_url": "https://github.com/microsoft/mxc/blob/c66201839d63cae2239db5e92f1f1d6076cf5181/src/mxc-sdk/src/backends/bubblewrap/common/bwrap_command.rs#L980",
+        "observed_source_behavior": "The later stable source still emits request environment entries as --setenv key value arguments. This is source evidence only;1.1.0 has not been admitted or executed.",
+        "decision": "No automatic upgrade or claim of a supported remedy."
+      }
     },
     "linux_artifact_inspection": {
       "venue": "H-22 designated native Linux MCP host",
@@ -666,9 +672,159 @@
         "cgroup_filesystem": "cgroup2fs"
       },
       "limitations": [
-        "No Native AOT publish or MXC execution yet.",
-        "Windows signatures, runtime closure, license/notice closure and all MXC-AOT-01 cases remain pending.",
+        "At this initial artifact-inspection checkpoint, native execution had not run; subsequent linux_runtime_result records the real failure.",
+        "Initial inspection did not qualify Windows signatures or runtime closure; subsequent native observations are separate, and overall cohort admission failed.",
         "Firewall helper binaries absent from current PATH; no install or host policy change performed."
+      ]
+    },
+    "linux_runtime_result": {
+      "experiment": "MXC-AOT-01",
+      "result": "FAILED",
+      "observed_at_utc": "2026-11-16T03:06:12Z",
+      "node_candidate": "8252c8fc13d5973b27ab76bc18726eab8f21cb96",
+      "node_pr": "https://github.com/ArcForges/ArcForges/pull/93",
+      "source_merged": false,
+      "design_baseline": "4472ea5a110a3c15c8beeeed14627e44b37103d0",
+      "plan_baseline": "c1599bc878f6e9fb1cec7f4d8ae4aaf5d3948b9e",
+      "venue": "H-22 native Linux MCP; Debian13 amd64 / kernel6.12.63+deb13-amd64 / user1000 / systemd user unit / Bubblewrap0.12.0",
+      "receipt_root": "ArcForges/.worktree/afv2-mxc-01-8252c8f/artifacts/mxc-01/",
+      "report": "linux-report-825.json",
+      "report_sha256": "2d9fbd329c481e77912a9df5b566a96590eba1aa8c8591f196d9c3664310eafe",
+      "context": "linux-context-825.json",
+      "aot_publish": {
+        "result": "0 warnings, 0 errors",
+        "sdk": "11.0.100",
+        "rid": "linux-x64",
+        "elapsed_seconds": 7.69,
+        "log": "linux-publish-8252c8f.log",
+        "probe_sha256": "d2465732a29fff4edd0d20b8017d3ed9f665254b67fa0af7005f0452d8b45663"
+      },
+      "stage_manifest_sha256": "2d2da41778cb1548b6521f4bf1b2f3ab2570ae467d54022e272c8d7c53161aa1",
+      "native_version": "1.0.1",
+      "discovery_supported": true,
+      "backend": "Bubblewrap",
+      "pipe": {
+        "result": "PASS",
+        "pid": 3026303,
+        "exit_code": 0,
+        "spawn_ms": 3.2801,
+        "elapsed_ms": 18.8408,
+        "pid_absent_after_wait": true
+      },
+      "pty": {
+        "result": "PASS",
+        "pid": 3026310,
+        "exit_code": 0,
+        "spawn_ms": 3.0346,
+        "elapsed_ms": 18.5713,
+        "pid_absent_after_wait": true
+      },
+      "kill_wait": {
+        "result": "FAILED_ENVIRONMENT_ARGV_CHECK",
+        "pid": 3026318,
+        "exit_code": -1,
+        "argv_sentinel_observed": true,
+        "pid_absent_after_wait": true,
+        "elapsed_ms": 3.5031
+      },
+      "owner_idle": {
+        "milliseconds": 1000.8812,
+        "cpu_ms": 0.949,
+        "working_set_bytes": 14897152,
+        "scope": "probe owner after discovery before workload; not a product performance target"
+      },
+      "negative_stage_cases": {
+        "result": "4/4 PASS",
+        "cases": [
+          "missing-native",
+          "incompatible-manifest",
+          "unexpected-file",
+          "loader-override"
+        ],
+        "all_nonzero_before_stage_verified_and_no_fixture": true,
+        "summary": "negative Linux825/summary.json",
+        "summary_sha256": "2e7bb00ee3b2e07a125fa44b59d52205a43801716c61987a29bcf4b480d0c7d8"
+      },
+      "cleanup": {
+        "unit": "arcforges-mxc-aot-825-26b98458",
+        "runtime_max_seconds": 45,
+        "memory_max_bytes": 268435456,
+        "tasks_max": 64,
+        "cpu_quota": "100%",
+        "delegate": true,
+        "post_active_state": "inactive",
+        "post_load_state": "not-found",
+        "post_control_group": "",
+        "all_recorded_pids_absent": true,
+        "log": "linux-unit-cleanup-825.txt"
+      },
+      "decision": "Reject selected1.0.1 admission. Environment sentinel appeared in owned native argv; no raw argv or sentinel value is exported. No private patch, weaker policy or unreviewed pin change.",
+      "limitations": [
+        "No complete Windows/Linux profile qualification.",
+        "No final Node required host profiles or source merge; draft93 preserves the rejected candidate.",
+        "Warm performance campaign stops at mandatory privacy failure."
+      ]
+    },
+    "node_draft_head": "4382988ce5b5ea40f4eb4583534a18bb135d371a",
+    "node_draft_head_note": "Only dotnet-format whitespace after native-tested8252c8f; not advertised as natively verified. Draft remains unmerged; required full Node statuses not run.",
+    "windows_runtime_observations": {
+      "result": "BOUNDED_AOT_EXECUTOR_CASES_PASS_NOT_FULL_PROFILE",
+      "node_candidate": "8252c8fc13d5973b27ab76bc18726eab8f21cb96",
+      "source_tree": "34cecc924b42ba17565f2051da33d0b3327d77df",
+      "venue": "DEKU native Windows26H2 build26300.9974; owner-authorized current-machine local access",
+      "receipt_root": "ArcForges/.worktree/afv2-mxc-01/artifacts/mxc-01/",
+      "summary": "windows-author-8252c8f-summary.json",
+      "summary_sha256": "18bb697dd27f4ae5afce757a2dd19ddb49dd32c6c21ed2afb175b9dec31dc5d7",
+      "probe_sha256": "23b9bae909c4bbaa638b5c1985d202e1e22ac6dc9aa28191b0bcc77d6b3a5370",
+      "manifest_sha256": "f903750d347c4709fd02a6fc6c80921604aac587b0935b7c9501d6071c81ce1a",
+      "aot_publish": {
+        "rid": "win-x64",
+        "sdk": "11.0.100",
+        "warnings": 0,
+        "errors": 0,
+        "elapsed_seconds": 5.23,
+        "log": "publish-win-8252c8f.log"
+      },
+      "official_native_signatures": {
+        "result": "5/5 Valid Microsoft Corporation",
+        "files": [
+          "mxc_ffi.dll",
+          "plm.exe",
+          "wslcsdk.dll",
+          "wxc-wslc-daemon.exe",
+          "wxc-exec.exe"
+        ],
+        "receipt": "install win 工作区8252c8f/windows-signatures.json"
+      },
+      "native_sdk_version": "1.0.1",
+      "discovered_processcontainer_tier": "BaseContainer",
+      "actual_official_executor_cases": 5,
+      "all_executor_exit_codes": 0,
+      "all_job_active_counts_after_wait": 0,
+      "all_actual_executor_argv_without_sentinel": true,
+      "no_jit_dependency_observation": {
+        "pe_clr_directory_absent": true,
+        "no_coreclr_jit_hostfxr_hostpolicy_module": true,
+        "parent_path": "SystemRoot/System32 only",
+        "dotnet_root": "absent owned fixture"
+      },
+      "negative_stage_cases": {
+        "result": "4/4 PASS",
+        "summary": "negative win 工作区8252c8f/summary.json",
+        "summary_sha256": "89f4afe65134917f311abeb12c893ccc4c107e9ecb781c11ec8fa5c4706d0a00"
+      },
+      "measurements": {
+        "first_fresh_process_launch_to_main_ms": 66.63203239440918,
+        "subsequent_fresh_process_count": 4,
+        "subsequent_launch_to_main_p50_ms": 10.817646980285645,
+        "subsequent_native_discovery_p50_ms": 2185.81055,
+        "os_cache_flushed": false,
+        "scope": "bounded sequential observations, not cold-cache or product targets; per-case idle CPU/RSS retained in summary"
+      },
+      "limitations": [
+        "Nonterminal pipe owner only; no ConPTY/full policy-resource recovery qualification.",
+        "Not complete MXC-AOT-01 admission because Linux privacy case failed.",
+        "825 native observations do not qualify formatted438 draft head."
       ]
     }
   }

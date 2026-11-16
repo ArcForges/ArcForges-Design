@@ -1,6 +1,6 @@
 # Platform capabilities and evidence authority
 
-**Status at design delivery:** V2 product implementation has not started. Source observations below are verified source facts, not runtime passes. All future V2 acceptance items are NOT_RUN. Historical V1 acceptance is preserved separately in the source audits and frozen snapshots.
+**Initial status at design delivery (2026-11-14):** V2 implementation had not started and all future items were NOT_RUN. Historical V1 acceptance stays separate. **Current update (2026-11-16):** real MXC-AOT-01 candidate execution failed the selected Linux request-environment argv privacy check. F-AOT-01 is FAILED; no native profile is admitted. Source observations and partial native results remain distinguished below.
 
 ## Source facts
 
@@ -12,7 +12,7 @@
 | V-MXC-04 | [Linux Bubblewrap](../research/mxc-research.md): policy/dependency/PTY and ingress/IPv6 restrictions are explicit | Native combination NOT_RUN |
 | V-MXC-05 | [Filesystem semantics](../research/mxc-research.md): grants use supported same absolute paths; no universal redirection | Source fact; negative runtime probes still required |
 | V-MXC-06 | [Lifecycle/exit source](../research/mxc-research.md): wait/dispose/kill/drain differ; terminal text is untrusted; executor exit is not payload-empty proof | Source fact; independent outer-scope verification required |
-| V-MXC-07 | [AOT/distribution](../research/mxc-research.md): package TFM/native/helpers/license are inventoried | Full Native AOT artifact qualification NOT_RUN |
+| V-MXC-07 | [AOT/distribution](../research/mxc-research.md): package TFM/native/helpers/license are inventoried | Real win-x64/linux-x64 AOT observed; candidate admission FAILED under F-AOT-01; no full profile claim |
 | V-BASE-01 | [Repository baseline](../research/baseline.md) and [runtime audit](../research/runtime-audit.md) pin actual implementations and historical delivered state | Read-only source/ledger audit |
 | V-BASE-02 | [Cloud/consumer audit](../research/cloud-audit.md) pins Go capability, Web scaffolds, published consumers and schema10/11 gap | Read-only source/ledger audit |
 
@@ -27,7 +27,7 @@
 
 | ID | Required evidence | Owner task | Status / exact protocol |
 |---|---|---|
-| F-AOT-01 | SDK/AOT/distribution closure | AFV2-MXC-01 | NOT_RUN — MXC-AOT-01; exact package/native/version/license/CPU architecture |
+| F-AOT-01 | SDK/AOT/distribution closure | AFV2-MXC-01 | FAILED — [MXC-AOT-01](mxc-experiments.md), exact candidate8252c8f: native Linux environment sentinel observed in owned argv; Kill/Wait and scope cleanup proved. Preserve draft93; no admission. |
 | F-MXC-01 | Windows complete profile | AFV2-MXC-02 | NOT_RUN — MXC-WIN-01..06 together; ConPTY, policy, nested Job and lifetime |
 | F-MXC-02 | Linux complete profile | AFV2-MXC-03 | NOT_RUN — MXC-LNX-01..05 together; Bubblewrap, PTY, cgroup, networking and lifetime |
 | F-RES-01 | Dynamic resource limits and aggregate safety | AFV2-RES-02 | NOT_RUN — Real CPU/memory saturation, child groups, reductions/increases, native readback/failure |
