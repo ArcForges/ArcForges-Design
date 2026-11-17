@@ -117,6 +117,16 @@
     "aot_owner": "AFV2-MXC-01",
     "notes": "Initial2026-11-14 research had no runtime execution. Current native negative evidence is in admission_progress; no composed-profile claim or product runtime change."
   },
+  "current_admission_policy": {
+    "decided_at_utc": "2026-11-17",
+    "authority": "Owner-approved AD-0022 local process visibility amendment",
+    "decision_document": "docs/decisions/AD-0022-cli-sandbox-platform-pivot.md#local-process-visibility--2026-11-17-amendment",
+    "aot_admission_status": "PENDING_REVALIDATION",
+    "trusted_local_requested_environment_argv_visibility_is_standalone_blocker": false,
+    "historical_native_observations_and_failed_reports_unchanged": true,
+    "prior_result_relabelled_as_pass": false,
+    "remaining_requirements": "Retain the selected official pin and existing native/artifact qualification. Implicit host credential inheritance, unauthorized payload/cross-boundary access, and raw secrets in public records, exported evidence or ordinary logs remain prohibited."
+  },
   "sources": [
     {
       "id": "MXCS-01",

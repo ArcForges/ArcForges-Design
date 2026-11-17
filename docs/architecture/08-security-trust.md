@@ -28,6 +28,10 @@ All Node metadata, manifests and supervisor endpoints are outside payload-writab
 
 Do not inherit the host's full environment, SSH agents, credential sockets, cloud keys or Node signing material. A sandbox user's intentionally provided application credentials may persist inside that sandbox and are within its data/export scope; warn in the export preview and never silently upload them. Raw terminal output is treated as untrusted bytes. CLI handles terminal escape behavior without creating host-side command actions; Web renders escaped text, never HTML. Output may contain secrets, so retention and remote output grants are explicit.
 
+### Trusted local process inspection
+
+Under the [2026-11-17 owner decision](../decisions/AD-0022-cli-sandbox-platform-pivot.md#local-process-visibility--2026-11-17-amendment), the owning host user, local administrators and their trusted host inspection tools may observe explicitly supplied Run inputs in official MXC/helper process arguments. That observation alone is not an admission failure. This does not authorize an untrusted payload, a neighboring Sandbox or another unauthorized principal to inspect host/control data; sharing an OS UID does not grant a payload those rights. Host credential inheritance remains prohibited unless a credential is an explicitly authorized input. Record synthetic visibility observations truthfully, with observer authority, without exporting raw secrets, argv or environment values to ordinary logs, public Plan/GitHub records or evidence bundles.
+
 ## Failure and audit
 
 Authenticate and authorize before existence-sensitive reads. The same operation ID/payload hash and actor chain persist across Center and Node; audit state changes, denials, grant changes, policy application/readback, deletes and migrations. Redact secrets and avoid recording command environments. Audits include a correlation ID, timestamp, local/remote origin, resource revision and effect certainty. `UNKNOWN` never has a blind retry recommendation.
