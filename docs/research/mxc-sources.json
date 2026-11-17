@@ -121,7 +121,7 @@
     "decided_at_utc": "2026-11-17",
     "authority": "Owner-approved AD-0022 local process visibility amendment",
     "decision_document": "docs/decisions/AD-0022-cli-sandbox-platform-pivot.md#local-process-visibility--2026-11-17-amendment",
-    "aot_admission_status": "COHORT_NATIVE_PASS_PENDING_SOURCE_MERGE_AND_REQUIRED_PROFILES",
+    "aot_admission_status": "ISOLATED_COHORT_ADMITTED_SOURCE_MERGED_REQUIRED_PROFILES_PASS",
     "trusted_local_requested_environment_argv_visibility_is_standalone_blocker": false,
     "historical_native_observations_and_failed_reports_unchanged": true,
     "prior_result_relabelled_as_pass": false,
@@ -844,7 +844,7 @@
       "node_candidate": "9a9378bc3a6bc8190d896ca7ef0e43eee5abd886",
       "source_tree": "4b8785f999505582558c85019bdceb7b4952cf7e",
       "status": "WINDOWS_LINUX_BOUNDED_COHORT_NATIVE_PASS",
-      "overall_aot_admission": "COHORT_NATIVE_PASS_SOURCE_UNMERGED_REQUIRED_PROFILES_PENDING",
+      "overall_aot_admission": "COHORT_NATIVE_PASS_SOURCE_MERGED_REQUIRED_PROFILES_PASS",
       "historical_results_unchanged": true,
       "windows": {
         "result": "BOUNDED_AOT_EXECUTOR_CASES_PASS_NOT_FULL_PROFILE",
@@ -1137,14 +1137,80 @@
         }
       },
       "limitations": [
-        "The bounded native AOT cohort passes; Node source integration and exact-head required host profiles remain pending. The original 825 FAILED report is retained.",
+        "The bounded native AOT cohort passes; final Node d460524 passed required Windows15/Linux20 checks and PR93 merged b2ebace5. Original825 FAILED and later failed formal attempts remain retained.",
         "The Windows nonterminal executor observations and Linux bounded cases do not qualify ConPTY, cgroup/resource composition or a complete shipping profile.",
         "Sequential fresh-process and idle CPU/working-set observations do not establish cold-cache behavior or a product performance target.",
         "The Linux auxiliary driver casePidsAbsent field is excluded; PID absence uses the probe actual-processId checks and originating-host independent read-back."
       ],
-      "source_merged": false,
-      "required_node_profiles": "PENDING",
-      "native_evidence_review": "Independent id_review verification of both originating-host native evidence cohorts passed; final exact-head source/delivery review remains separate."
+      "source_merged": true,
+      "required_node_profiles": "PASS",
+      "native_evidence_review": "Independent id_review accepted complete final source, original native evidence, both final required summaries and all35 step-log hashes; review https://github.com/ArcForges/ArcForges/pull/93#issuecomment-6939445328.",
+      "final_repository_verification": {
+        "candidate": "d460524d7fa23e1558fc7ddd5e4a3c31e66e71d6",
+        "source_tree": "14c754b7da091eb4e0630fa2350d0a1dcde322bc",
+        "source_merged": true,
+        "windows": {
+          "result": "PASS",
+          "profile": "full",
+          "context": "arcforges/windows",
+          "steps_passed": 15,
+          "steps_total": 15,
+          "elapsed_seconds": 2102,
+          "finished_at_utc": "2026-11-17T05:07:49Z",
+          "summary": "ArcForges/.git/arcforges-verify/logs/20261117-123248-d460524d7fa2-win/summary.json",
+          "summary_sha256": "ec87c1c6b9413d6303993e663f4272782667ca8ca127ed89eea4f1f048fbe438",
+          "step_log_hash_verification": "Coordinator and independent reviewer verified all15 recorded log hashes against the original same-host files.",
+          "prior_language_failure": {
+            "result": "FAILED",
+            "candidate": "d460524d7fa23e1558fc7ddd5e4a3c31e66e71d6",
+            "elapsed_seconds": 608,
+            "finished_at_utc": "2026-11-17T04:31:37Z",
+            "summary": "ArcForges/.git/arcforges-verify/logs/20261117-122129-d460524d7fa2-win/summary.json",
+            "summary_sha256": "4833c841042bccaaea2f4c184190eeaac5ce4c236580e03a0b74f950c4b4207e",
+            "failed_step": "win-publish",
+            "recorded_log_sha256": "7d4eb56c82a652f35728f1f53c4838676c5ccede309c93f2b11ee8a5d8ea3c2d",
+            "observation": "The actual native publish emitted localized Chinese zero-warning/zero-error output, but the English-only warning-count parser refused it. This original failed attempt is retained; it is not relabelled as the later successful full profile."
+          }
+        },
+        "linux": {
+          "result": "PASS",
+          "candidate": "d460524d7fa23e1558fc7ddd5e4a3c31e66e71d6",
+          "note": "The unchanged full R2 passed both JIT/native pressure cases and all required steps. No source, assertion, timeout or CPU override was changed; original failure remains preserved.",
+          "prior_failure": {
+            "result": "FAILED",
+            "summary": "ArcForges/.git/arcforges-verify/logs/20261117-122153-d460524d7fa2-linux/summary.json",
+            "summary_sha256": "c90b3f8812fd7562f1edd4acc04f4ba4da94bf83e34bd51fd193a87fa4457c0d",
+            "elapsed_seconds": 1354,
+            "finished_at_utc": "2026-11-17T04:44:27Z",
+            "failed_step": "linux-exclusive",
+            "recorded_log_sha256": "252962900293d7326f88d45f6438cfafd76d7454d83a50ee6161321d90f3ec4d",
+            "observation": "The existing pressure fixture waited90s for its fourth Normal task to enter Running before pressure allocation. The aggregate exclusive suite later reached its unchanged900s limit. The original fixture was disposed; the original admission cause is unknown."
+          },
+          "bounded_diagnostic": {
+            "result": "PASS",
+            "tests": 1,
+            "skipped": 0,
+            "test_elapsed_seconds": 19.476,
+            "summary": "ArcForges/artifacts/afv2-mxc-01-pressure-d460-20261117/sdk-selected/summary.json",
+            "summary_sha256": "9b9eb52c6db9b37e441796d88b539d0145f18e03dbc14e1245d57ad8e3aa45a1",
+            "observation": "Same source/SDK, no changed assertion/timeout or CPU override; all four tasks ran and real pressure/preemption/recovery passed. The original failure was not reproduced or explained. An earlier diagnostic invocation lacking DOTNET_ROOT failed before workload and remains separately retained."
+          },
+          "profile": "full",
+          "context": "arcforges/linux",
+          "steps_passed": 20,
+          "steps_total": 20,
+          "elapsed_seconds": 1950,
+          "finished_at_utc": "2026-11-17T05:23:17Z",
+          "summary": "ArcForges/.git/arcforges-verify/logs/20261117-125046-d460524d7fa2-linux/summary.json",
+          "summary_sha256": "089e7ca23191e06df55bc240ac10f06c547ad6411b42c511c57e96490b4ea8f1",
+          "step_log_hash_verification": "Coordinator and independent reviewer verified all20 recorded log hashes against the original same-host files."
+        },
+        "scope": "Final source d460524 and merge b2ebace5 have identical verified trees. Both required host profiles passed; unchanged9a native experiment identities remain separate. No main-push workflow run, publication or deployment occurred; complete composed profiles remain unqualified.",
+        "merge_commit": "b2ebace5c15a130b13a7dbd02fd9900e4983c6e8",
+        "pull_request": "https://github.com/ArcForges/ArcForges/pull/93",
+        "independent_review": "https://github.com/ArcForges/ArcForges/pull/93#issuecomment-6939445328"
+      },
+      "source_merge": "b2ebace5c15a130b13a7dbd02fd9900e4983c6e8"
     }
   }
 }

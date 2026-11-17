@@ -4,13 +4,13 @@ Status on **2026-11-14 UTC: every experiment below is NOT_RUN**. Official releas
 
 This protocol implements [02 — MXC integration](../architecture/02-mxc-integration.md). The selected profiles are `windows-process-executor-v1` and `linux-bubblewrap-sdk-v1`, initially pinned to official **1.0.1**, stable schema **1.0.0**. Windows uses the unchanged official executor, C# Native AOT ConPTY supervision and an outer ArcForges Job. Linux uses the official typed .NET SDK inside the established cgroup boundary. No private fork, custom MXC build, test-only forced tier, substitute backend, or plain-pipe terminal claim is acceptable.
 
-**Historical update 2026-11-16 UTC:** MXC-AOT-01 ran and **FAILED** the then-selected Linux 1.0.1 request-environment argv privacy check. Pipe/PTY execution passed and the owned scope was cleaned. That report is unchanged. **Current owner decision 2026-11-17 UTC:** trusted local host visibility of explicitly requested environment values is not a standalone blocker; F-AOT-01 now has a fresh **bounded Windows/Linux native cohort PASS**; Node source merge and exact-head required profiles remain pending. See the [dated revalidation checkpoint](#mxc-aot-01-revalidation-checkpoint--2026-11-17-utc). Other experiment sets remain NOT_RUN, and no complete profile is admitted.
+**Historical update 2026-11-16 UTC:** MXC-AOT-01 ran and **FAILED** the then-selected Linux 1.0.1 request-environment argv privacy check. Pipe/PTY execution passed and the owned scope was cleaned. That report is unchanged. **Current owner decision 2026-11-17 UTC:** trusted local host visibility of explicitly requested environment values is not a standalone blocker; F-AOT-01 now has a fresh **bounded Windows/Linux native cohort PASS**; Node PR93 is merged after exact-head required Windows15/Linux20 checks and independent review. See the [dated revalidation checkpoint](#mxc-aot-01-revalidation-checkpoint--2026-11-17-utc). Other experiment sets remain NOT_RUN, and no complete profile is admitted.
 
 ## 1. Ownership and evidence rules
 
 | Experiment set | Plan owner | Platform register | Current result |
 |---|---|---|---|
-| MXC-AOT-01 | AFV2-MXC-01 | F-AOT-01 | COHORT NATIVE PASS — fresh Windows/Linux 9a evidence under the amended criterion; source unmerged and required profiles pending; original 825 FAILED report retained |
+| MXC-AOT-01 | AFV2-MXC-01 | F-AOT-01 | COHORT NATIVE PASS — fresh Windows/Linux 9a evidence under the amended criterion; Node93 merged after exact-head required checks; original825 FAILED report retained |
 | MXC-WIN-01 through MXC-WIN-06 | AFV2-MXC-02 | A-MXC-01 / F-MXC-01 | NOT_RUN; Windows combination UNPROVEN |
 | MXC-LNX-01 through MXC-LNX-05 | AFV2-MXC-03 | A-MXC-02 / F-MXC-02 | NOT_RUN; Linux combination UNPROVEN |
 | Cross-profile decision | AFV2-MXC-04 | Both combination facts plus F-AOT-01 | BLOCKED pending evidence, not a declared product impossibility |
@@ -270,8 +270,8 @@ All mandatory terminal, filesystem, network and resource properties must coexist
 The fresh bounded Windows/Linux native AOT cohort **passes** under the amended
 criterion at Node `9a9378bc3a6bc8190d896ca7ef0e43eee5abd886` (tree
 `4b8785f999505582558c85019bdceb7b4952cf7e`) and Design policy
-`4bc1d2be8916a961d167b4965e30e45bc3023ef1`. The Node source is **not merged**;
-its exact-head required host profiles and final delivery review remain pending.
+`4bc1d2be8916a961d167b4965e30e45bc3023ef1`. At that native checkpoint the Node source had not merged. The subsequent final
+source checks, review and actual merge are recorded below.
 The original 825 failed observations and every historical report hash are unchanged.
 
 DEKU native Windows 10.0.26300 published win-x64 Native AOT with **0 warnings/
@@ -316,7 +316,7 @@ exported. This observation is permitted by the amended boundary and is retained.
 Originating-host reports, negative summaries, signature receipt and publish logs
 are identified by hash in [mxc-sources.json](../research/mxc-sources.json),
 `admission_progress.revalidation_2026_11_17`. Independent native evidence review
-passed; it does not replace the pending exact-head required Node profiles.
+passed; the separate final exact-head required Node profiles are recorded below.
 
 Windows first fresh-process launch-to-Main was44.269ms; the next four had
 p50 10.824ms and native-discovery p50 2177.940ms. Linux first whole-process wall time
@@ -326,3 +326,39 @@ owner-idle CPU/working-set observations remain in the reports. These bounded
 measurements establish no cold-cache claim or product performance target.
 Windows ConPTY, Linux resource composition and complete shipping profiles remain
 with AFV2-MXC-02/03 and are **UNPROVEN** here.
+
+### Final repository verification checkpoint — 2026-11-17 UTC
+
+The final Node source candidate is
+`d460524d7fa23e1558fc7ddd5e4a3c31e66e71d6`, tree
+`14c754b7da091eb4e0630fa2350d0a1dcde322bc`. Its native Windows **full profile
+passed 15/15 steps in 2102s**, with all 15 recorded log hashes verified by the
+coordinator against the original same-host files. The summary is
+`ArcForges/.git/arcforges-verify/logs/20261117-123248-d460524d7fa2-win/summary.json`,
+SHA256 `ec87c1c6b9413d6303993e663f4272782667ca8ca127ed89eea4f1f048fbe438`.
+Linux R2 passed **20/20 steps in 1950s**, with all20 original step-log hashes
+verified by the coordinator and independent reviewer. Its summary is
+`ArcForges/.git/arcforges-verify/logs/20261117-125046-d460524d7fa2-linux/summary.json`,
+SHA256 `089e7ca23191e06df55bc240ac10f06c547ad6411b42c511c57e96490b4ea8f1`.
+[Node PR93](https://github.com/ArcForges/ArcForges/pull/93) merged as
+`b2ebace5c15a130b13a7dbd02fd9900e4983c6e8`, with the identical verified tree.
+[Independent final review](https://github.com/ArcForges/ArcForges/pull/93#issuecomment-6939445328)
+accepted the full source and original evidence. No main-push workflow run or
+public distribution/deployment occurred; complete profiles remain unqualified.
+These repository results do not change the earlier 9a native probe, stage or
+report identities.
+
+The first Windows attempt at the same source remains **FAILED**: `win-publish`
+refused its localized Chinese zero-warning/zero-error summary because the warning
+count parser expected English. Its original summary is
+`ArcForges/.git/arcforges-verify/logs/20261117-122129-d460524d7fa2-win/summary.json`,
+SHA256 `4833c841042bccaaea2f4c184190eeaac5ce4c236580e03a0b74f950c4b4207e`.
+The failed attempt and its publish log are retained separately from the later
+15/15 pass. The first Linux full leg also remains FAILED: its pressure fixture
+waited90s for a fourth Normal task before allocation, and the aggregate exclusive
+suite reached900s. The original fixture was disposed, so the original admission
+cause is unknown. A bounded unchanged single case and both JIT/native cases in
+full R2 passed; no source, assertion, timeout or CPU override was changed.
+Original failure, diagnostic and final receipt identities are in
+`admission_progress.revalidation_2026_11_17.final_repository_verification` in
+[mxc-sources.json](../research/mxc-sources.json).
