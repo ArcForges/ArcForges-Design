@@ -26,6 +26,12 @@ Required native host checks use the unchanged repository eng/verify.py profiles 
 | Removal and compatibility | Zero obsolete runtime routes/projects, immutable public artifacts/history, protected independent consumers, real schema/restore tests | AFV2-MIG-01, AFV2-MIG-02 |
 | Release | Coherent install/update/rollback artifacts plus all mandatory native and remote journeys on same candidate | AFV2-DIST-01, AFV2-DIST-02, AFV2-ACC-01, AFV2-ACC-02 |
 
+### Local process visibility
+
+Apply the [2026-11-17 AD-0022 amendment](../decisions/AD-0022-cli-sandbox-platform-pivot.md#local-process-visibility--2026-11-17-amendment) to MXC admission: visibility of explicitly requested environment values in official/helper argv to the trusted owning host user or administrator is not a standalone blocker. Preserve and classify that native observation; do not hide it or rewrite its old result. Implicit host credential inheritance, unauthorized payload/cross-Sandbox access and raw secret disclosure into ordinary logs, public Plan/GitHub records or exported evidence still fail their applicable requirements.
+
+F-AOT-01 is pending revalidation under this boundary. The old Linux argv-only FAILED decision is superseded, while its report, `argv_sentinel_observed=true`, hashes and cleanup facts remain unchanged. This policy decision does not establish package/license closure, complete terminal/resource/isolation composition or a delivered task; continue the existing required checks and native experiments without adding an argv-absence gate for trusted local inspection.
+
 ## Performance evidence
 
 Measure source/artifact/OS/profile, CPU/RAM and helper configuration; cold and warm launch latency with p50/p95 and sample count; Node/supervisor idle CPU and resident/commit memory; workload resource overhead; terminal throughput/backpressure and dropped/gap count; time to bounded stop/empty; sample cadence cost. Compare the same workload against an unsandboxed reference only in an isolated benchmark fixture, never as a product fallback. There is no invented zero-overhead promise or arbitrary universal pass threshold. Detect regressions against the accepted P1 baseline and justify any required cap.

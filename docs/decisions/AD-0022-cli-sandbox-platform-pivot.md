@@ -2,6 +2,7 @@
 
 - Status: Accepted product and architecture direction; runtime combinations remain subject to named verification gates.
 - Date: 2026-11-14
+- Amendment: 2026-11-17; owner-approved local process visibility boundary below supersedes the Linux request-environment argv-only admission blocker.
 - Decision owner: product owner, through the supplied ArcForges V2 migration instruction.
 - Scope: current Design and Plan; this decision does not claim product code delivery.
 
@@ -12,6 +13,14 @@ ArcForges becomes the open-source general CLI sandbox and intelligent resource-m
 The primary model is persistent Sandbox plus one-execution Run. Local CLI is a full offline-capable path. The optional Go Center and Blazor Web management product use the same constrained Sandbox Core. Local and self-hosted use is free; only official-hosted service access is subscription-gated. The official service can manage devices owned by the user; it is not a cloud compute service and cannot bypass local host grants.
 
 Official .NET SDK APIs are preferred. Where stable .NET APIs lack a required facility, a narrowly scoped terminal/control adapter may invoke an unchanged, officially shipped MXC executor through its documented stable contract. This is not a private MXC fork, copied engine code, a Node.js product runtime, or an alternate isolation engine. Its terminal/resource/network composition must pass the experiments before admission. Unsupported combinations fail with a concrete capability error.
+
+### Local process visibility — 2026-11-17 amendment
+
+The owner permits user-requested environment values to be visible in official MXC/helper process arguments to the owning host user, local administrators and their trusted host inspection tools. This visibility alone is not a sandbox boundary violation and must not block MXC admission or dependent delivery. The product does not promise to hide a Run's intentionally supplied inputs from these trusted host principals. An untrusted Sandbox payload remains outside that trust boundary, including when its OS UID is shared with the owner.
+
+Continue to reject implicit inheritance of host credentials, SSH agents, credential sockets and Node signing material, and unauthorized access by a payload or another principal across Sandbox/control boundaries. Raw secrets, request environments and secret-bearing argv must not enter public Plan/GitHub records, exported evidence or ordinary logs. Native inspection uses synthetic fixtures and records only redacted observations and observer authority; it must not suppress an observed value or relabel a protected host observation as an unauthorized payload read.
+
+The 2026-11-16 Linux observation `argv_sentinel_observed=true` and its original FAILED report remain historical facts under the criterion then applied. This amendment supersedes that argv-only rejection criterion, not the evidence. F-AOT-01 becomes pending revalidation; no old run is rewritten as a pass or a complete profile admission. Resume the authorized MXC work with the existing official pin and remaining native/artifact requirements. See [trust boundaries](../architecture/08-security-trust.md), [current experiment interpretation](../verification/mxc-experiments.md#owner-decision-and-resumption--2026-11-17-utc) and [acceptance](../verification/acceptance.md#local-process-visibility).
 
 ## Supersession
 

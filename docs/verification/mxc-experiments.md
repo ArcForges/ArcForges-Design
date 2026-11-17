@@ -4,13 +4,13 @@ Status on **2026-11-14 UTC: every experiment below is NOT_RUN**. Official releas
 
 This protocol implements [02 — MXC integration](../architecture/02-mxc-integration.md). The selected profiles are `windows-process-executor-v1` and `linux-bubblewrap-sdk-v1`, initially pinned to official **1.0.1**, stable schema **1.0.0**. Windows uses the unchanged official executor, C# Native AOT ConPTY supervision and an outer ArcForges Job. Linux uses the official typed .NET SDK inside the established cgroup boundary. No private fork, custom MXC build, test-only forced tier, substitute backend, or plain-pipe terminal claim is acceptable.
 
-**Update 2026-11-16 UTC:** MXC-AOT-01 has now run and **FAILED** the selected Linux 1.0.1 request-environment argv privacy check. Pipe/PTY execution passed and the owned scope was cleaned. No profile or package is admitted by these partial successes. Other experiment sets remain NOT_RUN. See the dated result below.
+**Historical update 2026-11-16 UTC:** MXC-AOT-01 ran and **FAILED** the then-selected Linux 1.0.1 request-environment argv privacy check. Pipe/PTY execution passed and the owned scope was cleaned. That report is unchanged. **Current owner decision 2026-11-17 UTC:** trusted local host visibility of explicitly requested environment values is not a standalone blocker; F-AOT-01 is **PENDING REVALIDATION**, not an invented pass. See the [dated resumption decision](#owner-decision-and-resumption--2026-11-17-utc). Other experiment sets remain NOT_RUN, and no complete profile is admitted.
 
 ## 1. Ownership and evidence rules
 
 | Experiment set | Plan owner | Platform register | Current result |
 |---|---|---|---|
-| MXC-AOT-01 | AFV2-MXC-01 | F-AOT-01 | FAILED — Linux request environment exposed in owned native argv; candidate rejected |
+| MXC-AOT-01 | AFV2-MXC-01 | F-AOT-01 | PENDING REVALIDATION — original argv observation/FAILED report retained; trusted local argv-only blocker superseded by the 2026-11-17 owner decision |
 | MXC-WIN-01 through MXC-WIN-06 | AFV2-MXC-02 | A-MXC-01 / F-MXC-01 | NOT_RUN; Windows combination UNPROVEN |
 | MXC-LNX-01 through MXC-LNX-05 | AFV2-MXC-03 | A-MXC-02 / F-MXC-02 | NOT_RUN; Linux combination UNPROVEN |
 | Cross-profile decision | AFV2-MXC-04 | Both combination facts plus F-AOT-01 | BLOCKED pending evidence, not a declared product impossibility |
@@ -35,7 +35,7 @@ Use disposable, uniquely owned fixture directories and synthetic data, never rea
 2. Publish the bounded experiment supervisor with Native AOT for each candidate shipping RID. Run the published output from a clean installation location without an SDK/JIT dependency. Inspect trimming/AOT diagnostics and native dependency resolution; reject missing/unexpected files rather than masking it with development PATH or `MXC_FFI_DIR` overrides.
 3. Call public `MxcPlatform.NativeVersion`, `GetPlatformSupport` and `GetAvailableBackends`. On Linux perform an actual pipe and PTY spawn/wait/cleanup through V1. On Windows load/probe the package where used and run the unchanged executor through the intended host launcher. Record process behavior, not just successful JSON serialization.
 4. Validate mismatch detection with a deliberately incomplete private staging copy and an incompatible recorded manifest; no workload may run. The experiment never modifies a shared installed runtime. Check Unicode/space-containing installation and request paths, noninteractive service context, and absent global PATH helpers where the profile promises explicit resolution.
-5. Apply per-request optional telemetry disabled for the selected stable version. Verify an offline local start and completion with no Center login/subscription. Inspect logs/process argv for synthetic secret sentinels; policy/environment contents must not leak there. Document any remaining official-runtime artifacts or required telemetry behavior before accepting a newer pin.
+5. Apply per-request optional telemetry disabled for the selected stable version. Verify an offline local start and completion with no Center login/subscription. Use synthetic secret sentinels to inspect ordinary logs and native process visibility, recording only redacted observations and observer authority. Explicitly requested inputs visible to trusted host user/administrator inspection are permitted by the [local process boundary](../architecture/08-security-trust.md#trusted-local-process-inspection) and do not alone fail admission. Unexpected host credential inheritance, unauthorized payload/cross-boundary access and raw secret disclosure in ordinary logs or exported/public records remain failures. Document any remaining official-runtime artifacts or required telemetry behavior before accepting a newer pin.
 
 **Pass:** real published native execution and cleanup on each advertised RID, coherent verified official artifact set, license/distribution manifest and offline local behavior. Package metadata or the upstream reflection-free JSON smoke alone cannot pass. Unavailable architectures remain unqualified and must not be advertised.
 
@@ -79,7 +79,7 @@ bounds, not product resource qualification. The same-host evidence directory is
 | Public native version/support/backends |1.0.1 / supported / Bubblewrap |
 | Pipe/stdout/stderr | PASS; PID3026303, exit0, native wait and PID absent |
 | Real PTY `test -t` | PASS; PID3026310, exit0, native wait and PID absent |
-| Owned argv privacy | **FAILED**; actual native PID3026318 observed the synthetic request-environment sentinel in argv; only the boolean is exported |
+| Owned argv privacy under the 2026-11-16 criterion | **FAILED** in the original report; actual native PID3026318 observed the synthetic request-environment sentinel in argv; only the boolean is exported. The 2026-11-17 decision supersedes its argv-only blocking interpretation. |
 | Kill/wait and cleanup | Kill/native wait completed, PID3026318 absent; all recorded PIDs absent; unit inactive/not-found, empty ControlGroup |
 | Invalid private stages |4/4 PASS: missing native file, incompatible manifest, unexpected member and loader override all reject before fixture/native work |
 | Probe owner idle |1s observation: 0.949ms CPU, 14897152 bytes working set; no product target claim |
@@ -112,17 +112,33 @@ native observations remain bound to 825 and are not relabelled as 438 results.
 Independent review and documentation repository gates record a failed admission;
 they cannot turn the rejected Node candidate into a delivered product task.
 
-This actual failure rejects the selected cohort under step 5 above. It is not a
-host-connectivity or helper-availability failure. Do not suppress the sentinel,
-remove the privacy assertion, patch MXC or infer product admission from pipe/PTY
-success. The later official 1.1.0 source still constructs request environment
-entries as `--setenv key value`; that bounded source check does not admit or
-execute 1.1.0 and supplies no demonstrated remedy. A supported upstream contract
-or an explicit reviewed product decision is needed before retrying admission.
-Keep the Node candidate as a draft and preserve the old product runtime. Full
-Windows/Linux profile experiments and warm performance qualification remain
-pending. AFV2-API-01 is independent of this admission and may proceed under the
-existing authorization once this blocked state is recorded.
+Under the criterion applied on 2026-11-16, this actual observation rejected the
+selected cohort. It was not a host-connectivity or helper-availability failure.
+The later official 1.1.0 source also constructs request environment entries as
+`--setenv key value`; that bounded source check did not admit or execute 1.1.0.
+The original rejection and reports remain historical evidence, with their
+interpretation superseded only as described below. Preserve the Node draft and
+necessary old runtime until the applicable replacement checks pass; pipe/PTY
+success alone still does not admit a full profile.
+
+### Owner decision and resumption — 2026-11-17 UTC
+
+The [AD-0022 amendment](../decisions/AD-0022-cli-sandbox-platform-pivot.md#local-process-visibility--2026-11-17-amendment)
+records the owner's explicit decision to permit trusted local user/administrator
+process inspection of intentionally supplied request environment values. The
+observed boolean remains true; the old native report remains FAILED under its
+original assertion. That argv-only assertion is no longer a product admission
+requirement. Do not suppress the observation, silently inherit host credentials,
+permit unauthorized payload access, or copy raw secrets into logs, public Plan/
+GitHub records or evidence.
+
+AFV2-MXC-01 may resume with F-AOT-01 pending revalidation under the amended
+criterion, the retained official 1.0.1 pin and its existing package/license/AOT/
+offline/cleanup requirements. Record a fresh candidate and actual validation
+results; this decision does not relabel 825 or formatted 438 as a passed run.
+Full Windows/Linux profile experiments and warm performance qualification remain
+pending under their existing owners. Other authorized tasks remain governed by
+their actual dependencies, not by the superseded trusted-local argv blocker.
 
 ## 3. Windows experiments
 

@@ -8,7 +8,7 @@ Read this index and [AD-0022](decisions/AD-0022-cli-sandbox-platform-pivot.md) f
 | System and objects | [01 System](architecture/01-system-overview.md), [03 Sandbox and Run](architecture/03-sandbox-run-model.md) |
 | Official engine | [02 MXC integration](architecture/02-mxc-integration.md), [research](research/mxc-research.md), [experiments](verification/mxc-experiments.md) |
 | Local management | [04 Resources](architecture/04-resource-management.md), [05 Files and data](architecture/05-filesystem-data.md), [06 Node and CLI](architecture/06-local-node-cli.md), [07 Recovery](architecture/07-lifecycle-recovery.md) |
-| Security | [08 Trust](architecture/08-security-trust.md) |
+| Security | [08 Trust](architecture/08-security-trust.md), including the [owner-approved local process visibility boundary](decisions/AD-0022-cli-sandbox-platform-pivot.md#local-process-visibility--2026-11-17-amendment) |
 | Remote product | [09 Go Center](architecture/09-go-center.md), [10 Blazor](architecture/10-blazor-dashboard.md), [11 Identity and commerce](architecture/11-identity-commerce.md) |
 | Delivery | [12 Distribution](architecture/12-distribution-updates.md), [verification](verification/platform-capabilities.md), [acceptance](verification/acceptance.md) |
 | Dependency baseline | [AD-0023](decisions/AD-0023-current-dependency-baseline.md): preserve completed upgrades; necessary mainstream toolchains and local/CI parity |
