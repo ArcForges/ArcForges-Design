@@ -4,13 +4,13 @@ Status on **2026-11-14 UTC: every experiment below is NOT_RUN**. Official releas
 
 This protocol implements [02 — MXC integration](../architecture/02-mxc-integration.md). The selected profiles are `windows-process-executor-v1` and `linux-bubblewrap-sdk-v1`, initially pinned to official **1.0.1**, stable schema **1.0.0**. Windows uses the unchanged official executor, C# Native AOT ConPTY supervision and an outer ArcForges Job. Linux uses the official typed .NET SDK inside the established cgroup boundary. No private fork, custom MXC build, test-only forced tier, substitute backend, or plain-pipe terminal claim is acceptable.
 
-**Historical update 2026-11-16 UTC:** MXC-AOT-01 ran and **FAILED** the then-selected Linux 1.0.1 request-environment argv privacy check. Pipe/PTY execution passed and the owned scope was cleaned. That report is unchanged. **Current owner decision 2026-11-17 UTC:** trusted local host visibility of explicitly requested environment values is not a standalone blocker; F-AOT-01 is **PENDING REVALIDATION**, not an invented pass. See the [dated resumption decision](#owner-decision-and-resumption--2026-11-17-utc). Other experiment sets remain NOT_RUN, and no complete profile is admitted.
+**Historical update 2026-11-16 UTC:** MXC-AOT-01 ran and **FAILED** the then-selected Linux 1.0.1 request-environment argv privacy check. Pipe/PTY execution passed and the owned scope was cleaned. That report is unchanged. **Current owner decision 2026-11-17 UTC:** trusted local host visibility of explicitly requested environment values is not a standalone blocker; F-AOT-01 now has a fresh **bounded Windows/Linux native cohort PASS**; Node source merge and exact-head required profiles remain pending. See the [dated revalidation checkpoint](#mxc-aot-01-revalidation-checkpoint--2026-11-17-utc). Other experiment sets remain NOT_RUN, and no complete profile is admitted.
 
 ## 1. Ownership and evidence rules
 
 | Experiment set | Plan owner | Platform register | Current result |
 |---|---|---|---|
-| MXC-AOT-01 | AFV2-MXC-01 | F-AOT-01 | PENDING REVALIDATION — original argv observation/FAILED report retained; trusted local argv-only blocker superseded by the 2026-11-17 owner decision |
+| MXC-AOT-01 | AFV2-MXC-01 | F-AOT-01 | COHORT NATIVE PASS — fresh Windows/Linux 9a evidence under the amended criterion; source unmerged and required profiles pending; original 825 FAILED report retained |
 | MXC-WIN-01 through MXC-WIN-06 | AFV2-MXC-02 | A-MXC-01 / F-MXC-01 | NOT_RUN; Windows combination UNPROVEN |
 | MXC-LNX-01 through MXC-LNX-05 | AFV2-MXC-03 | A-MXC-02 / F-MXC-02 | NOT_RUN; Linux combination UNPROVEN |
 | Cross-profile decision | AFV2-MXC-04 | Both combination facts plus F-AOT-01 | BLOCKED pending evidence, not a declared product impossibility |
@@ -264,3 +264,65 @@ The owner assembles the signed-off experiment bundles, records their exact sourc
 | Cleanup/resource-before-exec isolation fails | Keep existing necessary execution assets, reject normal profile admission, and fix/requalify the composition before replacement. |
 
 All mandatory terminal, filesystem, network and resource properties must coexist for each shipping profile. Passing each on different backends, OS builds, shell paths or weakened policies is not acceptance. P2–P8 delivery may not convert these unknowns into presumed facts.
+
+## MXC-AOT-01 revalidation checkpoint — 2026-11-17 UTC
+
+The fresh bounded Windows/Linux native AOT cohort **passes** under the amended
+criterion at Node `9a9378bc3a6bc8190d896ca7ef0e43eee5abd886` (tree
+`4b8785f999505582558c85019bdceb7b4952cf7e`) and Design policy
+`4bc1d2be8916a961d167b4965e30e45bc3023ef1`. The Node source is **not merged**;
+its exact-head required host profiles and final delivery review remain pending.
+The original 825 failed observations and every historical report hash are unchanged.
+
+DEKU native Windows 10.0.26300 published win-x64 Native AOT with **0 warnings/
+0 errors** (9.85s). Probe SHA256 is
+`ab9486fd2dd58cf8e6c9bc328f802aff66f64bdbd997c7012400e6065e7bf1ad`;
+stage manifest SHA256 is
+`dc0bfb3708e1994f1ddf5714a5bd30f8f7d0149af6ecf519d96c06271040a34c`.
+All ten staged file hashes and the actual **5/5 Valid Microsoft Corporation**
+signature receipt were checked. The PE has no CLR directory, with only System32
+on parent PATH and an absent DOTNET_ROOT fixture. Five fresh owners discovered
+native 1.0.1/BaseContainer and each ran the unchanged official executor to exit0,
+with Job assignment/readback before resume and zero active Job processes after
+wait. All five executor argv observations were sentinel-free. Four invalid-stage
+cases rejected before stage verification or fixture/workload creation.
+The same-host Windows summary is
+`ArcForges/.worktree/afv2-mxc-01/artifacts/mxc-01/windows-author-9a9378bc3a6b-revalidated-summary.json`,
+SHA256 `9e1676addeedbbb465a4a0e0f1544220fc76a095db815075907167fd6355f12e`.
+
+H-22 published linux-x64 Native AOT with **0 warnings/0 errors** (10.89s).
+Probe SHA256 is
+`d3ff0a71a3a9614e360dbeb4011c8fee88268a74dfdf581bd8cc6b3e4218557c`;
+stage manifest SHA256 is
+`2a9df34d5e78d232ee81f5f4f7ed7b55052428eca61dc746281eddb7849ecf2a`.
+Five staged members retain the pinned official 1.0.1 unit. Five owned user-service
+processes each passed real pipe/stdout/stderr, PTY and kill/native-wait cases;
+all five owner exits were 0. Native library mappings were observed and no JIT
+runtime mapping or exported sentinel hit was recorded. Four invalid-stage cases
+rejected before stage verification or fixture/workload creation. The Linux
+same-host summary is
+`ArcForges/.worktree/afv2-mxc-01-9a9378b-native/artifacts/mxc-01-native-9a9378b/summary.json`,
+SHA256 `e499109bd69dd5476522c0fd1996a999e5dfdad745941c3aeea37a461dc9781b`.
+
+PID cleanup evidence uses the probe's internal `/proc` assertions with the actual
+`processId` values and independent originating-host read-back of all15 recorded
+PIDs. Pipe/PTY reports have a null supplemental `processAbsentAfterWait` field;
+the five kill/wait reports record it true. The driver's auxiliary `casePidsAbsent`
+check used a nonexistent `pid` key and supplies no independent cleanup evidence.
+Trusted host-user argv inspection recorded the requested-environment sentinel in
+four kill/wait observations and not in the fifth; only these booleans are
+exported. This observation is permitted by the amended boundary and is retained.
+
+Originating-host reports, negative summaries, signature receipt and publish logs
+are identified by hash in [mxc-sources.json](../research/mxc-sources.json),
+`admission_progress.revalidation_2026_11_17`. Independent native evidence review
+passed; it does not replace the pending exact-head required Node profiles.
+
+Windows first fresh-process launch-to-Main was44.269ms; the next four had
+p50 10.824ms and native-discovery p50 2177.940ms. Linux first whole-process wall time
+was 1125.462ms; the next four had p50 1117.151ms, including discovery, the one-second
+idle observation and all three workloads. No OS cache was flushed. Per-run
+owner-idle CPU/working-set observations remain in the reports. These bounded
+measurements establish no cold-cache claim or product performance target.
+Windows ConPTY, Linux resource composition and complete shipping profiles remain
+with AFV2-MXC-02/03 and are **UNPROVEN** here.
