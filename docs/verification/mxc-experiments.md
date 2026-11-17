@@ -4,7 +4,7 @@ Status on **2026-11-14 UTC: every experiment below is NOT_RUN**. Official releas
 
 This protocol implements [02 — MXC integration](../architecture/02-mxc-integration.md). The selected profiles are `windows-process-executor-v1` and `linux-bubblewrap-sdk-v1`, initially pinned to official **1.0.1**, stable schema **1.0.0**. Windows uses the unchanged official executor, C# Native AOT ConPTY supervision and an outer ArcForges Job. Linux uses the official typed .NET SDK inside the established cgroup boundary. No private fork, custom MXC build, test-only forced tier, substitute backend, or plain-pipe terminal claim is acceptable.
 
-**Historical update 2026-11-16 UTC:** MXC-AOT-01 ran and **FAILED** the then-selected Linux 1.0.1 request-environment argv privacy check. Pipe/PTY execution passed and the owned scope was cleaned. That report is unchanged. **Current owner decision 2026-11-17 UTC:** trusted local host visibility of explicitly requested environment values is not a standalone blocker; F-AOT-01 now has a fresh **bounded Windows/Linux native cohort PASS**; Node PR93 is merged after exact-head required Windows15/Linux20 checks and independent review. See the [dated revalidation checkpoint](#mxc-aot-01-revalidation-checkpoint--2026-11-17-utc). Other experiment sets remain NOT_RUN, and no complete profile is admitted.
+**Historical update 2026-11-16 UTC:** MXC-AOT-01 ran and **FAILED** the then-selected Linux 1.0.1 request-environment argv privacy check. Pipe/PTY execution passed and the owned scope was cleaned. That report is unchanged. **Current owner decision 2026-11-17 UTC:** trusted local host visibility of explicitly requested environment values is not a standalone blocker; F-AOT-01 now has a fresh **bounded Windows/Linux native cohort PASS**; Node PR93 is merged after exact-head required Windows15/Linux20 checks and independent review. See the [dated revalidation checkpoint](#mxc-aot-01-revalidation-checkpoint--2026-11-17-utc). The later [Linux full-profile checkpoint](#linux-full-profile-native-checkpoint--2026-11-17-utc) records native72/72 at50e602a8. Windows complete qualification and AFV2-MXC-04 product admission remain open.
 
 ## 1. Ownership and evidence rules
 
@@ -12,7 +12,7 @@ This protocol implements [02 — MXC integration](../architecture/02-mxc-integra
 |---|---|---|---|
 | MXC-AOT-01 | AFV2-MXC-01 | F-AOT-01 | COHORT NATIVE PASS — fresh Windows/Linux 9a evidence under the amended criterion; Node93 merged after exact-head required checks; original825 FAILED report retained |
 | MXC-WIN-01 through MXC-WIN-06 | AFV2-MXC-02 | A-MXC-01 / F-MXC-01 | NOT_RUN; Windows combination UNPROVEN |
-| MXC-LNX-01 through MXC-LNX-05 | AFV2-MXC-03 | A-MXC-02 / F-MXC-02 | NOT_RUN; Linux combination UNPROVEN |
+| MXC-LNX-01 through MXC-LNX-05 | AFV2-MXC-03 | A-MXC-02 / F-MXC-02 | NATIVE PASS — H-22 full-profile50e602a8, six groups72/72; scoped limitations and exact receipt below; product admission pending |
 | Cross-profile decision | AFV2-MXC-04 | Both combination facts plus F-AOT-01 | BLOCKED pending evidence, not a declared product impossibility |
 
 Use the designated native Windows and native Linux verification hosts and the repository's normal exact-commit verification procedure. An agent sandbox, WSL, container imitation, source unit test, mocked SDK, or successful CI compilation is not native combination evidence. Do not post successful platform statuses by hand. If a host/dependency is unavailable, preserve `NOT_RUN` with its reason and owner; do not downgrade the acceptance criterion.
@@ -362,3 +362,139 @@ full R2 passed; no source, assertion, timeout or CPU override was changed.
 Original failure, diagnostic and final receipt identities are in
 `admission_progress.revalidation_2026_11_17.final_repository_verification` in
 [mxc-sources.json](../research/mxc-sources.json).
+
+## Linux full-profile native checkpoint — 2026-11-17 UTC
+
+The `linux-bubblewrap-sdk-v1` full invocation **passed 72/72 recorded cases** on
+the designated native H-22 (`v2202601329473427941`, UID1000), exit0 with
+`qualificationPassed=true`, `cleanupConfirmed=true` and no unrun group. The
+whole invocation took 87.749s; its original receipt covers
+2026-11-17T16:55:36.2679558Z–16:57:04.0021302Z. This is the native experiment
+checkpoint at the source below. It does not assert completed Node repository
+checks, a merge, publication, product runtime cutover, or the AFV2-MXC-04
+profile-admission decision. Final integration source
+`022946a305e505e5817162c79a956c7816b99b12` differs only by initializer formatting;
+independent review confirmed unchanged C# tokens and non-whitespace bytes.
+That integration does not change the source/artifact identity of this original
+native evidence or substitute for final-head repository checks.
+
+| Identity | Exact value |
+|---|---|
+| Node native source / embedded AOT source | `50e602a83ece2c4de75d8dbd32777c7833a6eaf7` / `0.1.0-dev+50e602a83ece2c4de75d8dbd32777c7833a6eaf7` |
+| Design / Plan invocation baselines | `af28dc6378d91d678870abc628362476611efa32` / `cf937ddc1c52778007bdc0980a1ae139c809d25f` |
+| Full Run ID | `7eb7b9726a6a4b5d974d20fdadd3df8d` |
+| Full receipt SHA256 | `57f41658b57c18ff350fde2a9afc428c9434946b1aa829735325336019288fcf` |
+| Full driver events SHA256 | `3b85f0b9475972bcdd6bb8bf6508ff7113f657493b79185556cfd3eb0bfe2d48` |
+| AOT executable SHA256 | `eda60f8c071559985f88d17e1d6722f1be1f6b48a87b0845befc425496d99e7c` |
+| Stage manifest SHA256 | `5eedcd1733c25a38545d77f9f1d9f2d9aae1bee04d07b71584272c08f3f02616` |
+| Official SDK / schema / native source | `1.0.1` / `1.0.0` / `fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2` |
+| Official package / release ZIP SHA256 | `d47b1f70c3fcaaed1705a0c3872807e2878fe8c1b778c0dd9eb9325bf421a672` / `0e832239454ba7fcd338ff56218a287eef4c0a01c1484084b869f55feff8abe9` |
+| Official `libmxc_ffi.so` SHA256 | `18a1cba8f2980af79570141c4eec9cd3982872162ae6b63634d45862913002bc` |
+
+The original H-22 repository-relative evidence directory is
+`ArcForges/.worktree/mxc03-author-50e602a83ece/artifacts/mxc-03/`: retain
+`full-native-01.json`, its `.events.jsonl`, `full-native.log`,
+`author-summary.json`, toolchain/restore/build/publish/stage logs and
+`full fixture 01/`. The full receipt binds each group's report/event-log hashes,
+official stage members and actual case results. Owner/control evidence stays
+private; publish summaries and identities rather than whole control records.
+The Native AOT publish log has 0 warnings/0 errors; its SHA256 is
+`007ef021d5b7e5ada0ce97e1e03385978076ecfcce4ae4ad7d4f470ebc21749f`.
+The launcher's generic `author-summary.json` purpose text is not the full result;
+the explicit full receipt above is authoritative for the native combination.
+
+H-22 was Debian 13 x64, kernel `6.12.63+deb13-amd64`
+(`#1 SMP PREEMPT_DYNAMIC Debian 6.12.63-1 (2025-12-30)`), with actual user-manager
+version `257.9-1~deb13u1`. Actual helper observations include Bubblewrap 0.12.0,
+slirp4netns 1.2.1, iproute2-6.15.0, util-linux 2.41, and iptables/ip6tables/restore
+1.8.11 using `nf_tables`; shell identity is the resolved dash executable/hash
+and successful POSIX probe, not an invented `sh --version`. The admission log
+records exact helper paths, hashes and banners; `nf_conntrack` was listed, which
+alone is not a functional connection-tracking test. Real selected-network
+effects supply the runtime evidence.
+
+| Group | Recorded pass count | Observed scope |
+|---|---:|---|
+| admission |4/4| Public SDK discovery; helper identities; actual user/pid/mount/net/ipc/uts namespace differences; independently gated child with missing bwrap refused by SDK BackendError12 without payload/fallback |
+| terminal |17/17| Native PTY/pipe distinction, canonical/raw input, Unicode/resize, actual foreground-child SIGINT, EOF/escalation, 2MiB output/replay gaps, client cancellation, POSIX argv, shell editing and explicit exit provenance |
+| policy |12/12| System baseline reads; owned RW/RO/denied paths, symlink escape refusal, explicit host grant, clean environment/HOME/XDG, persistent second Run, invalid environment and unsupported ingress refusal |
+| network |10/10| Default-deny TCP/UDP without helpers; selected literal IPv4 TCP/UDP; denied address/port/protocol and DNS; private listener not host reachable; IPv6 remains unavailable even with an allow rule |
+| resource |13/13| Pre-execution membership/readback; CPU comparison and dynamic update; real pids-max/OOM enforcement; bounds/existing-unit/readback/native setter/controller-absence/pre-exec creation refusals |
+| lifecycle |16/16| Seven Node crash boundaries; authentication/generation/writer rules; independent client/Center loss; supervisor loss; root-exit descendants; retained cleanup/deletion refusal; two persistent Runs; default-deny and selected combined scenarios |
+
+Ordinary owners had actual pre-SDK readback `cpu.max=50000 100000`,
+`memory.max=536870912`, `pids.max=128`, with memory swap disabled. Resource cases
+used separately owned services: 250/1000millicore CPU comparison, 32 tasks for
+pids pressure and 96MiB for memory pressure. The OS recorded six pids-max events
+with the real process-creation refusal and one `oom_kill`; the identity-bound owner reports
+also completed successfully. The CPU comparison measured 248.534 versus
+1001.267 CPU microseconds per elapsed millisecond. Dynamic readback and the
+combined 500→250millicore update were observed. The controller-absence negative
+used only a fresh private slice, observed missing child `cpu.max`, and refused
+before owner admission; its trusted pre-exec process had memory/tasks guards
+and a 5s deadline. The native creation negative recorded systemd 200/CHDIR.
+No shared slice, host firewall/sysctl, credentials or host network setting was
+changed. All six groups confirmed owned cleanup; held cgroup identity and
+emptiness, not PID disappearance or workload text alone, establish that result.
+
+The same-source full invocation includes the long-lived raw-terminal/owned-files/
+network/resource scenarios under both default-deny and selected-egress policies.
+An internal ready gate starts network/filesystem operations only after actual
+memory touches and children are ready; the observer checks the recorded ordering
+against the load lifetime as well as native cgroup/namespace identities and
+external peer counters. Resize, detach, Node replacement, dynamic limits and Stop
+preserved the same authenticated native/PTY owner until cleanup. The controlled
+network peer is outside the payload's private network namespace on H-22, in the
+same bounded owner cgroup; no Windows-to-VPS data channel is part of this proof.
+
+### Measured overhead and limits of interpretation
+
+The following values come from the original lifecycle receipt's
+`LNX05-combined_default_deny` and `LNX05-combined_selected` facts. They are
+descriptive bounded observations, not new performance thresholds.
+
+| Measurement | Default deny | Selected IPv4 TCP |
+|---|---:|---:|
+| Owner service ready (`serviceReadyMs`) |155.681ms|157.376ms|
+| Official native spawn (`nativeSpawnMs`) |4.958ms|79.285ms|
+| Actual idle measurement window |1010.809ms|1013.665ms|
+| Owner RSS snapshot |21,471,232bytes|21,540,864bytes|
+| Aggregate cgroup `memory.current` snapshot |10,719,232bytes|11,395,072bytes|
+| Aggregate idle CPU delta / native members |15,278µs /4|16,822µs /6|
+| Observed terminal bytes / actual window |4,150bytes /3109.251ms|4,046bytes /3157.394ms|
+| Window terminal throughput |1334.721bytes/s|1281.428bytes/s|
+| Stop, native/helper drain and owner-final report |276.700ms|405.198ms|
+
+`serviceReadyMs` runs from before manager service creation through verified
+owner-ready identity/scope, before payload admission. `nativeSpawnMs` measures
+the official SDK spawn through native PID validation, before stream acquisition;
+each lifecycle case uses a fresh owner and its first spawn. The terminal owner's
+first spawn-to-stream-ready event envelope was 10.0591ms; its next 16, across the
+different fixed cases, ranged 4.7185–17.7631ms. Those envelopes include stream/
+drain setup and logging boundaries. This defines first/subsequent-owner-process
+observations explicitly; no OS cache was flushed, and these are not matched
+cold-cache/warm-cache benchmarks.
+
+The idle window rejects a workload-start event during measurement. Per-member
+RSS snapshots remain in the receipt and must not be summed as unique memory or
+equated with cgroup charges. Terminal throughput uses the output-cursor delta
+over a window that includes idle, restart/reconnect, resize and fixture startup;
+it is not peak throughput. Stop timing ends at validated owner-final reporting;
+the later outside-driver service Stop/empty-scope verification is separate.
+The supervisor-loss case observed original held-cgroup emptiness 11.094ms after
+the main-process kill operation returned. Original cleanup proofs remain in the
+driver events independently of these latency observations.
+
+The namespace-denial fault remains **NOT_RUN** under LNX-01's where-feasible
+clause: no safe independent denial injection was available without host policy/
+credential changes or adding a seccomp framework. Actual positive namespaces and
+the isolated missing-helper refusal passed; they do not fabricate a denial pass.
+DNS evidence is a single real bounded UDP53 query through the sandbox's configured
+resolver that produced native refusal or no response under the selected denying
+policy. There is no independent upstream packet count or delivery assertion.
+Allowed DNS, domain-name policy semantics, proxy mode and public ingress are not
+qualified. IPv6 had no routable address in the selected stable private namespace
+and the allow-rule request remained unreachable. The receipt qualifies only this
+official 1.0.1/cohort/H-22 experiment; Windows, other Linux hosts, reboot recovery
+and later product acceptance retain their separately owned evidence obligations.
+All earlier failed or partial receipts and their original hashes remain intact.
