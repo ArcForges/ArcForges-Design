@@ -1,6 +1,6 @@
 # Platform capabilities and evidence authority
 
-**Initial status at design delivery (2026-11-14):** V2 implementation had not started and all future items were NOT_RUN. Historical V1 acceptance stays separate. **Historical update (2026-11-16):** real MXC-AOT-01 candidate execution failed the then-selected Linux request-environment argv privacy check. **Current policy update (2026-11-17):** the [owner-approved local process boundary](../decisions/AD-0022-cli-sandbox-platform-pivot.md#local-process-visibility--2026-11-17-amendment) supersedes that argv-only blocker; F-AOT-01 is PENDING REVALIDATION. The observation and original FAILED report remain unchanged, and no complete native profile is admitted. Source observations and partial native results remain distinguished below.
+**Initial status at design delivery (2026-11-14):** V2 implementation had not started and all future items were NOT_RUN. Historical V1 acceptance stays separate. **Historical update (2026-11-16):** real MXC-AOT-01 candidate execution failed the then-selected Linux request-environment argv privacy check. **Current policy update (2026-11-17):** the [owner-approved local process boundary](../decisions/AD-0022-cli-sandbox-platform-pivot.md#local-process-visibility--2026-11-17-amendment) supersedes that argv-only blocker; F-AOT-01 passed fresh win-x64/linux-x64 cohort revalidation at candidate `9a9378bc` under that boundary. The observation and original FAILED report remain unchanged, and no complete native profile is admitted. Source observations and partial native results remain distinguished below.
 
 ## Source facts
 
@@ -12,7 +12,7 @@
 | V-MXC-04 | [Linux Bubblewrap](../research/mxc-research.md): policy/dependency/PTY and ingress/IPv6 restrictions are explicit | Native combination NOT_RUN |
 | V-MXC-05 | [Filesystem semantics](../research/mxc-research.md): grants use supported same absolute paths; no universal redirection | Source fact; negative runtime probes still required |
 | V-MXC-06 | [Lifecycle/exit source](../research/mxc-research.md): wait/dispose/kill/drain differ; terminal text is untrusted; executor exit is not payload-empty proof | Source fact; independent outer-scope verification required |
-| V-MXC-07 | [AOT/distribution](../research/mxc-research.md): package TFM/native/helpers/license are inventoried | Real win-x64/linux-x64 AOT observed; original F-AOT-01 FAILED report retained, current admission pending revalidation; no full profile claim |
+| V-MXC-07 | [AOT/distribution](../research/mxc-research.md): package TFM/native/helpers/license are inventoried | Real win-x64/linux-x64 Native AOT, coherent official stage, five native observations and four invalid-stage cases per host passed at9a9378bc; original FAILED report retained; no full profile claim |
 | V-BASE-01 | [Repository baseline](../research/baseline.md) and [runtime audit](../research/runtime-audit.md) pin actual implementations and historical delivered state | Read-only source/ledger audit |
 | V-BASE-02 | [Cloud/consumer audit](../research/cloud-audit.md) pins Go capability, Web scaffolds, published consumers and schema10/11 gap | Read-only source/ledger audit |
 
@@ -27,7 +27,7 @@
 
 | ID | Required evidence | Owner task | Status / exact protocol |
 |---|---|---|
-| F-AOT-01 | SDK/AOT/distribution closure | AFV2-MXC-01 | PENDING REVALIDATION — [owner decision](mxc-experiments.md#owner-decision-and-resumption--2026-11-17-utc) supersedes the trusted-local argv-only blocker. Exact candidate8252c8f still has its original FAILED report and observed environment sentinel; Kill/Wait and scope cleanup proved. Preserve draft93 and obtain current candidate evidence; no full profile admission. |
+| F-AOT-01 | SDK/AOT/distribution closure | AFV2-MXC-01 | PASS for the isolated official1.0.1 win-x64/linux-x64 cohort at9a9378bc under the [owner decision](mxc-experiments.md#owner-decision-and-resumption--2026-11-17-utc): warning-free AOT, native execution/cleanup, verified distribution closure and four negative staging cases per host. See dated revalidation evidence in mxc-experiments.md and mxc-sources.json. Original8252c8f FAILED report/argv observation remain unchanged. Repository delivery checks remain separate; no full profile admission. |
 | F-MXC-01 | Windows complete profile | AFV2-MXC-02 | NOT_RUN — MXC-WIN-01..06 together; ConPTY, policy, nested Job and lifetime |
 | F-MXC-02 | Linux complete profile | AFV2-MXC-03 | NOT_RUN — MXC-LNX-01..05 together; Bubblewrap, PTY, cgroup, networking and lifetime |
 | F-RES-01 | Dynamic resource limits and aggregate safety | AFV2-RES-02 | NOT_RUN — Real CPU/memory saturation, child groups, reductions/increases, native readback/failure |

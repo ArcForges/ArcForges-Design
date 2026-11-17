@@ -121,11 +121,12 @@
     "decided_at_utc": "2026-11-17",
     "authority": "Owner-approved AD-0022 local process visibility amendment",
     "decision_document": "docs/decisions/AD-0022-cli-sandbox-platform-pivot.md#local-process-visibility--2026-11-17-amendment",
-    "aot_admission_status": "PENDING_REVALIDATION",
+    "aot_admission_status": "COHORT_NATIVE_PASS_PENDING_SOURCE_MERGE_AND_REQUIRED_PROFILES",
     "trusted_local_requested_environment_argv_visibility_is_standalone_blocker": false,
     "historical_native_observations_and_failed_reports_unchanged": true,
     "prior_result_relabelled_as_pass": false,
-    "remaining_requirements": "Retain the selected official pin and existing native/artifact qualification. Implicit host credential inheritance, unauthorized payload/cross-boundary access, and raw secrets in public records, exported evidence or ordinary logs remain prohibited."
+    "remaining_requirements": "Retain the selected official pin and existing native/artifact qualification. Implicit host credential inheritance, unauthorized payload/cross-boundary access, and raw secrets in public records, exported evidence or ordinary logs remain prohibited.",
+    "revalidation_record": "admission_progress.revalidation_2026_11_17"
   },
   "sources": [
     {
@@ -836,6 +837,314 @@
         "Not complete MXC-AOT-01 admission because Linux privacy case failed.",
         "825 native observations do not qualify formatted438 draft head."
       ]
+    },
+    "revalidation_2026_11_17": {
+      "owner_task": "AFV2-MXC-01",
+      "policy_baseline": "4bc1d2be8916a961d167b4965e30e45bc3023ef1",
+      "node_candidate": "9a9378bc3a6bc8190d896ca7ef0e43eee5abd886",
+      "source_tree": "4b8785f999505582558c85019bdceb7b4952cf7e",
+      "status": "WINDOWS_LINUX_BOUNDED_COHORT_NATIVE_PASS",
+      "overall_aot_admission": "COHORT_NATIVE_PASS_SOURCE_UNMERGED_REQUIRED_PROFILES_PENDING",
+      "historical_results_unchanged": true,
+      "windows": {
+        "result": "BOUNDED_AOT_EXECUTOR_CASES_PASS_NOT_FULL_PROFILE",
+        "observed_at_utc": "2026-11-17T04:14:50.2025282+00:00",
+        "finished_at_utc": "2026-11-17T04:15:07.3342895+00:00",
+        "venue": "DEKU native Microsoft Windows 10.0.26300; owner-authorized current-machine local access",
+        "receipt_root": "ArcForges/.worktree/afv2-mxc-01/artifacts/mxc-01/",
+        "summary": "windows-author-9a9378bc3a6b-revalidated-summary.json",
+        "summary_sha256": "9e1676addeedbbb465a4a0e0f1544220fc76a095db815075907167fd6355f12e",
+        "probe_sha256": "ab9486fd2dd58cf8e6c9bc328f802aff66f64bdbd997c7012400e6065e7bf1ad",
+        "stage_manifest": "install win 工作区9a9378bc3a6b-revalidated/mxc-manifest.json",
+        "stage_manifest_sha256": "dc0bfb3708e1994f1ddf5714a5bd30f8f7d0149af6ecf519d96c06271040a34c",
+        "stage_file_hashes_verified": 10,
+        "official_native_hashes_unchanged": true,
+        "aot_publish": {
+          "rid": "win-x64",
+          "warnings": 0,
+          "errors": 0,
+          "elapsed_seconds": 9.85,
+          "log": "publish-win-9a9378bc3a6b-revalidated.log",
+          "log_sha256": "81d466bf72f607330fd27c0c600bd6e7f0acb19cc8e9952aba1e017b52516e30"
+        },
+        "official_native_signatures": {
+          "result": "5/5 Valid Microsoft Corporation",
+          "files": [
+            "mxc_ffi.dll",
+            "plm.exe",
+            "wslcsdk.dll",
+            "wxc-wslc-daemon.exe",
+            "wxc-exec.exe"
+          ],
+          "receipt": "install win 工作区9a9378bc3a6b-revalidated/windows-signatures.json",
+          "receipt_sha256": "a652cbd039dc63b6df5056d4065a3b1a9be597d33e3567e3aa3a5f04a53021fd"
+        },
+        "native_sdk_version": "1.0.1",
+        "discovered_processcontainer_tier": "BaseContainer",
+        "actual_official_executor_cases": 5,
+        "all_executor_exit_codes": 0,
+        "all_job_active_counts_after_wait": 0,
+        "all_recorded_executor_pids_absent_after_wait": true,
+        "all_actual_executor_argv_without_sentinel": true,
+        "no_sdk_jit_dependency_observation": {
+          "pe_clr_directory_absent": true,
+          "parent_path": "SystemRoot/System32 only; DOTNET_ROOT absent owned fixture",
+          "scope": "Native AOT execution with the retained staged official native unit; no SDK/JIT invocation is recorded."
+        },
+        "reports": [
+          {
+            "index": 0,
+            "report": "windows-report-9a9378bc3a6b-revalidated-0.json",
+            "sha256": "29de732231c778ff602f6848ef7b55d2e9fcaf6199b38636ae63a50a66d066a3",
+            "executor_pid": 26988,
+            "exit_code": 0,
+            "process_absent_after_wait": true,
+            "argv_sentinel_observed": false,
+            "launch_to_main_ms": 44.26884651184082,
+            "discovery_ms": 2354.5974,
+            "owner_idle": {
+              "elapsedMs": 1008.6964,
+              "ownerCpuMs": 0,
+              "ownerWorkingSetBytes": 23355392,
+              "scope": "Probe owner after discovery, before workloads; 1 second idle observation, not a product budget"
+            }
+          },
+          {
+            "index": 1,
+            "report": "windows-report-9a9378bc3a6b-revalidated-1.json",
+            "sha256": "be58fc56acbc59b39238f7124c8d915373abbe357913e048d62d0f93fc024f64",
+            "executor_pid": 26116,
+            "exit_code": 0,
+            "process_absent_after_wait": true,
+            "argv_sentinel_observed": false,
+            "launch_to_main_ms": 10.66899299621582,
+            "discovery_ms": 2177.0378,
+            "owner_idle": {
+              "elapsedMs": 1009.898,
+              "ownerCpuMs": 0,
+              "ownerWorkingSetBytes": 22474752,
+              "scope": "Probe owner after discovery, before workloads; 1 second idle observation, not a product budget"
+            }
+          },
+          {
+            "index": 2,
+            "report": "windows-report-9a9378bc3a6b-revalidated-2.json",
+            "sha256": "8c24e86a34027ca9c7801b490b86249104ec28db26e57436cde3fae06796d628",
+            "executor_pid": 26452,
+            "exit_code": 0,
+            "process_absent_after_wait": true,
+            "argv_sentinel_observed": false,
+            "launch_to_main_ms": 10.979175567626953,
+            "discovery_ms": 2178.8428,
+            "owner_idle": {
+              "elapsedMs": 1011.0934,
+              "ownerCpuMs": 0,
+              "ownerWorkingSetBytes": 22446080,
+              "scope": "Probe owner after discovery, before workloads; 1 second idle observation, not a product budget"
+            }
+          },
+          {
+            "index": 3,
+            "report": "windows-report-9a9378bc3a6b-revalidated-3.json",
+            "sha256": "595f54d163ccf6878b4d51702f1ab6a69a5023dafac49aeae6696cc23fb9c32f",
+            "executor_pid": 34264,
+            "exit_code": 0,
+            "process_absent_after_wait": true,
+            "argv_sentinel_observed": false,
+            "launch_to_main_ms": 10.654211044311523,
+            "discovery_ms": 2157.8707,
+            "owner_idle": {
+              "elapsedMs": 1004.3412,
+              "ownerCpuMs": 0,
+              "ownerWorkingSetBytes": 22441984,
+              "scope": "Probe owner after discovery, before workloads; 1 second idle observation, not a product budget"
+            }
+          },
+          {
+            "index": 4,
+            "report": "windows-report-9a9378bc3a6b-revalidated-4.json",
+            "sha256": "0f616db84849efb776fc0214774b799073b414b98e6cf3bd6a54eca3f4afdab7",
+            "executor_pid": 5532,
+            "exit_code": 0,
+            "process_absent_after_wait": true,
+            "argv_sentinel_observed": false,
+            "launch_to_main_ms": 11.351585388183594,
+            "discovery_ms": 2207.2652,
+            "owner_idle": {
+              "elapsedMs": 1008.0716,
+              "ownerCpuMs": 0,
+              "ownerWorkingSetBytes": 22638592,
+              "scope": "Probe owner after discovery, before workloads; 1 second idle observation, not a product budget"
+            }
+          }
+        ],
+        "negative_stage_cases": {
+          "result": "4/4 PASS",
+          "summary": "negative win 工作区9a9378bc3a6b-revalidated/summary.json",
+          "summary_sha256": "047e9930cb822f02bce7c8eb74b2cf7993a0ec30388f1b8f6ffdfc68f333eea2",
+          "all_nonzero_before_stage_verified_and_no_fixture": true,
+          "reports": [
+            {
+              "case": "missing-native",
+              "exit_code": 1,
+              "report": "missing-native.json",
+              "sha256": "2fe4da9fd088c278bf5308695d171ec29e9ed93584d69d06f1f82a532859e189",
+              "fixture_absent": true
+            },
+            {
+              "case": "incompatible-manifest",
+              "exit_code": 1,
+              "report": "incompatible-manifest.json",
+              "sha256": "9e6604b86caf996679d10fdb4025ac18edbb99c252e91471e241d3b2f42be570",
+              "fixture_absent": true
+            },
+            {
+              "case": "unexpected-file",
+              "exit_code": 1,
+              "report": "unexpected-file.json",
+              "sha256": "2334d01c802635829d39c811e68cc0f13fdaf507cfa9c863f406fcb0ada5dded",
+              "fixture_absent": true
+            },
+            {
+              "case": "loader-override",
+              "exit_code": 1,
+              "report": "loader-override.json",
+              "sha256": "54b7e77255fa46522043c020140f6be209ed57e829f43e5ed19efc69ca52dae4",
+              "fixture_absent": true
+            }
+          ]
+        },
+        "measurements": {
+          "first_fresh_process_launch_to_main_ms": 44.26884651184082,
+          "subsequent_fresh_process_count": 4,
+          "subsequent_launch_to_main_p50_ms": 10.824084281921387,
+          "subsequent_native_discovery_p50_ms": 2177.9403,
+          "os_cache_flushed": false,
+          "scope": "five bounded owner observations; no OS cache flush or product target claim"
+        }
+      },
+      "linux": {
+        "result": "BOUNDED_NATIVE_AOT_COHORT_PASS_NOT_FULL_PROFILE",
+        "observed_at_utc": "2026-11-17T04:18:10.706912+00:00",
+        "finished_at_utc": "2026-11-17T04:18:36.914249+00:00",
+        "venue": "H-22 designated native Linux MCP host; uid1000; owned systemd user unit",
+        "receipt_root": "ArcForges/.worktree/afv2-mxc-01-9a9378b-native/artifacts/mxc-01-native-9a9378b/",
+        "summary": "summary.json",
+        "summary_sha256": "e499109bd69dd5476522c0fd1996a999e5dfdad745941c3aeea37a461dc9781b",
+        "probe_sha256": "d3ff0a71a3a9614e360dbeb4011c8fee88268a74dfdf581bd8cc6b3e4218557c",
+        "stage_manifest_sha256": "2a9df34d5e78d232ee81f5f4f7ed7b55052428eca61dc746281eddb7849ecf2a",
+        "stage_file_hashes_verified": 5,
+        "official_native_hashes_unchanged": true,
+        "aot_publish": {
+          "rid": "linux-x64",
+          "warnings": 0,
+          "errors": 0,
+          "elapsed_seconds": 10.89,
+          "log": "publish.log",
+          "log_sha256": "c0adad8c37b2e9202b221528822c07a9cf57742bce3aebd5c8c1b1ab4c735eb0"
+        },
+        "native_sdk_version": "1.0.1",
+        "backend": "Bubblewrap",
+        "owner_processes": 5,
+        "all_owner_exit_codes": 0,
+        "pipe_pty_kill_wait_cases": 15,
+        "pid_absence_evidence": {
+          "pipe_and_pty": "The probe checks /proc absence using each actual processId before returning success; their supplemental processAbsentAfterWait fields are null.",
+          "kill_wait": "All five native kill/wait cases record processAbsentAfterWait=true and timedOut=false.",
+          "independent_review": "id_review inspected all 15 actual processId values on the originating host and confirmed them absent.",
+          "excluded_driver_check": "The auxiliary casePidsAbsent driver field used a nonexistent pid key; it is not independent PID-absence evidence."
+        },
+        "argv_observation": {
+          "observer": "trusted owning host user",
+          "kill_wait_sentinel_observed": [
+            true,
+            true,
+            true,
+            true,
+            false
+          ],
+          "all_exported_sentinel_checks_clear": true,
+          "interpretation": "Explicit request-environment visibility under trusted local inspection is recorded without raw argv/value export and is not a standalone failure under the amended policy."
+        },
+        "native_library_map_seen": true,
+        "jit_runtime_map_seen": false,
+        "resource_scope": "0::/user.slice/user-1000.slice/user@1000.service/app.slice/arcforges-mxc01-9a9378b-121810.service",
+        "reports": [
+          {
+            "report": "run-1.json",
+            "sha256": "ca109fddd483f3efc5897d868fb482eecc61578459c3c727fba8e06eb1ba6eee",
+            "actual_process_ids": [
+              3942897,
+              3942904,
+              3942911
+            ]
+          },
+          {
+            "report": "run-2.json",
+            "sha256": "a17d4597cf6a401f1aeceb69995ca2ff995d6dacbb098ff496c03e09be34ef46",
+            "actual_process_ids": [
+              3943006,
+              3943013,
+              3943020
+            ]
+          },
+          {
+            "report": "run-3.json",
+            "sha256": "3ef69dd45deadf9b3a90667d3764075ca7a85a2e1da694115ac29c27a9452936",
+            "actual_process_ids": [
+              3943093,
+              3943100,
+              3943107
+            ]
+          },
+          {
+            "report": "run-4.json",
+            "sha256": "58f8c22bee2751cc3ecf4ece598115d605c68751d2ba4afeeea4dd24eafcbed9",
+            "actual_process_ids": [
+              3943180,
+              3943187,
+              3943194
+            ]
+          },
+          {
+            "report": "run-5.json",
+            "sha256": "e1f99761aaf9deea6f61c4f6b0209def2a176b0ba80e5e335f492b89a8fd4edb",
+            "actual_process_ids": [
+              3943274,
+              3943281,
+              3943288
+            ]
+          }
+        ],
+        "negative_stage_cases": {
+          "result": "4/4 PASS",
+          "cases": [
+            "missing-native",
+            "incompatible-manifest",
+            "unexpected-file",
+            "loader-override"
+          ],
+          "all_nonzero_before_stage_verified_and_no_fixture": true,
+          "summary": "negative Linux9a 工作区/summary.json",
+          "summary_sha256": "4a27a0ce7f77159f9b709a350f403fa82a1907d348f23b5c2db8924f9538e3d7"
+        },
+        "measurements": {
+          "first_fresh_process_wall_ms": 1125.4621311090887,
+          "subsequent_fresh_process_count": 4,
+          "subsequent_whole_process_p50_ms": 1117.1505220700055,
+          "os_cache_flushed": false,
+          "scope": "Whole owner-process duration includes discovery, the one-second idle observation and all three workload cases. The first-run driver label does not establish a cold-cache measurement or a product target."
+        }
+      },
+      "limitations": [
+        "The bounded native AOT cohort passes; Node source integration and exact-head required host profiles remain pending. The original 825 FAILED report is retained.",
+        "The Windows nonterminal executor observations and Linux bounded cases do not qualify ConPTY, cgroup/resource composition or a complete shipping profile.",
+        "Sequential fresh-process and idle CPU/working-set observations do not establish cold-cache behavior or a product performance target.",
+        "The Linux auxiliary driver casePidsAbsent field is excluded; PID absence uses the probe actual-processId checks and originating-host independent read-back."
+      ],
+      "source_merged": false,
+      "required_node_profiles": "PENDING",
+      "native_evidence_review": "Independent id_review verification of both originating-host native evidence cohorts passed; final exact-head source/delivery review remains separate."
     }
   }
 }
