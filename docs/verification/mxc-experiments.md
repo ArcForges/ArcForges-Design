@@ -564,8 +564,10 @@ through console readiness was 393.2202 ms. The idle sample window was 1,021.6485
 ms, the terminal replay window recorded 171 bytes in 81.6838 ms, and Stop
 through cleanup took 59.7187 ms. These observations describe this run and
 measurement windows. The driver recorded immediate inherited Job context.
-Ancestor Jobs were not enumerated by that snapshot. Each case uses its
-owned native Job evidence for assignment, enforcement and cleanup.
+Ancestor Jobs were not enumerated by that snapshot. Cases with an owned
+Job use its native handles to verify assignment, enforcement and cleanup.
+The missing-policy case records the official executor's configuration
+rejection, identity, exit and cleanup.
 
 The report retains `qualificationPassed=false` and
 `externalNetworkStatus=unverified` for the separate external mode. The
