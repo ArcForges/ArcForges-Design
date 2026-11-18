@@ -15,7 +15,7 @@ Required native host checks use the unchanged repository eng/verify.py profiles 
 | Layer | What proves it | Owner |
 |---|---|---|
 | Current toolchain baseline | Actual selected necessary tools and local/CI fingerprints, compatible locked producer/consumer resolution and the normal required exact-head checks for all seven delivery repositories; preserve completed upgrades without extra individually-latest transitive or upstream-tag qualification | AFV2-ENV-01 |
-| Official engine admission | Exact stable artifact/source/license/AOT receipt and full composed Windows/Linux tests | AFV2-MXC-01..04 |
+| Official engine admission | Exact stable artifact/source/license/AOT receipt and required native Windows local MVP and Linux composed tests | AFV2-MXC-01..04 |
 | Core state and receipts | Real stores, locks, failure points, identity/revision/dedup and state-transition tests | AFV2-DATA-01, AFV2-CORE-01, AFV2-CORE-02, AFV2-REC-01 |
 | Terminal | Real TTY detection, full-screen redraw, Ctrl+C, resize, EOF, exclusive writer, detach and output GAP | AFV2-CORE-03, AFV2-CLI-02 |
 | Resources | Host reserve, multi-Sandbox grants, native saturation/readback, stale/mismatch/error and pressure/preemptibility | AFV2-RES-01, AFV2-RES-02, AFV2-RES-03 |
@@ -24,7 +24,13 @@ Required native host checks use the unchanged repository eng/verify.py profiles 
 | Business boundary | Free/offline local; self-host independent; official hosted access gated; account/expiry never kills local work | AFV2-ID-01, AFV2-HOST-01, AFV2-HOST-02, AFV2-HOST-03 |
 | UI | Seven pages with real APIs; responsive keyboard/focus/accessibility; offline/stale/error/unknown flow | AFV2-WEB-01..04 |
 | Removal and compatibility | Zero obsolete runtime routes/projects, immutable public artifacts/history, protected independent consumers, real schema/restore tests | AFV2-MIG-01, AFV2-MIG-02 |
-| Release | Coherent install/update/rollback artifacts plus all mandatory native and remote journeys on same candidate | AFV2-DIST-01, AFV2-DIST-02, AFV2-ACC-01, AFV2-ACC-02 |
+| Release | Coherent install/update/rollback artifacts plus all mandatory native and remote journeys in the declared matrix on the same candidate | AFV2-DIST-01, AFV2-DIST-02, AFV2-ACC-01, AFV2-ACC-02 |
+
+### Official MXC wrapper acceptance
+
+The [2026-11-18 AD-0022 amendment](../decisions/AD-0022-cli-sandbox-platform-pivot.md#official-mxc-wrapper-boundary--2026-11-18-amendment) defines the Windows MVP matrix. Require actual composed terminal, filesystem/control isolation, resource enforcement and lifetime/recovery on native Windows with the official executor. Exercise local policy effects and official refusal paths using the [protocol](mxc-experiments.md#3-windows-experiments). Separately retain the Windows external selected TCP/UDP attempts and unrun dependent cases as unverified. Neither admission of other capabilities nor completion of AFV2-ACC-01 depends on those optional results. The existing Linux native matrix and its scoped evidence still apply.
+
+Published claims and acceptance receipts distinguish official contract support, local native verification and modes without end-to-end evidence. Supported policy requests retain their semantics through the official backend, and the receipt reflects actual errors or outcome certainty. An unverified mode cannot satisfy a request for verified behavior. Required native safety failures still block the affected profile. Repository-required verification, independent review and separate outward-facing activation approval still apply.
 
 ### Local process visibility
 

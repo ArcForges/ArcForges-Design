@@ -39,4 +39,4 @@ One sandbox may host several concurrent runs, up to explicit policy. Its data pe
 
 SDK/executor versions are pinned together with platform prerequisites, source and package hashes, licenses, schema and capability receipts. No compatibility-by-version inference, private SDK fork, generic plugin registry or speculative extension interfaces. There are exactly the Windows and Linux adapters required by current profiles. Backend differences are visible in inspect, including memory metric type, terminal and network capabilities.
 
-The architecture can be implemented only after the [engine experiments](../verification/mxc-experiments.md) prove its combinations. Capability-dependent code may be developed without claiming support; final release cannot skip a required experiment.
+The [engine experiments](../verification/mxc-experiments.md) qualify the mandatory native composition for each profile. Development and release follow the declared acceptance matrix. Windows external selected egress and combinations that need it stay outside the required MVP matrix. Capability reporting retains their unverified status.

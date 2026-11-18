@@ -1,6 +1,6 @@
 # Local Node, CLI and terminal sessions
 
-Status: current V2 design. AFV2-CORE-01 through AFV2-CORE-03 implement the common core and Run owner; AFV2-CLI-01/02 deliver Core/admin commands and terminal behavior; AFV2-FILE-01/02 add data and deletion commands with their actual implementations; AFV2-CENTER-02 adds typed Center control. SDK/profile qualification is a prerequisite, not an assertion of present terminal compatibility. [Resource](04-resource-management.md), [filesystem](05-filesystem-data.md) and [lifecycle](07-lifecycle-recovery.md) define the shared behavior.
+Status: current V2 design. AFV2-CORE-01 through AFV2-CORE-03 implement the common core and Run owner. AFV2-CLI-01/02 deliver Core/admin commands and terminal behavior, AFV2-FILE-01/02 deliver data and deletion commands, and AFV2-CENTER-02 adds typed Center control. The [MXC integration matrix](02-mxc-integration.md) governs which behaviors require native qualification. [Resource](04-resource-management.md), [filesystem](05-filesystem-data.md) and [lifecycle](07-lifecycle-recovery.md) define the shared behavior.
 
 ## 1. First-class local use
 

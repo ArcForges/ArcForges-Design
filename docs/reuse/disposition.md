@@ -6,7 +6,7 @@ This index is normative for migration. Exact class/file/table/consumer findings 
 |---|---|---|---|---|
 | ArcForges resource samplers, pure pressure/budget math | KEEP | Host observation, headroom, conservative memory and bounded pressure | Re-test with new Run/native scope inputs | AFV2-RES-01 |
 | ResourceMonitor, CriticalShedding, running-attempt accounting and fairness | REWORK | Run/Sandbox grants and pressure response | Delete Task/pool/queue/AI coupling | AFV2-RES-01, AFV2-RES-03 |
-| Windows ProcessLauncher/AttemptRunner and Linux execution/guard launchers | REPLACE_WITH_MXC | Official admitted backend creates payload | Keep essential executor until complete profile/core/local acceptance; then delete old launch runtime | AFV2-MXC-04, AFV2-CORE-02, AFV2-MIG-01 |
+| Windows ProcessLauncher/AttemptRunner and Linux execution/guard launchers | REPLACE_WITH_MXC | Official admitted backend creates payload | Keep essential executor until the required native matrix, Core and local replacement pass, then delete the old launch runtime | AFV2-MXC-04, AFV2-CORE-02, AFV2-MIG-01 |
 | Windows Job and Linux systemd/cgroup control primitives | REWORK | Resource-before-exec ownership, limits and independent readback/cleanup | Old nesting topology is not transplanted; no use of private MXC Job handle | AFV2-RES-02 |
 | DirectAttemptHandle, host-process adoption and escaped-process inference | REMOVE | No uncontained or foreign-process fallback | Delete at new runtime cutover | AFV2-MIG-01 |
 | Task/Attempt/DAG/retry/queue/pool/ToolConcurrency implementation | REMOVE | Immediate bounded Run admission only | Drain old work; export historic records without relabeling | AFV2-RES-03, AFV2-MIG-01, AFV2-MIG-02 |

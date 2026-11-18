@@ -4,16 +4,18 @@ Status on **2026-11-14 UTC: every experiment below is NOT_RUN**. Official releas
 
 This protocol implements [02 — MXC integration](../architecture/02-mxc-integration.md). The selected profiles are `windows-process-executor-v1` and `linux-bubblewrap-sdk-v1`, initially pinned to official **1.0.1**, stable schema **1.0.0**. Windows uses the unchanged official executor, C# Native AOT ConPTY supervision and an outer ArcForges Job. Linux uses the official typed .NET SDK inside the established cgroup boundary. No private fork, custom MXC build, test-only forced tier, substitute backend, or plain-pipe terminal claim is acceptable.
 
-**Historical update 2026-11-16 UTC:** MXC-AOT-01 ran and **FAILED** the then-selected Linux 1.0.1 request-environment argv privacy check. Pipe/PTY execution passed and the owned scope was cleaned. That report is unchanged. **Current owner decision 2026-11-17 UTC:** trusted local host visibility of explicitly requested environment values is not a standalone blocker; F-AOT-01 now has a fresh **bounded Windows/Linux native cohort PASS**; Node PR93 is merged after exact-head required Windows15/Linux20 checks and independent review. See the [dated revalidation checkpoint](#mxc-aot-01-revalidation-checkpoint--2026-11-17-utc). The later [Linux full-profile checkpoint](#linux-full-profile-native-checkpoint--2026-11-17-utc) records native72/72 at50e602a8. Windows complete qualification and AFV2-MXC-04 product admission remain open.
+**Historical update 2026-11-16 UTC:** MXC-AOT-01 ran and **FAILED** the then-selected Linux 1.0.1 request-environment argv privacy check. Pipe/PTY execution passed and the owned scope was cleaned. That report is unchanged. **Owner decision 2026-11-17 UTC:** trusted local host visibility of explicitly requested environment values is not a standalone blocker; F-AOT-01 has a fresh **bounded Windows/Linux native cohort PASS**. Node PR93 merged after Windows15/Linux20 required checks and independent review. See the [dated revalidation checkpoint](#mxc-aot-01-revalidation-checkpoint--2026-11-17-utc). The [Linux full-profile checkpoint](#linux-full-profile-native-checkpoint--2026-11-17-utc) records native72/72 at50e602a8.
+
+The [2026-11-18 amendment](../decisions/AD-0022-cli-sandbox-platform-pivot.md#official-mxc-wrapper-boundary--2026-11-18-amendment) defines the Windows MVP qualification below. The [Plan evidence record](https://github.com/ArcForges/Plan/blob/f4767f08176526ec309de45ca10b0b361fd82e1a/docs/afv2-mxc-02-progress.md) retains 59/59 workstation cases at Node `cb0396b`, the original external selected-egress attempts and the unrun combined cases. Ordinary host calibration and native results are separate observations. The original external selected-egress guarantee remains unverified on the designated Windows host. Windows local MVP qualification and AFV2-MXC-04 product admission are open.
 
 ## 1. Ownership and evidence rules
 
 | Experiment set | Plan owner | Platform register | Current result |
 |---|---|---|---|
 | MXC-AOT-01 | AFV2-MXC-01 | F-AOT-01 | COHORT NATIVE PASS — fresh Windows/Linux 9a evidence under the amended criterion; Node93 merged after exact-head required checks; original825 FAILED report retained |
-| MXC-WIN-01 through MXC-WIN-06 | AFV2-MXC-02 | A-MXC-01 / F-MXC-01 | NOT_RUN; Windows combination UNPROVEN |
+| MXC-WIN-01 through MXC-WIN-06 | AFV2-MXC-02 | A-MXC-01 / F-MXC-01 | Local observations are partial. A complete Windows local MVP receipt remains open. External selected TCP/UDP and its dependent combinations are unverified and outside that receipt's required matrix. |
 | MXC-LNX-01 through MXC-LNX-05 | AFV2-MXC-03 | A-MXC-02 / F-MXC-02 | NATIVE PASS — H-22 full-profile50e602a8, six groups72/72; scoped limitations and exact receipt below; product admission pending |
-| Cross-profile decision | AFV2-MXC-04 | Both combination facts plus F-AOT-01 | BLOCKED pending evidence, not a declared product impossibility |
+| Profile decision | AFV2-MXC-04 | Required matrix for each profile plus F-AOT-01 | Record admission, actual limitations and optional unverified capabilities per profile. |
 
 Use the designated native Windows and native Linux verification hosts and the repository's normal exact-commit verification procedure. An agent sandbox, WSL, container imitation, source unit test, mocked SDK, or successful CI compilation is not native combination evidence. Do not post successful platform statuses by hand. If a host/dependency is unavailable, preserve `NOT_RUN` with its reason and owner; do not downgrade the acceptance criterion.
 
@@ -23,7 +25,7 @@ Each result bundle contains:
 - Host architecture, Windows build/PSEC request probe or Linux kernel/cgroup/user-namespace/helper versions, service identity and inherited resource-scope description. Redact personal paths and secrets in exported records.
 - Expected result and actual result for each case, native/API return values, trusted process/resource observations, terminal byte trace where useful, resource readback, cleanup proof, elapsed-time measurements and limitations.
 - Run ID, boot identity, supervisor process-start identity, owner generation, scope identity, state transitions, exit-source/start-certainty/stop-reason fields, and any gap or cleanup failure.
-- Separate labels for observed passes, observed failures, unavailable/not run cases, and inferences. An ordinary stdout assertion cannot establish isolation, start identity, resource membership or cleanup by itself.
+- Separate labels for official source support, observed passes and failures, unverified behavior and unavailable or unrun cases. Trusted host observations establish isolation, start identity, resource membership and cleanup.
 
 Use disposable, uniquely owned fixture directories and synthetic data, never real credentials or another user's files. Test processes have modest bounded CPU, memory, child counts and lifetimes; a trusted external observer/cleanup owner is ready before starting them. No global firewall/namespace/sysctl changes, DACL host preparation, or broad host filesystem grant is part of this protocol. Prerequisites are explicitly provisioned through normal host administration, not silently repaired by the test harness. Capture pre/post state for every resource the experiment owns.
 
@@ -184,10 +186,10 @@ their actual dependencies, not by the superseded trusted-local argv blocker.
 
 1. Present owned home/config/cache/tmp/work/data directories at their actual paths; grant only those needed writable and selected tool/input paths read-only. From the terminal run test intended persistence, read-only write denial, private-control and neighboring-Sandbox denial, hardcoded ungranted writes, reparse/link escape attempts, and explicit external writable grants. Confirm writes are denied rather than transparently redirected; verify external data is never marked owned for deletion.
 2. Test clean environment and known-folder behavior using synthetic secrets. Document applications that ignore configured paths; do not grant the entire user profile or temp directory to hide incompatibility. Include a multiprocess build/test fixture and named-IPC use to expose practical CLI limitations.
-3. Use controlled test endpoints to verify all-deny egress, selected IP/protocol/port egress, denied destinations, host-loopback policy and supported inbound behavior separately. If proxy mode is advertised, verify that only the configured cooperative proxy/peer is reachable and forbidden direct access remains denied. Record native capability prerequisites and unsupported combinations rather than broadening them.
-4. Run the TUI/resize and bounded resource pressure while the filesystem/network checks are active. Snapshot relevant host DACLs before/after. Verify enforcement remains until the last workload descendant is gone.
+3. Use disposable local controls to exercise the default-deny policy and the applicable host-loopback and ingress behavior. Record the exact official request, native preflight, launch/result and observed local effects. Verify a concrete refusal for an incompatible policy. A denial observation requires a local positive control and an independent outcome observation. Preserve the original external selected TCP/UDP attempts and unrun cases as evidence. A reachable external peer, proxy or route change is outside the Windows MVP matrix.
+4. Run the TUI, resize and bounded resource pressure while exercising the filesystem and applicable local policy checks. Snapshot relevant host DACLs before and after. Verify enforcement remains until the last workload descendant is gone.
 
-**Pass:** policy effects on both allowed and denied cases match the advertised capability set while terminal and resources remain active. Domain-name semantics, unrestricted host services and arbitrary write redirection are not inferred from successful network/filesystem calls.
+**Pass:** allowed and denied filesystem effects and the required local policy controls match the declared profile while terminal and resources remain active. The receipt states the scope of the observations, including the unverified external network cases.
 
 ### MXC-WIN-05 — Owner loss, root exit and cleanup proof
 
@@ -205,9 +207,9 @@ their actual dependencies, not by the superseded trusted-local argv blocker.
 
 **Owner:** AFV2-MXC-02; decision reviewed under AFV2-MXC-04.
 
-Run one bounded long-lived multiprocess terminal workload with the accepted filesystem/network policies and live CPU/memory/process limits. Exercise resize, attach/detach, Node restart/reconnect, a limit update, then Stop and complete cleanup. Repeat with the required default-deny and selected-egress modes. Capture cold/warm startup time, idle supervisor/executor/native memory, bounded terminal throughput, descendant accounting, and stop/cleanup latency. Keep measurements attributable to this exact profile/build; report overhead rather than inventing performance targets from source code.
+Run one bounded long-lived multiprocess terminal workload with the required local filesystem and default-deny network policy and live CPU/memory/process limits. Observe the default-deny network effect in that Run using a calibrated disposable local peer and independent observations. Exercise resize, attach/detach, Node restart/reconnect, a limit update, then Stop and complete cleanup. Retain the external selected-egress variant as unverified when no qualifying receipt exists. Capture cold/warm startup time, idle supervisor/executor/native memory, bounded terminal throughput, descendant accounting, and stop/cleanup latency. Attribute measurements to the exact profile/build.
 
-**Pass:** all mandatory combination cases from WIN-01–05 are demonstrated together and the supported host/profile matrix is explicit. If a mandatory feature cannot compose, record the minimal reproducer, unchanged official artifact hashes and upstream stable capability blocker. Pipes-only partial development is labeled partial and cannot pass this experiment.
+**Pass:** the same native Run demonstrates terminal behavior, filesystem/control isolation, the default-deny network effect against the local peer, resource limits/readback, ownership, recovery and cleanup. Record the scope of the network observation and the exact host/profile matrix. If a required property fails, retain its original observations and artifact identity. Record an upstream stable capability blocker only when established by the evidence.
 
 ## 4. Linux experiments
 
@@ -257,13 +259,13 @@ The owner assembles the signed-off experiment bundles, records their exact sourc
 
 | Outcome | Consequence |
 |---|---|
-| All mandatory requirements pass together on a qualified profile | Admit only that explicit profile/host/capability matrix for product implementation. Preserve unsupported requests as refusals. |
-| A host prerequisite is unavailable | Keep the relevant experiment NOT_RUN and the profile UNPROVEN; arrange the designated host/prerequisite, without claiming a pass elsewhere. |
-| An official stable public/adjunct capability cannot express or enforce the requirement | Record a concrete upstream stable capability blocker and a supported remedy/release dependency or explicit product decision. Do not invent an SDK method, privately patch MXC, or instruct a later task to perform an impossible pass. |
-| Only pipes or a weaker policy works | Permit only clearly labeled partial development if authorized; final full V2 acceptance remains blocked. |
-| Cleanup/resource-before-exec isolation fails | Keep existing necessary execution assets, reject normal profile admission, and fix/requalify the composition before replacement. |
+| All mandatory requirements pass together on a qualified profile | Admit the exact profile/host/capability matrix. Record actual unsupported requests as refusals. |
+| A prerequisite for required local/native behavior is unavailable | Keep the affected required cases NOT_RUN and the corresponding profile UNVERIFIED. |
+| A Windows external selected-egress case or dependent combination has no qualifying native evidence | Retain the observations and mark the affected capability UNVERIFIED. The local MVP matrix and dependent delivery can proceed when their applicable required evidence passes. |
+| The official contract cannot express or enforce a required property | Record the concrete refusal or capability failure and the supported remedy, release dependency or explicit product decision. |
+| A mandatory terminal, confinement, resource-before-execution or cleanup property fails | Keep the affected profile unadmitted and retain existing necessary execution assets until the required replacement passes. |
 
-All mandatory terminal, filesystem, network and resource properties must coexist for each shipping profile. Passing each on different backends, OS builds, shell paths or weakened policies is not acceptance. P2–P8 delivery may not convert these unknowns into presumed facts.
+Each shipping profile needs its mandatory properties together on the same backend, host and applicable policy. The optional Windows external result stays separate throughout P2–P8, including release acceptance.
 
 ## MXC-AOT-01 revalidation checkpoint — 2026-11-17 UTC
 
