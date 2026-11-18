@@ -3,6 +3,7 @@
 - Status: Accepted product and architecture direction; runtime combinations remain subject to named verification gates.
 - Date: 2026-11-14
 - Amendment: 2026-11-17; owner-approved local process visibility boundary below supersedes the Linux request-environment argv-only admission blocker.
+- Amendment: 2026-11-18. The official MXC wrapper boundary below scopes Windows MVP acceptance to local native behavior.
 - Decision owner: product owner, through the supplied ArcForges V2 migration instruction.
 - Scope: current Design and Plan; this decision does not claim product code delivery.
 
@@ -12,7 +13,15 @@ ArcForges becomes the open-source general CLI sandbox and intelligent resource-m
 
 The primary model is persistent Sandbox plus one-execution Run. Local CLI is a full offline-capable path. The optional Go Center and Blazor Web management product use the same constrained Sandbox Core. Local and self-hosted use is free; only official-hosted service access is subscription-gated. The official service can manage devices owned by the user; it is not a cloud compute service and cannot bypass local host grants.
 
-Official .NET SDK APIs are preferred. Where stable .NET APIs lack a required facility, a narrowly scoped terminal/control adapter may invoke an unchanged, officially shipped MXC executor through its documented stable contract. This is not a private MXC fork, copied engine code, a Node.js product runtime, or an alternate isolation engine. Its terminal/resource/network composition must pass the experiments before admission. Unsupported combinations fail with a concrete capability error.
+Official .NET SDK APIs are preferred. Where stable .NET APIs lack a required facility, a narrowly scoped terminal/control adapter may invoke an unchanged, officially shipped MXC executor through its documented stable contract. The adapter uses documented official policy and reports MXC's real result. The required native composition is defined by the [experiment protocol](../verification/mxc-experiments.md). Unsupported combinations fail with a concrete capability error.
+
+### Official MXC wrapper boundary — 2026-11-18 amendment
+
+Official stable MXC owns the isolation engine and native policy enforcement. ArcForges translates the requested policy into the documented official contract, invokes the intended official backend, and reports support, refusal and errors at the boundary it can observe. ArcForges owns its local filesystem/control boundaries, terminal, outer resource scope, process lifetime and recovery. Those integrations retain real native acceptance, including their safety checks together in the same Run.
+
+Record official source support, local native observations and unverified behavior separately. Windows external selected TCP/UDP egress, and the composition cases that need a reachable external peer, remain unverified on the designated host. Preserve the original attempted and unrun cases with their outcomes. Those cases are outside the required Windows MVP matrix and do not gate Core, other work or acceptance within the declared release matrix. Windows validation still covers the local cases in the [revised experiment protocol](../verification/mxc-experiments.md#3-windows-experiments). Linux retains its scoped native evidence and requirements.
+
+The Windows MVP uses local fixtures and existing host settings. An explicitly requested policy that the official contract supports and ArcForges can safely translate is submitted without semantic changes. An unverified mode cannot satisfy a requirement for locally demonstrated behavior. Actual unsupported policies and requests whose required safety constraints cannot be applied return their existing typed errors. A native refusal or uncertain outcome is reported for that request. ArcForges leaves underlying enforcement to MXC and preserves the requested policy across any failure.
 
 ### Local process visibility — 2026-11-17 amendment
 
