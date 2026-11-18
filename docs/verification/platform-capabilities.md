@@ -9,19 +9,21 @@ and recovery scenarios, with confirmed owned-scope cleanup. The
 [dated checkpoint](mxc-experiments.md#linux-full-profile-native-checkpoint--2026-11-17-utc)
 binds the original receipt and artifact hashes, host, limits and measurement
 definitions. This is evidence for F-MXC-02; repository delivery and the
-AFV2-MXC-04 product/profile admission decision remain separate. Windows local
-MVP qualification awaits its required native receipt. The permitted namespace-denial injection was
-not feasible and remains explicitly NOT_RUN; DNS evidence covers denial only.
+AFV2-MXC-04 product/profile admission decision remain separate. The permitted
+namespace-denial injection was not feasible and remains explicitly NOT_RUN.
+DNS evidence covers denial only.
 
 **Windows wrapper scope update (2026-11-18):** [AD-0022](../decisions/AD-0022-cli-sandbox-platform-pivot.md#official-mxc-wrapper-boundary--2026-11-18-amendment) limits the required Windows experiment to the local MVP matrix. Keep the external selected TCP/UDP and dependent combinations unverified on the designated host. The [Plan evidence record](https://github.com/ArcForges/Plan/blob/f4767f08176526ec309de45ca10b0b361fd82e1a/docs/afv2-mxc-02-progress.md) preserves the 59 workstation passes along with the attempted and unrun cases. This evidence gap does not establish upstream lack of support.
+
+**Windows native update (2026-11-18 UTC):** the [local wrapper checkpoint](mxc-experiments.md#windows-local-wrapper-native-checkpoint--2026-11-18-utc) at Node `fac982f628799c8905ea911bd949355072a4d2a7` passed 60/60 required cases on DEKU with owned cleanup confirmed. WIN-06 observed the default-deny effect against a calibrated host-loopback peer while the same Run exercised files, ConPTY, resources, recovery and cleanup. External selected TCP/UDP and its dependent Run combinations remain UNVERIFIED.
 
 ## Source facts
 
 | ID | Fact and evidence | Scope |
 |---|---|---|
 | V-MXC-01 | [Stable source/release/payload pins](../research/mxc-sources.json): SDK 1.0.1, schema1.0.0, commit fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2 | Source/package only |
-| V-MXC-02 | [Official .NET gaps and executor contract](../research/mxc-research.md): no stable ProcessContainer ConPTY handle setter; unchanged official executor adjunct is documented | Source-supported architecture, not composed pass |
-| V-MXC-03 | [Windows Job ownership](../research/mxc-research.md): MXC internal Job is private and kill-on-close; pre-exec outer resource scope needs qualification | Native combination NOT_RUN |
+| V-MXC-02 | [Official .NET gaps and executor contract](../research/mxc-research.md): no stable ProcessContainer ConPTY handle setter; unchanged official executor adjunct is documented | Official contract, with the scoped local composition observed under F-MXC-01 |
+| V-MXC-03 | [Windows Job ownership](../research/mxc-research.md): MXC internal Job is private and kill-on-close; pre-exec outer resource scope needs qualification | Native outer Job assignment, readback and cleanup observed under F-MXC-01 |
 | V-MXC-04 | [Linux Bubblewrap](../research/mxc-research.md): policy/dependency/PTY and ingress/IPv6 restrictions are explicit | H-22 native combination PASS at50e602a8, scoped by F-MXC-02 below; AFV2-MXC-04 product admission pending |
 | V-MXC-05 | [Filesystem semantics](../research/mxc-research.md): grants use supported same absolute paths; no universal redirection | Linux positive/negative effects observed at50e602a8 under F-MXC-02; other profiles retain their own runtime obligations |
 | V-MXC-06 | [Lifecycle/exit source](../research/mxc-research.md): wait/dispose/kill/drain differ; terminal text is untrusted; executor exit is not payload-empty proof | Source fact; independent outer-scope verification required |
@@ -33,7 +35,7 @@ not feasible and remains explicitly NOT_RUN; DNS evidence covers denial only.
 
 | ID | Assumption | Owner and resolution |
 |---|---|---|
-| A-MXC-01 | Windows official executor, ConPTY, outer Job, local native BaseContainer policy and recovery meet the required local composition together | AFV2-MXC-02 owns the local evidence. AFV2-MXC-04 records the admission matrix and unverified optional capabilities. |
+| A-MXC-01 | Windows official executor, ConPTY, outer Job, local native BaseContainer policy and recovery meet the required local composition together | AFV2-MXC-02 recorded the scoped DEKU native PASS. AFV2-MXC-04 records the admission matrix and unverified optional capabilities. |
 | A-MXC-02 | Linux official typed SDK+PTY+Bubblewrap+delegated cgroup meets every mandatory requirement together | AFV2-MXC-03 produced the scoped H-22 native PASS at50e602a8; AFV2-MXC-04 still owns the profile admission decision |
 
 ## Future evidence register
@@ -41,7 +43,7 @@ not feasible and remains explicitly NOT_RUN; DNS evidence covers denial only.
 | ID | Required evidence | Owner task | Status / exact protocol |
 |---|---|---|
 | F-AOT-01 | SDK/AOT/distribution closure | AFV2-MXC-01 | PASS for the isolated official1.0.1 win-x64/linux-x64 cohort at9a9378bc under the [owner decision](mxc-experiments.md#owner-decision-and-resumption--2026-11-17-utc): warning-free AOT, native execution/cleanup, verified distribution closure and four negative staging cases per host. See dated revalidation evidence in mxc-experiments.md and mxc-sources.json. Original8252c8f FAILED report/argv observation remain unchanged. Repository delivery checks remain separate; no full profile admission. |
-| F-MXC-01 | Windows local MVP profile | AFV2-MXC-02 | PARTIAL — Required MXC-WIN-01..06 local matrix with ConPTY, file/control isolation, nested Job and lifetime. External selected TCP/UDP and its dependent combinations remain UNVERIFIED outside the required matrix. |
+| F-MXC-01 | Windows local MVP profile | AFV2-MXC-02 | NATIVE PASS — MXC-WIN-01..06 local matrix 60/60 at `fac982f628799c8905ea911bd949355072a4d2a7` on DEKU. [Original identities and scope](mxc-experiments.md#windows-local-wrapper-native-checkpoint--2026-11-18-utc). External selected TCP/UDP and dependent combinations remain UNVERIFIED. |
 | F-MXC-02 | Linux complete profile | AFV2-MXC-03 | NATIVE PASS — MXC-LNX-01..05 together at50e602a83ece2c4de75d8dbd32777c7833a6eaf7 on H-22, six groups72/72 with cleanup confirmed. [Original receipt/identity/limits](mxc-experiments.md#linux-full-profile-native-checkpoint--2026-11-17-utc). Namespace-denial injection remains NOT_RUN under the protocol's where-feasible clause; DNS is deny-only and selected IPv4 is literal address/protocol/port. No Windows/general-host, repository-merge or subsequent product-admission claim. |
 | F-RES-01 | Dynamic resource limits and aggregate safety | AFV2-RES-02 | NOT_RUN — Real CPU/memory saturation, child groups, reductions/increases, native readback/failure |
 | F-REC-01 | Crash/reboot/unknown ownership recovery | AFV2-REC-01 | NOT_RUN — Node and supervisor death, PID reuse, duplicate handles, reboot identity and replay refusal |

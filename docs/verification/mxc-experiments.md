@@ -6,14 +6,14 @@ This protocol implements [02 — MXC integration](../architecture/02-mxc-integra
 
 **Historical update 2026-11-16 UTC:** MXC-AOT-01 ran and **FAILED** the then-selected Linux 1.0.1 request-environment argv privacy check. Pipe/PTY execution passed and the owned scope was cleaned. That report is unchanged. **Owner decision 2026-11-17 UTC:** trusted local host visibility of explicitly requested environment values is not a standalone blocker; F-AOT-01 has a fresh **bounded Windows/Linux native cohort PASS**. Node PR93 merged after Windows15/Linux20 required checks and independent review. See the [dated revalidation checkpoint](#mxc-aot-01-revalidation-checkpoint--2026-11-17-utc). The [Linux full-profile checkpoint](#linux-full-profile-native-checkpoint--2026-11-17-utc) records native72/72 at50e602a8.
 
-The [2026-11-18 amendment](../decisions/AD-0022-cli-sandbox-platform-pivot.md#official-mxc-wrapper-boundary--2026-11-18-amendment) defines the Windows MVP qualification below. The [Plan evidence record](https://github.com/ArcForges/Plan/blob/f4767f08176526ec309de45ca10b0b361fd82e1a/docs/afv2-mxc-02-progress.md) retains 59/59 workstation cases at Node `cb0396b`, the original external selected-egress attempts and the unrun combined cases. Ordinary host calibration and native results are separate observations. The original external selected-egress guarantee remains unverified on the designated Windows host. Windows local MVP qualification and AFV2-MXC-04 product admission are open.
+The [2026-11-18 amendment](../decisions/AD-0022-cli-sandbox-platform-pivot.md#official-mxc-wrapper-boundary--2026-11-18-amendment) defines the Windows MVP qualification below. The [Windows local wrapper checkpoint](#windows-local-wrapper-native-checkpoint--2026-11-18-utc) records 60/60 required native cases at Node `fac982f`, including WIN-06 against a calibrated local peer. The [earlier Plan evidence record](https://github.com/ArcForges/Plan/blob/f4767f08176526ec309de45ca10b0b361fd82e1a/docs/afv2-mxc-02-progress.md) retains the diagnostic 59/59 at `cb0396b`, the original external selected-egress attempts and the unrun external combined cases. External selected egress remains unverified on the designated host. AFV2-MXC-04 owns product/profile admission.
 
 ## 1. Ownership and evidence rules
 
 | Experiment set | Plan owner | Platform register | Current result |
 |---|---|---|---|
 | MXC-AOT-01 | AFV2-MXC-01 | F-AOT-01 | COHORT NATIVE PASS — fresh Windows/Linux 9a evidence under the amended criterion; Node93 merged after exact-head required checks; original825 FAILED report retained |
-| MXC-WIN-01 through MXC-WIN-06 | AFV2-MXC-02 | A-MXC-01 / F-MXC-01 | Local observations are partial. A complete Windows local MVP receipt remains open. External selected TCP/UDP and its dependent combinations are unverified and outside that receipt's required matrix. |
+| MXC-WIN-01 through MXC-WIN-06 | AFV2-MXC-02 | A-MXC-01 / F-MXC-01 | NATIVE PASS — 60/60 required workstation cases at `fac982f`, including one local composed Run. External selected TCP/UDP and its dependent combinations remain unverified. |
 | MXC-LNX-01 through MXC-LNX-05 | AFV2-MXC-03 | A-MXC-02 / F-MXC-02 | NATIVE PASS — H-22 full-profile50e602a8, six groups72/72; scoped limitations and exact receipt below; product admission pending |
 | Profile decision | AFV2-MXC-04 | Required matrix for each profile plus F-AOT-01 | Record admission, actual limitations and optional unverified capabilities per profile. |
 
@@ -500,3 +500,77 @@ and the allow-rule request remained unreachable. The receipt qualifies only this
 official 1.0.1/cohort/H-22 experiment; Windows, other Linux hosts, reboot recovery
 and later product acceptance retain their separately owned evidence obligations.
 All earlier failed or partial receipts and their original hashes remain intact.
+
+## Windows local wrapper native checkpoint — 2026-11-18 UTC
+
+The exact-source `windows-process-executor-v1` wrapper invocation passed
+**60/60 required cases** on DEKU, Microsoft Windows build `10.0.26300`,
+x64. Exit was 0 with `wrapperQualificationPassed=true`, confirmed owned
+cleanup, verified stage and final identity, and an observed driver Job
+context. All six protocols were complete. The report lists zero missing,
+duplicate, unexpected or failing cases. The elapsed time was 62.912 seconds.
+The original report covers 05:24:31.0808091–05:25:33.9240778 UTC.
+
+| Identity | Exact value |
+|---|---|
+| Node source and embedded AOT source | `fac982f628799c8905ea911bd949355072a4d2a7` and `0.1.0-dev+fac982f628799c8905ea911bd949355072a4d2a7` |
+| Design / Plan invocation baselines | `529d3154317178fb7eed50f2a9192281bb2f4b2d` / `6a7ecc46c47c27fc9673b75b4023023bdebd6946` |
+| Run ID / profile revision | `af8b9d5949f541f78397a1264119c2a7` / `win-wrapper-local-v1` |
+| Wrapper receipt SHA-256 | `d822ef2c65d8f6c12bb57d1d2b1f638a5be88b4d8de5618fbb614bd6c1dcbca4` |
+| Driver events SHA-256 | `94f7aa7ff27f0ab52678d762d5a3f9f5a8639b9334dcd62fdda2c038721735dd` |
+| Driver Job context SHA-256 | `3fff96853b8b35abb198cb40d4730797cd6f4d5f636b7187a0abbd2c5ca202c4` |
+| AOT executable / stage manifest SHA-256 | `79ca3c1e4f107dd96ac2f2a0a7f41965a4f9a92115c32d11fccb4d725a9f891f` / `9eec347151404510831bc05d5c67c522c17da608c52831b1164527fc9e8ea60e` |
+| Official MXC version / schema / RID | `1.0.1` / `1.0.0` / `win-x64` |
+| Official native source | `fda29ac63bc306b7f97f3b86b4b63d44f7f40cf2` |
+| Official package / release ZIP SHA-256 | `d47b1f70c3fcaaed1705a0c3872807e2878fe8c1b778c0dd9eb9325bf421a672` / `0e832239454ba7fcd338ff56218a287eef4c0a01c1484084b869f55feff8abe9` |
+| Official `wxc-exec.exe` SHA-256 | `090f5d1f7bb93104ab08dcd4e8034ef954aeefcdaf6658dde5f7dff4cfc12f3a` |
+| Combined policy / observation SHA-256 | `136052983aa167c3a3c9162376952451e8080d3b417e7702ff2c48917e4567f0` / `9e00538979494621f53b42304253897bfa82ffb1e82d6987e108de22e255302f` |
+
+The original repository-relative evidence directory is
+`ArcForges/.worktree/m02-wrapper-fac982f/artifacts/native-fac982f/`.
+Retain `wrapper.json`, the driver events and Job context, `wrapper.launch.json`,
+`wrapper.log`, verified staged artifacts and the owned fixture receipts.
+The wrapper used `--windows-profile --manifest <manifest> --work <fresh-dir>
+--report <fresh-file> --source <Node> --design <Design> --plan <Plan>`.
+The worktree's `wrapper.audit.json` verifies the combined policy and observation
+against the original report. Publish hashes and bounded observations from the
+private controls.
+
+| Protocol | Cases passed | Observed scope |
+|---|---:|---|
+| WIN-01 | 7/7 | Official request, policy and tier refusal cases and argv roundtrip |
+| WIN-02 | 15/15 | ConPTY and interactive shell, resize, input, detach/replay and exit/control observations |
+| WIN-03 | 9/9 | Pre-execution Job assignment, limit/readback, child burst, measured enforcement, live update and refusal |
+| WIN-04 | 13/13 | Filesystem/control isolation, owned and granted data, local CLI and six loopback/ingress cases |
+| WIN-05 | 15/15 | Owner/client loss, child drain, cleanup and persistent data |
+| WIN-06 | 1/1 | Same-Run ConPTY, file/control effects, default-deny against a local peer, resources, recovery and confirmed cleanup |
+
+`combined-local-host-loopback-deny` used egress default deny, ingress default
+deny, host loopback deny and `fallback.allowDaclMutation=false`. Ordinary
+Windows calibration advanced the local TCP peer's receive and matching
+counters from 0 to 1. Both remained at 1 after the contained attempt.
+The workload performed the network attempt and ten filesystem checks
+after the pressure fixture was ready, with the same payload's native Job
+membership independently observed. Six processes and 70,258,688 bytes of peak
+aggregate commit were observed at readiness. All 16 recorded DACL snapshots
+were unchanged. The same owner was rebound, ConPTY resize and Unicode output
+were observed, and resource readback recorded CPU rate 2500, memory 805,306,368
+bytes and process limit 12 after the update. The official executor exit was
+125 for this Stop path, and the held Job was observed empty at cleanup.
+
+The first and subsequent executor spawn-through-resume observations were
+4.340 and 3.2825 ms on separate ordered cases. In the combined case, admission
+through console readiness was 393.2202 ms. The idle sample window was 1,021.6485
+ms, the terminal replay window recorded 171 bytes in 81.6838 ms, and Stop
+through cleanup took 59.7187 ms. These observations describe this run and
+measurement windows. The driver recorded immediate inherited Job context.
+Ancestor Jobs were not enumerated by that snapshot. Each case uses its
+owned native Job evidence for assignment, enforcement and cleanup.
+
+The report retains `qualificationPassed=false` and
+`externalNetworkStatus=unverified` for the separate external mode. The
+local peer result covers host loopback only. Original external attempts and
+unrun combinations remain separate. The lower-capability-host case remains
+NOT_RUN because a designated host was unavailable. Deterministic official
+refusal cases passed. Repository checks and review, merge, publication and
+AFV2-MXC-04 product admission are separately recorded delivery steps.
