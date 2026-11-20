@@ -12,6 +12,12 @@ Remove current HUMAN-only diagnostic submit restrictions and the old Task/Attemp
 
 Current contrary behavior is source-backed: [LocalSubmission](https://github.com/ArcForges/ArcForges/blob/10f692224f94916cfc93fbad971f80ec340c5edf/src/ArcForges.Node.Core/LocalSubmission.cs) and [RunCommand](https://github.com/ArcForges/ArcForges/blob/10f692224f94916cfc93fbad971f80ec340c5edf/src/ArcForges.CommandLine/RunCommand.cs) at the audited baseline.
 
+### Local access to the Linux protected storage profile
+
+The [protected storage profile](05-filesystem-data.md#linux-protected-storage-profile) is opt-in for the host owner. A trusted administrator may invoke the fixed installed `arcforges` CLI as the provisioned service UID. The CLI and Node run without elevation and use the existing owner-only Unix socket and peer identity check. Provisioning belongs to the host owner. Do not grant regular callers a shell or general run-as access to the service account, accept cross-UID callers at that socket or add a second authorization route in FILE-02.
+
+FILE-02 admits this profile for offline local use. Keep Cloud Link disabled and refuse Center connection or enrollment for this profile so no legacy Cloud effect dispatcher runs under the service UID.
+
 ## 2. Composition and dependencies
 
 The product retains one `arcforges` CLI/Node host and the necessary platform service bootstrap. A durable internal RunSupervisor process owns each Run's official backend, terminal master/pipes, resource-scope identity and finalization record. It is a trusted implementation detail launched by the Node through a fixed executable and a private capability-bound handshake, not a second public CLI or arbitrary remote helper. Windows' existing service supervisor may remain as infrastructure; it is not a desktop client.
