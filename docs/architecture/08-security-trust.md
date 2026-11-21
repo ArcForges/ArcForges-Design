@@ -16,7 +16,8 @@ The Center is a remote management principal, never an ambient host administrator
 | Start/stop run | Owner plus valid Sandbox policy | Explicit run-control grant; same Core admission; no host launch |
 | Configure Sandbox | Owner; revision check; stopped runs for access changes | Only locally permitted narrowing/policy fields; no host-path/network expansion |
 | Read output/export | Owner plus data scope | Explicit output/data grant; bounded proxy, no arbitrary host path |
-| Import/delete | Owner; safe path and no-use guards; explicit delete plan | Dedicated destructive/data grant and fresh confirmation; identical guards |
+| Import a regular file | Owner and owned-path and managed-use checks | Scoped data-write grant through the admitted regular-file transfer routes |
+| Preview, execute or resume Sandbox deletion | Owner-local plan or original journal with revision, identity and managed-use checks | Owner-local on the shipped cohort |
 | Create/expand remote grant | Local owner only | Forbidden |
 | Revoke own remote access | Local owner | Revoke only; grant edits use local SetRemoteGrant; invalidate future commands |
 | Resource policy | Local owner within node safety envelope | Within preauthorized bounds; cannot remove host reserve or raise local ceilings |
@@ -35,6 +36,8 @@ Under the [2026-11-17 owner decision](../decisions/AD-0022-cli-sandbox-platform-
 ## Failure and audit
 
 Authenticate and authorize before existence-sensitive reads. The same operation ID/payload hash and actor chain persist across Center and Node; audit state changes, denials, grant changes, policy application/readback, deletes and migrations. Redact secrets and avoid recording command environments. Audits include a correlation ID, timestamp, local/remote origin, resource revision and effect certainty. `UNKNOWN` never has a blind retry recommendation.
+
+The Dashboard displays security facts available to the current account, such as session and device status and the selected Node grant. Server audit storage and account-export data do not create a general security activity feed in the browser. Account and subscription ceremonies use the Center's exact operation class, target and single-use proof when required. [Center account scope](https://github.com/ArcForges/Cloud/blob/9b8796eac760982d9814f371b820b736ddd945c4/docs/center-identity.md), [Center operation policy](https://github.com/ArcForges/Cloud/blob/9b8796eac760982d9814f371b820b736ddd945c4/center/internal/access/access.go)
 
 Revocation prevents further remote commands immediately when locally observed; the Node rejects stale epochs/grants on reconnect. A command already accepted by Core may finish and is reconciled; revocation does not erase effects or masquerade as rollback. Server outage, subscription expiry, account deletion or remote device revocation do not delete local sandbox data or stop local runs.
 
