@@ -61,7 +61,7 @@ The core contract namespace is `arcforges.sandbox.v2`. The remotely eligible ser
 | Service/action group | Remote permission | Local policy and result |
 |---|---|---|
 | Node list/inspect, last-seen and enrollment revocation | Account device management; essential security remains available after subscription lapse | Registry data only; live resource/Sandbox detail additionally needs a local view grant |
-| Sandbox list/inspect | `view` | Redacted configuration, revision, data usage and supported operations; no secret values |
+| Sandbox list/inspect | `view` | Redacted configuration, revision and active Run IDs for the granted Sandbox. List returns zero or one Sandbox with an empty next cursor. |
 | Sandbox create | `configure` through a local `provision` grant | Request carries `provision_grant_id` and immutable template revision; its complete configuration must equal or narrow the local creation template; no arbitrary Node-wide creation authority |
 | Sandbox configure | `configure` through a Sandbox-scoped grant | Root and host mounts remain within the local envelope; `meta.expected_rev` prevents lost updates; configuration never expands remote authority |
 | Run start | `run` | Exact executable/arguments within an existing authorized Sandbox; admission uses current resource and isolation policy |
@@ -69,10 +69,10 @@ The core contract namespace is `arcforges.sandbox.v2`. The remotely eligible ser
 | Run stop | `stop` | Targets one owned Run and its managed descendants; Core defines graceful timeout and escalation; does not terminate unrelated host processes |
 | Resource observation | `view` | Timestamped CPU/memory/pressure measurements and limit states for the granted Sandbox or its Runs |
 | Resource policy changes | `resources` | Complete policy at the current revision for a granted Sandbox or its Run, restricted to locally authorized ceilings |
-| Data import/export and size | `data` | Only Sandbox-relative owned paths; bounded streams and byte limits; no generic host file edit/search API |
+| Data import/export | `data` | Bounded regular-file transfers under Sandbox-relative owned paths. Progress and byte counts describe the selected transfer. |
 | Operation reconciliation | Original operation's read permission | Query by original `owner_epoch` and `command_id`; does not execute, retry or invent a replacement command |
 
-The precise generated names and wire fields live in the V2 API specification. Current route availability follows the admitted Center method list. The closed Center route list excludes `SandboxService.PlanDelete` and `Delete`, even if a grant or schema names a delete permission. Preview, execute and resume use the owner-local CLI. [Shipped Center method list](https://github.com/ArcForges/Cloud/blob/9b8796eac760982d9814f371b820b736ddd945c4/center/internal/routes/management.go)
+The precise generated names and wire fields live in the V2 API specification. Current route availability follows the admitted Center method list. `SandboxService.PlanDelete` and `Delete`, and `DataService.GetUsage` and `ListEntries`, are owner-local in this cohort. Preview, execute and resume use the owner-local CLI. [Shipped Center method list](https://github.com/ArcForges/Cloud/blob/9b8796eac760982d9814f371b820b736ddd945c4/center/internal/routes/management.go)
 
 Local grants default off. An enrollment can display the locally approved policy to the user and request a local enablement action. Only a local authenticated owner may create or edit a grant, authorize a host path, change the data root or expand a resource ceiling. V2 exposes typed remote grant revocation; re-enabling or editing a grant uses the local CLI. Remote configuration/resource actions may narrow settings within their existing grant but cannot restore revoked authority. Grants bind the Center's configured audience and exact enrollment, so signing in to another Center does not inherit permissions.
 
