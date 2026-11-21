@@ -62,7 +62,7 @@ Windows external selected TCP/UDP egress retains its exact request for the suppo
 | F-CTR-01 | Real PostgreSQL upgrade/admission/restore | AFV2-CENTER-01 | NOT_RUN — Fresh/schema10/schema11 guarded chain with preserved floors and uncertain receipts |
 | F-REMOTE-01 | Typed remote effect and grants | AFV2-CENTER-03 | NOT_RUN — Real Node+Go+PG lost reply, stale epoch, revoke, bounded template and denied arbitrary route |
 | F-HOST-01 | Official/self-host entitlement separation | AFV2-HOST-01 | NOT_RUN — Self-host with official offline; official expiry while local Run survives |
-| F-WEB-01 | Responsive accessibility and reconnect | AFV2-WEB-04 | NOT_RUN — Explicit local browser/assistive checks across seven pages; no browser CI |
+| F-WEB-01 | Responsive accessibility and reconnect | AFV2-WEB-04 | NOT_RUN — Real browser and assistive checks across seven page areas and connected reconnect evidence remain open in Plan AR-09. Typed mocked development evidence and local fixture renders have their own scope. See [Dashboard acceptance boundaries](../architecture/10-blazor-dashboard.md#8-task-and-acceptance-boundaries). |
 | F-DIST-01 | Final package install and AOT identity | AFV2-DIST-01 | NOT_RUN — Both native signed/verified cohorts and actual helper/license closure |
 | F-ACC-01 | Full native local product | AFV2-ACC-01 | NOT_RUN — Same final candidate on both native profiles, all journeys required by the declared matrix. Record optional capabilities without end-to-end evidence. |
 | F-REMOTE-02 | Full remote/self-host/account acceptance | AFV2-ACC-02 | NOT_RUN — Real self-host plus approved official/provider tests; activation prerequisites separately recorded |
